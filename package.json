@@ -1,0 +1,24 @@
+{
+    "name": "exspresso",
+    "description": "CodeIgniter inspired web development framework",
+    "version": "0.0.1",
+    "author": "bruce davidson <darkoverlordofdata@gmail.com>",
+    "dependencies": {
+      "coffee-script": "*",
+      "connect-redis": "*",
+      "consolidate": "*",
+      "eco": "*",
+      "express": "*",
+      "express-partials": "*",
+      "jade": "*",
+      "moment": "*",
+      "redis": "*",
+      "sequelize": "*"
+    },
+    "repository": "git://github.com/darkoverlordofdata/exspresso",
+    "main": "server",
+    "engines": { 
+      "node": "0.8.x",
+      "npm": "1.1.x"
+    }
+}

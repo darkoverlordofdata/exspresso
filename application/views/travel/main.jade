@@ -1,0 +1,26 @@
+extends ../layout
+block content
+  #main
+    #hotelSearch.section
+      span.errors
+      h2 Search Hotels
+      form#mainForm(name='mainForm', method='post', action='/hotels')
+        input(type='hidden', name='mainForm', value='mainForm')
+        fieldset
+          .searchGroup
+            .searchField
+              input#searchString(type='text', name='searchString', value='', style='width: 165px; height: 15px;')
+            .searchSize
+              label(for='pageSize')
+                | Maximum results:
+              select#pageSize(name='pageSize', size='1')
+                option(value='5', selected='selected') 5
+                option(value='10') 10
+                option(value='20') 20
+            .searchButton
+              button#findHotels(name='findHotels', type='submit', value='Find Hotels') Find Hotels
+    #bookingsSection.section
+      form#bookingsForm(name='bookingsForm', method='post', action='/bookings')
+        input(type='hidden', name='bookingsForm', value='bookingsForm')
+        h2 Current Hotel Bookings
+        | No Bookings Found

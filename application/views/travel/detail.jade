@@ -1,0 +1,37 @@
+extends ../layout
+
+block content
+
+  #main
+    .section
+      h2 View Hotel
+
+      .field
+        .label Name:
+        .output= hotel.name
+      .field
+        .label Address:
+        .output= hotel.address
+      .field
+        .label City:
+        .output= hotel.city
+      .field
+        .label State:
+        .output= hotel.state
+      .field
+        .label Zip:
+        .output= hotel.zip
+      .field
+        .label Country:
+        .output= hotel.country
+      .field
+        .label Nightly rate:
+        .output= hotel.price
+
+    .section
+      form(action="/booking",method="post")
+        input(type="hidden",name="hotelId",value="#{hotel.id}")
+        fieldset.buttonGroup
+          button(name="submit", type="submit") Book Hotel
+          &nbsp;
+          button(name="cancel", type="submit") Back to Search

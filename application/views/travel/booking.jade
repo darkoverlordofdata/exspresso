@@ -1,0 +1,97 @@
+extends ../layout
+
+block content
+
+  #main
+    .section
+      h2 Book Hotel
+      form(id="booking",action="/confirm",method="post")
+          input(type="hidden",name="hotelId",value="#{hotel.id}")
+          fieldset
+            .field
+              .label Name:
+              .output= hotel.name
+            .field
+              .label Address:
+              .output= hotel.address
+            .field
+              .label City, State:
+              .output= hotel.city + ', ' + hotel.state
+            .field
+              .label Zip:
+              .output= hotel.zip
+            .field
+              .label Country:
+              .output= hotel.country
+            .field
+              .label Nightly rate:
+              .output= hotel.price
+            .field
+              .label
+                label(for="checkinDate") Check In:
+              .input
+                input(id="checkinDate",name="checkinDate",type="text")
+            .field
+              .label
+                label(for="checkoutDate") Check Out:
+              .input
+                input(id="checkoutDate",name="checkoutDate",type="text")
+            .field
+              .label
+                label(for="beds") Room Preference:
+              .input
+                select(id="beds",name="beds")
+                  option(value="1") One king-size bed
+                  option(value="2") Two double beds
+                  option(value="3") Three beds
+            .field
+              .label
+                label(for="smoking") Smoking Preference:
+              #radio.input
+                table#smoking
+                  tr
+                    td
+                      input(id="smoking",name="smoking",type="radio",value="true")
+                      label(for="smoking") Smoking
+                  tr
+                    td
+                      input(id="non-smoking",name="smoking",type="radio",value="false",checked="checked")
+                      label(for="non-smoking") Non Smoking
+
+            .field
+              .label
+                label(for="creditCard") Credit Card #:
+              .input
+                input(id="creditCard",name="creditCard",type="text",value="")
+            .field
+              .label
+                label(for="creditCardName") Credit Card Name:
+              .input
+                input(id="creditCardName",name="creditCardName",type="text",value="",maxlength="40")
+            .field
+              .label
+                label(for="creditCardExpiryMonth") Expiration Date:
+              .input
+                select(id="creditCardExpiryMonth",name="creditCardExpiryMonth")
+                  option(value="1") Jan
+                  option(value="2") Feb
+                  option(value="3") Mar
+                  option(value="4") Apr
+                  option(value="5") May
+                  option(value="6") Jun
+                  option(value="7") Jul
+                  option(value="8") Aug
+                  option(value="9") Sep
+                  option(value="10") Oct
+                  option(value="11") Nov
+                  option(value="12") Dec
+                select(id="creditCardExpiryYear",name="creditCardExpiryYear")
+                  option(value="1") 2012
+                  option(value="2") 2013
+                  option(value="3") 2014
+                  option(value="4") 2015
+                  option(value="5") 2016
+              .buttonGroup
+                input(name="proceed", type="submit", value="Proceed")
+                &nbsp;
+                input(name="cancel", type="submit", value="Cancel")

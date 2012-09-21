@@ -1,0 +1,29 @@
+//+--------------------------------------------------------------------+
+//| 5xx.jade
+//+--------------------------------------------------------------------+
+//| Copyright DarkOverlordOfData (c) 2012
+//+--------------------------------------------------------------------+
+//|
+//| This file is a part of Exspresso
+//|
+//| Exspresso is free software you can copy, modify, and distribute
+//| it under the terms of the GNU General Public License Version 3
+//|
+//+--------------------------------------------------------------------+
+//|
+//|	Error 5xx
+//|
+
+extends ../layout
+
+block content
+  h1= settings.site_name
+  p
+  h3 500: Internal Server Error
+  if settings['verbose errors']
+    pre= error.stack
+  else
+    p An error ocurred!
+
+//End of file 5xx.jade
+//Location: ./views/errors/5xx.jade
