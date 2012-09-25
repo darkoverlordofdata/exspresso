@@ -40,10 +40,28 @@ else
   [username, password] = ['','']
 database = db.pathname.substr(1)
 
+hostname = db.hostname
+dialect  = db.protocol.split(':')[0]
+port = db.port
+
+console.log 'database: |' + database + '|'
+console.log 'username: |' + username + '|'
+console.log 'hostname: |' + hostname + '|'
+console.log 'protocol: |' + dialect + '|'
+console.log 'port: |' + port + '|'
+
 sequelize = new Sequelize(database, username, password,
-  host: db.host
-  logging: false
+  host:     hostname
+  port:     port
+  dialect:  dialect
+  logging:  false
 )
+###
+sequelize = new Sequelize('tagsobe', 'tagsobe', 'tagsobe',
+  host:     'localhost'
+  logging:  false
+)
+###
 
 #
 # Table options:

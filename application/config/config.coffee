@@ -14,6 +14,8 @@
 #	config - Main application
 #
 exports['db_url'] = process.env.CLEARDB_DATABASE_URL ? "mysql://tagsobe:tagsobe@localhost/tagsobe"
+#exports['db_url'] = process.env.DATABASE_URL ? "postgres://tagsobe:tagsobe@localhost:5432/tagsobe"
+#exports['db_url'] = process.env.DATABASE_URL ? "sqlite://localhost/tagsobe.db"
 ##
 #|--------------------------------------------------------------------------
 #| Site Name
