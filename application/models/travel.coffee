@@ -55,13 +55,8 @@ sequelize = new Sequelize(database, username, password,
   port:     port
   dialect:  dialect
   logging:  false
+  storage:  database
 )
-###
-sequelize = new Sequelize('tagsobe', 'tagsobe', 'tagsobe',
-  host:     'localhost'
-  logging:  false
-)
-###
 
 #
 # Table options:
