@@ -31,8 +31,17 @@ Sequelize = require("sequelize")
 #
 # Connect to database
 #
-sequelize = new Sequelize("tagsobe", "tagsobe", "tagsobe",
-  host: "localhost"
+config = require(APPPATH + 'config/config')       # application settings
+db   = require('url').parse config.db_url
+
+if db.auth?
+  [username, password] = db.auth.split(':')
+else
+  [username, password] = ['','']
+database = db.pathname.substr(1)
+
+sequelize = new Sequelize(database, username, password,
+  host: db.host
   logging: false
 )
 

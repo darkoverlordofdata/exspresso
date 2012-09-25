@@ -13,7 +13,7 @@
 #
 #	config - Main application
 #
-
+exports['db_url'] = process.env.CLEARDB_DATABASE_URL ? "mysql://tagsobe:tagsobe@localhost/tagsobe"
 ##
 #|--------------------------------------------------------------------------
 #| Site Name
