@@ -1,26 +1,3 @@
-## Exspresso
-
-
-Exspresso is a web framework based on Express.js, and inspired by CodeIgniter.
-
-## Features
-
-* Jade templating engine
-* Redis session storage
-* Bootstrap/LESS stylesheets
-* Sequelize ORM
-* Edit configuration defaults in application/config/config.coffee
-
-
-
-
-
-
-
-
-
-## License
-
 (The MIT License)
 
 Copyright (c) 2012 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;

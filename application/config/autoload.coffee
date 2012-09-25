@@ -45,7 +45,7 @@
 #|
 #|	exports['middleware'] = ['messages', ...]
 ##
-exports['middleware'] = ['messages', 'profiler']
+exports['middleware'] = []
 
 ##
 #|--------------------------------------------------------------------------

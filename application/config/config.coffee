@@ -36,16 +36,6 @@ exports['favicon'] = '/icons/favicon.png'
 
 ##
 #|--------------------------------------------------------------------------
-#| Default Controller
-#|--------------------------------------------------------------------------
-#|
-#| Default controller - url =  '/'
-#|
-##
-exports['default_controller'] = 'welcome'
-
-##
-#|--------------------------------------------------------------------------
 #| WebRoot
 #|--------------------------------------------------------------------------
 #|
@@ -82,7 +72,7 @@ exports['logger'] = 'dev'
 #| Path to the views folder
 #|
 ##
-exports['views'] = '/application/views'
+exports['views'] = '/views'
 
 ##
 #|--------------------------------------------------------------------------
@@ -202,6 +192,22 @@ exports['cookie_key'] = process.env.CLIENT_SECRET ? 'ZAHvYIu8u1iRS6Hox7jADpnCMYK
 exports['session_db'] = 'redis'
 
 exports['redis_url'] = process.env.REDISTOGO_URL ? 'redis://localhost:6379'
+
+exports['cache'] = false
+
+#
+#|--------------------------------------------------------------------------
+#| Class Extension Prefix
+#|--------------------------------------------------------------------------
+#|
+#| This item allows you to set the filename/classname prefix when extending
+#| native libraries.  For more information please see the user guide:
+#|
+#| http://codeigniter.com/user_guide/general/core_classes.html
+#| http://codeigniter.com/user_guide/general/creating_libraries.html
+#|
+#
+exports['subclass_prefix'] = 'MY_'
 
 
 # End of file config.coffee

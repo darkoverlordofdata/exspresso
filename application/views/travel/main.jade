@@ -1,10 +1,10 @@
-extends ../layout
+extends ./layout
 block content
   #main
     #hotelSearch.section
       span.errors
       h2 Search Hotels
-      form#mainForm(name='mainForm', method='post', action='/hotels')
+      form#mainForm(name='mainForm', method='post', action='/travel/hotels')
         input(type='hidden', name='mainForm', value='mainForm')
         fieldset
           .searchGroup

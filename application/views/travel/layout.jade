@@ -1,0 +1,37 @@
+//
+//  http://richweb.springsource.org/swf-booking-faces/spring/main?execution=c1v
+
+!!! transitional
+html(xmlns='http://www.w3.org/1999/xhtml')
+  head
+    meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+    title Spring Faces: Hotel Booking Sample Application
+    link(type='text/css', rel='stylesheet', href='/stylesheets/tundra.css')
+    style(type='text/css', media='screen')
+      @import url("/stylesheets/tools.css");
+      @import url("/stylesheets/typo.css");
+      @import url("/stylesheets/forms.css");
+      @import url("/stylesheets/layout-navtop-localleft.css");
+      @import url("/stylesheets/layout.css");
+      @import url("/stylesheets/booking.css");
+  body.tundra.spring
+    #page
+      #header.clearfix.spring
+        #welcome
+          .left D16A Time Travel: A DarkRoaster Reference Application
+          .right
+        #branding.spring
+          a(href='/travel/intro')
+            img(src='/images/header.jpg', alt='Spring Travel')
+      #content.clearfix.spring
+        #local.spring
+          a(href='http://www.thespringexperience.com')
+            img(src='/images/diplomat.jpg')
+          a(href='http://www.thespringexperience.com')
+            img(src='/images/tse.gif')
+          p
+
+        block content
+      #footer.clearfix.spring
+        a(href='http://www.springframework.org')
+          img(src='/images/powered-by-spring.png')

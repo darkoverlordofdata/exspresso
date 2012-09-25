@@ -13,7 +13,7 @@
 #
 #	cache a flash message queue
 #
-module.exports = (server, config) ->
+module.exports = (server) ->
 
   ##
   # add messages to the flash message

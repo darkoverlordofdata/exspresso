@@ -49,12 +49,35 @@
 #|
 ##
 
-exports['default'] = 
+#
+# session db
+#
+exports['default'] =
   hostname: ''
   username: ''
   password: ''
   database: ''
   dbdriver: 'connect-sqlite3'
+  dbprefix: ''
+  pconnect: true
+  db_debug: true
+  cache_on: false
+  cachedir: ''
+  char_set: 'utf8'
+  dbcollat: 'utf8_general_ci'
+  swap_pre: ''
+  autoinit: true
+  stricton: false
+
+#
+# travel sample
+#
+exports['tagsobe'] =
+  hostname: 'localhost'
+  username: 'tagsobe'
+  password: 'tagsobe'
+  database: 'tagsobe'
+  dbdriver: 'mysql'
   dbprefix: ''
   pconnect: true
   db_debug: true

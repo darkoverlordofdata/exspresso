@@ -21,7 +21,7 @@
 #   @param {Object} express connect server
 #   @param {Object} Exspresso configuration
 #
-module.exports = (server, config) ->
+module.exports = (server) ->
 
   #
   # profiler middleware

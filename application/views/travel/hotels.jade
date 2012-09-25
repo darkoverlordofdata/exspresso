@@ -1,4 +1,4 @@
-extends ../layout
+extends ./layout
 
 block content
   #main
@@ -24,4 +24,4 @@ block content
                   td= hotel.city + ', ' + hotel.state
                   td= hotel.zip
                   td
-                    a(href="/hotel/#{hotel.id}") View Hotel
+                    a(href="/travel/hotel/#{hotel.id}") View Hotel

@@ -14,26 +14,23 @@
 #
 #	Controller base class
 #
-class Controller
 
-  #
-  #	Create new controller
-  #
-  #	@param	object	http request object
-  #	@param	object	http response object
-  # @returns nothing
-  #
-  constructor: (@req, @res) ->
+class exspresso.Controller
 
-  #
-  #	Render the controller
-  #
-  #	@param	string	view template file name
-  #	@param	object	context for template engine
-  # @returns nothing
-  #
-  render: (view, data) ->
-    @res.render view, data
-    return
+  load: null
 
-module.exports = Controller
+  constructor: ->
+
+    @load = new Load(@)
+
+
+
+class Load
+
+  constructor: (@parent) ->
+
+  model: (name, name_as) ->
+
+    member = name_as ? name
+    @parent[member] = require(APPPATH + 'models/' + name)
+

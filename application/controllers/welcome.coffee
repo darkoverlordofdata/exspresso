@@ -11,16 +11,14 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	welcome - the default controller
+#	Welcome
+#
+# This is the default controller
 #
 
-#
-# register the controller with the server
-#
-#   @param {Object} express connect server
-#   @param {Object} Exspresso configuration
-#
-module.exports = (server, config) ->
+module.exports = class Welcome extends exspresso.Controller
+
+  constructor: () ->
 
   #
   # index
@@ -28,7 +26,21 @@ module.exports = (server, config) ->
   #   @param {Object} server request object
   #   @param {Object} server response object
   #
-  server.get "/", (req, res) ->
+  index: ->
 
-    res.render 'welcome_message'
-    return
+    @render 'welcome_message'
+
+
+  #
+  # about
+  #
+  #   @param {Object} server request object
+  #   @param {Object} server response object
+  #   @param {Function} next middleware
+  #   @param {String} id
+  #
+  about: (id) ->
+
+    @render 'about'
+      id: id
+

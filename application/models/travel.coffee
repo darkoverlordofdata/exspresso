@@ -25,6 +25,7 @@
 # *
 #
 #
+
 Sequelize = require("sequelize")
 
 #
@@ -97,7 +98,9 @@ sequelize.sync()
 #
 # Export Objects:
 #
-module.exports =
+module.exports = db =
   Booking:    Booking
   Customer:   Customer
   Hotel:      Hotel
+
+
