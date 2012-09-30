@@ -6,7 +6,7 @@
 #|
 #| This file is a part of Expresso
 #|
-#| Darklite is free software; you can copy, modify, and distribute
+#| Exspresso is free software; you can copy, modify, and distribute
 #| it under the terms of the GNU General Public License Version 3
 #|
 #+--------------------------------------------------------------------+
@@ -15,7 +15,9 @@
 #
 #   Defines the global Exspresso environment
 #
-{define, is_dir, realpath} = require('not-php') # load helpers
+{is_dir}        = require('./helper')                   # Tells whether the filename is a directory.
+{realpath}      = require('./helper')                   # Returns canonicalized absolute pathname.
+
 #
 #---------------------------------------------------------------
 # APPLICATION ENVIRONMENT
@@ -34,7 +36,7 @@
 # NOTE: If you change these, also change the error_reporting() code below
 #
 #
-define 'ENVIRONMENT', 'development'
+exports.ENVIRONMENT = ENVIRONMENT = 'development'
 
 #
 #
@@ -110,24 +112,21 @@ if not is_dir($public_path)
 
 #  The coffee-script file extension
 
-define 'EXT', '.coffee'
+exports.EXT = EXT = '.coffee'
 
 #  Path to the system folder
-define 'BASEPATH',  $system_path
+exports.BASEPATH = BASEPATH = $system_path
 
 #  Path to the front controller (this file)
-define 'FCPATH', process.cwd()
+exports.FCPATH = FCPATH = process.cwd()
 
 #  The path to the "webroot" folder
-define 'WEBROOT',   $public_path
+exports.WEBROOT = WEBROOT = $public_path
 
 #  The path to the "application" folder
 $application_path = realpath($application_folder) + '/';
 
-if is_dir($application_path)
-  define 'APPPATH',   $application_path
-
-else
+if not is_dir($application_path)
   $application_path = realpath(BASEPATH + $application_folder) + '/';
   if not is_dir($application_path)
     console.log "Your application folder path is not set correctly."
@@ -135,18 +134,7 @@ else
     console.log "\t#{__filename}"
     process.exit 1
 
-  define 'APPPATH',   $application_path
-
-
-#
-# -------------------------------------------------------------------
-#  Create namespace roots
-# -------------------------------------------------------------------
-#
-
-# Exspresso framework namespace
-define 'exspresso', {}
-
+exports.APPPATH = APPPATH = $application_path
 
 # --------------------------------------------------------------------
 # LOAD THE BOOTSTRAP FILE

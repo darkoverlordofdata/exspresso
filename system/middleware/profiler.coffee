@@ -13,7 +13,14 @@
 #
 #	Display profile data on rendered page
 #
-
+{FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
+{APPPATH}       = require(FCPATH + '/index')            # '/var/www/Exspresso/application/'
+{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
+{WEBROOT}       = require(FCPATH + '/index')            # '/var/www/Exspresso/public/'
+{EXT}           = require(FCPATH + '/index')            # '.coffee'
+{ENVIRONMENT}   = require(FCPATH + '/index')            # 'development'
+app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
+{log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 
 #
 # register the middleware with the server
@@ -21,7 +28,7 @@
 #   @param {Object} express connect server
 #   @param {Object} Exspresso configuration
 #
-module.exports = (server) ->
+module.exports = ()->
 
   #
   # profiler middleware
@@ -30,7 +37,7 @@ module.exports = (server) ->
   #   @param {Object} server response object
   #   @param {Object} next middleware
   #
-  server.use (req, res, next) ->
+  app.use (req, res, next) ->
 
     #
     # profile snapshot
@@ -68,6 +75,9 @@ module.exports = (server) ->
 
     next()
     return
+
+  log_message 'debug',"Middleware profiler initialized"
+
 
 
 # End of file profiler.coffee

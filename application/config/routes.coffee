@@ -6,13 +6,10 @@
 #|
 #| This file is a part of Expresso
 #|
-#| Darklite is free software; you can copy, modify, and distribute
+#| Exspresso is free software; you can copy, modify, and distribute
 #| it under the terms of the GNU General Public License Version 3
 #|
 #+--------------------------------------------------------------------+
-#
-#	routes - Main application
-#
 #
 #
 #
@@ -55,7 +52,7 @@
 #
 
 exports['default_controller']                 = "welcome/index"
-exports['404_override']                       = ''
+exports['404_override']                       = 'welcome/not_found'
 
 exports['/about']                             = 'welcome/about'
 exports['/about/:id']                         = "welcome/about"
@@ -64,13 +61,12 @@ exports['/travel/search']                     = 'travel/search'
 exports['/travel/hotels']                     = 'travel/hotels'
 exports['/travel/hotel/:id']                  = 'travel/hotel'
 
-###
 exports['/login']                             = 'travel/login'
 exports['/logout']                            = 'travel/logout'
 exports['/authenticate']                      = 'travel/authenticate'
 exports['/travel/booking']                    = 'travel/booking'
 exports['/travel/confirm']                    = 'travel/confirm'
 exports['/travel/book']                       = 'travel/book'
-###
+
 # End of file routes.coffee
 # Location: ./routes.coffee

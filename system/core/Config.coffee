@@ -6,27 +6,27 @@
 #|
 #| This file is a part of Expresso
 #|
-#| Darklite is free software; you can copy, modify, and distribute
+#| Exspresso is free software; you can copy, modify, and distribute
 #| it under the terms of the GNU General Public License Version 3
 #|
 #+--------------------------------------------------------------------+
 #
-# Exspress Config Class
+# Exspresso Config Class
 #
 # This class contains functions that enable config files to be managed
 #
 #
-log_message = (type, message) ->
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, file_exists, is_dir, ltrim, realpath, rtrim, trim, ucfirst} = require(FCPATH + '/helper')
+{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, log_message} = require(BASEPATH + 'core/Common')
 
-get_config = () ->
-  
-common = require(SYSPATH + 'core/Common')
-  
-class Exspress.Config
 
-  $config: {}
-  $is_loaded: {}
-  $_config_paths: [APPPATH]
+class CI_Config
+
+
+  _config:        {}
+  _is_loaded:     {}
+  _config_paths:  [APPPATH]
 
   #
   # Constructor
@@ -40,11 +40,10 @@ class Exspress.Config
   # @return  boolean  if the file was successfully loaded or not
   #
   constructor :  ->
-    @config = common.get_config()
-    log_message('debug', "Config Class Initialized")
+    @_config = get_config()
 
     #  Set the base_url automatically if none was provided
-    if @config['base_url'] is ''
+    if @_config['base_url'] is ''
       ###
       if $_SERVER['HTTP_HOST']?
         $base_url = if $_SERVER['HTTPS']?  and strtolower($_SERVER['HTTPS']) isnt 'off' then 'https' else 'http'
@@ -59,6 +58,7 @@ class Exspress.Config
 
       @set_item 'base_url', $base_url
 
+    log_message('debug', "Config Class Initialized")
 
 
   #  --------------------------------------------------------------------
@@ -73,68 +73,55 @@ class Exspress.Config
   # @return	boolean	if the file was loaded correctly
   #
   load : ($file = '', $use_sections = false, $fail_gracefully = false) ->
-    $file = if ($file is '') then 'config' else str_replace(EXT, '', $file)
-    $found = false
+    $file = if $file is '' then 'config' else $file.replace(EXT, '')
     $loaded = false
 
-    for $path in as
-      $check_locations = [ENVIRONMENT + '/' + $file, $file]
-      else [$file]
+    for $path of @_config_paths
 
-      for $location in as
+      $config = {}
+      $found = false
+      $check_locations = [$file, ENVIRONMENT + '/' + $file]
+      for $location of $check_locations
+
         $file_path = $path + 'config/' + $location + EXT
 
-        if in_array($file_path, @is_loaded, TRUE)
-          $loaded = TRUE
-          continue2
-
-
         if file_exists($file_path)
-          $found = TRUE
-          break
+          $config = array_merge($config, require($file_path))
 
 
-
-      if $found is false
-        continue
-
-
-      eval include_all($file_path)
-
-      if not $config?  or  not is_array($config)
-        if $fail_gracefully is TRUE
+      if not $found
+        if $fail_gracefully is true
           return false
 
         show_error('Your ' + $file_path + ' file does not appear to contain a valid configuration array.')
 
 
-      if $use_sections is TRUE
-        if @config[$file]?
-          @config[$file] = array_merge(@config[$file], $config)
+      if $use_sections is true
+        if @_config[$file]?
+          @_config[$file] = array_merge(@_config[$file], $config)
 
         else
-          @config[$file] = $config
+          @_config[$file] = $config
 
 
       else
-        @config = array_merge(@config, $config)
+        @_config = array_merge(@_config, $config)
 
 
-      @is_loaded.push $file_path
-      delete $config
+      @_is_loaded.push $file_path
 
-      $loaded = TRUE
+      $loaded = true
       log_message('debug', 'Config file loaded: ' + $file_path)
 
 
     if $loaded is false
-      if $fail_gracefully is TRUE
+      if $fail_gracefully is true
         return false
 
       show_error('The configuration file ' + $file + EXT + ' does not exist.')
 
 
-    return TRUE
+    return true
 
 
   #  --------------------------------------------------------------------
@@ -151,22 +138,22 @@ class Exspress.Config
   #
   item : ($item, $index = '') ->
     if $index is ''
-      if not @config[$item]?
+      if not @_config[$item]?
         return false
 
 
-      $pref = @config[$item]
+      $pref = @_config[$item]
 
     else
-      if not @config[$index]?
+      if not @_config[$index]?
         return false
 
 
-      if not @config[$index][$item]?
+      if not @_config[$index][$item]?
         return false
 
 
-      $pref = @config[$index][$item]
+      $pref = @_config[$index][$item]
 
 
     return $pref
@@ -186,11 +173,11 @@ class Exspress.Config
   # @return	string
   #
   slash_item : ($item) ->
-    if not @config[$item]?
+    if not @_config[$item]?
       return false
 
 
-    return rtrim(@config[$item], '/') + '/'
+    return rtrim(@_config[$item], '/') + '/'
 
 
   #  --------------------------------------------------------------------
@@ -203,13 +190,14 @@ class Exspress.Config
   # @return	string
   #
   site_url : ($uri = '') ->
-    if $uri is ''
+
+    if typeof $uri is 'string' and $uri is ''
       return @slash_item('base_url') + @item('index_page')
 
 
     if @item('enable_query_strings') is false
-      if is_array($uri)
-        $uri = implode('/', $uri)
+      if Array.isArray($uri)
+        $uri = $uri.join('/')
 
 
       $index = if @item('index_page') is '' then '' else @slash_item('index_page')
@@ -217,10 +205,10 @@ class Exspress.Config
       return @slash_item('base_url') + $index + trim($uri, '/') + $suffix
 
     else
-      if is_array($uri)
+      if typeof $uri is 'object'
         $i = 0
         $str = ''
-        for $val, $key in as
+        for $val, $key of $uri
           $prefix = if ($i is 0) then '' else '&'
           $str+=$prefix + $key + '=' + $val
           $i++
@@ -242,8 +230,9 @@ class Exspress.Config
   # @return	string
   #
   system_url :  ->
-    $x = explode("/", preg_replace("|/*(.+?)/*$|", "\\1", BASEPATH))
-    return @slash_item('base_url') + end($x) + '/'
+
+    $x = BASEPATH.split("/")
+    return @slash_item('base_url') + $x[$x.length-1] + '/'
 
 
   #  --------------------------------------------------------------------
@@ -257,7 +246,7 @@ class Exspress.Config
   # @return	void
   #
   set_item : ($item, $value) ->
-    @config[$item] = $value
+    @_config[$item] = $value
 
 
   #  --------------------------------------------------------------------
@@ -274,12 +263,17 @@ class Exspress.Config
   # @return	void
   #
   _assign_to_config : ($items = {}) ->
-    if is_array($items)
-      for $val, $key in as
-        @set_item($key, $val)
+    for $val, $key of $items
+      @set_item($key, $val)
 
 
 
+
+
+# END CI_Config class
+
+Exspresso.CI_Config = CI_Config
+module.exports = CI_Config
 
 
 # End of file Config.coffee

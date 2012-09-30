@@ -13,13 +13,22 @@
 #
 #	cache a flash message queue
 #
-module.exports = (server) ->
+{FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
+{APPPATH}       = require(FCPATH + '/index')            # '/var/www/Exspresso/application/'
+{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
+{WEBROOT}       = require(FCPATH + '/index')            # '/var/www/Exspresso/public/'
+{EXT}           = require(FCPATH + '/index')            # '.coffee'
+{ENVIRONMENT}   = require(FCPATH + '/index')            # 'development'
+app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
+{log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
+
+module.exports = () ->
 
   ##
   # add messages to the flash message
   # queue for this session
   ##
-  server.response.message = (msg) ->
+  app.response.message = (msg) ->
 
     sess = @req.session
 
@@ -34,7 +43,7 @@ module.exports = (server) ->
   # expose messages to template engine
   # while the views are rendering
   ##
-  server.use (req, res, next) ->
+  app.use (req, res, next) ->
 
     # make the message queue available the template engine
     res.locals.messages = req.session.messages ? []

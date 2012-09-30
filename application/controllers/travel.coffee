@@ -11,55 +11,102 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	travel - Main application
+#	Travel Controller Class
 #
-#
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
 
-moment  = require("moment")
+CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 
-module.exports = class Travel extends exspresso.Controller
+class Travel extends CI_Controller
 
+  ## --------------------------------------------------------------------
+
+  #
+  # Constructor
+  #
+  # Load the demo travel data model
+  #
+  #   @access	public
+  #   @return	void
+  #
   constructor: ->
 
     super()
-    @load.model 'travel', 'db'
+    @load.model 'Travel'
+
+  ## --------------------------------------------------------------------
 
   #
-  # #into to hotel app
+  # Intro
+  #
+  # Demo hotel app intro
+  #
+  #   @access	public
+  #   @return	void
   #
   intro: ->
+
     @render "travel/intro"
 
+  ## --------------------------------------------------------------------
+
   #
-  # Search Hotels
+  # Search
+  #
+  # Search for hotels
+  #
+  #   @access	public
+  #   @return	void
   #
   search: ->
 
-    query = @db.Booking.findAll(where: {state: "BOOKED"})
+    query = @Travel.Booking.findAll(where: {state: "BOOKED"})
     query.on "success", (bookings) =>
 
       @render "travel/main",
         bookings: bookings
 
+  ## --------------------------------------------------------------------
+
   #
-  # Hotel Results
+  # Hotels
+  #
+  # Display search results
+  #
+  #   @access	public
+  #   @return	void
   #
   hotels: ->
 
-    query = @db.Hotel.findAll(where: ["name like ?", "%" + @req.param("searchString") + "%"])
-    query.on "success", (result) =>
+    query = @Travel.Hotel.findAll(where: ["name like ?", "%" + @req.param("searchString") + "%"])
+    query.on "success", ($result) =>
 
       @render "travel/hotels",
-        hotels: result
+        hotels: $result
+
+  ## --------------------------------------------------------------------
 
   #
-  # View Hotel
+  # Hotel
   #
-  hotel: (id) ->
+  # Display one hotel
+  #
+  #   @access	public
+  #   @param string   The hotel record id#
+  #   @return	void
+  #
+  hotel: ($id) ->
 
-    query = @db.Hotel.find(parseInt(id, 10))
-    query.on "success", (result) =>
+    query = @Travel.Hotel.find(parseInt($id, 10))
+    query.on "success", ($result) =>
 
       @render "travel/detail",
-        hotel: result
+        hotel: $result
 
+#
+# Export the class:
+#
+module.exports = Travel
+
+# End of file Travel.coffee
+# Location: .application/controllers/Travel.coffee

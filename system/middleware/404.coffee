@@ -13,13 +13,21 @@
 #
 #	internal error 5xx
 #
+{FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
+{APPPATH}       = require(FCPATH + '/index')            # '/var/www/Exspresso/application/'
+{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
+{WEBROOT}       = require(FCPATH + '/index')            # '/var/www/Exspresso/public/'
+{EXT}           = require(FCPATH + '/index')            # '.coffee'
+{ENVIRONMENT}   = require(FCPATH + '/index')            # 'development'
+app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
+{log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 
-module.exports = (server) ->
+module.exports = () ->
 
   #
   # handle 404 not found error
   #
-  server.use (req, res, next) ->
+  app.use (req, res, next) ->
 
     res.status(404).render 'errors/404', url: req.originalUrl
     return

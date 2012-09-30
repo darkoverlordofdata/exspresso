@@ -10,7 +10,7 @@
 #| it under the terms of the GNU General Public License Version 3
 #|
 #+--------------------------------------------------------------------+
-##
+#
 #| -------------------------------------------------------------------
 #| AUTO-LOADER
 #| -------------------------------------------------------------------
@@ -29,54 +29,100 @@
 #|
 #| These are the things you can load automatically:
 #|
-#| 1. Middleware
+#| 1. Packages
 #| 2. Libraries
 #| 3. Helper files
-#| 4. Models
-#| 5. Controllers
+#| 4. Custom config files
+#| 5. Language files
+#| 6. Models
+#| 7. Middleware
 #|
-##
+#
 
-##
-#|--------------------------------------------------------------------------
-#|  Auto-load Middleware
-#|--------------------------------------------------------------------------
+#
+#| -------------------------------------------------------------------
+#|  Auto-load Packges
+#| -------------------------------------------------------------------
 #| Prototype:
 #|
-#|	exports['middleware'] = ['messages', ...]
-##
-exports['middleware'] = []
+#|  $autoload['packages'] = array(APPPATH.'third_party', '/usr/local/shared');
+#|
+#
+exports['packages'] = []
 
-##
+#
+#| -------------------------------------------------------------------
+#|  Auto-load Libraries
+#| -------------------------------------------------------------------
+#| These are the classes located in the system/libraries folder
+#| or in your application/libraries folder.
+#|
+#| Prototype:
+#|
+#|	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
+#
+exports['libraries'] = []
+
+#
 #|--------------------------------------------------------------------------
 #|  Auto-load Helpers
 #|--------------------------------------------------------------------------
 #| Prototype:
 #|
 #|	exports['helper'] = ['url', 'file']
-##
+#
 exports['helper'] = []
 
-##
+#
+#| -------------------------------------------------------------------
+#|  Auto-load Config files
+#| -------------------------------------------------------------------
+#| Prototype:
+#|
+#|	$autoload['config'] = array('config1', 'config2');
+#|
+#| NOTE: This item is intended for use ONLY if you have created custom
+#| config files.  Otherwise, leave it blank.
+#|
+#
+
+exports['config'] = []
+
+
+#
+#| -------------------------------------------------------------------
+#|  Auto-load Language files
+#| -------------------------------------------------------------------
+#| Prototype:
+#|
+#|	$autoload['language'] = array('lang1', 'lang2');
+#|
+#| NOTE: Do not include the "_lang" part of your file.  For example
+#| "codeigniter_lang.php" would be referenced as array('codeigniter');
+#|
+#
+
+exports['language'] = []
+
+#
 #|--------------------------------------------------------------------------
 #|  Auto-load Models
 #|--------------------------------------------------------------------------
 #| Prototype:
 #|
 #|	exports['model'] = ['accounts']
-##
+#
 exports['model'] = []
 
-##
+#
 #|--------------------------------------------------------------------------
-#|  Auto-load Controllers
+#|  Auto-load Middleware
 #|--------------------------------------------------------------------------
 #| Prototype:
 #|
-#|	exports['controllers'] = []
-#|
-##
-exports['controllers'] = []
+#|	exports['middleware'] = ['messages', ...]
+#
+exports['middleware'] = ['profiler']
 
 # End of file autoload.coffee
 # Location: ./application/config/autoload.coffee

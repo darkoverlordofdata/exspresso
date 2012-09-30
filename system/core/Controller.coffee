@@ -12,25 +12,49 @@
 #+--------------------------------------------------------------------+
 #
 #
-#	Controller base class
+# Exspresso Application Controller Class
 #
+# This class object is the super class for all controllers
+#
+#
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, file_exists, is_dir, ltrim, realpath, rtrim, trim, ucfirst} = require(FCPATH + '/helper')
+{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, log_message} = require(BASEPATH + 'core/Common')
 
-class exspresso.Controller
+#
+# ------------------------------------------------------
+#  Instantiate the loader class and initialize
+# ------------------------------------------------------
+#
+$self = instance: null
 
-  load: null
+
+class CI_Controller
 
   constructor: ->
 
-    @load = new Load(@)
+    $self.instance = @
+
+    # Assign all the class objects that were instantiated by the
+    # bootstrap file (Exspresso.coffee) to local class variables
+    # so that CI can run as one big super object.
+
+    for $var, $class of is_loaded()
+      @[$var] = load_class($class)
+
+    @load = load_class('Loader', 'core')
 
 
+    log_message 'debug', "Controller Class Initialized"
 
-class Load
+CI_Controller.get_instance = ()  ->
 
-  constructor: (@parent) ->
+  return $self.instance
 
-  model: (name, name_as) ->
+# END CI_Controller class
 
-    member = name_as ? name
-    @parent[member] = require(APPPATH + 'models/' + name)
+Exspresso.CI_Controller = CI_Controller
+module.exports = CI_Controller
 
+# End of file Controller.coffee
+# Location: ./system/core/Controller.coffee
