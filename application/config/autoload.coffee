@@ -122,7 +122,7 @@ exports['model'] = []
 #|
 #|	exports['middleware'] = ['messages', ...]
 #
-exports['middleware'] = ['profiler']
+exports['middleware'] = []
 
 # End of file autoload.coffee
 # Location: ./application/config/autoload.coffee

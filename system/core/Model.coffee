@@ -14,22 +14,31 @@
 #	Model Class
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, file_exists, is_dir, ltrim, realpath, rtrim, trim, ucfirst} = require(FCPATH + '/helper')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, log_message} = require(BASEPATH + 'core/Common')
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 class CI_Model
 
-  constructor: ->
+  ## --------------------------------------------------------------------
+
+  #
+  # Model Constructor
+  #
+  #
+  # @access	public
+  # @param	object	$CI Controller Instance mixin
+  # @return	void
+  #
+  constructor: ($CI = {}) ->
 
     # Allows models to access CI's loaded classes using the same
     # syntax as controllers:
-    $CI = get_instance()
     for $key, $member of $CI
-      @[$key] = $member unless $key is 'constructor'
-
+      @[$key] = $member
 
     log_message 'debug', "Model Class Initialized"
+
 
 
 # END CI_Model class

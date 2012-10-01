@@ -12,8 +12,8 @@
 #+--------------------------------------------------------------------+
 #
 
-#exports['db_url'] = "mysql://tagsobe:tagsobe@localhost/tagsobe"
-exports['db_url'] = "postgres://tagsobe:tagsobe@localhost:5432/tagsobe"
+#exports['db_url'] = process.env.CLEARDB_DATABASE_URL
+exports['db_url'] = process.env.HEROKU_POSTGRESQL_ROSE_URL
 #exports['db_url'] = "sqlite:///tagsobe"
 
 

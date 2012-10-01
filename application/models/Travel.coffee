@@ -17,7 +17,7 @@
 Sequelize       = require("sequelize")                  # Sequelize 1.5 ORM
 url             = require('url')                        # Utilities for URL resolution and parsing.
 {FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
-{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
+{BASEPATH}      = require(FCPATH + 'index')             # '/var/www/Exspresso/system/'
 {get_config}    = require(BASEPATH + 'core/Common')     # Loads the main config.coffee file.
 {log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 CI_Model        = require(BASEPATH + 'core/Model')      # Exspresso Model Base Class
@@ -39,7 +39,8 @@ class Travel extends CI_Model
   #
   # @return 	nothing
   #
-  constructor: ->
+  constructor: ($CI) ->
+    super $CI
     @initialize()
 
   ## --------------------------------------------------------------------
@@ -61,8 +62,7 @@ class Travel extends CI_Model
 
   initialize: ->
 
-    $config = get_config()
-    $db     = url.parse $config.db_url
+    $db     = url.parse @config._config.db_url
 
     if $db.auth?
       [$username, $password] = $db.auth.split(':')

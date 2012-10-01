@@ -1,0 +1,334 @@
+DEBUG 20:25:13 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 20:25:13 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 20:25:13 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 20:25:13 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 20:25:13 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 20:25:13 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 20:25:13 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 20:25:51 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 20:25:51 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 20:25:51 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 20:25:51 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 20:25:51 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 20:25:51 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 20:25:51 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 20:25:55 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:25:55 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:25:58 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:25:58 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:27:13 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 20:27:13 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 20:27:13 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 20:27:13 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 20:27:13 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 20:27:13 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 20:27:13 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 20:27:16 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:27:16 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:27:16 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 20:27:20 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:27:20 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:27:21 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:27:21 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:27:23 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:27:23 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:28:06 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 20:28:06 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 20:28:06 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 20:28:06 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 20:28:06 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 20:28:06 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 20:28:06 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 20:28:10 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:28:10 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:28:13 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:28:13 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:28:13 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 20:28:15 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:28:15 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:28:18 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:28:18 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:28:21 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:28:21 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:35:30 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 20:35:30 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 20:35:30 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 20:35:30 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 20:35:30 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 20:35:30 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 20:35:30 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 20:35:34 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:35:34 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:35:36 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:35:36 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:35:36 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 20:41:04 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 20:41:04 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 20:41:04 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 20:41:04 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 20:41:04 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 20:41:04 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 20:41:04 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 20:41:11 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:41:11 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 20:41:11 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:41:15 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:41:15 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:41:17 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:41:17 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:41:19 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:41:19 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:41:22 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:41:22 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:41:24 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:41:24 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:58:33 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 20:58:33 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 20:58:33 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 20:58:33 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 20:58:33 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 20:58:33 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 20:58:33 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 20:58:39 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:58:39 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:58:42 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:58:42 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:58:42 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 20:58:45 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:58:45 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:58:47 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:58:47 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 20:58:49 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 20:58:49 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 21:53:05 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 21:53:05 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 21:53:05 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 21:53:05 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 21:53:05 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 21:53:05 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 21:53:05 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 21:53:16 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 21:53:16 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:08:13 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 22:08:13 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 22:08:13 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 22:08:13 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 22:08:13 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 22:08:13 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 22:08:13 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 22:08:21 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:08:21 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:08:24 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:08:24 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:23:26 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 22:23:26 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 22:23:26 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 22:23:26 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 22:23:26 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 22:23:26 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 22:23:26 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 22:23:30 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:23:30 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:23:33 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:23:33 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:23:33 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 22:23:36 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:23:36 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:27:52 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 22:27:52 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 22:27:52 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 22:27:52 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 22:27:52 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 22:27:52 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 22:27:52 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 22:27:57 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:27:57 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:28:01 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:28:01 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:38:28 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 22:38:28 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 22:38:28 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 22:38:28 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 22:38:28 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 22:38:28 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 22:38:28 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 22:38:34 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:38:34 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:38:36 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:38:36 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:41:20 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 22:41:20 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 22:41:20 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 22:41:20 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 22:41:20 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 22:41:20 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 22:41:20 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 22:52:28 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 22:52:28 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 22:52:28 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 22:52:28 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 22:52:28 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 22:52:28 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 22:52:28 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 22:52:33 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:52:33 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:52:35 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:52:35 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:59:12 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 22:59:12 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 22:59:12 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 22:59:12 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 22:59:12 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 22:59:12 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 22:59:12 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 22:59:15 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:59:15 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 22:59:17 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 22:59:17 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:01:18 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:01:18 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:01:18 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:01:18 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:01:18 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:01:18 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:01:18 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:01:21 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:01:21 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:03:10 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:03:10 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:03:10 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:03:10 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:03:10 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:03:10 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:03:10 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:03:13 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:03:13 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:04:04 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:04:04 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:04:04 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:04:04 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:04:04 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:04:04 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:04:04 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:04:06 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:04:06 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:04:06 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:04:11 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:04:11 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:04:13 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:04:13 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:19:11 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:19:11 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:19:11 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:19:11 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:19:11 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:19:11 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:19:11 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:19:19 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:19:19 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:19:19 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:20:05 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:20:05 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:20:05 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:20:06 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:20:06 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:20:06 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:20:06 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:20:08 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:20:08 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:20:08 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:24:34 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:24:34 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:24:34 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:24:34 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:24:34 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:24:34 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:24:34 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:24:39 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:24:39 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:24:40 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:35:00 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:35:00 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:35:00 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:35:01 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:35:01 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:35:01 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:35:01 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:35:04 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:35:04 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:35:04 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:35:47 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:35:47 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:35:51 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:35:51 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:36:01 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:36:01 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:36:04 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:36:04 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:36:08 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:36:08 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:36:10 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:36:10 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:36:12 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:36:12 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:41:37 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:41:37 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:41:37 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:41:37 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:41:37 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:41:37 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:41:37 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:41:41 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:41:41 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:41:45 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:41:45 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:41:45 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:42:18 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:42:18 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:42:18 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:42:18 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:42:18 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:42:18 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:42:18 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:42:20 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:42:20 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:42:20 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:46:43 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:46:43 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:46:43 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:46:43 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:46:43 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:46:43 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:46:43 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:46:48 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:46:48 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:46:48 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:46:48 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:46:51 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:46:51 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:46:51 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:46:54 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:46:54 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:46:54 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:46:55 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:46:55 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:46:55 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:52:03 GMT-0700 (PDT) -->Exspresso copyright 2012 Dark Overlord of Data
+DEBUG 23:52:03 GMT-0700 (PDT) -->Config Class Initialized
+DEBUG 23:52:03 GMT-0700 (PDT) -->Profiler Middleware initialized
+DEBUG 23:52:03 GMT-0700 (PDT) -->Router Component Initialized
+DEBUG 23:52:03 GMT-0700 (PDT) -->5xx Middleware initialized
+DEBUG 23:52:03 GMT-0700 (PDT) -->404 Middleware initialized
+DEBUG 23:52:03 GMT-0700 (PDT) -->listening on port 5000
+DEBUG 23:52:16 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:52:16 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:52:19 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:52:19 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:52:19 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:52:19 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:52:22 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:52:22 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:52:22 GMT-0700 (PDT) -->Model Class Initialized
+DEBUG 23:52:24 GMT-0700 (PDT) -->Loader Class Initialized
+DEBUG 23:52:24 GMT-0700 (PDT) -->Controller Class Initialized
+DEBUG 23:52:24 GMT-0700 (PDT) -->Model Class Initialized

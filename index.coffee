@@ -15,8 +15,7 @@
 #
 #   Defines the global Exspresso environment
 #
-{is_dir}        = require('./helper')                   # Tells whether the filename is a directory.
-{realpath}      = require('./helper')                   # Returns canonicalized absolute pathname.
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require('./helper')
 
 #
 #---------------------------------------------------------------
@@ -88,7 +87,10 @@ $public_folder = 'public'
 # ---------------------------------------------------------------
 #
 
-$system_path = realpath($system_folder) + '/';
+$system_path = realpath($system_folder) + '/'
+# ensure there's a trailing slash
+$system_path = rtrim($system_path, '/') + '/';
+
 
 if not is_dir($system_path)
   console.log "Your system folder path is not set correctly:"
@@ -97,6 +99,7 @@ if not is_dir($system_path)
   process.exit 1
 
 $public_path = realpath($public_folder) + '/';
+$public_path = rtrim($public_path, '/') + '/';
 
 if not is_dir($public_path)
   console.log "Your public folder path is not set correctly."
@@ -118,21 +121,29 @@ exports.EXT = EXT = '.coffee'
 exports.BASEPATH = BASEPATH = $system_path
 
 #  Path to the front controller (this file)
-exports.FCPATH = FCPATH = process.cwd()
+$fc_path = rtrim(__dirname + '/', '/') + '/';
+#$fc_path = rtrim($fc_path, '/') + '/';
+exports.FCPATH = FCPATH = $fc_path
+
+# Name of the "system folder"
+exports.SYSDIR = SYSDIR = trim(strrchr(trim(BASEPATH, '/'), '/'), '/')
 
 #  The path to the "webroot" folder
 exports.WEBROOT = WEBROOT = $public_path
 
 #  The path to the "application" folder
 $application_path = realpath($application_folder) + '/';
+$application_path = rtrim($application_path, '/') + '/';
 
 if not is_dir($application_path)
   $application_path = realpath(BASEPATH + $application_folder) + '/';
+  $application_path = rtrim($application_path, '/') + '/';
   if not is_dir($application_path)
     console.log "Your application folder path is not set correctly."
     console.log "Please open the following file and correct this: "
     console.log "\t#{__filename}"
     process.exit 1
+
 
 exports.APPPATH = APPPATH = $application_path
 

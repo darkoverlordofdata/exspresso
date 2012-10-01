@@ -16,7 +16,7 @@
 # This is the default controller
 #
 {FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
-{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
+{BASEPATH}      = require(FCPATH + 'index')             # '/var/www/Exspresso/system/'
 {log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 

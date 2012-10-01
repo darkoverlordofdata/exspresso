@@ -13,14 +13,12 @@
 #
 #	cache a flash message queue
 #
-{FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
-{APPPATH}       = require(FCPATH + '/index')            # '/var/www/Exspresso/application/'
-{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
-{WEBROOT}       = require(FCPATH + '/index')            # '/var/www/Exspresso/public/'
-{EXT}           = require(FCPATH + '/index')            # '.coffee'
-{ENVIRONMENT}   = require(FCPATH + '/index')            # 'development'
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
+{load_object} = require(BASEPATH + 'core/Common')
+
 app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
-{log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 
 module.exports = () ->
 

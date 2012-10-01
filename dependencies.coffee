@@ -15,12 +15,12 @@
 #
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, file_exists, is_dir, ltrim, realpath, rtrim, trim, ucfirst} = require(FCPATH + '/helper')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, log_message} = require(BASEPATH + 'core/Common')
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 
-
+FCPATH, SYSDIR, WEBROOT}
 ## --------------------------------------------------------------------
 
 #
@@ -28,11 +28,11 @@
 #
 
 {FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
-{APPPATH}       = require(FCPATH + '/index')            # '/var/www/Exspresso/application/'
-{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
-{WEBROOT}       = require(FCPATH + '/index')            # '/var/www/Exspresso/public/'
-{EXT}           = require(FCPATH + '/index')            # '.coffee'
-{ENVIRONMENT}   = require(FCPATH + '/index')            # 'development'
+{APPPATH}       = require(FCPATH + 'index')             # '/var/www/Exspresso/application/'
+{BASEPATH}      = require(FCPATH + 'index')             # '/var/www/Exspresso/system/'
+{WEBROOT}       = require(FCPATH + 'index')             # '/var/www/Exspresso/public/'
+{EXT}           = require(FCPATH + 'index')             # '.coffee'
+{ENVIRONMENT}   = require(FCPATH + 'index')             # 'development'
 
 ## --------------------------------------------------------------------
 
@@ -45,6 +45,7 @@ connectRedis    = require('connect-redis')              # Redis session store fo
 dispatch        = require('dispatch')                   # URL dispatcher for Connect
 express         = require('express')                    # Express 3.0 Framework
 fs              = require('fs')                         # Standard POSIX file i/o
+path            = require('path')                       # File path utilities
 redis           = require('redis')                      # Redis client library.
 Sequelize       = require("sequelize")                  # Sequelize 1.5 ORM
 url             = require('url')                        # Utilities for URL resolution and parsing.
@@ -55,14 +56,14 @@ url             = require('url')                        # Utilities for URL reso
 # Not-PHP helper API
 #
 
-{array_merge}   = require(FCPATH + '/helper')           # Merge one or more arrays.
-{file_exists}   = require(FCPATH + '/helper')           # Checks whether a file or directory exists.
-{is_dir}        = require(FCPATH + '/helper')           # Tells whether the filename is a directory.
-{ltrim}         = require(FCPATH + '/helper')           # Strip chars from end of a string.
-{realpath}      = require(FCPATH + '/helper')           # Returns canonicalized absolute pathname.
-{rtrim}         = require(FCPATH + '/helper')           # Strip chars from beginning of a string.
-{trim}          = require(FCPATH + '/helper')           # Strip chars from both ends of a string.
-{ucfirst}       = require(FCPATH + '/helper')           # Make a string's first character uppercase.
+{array_merge}   = require(FCPATH + 'helper')            # Merge one or more arrays.
+{file_exists}   = require(FCPATH + 'helper')            # Checks whether a file or directory exists.
+{is_dir}        = require(FCPATH + 'helper')            # Tells whether the filename is a directory.
+{ltrim}         = require(FCPATH + 'helper')            # Strip chars from end of a string.
+{realpath}      = require(FCPATH + 'helper')            # Returns canonicalized absolute pathname.
+{rtrim}         = require(FCPATH + 'helper')            # Strip chars from beginning of a string.
+{trim}          = require(FCPATH + 'helper')            # Strip chars from both ends of a string.
+{ucfirst}       = require(FCPATH + 'helper')            # Make a string's first character uppercase.
 
 ## --------------------------------------------------------------------
 
@@ -86,6 +87,7 @@ url             = require('url')                        # Utilities for URL reso
 #
 
 app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
+middleware      = require(BASEPATH + 'core/Middleware') # Exspresso Middleware module
 CI_Benchmark    = require(BASEPATH + 'core/Benchmark')  # Exspresso Benchmark Base Class
 CI_Config       = require(BASEPATH + 'core/Config')     # Exspresso Config Base Class
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class

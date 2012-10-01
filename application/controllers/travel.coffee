@@ -13,7 +13,7 @@
 #
 #	Travel Controller Class
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 

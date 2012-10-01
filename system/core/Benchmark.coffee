@@ -16,10 +16,10 @@
 # Parses URIs and determines routing
 #
 {FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
-{BASEPATH}      = require(FCPATH + '/index')            # '/var/www/Exspresso/system/'
-{array_merge}   = require(FCPATH + '/helper')           # Merge one or more arrays.
-{file_exists}   = require(FCPATH + '/helper')           # Checks whether a file or directory exists.
-{is_dir}        = require(FCPATH + '/helper')           # Tells whether the filename is a directory.
+{BASEPATH}      = require(FCPATH + 'index')            # '/var/www/Exspresso/system/'
+{array_merge}   = require(FCPATH + 'helper')           # Merge one or more arrays.
+{file_exists}   = require(FCPATH + 'helper')           # Checks whether a file or directory exists.
+{is_dir}        = require(FCPATH + 'helper')           # Tells whether the filename is a directory.
 {load_class}    = require(BASEPATH + 'core/Common')     # Class registry.
 {log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 {Exspresso}     = require(BASEPATH + 'core/Common')     # Core framework library

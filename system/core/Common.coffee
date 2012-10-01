@@ -13,9 +13,9 @@
 #
 #	Common - Main application
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, file_exists, is_dir, ltrim, realpath, rtrim, trim, ucfirst} = require(FCPATH + '/helper')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, log_message} = require(BASEPATH + 'core/Common')
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 #
 # core/config cache
@@ -60,8 +60,7 @@ _error        = null
 #
 exports.Exspresso = Exspresso    = {}
 
-exports.get_instance = get_instance = () ->
-  return Exspresso.CI_Controller.get_instance()
+_objects      = {}
 
 #  ------------------------------------------------------------------------
 
@@ -103,6 +102,70 @@ exports.is_really_writable = ($file) ->
   fclose($fp)
   return TRUE
   ###
+
+#  ------------------------------------------------------------------------
+
+exports.load_object = get_object = ($object, $directory = 'libraries') ->
+
+  #  Does the object exist?  If so, we're done...
+  if _objects[$object]?
+    return _objects[$object]
+
+  #  Look for the object first in the native system/libraries folder
+  #  then in the local application/libraries folder
+  for $path in [BASEPATH, APPPATH]
+    if file_exists($path + $directory + '/' + $object + EXT)
+      _objects[$object] = new require($path + $directory + '/' + $object + EXT)
+      return _objects[$object]
+
+  return null
+
+#  ------------------------------------------------------------------------
+
+#
+# CI_<Object> factory
+#
+# Load the class if not already in cache.
+# Returns a new instance of the class.
+#
+# @access	public
+# @param	string	the class name being requested
+# @param	string	the directory where the class should be found
+# @param	string	the class name prefix
+# @return	object
+#
+exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_') ->
+
+  #  Does the class exist?  If so, we're done...
+  if Exspresso[$class]?
+    return new Exspresso[$class]()
+
+  $name = false
+
+  #  Look for the class first in the native system/libraries folder
+  #  then in the local application/libraries folder
+  for $path in [BASEPATH, APPPATH]
+    if file_exists($path + $directory + '/' + $class + EXT)
+      $name = $prefix + $class
+
+      if not Exspresso[$name]?
+        Exspresso[$name] = require($path + $directory + '/' + $class + EXT)
+
+      break
+
+  #  Is the request a class extension?  If so we load it too
+  if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
+    $name = config_item('subclass_prefix') + $class
+
+    if not Exspresso[$name]?
+      Exspresso[$name] = require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
+
+  #  Did we find the class?
+  if not Exspresso[$name]?
+    console.log 'Unable to locate the specified class: ' + $class + EXT
+    process.exit 1
+
+  return new Exspresso[$name]()
 
 #  ------------------------------------------------------------------------
 

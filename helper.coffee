@@ -14,6 +14,7 @@
 #	helper - core PHP-apish helpers
 #
 fs              = require('fs')                         # Standard POSIX file i/o
+path            = require('path')                       # File path utilities
 
 ## --------------------------------------------------------------------
 
@@ -101,7 +102,7 @@ exports.trim = (str, chars) ->
 #	@param	string	chars list
 # @returns string with chars removed
 #
-exports.ltrim = (str, chars) ->
+exports.ltrim = ltrim = (str, chars) ->
   chars = chars || "\s";
   return str.replace(new RegExp("^[" + chars + "]+", "g"), "")
 
@@ -114,7 +115,7 @@ exports.ltrim = (str, chars) ->
 #	@param	string	chars list
 # @returns string with chars removed
 #
-exports.rtrim = (str, chars) ->
+exports.rtrim = rtrim = (str, chars) ->
   chars = chars || "\s";
   return str.replace(new RegExp("[" + chars + "]+$", "g"), "")
 
@@ -128,3 +129,17 @@ exports.rtrim = (str, chars) ->
 #
 exports.ucfirst = (str) ->
   return str.charAt(0).toUpperCase() + str.substr(1)
+
+exports.dirname = (str) ->
+  return path.dirname(str)
+
+exports.strrchr = (haystack, needle) ->
+  pos = 0
+  if typeof needle isnt 'string'
+    needle = String.fromCharCode(parseInt(needle, 10))
+
+  needle = needle.charAt(0)
+  pos = haystack.lastIndexOf(needle)
+  if pos is -1 then return false
+
+  return haystack.substr(pos)

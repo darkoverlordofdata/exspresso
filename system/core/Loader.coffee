@@ -15,9 +15,9 @@
 #
 # Loads views and files
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, file_exists, is_dir, ltrim, realpath, rtrim, trim, ucfirst} = require(FCPATH + '/helper')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, log_message} = require(BASEPATH + 'core/Common')
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 app             = require(BASEPATH + 'core/Exspresso')  # Exspresso application module
 express         = require('express')                    # Express 3.0 Framework
@@ -105,8 +105,12 @@ class CI_Loader
   _ci_varmap:
     unit_test: 'unit'
     user_agent: 'agent'
-
-  _ci_initializing:     false
+  #
+  # Parent controller instance
+  #
+  # @var object
+  #
+  _CI:                   null
   ## --------------------------------------------------------------------
 
   #
@@ -126,7 +130,6 @@ class CI_Loader
     @_ci_model_paths        = [APPPATH]
   
     log_message 'debug', "Loader Class Initialized"
-    console.log "Loader Class Initialized"
 
   ## --------------------------------------------------------------------
 
@@ -138,7 +141,7 @@ class CI_Loader
   # @param 	object  CI_Controller class static self
   # @return 	object
   #
-  initialize: () ->
+  initialize: (@_CI) ->
 
     @_ci_classes        = {}
     @_ci_loaded_files   = []
@@ -146,9 +149,7 @@ class CI_Loader
     @_ci_middleware     = {}
     @_base_classes      = is_loaded()
 
-    @_ci_initializing = true
     @_ci_autoloader()
-    @_ci_initializing = false
     return @
 
   ## --------------------------------------------------------------------
@@ -235,12 +236,9 @@ class CI_Loader
 
     if $name is '' then $name = $model
 
-    if @_ci_initializing
-      return unless @_ci_models.indexOf($name) is -1
+    return unless @_ci_models.indexOf($name) is -1
 
-    $CI = get_instance()
-
-    if $CI[$name]?
+    if @_CI[$name]?
       console.log 'The model name you are loading is the name of a resource that is already being used: '+$name
       return
 
@@ -250,15 +248,16 @@ class CI_Loader
 
       if $db_conn isnt false and not Exspresso['CI_DB']?
         if $db_conn is true then $db_conn = ''
-        $CI.load.database $db_conn, false, true
+        @_CI.load.database $db_conn, false, true
 
       if not Exspresso['CI_Model']?
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
-      $CI[$name] = new $Model()
 
-      #console.log $CI[$name]
+      @_CI[$name] = new $Model    # create as a property of the Controller
+        load:   @_CI.load         # mixin Loader
+        config: @_CI.config       # mixin Config
 
       @_ci_models.push $name
       return
@@ -280,10 +279,10 @@ class CI_Loader
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Grab the super object
-    $CI = get_instance()
+    # $CI = get_instance()
 
     # Do we even need to load the database class?
-    if Exspresso['CI_DB']? and $return is false and $active_record is null and $CI['db']?
+    if Exspresso['CI_DB']? and $return is false and $active_record is null and @_CI['db']?
       return false
 
     DB = require(BASEPATH+'database/DB'+EXT)
@@ -292,10 +291,10 @@ class CI_Loader
 
     # Initialize the db variable.  Needed to prevent
     # reference errors with some configurations
-    $CI.db = ''
+    @_CI.db = ''
 
     # Load the DB class
-    $CI.db = DB($params, $active_record)
+    @_CI.db = DB($params, $active_record)
 
   ## --------------------------------------------------------------------
   
@@ -309,14 +308,14 @@ class CI_Loader
 
     if not Exspresso['CI_DB']? then @database()
 
-    $CI = get_instance()
+    # $CI = get_instance()
 
     require_once BASEPATH+'database/DB_utility'+EXT
-    require_once BASEPATH+'database/drivers/'+$CI.db.dbdriver+'/'+$CI.db.dbdriver+'_utility'+EXT
-    $class = 'CI_DB_'+$CI.db.dbdriver+'_utility'
+    require_once BASEPATH+'database/drivers/'+@_CI.db.dbdriver+'/'+@_CI.db.dbdriver+'_utility'+EXT
+    $class = 'CI_DB_'+@_CI.db.dbdriver+'_utility'
     # ex: CI_DB_sqlite_utility
 
-    $CI.dbutil = new $class()
+    @_CI.dbutil = new $class()
 
   ## --------------------------------------------------------------------
 
@@ -421,13 +420,13 @@ class CI_Loader
   #
   language: ($file = [], $lang = '') ->
 
-    $CI = get_instance()
+    # $CI = get_instance()
 
     if  not Array.isArray($file)
       $file = [$file]
 
     for $langfile in $file
-      $CI.lang.load $langfile, $lang
+      @_CI.lang.load $langfile, $lang
 
 
   ## --------------------------------------------------------------------
@@ -441,8 +440,8 @@ class CI_Loader
   #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
 
-    $CI = get_instance()
-    $CI.config.load $file, $use_sections, $fail_gracefully
+    # $CI = get_instance()
+    @_CI.config.load $file, $use_sections, $fail_gracefully
 
 
   ## --------------------------------------------------------------------
@@ -604,8 +603,8 @@ class CI_Loader
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if $object_name isnt null
-            $CI = get_instance()
-            if not $CI[$object_name]?
+            # $CI = get_instance()
+            if not @_CI[$object_name]?
               return @_ci_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
 
@@ -638,8 +637,8 @@ class CI_Loader
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if $object_name isnt null
-            $CI = get_instance()
-            if not $CI[$object_name]?
+            # $CI = get_instance()
+            if not @_CI[$object_name]?
               return @_ci_init_class($class, '', $params, $object_name)
 
 
@@ -745,12 +744,12 @@ class CI_Loader
     @_ci_classes[$class] = $classvar
 
     #  Instantiate the class
-    $CI = get_instance()
+    # $CI = get_instance()
     if $config isnt null
-      $CI[$classvar] = new $name($config)
+      @_CI[$classvar] = new $name($config)
 
     else
-      $CI[$classvar] = new $name
+      @_CI[$classvar] = new $name
 
 
 
@@ -786,14 +785,14 @@ class CI_Loader
 
     #  Load any custom config file
     if $autoload['config'].length > 0
-      $CI = get_instance()
+      # $CI = get_instance()
       for $val, $key in as
-        $CI.config.load $val
+        @_CI.config.load $val
 
     #  Autoload helpers and languages
     for $type in ['helper', 'language']
       if $autoload[$type]? and $autoload[$type].length > 0
-        @$type($autoload[$type])
+        @[$type]($autoload[$type])
 
     #  Load libraries
     if $autoload['libraries']?  and $autoload['libraries'].length > 0
@@ -840,8 +839,8 @@ class CI_Loader
   # @return	bool
   #
   _ci_get_component : ($component) ->
-    $CI = get_instance()
-    return $CI[$component]
+    # $CI = get_instance()
+    return @_CI[$component]
 
 
   #  --------------------------------------------------------------------
