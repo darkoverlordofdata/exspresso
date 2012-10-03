@@ -1,28 +1,57 @@
 #+--------------------------------------------------------------------+
-#| Security.coffee
+#  Hooks.coffee
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Expresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
-#|
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
-# Exspresso Application Security Class
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{class_exists, defined, file_exists, function_exists, is_array, is_file, item}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
+#
+# CodeIgniter
+#
+# An open source application development framework for PHP 5.1.6 or newer
+#
+# @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
+# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		http://codeigniter.com/user_guide/license.html
+# @link		http://codeigniter.com
+# @since		Version 1.0
+# @filesource
+#
+
+#  ------------------------------------------------------------------------
+
+#
+# CodeIgniter Hooks Class
+#
+# Provides a mechanism to extend the base system without hacking.
+#
+# @package		CodeIgniter
+# @subpackage	Libraries
+# @category	Libraries
+# @author		ExpressionEngine Dev Team
+# @link		http://codeigniter.com/user_guide/libraries/encryption.html
+#
 class CI_Hooks
 	
-	$enabled: false
-	$hooks: {}
-	$in_progress: false
+	enabled: false
+	hooks: {}
+	in_progress: false
 	
 	#
 	# Constructor
@@ -55,10 +84,10 @@ class CI_Hooks
 		#  If there are no hooks, we're done.
 		
 		if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
-			$hook = require(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
+			require(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
 			
 		else if is_file(APPPATH + 'config/hooks' + EXT)
-			$hook = require(APPPATH + 'config/hooks' + EXT)
+			require(APPPATH + 'config/hooks' + EXT)
 			
 		
 		
@@ -87,7 +116,7 @@ class CI_Hooks
 			
 		
 		if @hooks[$which][0]?  and is_array(@hooks[$which][0])
-			for $val in as
+			for $val in @hooks[$which]
 				@_run_hook($val)
 				
 			
@@ -175,7 +204,7 @@ class CI_Hooks
 		
 		if $class isnt false
 			if not class_exists($class)
-				eval require_all($filepath)
+				require($filepath)
 				
 			
 			$HOOK = new $class
@@ -183,7 +212,7 @@ class CI_Hooks
 			
 		else 
 			if not function_exists($function)
-				eval require_all($filepath)
+				require($filepath)
 				
 			
 			$function($params)
@@ -195,10 +224,10 @@ class CI_Hooks
 	
 	
 
-#  END CI_Hooks class
-
-Exspresso.CI_Hooks = CI_Hooks
+register_class 'CI_Hooks', CI_Hooks
 module.exports = CI_Hooks
+
+#  END CI_Hooks class
 
 #  End of file Hooks.php 
 #  Location: ./system/core/Hooks.php 

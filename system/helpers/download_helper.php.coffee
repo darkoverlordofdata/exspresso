@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  download_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{defined, end, explode, function_exists, header, is_array, is_file, strlen, strpos}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -38,15 +59,15 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	void
 #
 if not function_exists('force_download')
-	global.force_download = ($filename = '', $data = '') ->
+	exports.force_download = force_download = ($filename = '', $data = '') ->
 		if $filename is '' or $data is ''
-			return FALSE
+			return false
 			
 		
 		#  Try to determine if the filename includes a file extension.
 		#  We need it in order to set the MIME type
-		if FALSE is strpos($filename, '.')
-			return FALSE
+		if false is strpos($filename, '.')
+			return false
 			
 		
 		#  Grab the file extension
@@ -55,10 +76,10 @@ if not function_exists('force_download')
 		
 		#  Load the mime types
 		if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-			eval include_all(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+			require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
 			
 		else if is_file(APPPATH + 'config/mimes' + EXT)
-			eval include_all(APPPATH + 'config/mimes' + EXT)
+			require(APPPATH + 'config/mimes' + EXT)
 			
 		
 		#  Set a default mime if we can't find it
@@ -70,7 +91,7 @@ if not function_exists('force_download')
 			
 		
 		#  Generate the server headers
-		if strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") isnt FALSE
+		if strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") isnt false
 			header('Content-Type: "' + $mime + '"')
 			header('Content-Disposition: attachment; filename="' + $filename + '"')
 			header('Expires: 0')

@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Email.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, _build_headers, _build_message, _get_alt_message, _get_content_type, _get_encoding, _get_hostname, _get_ip, _get_message_id, _get_mime_message, _get_protocol, _get_smtp_data, _mime_types, _prep_q_encoding, _prep_quoted_printable, _remove_nl_callback, _send_command, _send_data, _send_with_mail, _send_with_sendmail, _send_with_smtp, _set_boundaries, _set_date, _set_error_message, _set_header, _smtp_authenticate, _spool_email, _str_to_array, _unwrap_specials, _write_headers, abs, addcslashes, attach, base64_encode, basename, batch_bcc_send, bcc, cc, chunk_split, clean_email, clear, count, date, dechex, defined, end, explode, fclose, fgets, file_exists, filesize, floor, fopen, fputs, fread, from, fsockopen, fwrite, get_instance, htmlspecialchars, implode, in_array, ini_get, initialize, is_array, is_numeric, is_resource, lang, line, load, mail, message, method_exists, next, ord, pclose, popen, preg_match, preg_match_all, preg_replace, preg_replace_callback, preg_split, print_debugger, reply_to, reset, rtrim, send, set_alt_message, set_crlf, set_mailtype, set_newline, set_priority, set_protocol, set_wordwrap, settype, sprintf, str_replace, strip_tags, stripslashes, strlen, strncmp, strpos, strstr, strtolower, strtoupper, subject, substr, to, trim, uniqid, valid_email, validate_email, version_compare, word_wrap}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -28,53 +49,53 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_Email
 	
-	$useragent: "CodeIgniter"
-	$mailpath: "/usr/sbin/sendmail"#  Sendmail path
-	$protocol: "mail"#  mail/sendmail/smtp
-	$smtp_host: ""#  SMTP Server.  Example: mail.earthlink.net
-	$smtp_user: ""#  SMTP Username
-	$smtp_pass: ""#  SMTP Password
-	$smtp_port: "25"#  SMTP Port
-	$smtp_timeout: 5#  SMTP Timeout in seconds
-	$wordwrap: TRUE#  TRUE/FALSE  Turns word-wrap on/off
-	$wrapchars: "76"#  Number of characters to wrap at.
-	$mailtype: "text"#  text/html  Defines email formatting
-	$charset: "utf-8"#  Default char set: iso-8859-1 or us-ascii
-	$multipart: "mixed"#  "mixed" (in the body) or "related" (separate)
-	$alt_message: ''#  Alternative message for HTML emails
-	$validate: FALSE#  TRUE/FALSE.  Enables email validation
-	$priority: "3"#  Default priority (1 - 5)
-	$newline: "\n"#  Default newline. "\r\n" or "\n" (Use "\r\n" to comply with RFC 822)
-	$crlf: "\n"#  The RFC 2045 compliant CRLF for quoted-printable is "\r\n".  Apparently some servers,
+	useragent: "CodeIgniter"
+	mailpath: "/usr/sbin/sendmail"#  Sendmail path
+	protocol: "mail"#  mail/sendmail/smtp
+	smtp_host: ""#  SMTP Server.  Example: mail.earthlink.net
+	smtp_user: ""#  SMTP Username
+	smtp_pass: ""#  SMTP Password
+	smtp_port: "25"#  SMTP Port
+	smtp_timeout: 5#  SMTP Timeout in seconds
+	wordwrap: true#  TRUE/FALSE  Turns word-wrap on/off
+	wrapchars: "76"#  Number of characters to wrap at.
+	mailtype: "text"#  text/html  Defines email formatting
+	charset: "utf-8"#  Default char set: iso-8859-1 or us-ascii
+	multipart: "mixed"#  "mixed" (in the body) or "related" (separate)
+	alt_message: ''#  Alternative message for HTML emails
+	validate: false#  TRUE/FALSE.  Enables email validation
+	priority: "3"#  Default priority (1 - 5)
+	newline: "\n"#  Default newline. "\r\n" or "\n" (Use "\r\n" to comply with RFC 822)
+	crlf: "\n"#  The RFC 2045 compliant CRLF for quoted-printable is "\r\n".  Apparently some servers,
 	#  even on the receiving end think they need to muck with CRLFs, so using "\n", while
 	#  distasteful, is the only thing that seems to work for all environments.
-	$send_multipart: TRUE#  TRUE/FALSE - Yahoo does not like multipart alternative, so this is an override.  Set to FALSE for Yahoo.
-	$bcc_batch_mode: FALSE#  TRUE/FALSE  Turns on/off Bcc batch feature
-	$bcc_batch_size: 200#  If bcc_batch_mode = TRUE, sets max number of Bccs in each batch
-	$_safe_mode: FALSE
-	$_subject: ""
-	$_body: ""
-	$_finalbody: ""
-	$_alt_boundary: ""
-	$_atc_boundary: ""
-	$_header_str: ""
-	$_smtp_connect: ""
-	$_encoding: "8bit"
-	$_IP: FALSE
-	$_smtp_auth: FALSE
-	$_replyto_flag: FALSE
-	$_debug_msg: {}
-	$_recipients: {}
-	$_cc_array: {}
-	$_bcc_array: {}
-	$_headers: {}
-	$_attach_name: {}
-	$_attach_type: {}
-	$_attach_disp: {}
-	$_protocols: ['mail', 'sendmail', 'smtp']
-	$_base_charsets: ['us-ascii', 'iso-2022-']#  7-bit charsets (excluding language suffix)
-	$_bit_depths: ['7bit', '8bit']
-	$_priorities: ['1 (Highest)', '2 (High)', '3 (Normal)', '4 (Low)', '5 (Lowest)']
+	send_multipart: true#  TRUE/FALSE - Yahoo does not like multipart alternative, so this is an override.  Set to FALSE for Yahoo.
+	bcc_batch_mode: false#  TRUE/FALSE  Turns on/off Bcc batch feature
+	bcc_batch_size: 200#  If bcc_batch_mode = TRUE, sets max number of Bccs in each batch
+	_safe_mode: false
+	_subject: ""
+	_body: ""
+	_finalbody: ""
+	_alt_boundary: ""
+	_atc_boundary: ""
+	_header_str: ""
+	_smtp_connect: ""
+	_encoding: "8bit"
+	_IP: false
+	_smtp_auth: false
+	_replyto_flag: false
+	_debug_msg: {}
+	_recipients: {}
+	_cc_array: {}
+	_bcc_array: {}
+	_headers: {}
+	_attach_name: {}
+	_attach_type: {}
+	_attach_disp: {}
+	_protocols: ['mail', 'sendmail', 'smtp']
+	_base_charsets: ['us-ascii', 'iso-2022-']#  7-bit charsets (excluding language suffix)
+	_bit_depths: ['7bit', '8bit']
+	_priorities: ['1 (Highest)', '2 (High)', '3 (Normal)', '4 (Low)', '5 (Lowest)']
 	
 	
 	#
@@ -85,11 +106,11 @@ class CI_Email
 	__construct($config = {})
 	{
 	if count($config) > 0
-		@.initialize($config)
+		@initialize($config)
 		
 	else 
-		@._smtp_auth = if (@.smtp_user is '' and @.smtp_pass is '') then FALSE else TRUE
-		@._safe_mode = if (ini_get("safe_mode") is FALSE) then FALSE else TRUE
+		@_smtp_auth = if (@smtp_user is '' and @smtp_pass is '') then false else true
+		@_safe_mode = if (ini_get("safe_mode") is false) then false else true
 		
 	
 	log_message('debug', "Email Class Initialized")
@@ -106,22 +127,22 @@ class CI_Email
 	#
 	initialize($config = {})
 	{
-	for $val, $key in as
-		if @.$key? 
+	for $key, $val of $config
+		if @$key? 
 			$method = 'set_' + $key
 			
 			if method_exists(@, $method)
-				@.$method($val)
+				@$method($val)
 				
 			else 
-				@.$key = $val
+				@$key = $val
 				
 			
 		
-	@.clear()
+	@clear()
 	
-	@._smtp_auth = if (@.smtp_user is '' and @.smtp_pass is '') then FALSE else TRUE
-	@._safe_mode = if (ini_get("safe_mode") is FALSE) then FALSE else TRUE
+	@_smtp_auth = if (@smtp_user is '' and @smtp_pass is '') then false else true
+	@_safe_mode = if (ini_get("safe_mode") is false) then false else true
 	
 	return @
 	}
@@ -134,26 +155,26 @@ class CI_Email
 	# @access	public
 	# @return	void
 	#
-	clear($clear_attachments = FALSE)
+	clear($clear_attachments = false)
 	{
-	@._subject = ""
-	@._body = ""
-	@._finalbody = ""
-	@._header_str = ""
-	@._replyto_flag = FALSE
-	@._recipients = {}
-	@._cc_array = {}
-	@._bcc_array = {}
-	@._headers = {}
-	@._debug_msg = {}
+	@_subject = ""
+	@_body = ""
+	@_finalbody = ""
+	@_header_str = ""
+	@_replyto_flag = false
+	@_recipients = {}
+	@_cc_array = {}
+	@_bcc_array = {}
+	@_headers = {}
+	@_debug_msg = {}
 	
-	@._set_header('User-Agent', @.useragent)
-	@._set_header('Date', @._set_date())
+	@_set_header('User-Agent', @useragent)
+	@_set_header('Date', @_set_date())
 	
-	if $clear_attachments isnt FALSE
-		@._attach_name = {}
-		@._attach_type = {}
-		@._attach_disp = {}
+	if $clear_attachments isnt false
+		@_attach_name = {}
+		@_attach_type = {}
+		@_attach_disp = {}
 		
 	
 	return @
@@ -175,8 +196,8 @@ class CI_Email
 		$from = $match['1']
 		
 	
-	if @.validate
-		@.validate_email(@._str_to_array($from))
+	if @validate
+		@validate_email(@_str_to_array($from))
 		
 	
 	#  prepare the display name
@@ -187,12 +208,12 @@ class CI_Email
 			$name = '"' + addcslashes($name, "\0..\37\177'\"\\") + '"'
 			
 		else 
-			$name = @._prep_q_encoding($name, TRUE)
+			$name = @_prep_q_encoding($name, true)
 			
 		
 	
-	@._set_header('From', $name + ' <' + $from + '>')
-	@._set_header('Return-Path', '<' + $from + '>')
+	@_set_header('From', $name + ' <' + $from + '>')
+	@_set_header('Return-Path', '<' + $from + '>')
 	
 	return @
 	}
@@ -213,8 +234,8 @@ class CI_Email
 		$replyto = $match['1']
 		
 	
-	if @.validate
-		@.validate_email(@._str_to_array($replyto))
+	if @validate
+		@validate_email(@_str_to_array($replyto))
 		
 	
 	if $name is ''
@@ -225,8 +246,8 @@ class CI_Email
 		$name = '"' + $name + '"'
 		
 	
-	@._set_header('Reply-To', $name + ' <' + $replyto + '>')
-	@._replyto_flag = TRUE
+	@_set_header('Reply-To', $name + ' <' + $replyto + '>')
+	@_replyto_flag = true
 	
 	return @
 	}
@@ -242,23 +263,23 @@ class CI_Email
 	#
 	to($to)
 	{
-	$to = @._str_to_array($to)
-	$to = @.clean_email($to)
+	$to = @_str_to_array($to)
+	$to = @clean_email($to)
 	
-	if @.validate
-		@.validate_email($to)
+	if @validate
+		@validate_email($to)
 		
 	
-	if @._get_protocol() isnt 'mail'
-		@._set_header('To', implode(", ", $to))
+	if @_get_protocol() isnt 'mail'
+		@_set_header('To', implode(", ", $to))
 		
 	
-	switch @._get_protocol()
+	switch @_get_protocol()
 		when 'smtp'
-			@._recipients = $to
+			@_recipients = $to
 			
 		when 'sendmail','mail'
-			@._recipients = implode(", ", $to)
+			@_recipients = implode(", ", $to)
 			
 			
 	
@@ -276,17 +297,17 @@ class CI_Email
 	#
 	cc($cc)
 	{
-	$cc = @._str_to_array($cc)
-	$cc = @.clean_email($cc)
+	$cc = @_str_to_array($cc)
+	$cc = @clean_email($cc)
 	
-	if @.validate
-		@.validate_email($cc)
+	if @validate
+		@validate_email($cc)
 		
 	
-	@._set_header('Cc', implode(", ", $cc))
+	@_set_header('Cc', implode(", ", $cc))
 	
-	if @._get_protocol() is "smtp"
-		@._cc_array = $cc
+	if @_get_protocol() is "smtp"
+		@_cc_array = $cc
 		
 	
 	return @
@@ -305,22 +326,22 @@ class CI_Email
 	bcc($bcc, $limit = '')
 	{
 	if $limit isnt '' and is_numeric($limit)
-		@.bcc_batch_mode = TRUE
-		@.bcc_batch_size = $limit
+		@bcc_batch_mode = true
+		@bcc_batch_size = $limit
 		
 	
-	$bcc = @._str_to_array($bcc)
-	$bcc = @.clean_email($bcc)
+	$bcc = @_str_to_array($bcc)
+	$bcc = @clean_email($bcc)
 	
-	if @.validate
-		@.validate_email($bcc)
+	if @validate
+		@validate_email($bcc)
 		
 	
-	if (@._get_protocol() is "smtp") or (@.bcc_batch_mode and count($bcc) > @.bcc_batch_size)
-		@._bcc_array = $bcc
+	if (@_get_protocol() is "smtp") or (@bcc_batch_mode and count($bcc) > @bcc_batch_size)
+		@_bcc_array = $bcc
 		
 	else 
-		@._set_header('Bcc', implode(", ", $bcc))
+		@_set_header('Bcc', implode(", ", $bcc))
 		
 	
 	return @
@@ -337,8 +358,8 @@ class CI_Email
 	#
 	subject($subject)
 	{
-	$subject = @._prep_q_encoding($subject)
-	@._set_header('Subject', $subject)
+	$subject = @_prep_q_encoding($subject)
+	@_set_header('Subject', $subject)
 	return @
 	}
 	
@@ -353,7 +374,7 @@ class CI_Email
 	#
 	message($body)
 	{
-	@._body = stripslashes(rtrim(str_replace("\r", "", $body)))
+	@_body = stripslashes(rtrim(str_replace("\r", "", $body)))
 	return @
 	}
 	
@@ -368,9 +389,9 @@ class CI_Email
 	#
 	attach($filename, $disposition = 'attachment')
 	{
-	@._attach_name.push $filename
-	@._attach_type.push @._mime_types(next(explode('.', basename($filename))))
-	@._attach_disp.push $disposition#  Can also be 'inline'  Not sure if it matters
+	@_attach_name.push $filename
+	@_attach_type.push @_mime_types(next(explode('.', basename($filename))))
+	@_attach_disp.push $disposition#  Can also be 'inline'  Not sure if it matters
 	return @
 	}
 	
@@ -386,7 +407,7 @@ class CI_Email
 	#
 	_set_header($header, $value)
 	{
-	@._headers[$header] = $value
+	@_headers[$header] = $value
 	}
 	
 	#  --------------------------------------------------------------------
@@ -401,7 +422,7 @@ class CI_Email
 	_str_to_array($email)
 	{
 	if not is_array($email)
-		if strpos($email, ',') isnt FALSE
+		if strpos($email, ',') isnt false
 			$email = preg_split('/[\s,]/', $email,  - 1, PREG_SPLIT_NO_EMPTY)
 			
 		else 
@@ -423,7 +444,7 @@ class CI_Email
 	#
 	set_alt_message($str = '')
 	{
-	@.alt_message = if ($str is '') then '' else $str
+	@alt_message = if ($str is '') then '' else $str
 	return @
 	}
 	
@@ -438,7 +459,7 @@ class CI_Email
 	#
 	set_mailtype($type = 'text')
 	{
-	@.mailtype = if ($type is 'html') then 'html' else 'text'
+	@mailtype = if ($type is 'html') then 'html' else 'text'
 	return @
 	}
 	
@@ -451,9 +472,9 @@ class CI_Email
 	# @param	string
 	# @return	void
 	#
-	set_wordwrap($wordwrap = TRUE)
+	set_wordwrap($wordwrap = true)
 	{
-	@.wordwrap = if ($wordwrap is FALSE) then FALSE else TRUE
+	@wordwrap = if ($wordwrap is false) then false else true
 	return @
 	}
 	
@@ -468,7 +489,7 @@ class CI_Email
 	#
 	set_protocol($protocol = 'mail')
 	{
-	@.protocol = if ( not in_array($protocol, @._protocols, TRUE)) then 'mail' else strtolower($protocol)
+	@protocol = if ( not in_array($protocol, @_protocols, true)) then 'mail' else strtolower($protocol)
 	return @
 	}
 	
@@ -484,16 +505,16 @@ class CI_Email
 	set_priority($n = 3)
 	{
 	if not is_numeric($n)
-		@.priority = 3
+		@priority = 3
 		return 
 		
 	
 	if $n < 1 or $n > 5
-		@.priority = 3
+		@priority = 3
 		return 
 		
 	
-	@.priority = $n
+	@priority = $n
 	return @
 	}
 	
@@ -509,11 +530,11 @@ class CI_Email
 	set_newline($newline = "\n")
 	{
 	if $newline isnt "\n" and $newline isnt "\r\n" and $newline isnt "\r"
-		@.newline = "\n"
+		@newline = "\n"
 		return 
 		
 	
-	@.newline = $newline
+	@newline = $newline
 	
 	return @
 	}
@@ -530,11 +551,11 @@ class CI_Email
 	set_crlf($crlf = "\n")
 	{
 	if $crlf isnt "\n" and $crlf isnt "\r\n" and $crlf isnt "\r"
-		@.crlf = "\n"
+		@crlf = "\n"
 		return 
 		
 	
-	@.crlf = $crlf
+	@crlf = $crlf
 	
 	return @
 	}
@@ -549,8 +570,8 @@ class CI_Email
 	#
 	_set_boundaries()
 	{
-	@._alt_boundary = "B_ALT_" + uniqid('')#  multipart/alternative
-	@._atc_boundary = "B_ATC_" + uniqid('')#  attachment boundary
+	@_alt_boundary = "B_ALT_" + uniqid('')#  multipart/alternative
+	@_atc_boundary = "B_ATC_" + uniqid('')#  attachment boundary
 	}
 	
 	#  --------------------------------------------------------------------
@@ -563,7 +584,7 @@ class CI_Email
 	#
 	_get_message_id()
 	{
-	$from = @._headers['Return-Path']
+	$from = @_headers['Return-Path']
 	$from = str_replace(">", "", $from)
 	$from = str_replace("<", "", $from)
 	
@@ -579,13 +600,13 @@ class CI_Email
 	# @param	bool
 	# @return	string
 	#
-	_get_protocol($return = TRUE)
+	_get_protocol($return = true)
 	{
-	@.protocol = strtolower(@.protocol)
-	@.protocol = if ( not in_array(@.protocol, @._protocols, TRUE)) then 'mail' else @.protocol
+	@protocol = strtolower(@protocol)
+	@protocol = if ( not in_array(@protocol, @_protocols, true)) then 'mail' else @protocol
 	
-	if $return is TRUE
-		return @.protocol
+	if $return is true
+		return @protocol
 		
 	}
 	
@@ -598,18 +619,18 @@ class CI_Email
 	# @param	bool
 	# @return	string
 	#
-	_get_encoding($return = TRUE)
+	_get_encoding($return = true)
 	{
-	@._encoding = if ( not in_array(@._encoding, @._bit_depths)) then '8bit' else @._encoding
+	@_encoding = if ( not in_array(@_encoding, @_bit_depths)) then '8bit' else @_encoding
 	
-	for $charset in as
-		if strncmp($charset, @.charset, strlen($charset)) is 0
-			@._encoding = '7bit'
+	for $charset in @_base_charsets
+		if strncmp($charset, @charset, strlen($charset)) is 0
+			@_encoding = '7bit'
 			
 		
 	
-	if $return is TRUE
-		return @._encoding
+	if $return is true
+		return @_encoding
 		
 	}
 	
@@ -623,13 +644,13 @@ class CI_Email
 	#
 	_get_content_type()
 	{
-	if @.mailtype is 'html' and count(@._attach_name) is 0
+	if @mailtype is 'html' and count(@_attach_name) is 0
 		return 'html'
 		
-	else if @.mailtype is 'html' and count(@._attach_name) > 0
+	else if @mailtype is 'html' and count(@_attach_name) > 0
 		return 'html-attach'
 		
-	else if @.mailtype is 'text' and count(@._attach_name) > 0
+	else if @mailtype is 'text' and count(@_attach_name) > 0
 		return 'plain-attach'
 		
 	else 
@@ -665,7 +686,7 @@ class CI_Email
 	#
 	_get_mime_message()
 	{
-	return "This is a multi-part message in MIME format." + @.newline + "Your email application may not support this format."
+	return "This is a multi-part message in MIME format." + @newline + "Your email application may not support this format."
 	}
 	
 	#  --------------------------------------------------------------------
@@ -680,18 +701,18 @@ class CI_Email
 	validate_email($email)
 	{
 	if not is_array($email)
-		@._set_error_message('email_must_be_array')
-		return FALSE
+		@_set_error_message('email_must_be_array')
+		return false
 		
 	
-	for $val in as
-		if not @.valid_email($val)
-			@._set_error_message('email_invalid_address', $val)
-			return FALSE
+	for $val in $email
+		if not @valid_email($val)
+			@_set_error_message('email_invalid_address', $val)
+			return false
 			
 		
 	
-	return TRUE
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -705,7 +726,7 @@ class CI_Email
 	#
 	valid_email($address)
 	{
-	return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then FALSE else TRUE
+	return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -730,7 +751,7 @@ class CI_Email
 	
 	$clean_email = {}
 	
-	for $addy in as
+	for $addy in $email
 		if preg_match('/\<(.*)\>/', $addy, $match)
 			$clean_email.push $match['1']
 			
@@ -757,15 +778,15 @@ class CI_Email
 	#
 	_get_alt_message()
 	{
-	if @.alt_message isnt ""
-		return @.word_wrap(@.alt_message, '76')
+	if @alt_message isnt ""
+		return @word_wrap(@alt_message, '76')
 		
 	
-	if preg_match('/\<body.*?\>(.*)\<\/body\>/si', @._body, $match)
+	if preg_match('/\<body.*?\>(.*)\<\/body\>/si', @_body, $match)
 		$body = $match['1']
 		
 	else 
-		$body = @._body
+		$body = @_body
 		
 	
 	$body = trim(strip_tags($body))
@@ -784,7 +805,7 @@ class CI_Email
 	$body = str_replace($n, "\n\n", $body)
 	}
 	
-	return @.word_wrap($body, '76')
+	return @word_wrap($body, '76')
 	}
 	
 	#  --------------------------------------------------------------------
@@ -801,14 +822,14 @@ class CI_Email
 	{
 	#  Se the character limit
 	if $charlim is ''
-		$charlim = if (@.wrapchars is "") then "76" else @.wrapchars
+		$charlim = if (@wrapchars is "") then "76" else @wrapchars
 		
 	
 	#  Reduce multiple spaces
 	$str = preg_replace("| +|", " ", $str)
 	
 	#  Standardize newlines
-	if strpos($str, "\r") isnt FALSE
+	if strpos($str, "\r") isnt false
 		$str = str_replace(["\r\n", "\r"], "\n", $str)
 		
 	
@@ -826,15 +847,15 @@ class CI_Email
 	#  Use PHP's native public function to do the initial wordwrap.
 	#  We set the cut flag to FALSE so that any individual words that are
 	#  too long get left alone.  In the next step we'll deal with them.
-	$str = wordwrap($str, $charlim, "\n", FALSE)
+	$str = wordwrap($str, $charlim, "\n", false)
 	
 	#  Split the string into individual lines of text and cycle through them
 	$output = ""
-	for $line in as
+	for $line in explode("\n", $str)
 		#  Is the line within the allowed character count?
 		#  If so we'll join it to the output and continue
 		if strlen($line)<=$charlim
-			$output+=$line + @.newline
+			$output+=$line + @newline
 			continue
 			
 		
@@ -853,18 +874,18 @@ class CI_Email
 		#  If $temp contains data it means we had to split up an over-length
 		#  word into smaller chunks so we'll add it back to our current line
 		if $temp isnt ''
-			$output+=$temp + @.newline + $line
+			$output+=$temp + @newline + $line
 			
 		else 
 			$output+=$line
 			
 		
-		$output+=@.newline
+		$output+=@newline
 		
 	
 	#  Put our markers back
 	if count($unwrap) > 0
-		for $val, $key in as
+		for $key, $val of $unwrap
 			$output = str_replace("{{unwrapped" + $key + "}}", $val, $output)
 			
 		
@@ -883,11 +904,11 @@ class CI_Email
 	#
 	_build_headers()
 	{
-	@._set_header('X-Sender', @.clean_email(@._headers['From']))
-	@._set_header('X-Mailer', @.useragent)
-	@._set_header('X-Priority', @._priorities[@.priority - 1])
-	@._set_header('Message-ID', @._get_message_id())
-	@._set_header('Mime-Version', '1.0')
+	@_set_header('X-Sender', @clean_email(@_headers['From']))
+	@_set_header('X-Mailer', @useragent)
+	@_set_header('X-Priority', @_priorities[@priority - 1])
+	@_set_header('Message-ID', @_get_message_id())
+	@_set_header('Mime-Version', '1.0')
 	}
 	
 	#  --------------------------------------------------------------------
@@ -900,24 +921,24 @@ class CI_Email
 	#
 	_write_headers()
 	{
-	if @.protocol is 'mail'
-		@._subject = @._headers['Subject']
-		delete @._headers['Subject']
+	if @protocol is 'mail'
+		@_subject = @_headers['Subject']
+		delete @_headers['Subject']
 		
 	
-	reset(@._headers)
-	@._header_str = ""
+	reset(@_headers)
+	@_header_str = ""
 	
-	for $val, $key in as
+	for $key, $val of @_headers
 		$val = trim($val)
 		
 		if $val isnt ""
-			@._header_str+=$key + ": " + $val + @.newline
+			@_header_str+=$key + ": " + $val + @newline
 			
 		
 	
-	if @._get_protocol() is 'mail'
-		@._header_str = rtrim(@._header_str)
+	if @_get_protocol() is 'mail'
+		@_header_str = rtrim(@_header_str)
 		
 	}
 	
@@ -931,28 +952,28 @@ class CI_Email
 	#
 	_build_message()
 	{
-	if @.wordwrap is TRUE and @.mailtype isnt 'html'
-		@._body = @.word_wrap(@._body)
+	if @wordwrap is true and @mailtype isnt 'html'
+		@_body = @word_wrap(@_body)
 		
 	
-	@._set_boundaries()
-	@._write_headers()
+	@_set_boundaries()
+	@_write_headers()
 	
-	$hdr = if (@._get_protocol() is 'mail') then @.newline else ''
+	$hdr = if (@_get_protocol() is 'mail') then @newline else ''
 	$body = ''
 	
-	switch @._get_content_type()
+	switch @_get_content_type()
 		when 'plain'
 			
-			$hdr+="Content-Type: text/plain; charset=" + @.charset + @.newline
-			$hdr+="Content-Transfer-Encoding: " + @._get_encoding()
+			$hdr+="Content-Type: text/plain; charset=" + @charset + @newline
+			$hdr+="Content-Transfer-Encoding: " + @_get_encoding()
 			
-			if @._get_protocol() is 'mail'
-				@._header_str+=$hdr
-				@._finalbody = @._body
+			if @_get_protocol() is 'mail'
+				@_header_str+=$hdr
+				@_finalbody = @_body
 				
 			else 
-				@._finalbody = $hdr + @.newline + @.newline + @._body
+				@_finalbody = $hdr + @newline + @newline + @_body
 				
 			
 			return 
@@ -960,37 +981,37 @@ class CI_Email
 			
 		when 'html'
 			
-			if @.send_multipart is FALSE
-				$hdr+="Content-Type: text/html; charset=" + @.charset + @.newline
+			if @send_multipart is false
+				$hdr+="Content-Type: text/html; charset=" + @charset + @newline
 				$hdr+="Content-Transfer-Encoding: quoted-printable"
 				
 			else 
-				$hdr+="Content-Type: multipart/alternative; boundary=\"" + @._alt_boundary + "\"" + @.newline + @.newline
+				$hdr+="Content-Type: multipart/alternative; boundary=\"" + @_alt_boundary + "\"" + @newline + @newline
 				
-				$body+=@._get_mime_message() + @.newline + @.newline
-				$body+="--" + @._alt_boundary + @.newline
+				$body+=@_get_mime_message() + @newline + @newline
+				$body+="--" + @_alt_boundary + @newline
 				
-				$body+="Content-Type: text/plain; charset=" + @.charset + @.newline
-				$body+="Content-Transfer-Encoding: " + @._get_encoding() + @.newline + @.newline
-				$body+=@._get_alt_message() + @.newline + @.newline + "--" + @._alt_boundary + @.newline
+				$body+="Content-Type: text/plain; charset=" + @charset + @newline
+				$body+="Content-Transfer-Encoding: " + @_get_encoding() + @newline + @newline
+				$body+=@_get_alt_message() + @newline + @newline + "--" + @_alt_boundary + @newline
 				
-				$body+="Content-Type: text/html; charset=" + @.charset + @.newline
-				$body+="Content-Transfer-Encoding: quoted-printable" + @.newline + @.newline
+				$body+="Content-Type: text/html; charset=" + @charset + @newline
+				$body+="Content-Transfer-Encoding: quoted-printable" + @newline + @newline
 				
 			
-			@._finalbody = $body + @._prep_quoted_printable(@._body) + @.newline + @.newline
+			@_finalbody = $body + @_prep_quoted_printable(@_body) + @newline + @newline
 			
 			
-			if @._get_protocol() is 'mail'
-				@._header_str+=$hdr
+			if @_get_protocol() is 'mail'
+				@_header_str+=$hdr
 				
 			else 
-				@._finalbody = $hdr + @._finalbody
+				@_finalbody = $hdr + @_finalbody
 				
 			
 			
-			if @.send_multipart isnt FALSE
-				@._finalbody+="--" + @._alt_boundary + "--"
+			if @send_multipart isnt false
+				@_finalbody+="--" + @_alt_boundary + "--"
 				
 			
 			return 
@@ -998,44 +1019,44 @@ class CI_Email
 			
 		when 'plain-attach'
 			
-			$hdr+="Content-Type: multipart/" + @.multipart + "; boundary=\"" + @._atc_boundary + "\"" + @.newline + @.newline
+			$hdr+="Content-Type: multipart/" + @multipart + "; boundary=\"" + @_atc_boundary + "\"" + @newline + @newline
 			
-			if @._get_protocol() is 'mail'
-				@._header_str+=$hdr
+			if @_get_protocol() is 'mail'
+				@_header_str+=$hdr
 				
 			
-			$body+=@._get_mime_message() + @.newline + @.newline
-			$body+="--" + @._atc_boundary + @.newline
+			$body+=@_get_mime_message() + @newline + @newline
+			$body+="--" + @_atc_boundary + @newline
 			
-			$body+="Content-Type: text/plain; charset=" + @.charset + @.newline
-			$body+="Content-Transfer-Encoding: " + @._get_encoding() + @.newline + @.newline
+			$body+="Content-Type: text/plain; charset=" + @charset + @newline
+			$body+="Content-Transfer-Encoding: " + @_get_encoding() + @newline + @newline
 			
-			$body+=@._body + @.newline + @.newline
+			$body+=@_body + @newline + @newline
 			
 			
 		when 'html-attach'
 			
-			$hdr+="Content-Type: multipart/" + @.multipart + "; boundary=\"" + @._atc_boundary + "\"" + @.newline + @.newline
+			$hdr+="Content-Type: multipart/" + @multipart + "; boundary=\"" + @_atc_boundary + "\"" + @newline + @newline
 			
-			if @._get_protocol() is 'mail'
-				@._header_str+=$hdr
+			if @_get_protocol() is 'mail'
+				@_header_str+=$hdr
 				
 			
-			$body+=@._get_mime_message() + @.newline + @.newline
-			$body+="--" + @._atc_boundary + @.newline
+			$body+=@_get_mime_message() + @newline + @newline
+			$body+="--" + @_atc_boundary + @newline
 			
-			$body+="Content-Type: multipart/alternative; boundary=\"" + @._alt_boundary + "\"" + @.newline + @.newline
-			$body+="--" + @._alt_boundary + @.newline
+			$body+="Content-Type: multipart/alternative; boundary=\"" + @_alt_boundary + "\"" + @newline + @newline
+			$body+="--" + @_alt_boundary + @newline
 			
-			$body+="Content-Type: text/plain; charset=" + @.charset + @.newline
-			$body+="Content-Transfer-Encoding: " + @._get_encoding() + @.newline + @.newline
-			$body+=@._get_alt_message() + @.newline + @.newline + "--" + @._alt_boundary + @.newline
+			$body+="Content-Type: text/plain; charset=" + @charset + @newline
+			$body+="Content-Transfer-Encoding: " + @_get_encoding() + @newline + @newline
+			$body+=@_get_alt_message() + @newline + @newline + "--" + @_alt_boundary + @newline
 			
-			$body+="Content-Type: text/html; charset=" + @.charset + @.newline
-			$body+="Content-Transfer-Encoding: quoted-printable" + @.newline + @.newline
+			$body+="Content-Type: text/html; charset=" + @charset + @newline
+			$body+="Content-Transfer-Encoding: quoted-printable" + @newline + @newline
 			
-			$body+=@._prep_quoted_printable(@._body) + @.newline + @.newline
-			$body+="--" + @._alt_boundary + "--" + @.newline + @.newline
+			$body+=@_prep_quoted_printable(@_body) + @newline + @newline
+			$body+="--" + @_alt_boundary + "--" + @newline + @newline
 			
 			
 			
@@ -1044,42 +1065,42 @@ class CI_Email
 	
 	$z = 0
 	
-	($i = 0$i < count(@._attach_name)$i++)
+	($i = 0$i < count(@_attach_name)$i++)
 	{
-	$filename = @._attach_name[$i]
+	$filename = @_attach_name[$i]
 	$basename = basename($filename)
-	$ctype = @._attach_type[$i]
+	$ctype = @_attach_type[$i]
 	
 	if not file_exists($filename)
-		@._set_error_message('email_attachment_missing', $filename)
-		return FALSE
+		@_set_error_message('email_attachment_missing', $filename)
+		return false
 		
 	
-	$h = "--" + @._atc_boundary + @.newline
+	$h = "--" + @_atc_boundary + @newline
 	$h+="Content-type: " + $ctype + "; "
-	$h+="name=\"" + $basename + "\"" + @.newline
-	$h+="Content-Disposition: " + @._attach_disp[$i] + ";" + @.newline
-	$h+="Content-Transfer-Encoding: base64" + @.newline
+	$h+="name=\"" + $basename + "\"" + @newline
+	$h+="Content-Disposition: " + @_attach_disp[$i] + ";" + @newline
+	$h+="Content-Transfer-Encoding: base64" + @newline
 	
 	$attachment[$z++] = $h
 	$file = filesize($filename) + 1
 	
-	if not $fp = fopen($filename, FOPEN_READ)) then @._set_error_message('email_attachment_unreadable', $filename)
-	return FALSE
+	if not $fp = fopen($filename, FOPEN_READ)) then @_set_error_message('email_attachment_unreadable', $filename)
+	return false
 	}
 	
 	$attachment[$z++] = chunk_split(base64_encode(fread($fp, $file)))
 	fclose($fp)
 	}
 	
-	$body+=implode(@.newline, $attachment) + @.newline + "--" + @._atc_boundary + "--"
+	$body+=implode(@newline, $attachment) + @newline + "--" + @_atc_boundary + "--"
 	
 	
-	if @._get_protocol() is 'mail'
-		@._finalbody = $body
+	if @_get_protocol() is 'mail'
+		@_finalbody = $body
 		
 	else 
-		@._finalbody = $hdr + $body
+		@_finalbody = $hdr + $body
 		
 	
 	return 
@@ -1114,7 +1135,7 @@ class CI_Email
 	$str = preg_replace('/\x00+/', '', $str)
 	
 	#  Standardize newlines
-	if strpos($str, "\r") isnt FALSE
+	if strpos($str, "\r") isnt false
 		$str = str_replace(["\r\n", "\r"], "\n", $str)
 		
 	
@@ -1128,7 +1149,7 @@ class CI_Email
 	$escape = '='
 	$output = ''
 	
-	for $line in as
+	for $line in $lines
 		$length = strlen($line)
 		$temp = ''
 		
@@ -1154,7 +1175,7 @@ class CI_Email
 		#  If we're at the character limit, add the line to the output,
 		#  reset our temp variable, and keep on chuggin'
 		if (strlen($temp) + strlen($char))>=$charlim
-			$output+=$temp + $escape + @.crlf
+			$output+=$temp + $escape + @crlf
 			$temp = ''
 			
 		
@@ -1163,11 +1184,11 @@ class CI_Email
 		}
 		
 		#  Add our completed line to the output
-		$output+=$temp + @.crlf
+		$output+=$temp + @crlf
 		
 	
 	#  get rid of extra CRLF tacked onto the end
-	$output = substr($output, 0, strlen(@.crlf) *  - 1)
+	$output = substr($output, 0, strlen(@crlf) *  - 1)
 	
 	return $output
 	}
@@ -1185,18 +1206,18 @@ class CI_Email
 	# @param	bool	// set to TRUE for processing From: headers
 	# @return	str
 	#
-	_prep_q_encoding($str, $from = FALSE)
+	_prep_q_encoding($str, $from = false)
 	{
 	$str = str_replace(["\r", "\n"], ['', ''], $str)
 	
 	#  Line length must not exceed 76 characters, so we adjust for
 	#  a space, 7 extra characters =??Q??=, and the charset that we will add to each line
-	$limit = 75 - 7 - strlen(@.charset)
+	$limit = 75 - 7 - strlen(@charset)
 	
 	#  these special characters must be converted too
 	$convert = ['_', '=', '?']
 	
-	if $from is TRUE
+	if $from is true
 		$convert.push ','
 		$convert.push ';'
 		
@@ -1223,7 +1244,7 @@ class CI_Email
 	#  If we're at the character limit, add the line to the output,
 	#  reset our temp variable, and keep on chuggin'
 	if (strlen($temp) + strlen($char))>=$limit
-		$output+=$temp + @.crlf
+		$output+=$temp + @crlf
 		$temp = ''
 		
 	
@@ -1235,7 +1256,7 @@ class CI_Email
 	
 	#  wrap each line with the shebang, charset, and transfer encoding
 	#  the preceding space on successive lines is required for header "folding"
-	$str = trim(preg_replace('/^(.*)$/m', ' =?' + @.charset + '?Q?$1?=', $str))
+	$str = trim(preg_replace('/^(.*)$/m', ' =?' + @charset + '?Q?$1?=', $str))
 	
 	return $str
 	}
@@ -1250,24 +1271,24 @@ class CI_Email
 	#
 	send()
 	{
-	if @._replyto_flag is FALSE
-		@.reply_to(@._headers['From'])
+	if @_replyto_flag is false
+		@reply_to(@_headers['From'])
 		
 	
-	if ( not @._recipients?  and  not @._headers['To']? ) and ( not @._bcc_array?  and  not @._headers['Bcc']? ) and ( not @._headers['Cc']? )
-		@._set_error_message('email_no_recipients')
-		return FALSE
+	if ( not @_recipients?  and  not @_headers['To']? ) and ( not @_bcc_array?  and  not @_headers['Bcc']? ) and ( not @_headers['Cc']? )
+		@_set_error_message('email_no_recipients')
+		return false
 		
 	
-	@._build_headers()
+	@_build_headers()
 	
-	if @.bcc_batch_mode and count(@._bcc_array) > 0
-		if count(@._bcc_array) > @.bcc_batch_size then return @.batch_bcc_send()}@._build_message()
-	if not @._spool_email()
-		return FALSE
+	if @bcc_batch_mode and count(@_bcc_array) > 0
+		if count(@_bcc_array) > @bcc_batch_size then return @batch_bcc_send()}@_build_message()
+	if not @_spool_email()
+		return false
 		
 	else 
-		return TRUE
+		return true
 		
 	}
 	
@@ -1281,46 +1302,46 @@ class CI_Email
 	#
 	batch_bcc_send()
 	{
-	$float = @.bcc_batch_size - 1
+	$float = @bcc_batch_size - 1
 	
 	$set = ""
 	
 	$chunk = {}
 	
-	($i = 0$i < count(@._bcc_array)$i++)
+	($i = 0$i < count(@_bcc_array)$i++)
 	{
-	if @._bcc_array[$i]? 
-		$set+=", " + @._bcc_array[$i]
+	if @_bcc_array[$i]? 
+		$set+=", " + @_bcc_array[$i]
 		
 	
 	if $i is $float
 		$chunk.push substr($set, 1)
-		$float = $float + @.bcc_batch_size
+		$float = $float + @bcc_batch_size
 		$set = ""
 		
 	
-	if $i is count(@._bcc_array) - 1
+	if $i is count(@_bcc_array) - 1
 		$chunk.push substr($set, 1)
 		
 	}
 	
 	($i = 0$i < count($chunk)$i++)
 	{
-	delete @._headers['Bcc']
+	delete @_headers['Bcc']
 	delete $bcc
 	
-	$bcc = @._str_to_array($chunk[$i])
-	$bcc = @.clean_email($bcc)
+	$bcc = @_str_to_array($chunk[$i])
+	$bcc = @clean_email($bcc)
 	
-	if @.protocol isnt 'smtp'
-		@._set_header('Bcc', implode(", ", $bcc))
+	if @protocol isnt 'smtp'
+		@_set_header('Bcc', implode(", ", $bcc))
 		
 	else 
-		@._bcc_array = $bcc
+		@_bcc_array = $bcc
 		
 	
-	@._build_message()
-	@._spool_email()
+	@_build_message()
+	@_spool_email()
 	}
 	}
 	
@@ -1334,7 +1355,7 @@ class CI_Email
 	#
 	_unwrap_specials()
 	{
-	@._finalbody = preg_replace_callback("/\{unwrap\}(.*?)\{\/unwrap\}/si", [@, '_remove_nl_callback'], @._finalbody)
+	@_finalbody = preg_replace_callback("/\{unwrap\}(.*?)\{\/unwrap\}/si", [@, '_remove_nl_callback'], @_finalbody)
 	}
 	
 	#  --------------------------------------------------------------------
@@ -1347,7 +1368,7 @@ class CI_Email
 	#
 	_remove_nl_callback($matches)
 	{
-	if strpos($matches[1], "\r") isnt FALSE or strpos($matches[1], "\n") isnt FALSE
+	if strpos($matches[1], "\r") isnt false or strpos($matches[1], "\n") isnt false
 		$matches[1] = str_replace(["\r\n", "\r", "\n"], '', $matches[1])
 		
 	
@@ -1364,35 +1385,35 @@ class CI_Email
 	#
 	_spool_email()
 	{
-	@._unwrap_specials()
+	@_unwrap_specials()
 	
-	switch @._get_protocol()
+	switch @_get_protocol()
 		when 'mail'
 			
-			if not @._send_with_mail()
-				@._set_error_message('email_send_failure_phpmail')
-				return FALSE
+			if not @_send_with_mail()
+				@_set_error_message('email_send_failure_phpmail')
+				return false
 				
 			
 		when 'sendmail'
 			
-			if not @._send_with_sendmail()
-				@._set_error_message('email_send_failure_sendmail')
-				return FALSE
+			if not @_send_with_sendmail()
+				@_set_error_message('email_send_failure_sendmail')
+				return false
 				
 			
 		when 'smtp'
 			
-			if not @._send_with_smtp()
-				@._set_error_message('email_send_failure_smtp')
-				return FALSE
+			if not @_send_with_smtp()
+				@_set_error_message('email_send_failure_smtp')
+				return false
 				
 			
 			
 			
 	
-	@._set_error_message('email_sent', @._get_protocol())
-	return TRUE
+	@_set_error_message('email_sent', @_get_protocol())
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -1405,23 +1426,23 @@ class CI_Email
 	#
 	_send_with_mail()
 	{
-	if @._safe_mode is TRUE
-		if not mail(@._recipients, @._subject, @._finalbody, @._header_str)
-			return FALSE
+	if @_safe_mode is true
+		if not mail(@_recipients, @_subject, @_finalbody, @_header_str)
+			return false
 			
 		else 
-			return TRUE
+			return true
 			
 		
 	else 
 		#  most documentation of sendmail using the "-f" flag lacks a space after it, however
 		#  we've encountered servers that seem to require it to be in place.
 		
-		if not mail(@._recipients, @._subject, @._finalbody, @._header_str, "-f " + @.clean_email(@._headers['From']))
-			return FALSE
+		if not mail(@_recipients, @_subject, @_finalbody, @_header_str, "-f " + @clean_email(@_headers['From']))
+			return false
 			
 		else 
-			return TRUE
+			return true
 			
 		
 	}
@@ -1436,15 +1457,15 @@ class CI_Email
 	#
 	_send_with_sendmail()
 	{
-	$fp = popen(@.mailpath + " -oi -f " + @.clean_email(@._headers['From']) + " -t", 'w')
+	$fp = popen(@mailpath + " -oi -f " + @clean_email(@_headers['From']) + " -t", 'w')
 	
-	if $fp is FALSE or $fp is NULL
+	if $fp is false or $fp is null
 		#  server probably has popen disabled, so nothing we can do to get a verbose error.
-		return FALSE
+		return false
 		
 	
-	fputs($fp, @._header_str)
-	fputs($fp, @._finalbody)
+	fputs($fp, @_header_str)
+	fputs($fp, @_finalbody)
 	
 	$status = pclose($fp)
 	
@@ -1453,12 +1474,12 @@ class CI_Email
 		
 	
 	if $status isnt 0
-		@._set_error_message('email_exit_status', $status)
-		@._set_error_message('email_no_socket')
-		return FALSE
+		@_set_error_message('email_exit_status', $status)
+		@_set_error_message('email_no_socket')
+		return false
 		
 	
-	return TRUE
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -1471,54 +1492,54 @@ class CI_Email
 	#
 	_send_with_smtp()
 	{
-	if @.smtp_host is ''
-		@._set_error_message('email_no_hostname')
-		return FALSE
+	if @smtp_host is ''
+		@_set_error_message('email_no_hostname')
+		return false
 		
 	
-	@._smtp_connect()
-	@._smtp_authenticate()
+	@_smtp_connect()
+	@_smtp_authenticate()
 	
-	@._send_command('from', @.clean_email(@._headers['From']))
+	@_send_command('from', @clean_email(@_headers['From']))
 	
-	for $val in as
-		@._send_command('to', $val)
+	for $val in @_recipients
+		@_send_command('to', $val)
 		
 	
-	if count(@._cc_array) > 0
-		for $val in as
+	if count(@_cc_array) > 0
+		for $val in @_cc_array
 			if $val isnt ""
-				@._send_command('to', $val)
+				@_send_command('to', $val)
 				
 			
 		
 	
-	if count(@._bcc_array) > 0
-		for $val in as
+	if count(@_bcc_array) > 0
+		for $val in @_bcc_array
 			if $val isnt ""
-				@._send_command('to', $val)
+				@_send_command('to', $val)
 				
 			
 		
 	
-	@._send_command('data')
+	@_send_command('data')
 	
 	#  perform dot transformation on any lines that begin with a dot
-	@._send_data(@._header_str + preg_replace('/^\./m', '..$1', @._finalbody))
+	@_send_data(@_header_str + preg_replace('/^\./m', '..$1', @_finalbody))
 	
-	@._send_data('.')
+	@_send_data('.')
 	
-	$reply = @._get_smtp_data()
+	$reply = @_get_smtp_data()
 	
-	@._set_error_message($reply)
+	@_set_error_message($reply)
 	
 	if strncmp($reply, '250', 3) isnt 0
-		@._set_error_message('email_smtp_error', $reply)
-		return FALSE
+		@_set_error_message('email_smtp_error', $reply)
+		return false
 		
 	
-	@._send_command('quit')
-	return TRUE
+	@_send_command('quit')
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -1532,15 +1553,15 @@ class CI_Email
 	#
 	_smtp_connect()
 	{
-	@._smtp_connect = fsockopen(@.smtp_host, @.smtp_port, $errno, $errstr, @.smtp_timeout)
+	@_smtp_connect = fsockopen(@smtp_host, @smtp_port, $errno, $errstr, @smtp_timeout)
 	
-	if not is_resource(@._smtp_connect)
-		@._set_error_message('email_smtp_error', $errno + " " + $errstr)
-		return FALSE
+	if not is_resource(@_smtp_connect)
+		@_set_error_message('email_smtp_error', $errno + " " + $errstr)
+		return false
 		
 	
-	@._set_error_message(@._get_smtp_data())
-	return @._send_command('hello')
+	@_set_error_message(@_get_smtp_data())
+	return @_send_command('hello')
 	}
 	
 	#  --------------------------------------------------------------------
@@ -1558,51 +1579,51 @@ class CI_Email
 	switch $cmd
 		when 'hello'
 			
-			if @._smtp_auth or @._get_encoding() is '8bit' then @._send_data('EHLO ' + @._get_hostname())
-			else @._send_data('HELO ' + @._get_hostname())
+			if @_smtp_auth or @_get_encoding() is '8bit' then @_send_data('EHLO ' + @_get_hostname())
+			else @_send_data('HELO ' + @_get_hostname())
 			
 			$resp = 250
 			
 		when 'from'
 			
-			@._send_data('MAIL FROM:<' + $data + '>')
+			@_send_data('MAIL FROM:<' + $data + '>')
 			
 			$resp = 250
 			
 		when 'to'
 			
-			@._send_data('RCPT TO:<' + $data + '>')
+			@_send_data('RCPT TO:<' + $data + '>')
 			
 			$resp = 250
 			
 		when 'data'
 			
-			@._send_data('DATA')
+			@_send_data('DATA')
 			
 			$resp = 354
 			
 		when 'quit'
 			
-			@._send_data('QUIT')
+			@_send_data('QUIT')
 			
 			$resp = 221
 			
 			
 	
-	$reply = @._get_smtp_data()
+	$reply = @_get_smtp_data()
 	
-	@._debug_msg.push "<pre>" + $cmd + ": " + $reply + "</pre>"
+	@_debug_msg.push "<pre>" + $cmd + ": " + $reply + "</pre>"
 	
 	if substr($reply, 0, 3) isnt $resp
-		@._set_error_message('email_smtp_error', $reply)
-		return FALSE
+		@_set_error_message('email_smtp_error', $reply)
+		return false
 		
 	
 	if $cmd is 'quit'
-		fclose(@._smtp_connect)
+		fclose(@_smtp_connect)
 		
 	
-	return TRUE
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -1615,43 +1636,43 @@ class CI_Email
 	#
 	_smtp_authenticate()
 	{
-	if not @._smtp_auth
-		return TRUE
+	if not @_smtp_auth
+		return true
 		
 	
-	if @.smtp_user is "" and @.smtp_pass is ""
-		@._set_error_message('email_no_smtp_unpw')
-		return FALSE
+	if @smtp_user is "" and @smtp_pass is ""
+		@_set_error_message('email_no_smtp_unpw')
+		return false
 		
 	
-	@._send_data('AUTH LOGIN')
+	@_send_data('AUTH LOGIN')
 	
-	$reply = @._get_smtp_data()
+	$reply = @_get_smtp_data()
 	
 	if strncmp($reply, '334', 3) isnt 0
-		@._set_error_message('email_failed_smtp_login', $reply)
-		return FALSE
+		@_set_error_message('email_failed_smtp_login', $reply)
+		return false
 		
 	
-	@._send_data(base64_encode(@.smtp_user))
+	@_send_data(base64_encode(@smtp_user))
 	
-	$reply = @._get_smtp_data()
+	$reply = @_get_smtp_data()
 	
 	if strncmp($reply, '334', 3) isnt 0
-		@._set_error_message('email_smtp_auth_un', $reply)
-		return FALSE
+		@_set_error_message('email_smtp_auth_un', $reply)
+		return false
 		
 	
-	@._send_data(base64_encode(@.smtp_pass))
+	@_send_data(base64_encode(@smtp_pass))
 	
-	$reply = @._get_smtp_data()
+	$reply = @_get_smtp_data()
 	
 	if strncmp($reply, '235', 3) isnt 0
-		@._set_error_message('email_smtp_auth_pw', $reply)
-		return FALSE
+		@_set_error_message('email_smtp_auth_pw', $reply)
+		return false
 		
 	
-	return TRUE
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -1664,12 +1685,12 @@ class CI_Email
 	#
 	_send_data($data)
 	{
-	if not fwrite(@._smtp_connect, $data + @.newline)
-		@._set_error_message('email_smtp_data_failure', $data)
-		return FALSE
+	if not fwrite(@_smtp_connect, $data + @newline)
+		@_set_error_message('email_smtp_data_failure', $data)
+		return false
 		
 	else 
-		return TRUE
+		return true
 		
 	}
 	
@@ -1685,7 +1706,7 @@ class CI_Email
 	{
 	$data = ""
 	
-	while $str = fgets(@._smtp_connect, 512))$data+=$str
+	while $str = fgets(@_smtp_connect, 512))$data+=$str
 	
 	if substr($str, 3, 1) is " "
 		break
@@ -1718,13 +1739,13 @@ class CI_Email
 	#
 	_get_ip()
 	{
-	if @._IP isnt FALSE
-		return @._IP
+	if @_IP isnt false
+		return @_IP
 		
 	
-	$cip = if ($_SERVER['HTTP_CLIENT_IP']?  and $_SERVER['HTTP_CLIENT_IP'] isnt "") then $_SERVER['HTTP_CLIENT_IP'] else FALSE
-	$rip = if ($_SERVER['REMOTE_ADDR']?  and $_SERVER['REMOTE_ADDR'] isnt "") then $_SERVER['REMOTE_ADDR'] else FALSE
-	$fip = if ($_SERVER['HTTP_X_FORWARDED_FOR']?  and $_SERVER['HTTP_X_FORWARDED_FOR'] isnt "") then $_SERVER['HTTP_X_FORWARDED_FOR'] else FALSE
+	$cip = if ($_SERVER['HTTP_CLIENT_IP']?  and $_SERVER['HTTP_CLIENT_IP'] isnt "") then $_SERVER['HTTP_CLIENT_IP'] else false
+	$rip = if ($_SERVER['REMOTE_ADDR']?  and $_SERVER['REMOTE_ADDR'] isnt "") then $_SERVER['REMOTE_ADDR'] else false
+	$fip = if ($_SERVER['HTTP_X_FORWARDED_FOR']?  and $_SERVER['HTTP_X_FORWARDED_FOR'] isnt "") then $_SERVER['HTTP_X_FORWARDED_FOR'] else false
 	
 	if $cip and $rip#  --------------------------------------------------------------------#
 	# Get Debug Message
@@ -1734,13 +1755,13 @@ class CI_Email
 	#
 		$msg = ''
 		
-		if count(@._debug_msg) > 0
-			for $val in as
+		if count(@_debug_msg) > 0
+			for $val in @_debug_msg
 				$msg+=$val
 				
 			
 		
-		$msg+="<pre>" + @._header_str + "\n" + htmlspecialchars(@._subject) + "\n" + htmlspecialchars(@._finalbody) + '</pre>'
+		$msg+="<pre>" + @_header_str + "\n" + htmlspecialchars(@_subject) + "\n" + htmlspecialchars(@_finalbody) + '</pre>'
 		return $msg
 		
 	
@@ -1758,11 +1779,11 @@ class CI_Email
 	$CI = get_instance()
 	$CI.lang.load('email')
 	
-	if FALSE is ($line = $CI.lang.line($msg))
-		@._debug_msg.push str_replace('%s', $val, $msg) + "<br />"
+	if false is ($line = $CI.lang.line($msg))
+		@_debug_msg.push str_replace('%s', $val, $msg) + "<br />"
 		
 	else 
-		@._debug_msg.push str_replace('%s', $val, $line) + "<br />"
+		@_debug_msg.push str_replace('%s', $val, $line) + "<br />"
 		
 	}
 	
@@ -1870,6 +1891,9 @@ class CI_Email
 	}
 	
 	
+
+register_class 'CI_Email', CI_Email
+module.exports = CI_Email
 #  END CI_Email class
 
 #  End of file Email.php 

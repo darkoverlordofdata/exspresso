@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  inflector_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{defined, function_exists, in_array, preg_match, preg_replace, str_replace, strlen, strtolower, substr, trim, ucwords}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -38,7 +59,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	str
 #
 if not function_exists('singular')
-	global.singular = ($str) ->
+	exports.singular = singular = ($str) ->
 		$str = trim($str)
 		$end = substr($str,  - 3)
 		
@@ -75,7 +96,7 @@ if not function_exists('singular')
 # @return	str
 #
 if not function_exists('plural')
-	global.plural = ($str, $force = FALSE) ->
+	exports.plural = plural = ($str, $force = false) ->
 		$str = trim($str)
 		$end = substr($str,  - 1)
 		
@@ -93,7 +114,7 @@ if not function_exists('plural')
 				
 			
 		else if preg_match('/s/i', $end)
-			if $force is TRUE
+			if $force is true
 				$str+='es'
 				
 			
@@ -117,7 +138,7 @@ if not function_exists('plural')
 # @return	str
 #
 if not function_exists('camelize')
-	global.camelize = ($str) ->
+	exports.camelize = camelize = ($str) ->
 		$str = 'x' + strtolower(trim($str))
 		$str = ucwords(preg_replace('/[\s_]+/', ' ', $str))
 		return substr(str_replace(' ', '', $str), 1)
@@ -136,7 +157,7 @@ if not function_exists('camelize')
 # @return	str
 #
 if not function_exists('underscore')
-	global.underscore = ($str) ->
+	exports.underscore = underscore = ($str) ->
 		return preg_replace('/[\s]+/', '_', strtolower(trim($str)))
 		
 	
@@ -153,7 +174,7 @@ if not function_exists('underscore')
 # @return	str
 #
 if not function_exists('humanize')
-	global.humanize = ($str) ->
+	exports.humanize = humanize = ($str) ->
 		return ucwords(preg_replace('/[_]+/', ' ', strtolower(trim($str))))
 		
 	

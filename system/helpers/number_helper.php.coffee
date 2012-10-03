@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  number_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{defined, function_exists, get_instance, lang, line, load, number_format, round}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -35,7 +56,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	string
 #
 if not function_exists('byte_format')
-	global.byte_format = ($num, $precision = 1) ->
+	exports.byte_format = byte_format = ($num, $precision = 1) ->
 		$CI = get_instance()
 		$CI.lang.load('number')
 		

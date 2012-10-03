@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Cache_dummy.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{cache_info, clean, defined, delete, get, get_metadata, is_supported, save}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -25,7 +46,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link
 #
 
-class CI_Cache_dummyextends CI_Driver
+class CI_Cache_dummy extends CI_Driver
 	
 	#
 	# Get
@@ -37,7 +58,7 @@ class CI_Cache_dummyextends CI_Driver
 	#
 	get($id)
 	{
-	return FALSE
+	return false
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -53,7 +74,7 @@ class CI_Cache_dummyextends CI_Driver
 	#
 	save($id, $data, $ttl = 60)
 	{
-	return TRUE
+	return true
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -66,7 +87,7 @@ class CI_Cache_dummyextends CI_Driver
 	#
 	delete($id)
 	{
-	return TRUE
+	return true
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -78,7 +99,7 @@ class CI_Cache_dummyextends CI_Driver
 	#
 	clean()
 	{
-	return TRUE
+	return true
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -89,9 +110,9 @@ class CI_Cache_dummyextends CI_Driver
 	# @param 	string		user/filehits
 	# @return 	boolean		FALSE
 	#
-	cache_info($type = NULL)
+	cache_info($type = null)
 	{
-	return FALSE
+	return false
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -104,7 +125,7 @@ class CI_Cache_dummyextends CI_Driver
 	#
 	get_metadata($id)
 	{
-	return FALSE
+	return false
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -117,12 +138,15 @@ class CI_Cache_dummyextends CI_Driver
 	#
 	is_supported()
 	{
-	return TRUE
+	return true
 	}
 	
 	#  ------------------------------------------------------------------------
 	
 	
+
+register_class 'CI_Cache_dummy', CI_Cache_dummy
+module.exports = CI_Cache_dummy
 #  End Class
 
 #  End of file Cache_apc.php 

@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  User_agent.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, _compile_data, _load_agent_file, _set_browser, _set_charsets, _set_languages, _set_mobile, _set_platform, _set_robot, accept_charset, accept_lang, agent_string, array_key_exists, count, defined, explode, in_array, is_array, is_file, is_null, is_referral, preg_match, preg_quote, preg_replace, referrer, strpos, strtolower, trim}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -28,25 +49,25 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_User_agent
 	
-	$agent: NULL
+	agent: null
 	
-	$is_browser: FALSE
-	$is_robot: FALSE
-	$is_mobile: FALSE
+	is_browser: false
+	is_robot: false
+	is_mobile: false
 	
-	$languages: {}
-	$charsets: {}
+	languages: {}
+	charsets: {}
 	
-	$platforms: {}
-	$browsers: {}
-	$mobiles: {}
-	$robots: {}
+	platforms: {}
+	browsers: {}
+	mobiles: {}
+	robots: {}
 	
-	$platform: ''
-	$browser: ''
-	$version: ''
-	$mobile: ''
-	$robot: ''
+	platform: ''
+	browser: ''
+	version: ''
+	mobile: ''
+	robot: ''
 	
 	#
 	# Constructor
@@ -59,12 +80,12 @@ class CI_User_agent
 	__construct()
 	{
 	if $_SERVER['HTTP_USER_AGENT']? 
-		@.agent = trim($_SERVER['HTTP_USER_AGENT'])
+		@agent = trim($_SERVER['HTTP_USER_AGENT'])
 		
 	
-	if not is_null(@.agent)
-		if @._load_agent_file()
-			@._compile_data()
+	if not is_null(@agent)
+		if @_load_agent_file()
+			@_compile_data()
 			
 		
 	
@@ -82,39 +103,39 @@ class CI_User_agent
 	_load_agent_file()
 	{
 	if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/user_agents' + EXT)
-		eval include_all(APPPATH + 'config/' + ENVIRONMENT + '/user_agents' + EXT)
+		require(APPPATH + 'config/' + ENVIRONMENT + '/user_agents' + EXT)
 		
 	else if is_file(APPPATH + 'config/user_agents' + EXT)
-		eval include_all(APPPATH + 'config/user_agents' + EXT)
+		require(APPPATH + 'config/user_agents' + EXT)
 		
 	else 
-		return FALSE
+		return false
 		
 	
-	$return = FALSE
+	$return = false
 	
 	if $platforms? 
-		@.platforms = $platforms
+		@platforms = $platforms
 		delete $platforms
-		$return = TRUE
+		$return = true
 		
 	
 	if $browsers? 
-		@.browsers = $browsers
+		@browsers = $browsers
 		delete $browsers
-		$return = TRUE
+		$return = true
 		
 	
 	if $mobiles? 
-		@.mobiles = $mobiles
+		@mobiles = $mobiles
 		delete $mobiles
-		$return = TRUE
+		$return = true
 		
 	
 	if $robots? 
-		@.robots = $robots
+		@robots = $robots
 		delete $robots
-		$return = TRUE
+		$return = true
 		
 	
 	return $return
@@ -130,10 +151,10 @@ class CI_User_agent
 	#
 	_compile_data()
 	{
-	@._set_platform()
+	@_set_platform()
 	
-	for $function in as
-		if @.$function() is TRUE
+	for $function in ['_set_browser', '_set_robot', '_set_mobile']
+		if @$function() is true
 			break
 			
 		
@@ -149,15 +170,15 @@ class CI_User_agent
 	#
 	_set_platform()
 	{
-	if is_array(@.platforms) and count(@.platforms) > 0
-		for $val, $key in as
-			if preg_match("|" + preg_quote($key) + "|i", @.agent)
-				@.platform = $val
-				return TRUE
+	if is_array(@platforms) and count(@platforms) > 0
+		for $key, $val of @platforms
+			if preg_match("|" + preg_quote($key) + "|i", @agent)
+				@platform = $val
+				return true
 				
 			
 		
-	@.platform = 'Unknown Platform'
+	@platform = 'Unknown Platform'
 	}
 	
 	#  --------------------------------------------------------------------
@@ -170,18 +191,18 @@ class CI_User_agent
 	#
 	_set_browser()
 	{
-	if is_array(@.browsers) and count(@.browsers) > 0
-		for $val, $key in as
-			if preg_match("|" + preg_quote($key) + ".*?([0-9\.]+)|i", @.agent, $match)
-				@.is_browser = TRUE
-				@.version = $match[1]
-				@.browser = $val
-				@._set_mobile()
-				return TRUE
+	if is_array(@browsers) and count(@browsers) > 0
+		for $key, $val of @browsers
+			if preg_match("|" + preg_quote($key) + ".*?([0-9\.]+)|i", @agent, $match)
+				@is_browser = true
+				@version = $match[1]
+				@browser = $val
+				@_set_mobile()
+				return true
 				
 			
 		
-	return FALSE
+	return false
 	}
 	
 	#  --------------------------------------------------------------------
@@ -194,16 +215,16 @@ class CI_User_agent
 	#
 	_set_robot()
 	{
-	if is_array(@.robots) and count(@.robots) > 0
-		for $val, $key in as
-			if preg_match("|" + preg_quote($key) + "|i", @.agent)
-				@.is_robot = TRUE
-				@.robot = $val
-				return TRUE
+	if is_array(@robots) and count(@robots) > 0
+		for $key, $val of @robots
+			if preg_match("|" + preg_quote($key) + "|i", @agent)
+				@is_robot = true
+				@robot = $val
+				return true
 				
 			
 		
-	return FALSE
+	return false
 	}
 	
 	#  --------------------------------------------------------------------
@@ -216,16 +237,16 @@ class CI_User_agent
 	#
 	_set_mobile()
 	{
-	if is_array(@.mobiles) and count(@.mobiles) > 0
-		for $val, $key in as
-			if FALSE isnt (strpos(strtolower(@.agent), $key))
-				@.is_mobile = TRUE
-				@.mobile = $val
-				return TRUE
+	if is_array(@mobiles) and count(@mobiles) > 0
+		for $key, $val of @mobiles
+			if false isnt (strpos(strtolower(@agent), $key))
+				@is_mobile = true
+				@mobile = $val
+				return true
 				
 			
 		
-	return FALSE
+	return false
 	}
 	
 	#  --------------------------------------------------------------------
@@ -238,14 +259,14 @@ class CI_User_agent
 	#
 	_set_languages()
 	{
-	if (count(@.languages) is 0) and $_SERVER['HTTP_ACCEPT_LANGUAGE']?  and $_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
+	if (count(@languages) is 0) and $_SERVER['HTTP_ACCEPT_LANGUAGE']?  and $_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
 		$languages = preg_replace('/(;q=[0-9\.]+)/i', '', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])))
 		
-		@.languages = explode(',', $languages)
+		@languages = explode(',', $languages)
 		
 	
-	if count(@.languages) is 0
-		@.languages = ['Undefined']
+	if count(@languages) is 0
+		@languages = ['Undefined']
 		
 	}
 	
@@ -259,14 +280,14 @@ class CI_User_agent
 	#
 	_set_charsets()
 	{
-	if (count(@.charsets) is 0) and $_SERVER['HTTP_ACCEPT_CHARSET']?  and $_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
+	if (count(@charsets) is 0) and $_SERVER['HTTP_ACCEPT_CHARSET']?  and $_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
 		$charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])))
 		
-		@.charsets = explode(',', $charsets)
+		@charsets = explode(',', $charsets)
 		
 	
-	if count(@.charsets) is 0
-		@.charsets = ['Undefined']
+	if count(@charsets) is 0
+		@charsets = ['Undefined']
 		
 	}
 	
@@ -278,19 +299,19 @@ class CI_User_agent
 	# @access	public
 	# @return	bool
 	#
-	is_browser($key = NULL)
+	is_browser($key = null)
 	{
-	if not @.is_browser
-		return FALSE
+	if not @is_browser
+		return false
 		
 	
 	#  No need to be specific, it's a browser
-	if $key is NULL
-		return TRUE
+	if $key is null
+		return true
 		
 	
 	#  Check for a specific browser
-	return array_key_exists($key, @.browsers) and @.browser is @.browsers[$key]
+	return array_key_exists($key, @browsers) and @browser is @browsers[$key]
 	}
 	
 	#  --------------------------------------------------------------------
@@ -301,19 +322,19 @@ class CI_User_agent
 	# @access	public
 	# @return	bool
 	#
-	is_robot($key = NULL)
+	is_robot($key = null)
 	{
-	if not @.is_robot
-		return FALSE
+	if not @is_robot
+		return false
 		
 	
 	#  No need to be specific, it's a robot
-	if $key is NULL
-		return TRUE
+	if $key is null
+		return true
 		
 	
 	#  Check for a specific robot
-	return array_key_exists($key, @.robots) and @.robot is @.robots[$key]
+	return array_key_exists($key, @robots) and @robot is @robots[$key]
 	}
 	
 	#  --------------------------------------------------------------------
@@ -324,19 +345,19 @@ class CI_User_agent
 	# @access	public
 	# @return	bool
 	#
-	is_mobile($key = NULL)
+	is_mobile($key = null)
 	{
-	if not @.is_mobile
-		return FALSE
+	if not @is_mobile
+		return false
 		
 	
 	#  No need to be specific, it's a mobile
-	if $key is NULL
-		return TRUE
+	if $key is null
+		return true
 		
 	
 	#  Check for a specific robot
-	return array_key_exists($key, @.mobiles) and @.mobile is @.mobiles[$key]
+	return array_key_exists($key, @mobiles) and @mobile is @mobiles[$key]
 	}
 	
 	#  --------------------------------------------------------------------
@@ -350,9 +371,9 @@ class CI_User_agent
 	is_referral()
 	{
 	if not $_SERVER['HTTP_REFERER']?  or $_SERVER['HTTP_REFERER'] is ''
-		return FALSE
+		return false
 		
-	return TRUE
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -365,7 +386,7 @@ class CI_User_agent
 	#
 	agent_string()
 	{
-	return @.agent
+	return @agent
 	}
 	
 	#  --------------------------------------------------------------------
@@ -378,7 +399,7 @@ class CI_User_agent
 	#
 	platform()
 	{
-	return @.platform
+	return @platform
 	}
 	
 	#  --------------------------------------------------------------------
@@ -391,7 +412,7 @@ class CI_User_agent
 	#
 	browser()
 	{
-	return @.browser
+	return @browser
 	}
 	
 	#  --------------------------------------------------------------------
@@ -404,7 +425,7 @@ class CI_User_agent
 	#
 	version()
 	{
-	return @.version
+	return @version
 	}
 	
 	#  --------------------------------------------------------------------
@@ -417,7 +438,7 @@ class CI_User_agent
 	#
 	robot()
 	{
-	return @.robot
+	return @robot
 	}
 	#  --------------------------------------------------------------------
 	
@@ -429,7 +450,7 @@ class CI_User_agent
 	#
 	mobile()
 	{
-	return @.mobile
+	return @mobile
 	}
 	
 	#  --------------------------------------------------------------------
@@ -455,11 +476,11 @@ class CI_User_agent
 	#
 	languages()
 	{
-	if count(@.languages) is 0
-		@._set_languages()
+	if count(@languages) is 0
+		@_set_languages()
 		
 	
-	return @.languages
+	return @languages
 	}
 	
 	#  --------------------------------------------------------------------
@@ -472,11 +493,11 @@ class CI_User_agent
 	#
 	charsets()
 	{
-	if count(@.charsets) is 0
-		@._set_charsets()
+	if count(@charsets) is 0
+		@_set_charsets()
 		
 	
-	return @.charsets
+	return @charsets
 	}
 	
 	#  --------------------------------------------------------------------
@@ -489,7 +510,7 @@ class CI_User_agent
 	#
 	accept_lang($lang = 'en')
 	{
-	return (in_array(strtolower($lang), @.languages(), TRUE))
+	return (in_array(strtolower($lang), @languages(), true))
 	}
 	
 	#  --------------------------------------------------------------------
@@ -502,10 +523,13 @@ class CI_User_agent
 	#
 	accept_charset($charset = 'utf-8')
 	{
-	return (in_array(strtolower($charset), @.charsets(), TRUE))
+	return (in_array(strtolower($charset), @charsets(), true))
 	}
 	
 	
+
+register_class 'CI_User_agent', CI_User_agent
+module.exports = CI_User_agent
 
 
 #  End of file User_agent.php 

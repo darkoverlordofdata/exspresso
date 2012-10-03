@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  captcha_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{ImageDestroy, ImageFilledRectangle, ImageJPEG, closedir, cos, defined, explode, extension_loaded, file_exists, function_exists, imagecolorallocate, imagecreate, imagecreatetruecolor, imageline, imagerectangle, imagestring, imagettftext, is_array, is_dir, is_writable, microtime, mt_rand, opendir, rand, readdir, sin, str_replace, strlen, substr, unlink}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -38,10 +59,10 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	string
 #
 if not function_exists('create_captcha')
-	global.create_captcha = ($data = '', $img_path = '', $img_url = '', $font_path = '') ->
+	exports.create_captcha = create_captcha = ($data = '', $img_path = '', $img_url = '', $font_path = '') ->
 		$defaults = 'word':'', 'img_path':'', 'img_url':'', 'img_width':'150', 'img_height':'30', 'font_path':'', 'expiration':7200
 		
-		for $val, $key in as
+		for $key, $val of $defaults
 			if not is_array($data)
 				if not $key?  or $key is ''
 					$key = $val
@@ -53,19 +74,19 @@ if not function_exists('create_captcha')
 			
 		
 		if $img_path is '' or $img_url is ''
-			return FALSE
+			return false
 			
 		
 		if not is_dir($img_path)
-			return FALSE
+			return false
 			
 		
 		if not is_writable($img_path)
-			return FALSE
+			return false
 			
 		
 		if not extension_loaded('gd')
-			return FALSE
+			return false
 			
 		
 		#  -----------------------------------
@@ -166,9 +187,9 @@ if not function_exists('create_captcha')
 		#   Write the text
 		#  -----------------------------------
 		
-		$use_font = if ($font_path isnt '' and file_exists($font_path) and function_exists('imagettftext')) then TRUE else FALSE
+		$use_font = if ($font_path isnt '' and file_exists($font_path) and function_exists('imagettftext')) then true else false
 		
-		if $use_font is FALSE
+		if $use_font is false
 			$font_size = 5
 			$x = rand(0, $img_width / ($length / 3))
 			$y = 0
@@ -181,7 +202,7 @@ if not function_exists('create_captcha')
 		
 		($i = 0$i < strlen($word)$i++)
 		{
-		if $use_font is FALSE
+		if $use_font is false
 			$y = rand(0, $img_height / 2)
 			imagestring($im, $font_size, $x, $y, substr($word, $i, 1), $text_color)
 			$x+=($font_size * 2)

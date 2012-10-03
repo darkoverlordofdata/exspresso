@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Jquery.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, config, count, defined, external, extract, get_instance, hover, implode, in_array, inline, is_array, item, load, preg_match, site_url, slash_item, str_replace, strpos, substr, vars}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 
 #
 # CodeIgniter
@@ -24,23 +45,23 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link		http://www.codeigniter.com/user_guide/libraries/javascript.html
 #
 
-class CI_Jqueryextends CI_Javascript
+class CI_Jquery extends CI_Javascript
 	
-	$_javascript_folder: 'js'
-	$jquery_code_for_load: {}
-	$jquery_code_for_compile: {}
-	$jquery_corner_active: FALSE
-	$jquery_table_sorter_active: FALSE
-	$jquery_table_sorter_pager_active: FALSE
-	$jquery_ajax_img: ''
+	_javascript_folder: 'js'
+	jquery_code_for_load: {}
+	jquery_code_for_compile: {}
+	jquery_corner_active: false
+	jquery_table_sorter_active: false
+	jquery_table_sorter_pager_active: false
+	jquery_ajax_img: ''
 	
 	__construct($params)
 	{
-	@.CI = get_instance()
+	@CI = get_instance()
 	extract($params)
 	
-	if $autoload is TRUE
-		@.script()
+	if $autoload is true
+		@script()
 		
 	
 	log_message('debug', "Jquery Class Initialized")
@@ -60,8 +81,8 @@ class CI_Jqueryextends CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	_blur : ($element = 'this', $js = '') =>
-		return @._add_event($element, $js, 'blur')
+	_blur : ($element = 'this', $js = '') ->
+		return @_add_event($element, $js, 'blur')
 		
 	
 	#  --------------------------------------------------------------------
@@ -76,8 +97,8 @@ class CI_Jqueryextends CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	_change : ($element = 'this', $js = '') =>
-		return @._add_event($element, $js, 'change')
+	_change : ($element = 'this', $js = '') ->
+		return @_add_event($element, $js, 'change')
 		
 	
 	#  --------------------------------------------------------------------
@@ -93,7 +114,7 @@ class CI_Jqueryextends CI_Javascript
 	# @param	boolean	whether or not to return false
 	# @return	string
 	#
-	_click : ($element = 'this', $js = '', $ret_false = TRUE) =>
+	_click : ($element = 'this', $js = '', $ret_false = true) ->
 		if not is_array($js)
 			$js = [$js]
 			
@@ -102,7 +123,7 @@ class CI_Jqueryextends CI_Javascript
 			$js.push "return false;"
 			
 		
-		return @._add_event($element, $js, 'click')
+		return @_add_event($element, $js, 'click')
 		
 	
 	#  --------------------------------------------------------------------
@@ -117,8 +138,8 @@ class CI_Jqueryextends CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	_dblclick : ($element = 'this', $js = '') =>
-		return @._add_event($element, $js, 'dblclick')
+	_dblclick : ($element = 'this', $js = '') ->
+		return @_add_event($element, $js, 'dblclick')
 		
 	
 	#  --------------------------------------------------------------------
@@ -133,8 +154,8 @@ class CI_Jqueryextends CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	_error : ($element = 'this', $js = '') =>
-		return @._add_event($element, $js, 'error')
+	_error : ($element = 'this', $js = '') ->
+		return @_add_event($element, $js, 'error')
 		
 	
 	#  --------------------------------------------------------------------
@@ -149,8 +170,8 @@ class CI_Jqueryextends CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	_focus : ($element = 'this', $js = '') =>
-		return @._add_event($element, $js, 'focus')
+	_focus : ($element = 'this', $js = '') ->
+		return @_add_event($element, $js, 'focus')
 		
 	
 	#  --------------------------------------------------------------------
@@ -166,8 +187,11 @@ class CI_Jqueryextends CI_Javascript
 	# @param	string	- Javascript code for mouse out
 	# @return	string
 	#
-	_hover : ($element = 'this', $over, $out) =>
-		$event = "\n\t$(" + @._prep_element($element) + ).hover(\n\t\tfunction()\n\t\t{\n\t\t\t{$$over}\n\t\t}, \n\t\tfunction()\n\t\t{\n\t\t\t{$$out}\n\t\t});\n@.jquery_code_for_compile.push $event
+	_hover : ($element = 'this', $over, $out) ->
+		$event = "\n\t$(" + @_prep_element($element) + ).hover(\n\t\tfunction()\n\t\t{\n\t\t\t{$$over}\n\t\t}, \n\t\tfunction()\n\t\t{\n\t\t\t{$$out}\n\t\t});\n
+
+register_class 'CI_Jquery', CI_Jquery
+module.exports = CI_Jquery@jquery_code_for_compile.push $event
 
 return $event
 }
@@ -184,8 +208,8 @@ return $event
 # @param	string	The code to execute
 # @return	string
 #
-global._keydown = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'keydown')
+exports._keydown = _keydown = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'keydown')
 	
 
 #  --------------------------------------------------------------------
@@ -200,8 +224,8 @@ global._keydown = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._keyup = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'keyup')
+exports._keyup = _keyup = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'keyup')
 	
 
 #  --------------------------------------------------------------------
@@ -216,8 +240,8 @@ global._keyup = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._load = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'load')
+exports._load = _load = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'load')
 	
 
 #  --------------------------------------------------------------------
@@ -232,8 +256,8 @@ global._load = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._mousedown = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'mousedown')
+exports._mousedown = _mousedown = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'mousedown')
 	
 
 #  --------------------------------------------------------------------
@@ -248,8 +272,8 @@ global._mousedown = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._mouseout = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'mouseout')
+exports._mouseout = _mouseout = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'mouseout')
 	
 
 #  --------------------------------------------------------------------
@@ -264,8 +288,8 @@ global._mouseout = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._mouseover = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'mouseover')
+exports._mouseover = _mouseover = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'mouseover')
 	
 
 #  --------------------------------------------------------------------
@@ -280,8 +304,8 @@ global._mouseover = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._mouseup = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'mouseup')
+exports._mouseup = _mouseup = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'mouseup')
 	
 
 #  --------------------------------------------------------------------
@@ -296,13 +320,13 @@ global._mouseup = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._output = ($array_js = '') ->
+exports._output = _output = ($array_js = '') ->
 	if not is_array($array_js)
 		$array_js = [$array_js]
 		
 	
-	for $js in as
-		@.jquery_code_for_compile.push \t$js\n
+	for $js in $array_js
+		@jquery_code_for_compile.push \t$js\n
 		
 	
 
@@ -318,8 +342,8 @@ global._output = ($array_js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._resize = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'resize')
+exports._resize = _resize = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'resize')
 	
 
 #  --------------------------------------------------------------------
@@ -334,8 +358,8 @@ global._resize = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._scroll = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'scroll')
+exports._scroll = _scroll = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'scroll')
 	
 
 #  --------------------------------------------------------------------
@@ -350,8 +374,8 @@ global._scroll = ($element = 'this', $js = '') ->
 # @param	string	The code to execute
 # @return	string
 #
-global._unload = ($element = 'this', $js = '') ->
-	return @._add_event($element, $js, 'unload')
+exports._unload = _unload = ($element = 'this', $js = '') ->
+	return @_add_event($element, $js, 'unload')
 	
 
 #  --------------------------------------------------------------------
@@ -367,8 +391,8 @@ global._unload = ($element = 'this', $js = '') ->
 # @param	string	- element
 # @return	string
 #
-global._addClass = ($element = 'this', $class = '') ->
-	$element = @._prep_element($element)
+exports._addClass = _addClass = ($element = 'this', $class = '') ->
+	$element = @_prep_element($element)
 	$str = $({$$element}).addClass(\"$class\");return $str
 }
 
@@ -385,13 +409,13 @@ global._addClass = ($element = 'this', $class = '') ->
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._animate = ($element = 'this', $params = {}, $speed = '', $extra = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._animate = _animate = ($element = 'this', $params = {}, $speed = '', $extra = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	$animations = "\t\t\t"
 	
-	for $value, $param in as
+	for $param, $value of $params
 		$animations+=$param + ': \'' + $value + '\', '
 		
 	
@@ -422,9 +446,9 @@ return $str
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._fadeIn = ($element = 'this', $speed = '', $callback = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._fadeIn = _fadeIn = ($element = 'this', $speed = '', $callback = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	if $callback isnt ''
 		$callback = , function(){\n{$$callback}\n}
@@ -447,9 +471,9 @@ return $str
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._fadeOut = ($element = 'this', $speed = '', $callback = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._fadeOut = _fadeOut = ($element = 'this', $speed = '', $callback = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	if $callback isnt ''
 		$callback = , function(){\n{$$callback}\n}
@@ -472,9 +496,9 @@ return $str
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._hide = ($element = 'this', $speed = '', $callback = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._hide = _hide = ($element = 'this', $speed = '', $callback = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	if $callback isnt ''
 		$callback = , function(){\n{$$callback}\n}
@@ -495,8 +519,8 @@ return $str
 # @param	string	- element
 # @return	string
 #
-global._removeClass = ($element = 'this', $class = '') ->
-	$element = @._prep_element($element)
+exports._removeClass = _removeClass = ($element = 'this', $class = '') ->
+	$element = @_prep_element($element)
 	$str = $({$$element}).removeClass(\"$class\");return $str
 }
 
@@ -513,9 +537,9 @@ global._removeClass = ($element = 'this', $class = '') ->
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._slideUp = ($element = 'this', $speed = '', $callback = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._slideUp = _slideUp = ($element = 'this', $speed = '', $callback = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	if $callback isnt ''
 		$callback = , function(){\n{$$callback}\n}
@@ -538,9 +562,9 @@ return $str
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._slideDown = ($element = 'this', $speed = '', $callback = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._slideDown = _slideDown = ($element = 'this', $speed = '', $callback = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	if $callback isnt ''
 		$callback = , function(){\n{$$callback}\n}
@@ -563,9 +587,9 @@ return $str
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._slideToggle = ($element = 'this', $speed = '', $callback = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._slideToggle = _slideToggle = ($element = 'this', $speed = '', $callback = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	if $callback isnt ''
 		$callback = , function(){\n{$$callback}\n}
@@ -586,8 +610,8 @@ return $str
 # @param	string	- element
 # @return	string
 #
-global._toggle = ($element = 'this') ->
-	$element = @._prep_element($element)
+exports._toggle = _toggle = ($element = 'this') ->
+	$element = @_prep_element($element)
 	$str = $({$$element}).toggle();return $str
 }
 
@@ -602,8 +626,8 @@ global._toggle = ($element = 'this') ->
 # @param	string	- element
 # @return	string
 #
-global._toggleClass = ($element = 'this', $class = '') ->
-	$element = @._prep_element($element)
+exports._toggleClass = _toggleClass = ($element = 'this', $class = '') ->
+	$element = @_prep_element($element)
 	$str = $({$$element}).toggleClass(\"$class\");return $str
 }
 
@@ -620,9 +644,9 @@ global._toggleClass = ($element = 'this', $class = '') ->
 # @param	string	- Javascript callback function
 # @return	string
 #
-global._show = ($element = 'this', $speed = '', $callback = '') ->
-	$element = @._prep_element($element)
-	$speed = @._validate_speed($speed)
+exports._show = _show = ($element = 'this', $speed = '', $callback = '') ->
+	$element = @_prep_element($element)
+	$speed = @_validate_speed($speed)
 	
 	if $callback isnt ''
 		$callback = , function(){\n{$$callback}\n}
@@ -647,17 +671,17 @@ return $str
 # @return	string
 #
 
-global._updater = ($container = 'this', $controller, $options = '') ->
-	$container = @._prep_element($container)
+exports._updater = _updater = ($container = 'this', $controller, $options = '') ->
+	$container = @_prep_element($container)
 	
-	$controller = if (strpos('://', $controller) is FALSE) then $controller else @.CI.config.site_url($controller)
+	$controller = if (strpos('://', $controller) is false) then $controller else @CI.config.site_url($controller)
 	
 	#  ajaxStart and ajaxStop are better choices here... but this is a stop gap
-	if @.CI.config.item('javascript_ajax_img') is ''
+	if @CI.config.item('javascript_ajax_img') is ''
 		$loading_notifier = "Loading..."
 		
 	else 
-		$loading_notifier = '<img src=\'' + @.CI.config.slash_item('base_url') + @.CI.config.item('javascript_ajax_img') + '\' alt=\'Loading\' />'
+		$loading_notifier = '<img src=\'' + @CI.config.slash_item('base_url') + @CI.config.item('javascript_ajax_img') + '\' alt=\'Loading\' />'
 		
 	
 	$updater = $($container).empty();\n#  anything that was in... get it out
@@ -687,14 +711,14 @@ global._updater = ($container = 'this', $controller, $options = '') ->
 # @param	string	plugin location
 # @return	string
 #
-global._zebraTables = ($class = '', $odd = 'odd', $hover = '') ->
+exports._zebraTables = _zebraTables = ($class = '', $odd = 'odd', $hover = '') ->
 	$class = if ($class isnt '') then '.' + $class else ''
 	
 	$zebra = \t\$(\"table{$$class} tbody tr:nth-child(even)\").addClass(\"{$$odd}\");
-@.jquery_code_for_compile.push $zebra
+@jquery_code_for_compile.push $zebra
 
 if $hover isnt ''
-	$hover = @.hover(table{$$class} tbody tr, "$(this).addClass('hover');", "$(this).removeClass('hover');")}
+	$hover = @hover(table{$$class} tbody tr, "$(this).addClass('hover');", "$(this).removeClass('hover');")}
 
 return $zebra
 }
@@ -714,7 +738,7 @@ return $zebra
 # @param	string	target
 # @return	string
 #
-global.corner = ($element = '', $corner_style = '') ->
+exports.corner = corner = ($element = '', $corner_style = '') ->
 	#  may want to make this configurable down the road
 	$corner_location = '/plugins/jquery.corner.js'
 	
@@ -722,7 +746,7 @@ global.corner = ($element = '', $corner_style = '') ->
 		$corner_style = '"' + $corner_style + '"'
 		
 	
-	return "$(" + @._prep_element($element) + ").corner(" + $corner_style + ");"
+	return "$(" + @_prep_element($element) + ").corner(" + $corner_style + ");"
 	
 
 #  --------------------------------------------------------------------
@@ -735,8 +759,8 @@ global.corner = ($element = '', $corner_style = '') ->
 # @access	public
 # @return	void
 #
-global.modal = ($src, $relative = FALSE) ->
-	@.jquery_code_for_load.push @.external($src, $relative)
+exports.modal = modal = ($src, $relative = false) ->
+	@jquery_code_for_load.push @external($src, $relative)
 	
 
 #  --------------------------------------------------------------------
@@ -749,8 +773,8 @@ global.modal = ($src, $relative = FALSE) ->
 # @access	public
 # @return	void
 #
-global.effect = ($src, $relative = FALSE) ->
-	@.jquery_code_for_load.push @.external($src, $relative)
+exports.effect = effect = ($src, $relative = false) ->
+	@jquery_code_for_load.push @external($src, $relative)
 	
 
 #  --------------------------------------------------------------------
@@ -763,8 +787,8 @@ global.effect = ($src, $relative = FALSE) ->
 # @access	public
 # @return	void
 #
-global.plugin = ($src, $relative = FALSE) ->
-	@.jquery_code_for_load.push @.external($src, $relative)
+exports.plugin = plugin = ($src, $relative = false) ->
+	@jquery_code_for_load.push @external($src, $relative)
 	
 
 #  --------------------------------------------------------------------
@@ -777,8 +801,8 @@ global.plugin = ($src, $relative = FALSE) ->
 # @access	public
 # @return	void
 #
-global.ui = ($src, $relative = FALSE) ->
-	@.jquery_code_for_load.push @.external($src, $relative)
+exports.ui = ui = ($src, $relative = false) ->
+	@jquery_code_for_load.push @external($src, $relative)
 	
 #  --------------------------------------------------------------------
 
@@ -790,11 +814,11 @@ global.ui = ($src, $relative = FALSE) ->
 # @access	public
 # @return	void
 #
-global.sortable = ($element, $options = {}) ->
+exports.sortable = sortable = ($element, $options = {}) ->
 	
 	if count($options) > 0
 		$sort_options = {}
-		for $v, $k in as
+		for $k, $v of $options
 			$sort_options.push "\n\t\t" + $k + ': ' + $v + ""
 			
 		$sort_options = implode(",", $sort_options)
@@ -803,7 +827,7 @@ global.sortable = ($element, $options = {}) ->
 		$sort_options = ''
 		
 	
-	return "$(" + @._prep_element($element) + ").sortable({" + $sort_options + "\n\t});"
+	return "$(" + @_prep_element($element) + ").sortable({" + $sort_options + "\n\t});"
 	
 
 #  --------------------------------------------------------------------
@@ -816,8 +840,8 @@ global.sortable = ($element, $options = {}) ->
 # @param	string	plugin location
 # @return	string
 #
-global.tablesorter = ($table = '', $options = '') ->
-	@.jquery_code_for_compile.push "\t$(" + @._prep_element($table) + ).tablesorter($options);\n
+exports.tablesorter = tablesorter = ($table = '', $options = '') ->
+	@jquery_code_for_compile.push "\t$(" + @_prep_element($table) + ).tablesorter($options);\n
 	
 
 #  --------------------------------------------------------------------
@@ -835,13 +859,13 @@ global.tablesorter = ($table = '', $options = '') ->
 # @param	string	The event to pass
 # @return	string
 #
-global._add_event = ($element, $js, $event) ->
+exports._add_event = _add_event = ($element, $js, $event) ->
 	if is_array($js)
 		$js = implode("\n\t\t", $js)
 		
 		
 	
-	$event = "\n\t$(" + @._prep_element($element) + ).{$$event}(function(){\n\t\t{$$js}\n\t});\n@.jquery_code_for_compile.push $event
+	$event = "\n\t$(" + @_prep_element($element) + ).{$$event}(function(){\n\t\t{$$js}\n\t});\n@jquery_code_for_compile.push $event
 return $event
 }
 
@@ -856,24 +880,24 @@ return $event
 # @access	private
 # @return	string
 #
-global._compile = ($view_var = 'script_foot', $script_tags = TRUE) ->
+exports._compile = _compile = ($view_var = 'script_foot', $script_tags = true) ->
 	#  External references
-	$external_scripts = implode('', @.jquery_code_for_load)
-	@.CI.load.vars('library_src':$external_scripts)
+	$external_scripts = implode('', @jquery_code_for_load)
+	@CI.load.vars('library_src':$external_scripts)
 	
-	if count(@.jquery_code_for_compile) is 0
+	if count(@jquery_code_for_compile) is 0
 		#  no inline references, let's just return
 		return 
 		
 	
 	#  Inline references
 	$script = '$(document).ready(function() {' + "\n"
-	$script+=implode('', @.jquery_code_for_compile)
+	$script+=implode('', @jquery_code_for_compile)
 	$script+='});'
 	
-	$output = if ($script_tags is FALSE) then $script else @.inline($script)
+	$output = if ($script_tags is false) then $script else @inline($script)
 	
-	@.CI.load.vars($view_var:$output)
+	@CI.load.vars($view_var:$output)
 	
 	
 
@@ -887,8 +911,8 @@ global._compile = ($view_var = 'script_foot', $script_tags = TRUE) ->
 # @access	public
 # @return	void
 #
-global._clear_compile =  ->
-	@.jquery_code_for_compile = {}
+exports._clear_compile = _clear_compile =  ->
+	@jquery_code_for_compile = {}
 	
 
 #  --------------------------------------------------------------------
@@ -901,14 +925,14 @@ global._clear_compile =  ->
 # @access	private
 # @return	string
 #
-global._document_ready = ($js) ->
+exports._document_ready = _document_ready = ($js) ->
 	if not is_array($js)
 		$js = [$js]
 		
 		
 	
-	for $script in as
-		@.jquery_code_for_compile.push $script
+	for $script in $js
+		@jquery_code_for_compile.push $script
 		
 	
 
@@ -923,9 +947,9 @@ global._document_ready = ($js) ->
 # @param	string
 # @return	string
 #
-global.script = ($library_src = '', $relative = FALSE) ->
-	$library_src = @.external($library_src, $relative)
-	@.jquery_code_for_load.push $library_src
+exports.script = script = ($library_src = '', $relative = false) ->
+	$library_src = @external($library_src, $relative)
+	@jquery_code_for_load.push $library_src
 	return $library_src
 	
 
@@ -942,7 +966,7 @@ global.script = ($library_src = '', $relative = FALSE) ->
 # @param	string
 # @return	string
 #
-global._prep_element = ($element) ->
+exports._prep_element = _prep_element = ($element) ->
 	if $element isnt 'this'
 		$element = '"' + $element + '"'
 		
@@ -961,7 +985,7 @@ global._prep_element = ($element) ->
 # @param	string
 # @return	string
 #
-global._validate_speed = ($speed) ->
+exports._validate_speed = _validate_speed = ($speed) ->
 	if in_array($speed, ['slow', 'normal', 'fast'])
 		$speed = '"' + $speed + '"'
 		

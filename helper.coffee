@@ -24,15 +24,15 @@ path            = require('path')                       # File path utilities
 #	@param	string	The path being checked
 # @returns true or false
 #
-exports.is_dir = (path) ->
+exports.is_dir = ($path) ->
 
   try
-    stats = fs.statSync(path)
-    b = stats.isDirectory()
+    $stats = fs.statSync($path)
+    $b = $stats.isDirectory()
   catch ex
-    b = false
+    $b = false
   finally
-    return b
+    return $b
 
 ## --------------------------------------------------------------------
 
@@ -42,10 +42,10 @@ exports.is_dir = (path) ->
 #	@param	string	The path being checked
 # @returns the canonicalized absolute pathname
 #
-exports.realpath = (path) ->
+exports.realpath = ($path) ->
 
-  if fs.existsSync(path)
-    return fs.realpathSync(path)
+  if fs.existsSync($path)
+    return fs.realpathSync($path)
   else
     return false
 
@@ -57,9 +57,9 @@ exports.realpath = (path) ->
 #	@param	string	The path being checked
 # @returns true or false
 #
-exports.file_exists = (path) ->
+exports.file_exists = ($path) ->
 
-  return fs.existsSync(path)
+  fs.existsSync($path)
 
 ## --------------------------------------------------------------------
 
@@ -70,16 +70,14 @@ exports.file_exists = (path) ->
 #	@param	object	array to merge
 # @returns merged hash
 #
-exports.array_merge = (array1, array2) ->
+exports.array_merge = ($array1, $array2) ->
 
-  #ret = Object.create(__proto__: array1)
-  #ret = {__proto__: array1}
-  ret = {}
-  for key, item of array1
-    ret[key] = item
-  for key, item of array2
-    ret[key] = item
-  return ret
+  $ret = {}
+  for $key, $item of $array1
+    $ret[$key] = $item
+  for $key, $item of $array2
+    $ret[$key] = $item
+  $ret
 
 ## --------------------------------------------------------------------
 
@@ -90,8 +88,8 @@ exports.array_merge = (array1, array2) ->
 #	@param	string	chars list
 # @returns string with chars removed
 #
-exports.trim = (str, chars) ->
-  return ltrim(rtrim(str, chars), chars)
+exports.trim = ($str, $chars) ->
+  ltrim(rtrim($str, $chars), $chars)
 
 ## --------------------------------------------------------------------
 
@@ -102,9 +100,9 @@ exports.trim = (str, chars) ->
 #	@param	string	chars list
 # @returns string with chars removed
 #
-exports.ltrim = ltrim = (str, chars) ->
-  chars = chars || "\s";
-  return str.replace(new RegExp("^[" + chars + "]+", "g"), "")
+exports.ltrim = ltrim = ($str, $chars) ->
+  $chars = $chars || "\s";
+  $str.replace(new RegExp("^[" + $chars + "]+", "g"), "")
 
 ## --------------------------------------------------------------------
 
@@ -115,9 +113,9 @@ exports.ltrim = ltrim = (str, chars) ->
 #	@param	string	chars list
 # @returns string with chars removed
 #
-exports.rtrim = rtrim = (str, chars) ->
-  chars = chars || "\s";
-  return str.replace(new RegExp("[" + chars + "]+$", "g"), "")
+exports.rtrim = rtrim = ($str, $chars) ->
+  $chars = $chars || "\s";
+  $str.replace(new RegExp("[" + $chars + "]+$", "g"), "")
 
 ## --------------------------------------------------------------------
 
@@ -127,19 +125,124 @@ exports.rtrim = rtrim = (str, chars) ->
 #	@param	string	sting to change
 # @returns changed string
 #
-exports.ucfirst = (str) ->
-  return str.charAt(0).toUpperCase() + str.substr(1)
+exports.ucfirst = ($str) ->
+  $str.charAt(0).toUpperCase() + $str.substr(1)
 
-exports.dirname = (str) ->
-  return path.dirname(str)
+exports.dirname = ($str) ->
+  path.dirname($str)
 
-exports.strrchr = (haystack, needle) ->
-  pos = 0
-  if typeof needle isnt 'string'
-    needle = String.fromCharCode(parseInt(needle, 10))
+exports.strrchr = ($haystack, $needle) ->
 
-  needle = needle.charAt(0)
-  pos = haystack.lastIndexOf(needle)
-  if pos is -1 then return false
+  if typeof $needle isnt 'string'
+    $needle = String.fromCharCode(parseInt($needle, 10))
 
-  return haystack.substr(pos)
+  $needle = $needle.charAt(0)
+  $pos = $haystack.lastIndexOf($needle)
+  if $pos is -1 then return false
+
+  $haystack.substr($pos)
+
+exports.count = ($var) ->
+
+  if typeof $var is 'string' or typeof $var is 'number' or typeof $var is 'boolean'
+    return 1
+
+  if typeof $var isnt 'object'
+    return 0
+
+  Object.keys($var).length
+
+exports.is_string = ($var) ->
+
+  if typeof $var is 'string' then true else false
+
+exports.is_array = ($var) ->
+
+  if typeof $var is 'object' then true else false
+
+exports.is_null = ($var) ->
+
+  if $var is null or typeof $var is 'undefined' then true else false
+
+
+exports.strpos = ($haystack, $needle, $offset = 0) ->
+
+  if typeof $needle isnt 'string'
+    $needle = String.fromCharCode(parseInt($needle, 10))
+
+  $pos = $haystack.indexOf($needle, $offset)
+  if $pos is -1 then false else $pos
+
+exports.strrpos = ($haystack, $needle, $offset = 0) ->
+
+  if typeof $needle isnt 'string'
+    $needle = String.fromCharCode(parseInt($needle, 10))
+
+  $pos = $haystack.lastIndexOf($needle, $offset)
+  if $pos is -1 then false else $pos
+
+exports.substr = ($string, $start, $length) ->
+
+  $pos = $string.substr($start, $length)
+  if $pos is -1 then false else $pos
+
+exports.in_array = ($needle, $haystack, $strict = false) ->
+
+  $pos = $haystack.indexOf($needle)
+  if $pos is -1 then return false
+  if $strict
+    if typeof $needle is typeof $haystack[$pos] then $pos else false
+  else
+    $pos
+
+
+exports.strtolower = ($str) ->
+  $str.toLowerCase()
+
+exports._classes = _classes = {}
+exports.class_exists = ($class_name) ->
+  _classes[$class_name]?
+
+
+exports.is_object = ($var) ->
+
+  if typeof $var is 'object' then true else false
+
+exports.array_unshift = ($array, $var...) ->
+
+  Array::unshift.apply($array, $var)
+
+exports.array_shift = ($array) ->
+
+  $array.shift()
+
+exports.explode = ($delimiter, $string, $limit) ->
+
+  $string.split($delimiter, $limit)
+
+exports.implode = ($glue, $pieces = null) ->
+
+  if $pieces = null
+    $pieces = $glue
+    $glue = ''
+
+  $pieces.join($glue)
+
+exports.str_replace = ($search, $replace, $subject) ->
+
+  $subject.replace($search, $replace)
+
+
+exports.exit = exit = ($status = 0) ->
+
+  if typeof $status is 'number'
+    process.exit $status
+  else
+    console.log $status
+    process.exit 1
+
+exports.die = exit
+
+exports.is_array = ($var) ->
+
+  Array.isArray($var)

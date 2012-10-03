@@ -16,7 +16,7 @@
 #
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{array_merge, count, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 
@@ -47,6 +47,7 @@ express         = require('express')                    # Express 3.0 Framework
 fs              = require('fs')                         # Standard POSIX file i/o
 path            = require('path')                       # File path utilities
 redis           = require('redis')                      # Redis client library.
+querystring     = require('querystring')
 Sequelize       = require("sequelize")                  # Sequelize 1.5 ORM
 url             = require('url')                        # Utilities for URL resolution and parsing.
 

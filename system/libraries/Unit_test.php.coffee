@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Unit_test.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, count, debug_backtrace, defined, function_exists, get_instance, gettype, in_array, is_array, is_bool, is_null, lang, language, line, load, preg_match, str_replace, strtolower}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -28,17 +49,17 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_Unit_test
 	
-	$active: TRUE
-	$results: {}
-	$strict: FALSE
-	$_template: NULL
-	$_template_rows: NULL
-	$_test_items_visible: {}
+	active: true
+	results: {}
+	strict: false
+	_template: null
+	_template_rows: null
+	_test_items_visible: {}
 	
 	__construct()
 	{
 	#  These are the default items visible when a test is run.
-	@._test_items_visible = [
+	@_test_items_visible = [
 		'test_name'
 		'test_datatype'
 		'res_datatype'
@@ -62,9 +83,9 @@ class CI_Unit_test
 	# @param	array
 	# @return	void
 	#
-	set_test_items : ($items = {}) =>
+	set_test_items : ($items = {}) ->
 		if not empty($items) and is_array($items)
-			@._test_items_visible = $items
+			@_test_items_visible = $items
 			
 		
 	
@@ -81,21 +102,21 @@ class CI_Unit_test
 	# @param	string
 	# @return	string
 	#
-	run : ($test, $expected = TRUE, $test_name = 'undefined', $notes = '') =>
-		if @.active is FALSE
-			return FALSE
+	run : ($test, $expected = true, $test_name = 'undefined', $notes = '') ->
+		if @active is false
+			return false
 			
 		
-		if in_array($expected, ['is_object', 'is_string', 'is_bool', 'is_true', 'is_false', 'is_int', 'is_numeric', 'is_float', 'is_double', 'is_array', 'is_null'], TRUE)
+		if in_array($expected, ['is_object', 'is_string', 'is_bool', 'is_true', 'is_false', 'is_int', 'is_numeric', 'is_float', 'is_double', 'is_array', 'is_null'], true)
 			$expected = str_replace('is_float', 'is_double', $expected)
-			$result = if ($expected($test)) then TRUE else FALSE
+			$result = if ($expected($test)) then true else false
 			$extype = str_replace(['true', 'false'], 'bool', str_replace('is_', '', $expected))
 			
 		else 
-			if @.strict is TRUE then $result = if ($test is $expected) then TRUE else FALSEelse $result = if ($test is $expected) then TRUE else FALSE$extype = gettype($expected)}$back = @._backtrace()$report.push 
+			if @strict is true then $result = if ($test is $expected) then true else falseelse $result = if ($test is $expected) then true else false$extype = gettype($expected)}$back = @_backtrace()$report.push 
 				'test_name':$test_name
-				'test_datatype':gettype($test, 'res_datatype':$extype, 'result':($result is TRUE) then 'passed' else 'failed', 'file':$back['file'], 'line':$back['line'], 'notes':$notes)@.results.push $report
-		return (@.report(@.result($report)))
+				'test_datatype':gettype($test, 'res_datatype':$extype, 'result':($result is true) then 'passed' else 'failed', 'file':$back['file'], 'line':$back['line'], 'notes':$notes)@results.push $report
+		return (@report(@result($report)))
 		
 	
 	#  --------------------------------------------------------------------
@@ -108,21 +129,21 @@ class CI_Unit_test
 	# @access	public
 	# @return	string
 	#
-	report : ($result = {}) =>
+	report : ($result = {}) ->
 		if count($result) is 0
-			$result = @.result()
+			$result = @result()
 			
 		
 		$CI = get_instance()
 		$CI.load.language('unit_test')
 		
-		@._parse_template()
+		@_parse_template()
 		
 		$r = ''
-		for $res in as
+		for $res in $result
 			$table = ''
 			
-			for $val, $key in as
+			for $key, $val of $res
 				if $key is $CI.lang.line('ut_result')
 					if $val is $CI.lang.line('ut_passed')
 						$val = '<span style="color: #0C0;">' + $val + '</span>'
@@ -132,13 +153,13 @@ class CI_Unit_test
 						
 					
 				
-				$temp = @._template_rows
+				$temp = @_template_rows
 				$temp = str_replace('{item}', $key, $temp)
 				$temp = str_replace('{result}', $val, $temp)
 				$table+=$temp
 				
 			
-			$r+=str_replace('{rows}', $table, @._template)
+			$r+=str_replace('{rows}', $table, @_template)
 			
 		
 		return $r
@@ -155,8 +176,8 @@ class CI_Unit_test
 	# @param	bool
 	# @return	null
 	#
-	use_strict : ($state = TRUE) =>
-		@.strict = if ($state is FALSE) then FALSE else TRUE
+	use_strict : ($state = true) ->
+		@strict = if ($state is false) then false else true
 		
 	
 	#  --------------------------------------------------------------------
@@ -170,8 +191,8 @@ class CI_Unit_test
 	# @param	bool
 	# @return	null
 	#
-	active : ($state = TRUE) =>
-		@.active = if ($state is FALSE) then FALSE else TRUE
+	active : ($state = true) ->
+		@active = if ($state is false) then false else true
 		
 	
 	#  --------------------------------------------------------------------
@@ -184,32 +205,32 @@ class CI_Unit_test
 	# @access	public
 	# @return	array
 	#
-	result : ($results = {}) =>
+	result : ($results = {}) ->
 		$CI = get_instance()
 		$CI.load.language('unit_test')
 		
 		if count($results) is 0
-			$results = @.results
+			$results = @results
 			
 		
 		$retval = {}
-		for $result in as
+		for $result in $results
 			$temp = {}
-			for $val, $key in as
-				if not in_array($key, @._test_items_visible)
+			for $key, $val of $result
+				if not in_array($key, @_test_items_visible)
 					continue
 					
 				
 				if is_array($val)
-					for $v, $k in as
-						if FALSE isnt ($line = $CI.lang.line(strtolower('ut_' + $v)))
+					for $k, $v of $val
+						if false isnt ($line = $CI.lang.line(strtolower('ut_' + $v)))
 							$v = $line
 							
 						$temp[$CI.lang.line('ut_' + $k)] = $v
 						
 					
 				else 
-					if FALSE isnt ($line = $CI.lang.line(strtolower('ut_' + $val)))
+					if false isnt ($line = $CI.lang.line(strtolower('ut_' + $val)))
 						$val = $line
 						
 					$temp[$CI.lang.line('ut_' + $key)] = $val
@@ -233,8 +254,8 @@ class CI_Unit_test
 	# @param	string
 	# @return	void
 	#
-	set_template : ($template) =>
-		@._template = $template
+	set_template : ($template) ->
+		@_template = $template
 		
 	
 	#  --------------------------------------------------------------------
@@ -247,7 +268,7 @@ class CI_Unit_test
 	# @access	private
 	# @return	array
 	#
-	_backtrace :  =>
+	_backtrace :  ->
 		if function_exists('debug_backtrace')
 			$back = debug_backtrace()
 			
@@ -267,15 +288,15 @@ class CI_Unit_test
 	# @access	private
 	# @return	string
 	#
-	_default_template :  =>
-		@._template = "\n" + '<table style="width:100%; font-size:small; margin:10px 0; border-collapse:collapse; border:1px solid #CCC;">'
-		@._template+='{rows}'
-		@._template+="\n" + '</table>'
+	_default_template :  ->
+		@_template = "\n" + '<table style="width:100%; font-size:small; margin:10px 0; border-collapse:collapse; border:1px solid #CCC;">'
+		@_template+='{rows}'
+		@_template+="\n" + '</table>'
 		
-		@._template_rows = "\n\t" + '<tr>'
-		@._template_rows+="\n\t\t" + '<th style="text-align: left; border-bottom:1px solid #CCC;">{item}</th>'
-		@._template_rows+="\n\t\t" + '<td style="border-bottom:1px solid #CCC;">{result}</td>'
-		@._template_rows+="\n\t" + '</tr>'
+		@_template_rows = "\n\t" + '<tr>'
+		@_template_rows+="\n\t\t" + '<th style="text-align: left; border-bottom:1px solid #CCC;">{item}</th>'
+		@_template_rows+="\n\t\t" + '<td style="border-bottom:1px solid #CCC;">{result}</td>'
+		@_template_rows+="\n\t" + '</tr>'
 		
 	
 	#  --------------------------------------------------------------------
@@ -288,26 +309,29 @@ class CI_Unit_test
 	# @access	private
 	# @return	void
 	#
-	_parse_template :  =>
-		if not is_null(@._template_rows)
+	_parse_template :  ->
+		if not is_null(@_template_rows)
 			return 
 			
 		
-		if is_null(@._template)
-			@._default_template()
+		if is_null(@_template)
+			@_default_template()
 			return 
 			
 		
-		if not preg_match("/\{rows\}(.*?)\{\/rows\}/si", @._template, $match)
-			@._default_template()
+		if not preg_match("/\{rows\}(.*?)\{\/rows\}/si", @_template, $match)
+			@_default_template()
 			return 
 			
 		
-		@._template_rows = $match['1']
-		@._template = str_replace($match['0'], '{rows}', @._template)
+		@_template_rows = $match['1']
+		@_template = str_replace($match['0'], '{rows}', @_template)
 		
 	
 	
+
+register_class 'CI_Unit_test', CI_Unit_test
+module.exports = CI_Unit_test
 #  END Unit_test Class
 
 #
@@ -317,11 +341,11 @@ class CI_Unit_test
 # @access	private
 # @return	bool
 #
-global.is_true = ($test) ->
-	return if (is_bool($test) and $test is TRUE) then TRUE else FALSE
+exports.is_true = is_true = ($test) ->
+	return if (is_bool($test) and $test is true) then true else false
 	
-global.is_false = ($test) ->
-	return if (is_bool($test) and $test is FALSE) then TRUE else FALSE
+exports.is_false = is_false = ($test) ->
+	return if (is_bool($test) and $test is false) then true else false
 	
 
 

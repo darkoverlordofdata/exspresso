@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  sqlite_driver.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, database, db_debug, dbprefix, defined, display_error, escape_like_str, implode, is_array, num_rows, numrows, preg_replace, query, row, simple_query, sprintf, sqlite_changes, sqlite_close, sqlite_error_string, sqlite_escape_string, sqlite_last_error, sqlite_last_insert_rowid, sqlite_libversion, sqlite_open, sqlite_popen, sqlite_query, str_replace, strpos, trans_enabled}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -30,24 +51,24 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_sqlite_driverextends CI_DB
+class CI_DB_sqlite_driver extends CI_DB
 	
-	$dbdriver: 'sqlite'
+	dbdriver: 'sqlite'
 	
 	#  The character used to escape with - not needed for SQLite
-	$_escape_char: ''
+	_escape_char: ''
 	
 	#  clause and character used for LIKE escape sequences
-	$_like_escape_str: " ESCAPE '%s' "
-	$_like_escape_chr: '!'
+	_like_escape_str: " ESCAPE '%s' "
+	_like_escape_chr: '!'
 	
 	#
 	# The syntax to count rows is slightly different across different
 	# database engines, so this string appears in each driver and is
 	# used for the count_all() and count_all_results() functions.
 	#
-	$_count_string: "SELECT COUNT(*) AS "
-	$_random_keyword: ' Random()'#  database specific random keyword
+	_count_string: "SELECT COUNT(*) AS "
+	_random_keyword: ' Random()'#  database specific random keyword
 	
 	#
 	# Non-persistent database connection
@@ -55,14 +76,14 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_connect :  =>
-		if not $conn_id = sqlite_open(@.database, FILE_WRITE_MODE, $error)) then log_message('error', $error)
+	db_connect :  ->
+		if not $conn_id = sqlite_open(@database, FILE_WRITE_MODE, $error)) then log_message('error', $error)
 		
-		if @.db_debug
-			@.display_error($error, '', TRUE)
+		if @db_debug
+			@display_error($error, '', true)
 			
 		
-		return FALSE
+		return false
 		}
 		
 		return $conn_id
@@ -76,14 +97,14 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_pconnect :  =>
-		if not $conn_id = sqlite_popen(@.database, FILE_WRITE_MODE, $error)) then log_message('error', $error)
+	db_pconnect :  ->
+		if not $conn_id = sqlite_popen(@database, FILE_WRITE_MODE, $error)) then log_message('error', $error)
 		
-		if @.db_debug
-			@.display_error($error, '', TRUE)
+		if @db_debug
+			@display_error($error, '', true)
 			
 		
-		return FALSE
+		return false
 		}
 		
 		return $conn_id
@@ -100,7 +121,7 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	public
 	# @return	void
 	#
-	reconnect :  =>
+	reconnect :  ->
 		#  not implemented in SQLite
 		
 	
@@ -112,8 +133,8 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_select :  =>
-		return TRUE
+	db_select :  ->
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -126,9 +147,9 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string
 	# @return	resource
 	#
-	db_set_charset : ($charset, $collation) =>
+	db_set_charset : ($charset, $collation) ->
 		#  @todo - add support if needed
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -139,7 +160,7 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	public
 	# @return	string
 	#
-	_version :  =>
+	_version :  ->
 		return sqlite_libversion()
 		
 	
@@ -152,9 +173,9 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string	an SQL query
 	# @return	resource
 	#
-	_execute : ($sql) =>
-		$sql = @._prep_query($sql)
-		return sqlite_query(@.conn_id, $sql)
+	_execute : ($sql) ->
+		$sql = @_prep_query($sql)
+		return sqlite_query(@conn_id, $sql)
 		
 	
 	#  --------------------------------------------------------------------
@@ -168,7 +189,7 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string	an SQL query
 	# @return	string
 	#
-	_prep_query : ($sql) =>
+	_prep_query : ($sql) ->
 		return $sql
 		
 	
@@ -180,23 +201,23 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_begin : ($test_mode = FALSE) =>
-		if not @.trans_enabled
-			return TRUE
+	trans_begin : ($test_mode = false) ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
 		#  Reset the transaction failure flag.
 		#  If the $test_mode flag is set to TRUE transactions will be rolled back
 		#  even if the queries produce a successful result.
-		@._trans_failure = if ($test_mode is TRUE) then TRUE else FALSE
+		@_trans_failure = if ($test_mode is true) then true else false
 		
-		@.simple_query('BEGIN TRANSACTION')
-		return TRUE
+		@simple_query('BEGIN TRANSACTION')
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -207,18 +228,18 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_commit :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_commit :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		@.simple_query('COMMIT')
-		return TRUE
+		@simple_query('COMMIT')
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -229,18 +250,18 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_rollback :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_rollback :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		@.simple_query('ROLLBACK')
-		return TRUE
+		@simple_query('ROLLBACK')
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -253,10 +274,10 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	bool	whether or not the string will be used in a LIKE condition
 	# @return	string
 	#
-	escape_str : ($str, $like = FALSE) =>
+	escape_str : ($str, $like = false) ->
 		if is_array($str)
-			for $val, $key in as
-				$str[$key] = @.escape_str($val, $like)
+			for $key, $val of $str
+				$str[$key] = @escape_str($val, $like)
 				
 			
 			return $str
@@ -265,9 +286,9 @@ class CI_DB_sqlite_driverextends CI_DB
 		$str = sqlite_escape_string($str)
 		
 		#  escape LIKE condition wildcards
-		if $like is TRUE
-			$str = str_replace(['%', '_', @._like_escape_chr], 
-			[@._like_escape_chr + '%', @._like_escape_chr + '_', @._like_escape_chr + @._like_escape_chr], 
+		if $like is true
+			$str = str_replace(['%', '_', @_like_escape_chr], 
+			[@_like_escape_chr + '%', @_like_escape_chr + '_', @_like_escape_chr + @_like_escape_chr], 
 			$str)
 			
 		
@@ -282,8 +303,8 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	public
 	# @return	integer
 	#
-	affected_rows :  =>
-		return sqlite_changes(@.conn_id)
+	affected_rows :  ->
+		return sqlite_changes(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -294,8 +315,8 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	public
 	# @return	integer
 	#
-	insert_id :  =>
-		return sqlite_last_insert_rowid(@.conn_id)
+	insert_id :  ->
+		return sqlite_last_insert_rowid(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -310,12 +331,12 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string
 	# @return	string
 	#
-	count_all : ($table = '') =>
+	count_all : ($table = '') ->
 		if $table is ''
 			return 0
 			
 		
-		$query = @.query(@._count_string + @._protect_identifiers('numrows') + " FROM " + @._protect_identifiers($table, TRUE, NULL, FALSE))
+		$query = @query(@_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false))
 		
 		if $query.num_rows() is 0
 			return 0
@@ -336,11 +357,11 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	boolean
 	# @return	string
 	#
-	_list_tables : ($prefix_limit = FALSE) =>
+	_list_tables : ($prefix_limit = false) ->
 		$sql = "SELECT name from sqlite_master WHERE type='table'"
 		
-		if $prefix_limit isnt FALSE and @.dbprefix isnt ''
-			$sql+=" AND 'name' LIKE '" + @.escape_like_str(@.dbprefix) + "%' " + sprintf(@._like_escape_str, @._like_escape_chr)
+		if $prefix_limit isnt false and @dbprefix isnt ''
+			$sql+=" AND 'name' LIKE '" + @escape_like_str(@dbprefix) + "%' " + sprintf(@_like_escape_str, @_like_escape_chr)
 			
 		return $sql
 		
@@ -356,9 +377,9 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string	the table name
 	# @return	string
 	#
-	_list_columns : ($table = '') =>
+	_list_columns : ($table = '') ->
 		#  Not supported
-		return FALSE
+		return false
 		
 	
 	#  --------------------------------------------------------------------
@@ -372,7 +393,7 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string	the table name
 	# @return	object
 	#
-	_field_data : ($table) =>
+	_field_data : ($table) ->
 		return "SELECT * FROM " + $table + " LIMIT 1"
 		
 	
@@ -384,8 +405,8 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	private
 	# @return	string
 	#
-	_error_message :  =>
-		return sqlite_error_string(sqlite_last_error(@.conn_id))
+	_error_message :  ->
+		return sqlite_error_string(sqlite_last_error(@conn_id))
 		
 	
 	#  --------------------------------------------------------------------
@@ -396,8 +417,8 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @access	private
 	# @return	integer
 	#
-	_error_number :  =>
-		return sqlite_last_error(@.conn_id)
+	_error_number :  ->
+		return sqlite_last_error(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -411,29 +432,29 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string
 	# @return	string
 	#
-	_escape_identifiers : ($item) =>
-		if @._escape_char is ''
+	_escape_identifiers : ($item) ->
+		if @_escape_char is ''
 			return $item
 			
 		
-		for $id in as
-			if strpos($item, '.' + $id) isnt FALSE
-				$str = @._escape_char + str_replace('.', @._escape_char + '.', $item)
+		for $id in @_reserved_identifiers
+			if strpos($item, '.' + $id) isnt false
+				$str = @_escape_char + str_replace('.', @_escape_char + '.', $item)
 				
 				#  remove duplicates if the user already included the escape
-				return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+				return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 				
 			
 		
-		if strpos($item, '.') isnt FALSE
-			$str = @._escape_char + str_replace('.', @._escape_char + '.' + @._escape_char, $item) + @._escape_char
+		if strpos($item, '.') isnt false
+			$str = @_escape_char + str_replace('.', @_escape_char + '.' + @_escape_char, $item) + @_escape_char
 			
 		else 
-			$str = @._escape_char + $item + @._escape_char
+			$str = @_escape_char + $item + @_escape_char
 			
 		
 		#  remove duplicates if the user already included the escape
-		return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+		return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 		
 	
 	#  --------------------------------------------------------------------
@@ -448,7 +469,7 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	type
 	# @return	type
 	#
-	_from_tables : ($tables) =>
+	_from_tables : ($tables) ->
 		if not is_array($tables)
 			$tables = [$tables]
 			
@@ -469,7 +490,7 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	array	the insert values
 	# @return	string
 	#
-	_insert : ($table, $keys, $values) =>
+	_insert : ($table, $keys, $values) ->
 		return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
 		
 	
@@ -488,8 +509,8 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	array	the limit clause
 	# @return	string
 	#
-	_update : ($table, $values, $where, $orderby = {}, $limit = FALSE) =>
-		for $val, $key in as
+	_update : ($table, $values, $where, $orderby = {}, $limit = false) ->
+		for $key, $val of $values
 			$valstr.push $key + " = " + $val
 			
 		
@@ -520,8 +541,8 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string	the table name
 	# @return	string
 	#
-	_truncate : ($table) =>
-		return @._delete($table)
+	_truncate : ($table) ->
+		return @_delete($table)
 		
 	
 	#  --------------------------------------------------------------------
@@ -537,12 +558,12 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	string	the limit clause
 	# @return	string
 	#
-	_delete : ($table, $where = {}, $like = {}, $limit = FALSE) =>
+	_delete : ($table, $where = {}, $like = {}, $limit = false) ->
 		$conditions = ''
 		
 		if count($where) > 0 or count($like) > 0
 			$conditions = "\nWHERE "
-			$conditions+=implode("\n", @.ar_where)
+			$conditions+=implode("\n", @ar_where)
 			
 			if count($where) > 0 and count($like) > 0
 				$conditions+=" AND "
@@ -568,7 +589,7 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	integer	the offset value
 	# @return	string
 	#
-	_limit : ($sql, $limit, $offset) =>
+	_limit : ($sql, $limit, $offset) ->
 		if $offset is 0
 			$offset = ''
 			
@@ -588,12 +609,15 @@ class CI_DB_sqlite_driverextends CI_DB
 	# @param	resource
 	# @return	void
 	#
-	_close : ($conn_id) =>
+	_close : ($conn_id) ->
 		sqlite_close($conn_id)
 		
 	
 	
 	
+
+register_class 'CI_DB_sqlite_driver', CI_DB_sqlite_driver
+module.exports = CI_DB_sqlite_driver
 
 
 #  End of file sqlite_driver.php 

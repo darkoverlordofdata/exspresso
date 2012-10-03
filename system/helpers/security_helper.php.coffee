@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  security_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{defined, function_exists, get_instance, md5, preg_replace, security, sha1, str_replace}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -36,7 +57,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	string
 #
 if not function_exists('xss_clean')
-	global.xss_clean = ($str, $is_image = FALSE) ->
+	exports.xss_clean = xss_clean = ($str, $is_image = false) ->
 		$CI = get_instance()
 		return $CI.security.xss_clean($str, $is_image)
 		
@@ -52,7 +73,7 @@ if not function_exists('xss_clean')
 # @return	string
 #
 if not function_exists('sanitize_filename')
-	global.sanitize_filename = ($filename) ->
+	exports.sanitize_filename = sanitize_filename = ($filename) ->
 		$CI = get_instance()
 		return $CI.security.sanitize_filename($filename)
 		
@@ -68,7 +89,7 @@ if not function_exists('sanitize_filename')
 # @return	string
 #
 if not function_exists('do_hash')
-	global.do_hash = ($str, $type = 'sha1') ->
+	exports.do_hash = do_hash = ($str, $type = 'sha1') ->
 		if $type is 'sha1'
 			return sha1($str)
 			
@@ -88,7 +109,7 @@ if not function_exists('do_hash')
 # @return	string
 #
 if not function_exists('strip_image_tags')
-	global.strip_image_tags = ($str) ->
+	exports.strip_image_tags = strip_image_tags = ($str) ->
 		$str = preg_replace("#<img\s+.*?src\s*=\s*[\"'](.+?)[\"'].*?\>#", "\\1", $str)
 		$str = preg_replace("#<img\s+.*?src\s*=\s*(.+?).*?\>#", "\\1", $str)
 		
@@ -106,7 +127,7 @@ if not function_exists('strip_image_tags')
 # @return	string
 #
 if not function_exists('encode_php_tags')
-	global.encode_php_tags = ($str) ->
+	exports.encode_php_tags = encode_php_tags = ($str) ->
 		return str_replace(['<?php', '<?PHP', '<?', '?>'], ['&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'], $str)
 		
 	

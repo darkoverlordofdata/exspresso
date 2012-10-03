@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  cookie_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{cookie, defined, function_exists, get_instance, input}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -43,7 +64,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	void
 #
 if not function_exists('set_cookie')
-	global.set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = FALSE) ->
+	exports.set_cookie = set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
 		#  Set the config file options
 		$CI = get_instance()
 		$CI.input.set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure)
@@ -61,7 +82,7 @@ if not function_exists('set_cookie')
 # @return	mixed
 #
 if not function_exists('get_cookie')
-	global.get_cookie = ($index = '', $xss_clean = FALSE) ->
+	exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
 		$CI = get_instance()
 		
 		$prefix = ''
@@ -86,7 +107,7 @@ if not function_exists('get_cookie')
 # @return	void
 #
 if not function_exists('delete_cookie')
-	global.delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
+	exports.delete_cookie = delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
 		set_cookie($name, '', '', $domain, $path, $prefix)
 		
 	

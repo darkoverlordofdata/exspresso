@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Cache_memcached.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{Memcached, _default_options, _setup_memcached, add, addServer, array_key_exists, cache_info, clean, config, count, defined, delete, extension_loaded, flush, get, getStats, get_instance, get_metadata, is_array, is_supported, load, save, time}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -25,11 +46,11 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link
 #
 
-class CI_Cache_memcachedextends CI_Driver
+class CI_Cache_memcached extends CI_Driver
 	
-	$_memcached: {}#  Holds the memcached object
+	_memcached: {}#  Holds the memcached object
 	
-	$_memcache_conf: 
+	_memcache_conf: 
 		'default':
 			'default_host':'127.0.0.1'
 			'default_port':11211
@@ -47,9 +68,9 @@ class CI_Cache_memcachedextends CI_Driver
 	#
 	get($id)
 	{
-	$data = @._memcached.get($id)
+	$data = @_memcached.get($id)
 	
-	return if (is_array($data)) then $data[0] else FALSE
+	return if (is_array($data)) then $data[0] else false
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -64,7 +85,7 @@ class CI_Cache_memcachedextends CI_Driver
 	#
 	save($id, $data, $ttl = 60)
 	{
-	return @._memcached.add($id, [$data, time(], $ttl),$ttl)
+	return @_memcached.add($id, [$data, time(], $ttl),$ttl)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -77,7 +98,7 @@ class CI_Cache_memcachedextends CI_Driver
 	#
 	delete($id)
 	{
-	return @._memcached.delete($id)
+	return @_memcached.delete($id)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -89,7 +110,7 @@ class CI_Cache_memcachedextends CI_Driver
 	#
 	clean()
 	{
-	return @._memcached.flush()
+	return @_memcached.flush()
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -100,9 +121,9 @@ class CI_Cache_memcachedextends CI_Driver
 	# @param 	null		type not supported in memcached
 	# @return 	mixed 		array on success, false on failure
 	#
-	cache_info($type = NULL)
+	cache_info($type = null)
 	{
-	return @._memcached.getStats()
+	return @_memcached.getStats()
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -115,10 +136,10 @@ class CI_Cache_memcachedextends CI_Driver
 	#
 	get_metadata($id)
 	{
-	$stored = @._memcached.get($id)
+	$stored = @_memcached.get($id)
 	
 	if count($stored) isnt 3
-		return FALSE
+		return false
 		
 	
 	[$data, $time, $ttl] = $stored
@@ -139,32 +160,32 @@ class CI_Cache_memcachedextends CI_Driver
 	{
 	#  Try to load memcached server info from the config file.
 	$CI = get_instance()
-	if $CI.config.load('memcached', TRUE, TRUE)
+	if $CI.config.load('memcached', true, true)
 		if is_array($CI.config.config['memcached'])
-			@._memcache_conf = NULL
+			@_memcache_conf = null
 			
-			for $conf, $name in as
-				@._memcache_conf[$name] = $conf
+			for $name, $conf of $CI.config.config['memcached']
+				@_memcache_conf[$name] = $conf
 				
 			
 		
 	
-	@._memcached = new Memcached()
+	@_memcached = new Memcached()
 	
-	for $cache_server, $name in as
+	for $name, $cache_server of @_memcache_conf
 		if not array_key_exists('hostname', $cache_server)
-			$cache_server['hostname'] = @._default_options['default_host']
+			$cache_server['hostname'] = @_default_options['default_host']
 			
 		
 		if not array_key_exists('port', $cache_server)
-			$cache_server['port'] = @._default_options['default_port']
+			$cache_server['port'] = @_default_options['default_port']
 			
 		
 		if not array_key_exists('weight', $cache_server)
-			$cache_server['weight'] = @._default_options['default_weight']
+			$cache_server['weight'] = @_default_options['default_weight']
 			
 		
-		@._memcached.addServer(
+		@_memcached.addServer(
 		$cache_server['hostname'], $cache_server['port'], $cache_server['weight']
 		)
 		
@@ -184,16 +205,19 @@ class CI_Cache_memcachedextends CI_Driver
 	if not extension_loaded('memcached')
 		log_message('error', 'The Memcached Extension must be loaded to use Memcached Cache.')
 		
-		return FALSE
+		return false
 		
 	
-	@._setup_memcached()
-	return TRUE
+	@_setup_memcached()
+	return true
 	}
 	
 	#  ------------------------------------------------------------------------
 	
 	
+
+register_class 'CI_Cache_memcached', CI_Cache_memcached
+module.exports = CI_Cache_memcached
 #  End Class
 
 #  End of file Cache_memcached.php 

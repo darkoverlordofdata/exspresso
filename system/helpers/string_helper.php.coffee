@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  string_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{count, defined, do_hash, func_get_args, func_num_args, function_exists, get_instance, helper, is_array, load, md5, mt_rand, preg_quote, preg_replace, str_repeat, str_replace, stripslashes, strlen, substr, trim, uniqid}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -43,7 +64,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	string
 #
 if not function_exists('trim_slashes')
-	global.trim_slashes = ($str) ->
+	exports.trim_slashes = trim_slashes = ($str) ->
 		return trim($str, '/')
 		
 	
@@ -60,9 +81,9 @@ if not function_exists('trim_slashes')
 # @return	mixed	string or array
 #
 if not function_exists('strip_slashes')
-	global.strip_slashes = ($str) ->
+	exports.strip_slashes = strip_slashes = ($str) ->
 		if is_array($str)
-			for $val, $key in as
+			for $key, $val of $str
 				$str[$key] = strip_slashes($val)
 				
 			
@@ -86,7 +107,7 @@ if not function_exists('strip_slashes')
 # @return	string
 #
 if not function_exists('strip_quotes')
-	global.strip_quotes = ($str) ->
+	exports.strip_quotes = strip_quotes = ($str) ->
 		return str_replace(['"', "'"], '', $str)
 		
 	
@@ -103,7 +124,7 @@ if not function_exists('strip_quotes')
 # @return	string
 #
 if not function_exists('quotes_to_entities')
-	global.quotes_to_entities = ($str) ->
+	exports.quotes_to_entities = quotes_to_entities = ($str) ->
 		return str_replace(["\'", "\"", "'", '"'], ["&#39;", "&quot;", "&#39;", "&quot;"], $str)
 		
 	
@@ -127,7 +148,7 @@ if not function_exists('quotes_to_entities')
 # @return	string
 #
 if not function_exists('reduce_double_slashes')
-	global.reduce_double_slashes = ($str) ->
+	exports.reduce_double_slashes = reduce_double_slashes = ($str) ->
 		return preg_replace("#(^|[^:])//+#", "\\1/", $str)
 		
 	
@@ -152,10 +173,10 @@ if not function_exists('reduce_double_slashes')
 # @return	string
 #
 if not function_exists('reduce_multiples')
-	global.reduce_multiples = ($str, $character = ',', $trim = FALSE) ->
+	exports.reduce_multiples = reduce_multiples = ($str, $character = ',', $trim = false) ->
 		$str = preg_replace('#' + preg_quote($character, '#') + '{2,}#', $character, $str)
 		
-		if $trim is TRUE
+		if $trim is true
 			$str = trim($str, $character)
 			
 		
@@ -176,7 +197,7 @@ if not function_exists('reduce_multiples')
 # @return	string
 #
 if not function_exists('random_string')
-	global.random_string = ($type = 'alnum', $len = 8) ->
+	exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
 		switch $type
 			when 'basic'return mt_rand()
 				
@@ -209,7 +230,7 @@ if not function_exists('random_string')
 				$CI = get_instance()
 				$CI.load.helper('security')
 				
-				return do_hash(uniqid(mt_rand(), TRUE), 'sha1')
+				return do_hash(uniqid(mt_rand(), true), 'sha1')
 				
 				
 		
@@ -227,8 +248,8 @@ if not function_exists('random_string')
 # @return	string
 #
 if not function_exists('alternator')
-	global.alternator =  ->
-		global.$i = global.$i ? {}
+	exports.alternator = alternator =  ->
+		exports.$i = $i ? {}
 		
 		if func_num_args() is 0
 			$i = 0
@@ -250,7 +271,7 @@ if not function_exists('alternator')
 # @return	string
 #
 if not function_exists('repeater')
-	global.repeater = ($data, $num = 1) ->
+	exports.repeater = repeater = ($data, $num = 1) ->
 		return if (($num > 0) then str_repeat($data, $num) else '')
 		
 	

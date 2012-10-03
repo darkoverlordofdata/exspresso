@@ -91,7 +91,6 @@ $system_path = realpath($system_folder) + '/'
 # ensure there's a trailing slash
 $system_path = rtrim($system_path, '/') + '/';
 
-
 if not is_dir($system_path)
   console.log "Your system folder path is not set correctly:"
   console.log "Please open the following file and correct this: "

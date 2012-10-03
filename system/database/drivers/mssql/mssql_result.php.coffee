@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  mssql_result.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{default, defined, is_resource, max_length, mssql_data_seek, mssql_fetch_assoc, mssql_fetch_field, mssql_fetch_object, mssql_free_result, mssql_num_fields, mssql_num_rows, name, primary_key, result_id, stdClass, type}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -24,7 +45,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_mssql_resultextends CI_DB_result
+class CI_DB_mssql_result extends CI_DB_result
 	
 	#
 	# Number of rows in the result set
@@ -32,8 +53,8 @@ class CI_DB_mssql_resultextends CI_DB_result
 	# @access	public
 	# @return	integer
 	#
-	num_rows :  =>
-		return mssql_num_rows(@.result_id)
+	num_rows :  ->
+		return mssql_num_rows(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -44,8 +65,8 @@ class CI_DB_mssql_resultextends CI_DB_result
 	# @access	public
 	# @return	integer
 	#
-	num_fields :  =>
-		return mssql_num_fields(@.result_id)
+	num_fields :  ->
+		return mssql_num_fields(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -58,9 +79,9 @@ class CI_DB_mssql_resultextends CI_DB_result
 	# @access	public
 	# @return	array
 	#
-	list_fields :  =>
+	list_fields :  ->
 		$field_names = {}
-		while $field = mssql_fetch_field(@.result_id))$field_names.push $field.name
+		while $field = mssql_fetch_field(@result_id))$field_names.push $field.name
 		}
 		
 		return $field_names
@@ -76,9 +97,9 @@ class CI_DB_mssql_resultextends CI_DB_result
 	# @access	public
 	# @return	array
 	#
-	field_data :  =>
+	field_data :  ->
 		$retval = {}
-		while $field = mssql_fetch_field(@.result_id))$F = new stdClass()$F.name = $field.name$F.type = $field.type$F.max_length = $field.max_length$F.primary_key = 0$F.default = ''$retval.push $F
+		while $field = mssql_fetch_field(@result_id))$F = new stdClass()$F.name = $field.name$F.type = $field.type$F.max_length = $field.max_length$F.primary_key = 0$F.default = ''$retval.push $F
 		}
 		
 		return $retval
@@ -91,10 +112,10 @@ class CI_DB_mssql_resultextends CI_DB_result
 	#
 	# @return	null
 	#
-	free_result :  =>
-		if is_resource(@.result_id)
-			mssql_free_result(@.result_id)
-			@.result_id = FALSE
+	free_result :  ->
+		if is_resource(@result_id)
+			mssql_free_result(@result_id)
+			@result_id = false
 			
 		
 	
@@ -110,8 +131,8 @@ class CI_DB_mssql_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_data_seek : ($n = 0) =>
-		return mssql_data_seek(@.result_id, $n)
+	_data_seek : ($n = 0) ->
+		return mssql_data_seek(@result_id, $n)
 		
 	
 	#  --------------------------------------------------------------------
@@ -124,8 +145,8 @@ class CI_DB_mssql_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_fetch_assoc :  =>
-		return mssql_fetch_assoc(@.result_id)
+	_fetch_assoc :  ->
+		return mssql_fetch_assoc(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -138,11 +159,14 @@ class CI_DB_mssql_resultextends CI_DB_result
 	# @access	private
 	# @return	object
 	#
-	_fetch_object :  =>
-		return mssql_fetch_object(@.result_id)
+	_fetch_object :  ->
+		return mssql_fetch_object(@result_id)
 		
 	
 	
+
+register_class 'CI_DB_mssql_result', CI_DB_mssql_result
+module.exports = CI_DB_mssql_result
 
 
 #  End of file mssql_result.php 

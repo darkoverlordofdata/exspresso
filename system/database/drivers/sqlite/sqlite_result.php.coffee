@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  sqlite_result.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{default, defined, function_exists, is_array, max_length, name, primary_key, result_id, sqlite_fetch_array, sqlite_fetch_object, sqlite_field_name, sqlite_num_fields, sqlite_num_rows, sqlite_seek, stdClass, type}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -24,7 +45,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_sqlite_resultextends CI_DB_result
+class CI_DB_sqlite_result extends CI_DB_result
 	
 	#
 	# Number of rows in the result set
@@ -32,8 +53,8 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	# @access	public
 	# @return	integer
 	#
-	num_rows :  =>
-		return sqlite_num_rows(@.result_id)
+	num_rows :  ->
+		return sqlite_num_rows(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -44,8 +65,8 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	# @access	public
 	# @return	integer
 	#
-	num_fields :  =>
-		return sqlite_num_fields(@.result_id)
+	num_fields :  ->
+		return sqlite_num_fields(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -58,11 +79,11 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	# @access	public
 	# @return	array
 	#
-	list_fields :  =>
+	list_fields :  ->
 		$field_names = {}
-		($i = 0$i < @.num_fields()$i++)
+		($i = 0$i < @num_fields()$i++)
 		{
-		$field_names.push sqlite_field_name(@.result_id, $i)
+		$field_names.push sqlite_field_name(@result_id, $i)
 		}
 		
 		return $field_names
@@ -78,12 +99,12 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	# @access	public
 	# @return	array
 	#
-	field_data :  =>
+	field_data :  ->
 		$retval = {}
-		($i = 0$i < @.num_fields()$i++)
+		($i = 0$i < @num_fields()$i++)
 		{
 		$F = new stdClass()
-		$F.name = sqlite_field_name(@.result_id, $i)
+		$F.name = sqlite_field_name(@result_id, $i)
 		$F.type = 'varchar'
 		$F.max_length = 0
 		$F.primary_key = 0
@@ -102,7 +123,7 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	#
 	# @return	null
 	#
-	free_result :  =>
+	free_result :  ->
 		#  Not implemented in SQLite
 		
 	
@@ -118,8 +139,8 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_data_seek : ($n = 0) =>
-		return sqlite_seek(@.result_id, $n)
+	_data_seek : ($n = 0) ->
+		return sqlite_seek(@result_id, $n)
 		
 	
 	#  --------------------------------------------------------------------
@@ -132,8 +153,8 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_fetch_assoc :  =>
-		return sqlite_fetch_array(@.result_id)
+	_fetch_assoc :  ->
+		return sqlite_fetch_array(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -146,22 +167,25 @@ class CI_DB_sqlite_resultextends CI_DB_result
 	# @access	private
 	# @return	object
 	#
-	_fetch_object :  =>
+	_fetch_object :  ->
 		if function_exists('sqlite_fetch_object')
-			return sqlite_fetch_object(@.result_id)
+			return sqlite_fetch_object(@result_id)
 			
 		else 
-			$arr = sqlite_fetch_array(@.result_id, SQLITE_ASSOC)
+			$arr = sqlite_fetch_array(@result_id, SQLITE_ASSOC)
 			if is_array($arr)
 				$obj = $arr
 				return $obj
 				else 
-				return NULL
+				return null
 				
 			
 		
 	
 	
+
+register_class 'CI_DB_sqlite_result', CI_DB_sqlite_result
+module.exports = CI_DB_sqlite_result
 
 
 #  End of file sqlite_result.php 

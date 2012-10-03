@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  oci8_driver.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{OCIcommit, OCIrollback, _protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, array_key_exists, conn_id, count, db_debug, dbprefix, defined, display_error, escape_like_str, hostname, implode, is_array, is_resource, numrows, ocibindbyname, ocierror, ociexecute, ocilogoff, ocilogon, ocinewcursor, ociparse, ociplogon, ocirowcount, ociserverversion, ocisetprefetch, password, preg_replace, query, row, sprintf, str_replace, strpos, trans_enabled, trim, username}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -41,35 +62,35 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 #
 
-class CI_DB_oci8_driverextends CI_DB
+class CI_DB_oci8_driver extends CI_DB
 	
-	$dbdriver: 'oci8'
+	dbdriver: 'oci8'
 	
 	#  The character used for excaping
-	$_escape_char: '"'
+	_escape_char: '"'
 	
 	#  clause and character used for LIKE escape sequences
-	$_like_escape_str: " escape '%s' "
-	$_like_escape_chr: '!'
+	_like_escape_str: " escape '%s' "
+	_like_escape_chr: '!'
 	
 	#
 	# The syntax to count rows is slightly different across different
 	# database engines, so this string appears in each driver and is
 	# used for the count_all() and count_all_results() functions.
 	#
-	$_count_string: "SELECT COUNT(1) AS "
-	$_random_keyword: ' ASC'#  not currently supported
+	_count_string: "SELECT COUNT(1) AS "
+	_random_keyword: ' ASC'#  not currently supported
 	
 	#  Set "auto commit" by default
-	$_commit: OCI_COMMIT_ON_SUCCESS
+	_commit: OCI_COMMIT_ON_SUCCESS
 	
 	#  need to track statement id and cursor id
-	$stmt_id: {}
-	$curs_id: {}
+	stmt_id: {}
+	curs_id: {}
 	
 	#  if we use a limit, we will add a field that will
 	#  throw off num_fields later
-	$limit_used: {}
+	limit_used: {}
 	
 	#
 	# Non-persistent database connection
@@ -77,8 +98,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  private called by the base class
 	# @return  resource
 	#
-	db_connect :  =>
-		return ocilogon(@.username, @.password, @.hostname)
+	db_connect :  ->
+		return ocilogon(@username, @password, @hostname)
 		
 	
 	#  --------------------------------------------------------------------
@@ -89,8 +110,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  private called by the base class
 	# @return  resource
 	#
-	db_pconnect :  =>
-		return ociplogon(@.username, @.password, @.hostname)
+	db_pconnect :  ->
+		return ociplogon(@username, @password, @hostname)
 		
 	
 	#  --------------------------------------------------------------------
@@ -104,7 +125,7 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access	public
 	# @return	void
 	#
-	reconnect :  =>
+	reconnect :  ->
 		#  not implemented in oracle
 		
 	
@@ -116,8 +137,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  private called by the base class
 	# @return  resource
 	#
-	db_select :  =>
-		return TRUE
+	db_select :  ->
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -130,9 +151,9 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	string
 	# @return	resource
 	#
-	db_set_charset : ($charset, $collation) =>
+	db_set_charset : ($charset, $collation) ->
 		#  @todo - add support if needed
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -143,8 +164,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  public
 	# @return  string
 	#
-	_version :  =>
-		return ociserverversion(@.conn_id)
+	_version :  ->
+		return ociserverversion(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -156,13 +177,13 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   string  an SQL query
 	# @return  resource
 	#
-	_execute : ($sql) =>
+	_execute : ($sql) ->
 		#  oracle must parse the query before it is run. All of the actions with
 		#  the query are based on the statement id returned by ociparse
-		@.stmt_id = FALSE
-		@._set_stmt_id($sql)
-		ocisetprefetch(@.stmt_id, 1000)
-		return ociexecute(@.stmt_id, @._commit)
+		@stmt_id = false
+		@_set_stmt_id($sql)
+		ocisetprefetch(@stmt_id, 1000)
+		return ociexecute(@stmt_id, @_commit)
 		
 	
 	#
@@ -172,9 +193,9 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   string  an SQL query
 	# @return  none
 	#
-	_set_stmt_id : ($sql) =>
-		if not is_resource(@.stmt_id)
-			@.stmt_id = ociparse(@.conn_id, @._prep_query($sql))
+	_set_stmt_id : ($sql) ->
+		if not is_resource(@stmt_id)
+			@stmt_id = ociparse(@conn_id, @_prep_query($sql))
 			
 		
 	
@@ -189,7 +210,7 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   string  an SQL query
 	# @return  string
 	#
-	_prep_query : ($sql) =>
+	_prep_query : ($sql) ->
 		return $sql
 		
 	
@@ -201,9 +222,9 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  public
 	# @return  cursor id
 	#
-	get_cursor :  =>
-		@.curs_id = ocinewcursor(@.conn_id)
-		return @.curs_id
+	get_cursor :  ->
+		@curs_id = ocinewcursor(@conn_id)
+		return @curs_id
 		
 	
 	#  --------------------------------------------------------------------
@@ -226,32 +247,32 @@ class CI_DB_oci8_driverextends CI_DB
 	# type		yes		the type of the parameter
 	# length	yes		the max size of the parameter
 	#
-	stored_procedure : ($package, $procedure, $params) =>
+	stored_procedure : ($package, $procedure, $params) ->
 		if $package is '' or $procedure is '' or  not is_array($params)
-			if @.db_debug
+			if @db_debug
 				log_message('error', 'Invalid query: ' + $package + '.' + $procedure)
-				return @.display_error('db_invalid_query')
+				return @display_error('db_invalid_query')
 				
-			return FALSE
+			return false
 			
 		
 		#  build the query string
-		$sql = begin $package.$procedure(
+		$sql = "begin $package.$procedure("
 		
-		$have_cursor = FALSE
-		for $param in as
+		$have_cursor = false
+		for $param in $params
 			$sql+=$param['name'] + ","
 			
 			if array_key_exists('type', $param) and ($param['type'] is OCI_B_CURSOR)
-				$have_cursor = TRUE
+				$have_cursor = true
 				
 			
 		$sql = trim($sql, ",") + "); end;"
 		
-		@.stmt_id = FALSE
-		@._set_stmt_id($sql)
-		@._bind_params($params)
-		@.query($sql, FALSE, $have_cursor)
+		@stmt_id = false
+		@_set_stmt_id($sql)
+		@_bind_params($params)
+		@query($sql, false, $have_cursor)
 		
 	
 	#  --------------------------------------------------------------------
@@ -262,19 +283,19 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  private
 	# @return  none
 	#
-	_bind_params : ($params) =>
-		if not is_array($params) or  not is_resource(@.stmt_id)
+	_bind_params : ($params) ->
+		if not is_array($params) or  not is_resource(@stmt_id)
 			return 
 			
 		
-		for $param in as
-			for $val in as
+		for $param in $params
+			for $val in ['name', 'value', 'type', 'length']
 				if not $param[$val]? 
 					$param[$val] = ''
 					
 				
 			
-			ocibindbyname(@.stmt_id, $param['name'], $param['value'], $param['length'], $param['type'])
+			ocibindbyname(@stmt_id, $param['name'], $param['value'], $param['length'], $param['type'])
 			
 		
 	
@@ -286,23 +307,23 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_begin : ($test_mode = FALSE) =>
-		if not @.trans_enabled
-			return TRUE
+	trans_begin : ($test_mode = false) ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
 		#  Reset the transaction failure flag.
 		#  If the $test_mode flag is set to TRUE transactions will be rolled back
 		#  even if the queries produce a successful result.
-		@._trans_failure = if ($test_mode is TRUE) then TRUE else FALSE
+		@_trans_failure = if ($test_mode is true) then true else false
 		
-		@._commit = OCI_DEFAULT
-		return TRUE
+		@_commit = OCI_DEFAULT
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -313,18 +334,18 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_commit :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_commit :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		$ret = OCIcommit(@.conn_id)
-		@._commit = OCI_COMMIT_ON_SUCCESS
+		$ret = OCIcommit(@conn_id)
+		@_commit = OCI_COMMIT_ON_SUCCESS
 		return $ret
 		
 	
@@ -336,18 +357,18 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_rollback :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_rollback :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		$ret = OCIrollback(@.conn_id)
-		@._commit = OCI_COMMIT_ON_SUCCESS
+		$ret = OCIrollback(@conn_id)
+		@_commit = OCI_COMMIT_ON_SUCCESS
 		return $ret
 		
 	
@@ -361,10 +382,10 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	bool	whether or not the string will be used in a LIKE condition
 	# @return  string
 	#
-	escape_str : ($str, $like = FALSE) =>
+	escape_str : ($str, $like = false) ->
 		if is_array($str)
-			for $val, $key in as
-				$str[$key] = @.escape_str($val, $like)
+			for $key, $val of $str
+				$str[$key] = @escape_str($val, $like)
 				
 			
 			return $str
@@ -373,9 +394,9 @@ class CI_DB_oci8_driverextends CI_DB
 		$str = remove_invisible_characters($str)
 		
 		#  escape LIKE condition wildcards
-		if $like is TRUE
-			$str = str_replace(['%', '_', @._like_escape_chr], 
-			[@._like_escape_chr + '%', @._like_escape_chr + '_', @._like_escape_chr + @._like_escape_chr], 
+		if $like is true
+			$str = str_replace(['%', '_', @_like_escape_chr], 
+			[@_like_escape_chr + '%', @_like_escape_chr + '_', @_like_escape_chr + @_like_escape_chr], 
 			$str)
 			
 		
@@ -390,8 +411,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  public
 	# @return  integer
 	#
-	affected_rows :  =>
-		return ocirowcount(@.stmt_id)
+	affected_rows :  ->
+		return ocirowcount(@stmt_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -402,9 +423,9 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  public
 	# @return  integer
 	#
-	insert_id :  =>
+	insert_id :  ->
 		#  not supported in oracle
-		return @.display_error('db_unsupported_function')
+		return @display_error('db_unsupported_function')
 		
 	
 	#  --------------------------------------------------------------------
@@ -419,14 +440,14 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   string
 	# @return  string
 	#
-	count_all : ($table = '') =>
+	count_all : ($table = '') ->
 		if $table is ''
 			return 0
 			
 		
-		$query = @.query(@._count_string + @._protect_identifiers('numrows') + " FROM " + @._protect_identifiers($table, TRUE, NULL, FALSE))
+		$query = @query(@_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false))
 		
-		if $query is FALSE
+		if $query is false
 			return 0
 			
 		
@@ -445,11 +466,11 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	boolean
 	# @return  string
 	#
-	_list_tables : ($prefix_limit = FALSE) =>
+	_list_tables : ($prefix_limit = false) ->
 		$sql = "SELECT TABLE_NAME FROM ALL_TABLES"
 		
-		if $prefix_limit isnt FALSE and @.dbprefix isnt ''
-			$sql+=" WHERE TABLE_NAME LIKE '" + @.escape_like_str(@.dbprefix) + "%' " + sprintf(@._like_escape_str, @._like_escape_chr)
+		if $prefix_limit isnt false and @dbprefix isnt ''
+			$sql+=" WHERE TABLE_NAME LIKE '" + @escape_like_str(@dbprefix) + "%' " + sprintf(@_like_escape_str, @_like_escape_chr)
 			
 		
 		return $sql
@@ -466,8 +487,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   string  the table name
 	# @return  string
 	#
-	_list_columns : ($table = '') =>
-		return SELECT COLUMN_NAME FROM all_tab_columns WHERE table_name = '$table'
+	_list_columns : ($table = '') ->
+		return "SELECT COLUMN_NAME FROM all_tab_columns WHERE table_name = '$table'"
 		
 	
 	#  --------------------------------------------------------------------
@@ -481,7 +502,7 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   string  the table name
 	# @return  object
 	#
-	_field_data : ($table) =>
+	_field_data : ($table) ->
 		return "SELECT * FROM " + $table + " where rownum = 1"
 		
 	
@@ -493,8 +514,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  private
 	# @return  string
 	#
-	_error_message :  =>
-		$error = ocierror(@.conn_id)
+	_error_message :  ->
+		$error = ocierror(@conn_id)
 		return $error['message']
 		
 	
@@ -506,8 +527,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @access  private
 	# @return  integer
 	#
-	_error_number :  =>
-		$error = ocierror(@.conn_id)
+	_error_number :  ->
+		$error = ocierror(@conn_id)
 		return $error['code']
 		
 	
@@ -522,29 +543,29 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	string
 	# @return	string
 	#
-	_escape_identifiers : ($item) =>
-		if @._escape_char is ''
+	_escape_identifiers : ($item) ->
+		if @_escape_char is ''
 			return $item
 			
 		
-		for $id in as
-			if strpos($item, '.' + $id) isnt FALSE
-				$str = @._escape_char + str_replace('.', @._escape_char + '.', $item)
+		for $id in @_reserved_identifiers
+			if strpos($item, '.' + $id) isnt false
+				$str = @_escape_char + str_replace('.', @_escape_char + '.', $item)
 				
 				#  remove duplicates if the user already included the escape
-				return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+				return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 				
 			
 		
-		if strpos($item, '.') isnt FALSE
-			$str = @._escape_char + str_replace('.', @._escape_char + '.' + @._escape_char, $item) + @._escape_char
+		if strpos($item, '.') isnt false
+			$str = @_escape_char + str_replace('.', @_escape_char + '.' + @_escape_char, $item) + @_escape_char
 			
 		else 
-			$str = @._escape_char + $item + @._escape_char
+			$str = @_escape_char + $item + @_escape_char
 			
 		
 		#  remove duplicates if the user already included the escape
-		return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+		return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 		
 	
 	#  --------------------------------------------------------------------
@@ -559,7 +580,7 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	type
 	# @return	type
 	#
-	_from_tables : ($tables) =>
+	_from_tables : ($tables) ->
 		if not is_array($tables)
 			$tables = [$tables]
 			
@@ -580,7 +601,7 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   array   the insert values
 	# @return  string
 	#
-	_insert : ($table, $keys, $values) =>
+	_insert : ($table, $keys, $values) ->
 		return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
 		
 	
@@ -599,8 +620,8 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	array	the limit clause
 	# @return	string
 	#
-	_update : ($table, $values, $where, $orderby = {}, $limit = FALSE) =>
-		for $val, $key in as
+	_update : ($table, $values, $where, $orderby = {}, $limit = false) ->
+		for $key, $val of $values
 			$valstr.push $key + " = " + $val
 			
 		
@@ -630,7 +651,7 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	string	the table name
 	# @return	string
 	#
-	_truncate : ($table) =>
+	_truncate : ($table) ->
 		return "TRUNCATE TABLE " + $table
 		
 	
@@ -647,12 +668,12 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param	string	the limit clause
 	# @return	string
 	#
-	_delete : ($table, $where = {}, $like = {}, $limit = FALSE) =>
+	_delete : ($table, $where = {}, $like = {}, $limit = false) ->
 		$conditions = ''
 		
 		if count($where) > 0 or count($like) > 0
 			$conditions = "\nWHERE "
-			$conditions+=implode("\n", @.ar_where)
+			$conditions+=implode("\n", @ar_where)
 			
 			if count($where) > 0 and count($like) > 0
 				$conditions+=" AND "
@@ -678,16 +699,16 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   integer the offset value
 	# @return  string
 	#
-	_limit : ($sql, $limit, $offset) =>
+	_limit : ($sql, $limit, $offset) ->
 		$limit = $offset + $limit
-		$newsql = SELECT * FROM (select inner_query.*, rownum rnum FROM ($sql) inner_query WHERE rownum < $limit)
+		$newsql = "SELECT * FROM (select inner_query.*, rownum rnum FROM ($sql) inner_query WHERE rownum < $limit)"
 		
 		if $offset isnt 0
-			$newsql+= WHERE rnum >= $offset
+			$newsql+=" WHERE rnum >= $offset"
 			
 		
 		#  remember that we used limits
-		@.limit_used = TRUE
+		@limit_used = true
 		
 		return $newsql
 		
@@ -701,12 +722,15 @@ class CI_DB_oci8_driverextends CI_DB
 	# @param   resource
 	# @return  void
 	#
-	_close : ($conn_id) =>
+	_close : ($conn_id) ->
 		ocilogoff($conn_id)
 		
 	
 	
 	
+
+register_class 'CI_DB_oci8_driver', CI_DB_oci8_driver
+module.exports = CI_DB_oci8_driver
 
 
 

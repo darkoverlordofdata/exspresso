@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  odbc_driver.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, database, dbprefix, defined, hostname, implode, is_array, num_rows, numrows, odbc_autocommit, odbc_close, odbc_commit, odbc_connect, odbc_error, odbc_errormsg, odbc_exec, odbc_insert_id, odbc_num_rows, odbc_pconnect, odbc_rollback, parent, password, preg_replace, query, row, str_replace, strpos, time, trans_enabled, username}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -28,30 +49,30 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_odbc_driverextends CI_DB
+class CI_DB_odbc_driver extends CI_DB
 	
-	$dbdriver: 'odbc'
+	dbdriver: 'odbc'
 	
 	#  the character used to excape - not necessary for ODBC
-	$_escape_char: ''
+	_escape_char: ''
 	
 	#  clause and character used for LIKE escape sequences
-	$_like_escape_str: " {escape '%s'} "
-	$_like_escape_chr: '!'
+	_like_escape_str: " {escape '%s'} "
+	_like_escape_chr: '!'
 	
 	#
 	# The syntax to count rows is slightly different across different
 	# database engines, so this string appears in each driver and is
 	# used for the count_all() and count_all_results() functions.
 	#
-	$_count_string: "SELECT COUNT(*) AS "
-	$_random_keyword: {}
+	_count_string: "SELECT COUNT(*) AS "
+	_random_keyword: {}
 	
 	
-	CI_DB_odbc_driver : ($params) =>
+	CI_DB_odbc_driver : ($params) ->
 		parent::CI_DB($params)
 		
-		@._random_keyword = ' RND(' + time() + ')'#  database specific random keyword
+		@_random_keyword = ' RND(' + time() + ')'#  database specific random keyword
 		
 	
 	#
@@ -60,8 +81,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_connect :  =>
-		return odbc_connect(@.hostname, @.username, @.password)
+	db_connect :  ->
+		return odbc_connect(@hostname, @username, @password)
 		
 	
 	#  --------------------------------------------------------------------
@@ -72,8 +93,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_pconnect :  =>
-		return odbc_pconnect(@.hostname, @.username, @.password)
+	db_pconnect :  ->
+		return odbc_pconnect(@hostname, @username, @password)
 		
 	
 	#  --------------------------------------------------------------------
@@ -87,7 +108,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	public
 	# @return	void
 	#
-	reconnect :  =>
+	reconnect :  ->
 		#  not implemented in odbc
 		
 	
@@ -99,9 +120,9 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_select :  =>
+	db_select :  ->
 		#  Not needed for ODBC
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -114,9 +135,9 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string
 	# @return	resource
 	#
-	db_set_charset : ($charset, $collation) =>
+	db_set_charset : ($charset, $collation) ->
 		#  @todo - add support if needed
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -127,7 +148,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	public
 	# @return	string
 	#
-	_version :  =>
+	_version :  ->
 		return "SELECT version() AS ver"
 		
 	
@@ -140,9 +161,9 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string	an SQL query
 	# @return	resource
 	#
-	_execute : ($sql) =>
-		$sql = @._prep_query($sql)
-		return odbc_exec(@.conn_id, $sql)
+	_execute : ($sql) ->
+		$sql = @_prep_query($sql)
+		return odbc_exec(@conn_id, $sql)
 		
 	
 	#  --------------------------------------------------------------------
@@ -156,7 +177,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string	an SQL query
 	# @return	string
 	#
-	_prep_query : ($sql) =>
+	_prep_query : ($sql) ->
 		return $sql
 		
 	
@@ -168,22 +189,22 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_begin : ($test_mode = FALSE) =>
-		if not @.trans_enabled
-			return TRUE
+	trans_begin : ($test_mode = false) ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
 		#  Reset the transaction failure flag.
 		#  If the $test_mode flag is set to TRUE transactions will be rolled back
 		#  even if the queries produce a successful result.
-		@._trans_failure = if ($test_mode is TRUE) then TRUE else FALSE
+		@_trans_failure = if ($test_mode is true) then true else false
 		
-		return odbc_autocommit(@.conn_id, FALSE)
+		return odbc_autocommit(@conn_id, false)
 		
 	
 	#  --------------------------------------------------------------------
@@ -194,18 +215,18 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_commit :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_commit :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		$ret = odbc_commit(@.conn_id)
-		odbc_autocommit(@.conn_id, TRUE)
+		$ret = odbc_commit(@conn_id)
+		odbc_autocommit(@conn_id, true)
 		return $ret
 		
 	
@@ -217,18 +238,18 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_rollback :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_rollback :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		$ret = odbc_rollback(@.conn_id)
-		odbc_autocommit(@.conn_id, TRUE)
+		$ret = odbc_rollback(@conn_id)
+		odbc_autocommit(@conn_id, true)
 		return $ret
 		
 	
@@ -242,10 +263,10 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	bool	whether or not the string will be used in a LIKE condition
 	# @return	string
 	#
-	escape_str : ($str, $like = FALSE) =>
+	escape_str : ($str, $like = false) ->
 		if is_array($str)
-			for $val, $key in as
-				$str[$key] = @.escape_str($val, $like)
+			for $key, $val of $str
+				$str[$key] = @escape_str($val, $like)
 				
 			
 			return $str
@@ -255,9 +276,9 @@ class CI_DB_odbc_driverextends CI_DB
 		$str = remove_invisible_characters($str)
 		
 		#  escape LIKE condition wildcards
-		if $like is TRUE
-			$str = str_replace(['%', '_', @._like_escape_chr], 
-			[@._like_escape_chr + '%', @._like_escape_chr + '_', @._like_escape_chr + @._like_escape_chr], 
+		if $like is true
+			$str = str_replace(['%', '_', @_like_escape_chr], 
+			[@_like_escape_chr + '%', @_like_escape_chr + '_', @_like_escape_chr + @_like_escape_chr], 
 			$str)
 			
 		
@@ -272,8 +293,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	public
 	# @return	integer
 	#
-	affected_rows :  =>
-		return odbc_num_rows(@.conn_id)
+	affected_rows :  ->
+		return odbc_num_rows(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -284,8 +305,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	public
 	# @return	integer
 	#
-	insert_id :  =>
-		return odbc_insert_id(@.conn_id)
+	insert_id :  ->
+		return odbc_insert_id(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -300,12 +321,12 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string
 	# @return	string
 	#
-	count_all : ($table = '') =>
+	count_all : ($table = '') ->
 		if $table is ''
 			return 0
 			
 		
-		$query = @.query(@._count_string + @._protect_identifiers('numrows') + " FROM " + @._protect_identifiers($table, TRUE, NULL, FALSE))
+		$query = @query(@_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false))
 		
 		if $query.num_rows() is 0
 			return 0
@@ -326,12 +347,12 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	boolean
 	# @return	string
 	#
-	_list_tables : ($prefix_limit = FALSE) =>
-		$sql = "SHOW TABLES FROM `" + @.database + "`"
+	_list_tables : ($prefix_limit = false) ->
+		$sql = "SHOW TABLES FROM `" + @database + "`"
 		
-		if $prefix_limit isnt FALSE and @.dbprefix isnt ''
+		if $prefix_limit isnt false and @dbprefix isnt ''
 			# $sql .= " LIKE '".$this->escape_like_str($this->dbprefix)."%' ".sprintf($this->_like_escape_str, $this->_like_escape_chr);
-			return FALSE#  not currently supported
+			return false#  not currently supported
 			
 		
 		return $sql
@@ -348,7 +369,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string	the table name
 	# @return	string
 	#
-	_list_columns : ($table = '') =>
+	_list_columns : ($table = '') ->
 		return "SHOW COLUMNS FROM " + $table
 		
 	
@@ -363,7 +384,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string	the table name
 	# @return	object
 	#
-	_field_data : ($table) =>
+	_field_data : ($table) ->
 		return "SELECT TOP 1 FROM " + $table
 		
 	
@@ -375,8 +396,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	private
 	# @return	string
 	#
-	_error_message :  =>
-		return odbc_errormsg(@.conn_id)
+	_error_message :  ->
+		return odbc_errormsg(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -387,8 +408,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @access	private
 	# @return	integer
 	#
-	_error_number :  =>
-		return odbc_error(@.conn_id)
+	_error_number :  ->
+		return odbc_error(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -402,29 +423,29 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string
 	# @return	string
 	#
-	_escape_identifiers : ($item) =>
-		if @._escape_char is ''
+	_escape_identifiers : ($item) ->
+		if @_escape_char is ''
 			return $item
 			
 		
-		for $id in as
-			if strpos($item, '.' + $id) isnt FALSE
-				$str = @._escape_char + str_replace('.', @._escape_char + '.', $item)
+		for $id in @_reserved_identifiers
+			if strpos($item, '.' + $id) isnt false
+				$str = @_escape_char + str_replace('.', @_escape_char + '.', $item)
 				
 				#  remove duplicates if the user already included the escape
-				return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+				return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 				
 			
 		
-		if strpos($item, '.') isnt FALSE
-			$str = @._escape_char + str_replace('.', @._escape_char + '.' + @._escape_char, $item) + @._escape_char
+		if strpos($item, '.') isnt false
+			$str = @_escape_char + str_replace('.', @_escape_char + '.' + @_escape_char, $item) + @_escape_char
 			
 		else 
-			$str = @._escape_char + $item + @._escape_char
+			$str = @_escape_char + $item + @_escape_char
 			
 		
 		#  remove duplicates if the user already included the escape
-		return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+		return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 		
 	
 	#  --------------------------------------------------------------------
@@ -439,7 +460,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	type
 	# @return	type
 	#
-	_from_tables : ($tables) =>
+	_from_tables : ($tables) ->
 		if not is_array($tables)
 			$tables = [$tables]
 			
@@ -460,7 +481,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	array	the insert values
 	# @return	string
 	#
-	_insert : ($table, $keys, $values) =>
+	_insert : ($table, $keys, $values) ->
 		return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
 		
 	
@@ -479,8 +500,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	array	the limit clause
 	# @return	string
 	#
-	_update : ($table, $values, $where, $orderby = {}, $limit = FALSE) =>
-		for $val, $key in as
+	_update : ($table, $values, $where, $orderby = {}, $limit = false) ->
+		for $key, $val of $values
 			$valstr.push $key + " = " + $val
 			
 		
@@ -511,8 +532,8 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string	the table name
 	# @return	string
 	#
-	_truncate : ($table) =>
-		return @._delete($table)
+	_truncate : ($table) ->
+		return @_delete($table)
 		
 	
 	#  --------------------------------------------------------------------
@@ -528,12 +549,12 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	string	the limit clause
 	# @return	string
 	#
-	_delete : ($table, $where = {}, $like = {}, $limit = FALSE) =>
+	_delete : ($table, $where = {}, $like = {}, $limit = false) ->
 		$conditions = ''
 		
 		if count($where) > 0 or count($like) > 0
 			$conditions = "\nWHERE "
-			$conditions+=implode("\n", @.ar_where)
+			$conditions+=implode("\n", @ar_where)
 			
 			if count($where) > 0 and count($like) > 0
 				$conditions+=" AND "
@@ -559,7 +580,7 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	integer	the offset value
 	# @return	string
 	#
-	_limit : ($sql, $limit, $offset) =>
+	_limit : ($sql, $limit, $offset) ->
 		#  Does ODBC doesn't use the LIMIT clause?
 		return $sql
 		
@@ -573,12 +594,15 @@ class CI_DB_odbc_driverextends CI_DB
 	# @param	resource
 	# @return	void
 	#
-	_close : ($conn_id) =>
+	_close : ($conn_id) ->
 		odbc_close($conn_id)
 		
 	
 	
 	
+
+register_class 'CI_DB_odbc_driver', CI_DB_odbc_driver
+module.exports = CI_DB_odbc_driver
 
 
 

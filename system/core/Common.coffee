@@ -1,21 +1,52 @@
 #+--------------------------------------------------------------------+
-#| Common.coffee
+#  Common.coffee
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Expresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
-#|
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
-#	Common - Main application
+#  This file is a part of Exspresso
 #
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
+{array_merge, chmod, class_exists, count, defined, error_reporting, fclose, file_exists, fopen, header, ini_get, is_array, is_dir, is_file, is_numeric, is_writable, log_exception, md5, mt_rand, php_sapi_name, preg_replace, rtrim, show_php_error, strtolower, substr, unlink, version_compare, write_log}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+#
+# CodeIgniter
+#
+# An open source application development framework for PHP 5.1.6 or newer
+#
+# @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
+# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		http://codeigniter.com/user_guide/license.html
+# @link		http://codeigniter.com
+# @since		Version 1.0
+# @filesource
+#
+
+#  ------------------------------------------------------------------------
+
+#
+# Common Functions
+#
+# Loads the base classes and executes the request.
+#
+# @package		CodeIgniter
+# @subpackage	codeigniter
+# @category	Common Functions
+# @author		ExpressionEngine Dev Team
+# @link		http://codeigniter.com/user_guide/
+#
+
 
 #
 # core/config cache
@@ -62,46 +93,10 @@ exports.Exspresso = Exspresso    = {}
 
 _objects      = {}
 
-#  ------------------------------------------------------------------------
+exports.register_class = ($classname, $class) ->
 
-#
-# Tests for file writability
-#
-# is_writable() returns TRUE on Windows servers when you really can't write to
-# the file, based on the read-only attribute.  is_writable() is also unreliable
-# on Unix servers if safe_mode is on.
-#
-# @access	private
-# @return	void
-#
-exports.is_really_writable = ($file) ->
-  #  If we're on a Unix server with safe_mode off we call is_writable
-  ###
-  if DIRECTORY_SEPARATOR is '/' and ini_get("safe_mode") is FALSE
-    return is_writable($file)
-
-
-  #  For windows servers and safe_mode "on" installations we'll actually
-  #  write a file then read it.  Bah...
-  if is_dir($file)
-    $file = rtrim($file, '/') + '/' + md5(mt_rand(1, 100) + mt_rand(1, 100))
-
-    if ($fp = fopen($file, FOPEN_WRITE_CREATE)) is FALSE
-      return FALSE
-
-
-    fclose($fp)
-    chmod($file, DIR_WRITE_MODE)
-    unlink($file)
-    return TRUE
-
-  else if not is_file($file) or ($fp = fopen($file, FOPEN_WRITE_CREATE)) is FALSE
-    return FALSE
-
-
-  fclose($fp)
-  return TRUE
-  ###
+  Exspresso[$classname] = $class
+  return
 
 #  ------------------------------------------------------------------------
 
@@ -162,8 +157,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
 
   #  Did we find the class?
   if not Exspresso[$name]?
-    console.log 'Unable to locate the specified class: ' + $class + EXT
-    process.exit 1
+    die 'Unable to locate the specified class: ' + $class + EXT
 
   return new Exspresso[$name]()
 
@@ -210,8 +204,7 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
 
   #  Did we find the class?
   if not Exspresso[$name]?
-    console.log 'Unable to locate the specified class: ' + $class + EXT
-    process.exit 1
+    die 'Unable to locate the specified class: ' + $class + EXT
 
 
   #  Keep track of what we just loaded
@@ -269,14 +262,12 @@ exports.get_config = get_config = ($replace = {}) ->
 
 
   if not $found
-    console.log 'The config/config file does not exist.'
-    process.exit 1
+    die 'The configuration file does not exist.'
 
 
   #  Does the $config array exist in the file?
   if not $config?  #or  not is_array($config)
-    console.log 'Your config file does not appear to be formatted correctly.'
-    process.exit 1
+    die 'Your config file does not appear to be formatted correctly.'
 
 
   #  Are any values being dynamically replaced?
@@ -324,6 +315,7 @@ exports.config_item = config_item = ($item) ->
 exports.show_error = show_error = ($message, $status_code = 500, $heading = 'An Error Was Encountered') ->
   _error = load_class('Exceptions', 'core')
   require('./Exspresso').res.send  _error.show_error($heading, $message, 'error_general', $status_code)
+  die()
 
 
 #  ------------------------------------------------------------------------
@@ -341,6 +333,7 @@ exports.show_error = show_error = ($message, $status_code = 500, $heading = 'An 
 exports.show_404 = show_404 = ($page = '', $log_error = TRUE) ->
   _error = load_class('Exceptions', 'core')
   _error.show_404($page, $log_error)
+  die()
 
 
 #  ------------------------------------------------------------------------

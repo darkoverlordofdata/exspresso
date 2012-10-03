@@ -39,9 +39,7 @@ class Travel extends CI_Model
   #
   # @return 	nothing
   #
-  constructor: ($CI) ->
-    super $CI
-    @initialize()
+  constructor: () ->
 
   ## --------------------------------------------------------------------
 

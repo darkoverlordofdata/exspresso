@@ -1,7 +1,9 @@
-## Exspresso
+# Exspresso
 
 
-Exspresso is a web framework based on Express.js, and inspired by CodeIgniter.
+### Exspresso is ...
+
+  CodeIgniter ported to coffee-script and wrapped around the Express core.
 
 ## Features
 
@@ -10,6 +12,7 @@ Exspresso is a web framework based on Express.js, and inspired by CodeIgniter.
 * Bootstrap/LESS stylesheets
 * Sequelize ORM
 * Edit configuration defaults in application/config/config.coffee
+* Includes php2coffee command line tool
 
 
 

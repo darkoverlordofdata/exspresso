@@ -1,24 +1,52 @@
 #+--------------------------------------------------------------------+
-#| Config.coffee
+#  Config.coffee
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Expresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
-#|
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
-# Exspresso Config Class
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_merge, basename, defined, end, explode, file_exists, implode, in_array, is_array, item, preg_replace, rtrim, set_item, slash_item, str_replace, strtolower, trim}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
+#
+# CodeIgniter
+#
+# An open source application development framework for PHP 5.1.6 or newer
+#
+# @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
+# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		http://codeigniter.com/user_guide/license.html
+# @link		http://codeigniter.com
+# @since		Version 1.0
+# @filesource
+#
+
+#  ------------------------------------------------------------------------
+
+#
+# CodeIgniter Config Class
 #
 # This class contains functions that enable config files to be managed
 #
+# @package		CodeIgniter
+# @subpackage	Libraries
+# @category	Libraries
+# @author		ExpressionEngine Dev Team
+# @link		http://codeigniter.com/user_guide/libraries/config.html
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 
 class CI_Config
@@ -272,9 +300,8 @@ class CI_Config
 
 # END CI_Config class
 
-Exspresso.CI_Config = CI_Config
+register_class 'CI_Config', CI_Config
 module.exports = CI_Config
-
 
 # End of file Config.coffee
 # Location: ./Config.coffee

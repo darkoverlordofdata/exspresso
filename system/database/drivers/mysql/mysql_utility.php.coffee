@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  mysql_utility.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{_escape_identifiers, count, database, db, defined, escape, extract, in_array, mysql_fetch_field, mysql_field_type, name, num_rows, preg_replace, query, result_array, result_id, strtolower}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -22,7 +43,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_mysql_utilityextends CI_DB_utility
+class CI_DB_mysql_utility extends CI_DB_utility
 	
 	#
 	# List databases
@@ -30,7 +51,7 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 	# @access	private
 	# @return	bool
 	#
-	_list_databases :  =>
+	_list_databases :  ->
 		return "SHOW DATABASES"
 		
 	
@@ -45,8 +66,8 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 	# @param	string	the table name
 	# @return	object
 	#
-	_optimize_table : ($table) =>
-		return "OPTIMIZE TABLE " + @.db._escape_identifiers($table)
+	_optimize_table : ($table) ->
+		return "OPTIMIZE TABLE " + @db._escape_identifiers($table)
 		
 	
 	#  --------------------------------------------------------------------
@@ -60,8 +81,8 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 	# @param	string	the table name
 	# @return	object
 	#
-	_repair_table : ($table) =>
-		return "REPAIR TABLE " + @.db._escape_identifiers($table)
+	_repair_table : ($table) ->
+		return "REPAIR TABLE " + @db._escape_identifiers($table)
 		
 	
 	#  --------------------------------------------------------------------
@@ -72,9 +93,9 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 	# @param	array	Preferences
 	# @return	mixed
 	#
-	_backup : ($params = {}) =>
+	_backup : ($params = {}) ->
 		if count($params) is 0
-			return FALSE
+			return false
 			
 		
 		#  Extract the prefs for simplicity
@@ -82,42 +103,42 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 		
 		#  Build the output
 		$output = ''
-		for $table in as
+		for $table in $tables
 			#  Is the table in the "ignore" list?
-			if in_array($table, $ignore, TRUE)
+			if in_array($table, $ignore, true)
 				continue
 				
 			
 			#  Get the table schema
-			$query = @.db.query("SHOW CREATE TABLE `" + @.db.database + '`.' + $table)
+			$query = @db.query("SHOW CREATE TABLE `" + @db.database + '`.' + $table)
 			
 			#  No result means the table name was invalid
-			if $query is FALSE
+			if $query is false
 				continue
 				
 			
 			#  Write out the table schema
 			$output+='#' + $newline + '# TABLE STRUCTURE FOR: ' + $table + $newline + '#' + $newline + $newline
 			
-			if $add_drop is TRUE
+			if $add_drop is true
 				$output+='DROP TABLE IF EXISTS ' + $table + ';' + $newline + $newline
 				
 			
 			$i = 0
 			$result = $query.result_array()
-			for $val in as
+			for $val in $result[0]
 				if $i++2
 					$output+=$val + ';' + $newline + $newline
 					
 				
 			
 			#  If inserts are not needed we're done...
-			if $add_insert is FALSE
+			if $add_insert is false
 				continue
 				
 			
 			#  Grab all the data from the current table
-			$query = @.db.query(SELECT * FROM $table)
+			$query = @db.query("SELECT * FROM $table")
 			
 			if $query.num_rows() is 0
 				continue
@@ -131,8 +152,8 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 			$field_str = ''
 			$is_int = {}
 			while $field = mysql_fetch_field($query.result_id))#  Most versions of MySQL store timestamp as a string#  Create a string of field names$is_int[$i] = if (in_array(strtolower(mysql_field_type($query.result_id, $i)), ['tinyint', 'smallint', 'mediumint', 'int', 'bigint'], # , 'timestamp'),
-			TRUE)
-			) then TRUE else FALSE$field_str+='`' + $field.name + '`, '
+			true)
+			) then true else false$field_str+='`' + $field.name + '`, '
 			$i++
 			}
 			
@@ -141,19 +162,19 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 			
 			
 			#  Build the insert string
-			for $row in as
+			for $row in $query.result_array()
 				$val_str = ''
 				
 				$i = 0
-				for $v in as
+				for $v in $row
 					#  Is the value NULL?
-					if $v is NULL
+					if $v is null
 						$val_str+='NULL'
 						
 					else 
 						#  Escape the data if it's not an integer
-						if $is_int[$i] is FALSE
-							$val_str+=@.db.escape($v)
+						if $is_int[$i] is false
+							$val_str+=@db.escape($v)
 							
 						else 
 							$val_str+=$v
@@ -178,6 +199,9 @@ class CI_DB_mysql_utilityextends CI_DB_utility
 		return $output
 		
 	
+
+register_class 'CI_DB_mysql_utility', CI_DB_mysql_utility
+module.exports = CI_DB_mysql_utility
 
 #  End of file mysql_utility.php 
 #  Location: ./system/database/drivers/mysql/mysql_utility.php 

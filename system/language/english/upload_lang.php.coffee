@@ -1,3 +1,23 @@
+#+--------------------------------------------------------------------+
+#  upload_lang.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
+
 
 exports['upload_userfile_not_set'] = "Unable to find a post variable called userfile."
 exports['upload_file_exceeds_limit'] = "The uploaded file exceeds the maximum allowed size in your PHP configuration file."

@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  email_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{defined, function_exists, mail, preg_match}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -34,8 +55,8 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	bool
 #
 if not function_exists('valid_email')
-	global.valid_email = ($address) ->
-		return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then FALSE else TRUE
+	exports.valid_email = valid_email = ($address) ->
+		return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
 		
 	
 
@@ -48,7 +69,7 @@ if not function_exists('valid_email')
 # @return	bool
 #
 if not function_exists('send_email')
-	global.send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
+	exports.send_email = send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
 		return mail($recipient, $subject, $message)
 		
 	

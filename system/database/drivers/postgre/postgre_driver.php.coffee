@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  postgre_driver.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, dbprefix, defined, escape_like_str, func_get_arg, func_num_args, implode, ins_id, is_array, num_rows, numrows, pg_affected_rows, pg_close, pg_connect, pg_escape_string, pg_exec, pg_last_error, pg_last_oid, pg_pconnect, pg_ping, pg_query, preg_replace, query, result_id, row, seq, sprintf, str_replace, strpos, trans_enabled, trim}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -28,23 +49,23 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_postgre_driverextends CI_DB
+class CI_DB_postgre_driver extends CI_DB
 	
-	$dbdriver: 'postgre'
+	dbdriver: 'postgre'
 	
-	$_escape_char: '"'
+	_escape_char: '"'
 	
 	#  clause and character used for LIKE escape sequences
-	$_like_escape_str: " ESCAPE '%s' "
-	$_like_escape_chr: '!'
+	_like_escape_str: " ESCAPE '%s' "
+	_like_escape_chr: '!'
 	
 	#
 	# The syntax to count rows is slightly different across different
 	# database engines, so this string appears in each driver and is
 	# used for the count_all() and count_all_results() functions.
 	#
-	$_count_string: "SELECT COUNT(*) AS "
-	$_random_keyword: ' RANDOM()'#  database specific random keyword
+	_count_string: "SELECT COUNT(*) AS "
+	_random_keyword: ' RANDOM()'#  database specific random keyword
 	
 	#
 	# Connection String
@@ -52,7 +73,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	private
 	# @return	string
 	#
-	_connect_string :  =>
+	_connect_string :  ->
 		$components = 
 			'hostname':'host'
 			'port':'port'
@@ -62,9 +83,9 @@ class CI_DB_postgre_driverextends CI_DB
 			
 		
 		$connect_string = ""
-		for $val, $key in as
-			if @.$key?  and @.$key isnt ''
-				$connect_string+=$val= + @.$key
+		for $key, $val of $components
+			if @$key?  and @$key isnt ''
+				$connect_string+=" $val=" + @$key
 				
 			
 		return trim($connect_string)
@@ -78,8 +99,8 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_connect :  =>
-		return pg_connect(@._connect_string())
+	db_connect :  ->
+		return pg_connect(@_connect_string())
 		
 	
 	#  --------------------------------------------------------------------
@@ -90,8 +111,8 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_pconnect :  =>
-		return pg_pconnect(@._connect_string())
+	db_pconnect :  ->
+		return pg_pconnect(@_connect_string())
 		
 	
 	#  --------------------------------------------------------------------
@@ -105,9 +126,9 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	public
 	# @return	void
 	#
-	reconnect :  =>
-		if pg_ping(@.conn_id) is FALSE
-			@.conn_id = FALSE
+	reconnect :  ->
+		if pg_ping(@conn_id) is false
+			@conn_id = false
 			
 		
 	
@@ -119,9 +140,9 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	private called by the base class
 	# @return	resource
 	#
-	db_select :  =>
+	db_select :  ->
 		#  Not needed for Postgre so we'll return TRUE
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -134,9 +155,9 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string
 	# @return	resource
 	#
-	db_set_charset : ($charset, $collation) =>
+	db_set_charset : ($charset, $collation) ->
 		#  @todo - add support if needed
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -147,7 +168,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	public
 	# @return	string
 	#
-	_version :  =>
+	_version :  ->
 		return "SELECT version() AS ver"
 		
 	
@@ -160,9 +181,9 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string	an SQL query
 	# @return	resource
 	#
-	_execute : ($sql) =>
-		$sql = @._prep_query($sql)
-		return pg_query(@.conn_id, $sql)
+	_execute : ($sql) ->
+		$sql = @_prep_query($sql)
+		return pg_query(@conn_id, $sql)
 		
 	
 	#  --------------------------------------------------------------------
@@ -176,7 +197,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string	an SQL query
 	# @return	string
 	#
-	_prep_query : ($sql) =>
+	_prep_query : ($sql) ->
 		return $sql
 		
 	
@@ -188,22 +209,22 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_begin : ($test_mode = FALSE) =>
-		if not @.trans_enabled
-			return TRUE
+	trans_begin : ($test_mode = false) ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
 		#  Reset the transaction failure flag.
 		#  If the $test_mode flag is set to TRUE transactions will be rolled back
 		#  even if the queries produce a successful result.
-		@._trans_failure = if ($test_mode is TRUE) then TRUE else FALSE
+		@_trans_failure = if ($test_mode is true) then true else false
 		
-		return pg_exec(@.conn_id, "begin")
+		return pg_exec(@conn_id, "begin")
 		
 	
 	#  --------------------------------------------------------------------
@@ -214,17 +235,17 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_commit :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_commit :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		return pg_exec(@.conn_id, "commit")
+		return pg_exec(@conn_id, "commit")
 		
 	
 	#  --------------------------------------------------------------------
@@ -235,17 +256,17 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	public
 	# @return	bool
 	#
-	trans_rollback :  =>
-		if not @.trans_enabled
-			return TRUE
+	trans_rollback :  ->
+		if not @trans_enabled
+			return true
 			
 		
 		#  When transactions are nested we only begin/commit/rollback the outermost ones
-		if @._trans_depth > 0
-			return TRUE
+		if @_trans_depth > 0
+			return true
 			
 		
-		return pg_exec(@.conn_id, "rollback")
+		return pg_exec(@conn_id, "rollback")
 		
 	
 	#  --------------------------------------------------------------------
@@ -258,10 +279,10 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	bool	whether or not the string will be used in a LIKE condition
 	# @return	string
 	#
-	escape_str : ($str, $like = FALSE) =>
+	escape_str : ($str, $like = false) ->
 		if is_array($str)
-			for $val, $key in as
-				$str[$key] = @.escape_str($val, $like)
+			for $key, $val of $str
+				$str[$key] = @escape_str($val, $like)
 				
 			
 			return $str
@@ -270,9 +291,9 @@ class CI_DB_postgre_driverextends CI_DB
 		$str = pg_escape_string($str)
 		
 		#  escape LIKE condition wildcards
-		if $like is TRUE
-			$str = str_replace(['%', '_', @._like_escape_chr], 
-			[@._like_escape_chr + '%', @._like_escape_chr + '_', @._like_escape_chr + @._like_escape_chr], 
+		if $like is true
+			$str = str_replace(['%', '_', @_like_escape_chr], 
+			[@_like_escape_chr + '%', @_like_escape_chr + '_', @_like_escape_chr + @_like_escape_chr], 
 			$str)
 			
 		
@@ -287,8 +308,8 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	public
 	# @return	integer
 	#
-	affected_rows :  =>
-		return pg_affected_rows(@.result_id)
+	affected_rows :  ->
+		return pg_affected_rows(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -299,30 +320,30 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	public
 	# @return	integer
 	#
-	insert_id :  =>
-		$v = @._version()
+	insert_id :  ->
+		$v = @_version()
 		$v = $v['server']
 		
-		$table = if func_num_args() > 0 then func_get_arg(0) else NULL
-		$column = if func_num_args() > 1 then func_get_arg(1) else NULL
+		$table = if func_num_args() > 0 then func_get_arg(0) else null
+		$column = if func_num_args() > 1 then func_get_arg(1) else null
 		
-		if $table is NULL and $v>='8.1'
+		if $table is null and $v>='8.1'
 			$sql = 'SELECT LASTVAL() as ins_id'
 			
-		else if $table isnt NULL and $column isnt NULL and $v>='8.0'
+		else if $table isnt null and $column isnt null and $v>='8.0'
 			$sql = sprintf("SELECT pg_get_serial_sequence('%s','%s') as seq", $table, $column)
-			$query = @.query($sql)
+			$query = @query($sql)
 			$row = $query.row()
 			$sql = sprintf("SELECT CURRVAL('%s') as ins_id", $row.seq)
 			
-		else if $table isnt NULL
+		else if $table isnt null
 			#  seq_name passed in table parameter
 			$sql = sprintf("SELECT CURRVAL('%s') as ins_id", $table)
 			
 		else 
-			return pg_last_oid(@.result_id)
+			return pg_last_oid(@result_id)
 			
-		$query = @.query($sql)
+		$query = @query($sql)
 		$row = $query.row()
 		return $row.ins_id
 		
@@ -339,12 +360,12 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string
 	# @return	string
 	#
-	count_all : ($table = '') =>
+	count_all : ($table = '') ->
 		if $table is ''
 			return 0
 			
 		
-		$query = @.query(@._count_string + @._protect_identifiers('numrows') + " FROM " + @._protect_identifiers($table, TRUE, NULL, FALSE))
+		$query = @query(@_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false))
 		
 		if $query.num_rows() is 0
 			return 0
@@ -365,11 +386,11 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	boolean
 	# @return	string
 	#
-	_list_tables : ($prefix_limit = FALSE) =>
+	_list_tables : ($prefix_limit = false) ->
 		$sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
 		
-		if $prefix_limit isnt FALSE and @.dbprefix isnt ''
-			$sql+=" AND table_name LIKE '" + @.escape_like_str(@.dbprefix) + "%' " + sprintf(@._like_escape_str, @._like_escape_chr)
+		if $prefix_limit isnt false and @dbprefix isnt ''
+			$sql+=" AND table_name LIKE '" + @escape_like_str(@dbprefix) + "%' " + sprintf(@_like_escape_str, @_like_escape_chr)
 			
 		
 		return $sql
@@ -386,7 +407,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string	the table name
 	# @return	string
 	#
-	_list_columns : ($table = '') =>
+	_list_columns : ($table = '') ->
 		return "SELECT column_name FROM information_schema.columns WHERE table_name ='" + $table + "'"
 		
 	
@@ -401,7 +422,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string	the table name
 	# @return	object
 	#
-	_field_data : ($table) =>
+	_field_data : ($table) ->
 		return "SELECT * FROM " + $table + " LIMIT 1"
 		
 	
@@ -413,8 +434,8 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	private
 	# @return	string
 	#
-	_error_message :  =>
-		return pg_last_error(@.conn_id)
+	_error_message :  ->
+		return pg_last_error(@conn_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -425,7 +446,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @access	private
 	# @return	integer
 	#
-	_error_number :  =>
+	_error_number :  ->
 		return ''
 		
 	
@@ -440,29 +461,29 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string
 	# @return	string
 	#
-	_escape_identifiers : ($item) =>
-		if @._escape_char is ''
+	_escape_identifiers : ($item) ->
+		if @_escape_char is ''
 			return $item
 			
 		
-		for $id in as
-			if strpos($item, '.' + $id) isnt FALSE
-				$str = @._escape_char + str_replace('.', @._escape_char + '.', $item)
+		for $id in @_reserved_identifiers
+			if strpos($item, '.' + $id) isnt false
+				$str = @_escape_char + str_replace('.', @_escape_char + '.', $item)
 				
 				#  remove duplicates if the user already included the escape
-				return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+				return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 				
 			
 		
-		if strpos($item, '.') isnt FALSE
-			$str = @._escape_char + str_replace('.', @._escape_char + '.' + @._escape_char, $item) + @._escape_char
+		if strpos($item, '.') isnt false
+			$str = @_escape_char + str_replace('.', @_escape_char + '.' + @_escape_char, $item) + @_escape_char
 			
 		else 
-			$str = @._escape_char + $item + @._escape_char
+			$str = @_escape_char + $item + @_escape_char
 			
 		
 		#  remove duplicates if the user already included the escape
-		return preg_replace('/[' + @._escape_char + ']+/', @._escape_char, $str)
+		return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 		
 	
 	#  --------------------------------------------------------------------
@@ -477,7 +498,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	type
 	# @return	type
 	#
-	_from_tables : ($tables) =>
+	_from_tables : ($tables) ->
 		if not is_array($tables)
 			$tables = [$tables]
 			
@@ -498,7 +519,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	array	the insert values
 	# @return	string
 	#
-	_insert : ($table, $keys, $values) =>
+	_insert : ($table, $keys, $values) ->
 		return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
 		
 	
@@ -517,8 +538,8 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	array	the limit clause
 	# @return	string
 	#
-	_update : ($table, $values, $where, $orderby = {}, $limit = FALSE) =>
-		for $val, $key in as
+	_update : ($table, $values, $where, $orderby = {}, $limit = false) ->
+		for $key, $val of $values
 			$valstr.push $key + " = " + $val
 			
 		
@@ -548,7 +569,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string	the table name
 	# @return	string
 	#
-	_truncate : ($table) =>
+	_truncate : ($table) ->
 		return "TRUNCATE " + $table
 		
 	
@@ -565,12 +586,12 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	string	the limit clause
 	# @return	string
 	#
-	_delete : ($table, $where = {}, $like = {}, $limit = FALSE) =>
+	_delete : ($table, $where = {}, $like = {}, $limit = false) ->
 		$conditions = ''
 		
 		if count($where) > 0 or count($like) > 0
 			$conditions = "\nWHERE "
-			$conditions+=implode("\n", @.ar_where)
+			$conditions+=implode("\n", @ar_where)
 			
 			if count($where) > 0 and count($like) > 0
 				$conditions+=" AND "
@@ -595,7 +616,7 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	integer	the offset value
 	# @return	string
 	#
-	_limit : ($sql, $limit, $offset) =>
+	_limit : ($sql, $limit, $offset) ->
 		$sql+="LIMIT " + $limit
 		
 		if $offset > 0
@@ -614,12 +635,15 @@ class CI_DB_postgre_driverextends CI_DB
 	# @param	resource
 	# @return	void
 	#
-	_close : ($conn_id) =>
+	_close : ($conn_id) ->
 		pg_close($conn_id)
 		
 	
 	
 	
+
+register_class 'CI_DB_postgre_driver', CI_DB_postgre_driver
+module.exports = CI_DB_postgre_driver
 
 
 #  End of file postgre_driver.php 

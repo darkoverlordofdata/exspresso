@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  form_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{_ci_classes, array_key_exists, array_merge, config, count, defined, error, error_string, function_exists, get_csrf_hash, get_csrf_token_name, get_instance, htmlspecialchars, in_array, is_array, is_int, is_object, is_string, item, load, security, site_url, sprintf, str_replace, strlen, strpos, strtolower, uri, uri_string}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -39,7 +60,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	string
 #
 if not function_exists('form_open')
-	global.form_open = ($action = '', $attributes = '', $hidden = {}) ->
+	exports.form_open = form_open = ($action = '', $attributes = '', $hidden = {}) ->
 		$CI = get_instance()
 		
 		if $attributes is ''
@@ -47,7 +68,7 @@ if not function_exists('form_open')
 			
 		
 		#  If an action is not a full URL then turn it into one
-		if $action and strpos($action, '://') is FALSE
+		if $action and strpos($action, '://') is false
 			$action = $CI.config.site_url($action)
 			
 		
@@ -56,12 +77,12 @@ if not function_exists('form_open')
 		
 		$form = '<form action="' + $action + '"'
 		
-		$form+=_attributes_to_string($attributes, TRUE)
+		$form+=_attributes_to_string($attributes, true)
 		
 		$form+='>'
 		
 		#  CSRF
-		if $CI.config.item('csrf_protection') is TRUE
+		if $CI.config.item('csrf_protection') is true
 			$hidden[$CI.security.get_csrf_token_name()] = $CI.security.get_csrf_hash()
 			
 		
@@ -87,7 +108,7 @@ if not function_exists('form_open')
 # @return	string
 #
 if not function_exists('form_open_multipart')
-	global.form_open_multipart = ($action, $attributes = {}, $hidden = {}) ->
+	exports.form_open_multipart = form_open_multipart = ($action, $attributes = {}, $hidden = {}) ->
 		if is_string($attributes)
 			$attributes+=' enctype="multipart/form-data"'
 			
@@ -113,16 +134,16 @@ if not function_exists('form_open_multipart')
 # @return	string
 #
 if not function_exists('form_hidden')
-	global.form_hidden = ($name, $value = '', $recursing = FALSE) ->
-		global.$form = global.$form ? {}
+	exports.form_hidden = form_hidden = ($name, $value = '', $recursing = false) ->
+		exports.$form = $form ? {}
 		
-		if $recursing is FALSE
+		if $recursing is false
 			$form = "\n"
 			
 		
 		if is_array($name)
-			for $val, $key in as
-				form_hidden($key, $val, TRUE)
+			for $key, $val of $name
+				form_hidden($key, $val, true)
 				
 			return $form
 			
@@ -131,9 +152,9 @@ if not function_exists('form_hidden')
 			$form+='<input type="hidden" name="' + $name + '" value="' + form_prep($value, $name) + '" />' + "\n"
 			
 		else 
-			for $v, $k in as
+			for $k, $v of $value
 				$k = if (is_int($k)) then '' else $k
-				form_hidden($name + '[' + $k + ']', $v, TRUE)
+				form_hidden($name + '[' + $k + ']', $v, true)
 				
 			
 		
@@ -153,7 +174,7 @@ if not function_exists('form_hidden')
 # @return	string
 #
 if not function_exists('form_input')
-	global.form_input = ($data = '', $value = '', $extra = '') ->
+	exports.form_input = form_input = ($data = '', $value = '', $extra = '') ->
 		$defaults = 'type':'text', 'name':(( not is_array($data) then $data else ''), 'value':$value)
 		
 		return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
@@ -174,7 +195,7 @@ if not function_exists('form_input')
 # @return	string
 #
 if not function_exists('form_password')
-	global.form_password = ($data = '', $value = '', $extra = '') ->
+	exports.form_password = form_password = ($data = '', $value = '', $extra = '') ->
 		if not is_array($data)
 			$data = 'name':$data
 			
@@ -198,7 +219,7 @@ if not function_exists('form_password')
 # @return	string
 #
 if not function_exists('form_upload')
-	global.form_upload = ($data = '', $value = '', $extra = '') ->
+	exports.form_upload = form_upload = ($data = '', $value = '', $extra = '') ->
 		if not is_array($data)
 			$data = 'name':$data
 			
@@ -220,7 +241,7 @@ if not function_exists('form_upload')
 # @return	string
 #
 if not function_exists('form_textarea')
-	global.form_textarea = ($data = '', $value = '', $extra = '') ->
+	exports.form_textarea = form_textarea = ($data = '', $value = '', $extra = '') ->
 		$defaults = 'name':(( not is_array($data) then $data else ''), 'cols':'90', 'rows':'12')
 		
 		if not is_array($data) or  not $data['value']? 
@@ -249,7 +270,7 @@ if not function_exists('form_textarea')
 # @return	type
 #
 if not function_exists('form_multiselect')
-	global.form_multiselect = ($name = '', $options = {}, $selected = {}, $extra = '') ->
+	exports.form_multiselect = form_multiselect = ($name = '', $options = {}, $selected = {}, $extra = '') ->
 		if not strpos($extra, 'multiple')
 			$extra+=' multiple="multiple"'
 			
@@ -271,7 +292,7 @@ if not function_exists('form_multiselect')
 # @return	string
 #
 if not function_exists('form_dropdown')
-	global.form_dropdown = ($name = '', $options = {}, $selected = {}, $extra = '') ->
+	exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = {}, $extra = '') ->
 		if not is_array($selected)
 			$selected = [$selected]
 			
@@ -284,13 +305,13 @@ if not function_exists('form_dropdown')
 				
 			
 		
-		if $extra isnt '' then $extra = ' ' + $extra$multiple = if (count($selected) > 1 and strpos($extra, 'multiple') is FALSE) then ' multiple="multiple"' else ''$form = '<select name="' + $name + '"' + $extra + $multiple + ">\n"for $val, $key in as
+		if $extra isnt '' then $extra = ' ' + $extra$multiple = if (count($selected) > 1 and strpos($extra, 'multiple') is false) then ' multiple="multiple"' else ''$form = '<select name="' + $name + '"' + $extra + $multiple + ">\n"for $key, $val of $options
 			$key = ''+$key
 			
 			if is_array($val) and  not empty($val)
 				$form+='<optgroup label="' + $key + '">' + "\n"
 				
-				for $optgroup_val, $optgroup_key in as
+				for $optgroup_key, $optgroup_val of $val
 					$sel = if (in_array($optgroup_key, $selected)) then ' selected="selected"' else ''
 					
 					$form+='<option value="' + $optgroup_key + '"' + $sel + '>' + ''+$optgroup_val + "</option>\n"
@@ -322,13 +343,13 @@ if not function_exists('form_dropdown')
 # @return	string
 #
 if not function_exists('form_checkbox')
-	global.form_checkbox = ($data = '', $value = '', $checked = FALSE, $extra = '') ->
+	exports.form_checkbox = form_checkbox = ($data = '', $value = '', $checked = false, $extra = '') ->
 		$defaults = 'type':'checkbox', 'name':(( not is_array($data) then $data else ''), 'value':$value)
 		
 		if is_array($data) and array_key_exists('checked', $data)
 			$checked = $data['checked']
 			
-			if $checked is FALSE
+			if $checked is false
 				delete $data['checked']
 				
 			else 
@@ -336,7 +357,7 @@ if not function_exists('form_checkbox')
 				
 			
 		
-		if $checked is TRUE
+		if $checked is true
 			$defaults['checked'] = 'checked'
 			
 		else 
@@ -360,7 +381,7 @@ if not function_exists('form_checkbox')
 # @return	string
 #
 if not function_exists('form_radio')
-	global.form_radio = ($data = '', $value = '', $checked = FALSE, $extra = '') ->
+	exports.form_radio = form_radio = ($data = '', $value = '', $checked = false, $extra = '') ->
 		if not is_array($data)
 			$data = 'name':$data
 			
@@ -382,7 +403,7 @@ if not function_exists('form_radio')
 # @return	string
 #
 if not function_exists('form_submit')
-	global.form_submit = ($data = '', $value = '', $extra = '') ->
+	exports.form_submit = form_submit = ($data = '', $value = '', $extra = '') ->
 		$defaults = 'type':'submit', 'name':(( not is_array($data) then $data else ''), 'value':$value)
 		
 		return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
@@ -401,7 +422,7 @@ if not function_exists('form_submit')
 # @return	string
 #
 if not function_exists('form_reset')
-	global.form_reset = ($data = '', $value = '', $extra = '') ->
+	exports.form_reset = form_reset = ($data = '', $value = '', $extra = '') ->
 		$defaults = 'type':'reset', 'name':(( not is_array($data) then $data else ''), 'value':$value)
 		
 		return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
@@ -420,7 +441,7 @@ if not function_exists('form_reset')
 # @return	string
 #
 if not function_exists('form_button')
-	global.form_button = ($data = '', $content = '', $extra = '') ->
+	exports.form_button = form_button = ($data = '', $content = '', $extra = '') ->
 		$defaults = 'name':(( not is_array($data) then $data else ''), 'type':'button')
 		
 		if is_array($data) and $data['content']? 
@@ -444,7 +465,7 @@ if not function_exists('form_button')
 # @return	string
 #
 if not function_exists('form_label')
-	global.form_label = ($label_text = '', $id = '', $attributes = {}) ->
+	exports.form_label = form_label = ($label_text = '', $id = '', $attributes = {}) ->
 		
 		$label = '<label'
 		
@@ -453,7 +474,7 @@ if not function_exists('form_label')
 			
 		
 		if is_array($attributes) and count($attributes) > 0
-			for $val, $key in as
+			for $key, $val of $attributes
 				$label+=' ' + $key + '="' + $val + '"'
 				
 			
@@ -477,10 +498,10 @@ if not function_exists('form_label')
 # @return	string
 #
 if not function_exists('form_fieldset')
-	global.form_fieldset = ($legend_text = '', $attributes = {}) ->
+	exports.form_fieldset = form_fieldset = ($legend_text = '', $attributes = {}) ->
 		$fieldset = "<fieldset"
 		
-		$fieldset+=_attributes_to_string($attributes, FALSE)
+		$fieldset+=_attributes_to_string($attributes, false)
 		
 		$fieldset+=">\n"
 		
@@ -502,7 +523,7 @@ if not function_exists('form_fieldset')
 # @return	string
 #
 if not function_exists('form_fieldset_close')
-	global.form_fieldset_close = ($extra = '') ->
+	exports.form_fieldset_close = form_fieldset_close = ($extra = '') ->
 		return "</fieldset>" + $extra
 		
 	
@@ -517,7 +538,7 @@ if not function_exists('form_fieldset_close')
 # @return	string
 #
 if not function_exists('form_close')
-	global.form_close = ($extra = '') ->
+	exports.form_close = form_close = ($extra = '') ->
 		return "</form>" + $extra
 		
 	
@@ -534,12 +555,12 @@ if not function_exists('form_close')
 # @return	string
 #
 if not function_exists('form_prep')
-	global.form_prep = ($str = '', $field_name = '') ->
-		global.$prepped_fields = global.$prepped_fields ? {}
+	exports.form_prep = form_prep = ($str = '', $field_name = '') ->
+		exports.$prepped_fields = $prepped_fields ? {}{}
 		
 		#  if the field name is an array we do this recursively
 		if is_array($str)
-			for $val, $key in as
+			for $key, $val of $str
 				$str[$key] = form_prep($val)
 				
 			
@@ -585,8 +606,8 @@ if not function_exists('form_prep')
 # @return	mixed
 #
 if not function_exists('set_value')
-	global.set_value = ($field = '', $default = '') ->
-		if FALSE is ($OBJ = _get_validation_object())
+	exports.set_value = set_value = ($field = '', $default = '') ->
+		if false is ($OBJ = _get_validation_object())
 			if not $_POST[$field]? 
 				return $default
 				
@@ -613,12 +634,12 @@ if not function_exists('set_value')
 # @return	string
 #
 if not function_exists('set_select')
-	global.set_select = ($field = '', $value = '', $default = FALSE) ->
+	exports.set_select = set_select = ($field = '', $value = '', $default = false) ->
 		$OBJ = _get_validation_object()
 		
-		if $OBJ is FALSE
+		if $OBJ is false
 			if not $_POST[$field]? 
-				if count($_POST) is 0 and $default is TRUE
+				if count($_POST) is 0 and $default is true
 					return ' selected="selected"'
 					
 				return ''
@@ -659,12 +680,12 @@ if not function_exists('set_select')
 # @return	string
 #
 if not function_exists('set_checkbox')
-	global.set_checkbox = ($field = '', $value = '', $default = FALSE) ->
+	exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = false) ->
 		$OBJ = _get_validation_object()
 		
-		if $OBJ is FALSE
+		if $OBJ is false
 			if not $_POST[$field]? 
-				if count($_POST) is 0 and $default is TRUE
+				if count($_POST) is 0 and $default is true
 					return ' checked="checked"'
 					
 				return ''
@@ -705,12 +726,12 @@ if not function_exists('set_checkbox')
 # @return	string
 #
 if not function_exists('set_radio')
-	global.set_radio = ($field = '', $value = '', $default = FALSE) ->
+	exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
 		$OBJ = _get_validation_object()
 		
-		if $OBJ is FALSE
+		if $OBJ is false
 			if not $_POST[$field]? 
-				if count($_POST) is 0 and $default is TRUE
+				if count($_POST) is 0 and $default is true
 					return ' checked="checked"'
 					
 				return ''
@@ -751,8 +772,8 @@ if not function_exists('set_radio')
 # @return	string
 #
 if not function_exists('form_error')
-	global.form_error = ($field = '', $prefix = '', $suffix = '') ->
-		if FALSE is ($OBJ = _get_validation_object())
+	exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
+		if false is ($OBJ = _get_validation_object())
 			return ''
 			
 		
@@ -774,8 +795,8 @@ if not function_exists('form_error')
 # @return	string
 #
 if not function_exists('validation_errors')
-	global.validation_errors = ($prefix = '', $suffix = '') ->
-		if FALSE is ($OBJ = _get_validation_object())
+	exports.validation_errors = validation_errors = ($prefix = '', $suffix = '') ->
+		if false is ($OBJ = _get_validation_object())
 			return ''
 			
 		
@@ -796,9 +817,9 @@ if not function_exists('validation_errors')
 # @return	string
 #
 if not function_exists('_parse_form_attributes')
-	global._parse_form_attributes = ($attributes, $default) ->
+	exports._parse_form_attributes = _parse_form_attributes = ($attributes, $default) ->
 		if is_array($attributes)
-			for $val, $key in as
+			for $key, $val of $default
 				if $attributes[$key]? 
 					$default[$key] = $attributes[$key]
 					delete $attributes[$key]
@@ -812,7 +833,7 @@ if not function_exists('_parse_form_attributes')
 		
 		$att = ''
 		
-		for $val, $key in as
+		for $key, $val of $default
 			if $key is 'value'
 				$val = form_prep($val, $default['name'])
 				
@@ -837,13 +858,13 @@ if not function_exists('_parse_form_attributes')
 # @return	string
 #
 if not function_exists('_attributes_to_string')
-	global._attributes_to_string = ($attributes, $formtag = FALSE) ->
+	exports._attributes_to_string = _attributes_to_string = ($attributes, $formtag = false) ->
 		if is_string($attributes) and strlen($attributes) > 0
-			if $formtag is TRUE and strpos($attributes, 'method=') is FALSE
+			if $formtag is true and strpos($attributes, 'method=') is false
 				$attributes+=' method="post"'
 				
 			
-			if $formtag is TRUE and strpos($attributes, 'accept-charset=') is FALSE
+			if $formtag is true and strpos($attributes, 'accept-charset=') is false
 				$attributes+=' accept-charset="' + strtolower(config_item('charset')) + '"'
 				
 			
@@ -857,15 +878,15 @@ if not function_exists('_attributes_to_string')
 		if is_array($attributes) and count($attributes) > 0
 			$atts = ''
 			
-			if not $attributes['method']?  and $formtag is TRUE
+			if not $attributes['method']?  and $formtag is true
 				$atts+=' method="post"'
 				
 			
-			if not $attributes['accept-charset']?  and $formtag is TRUE
+			if not $attributes['accept-charset']?  and $formtag is true
 				$atts+=' accept-charset="' + strtolower(config_item('charset')) + '"'
 				
 			
-			for $val, $key in as
+			for $key, $val of $attributes
 				$atts+=' ' + $key + '="' + $val + '"'
 				
 			
@@ -886,11 +907,11 @@ if not function_exists('_attributes_to_string')
 # @return	mixed
 #
 if not function_exists('_get_validation_object')
-	global._get_validation_object =  ->
+	exports._get_validation_object = _get_validation_object =  ->
 		$CI = get_instance()
 		
 		#  We set this as a variable since we're returning by reference
-		$return = FALSE
+		$return = false
 		
 		if not $CI.load._ci_classes?  or  not $CI.load._ci_classes['form_validation']? 
 			return $return

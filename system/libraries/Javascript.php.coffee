@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Javascript.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__add_event, __construct, __hover, _addClass, _animate, _blur, _change, _clear_compile, _click, _compile, _dblclick, _document_ready, _error, _fadeIn, _fadeOut, _hide, _keydown, _keyup, _load, _mousedown, _mouseout, _mouseover, _mouseup, _output, _removeClass, _resize, _scroll, _show, _slideDown, _slideToggle, _slideUp, _toggle, _toggleClass, _unload, _updater, array_keys, config, defined, extract, get_instance, implode, is_array, is_bool, is_null, is_object, is_scalar, is_string, item, js, library, result_array, slash_item, str_replace, strncmp, strpos, strtolower}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -26,13 +47,13 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_Javascript
 	
-	$_javascript_location: 'js'
+	_javascript_location: 'js'
 	
 	__construct($params = {})
 	{
-	$defaults = 'js_library_driver':'jquery', 'autoload':TRUE
+	$defaults = 'js_library_driver':'jquery', 'autoload':true
 	
-	for $val, $key in as
+	for $key, $val of $defaults
 		if $params[$key]?  and $params[$key] isnt ""
 			$defaults[$key] = $params[$key]
 			
@@ -40,12 +61,12 @@ class CI_Javascript
 	
 	extract($defaults)
 	
-	@.CI = get_instance()
+	@CI = get_instance()
 	
 	#  load the requested js library
-	@.CI.load.library('javascript/' + $js_library_driver, 'autoload':$autoload)
+	@CI.load.library('javascript/' + $js_library_driver, 'autoload':$autoload)
 	#  make js to refer to current library
-	@.js = @.CI.$js_library_driver
+	@js = @CI.$js_library_driver
 	
 	log_message('debug', Javascript Class Initialized and loaded.  Driver used: $js_library_driver)
 	}
@@ -64,8 +85,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	blur : ($element = 'this', $js = '') =>
-		return @.js._blur($element, $js)
+	blur : ($element = 'this', $js = '') ->
+		return @js._blur($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -80,8 +101,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	change : ($element = 'this', $js = '') =>
-		return @.js._change($element, $js)
+	change : ($element = 'this', $js = '') ->
+		return @js._change($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -97,8 +118,8 @@ class CI_Javascript
 	# @param	boolean	whether or not to return false
 	# @return	string
 	#
-	click : ($element = 'this', $js = '', $ret_false = TRUE) =>
-		return @.js._click($element, $js, $ret_false)
+	click : ($element = 'this', $js = '', $ret_false = true) ->
+		return @js._click($element, $js, $ret_false)
 		
 	
 	#  --------------------------------------------------------------------
@@ -113,8 +134,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	dblclick : ($element = 'this', $js = '') =>
-		return @.js._dblclick($element, $js)
+	dblclick : ($element = 'this', $js = '') ->
+		return @js._dblclick($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -129,8 +150,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	error : ($element = 'this', $js = '') =>
-		return @.js._error($element, $js)
+	error : ($element = 'this', $js = '') ->
+		return @js._error($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -145,8 +166,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	focus : ($element = 'this', $js = '') =>
-		return @.js.__add_event($focus, $js)
+	focus : ($element = 'this', $js = '') ->
+		return @js.__add_event($focus, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -162,8 +183,8 @@ class CI_Javascript
 	# @param	string	- Javascript code for mouse out
 	# @return	string
 	#
-	hover : ($element = 'this', $over, $out) =>
-		return @.js.__hover($element, $over, $out)
+	hover : ($element = 'this', $over, $out) ->
+		return @js.__hover($element, $over, $out)
 		
 	
 	#  --------------------------------------------------------------------
@@ -178,8 +199,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	keydown : ($element = 'this', $js = '') =>
-		return @.js._keydown($element, $js)
+	keydown : ($element = 'this', $js = '') ->
+		return @js._keydown($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -194,8 +215,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	keyup : ($element = 'this', $js = '') =>
-		return @.js._keyup($element, $js)
+	keyup : ($element = 'this', $js = '') ->
+		return @js._keyup($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -210,8 +231,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	load : ($element = 'this', $js = '') =>
-		return @.js._load($element, $js)
+	load : ($element = 'this', $js = '') ->
+		return @js._load($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -226,8 +247,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	mousedown : ($element = 'this', $js = '') =>
-		return @.js._mousedown($element, $js)
+	mousedown : ($element = 'this', $js = '') ->
+		return @js._mousedown($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -242,8 +263,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	mouseout : ($element = 'this', $js = '') =>
-		return @.js._mouseout($element, $js)
+	mouseout : ($element = 'this', $js = '') ->
+		return @js._mouseout($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -258,8 +279,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	mouseover : ($element = 'this', $js = '') =>
-		return @.js._mouseover($element, $js)
+	mouseover : ($element = 'this', $js = '') ->
+		return @js._mouseover($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -274,8 +295,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	mouseup : ($element = 'this', $js = '') =>
-		return @.js._mouseup($element, $js)
+	mouseup : ($element = 'this', $js = '') ->
+		return @js._mouseup($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -289,8 +310,8 @@ class CI_Javascript
 	# @param	string	The code to output
 	# @return	string
 	#
-	output : ($js) =>
-		return @.js._output($js)
+	output : ($js) ->
+		return @js._output($js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -305,8 +326,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	ready : ($js) =>
-		return @.js._document_ready($js)
+	ready : ($js) ->
+		return @js._document_ready($js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -321,8 +342,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	resize : ($element = 'this', $js = '') =>
-		return @.js._resize($element, $js)
+	resize : ($element = 'this', $js = '') ->
+		return @js._resize($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -337,8 +358,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	scroll : ($element = 'this', $js = '') =>
-		return @.js._scroll($element, $js)
+	scroll : ($element = 'this', $js = '') ->
+		return @js._scroll($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -353,8 +374,8 @@ class CI_Javascript
 	# @param	string	The code to execute
 	# @return	string
 	#
-	unload : ($element = 'this', $js = '') =>
-		return @.js._unload($element, $js)
+	unload : ($element = 'this', $js = '') ->
+		return @js._unload($element, $js)
 		
 	
 	#  --------------------------------------------------------------------
@@ -372,8 +393,8 @@ class CI_Javascript
 	# @param	string	- Class to add
 	# @return	string
 	#
-	addClass : ($element = 'this', $class = '') =>
-		return @.js._addClass($element, $class)
+	addClass : ($element = 'this', $class = '') ->
+		return @js._addClass($element, $class)
 		
 	
 	#  --------------------------------------------------------------------
@@ -389,8 +410,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	animate : ($element = 'this', $params = {}, $speed = '', $extra = '') =>
-		return @.js._animate($element, $params, $speed, $extra)
+	animate : ($element = 'this', $params = {}, $speed = '', $extra = '') ->
+		return @js._animate($element, $params, $speed, $extra)
 		
 	
 	#  --------------------------------------------------------------------
@@ -406,8 +427,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	fadeIn : ($element = 'this', $speed = '', $callback = '') =>
-		return @.js._fadeIn($element, $speed, $callback)
+	fadeIn : ($element = 'this', $speed = '', $callback = '') ->
+		return @js._fadeIn($element, $speed, $callback)
 		
 	
 	#  --------------------------------------------------------------------
@@ -423,8 +444,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	fadeOut : ($element = 'this', $speed = '', $callback = '') =>
-		return @.js._fadeOut($element, $speed, $callback)
+	fadeOut : ($element = 'this', $speed = '', $callback = '') ->
+		return @js._fadeOut($element, $speed, $callback)
 		
 	#  --------------------------------------------------------------------
 	
@@ -439,8 +460,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	slideUp : ($element = 'this', $speed = '', $callback = '') =>
-		return @.js._slideUp($element, $speed, $callback)
+	slideUp : ($element = 'this', $speed = '', $callback = '') ->
+		return @js._slideUp($element, $speed, $callback)
 		
 		
 	
@@ -456,8 +477,8 @@ class CI_Javascript
 	# @param	string	- Class to add
 	# @return	string
 	#
-	removeClass : ($element = 'this', $class = '') =>
-		return @.js._removeClass($element, $class)
+	removeClass : ($element = 'this', $class = '') ->
+		return @js._removeClass($element, $class)
 		
 	
 	#  --------------------------------------------------------------------
@@ -473,8 +494,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	slideDown : ($element = 'this', $speed = '', $callback = '') =>
-		return @.js._slideDown($element, $speed, $callback)
+	slideDown : ($element = 'this', $speed = '', $callback = '') ->
+		return @js._slideDown($element, $speed, $callback)
 		
 	
 	#  --------------------------------------------------------------------
@@ -490,8 +511,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	slideToggle : ($element = 'this', $speed = '', $callback = '') =>
-		return @.js._slideToggle($element, $speed, $callback)
+	slideToggle : ($element = 'this', $speed = '', $callback = '') ->
+		return @js._slideToggle($element, $speed, $callback)
 		
 		
 	
@@ -508,8 +529,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	hide : ($element = 'this', $speed = '', $callback = '') =>
-		return @.js._hide($element, $speed, $callback)
+	hide : ($element = 'this', $speed = '', $callback = '') ->
+		return @js._hide($element, $speed, $callback)
 		
 	
 	#  --------------------------------------------------------------------
@@ -523,8 +544,8 @@ class CI_Javascript
 	# @param	string	- element
 	# @return	string
 	#
-	toggle : ($element = 'this') =>
-		return @.js._toggle($element)
+	toggle : ($element = 'this') ->
+		return @js._toggle($element)
 		
 		
 	
@@ -539,8 +560,8 @@ class CI_Javascript
 	# @param	string	- element
 	# @return	string
 	#
-	toggleClass : ($element = 'this', $class = '') =>
-		return @.js._toggleClass($element, $class)
+	toggleClass : ($element = 'this', $class = '') ->
+		return @js._toggleClass($element, $class)
 		
 	
 	#  --------------------------------------------------------------------
@@ -556,8 +577,8 @@ class CI_Javascript
 	# @param	string	- Javascript callback function
 	# @return	string
 	#
-	show : ($element = 'this', $speed = '', $callback = '') =>
-		return @.js._show($element, $speed, $callback)
+	show : ($element = 'this', $speed = '', $callback = '') ->
+		return @js._show($element, $speed, $callback)
 		
 	
 	
@@ -572,8 +593,8 @@ class CI_Javascript
 	# @param	string	The element to attach the event to
 	# @return	string
 	#
-	compile : ($view_var = 'script_foot', $script_tags = TRUE) =>
-		@.js._compile($view_var, $script_tags)
+	compile : ($view_var = 'script_foot', $script_tags = true) ->
+		@js._compile($view_var, $script_tags)
 		
 	
 	#
@@ -584,8 +605,8 @@ class CI_Javascript
 	# @access	public
 	# @return	void
 	#
-	clear_compile :  =>
-		@.js._clear_compile()
+	clear_compile :  ->
+		@js._clear_compile()
 		
 	
 	#  --------------------------------------------------------------------
@@ -599,27 +620,27 @@ class CI_Javascript
 	# @param	string	The element to attach the event to
 	# @return	string
 	#
-	external : ($external_file = '', $relative = FALSE) =>
+	external : ($external_file = '', $relative = false) ->
 		if $external_file isnt ''
-			@._javascript_location = $external_file
+			@_javascript_location = $external_file
 			
 		else 
-			if @.CI.config.item('javascript_location') isnt ''
-				@._javascript_location = @.CI.config.item('javascript_location')
+			if @CI.config.item('javascript_location') isnt ''
+				@_javascript_location = @CI.config.item('javascript_location')
 				
 			
 		
-		if $relative is TRUE or strncmp($external_file, 'http://', 7) is 0 or strncmp($external_file, 'https://', 8) is 0
-			$str = @._open_script($external_file)
+		if $relative is true or strncmp($external_file, 'http://', 7) is 0 or strncmp($external_file, 'https://', 8) is 0
+			$str = @_open_script($external_file)
 			
-		else if strpos(@._javascript_location, 'http://') isnt FALSE
-			$str = @._open_script(@._javascript_location + $external_file)
+		else if strpos(@_javascript_location, 'http://') isnt false
+			$str = @_open_script(@_javascript_location + $external_file)
 			
 		else 
-			$str = @._open_script(@.CI.config.slash_item('base_url') + @._javascript_location + $external_file)
+			$str = @_open_script(@CI.config.slash_item('base_url') + @_javascript_location + $external_file)
 			
 		
-		$str+=@._close_script()
+		$str+=@_close_script()
 		return $str
 		
 	
@@ -635,10 +656,13 @@ class CI_Javascript
 	# @param	boolean	If a CDATA section should be added
 	# @return	string
 	#
-	inline : ($script, $cdata = TRUE) =>
-		$str = @._open_script()
-		$str+=($cdata) then \n// <![CDATA[\n{$$script\n// ]]>\n else \n{$$script\n
-$str+=@._close_script()
+	inline : ($script, $cdata = true) ->
+		$str = @_open_script()
+		$str+=($cdata) then \n// <![CDATA[\n{$$script\n// ]]>\n else \n{$$script
+
+register_class 'CI_Javascript', CI_Javascript
+module.exports = CI_Javascript\n
+$str+=@_close_script()
 
 return $str
 }
@@ -654,8 +678,8 @@ return $str
 # @param	string
 # @return	string
 #
-global._open_script = ($src = '') ->
-	$str = '<script type="text/javascript" charset="' + strtolower(@.CI.config.item('charset')) + '"'
+exports._open_script = _open_script = ($src = '') ->
+	$str = '<script type="text/javascript" charset="' + strtolower(@CI.config.item('charset')) + '"'
 	$str+=($src is '') then '>' else ' src="' + $src + '">'
 	return $str
 	
@@ -671,7 +695,7 @@ global._open_script = ($src = '') ->
 # @param	string
 # @return	string
 #
-global._close_script = ($extra = "\n") ->
+exports._close_script = _close_script = ($extra = "\n") ->
 	return </script>$extra
 	
 
@@ -693,8 +717,8 @@ global._close_script = ($extra = "\n") ->
 # @param	string	- Javascript callback function
 # @return	string
 #
-global.update = ($element = 'this', $speed = '', $callback = '') ->
-	return @.js._updater($element, $speed, $callback)
+exports.update = update = ($element = 'this', $speed = '', $callback = '') ->
+	return @js._updater($element, $speed, $callback)
 	
 
 #  --------------------------------------------------------------------
@@ -708,7 +732,7 @@ global.update = ($element = 'this', $speed = '', $callback = '') ->
 # @param	bool	match array types (defaults to objects)
 # @return	string	a json formatted string
 #
-global.generate_json = ($result = NULL, $match_array_type = FALSE) ->
+exports.generate_json = generate_json = ($result = null, $match_array_type = false) ->
 	#  JSON data can optionally be passed to this function
 	#  either as a database result object or an array, or a user supplied array
 	if not is_null($result)
@@ -719,7 +743,7 @@ global.generate_json = ($result = NULL, $match_array_type = FALSE) ->
 			$json_result = $result
 			
 		else 
-			return @._prep_args($result)
+			return @_prep_args($result)
 			
 		
 	else 
@@ -727,21 +751,21 @@ global.generate_json = ($result = NULL, $match_array_type = FALSE) ->
 		
 	
 	$json = {}
-	$_is_assoc = TRUE
+	$_is_assoc = true
 	
 	if not is_array($json_result) and empty($json_result)
 		show_error("Generate JSON Failed - Illegal key, value pair.")
 		
 	else if $match_array_type
-		$_is_assoc = @._is_associative_array($json_result)
+		$_is_assoc = @_is_associative_array($json_result)
 		
 	
-	for $v, $k in as
+	for $k, $v of $json_result
 		if $_is_assoc
-			$json.push @._prep_args($k, TRUE) + ':' + @.generate_json($v, $match_array_type)
+			$json.push @_prep_args($k, true) + ':' + @generate_json($v, $match_array_type)
 			
 		else 
-			$json.push @.generate_json($v, $match_array_type)
+			$json.push @generate_json($v, $match_array_type)
 			
 		
 	
@@ -762,14 +786,14 @@ global.generate_json = ($result = NULL, $match_array_type = FALSE) ->
 # @param	type
 # @return	type
 #
-global._is_associative_array = ($arr) ->
-	for $val, $key in as
+exports._is_associative_array = _is_associative_array = ($arr) ->
+	for $key, $val of array_keys($arr)
 		if $key isnt $val
-			return TRUE
+			return true
 			
 		
 	
-	return FALSE
+	return false
 	
 
 #  --------------------------------------------------------------------
@@ -783,12 +807,12 @@ global._is_associative_array = ($arr) ->
 # @param	type
 # @return	type
 #
-global._prep_args = ($result, $is_key = FALSE) ->
+exports._prep_args = _prep_args = ($result, $is_key = false) ->
 	if is_null($result)
 		return 'null'
 		
 	else if is_bool($result)
-		return if ($result is TRUE) then 'true' else 'false'
+		return if ($result is true) then 'true' else 'false'
 		
 	else if is_string($result) or $is_key
 		return '"' + str_replace(['\\', "\t", "\n", "\r", '"', '/'], ['\\\\', '\\t', '\\n', "\\r", '\"', '\/'], $result) + '"'

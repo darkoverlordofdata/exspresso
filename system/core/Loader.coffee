@@ -3,25 +3,50 @@
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
-# 
-#  This file is a part of Expresso
-# 
+#
+#  This file is a part of Exspresso
+#
 #  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the GNU General Public License Version 3
-# 
+#  it under the terms of the MIT License
+#
 #+--------------------------------------------------------------------+
 #
-#	Loader Class
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{_config_paths, append_output, array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, class_exists, count, db, dbdriver, defined, end, explode, extract, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
+#
+# CodeIgniter
+#
+# An open source application development framework for PHP 5.1.6 or newer
+#
+# @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
+# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		http://codeigniter.com/user_guide/license.html
+# @link		http://codeigniter.com
+# @since		Version 1.0
+# @filesource
+#
+
+#  ------------------------------------------------------------------------
+
+#
+# Loader Class
 #
 # Loads views and files
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
-
-app             = require(BASEPATH + 'core/Exspresso')  # Exspresso application module
-express         = require('express')                    # Express 3.0 Framework
-
+# @package		CodeIgniter
+# @subpackage	Libraries
+# @author		ExpressionEngine Dev Team
+# @category	Loader
+# @link		http://codeigniter.com/user_guide/libraries/loader.html
+#
 class CI_Loader
 
   # All these are set automatically. Don't mess with them.
@@ -138,7 +163,7 @@ class CI_Loader
   #
   # This method is called once in CI_Controller.
   #
-  # @param 	object  CI_Controller class static self
+  # @param 	object  CI  Controller Instance
   # @return 	object
   #
   initialize: (@_CI) ->
@@ -188,7 +213,7 @@ class CI_Loader
   #
   library: ($library = '', $params = null, $object_name = null) ->
 
-    if Array.isArray($library)
+    if is_array($library)
       for $class in $library
         @library $class, $params
       return
@@ -196,7 +221,7 @@ class CI_Loader
     if $library is '' or @_base_classes[$library]?
       return false
 
-    if $params isnt null and not Array.isArray($params)
+    if $params isnt null and not is_array($params)
       $params = null
 
     @_ci_load_class $library, $params, $object_name
@@ -217,7 +242,7 @@ class CI_Loader
   #
   model: ($model, $name = '', $db_conn = false) ->
 
-    if Array.isArray($model)
+    if is_array($model)
       for $babe in $model
         @model $babe
       return
@@ -227,43 +252,49 @@ class CI_Loader
     $path = ''
 
     # Is the model in a sub-folder? If so, parse out the filename and path.
-    if $last_slash = ($model.lastIndexOf('/')) isnt -1
-      # The path is in front of the last slash
-      $path = $model.substr(0, $last_slash + 1)
+    $last_slash = strrpos($model, '/')
+    if $last_slash isnt false
+      #  The path is in front of the last slash
+      $path = substr($model, 0, $last_slash + 1)
 
-      # And the model name behind it
-      $model = $model.substr($last_slash + 1)
+      #  And the model name behind it
+      $model = substr($model, $last_slash + 1)
 
     if $name is '' then $name = $model
 
-    return unless @_ci_models.indexOf($name) is -1
+    if in_array($name, @_ci_models, true)
+      return
 
     if @_CI[$name]?
-      console.log 'The model name you are loading is the name of a resource that is already being used: '+$name
-      return
+      show_error 'The model name you are loading is the name of a resource that is already being used: '+$name
+
 
     for $mod_path in @_ci_model_paths
       if not file_exists($mod_path+'models/'+$path+$model+EXT)
         continue
 
-      if $db_conn isnt false and not Exspresso['CI_DB']?
+      if $db_conn isnt false and not class_exists('CI_DB')
         if $db_conn is true then $db_conn = ''
         @_CI.load.database $db_conn, false, true
 
-      if not Exspresso['CI_Model']?
+      if not class_exists('CI_Model')
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
 
-      @_CI[$name] = new $Model    # create as a property of the Controller
-        load:   @_CI.load         # mixin Loader
-        config: @_CI.config       # mixin Config
+      # Allows models to access CI's loaded classes using the same
+      # syntax as controllers:
+      # TODO: use ownProperty?
+      #       copy libraries
+      @_CI[$name]         = new $Model()
+      @_CI[$name].load    = @_CI.load
+      @_CI[$name].config  = @_CI.config
 
       @_ci_models.push $name
       return
 
     # couldn't find the model
-    console.log 'Unable to locate the model you have specified: '+$model
+    show_error 'Unable to locate the model you have specified: '+$model
 
   ## --------------------------------------------------------------------
 
@@ -282,7 +313,7 @@ class CI_Loader
     # $CI = get_instance()
 
     # Do we even need to load the database class?
-    if Exspresso['CI_DB']? and $return is false and $active_record is null and @_CI['db']?
+    if class_exists('CI_DB') and $return is false and $active_record is null and @_CI['db']?
       return false
 
     DB = require(BASEPATH+'database/DB'+EXT)
@@ -306,13 +337,14 @@ class CI_Loader
   #@
   dbutil: ->
 
-    if not Exspresso['CI_DB']? then @database()
+    if not class_exists('CI_DB')
+      @database()
 
     # $CI = get_instance()
 
-    require_once BASEPATH+'database/DB_utility'+EXT
-    require_once BASEPATH+'database/drivers/'+@_CI.db.dbdriver+'/'+@_CI.db.dbdriver+'_utility'+EXT
-    $class = 'CI_DB_'+@_CI.db.dbdriver+'_utility'
+    require BASEPATH+'database/DB_utility'+EXT
+    $class = require(BASEPATH+'database/drivers/'+@_CI.db.dbdriver+'/'+@_CI.db.dbdriver+'_utility'+EXT)
+    # $class = 'CI_DB_'+@_CI.db.dbdriver+'_utility'
     # ex: CI_DB_sqlite_utility
 
     @_CI.dbutil = new $class()
@@ -360,8 +392,7 @@ class CI_Loader
 
         $base_helper = BASEPATH+'helpers/'+$helper+EXT
         if not file_exists($base_helper)
-          console.log 'Unable to load the requested file: helpers/'+$helper+EXT
-          return
+          show_error 'Unable to load the requested file: helpers/'+$helper+EXT
 
         @_ci_helpers[$helper] = array_merge(require($base_helper), require($ext_helper))
         log_message 'debug', 'Helper loaded: '+$helper
@@ -376,7 +407,7 @@ class CI_Loader
 
       # unable to load the helper
       if not @_ci_helpers[$helper]
-        console.log 'Unable to load the requested file: helpers/'+$helper+EXT
+        show_error 'Unable to load the requested file: helpers/'+$helper+EXT
 
   ## --------------------------------------------------------------------
 
@@ -406,7 +437,7 @@ class CI_Loader
 
       # unable to load the helper
       if not $loaded
-        console.log 'Unable to load the requested file: middleware/'+$middleware+EXT
+        show_error 'Unable to load the requested file: middleware/'+$middleware+EXT
 
   ## --------------------------------------------------------------------
 
@@ -422,7 +453,7 @@ class CI_Loader
 
     # $CI = get_instance()
 
-    if  not Array.isArray($file)
+    if  not is_array($file)
       $file = [$file]
 
     for $langfile in $file
@@ -459,7 +490,7 @@ class CI_Loader
 
   driver: ($library = '', $params = NULL, $object_name = NULL) ->
 
-    if not Exspresso['CI_Driver_Library']?
+    if not class_exists('CI_Driver_Library')
       # we aren't instantiating an object here, that'll be done by the Library itself
       require BASEPATH+'libraries/Driver'+EXT
 
@@ -485,14 +516,16 @@ class CI_Loader
   add_package_path: ($path) ->
 
     $path = rtrim($path, '/')+'/'
-    
-    @_ci_library_paths.unshift($path)
-    @_ci_model_paths.unshift($path)
-    @_ci_helper_paths.unshift($path)
-    
-    # Add config file path
+
+    array_unshift(@_ci_library_paths, $path)
+    array_unshift(@_ci_model_paths, $path)
+    array_unshift(@_ci_helper_paths, $path)
+
+    #  Add config file path
     $config = @_ci_get_component('config')
-    $config.config_paths.unshift($path)
+    array_unshift($config._config_paths, $path)
+
+
 
   #  --------------------------------------------------------------------
 
@@ -523,35 +556,32 @@ class CI_Loader
   #
   remove_package_path : ($path = '', $remove_config_path = true) ->
     $config = @_ci_get_component('config')
-  
+
     if $path is ''
-      @_ci_library_paths.shift()
-      @_ci_model_paths.shift()
-      @_ci_helper_paths.shift()
-      $config._config_paths.shift()
-  
+      $void = array_shift(@_ci_library_paths)
+      $void = array_shift(@_ci_model_paths)
+      $void = array_shift(@_ci_helper_paths)
+      $void = array_shift($config._config_paths)
+
     else
       $path = rtrim($path, '/') + '/'
-  
-      if @_ci_library_paths.indexOf($path) isnt -1
-        @_ci_library_paths = @_remove_path($path, @_ci_library_paths, [APPPATH, BASEPATH])
 
-      if @_ci_helper_paths.indexOf($path) isnt -1
-        @_ci_helper_paths = @_remove_path($path, @_ci_helper_paths, [APPPATH, BASEPATH])
-
-      if @_ci_model_paths.indexOf($path) isnt -1
-        @_ci_model_paths = @_remove_path($path, @_ci_model_paths, [APPPATH])
-
-      if $config._config_paths.indexOf($path) isnt -1
-        $config._config_paths = @_remove_path($path, $config._config_paths, [APPPATH])
+      for $var in ['_ci_library_paths', '_ci_model_paths', '_ci_helper_paths']
+        if ($key = array_search($path, @[$var])) isnt false
+          delete @[$var][$key]
 
 
-  _remove_path: ($key, $original, $keeping = []) ->
 
-    $ret = []
-    for $item in $original
-      $ret.push item unless $item is $key and $keeping.indexOf($item) is -1
-    return $ret
+      if ($key = array_search($path, $config._config_paths)) isnt false
+        delete $config._config_paths[$key]
+
+
+
+    #  make sure the application default paths are still in the array
+    @_ci_library_paths = array_unique(array_merge(@_ci_library_paths, [APPPATH, BASEPATH]))
+    @_ci_helper_paths = array_unique(array_merge(@_ci_helper_paths, [APPPATH, BASEPATH]))
+    @_ci_model_paths = array_unique(array_merge(@_ci_model_paths, [APPPATH]))
+    $config._config_paths = array_unique(array_merge($config._config_paths, [APPPATH]))
 
   #  --------------------------------------------------------------------
 
@@ -570,21 +600,21 @@ class CI_Loader
     #  Get the class name, and while we're at it trim any slashes.
     #  The directory path can be included as part of the class name,
     #  but we don't want a leading slash
-    $class = trim($class.replace(EXT, ''), '/')
+    $class = str_replace(EXT, '', trim($class, '/'))
 
     #  Was the path included with the class name?
     #  We look for a slash to determine this
     $subdir = ''
-    if $last_slash = $class.indexOf('/') isnt -1
+    if ($last_slash = strrpos($class, '/')) isnt false
       #  Extract the path
-      $subdir = $class.substr(0, $last_slash + 1)
+      $subdir = substr($class, 0, $last_slash + 1)
 
       #  Get the filename from the path
-      $class = $class.substr($last_slash + 1)
+      $class = substr($class, $last_slash + 1)
 
 
     #  We'll test for both lowercase and capitalized versions of the file name
-    for $class in [ucfirst($class), $class.toLowerCase()]
+    for $class in [ucfirst($class), strtolower($class)]
       $subclass = APPPATH + 'libraries/' + $subdir + config_item('subclass_prefix') + $class + EXT
 
       #  Is this a class extension request?
@@ -593,16 +623,15 @@ class CI_Loader
 
         if not file_exists($baseclass)
           log_message('error', "Unable to load the requested class: " + $class)
-          return
-          #show_error("Unable to load the requested class: " + $class)
+          show_error("Unable to load the requested class: " + $class)
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if @_ci_loaded_files.indexOf($subclass) isnt -1
+        if in_array($subclass, @_ci_loaded_files)
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
-          if $object_name isnt null
+          if not is_null($object_name)
             # $CI = get_instance()
             if not @_CI[$object_name]?
               return @_ci_init_class($class, config_item('subclass_prefix'), $params, $object_name)
@@ -632,11 +661,11 @@ class CI_Loader
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if @_ci_loaded_files.indexOf($filepath) isnt -1
+        if in_array($filepath, @_ci_loaded_files)
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
-          if $object_name isnt null
+          if not is_null($object_name)
             # $CI = get_instance()
             if not @_CI[$object_name]?
               return @_ci_init_class($class, '', $params, $object_name)
@@ -653,20 +682,21 @@ class CI_Loader
         return @_ci_init_class($class, '', $params, $object_name)
 
 
-    #  END FOREACH
+      #  END FOREACH
 
-    #  One last attempt.  Maybe the library is in a subdirectory, but it wasn't specified?
-    if $subdir is ''
-      $path = $class.toLowerCase() + '/' + $class
-      return @_ci_load_class($path, $params)
+      #  One last attempt.  Maybe the library is in a subdirectory, but it wasn't specified?
+      if $subdir is ''
+        $path = strtolower($class) + '/' + $class
+        return @_ci_load_class($path, $params)
 
 
-    #  If we got this far we were unable to find the requested class.
-    #  We do not issue errors if the load call failed due to a duplicate request
-    if $is_duplicate is false
-      log_message('error', "Unable to load the requested class: " + $class)
-      #show_error("Unable to load the requested class: " + $class)
-    return
+      #  If we got this far we were unable to find the requested class.
+      #  We do not issue errors if the load call failed due to a duplicate request
+      if $is_duplicate is false
+        log_message('error', "Unable to load the requested class: " + $class)
+        show_error("Unable to load the requested class: " + $class)
+
+
 
 
   #  --------------------------------------------------------------------
@@ -687,7 +717,7 @@ class CI_Loader
     #  Fetch the config paths containing any package paths
       $config_component = @_ci_get_component('config')
 
-      if Array.isArray($config_component._config_paths)
+      if is_array($config_component._config_paths)
         #  Break on the first found file, thus package files
         #  are not overridden by default paths
         for $path in $config_component._config_paths
@@ -724,9 +754,7 @@ class CI_Loader
 
     #  Is the class name valid?
     if not class_exists($name)
-      log_message('error', "Non-existent class: " + $name)
-      return
-      #show_error("Non-existent class: " + $class)
+      show_error("Non-existent class: " + $class)
 
 
     #  Set the variable name we will assign the class to
@@ -858,7 +886,7 @@ class CI_Loader
   #
   _ci_prep_filename : ($filename, $extension) ->
 
-    if typeof $filename is 'string'
+    if not is_array($filename)
       return [($filename.replace($extension, '').replace(EXT, '') + $extension).toLowerCase()]
 
     else
@@ -869,7 +897,7 @@ class CI_Loader
 
 # END CI_Load class
 
-Exspresso.CI_Loader = CI_Loader
+register_class 'CI_Loader', CI_Loader
 module.exports =  CI_Loader
 
 # End of file Loader.coffee

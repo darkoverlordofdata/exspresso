@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  directory_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{closedir, defined, function_exists, is_dir, opendir, readdir, rtrim, trim}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -40,10 +61,10 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	array
 #
 if not function_exists('directory_map')
-	global.directory_map = ($source_dir, $directory_depth = 0, $hidden = FALSE) ->
-		if $fp = opendir($source_dir)) then $filedata = {}$new_depth = $directory_depth - 1$source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATORwhile FALSE isnt ($file = readdir($fp))
+	exports.directory_map = directory_map = ($source_dir, $directory_depth = 0, $hidden = false) ->
+		if $fp = opendir($source_dir)) then $filedata = {}$new_depth = $directory_depth - 1$source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATORwhile false isnt ($file = readdir($fp))
 			#  Remove '.', '..', and hidden files [optional]
-			if not trim($file, '.') or ($hidden is FALSE and $file[0] is '.')
+			if not trim($file, '.') or ($hidden is false and $file[0] is '.')
 				continue
 				
 			
@@ -57,7 +78,7 @@ if not function_exists('directory_map')
 		return $filedata
 		}
 		
-		return FALSE
+		return false
 		
 	
 

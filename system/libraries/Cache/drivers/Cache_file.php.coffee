@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Cache_file.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, cache_info, chmod, clean, config, defined, delete, delete_files, file_exists, filemtime, get, get_dir_file_info, get_instance, get_metadata, helper, is_array, is_supported, item, load, read_file, save, serialize, time, unlink, unserialize, write_file}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -25,9 +46,9 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link
 #
 
-class CI_Cache_fileextends CI_Driver
+class CI_Cache_file extends CI_Driver
 	
-	$_cache_path: {}
+	_cache_path: {}
 	
 	#
 	# Constructor
@@ -39,7 +60,7 @@ class CI_Cache_fileextends CI_Driver
 	
 	$path = $CI.config.item('cache_path')
 	
-	@._cache_path = if ($path is '') then APPPATH + 'cache/' else $path
+	@_cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -52,16 +73,16 @@ class CI_Cache_fileextends CI_Driver
 	#
 	get($id)
 	{
-	if not file_exists(@._cache_path + $id)
-		return FALSE
+	if not file_exists(@_cache_path + $id)
+		return false
 		
 	
-	$data = read_file(@._cache_path + $id)
+	$data = read_file(@_cache_path + $id)
 	$data = unserialize($data)
 	
 	if time() > $data['time'] + $data['ttl']
-		unlink(@._cache_path + $id)
-		return FALSE
+		unlink(@_cache_path + $id)
+		return false
 		
 	
 	return $data['data']
@@ -86,12 +107,12 @@ class CI_Cache_fileextends CI_Driver
 	'data':$data
 	)
 	
-	if write_file(@._cache_path + $id, serialize($contents))
-		chmod(@._cache_path + $id, 0o0777)
-		return TRUE
+	if write_file(@_cache_path + $id, serialize($contents))
+		chmod(@_cache_path + $id, 0o0777)
+		return true
 		
 	
-	return FALSE
+	return false
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -104,7 +125,7 @@ class CI_Cache_fileextends CI_Driver
 	#
 	delete($id)
 	{
-	return unlink(@._cache_path + $id)
+	return unlink(@_cache_path + $id)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -116,7 +137,7 @@ class CI_Cache_fileextends CI_Driver
 	#
 	clean()
 	{
-	return delete_files(@._cache_path)
+	return delete_files(@_cache_path)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -129,9 +150,9 @@ class CI_Cache_fileextends CI_Driver
 	# @param 	string	user/filehits
 	# @return 	mixed 	FALSE
 	#
-	cache_info($type = NULL)
+	cache_info($type = null)
 	{
-	return get_dir_file_info(@._cache_path)
+	return get_dir_file_info(@_cache_path)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -144,19 +165,19 @@ class CI_Cache_fileextends CI_Driver
 	#
 	get_metadata($id)
 	{
-	if not file_exists(@._cache_path + $id)
-		return FALSE
+	if not file_exists(@_cache_path + $id)
+		return false
 		
 	
-	$data = read_file(@._cache_path + $id)
+	$data = read_file(@_cache_path + $id)
 	$data = unserialize($data)
 	
 	if is_array($data)
 		$data = $data['data']
-		$mtime = filemtime(@._cache_path + $id)
+		$mtime = filemtime(@_cache_path + $id)
 		
 		if not $data['ttl']? 
-			return FALSE
+			return false
 			
 		
 		return 
@@ -165,7 +186,7 @@ class CI_Cache_fileextends CI_Driver
 			
 		
 	
-	return FALSE
+	return false
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -179,11 +200,14 @@ class CI_Cache_fileextends CI_Driver
 	#
 	is_supported()
 	{
-	return is_really_writable(@._cache_path)
+	return is_really_writable(@_cache_path)
 	}
 	
 	#  ------------------------------------------------------------------------
 	
+
+register_class 'CI_Cache_file', CI_Cache_file
+module.exports = CI_Cache_file
 #  End Class
 
 #  End of file Cache_file.php 

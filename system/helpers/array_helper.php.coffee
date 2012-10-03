@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  array_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_rand, defined, function_exists, is_array}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -40,7 +61,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	mixed	depends on what the array contains
 #
 if not function_exists('element')
-	global.element = ($item, $array, $default = FALSE) ->
+	exports.element = element = ($item, $array, $default = false) ->
 		if not $array[$item]?  or $array[$item] is ""
 			return $default
 			
@@ -59,7 +80,7 @@ if not function_exists('element')
 # @return	mixed	depends on what the array contains
 #
 if not function_exists('random_element')
-	global.random_element = ($array) ->
+	exports.random_element = random_element = ($array) ->
 		if not is_array($array)
 			return $array
 			
@@ -83,14 +104,14 @@ if not function_exists('random_element')
 # @return	mixed	depends on what the array contains
 #
 if not function_exists('elements')
-	global.elements = ($items, $array, $default = FALSE) ->
+	exports.elements = elements = ($items, $array, $default = false) ->
 		$return = {}
 		
 		if not is_array($items)
 			$items = [$items]
 			
 		
-		for $item in as
+		for $item in $items
 			if $array[$item]? 
 				$return[$item] = $array[$item]
 				

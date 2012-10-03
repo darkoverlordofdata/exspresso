@@ -1,3 +1,23 @@
+#+--------------------------------------------------------------------+
+#  ftp_lang.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
+
 
 exports['ftp_no_connection'] = "Unable to locate a valid connection ID. Please make sure you are connected before peforming any file routines."
 exports['ftp_unable_to_connect'] = "Unable to connect to your FTP server using the supplied hostname."

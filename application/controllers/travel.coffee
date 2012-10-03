@@ -33,6 +33,7 @@ class Travel extends CI_Controller
 
     super()
     @load.model 'Travel'
+    @Travel.initialize()
 
   ## --------------------------------------------------------------------
 

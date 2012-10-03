@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Parser.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{append_output, defined, get_instance, is_array, load, output, parse, preg_match, preg_quote, str_replace, view}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -26,9 +47,9 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_Parser
 	
-	$l_delim: '{'
-	$r_delim: '}'
-	$object: {}
+	l_delim: '{'
+	r_delim: '}'
+	object: {}
 	
 	#
 	#  Parse a template
@@ -42,12 +63,12 @@ class CI_Parser
 	# @param	bool
 	# @return	string
 	#
-	parse($template, $data, $return = FALSE)
+	parse($template, $data, $return = false)
 	{
 	$CI = get_instance()
-	$template = $CI.load.view($template, $data, TRUE)
+	$template = $CI.load.view($template, $data, true)
 	
-	return @._parse($template, $data, $return)
+	return @_parse($template, $data, $return)
 	}
 	
 	#  --------------------------------------------------------------------
@@ -64,8 +85,8 @@ class CI_Parser
 	# @param	bool
 	# @return	string
 	#
-	parse_string : ($template, $data, $return = FALSE) =>
-		return @._parse($template, $data, $return)
+	parse_string : ($template, $data, $return = false) ->
+		return @_parse($template, $data, $return)
 		
 	
 	#  --------------------------------------------------------------------
@@ -82,21 +103,21 @@ class CI_Parser
 	# @param	bool
 	# @return	string
 	#
-	_parse : ($template, $data, $return = FALSE) =>
+	_parse : ($template, $data, $return = false) ->
 		if $template is ''
-			return FALSE
+			return false
 			
 		
-		for $val, $key in as
+		for $key, $val of $data
 			if is_array($val)
-				$template = @._parse_pair($key, $val, $template)
+				$template = @_parse_pair($key, $val, $template)
 				
 			else 
-				$template = @._parse_single($key, ''+$val, $template)
+				$template = @_parse_single($key, ''+$val, $template)
 				
 			
 		
-		if $return is FALSE
+		if $return is false
 			$CI = get_instance()
 			$CI.output.append_output($template)
 			
@@ -114,9 +135,9 @@ class CI_Parser
 	# @param	string
 	# @return	void
 	#
-	set_delimiters : ($l = '{', $r = '}') =>
-		@.l_delim = $l
-		@.r_delim = $r
+	set_delimiters : ($l = '{', $r = '}') ->
+		@l_delim = $l
+		@r_delim = $r
 		
 	
 	#  --------------------------------------------------------------------
@@ -130,8 +151,8 @@ class CI_Parser
 	# @param	string
 	# @return	string
 	#
-	_parse_single : ($key, $val, $string) =>
-		return str_replace(@.l_delim + $key + @.r_delim, $val, $string)
+	_parse_single : ($key, $val, $string) ->
+		return str_replace(@l_delim + $key + @r_delim, $val, $string)
 		
 	
 	#  --------------------------------------------------------------------
@@ -147,20 +168,20 @@ class CI_Parser
 	# @param	string
 	# @return	string
 	#
-	_parse_pair : ($variable, $data, $string) =>
-		if FALSE is ($match = @._match_pair($string, $variable))
+	_parse_pair : ($variable, $data, $string) ->
+		if false is ($match = @_match_pair($string, $variable))
 			return $string
 			
 		
 		$str = ''
-		for $row in as
+		for $row in $data
 			$temp = $match['1']
-			for $val, $key in as
+			for $key, $val of $row
 				if not is_array($val)
-					$temp = @._parse_single($key, $val, $temp)
+					$temp = @_parse_single($key, $val, $temp)
 					
 				else 
-					$temp = @._parse_pair($key, $val, $temp)
+					$temp = @_parse_pair($key, $val, $temp)
 					
 				
 			
@@ -180,15 +201,18 @@ class CI_Parser
 	# @param	string
 	# @return	mixed
 	#
-	_match_pair : ($string, $variable) =>
-		if not preg_match("|" + preg_quote(@.l_delim) + $variable + preg_quote(@.r_delim) + "(.+?)" + preg_quote(@.l_delim) + '/' + $variable + preg_quote(@.r_delim) + "|s", $string, $match)
-			return FALSE
+	_match_pair : ($string, $variable) ->
+		if not preg_match("|" + preg_quote(@l_delim) + $variable + preg_quote(@r_delim) + "(.+?)" + preg_quote(@l_delim) + '/' + $variable + preg_quote(@r_delim) + "|s", $string, $match)
+			return false
 			
 		
 		return $match
 		
 	
 	
+
+register_class 'CI_Parser', CI_Parser
+module.exports = CI_Parser
 #  END Parser Class
 
 #  End of file Parser.php 

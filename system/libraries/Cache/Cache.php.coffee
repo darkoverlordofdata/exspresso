@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Cache.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, __get, _initialize, cache_info, clean, defined, delete, get, get_metadata, in_array, is_supported, parent, save}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -24,15 +45,15 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link
 #
-class CI_Cacheextends CI_Driver_Library
+class CI_Cache extends CI_Driver_Library
 	
-	$valid_drivers: [
+	valid_drivers: [
 		'cache_apc', 'cache_file', 'cache_memcached', 'cache_dummy'
 		]
 	
-	$_cache_path: NULL#  Path of cache files (if file-based cache)
-	$_adapter: 'dummy'
-	$_backup_driver: {}
+	_cache_path: null#  Path of cache files (if file-based cache)
+	_adapter: 'dummy'
+	_backup_driver: {}
 	
 	#  ------------------------------------------------------------------------
 	
@@ -44,7 +65,7 @@ class CI_Cacheextends CI_Driver_Library
 	__construct($config = {})
 	{
 	if not empty($config)
-		@._initialize($config)
+		@_initialize($config)
 		
 	}
 	
@@ -61,7 +82,7 @@ class CI_Cacheextends CI_Driver_Library
 	#
 	get($id)
 	{
-	return @.{@._adapter}.get($id)
+	return @{@_adapter}.get($id)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -77,7 +98,7 @@ class CI_Cacheextends CI_Driver_Library
 	#
 	save($id, $data, $ttl = 60)
 	{
-	return @.{@._adapter}.save($id, $data, $ttl)
+	return @{@_adapter}.save($id, $data, $ttl)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -90,7 +111,7 @@ class CI_Cacheextends CI_Driver_Library
 	#
 	delete($id)
 	{
-	return @.{@._adapter}.delete($id)
+	return @{@_adapter}.delete($id)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -102,7 +123,7 @@ class CI_Cacheextends CI_Driver_Library
 	#
 	clean()
 	{
-	return @.{@._adapter}.clean()
+	return @{@_adapter}.clean()
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -115,7 +136,7 @@ class CI_Cacheextends CI_Driver_Library
 	#
 	cache_info($type = 'user')
 	{
-	return @.{@._adapter}.cache_info($type)
+	return @{@_adapter}.cache_info($type)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -128,7 +149,7 @@ class CI_Cacheextends CI_Driver_Library
 	#
 	get_metadata($id)
 	{
-	return @.{@._adapter}.get_metadata($id)
+	return @{@_adapter}.get_metadata($id)
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -148,17 +169,17 @@ class CI_Cacheextends CI_Driver_Library
 		'memcached'
 		]
 	
-	for $key in as
+	for $key in $default_config
 		if $config[$key]? 
 			$param = '_' + $key
 			
-			@.{$param} = $config[$key]
+			@{$param} = $config[$key]
 			
 		
 	
 	if $config['backup']? 
-		if in_array('cache_' + $config['backup'], @.valid_drivers)
-			@._backup_driver = $config['backup']
+		if in_array('cache_' + $config['backup'], @valid_drivers)
+			@_backup_driver = $config['backup']
 			
 		
 	}
@@ -173,10 +194,10 @@ class CI_Cacheextends CI_Driver_Library
 	#
 	is_supported($driver)
 	{
-	@$support = @$support ?  = {}
+	@$support = @$support ? {} = {}
 	
 	if not $support[$driver]? 
-		$support[$driver] = @.{$driver}.is_supported()
+		$support[$driver] = @{$driver}.is_supported()
 		
 	
 	return $support[$driver]
@@ -194,8 +215,8 @@ class CI_Cacheextends CI_Driver_Library
 	{
 	$obj = parent::__get($child)
 	
-	if not @.is_supported($child)
-		@._adapter = @._backup_driver
+	if not @is_supported($child)
+		@_adapter = @_backup_driver
 		
 	
 	return $obj
@@ -203,6 +224,9 @@ class CI_Cacheextends CI_Driver_Library
 	
 	#  ------------------------------------------------------------------------
 	
+
+register_class 'CI_Cache', CI_Cache
+module.exports = CI_Cache
 #  End Class
 
 #  End of file Cache.php 

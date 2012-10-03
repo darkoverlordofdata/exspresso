@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  url_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{array_reverse, config, count, defined, function_exists, get_instance, header, is_array, is_string, item, ob_end_clean, ob_get_contents, ob_start, ord, parse_url, preg_match, preg_match_all, preg_replace, slash_item, str_replace, strip_tags, stripslashes, strlen, strtolower, substr, trim, uri}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -38,7 +59,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	string
 #
 if not function_exists('site_url')
-	global.site_url = ($uri = '') ->
+	exports.site_url = site_url = ($uri = '') ->
 		$CI = get_instance()
 		return $CI.config.site_url($uri)
 		
@@ -55,7 +76,7 @@ if not function_exists('site_url')
 # @return	string
 #
 if not function_exists('base_url')
-	global.base_url =  ->
+	exports.base_url = base_url =  ->
 		$CI = get_instance()
 		return $CI.config.slash_item('base_url')
 		
@@ -73,7 +94,7 @@ if not function_exists('base_url')
 # @return	string
 #
 if not function_exists('current_url')
-	global.current_url =  ->
+	exports.current_url = current_url =  ->
 		$CI = get_instance()
 		return $CI.config.site_url($CI.uri.uri_string())
 		
@@ -89,7 +110,7 @@ if not function_exists('current_url')
 # @return	string
 #
 if not function_exists('uri_string')
-	global.uri_string =  ->
+	exports.uri_string = uri_string =  ->
 		$CI = get_instance()
 		return $CI.uri.uri_string()
 		
@@ -106,7 +127,7 @@ if not function_exists('uri_string')
 # @return	string
 #
 if not function_exists('index_page')
-	global.index_page =  ->
+	exports.index_page = index_page =  ->
 		$CI = get_instance()
 		return $CI.config.item('index_page')
 		
@@ -126,7 +147,7 @@ if not function_exists('index_page')
 # @return	string
 #
 if not function_exists('anchor')
-	global.anchor = ($uri = '', $title = '', $attributes = '') ->
+	exports.anchor = anchor = ($uri = '', $title = '', $attributes = '') ->
 		$title = ''+$title
 		
 		if not is_array($uri)
@@ -163,7 +184,7 @@ if not function_exists('anchor')
 # @return	string
 #
 if not function_exists('anchor_popup')
-	global.anchor_popup = ($uri = '', $title = '', $attributes = FALSE) ->
+	exports.anchor_popup = anchor_popup = ($uri = '', $title = '', $attributes = false) ->
 		$title = ''+$title
 		
 		$site_url = if ( not preg_match('!^\w+://! i', $uri)) then site_url($uri) else $uri
@@ -172,7 +193,7 @@ if not function_exists('anchor_popup')
 			$title = $site_url
 			
 		
-		if $attributes is FALSE
+		if $attributes is false
 			return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank');\">" + $title + "</a>"
 			
 		
@@ -180,7 +201,7 @@ if not function_exists('anchor_popup')
 			$attributes = {}
 			
 		
-		for $val, $key in as
+		for $key, $val of 'width':'800', 'height':'600', 'scrollbars':'yes', 'status':'yes', 'resizable':'yes', 'screenx':'0', 'screeny':'0', 
 			$atts[$key] = if ( not $attributes[$key]? ) then $val else $attributes[$key]
 			delete $attributes[$key]
 			
@@ -189,7 +210,7 @@ if not function_exists('anchor_popup')
 			$attributes = _parse_attributes($attributes)
 			
 		
-		return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank', '" + _parse_attributes($atts, TRUE) + ');\"$attributes> + $title + "</a>"
+		return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank', '" + _parse_attributes($atts, true) + ');\"$attributes> + $title + "</a>"
 		
 	
 
@@ -205,7 +226,7 @@ if not function_exists('anchor_popup')
 # @return	string
 #
 if not function_exists('mailto')
-	global.mailto = ($email, $title = '', $attributes = '') ->
+	exports.mailto = mailto = ($email, $title = '', $attributes = '') ->
 		$title = ''+$title
 		
 		if $title is ""
@@ -232,7 +253,7 @@ if not function_exists('mailto')
 # @return	string
 #
 if not function_exists('safe_mailto')
-	global.safe_mailto = ($email, $title = '', $attributes = '') ->
+	exports.safe_mailto = safe_mailto = ($email, $title = '', $attributes = '') ->
 		$title = ''+$title
 		
 		if $title is ""
@@ -253,7 +274,7 @@ if not function_exists('safe_mailto')
 		
 		if $attributes isnt ''
 			if is_array($attributes)
-				for $val, $key in as
+				for $key, $val of $attributes
 					$x.push ' ' + $key + '="'
 					($i = 0$i < strlen($val)$i++)
 					{
@@ -301,7 +322,7 @@ if not function_exists('safe_mailto')
 		ob_start()
 		
 		$i = 0
-		for $val in as echo $i++echo $val
+		for $val in $x echo $i++echo $val
 		$buffer = ob_get_contents()
 		ob_end_clean()
 		return $buffer
@@ -325,10 +346,10 @@ if not function_exists('safe_mailto')
 # @return	string
 #
 if not function_exists('auto_link')
-	global.auto_link = ($str, $type = 'both', $popup = FALSE) ->
+	exports.auto_link = auto_link = ($str, $type = 'both', $popup = false) ->
 		if $type isnt 'email'
 			if preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches)
-				$pop = if ($popup is TRUE) then " target=\"_blank\" " else ""
+				$pop = if ($popup is true) then " target=\"_blank\" " else ""
 				
 				($i = 0$i < count($matches['0'])$i++)
 				{
@@ -374,7 +395,7 @@ if not function_exists('auto_link')
 # @return	string
 #
 if not function_exists('prep_url')
-	global.prep_url = ($str = '') ->
+	exports.prep_url = prep_url = ($str = '') ->
 		if $str is 'http://' or $str is ''
 			return ''
 			
@@ -404,7 +425,7 @@ if not function_exists('prep_url')
 # @return	string
 #
 if not function_exists('url_title')
-	global.url_title = ($str, $separator = 'dash', $lowercase = FALSE) ->
+	exports.url_title = url_title = ($str, $separator = 'dash', $lowercase = false) ->
 		if $separator is 'dash'
 			$search = '_'
 			$replace = '-'
@@ -427,11 +448,11 @@ if not function_exists('url_title')
 		
 		$str = strip_tags($str)
 		
-		for $val, $key in as
+		for $key, $val of $trans
 			$str = preg_replace("#" + $key + "#i", $val, $str)
 			
 		
-		if $lowercase is TRUE
+		if $lowercase is true
 			$str = strtolower($str)
 			
 		
@@ -454,7 +475,7 @@ if not function_exists('url_title')
 # @return	string
 #
 if not function_exists('redirect')
-	global.redirect = ($uri = '', $method = 'location', $http_response_code = 302) ->
+	exports.redirect = redirect = ($uri = '', $method = 'location', $http_response_code = 302) ->
 		if not preg_match('#^https?://#i', $uri)
 			$uri = site_url($uri)
 			
@@ -462,7 +483,7 @@ if not function_exists('redirect')
 		switch $method
 			when 'refresh'header("Refresh:0;url=" + $uri)
 				
-			elseheader("Location: " + $uri, TRUE, $http_response_code)
+			elseheader("Location: " + $uri, true, $http_response_code)
 				
 				
 		die()
@@ -482,14 +503,14 @@ if not function_exists('redirect')
 # @return	string
 #
 if not function_exists('_parse_attributes')
-	global._parse_attributes = ($attributes, $javascript = FALSE) ->
+	exports._parse_attributes = _parse_attributes = ($attributes, $javascript = false) ->
 		if is_string($attributes)
 			return if ($attributes isnt '') then ' ' + $attributes else ''
 			
 		
 		$att = ''
-		for $val, $key in as
-			if $javascript is TRUE
+		for $key, $val of $attributes
+			if $javascript is true
 				$att+=$key + '=' + $val + ','
 				
 			else 
@@ -497,7 +518,7 @@ if not function_exists('_parse_attributes')
 				
 			
 		
-		if $javascript is TRUE and $att isnt ''
+		if $javascript is true and $att isnt ''
 			$att = substr($att, 0,  - 1)
 			
 		

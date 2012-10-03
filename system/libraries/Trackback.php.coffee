@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Trackback.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, array_unique, array_walk, count, defined, explode, fclose, feof, fgets, fputs, fsockopen, function_exists, is_array, is_numeric, mb_convert_encoding, ord, parse_url, preg_match, preg_replace, preg_split, rawurlencode, rtrim, str_replace, strip_tags, stripslashes, stristr, strlen, strpos, strtoupper, substr, trim}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -28,12 +49,12 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_Trackback
 	
-	$time_format: 'local'
-	$charset: 'UTF-8'
-	$data: 'url':'', 'title':'', 'excerpt':'', 'blog_name':'', 'charset':''
-	$convert_ascii: TRUE
-	$response: ''
-	$error_msg: {}
+	time_format: 'local'
+	charset: 'UTF-8'
+	data: 'url':'', 'title':'', 'excerpt':'', 'blog_name':'', 'charset':''
+	convert_ascii: true
+	response: ''
+	error_msg: {}
 	
 	#
 	# Constructor
@@ -54,55 +75,55 @@ class CI_Trackback
 	# @param	array
 	# @return	bool
 	#
-	send : ($tb_data) =>
+	send : ($tb_data) ->
 		if not is_array($tb_data)
-			@.set_error('The send() method must be passed an array')
-			return FALSE
+			@set_error('The send() method must be passed an array')
+			return false
 			
 		
 		#  Pre-process the Trackback Data
-		for $item in as
+		for $item in ['url', 'title', 'excerpt', 'blog_name', 'ping_url']
 			if not $tb_data[$item]? 
-				@.set_error('Required item missing: ' + $item)
-				return FALSE
+				@set_error('Required item missing: ' + $item)
+				return false
 				
 			
 			switch $item
-				when 'ping_url'$item = @.extract_urls($tb_data[$item])
+				when 'ping_url'$item = @extract_urls($tb_data[$item])
 					
-				when 'excerpt'$item = @.limit_characters(@.convert_xml(strip_tags(stripslashes($tb_data[$item]))))
+				when 'excerpt'$item = @limit_characters(@convert_xml(strip_tags(stripslashes($tb_data[$item]))))
 					
-				when 'url'$item = str_replace('&#45;', '-', @.convert_xml(strip_tags(stripslashes($tb_data[$item]))))
+				when 'url'$item = str_replace('&#45;', '-', @convert_xml(strip_tags(stripslashes($tb_data[$item]))))
 					
-				else$item = @.convert_xml(strip_tags(stripslashes($tb_data[$item])))
+				else$item = @convert_xml(strip_tags(stripslashes($tb_data[$item])))
 					
 					
 			
 			#  Convert High ASCII Characters
-			if @.convert_ascii is TRUE
+			if @convert_ascii is true
 				if $item is 'excerpt'
-					$item = @.convert_ascii($item)
+					$item = @convert_ascii($item)
 					
 				else if $item is 'title'
-					$item = @.convert_ascii($item)
+					$item = @convert_ascii($item)
 					
 				else if $item is 'blog_name'
-					$item = @.convert_ascii($item)
+					$item = @convert_ascii($item)
 					
 				
 			
 		
 		#  Build the Trackback data string
-		$charset = if ( not $tb_data['charset']? ) then @.charset else $tb_data['charset']
+		$charset = if ( not $tb_data['charset']? ) then @charset else $tb_data['charset']
 		
 		$data = "url=" + rawurlencode($url) + "&title=" + rawurlencode($title) + "&blog_name=" + rawurlencode($blog_name) + "&excerpt=" + rawurlencode($excerpt) + "&charset=" + rawurlencode($charset)
 		
 		#  Send Trackback(s)
-		$return = TRUE
+		$return = true
 		if count($ping_url) > 0
-			for $url in as
-				if @.process($url, $data) is FALSE
-					$return = FALSE
+			for $url in $ping_url
+				if @process($url, $data) is false
+					$return = false
 					
 				
 			
@@ -123,29 +144,29 @@ class CI_Trackback
 	# @access	public
 	# @return	bool
 	#
-	receive :  =>
-		for $val in as
+	receive :  ->
+		for $val in ['url', 'title', 'blog_name', 'excerpt']
 			if not $_POST[$val]?  or $_POST[$val] is ''
-				@.set_error('The following required POST variable is missing: ' + $val)
-				return FALSE
+				@set_error('The following required POST variable is missing: ' + $val)
+				return false
 				
 			
-			@.data['charset'] = if ( not $_POST['charset']? ) then 'auto' else strtoupper(trim($_POST['charset']))
+			@data['charset'] = if ( not $_POST['charset']? ) then 'auto' else strtoupper(trim($_POST['charset']))
 			
 			if $val isnt 'url' and function_exists('mb_convert_encoding')
-				$_POST[$val] = mb_convert_encoding($_POST[$val], @.charset, @.data['charset'])
+				$_POST[$val] = mb_convert_encoding($_POST[$val], @charset, @data['charset'])
 				
 			
-			$_POST[$val] = if ($val isnt 'url') then @.convert_xml(strip_tags($_POST[$val])) else strip_tags($_POST[$val])
+			$_POST[$val] = if ($val isnt 'url') then @convert_xml(strip_tags($_POST[$val])) else strip_tags($_POST[$val])
 			
 			if $val is 'excerpt'
-				$_POST['excerpt'] = @.limit_characters($_POST['excerpt'])
+				$_POST['excerpt'] = @limit_characters($_POST['excerpt'])
 				
 			
-			@.data[$val] = $_POST[$val]
+			@data[$val] = $_POST[$val]
 			
 		
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -161,7 +182,7 @@ class CI_Trackback
 	# @param	string
 	# @return	void
 	#
-	send_error : ($message = 'Incomplete Information') =>
+	send_error : ($message = 'Incomplete Information') ->
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?" + ">\n<response>\n<error>1</error>\n<message>" + $message + "</message>\n</response>"
 		die()
 		
@@ -177,7 +198,7 @@ class CI_Trackback
 	# @access	public
 	# @return	void
 	#
-	send_success :  =>
+	send_success :  ->
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?" + ">\n<response>\n<error>0</error>\n</response>"
 		die()
 		
@@ -191,8 +212,8 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	data : ($item) =>
-		return if ( not @.data[$item]? ) then '' else @.data[$item]
+	data : ($item) ->
+		return if ( not @data[$item]? ) then '' else @data[$item]
 		
 	
 	#  --------------------------------------------------------------------
@@ -208,12 +229,12 @@ class CI_Trackback
 	# @param	string
 	# @return	bool
 	#
-	process : ($url, $data) =>
+	process : ($url, $data) ->
 		$target = parse_url($url)
 		
 		#  Open the socket
-		if not $fp = fsockopen($target['host'], 80)) then @.set_error('Invalid Connection: ' + $url)
-		return FALSE
+		if not $fp = fsockopen($target['host'], 80)) then @set_error('Invalid Connection: ' + $url)
+		return false
 		}
 		
 		#  Build the path
@@ -222,7 +243,7 @@ class CI_Trackback
 		$path = if ($target['query']?  and $target['query'] isnt "") then $ppath + '?' + $target['query'] else $ppath
 		
 		#  Add the Trackback ID to the data string
-		if $id = @.get_id($url)) then $data = "tb_id=" + $id + "&" + $data}fputs($fp, "POST " + $path + " HTTP/1.0\r\n")#  Transfer the data
+		if $id = @get_id($url)) then $data = "tb_id=" + $id + "&" + $data}fputs($fp, "POST " + $path + " HTTP/1.0\r\n")#  Transfer the data
 		fputs($fp, "Host: " + $target['host'] + "\r\n")
 		fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n")
 		fputs($fp, "Content-length: " + strlen($data) + "\r\n")
@@ -230,26 +251,26 @@ class CI_Trackback
 		fputs($fp, $data)
 		
 		#  Was it successful?
-		@.response = ""
+		@response = ""
 		
 		while not feof($fp)
-			@.response+=fgets($fp, 128)
+			@response+=fgets($fp, 128)
 			
 		fclose($fp)
 		
 		
-		if stristr(@.response, '<error>0</error>') is FALSE
+		if stristr(@response, '<error>0</error>') is false
 			$message = 'An unknown error was encountered'
 			
-			if preg_match("/<message>(.*?)<\/message>/is", @.response, $match)
+			if preg_match("/<message>(.*?)<\/message>/is", @response, $match)
 				$message = trim($match['1'])
 				
 			
-			@.set_error($message)
-			return FALSE
+			@set_error($message)
+			return false
 			
 		
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -265,7 +286,7 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	extract_urls : ($urls) =>
+	extract_urls : ($urls) ->
 		#  Remove the pesky white space and replace with a comma.
 		$urls = preg_replace("/\s*(\S+)\s*/", "\\1,", $urls)
 		
@@ -299,7 +320,7 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	validate_url : ($url) =>
+	validate_url : ($url) ->
 		$url = trim($url)
 		
 		if substr($url, 0, 4) isnt "http"
@@ -316,10 +337,10 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	get_id : ($url) =>
+	get_id : ($url) ->
 		$tb_id = ""
 		
-		if strpos($url, '?') isnt FALSE
+		if strpos($url, '?') isnt false
 			$tb_array = explode('/', $url)
 			$tb_end = $tb_array[count($tb_array) - 1]
 			
@@ -342,7 +363,7 @@ class CI_Trackback
 			
 		
 		if not preg_match("/^([0-9]+)$/", $tb_id)
-			return FALSE
+			return false
 			
 		else 
 			return $tb_id
@@ -358,7 +379,7 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	convert_xml : ($str) =>
+	convert_xml : ($str) ->
 		$temp = '__TEMP_AMPERSANDS__'
 		
 		$str = preg_replace("/&#(\d+);/", $temp\\1;, $str)
@@ -387,7 +408,7 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	limit_characters : ($str, $n = 500, $end_char = '&#8230;') =>
+	limit_characters : ($str, $n = 500, $end_char = '&#8230;') ->
 		if strlen($str) < $n
 			return $str
 			
@@ -399,7 +420,7 @@ class CI_Trackback
 			
 		
 		$out = ""
-		for $val in as
+		for $val in explode(' ', trim($str))
 			$out+=$val + ' '
 			if strlen($out)>=$n
 				return trim($out) + $end_char
@@ -419,7 +440,7 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	convert_ascii : ($str) =>
+	convert_ascii : ($str) ->
 		$count = 1
 		$out = ''
 		$temp = {}
@@ -460,9 +481,9 @@ class CI_Trackback
 	# @param	string
 	# @return	void
 	#
-	set_error : ($msg) =>
+	set_error : ($msg) ->
 		log_message('error', $msg)
-		@.error_msg.push $msg
+		@error_msg.push $msg
 		
 	
 	#  --------------------------------------------------------------------
@@ -475,9 +496,9 @@ class CI_Trackback
 	# @param	string
 	# @return	string
 	#
-	display_errors : ($open = '<p>', $close = '</p>') =>
+	display_errors : ($open = '<p>', $close = '</p>') ->
 		$str = ''
-		for $val in as
+		for $val in @error_msg
 			$str+=$open + $val + $close
 			
 		
@@ -485,6 +506,9 @@ class CI_Trackback
 		
 	
 	
+
+register_class 'CI_Trackback', CI_Trackback
+module.exports = CI_Trackback
 #  END Trackback Class
 
 #  End of file Trackback.php 

@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Cache_apc.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{apc_cache_info, apc_clear_cache, apc_delete, apc_fetch, apc_store, cache_info, clean, count, defined, delete, extension_loaded, function_exists, get, get_metadata, is_array, is_supported, save, time}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -25,7 +46,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link
 #
 
-class CI_Cache_apcextends CI_Driver
+class CI_Cache_apc extends CI_Driver
 	
 	#
 	# Get
@@ -40,7 +61,7 @@ class CI_Cache_apcextends CI_Driver
 	{
 	$data = apc_fetch($id)
 	
-	return if (is_array($data)) then $data[0] else FALSE
+	return if (is_array($data)) then $data[0] else false
 	}
 	
 	#  ------------------------------------------------------------------------
@@ -92,7 +113,7 @@ class CI_Cache_apcextends CI_Driver
 	# @param 	string		user/filehits
 	# @return 	mixed		array on success, false on failure
 	#
-	cache_info($type = NULL)
+	cache_info($type = null)
 	{
 	return apc_cache_info($type)
 	}
@@ -110,7 +131,7 @@ class CI_Cache_apcextends CI_Driver
 	$stored = apc_fetch($id)
 	
 	if count($stored) isnt 3
-		return FALSE
+		return false
 		
 	
 	[$data, $time, $ttl] = $stored
@@ -133,16 +154,19 @@ class CI_Cache_apcextends CI_Driver
 	{
 	if not extension_loaded('apc') or  not function_exists('apc_store')
 		log_message('error', 'The APC PHP extension must be loaded to use APC Cache.')
-		return FALSE
+		return false
 		
 	
-	return TRUE
+	return true
 	}
 	
 	#  ------------------------------------------------------------------------
 	
 	
 	
+
+register_class 'CI_Cache_apc', CI_Cache_apc
+module.exports = CI_Cache_apc
 #  End Class
 
 #  End of file Cache_apc.php 

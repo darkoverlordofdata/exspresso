@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  DB_cache.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{cache_off, cachedir, chmod, defined, delete_files, get_instance, helper, is_dir, load, md5, mkdir, preg_replace, read_file, segment, serialize, unserialize, uri, write_file}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -24,8 +45,8 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_DB_Cache
 	
-	$CI: {}
-	$db: {}#  allows passing of db object so that multiple database connections and returned db objects can be supported
+	CI: {}
+	db: {}#  allows passing of db object so that multiple database connections and returned db objects can be supported
 	
 	#
 	# Constructor
@@ -33,12 +54,12 @@ class CI_DB_Cache
 	# Grabs the CI super object instance so we can access it.
 	#
 	#
-	CI_DB_Cache : ( and $db) =>
+	CI_DB_Cache : ( and $db) ->
 		#  Assign the main CI object to $this->CI
 		#  and load the file helper since we use it a lot
-		@.CI = get_instance()
-		@.db = $db
-		@.CI.load.helper('file')
+		@CI = get_instance()
+		@db = $db
+		@CI.load.helper('file')
 		
 	
 	#  --------------------------------------------------------------------
@@ -50,13 +71,13 @@ class CI_DB_Cache
 	# @param	string	the path to the cache directory
 	# @return	bool
 	#
-	check_path : ($path = '') =>
+	check_path : ($path = '') ->
 		if $path is ''
-			if @.db.cachedir is ''
-				return @.db.cache_off()
+			if @db.cachedir is ''
+				return @db.cache_off()
 				
 			
-			$path = @.db.cachedir
+			$path = @db.cachedir
 			
 		
 		#  Add a trailing slash to the path if needed
@@ -64,11 +85,11 @@ class CI_DB_Cache
 		
 		if not is_dir($path) or  not is_really_writable($path)
 			#  If the path is wrong we'll turn off caching
-			return @.db.cache_off()
+			return @db.cache_off()
 			
 		
-		@.db.cachedir = $path
-		return TRUE
+		@db.cachedir = $path
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -82,19 +103,19 @@ class CI_DB_Cache
 	# @access	public
 	# @return	string
 	#
-	read : ($sql) =>
-		if not @.check_path()
-			return @.db.cache_off()
+	read : ($sql) ->
+		if not @check_path()
+			return @db.cache_off()
 			
 		
-		$segment_one = if (@.CI.uri.segment(1) is FALSE) then 'default' else @.CI.uri.segment(1)
+		$segment_one = if (@CI.uri.segment(1) is false) then 'default' else @CI.uri.segment(1)
 		
-		$segment_two = if (@.CI.uri.segment(2) is FALSE) then 'index' else @.CI.uri.segment(2)
+		$segment_two = if (@CI.uri.segment(2) is false) then 'index' else @CI.uri.segment(2)
 		
-		$filepath = @.db.cachedir + $segment_one + '+' + $segment_two + '/' + md5($sql)
+		$filepath = @db.cachedir + $segment_one + '+' + $segment_two + '/' + md5($sql)
 		
-		if FALSE is ($cachedata = read_file($filepath))
-			return FALSE
+		if false is ($cachedata = read_file($filepath))
+			return false
 			
 		
 		return unserialize($cachedata)
@@ -108,33 +129,33 @@ class CI_DB_Cache
 	# @access	public
 	# @return	bool
 	#
-	write : ($sql, $object) =>
-		if not @.check_path()
-			return @.db.cache_off()
+	write : ($sql, $object) ->
+		if not @check_path()
+			return @db.cache_off()
 			
 		
-		$segment_one = if (@.CI.uri.segment(1) is FALSE) then 'default' else @.CI.uri.segment(1)
+		$segment_one = if (@CI.uri.segment(1) is false) then 'default' else @CI.uri.segment(1)
 		
-		$segment_two = if (@.CI.uri.segment(2) is FALSE) then 'index' else @.CI.uri.segment(2)
+		$segment_two = if (@CI.uri.segment(2) is false) then 'index' else @CI.uri.segment(2)
 		
-		$dir_path = @.db.cachedir + $segment_one + '+' + $segment_two + '/'
+		$dir_path = @db.cachedir + $segment_one + '+' + $segment_two + '/'
 		
 		$filename = md5($sql)
 		
 		if not is_dir($dir_path)
 			if not mkdir($dir_path, DIR_WRITE_MODE)
-				return FALSE
+				return false
 				
 			
 			chmod($dir_path, DIR_WRITE_MODE)
 			
 		
-		if write_file($dir_path + $filename, serialize($object)) is FALSE
-			return FALSE
+		if write_file($dir_path + $filename, serialize($object)) is false
+			return false
 			
 		
 		chmod($dir_path + $filename, FILE_WRITE_MODE)
-		return TRUE
+		return true
 		
 	
 	#  --------------------------------------------------------------------
@@ -145,18 +166,18 @@ class CI_DB_Cache
 	# @access	public
 	# @return	bool
 	#
-	delete : ($segment_one = '', $segment_two = '') =>
+	delete : ($segment_one = '', $segment_two = '') ->
 		if $segment_one is ''
-			$segment_one = if (@.CI.uri.segment(1) is FALSE) then 'default' else @.CI.uri.segment(1)
+			$segment_one = if (@CI.uri.segment(1) is false) then 'default' else @CI.uri.segment(1)
 			
 		
 		if $segment_two is ''
-			$segment_two = if (@.CI.uri.segment(2) is FALSE) then 'index' else @.CI.uri.segment(2)
+			$segment_two = if (@CI.uri.segment(2) is false) then 'index' else @CI.uri.segment(2)
 			
 		
-		$dir_path = @.db.cachedir + $segment_one + '+' + $segment_two + '/'
+		$dir_path = @db.cachedir + $segment_one + '+' + $segment_two + '/'
 		
-		delete_files($dir_path, TRUE)
+		delete_files($dir_path, true)
 		
 	
 	#  --------------------------------------------------------------------
@@ -167,11 +188,14 @@ class CI_DB_Cache
 	# @access	public
 	# @return	bool
 	#
-	delete_all :  =>
-		delete_files(@.db.cachedir, TRUE)
+	delete_all :  ->
+		delete_files(@db.cachedir, true)
 		
 	
 	
+
+register_class 'CI_DB_Cache', CI_DB_Cache
+module.exports = CI_DB_Cache
 
 
 #  End of file DB_cache.php 

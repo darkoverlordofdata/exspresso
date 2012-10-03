@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  mysqli_utility.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{_escape_identifiers, db, defined, display_error}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -22,7 +43,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_mysqli_utilityextends CI_DB_utility
+class CI_DB_mysqli_utility extends CI_DB_utility
 	
 	#
 	# List databases
@@ -30,7 +51,7 @@ class CI_DB_mysqli_utilityextends CI_DB_utility
 	# @access	private
 	# @return	bool
 	#
-	_list_databases :  =>
+	_list_databases :  ->
 		return "SHOW DATABASES"
 		
 	
@@ -45,8 +66,8 @@ class CI_DB_mysqli_utilityextends CI_DB_utility
 	# @param	string	the table name
 	# @return	object
 	#
-	_optimize_table : ($table) =>
-		return "OPTIMIZE TABLE " + @.db._escape_identifiers($table)
+	_optimize_table : ($table) ->
+		return "OPTIMIZE TABLE " + @db._escape_identifiers($table)
 		
 	
 	#  --------------------------------------------------------------------
@@ -60,8 +81,8 @@ class CI_DB_mysqli_utilityextends CI_DB_utility
 	# @param	string	the table name
 	# @return	object
 	#
-	_repair_table : ($table) =>
-		return "REPAIR TABLE " + @.db._escape_identifiers($table)
+	_repair_table : ($table) ->
+		return "REPAIR TABLE " + @db._escape_identifiers($table)
 		
 	
 	#  --------------------------------------------------------------------
@@ -73,11 +94,14 @@ class CI_DB_mysqli_utilityextends CI_DB_utility
 	# @param	array	Preferences
 	# @return	mixed
 	#
-	_backup : ($params = {}) =>
+	_backup : ($params = {}) ->
 		#  Currently unsupported
-		return @.db.display_error('db_unsuported_feature')
+		return @db.display_error('db_unsuported_feature')
 		
 	
+
+register_class 'CI_DB_mysqli_utility', CI_DB_mysqli_utility
+module.exports = CI_DB_mysqli_utility
 
 #  End of file mysqli_utility.php 
 #  Location: ./system/database/drivers/mysqli/mysqli_utility.php 

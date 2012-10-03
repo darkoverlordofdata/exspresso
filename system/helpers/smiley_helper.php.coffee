@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  smiley_helper.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{defined, file_exists, function_exists, implode, is_array, preg_replace, rtrim, str_replace}	= require(FCPATH + 'helper')
+
+
+
 #
 # CodeIgniter
 #
@@ -39,8 +60,8 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @return	array
 #
 if not function_exists('smiley_js')
-	global.smiley_js = ($alias = '', $field_id = '', $inline = TRUE) ->
-		global.$do_setup = global.$do_setup ? TRUE
+	exports.smiley_js = smiley_js = ($alias = '', $field_id = '', $inline = true) ->
+		exports.$do_setup = $do_setup ? {}true
 		
 		$r = ''
 		
@@ -48,13 +69,13 @@ if not function_exists('smiley_js')
 			$alias = $alias:$field_id
 			
 		
-		if $do_setup is TRUE
-			$do_setup = FALSE
+		if $do_setup is true
+			$do_setup = false
 			
 			$m = {}
 			
 			if is_array($alias)
-				for $id, $name in as
+				for $name, $id of $alias
 					$m.push '"' + $name + '" : "' + $id + '"'
 					
 				
@@ -92,7 +113,7 @@ document.selection.createRange().text = smiley;
 		
 	else 
 		if is_array($alias)
-			for $id, $name in as
+			for $name, $id of $alias
 				$r+='smiley_map["' + $name + '"] = "' + $id + '";' + "\n"
 				
 			
@@ -120,7 +141,7 @@ document.selection.createRange().text = smiley;
 # @return	array
 #
 if not function_exists('get_clickable_smileys')
-	global.get_clickable_smileys = ($image_url, $alias = '', $smileys = NULL) ->
+	exports.get_clickable_smileys = get_clickable_smileys = ($image_url, $alias = '', $smileys = null) ->
 		#  For backward compatibility with js_insert_smiley
 		
 		if is_array($alias)
@@ -128,7 +149,7 @@ if not function_exists('get_clickable_smileys')
 			
 		
 		if not is_array($smileys)
-			if FALSE is ($smileys = _get_smiley_array())
+			if false is ($smileys = _get_smiley_array())
 				return $smileys
 				
 			
@@ -137,7 +158,7 @@ if not function_exists('get_clickable_smileys')
 		$image_url = rtrim($image_url, '/') + '/'
 		
 		$used = {}
-		for $val, $key in as
+		for $key, $val of $smileys
 			#  Keep duplicates from being used, which can happen if the
 			#  mapping array contains multiple identical replacements.  For example:
 			#  :-) and :) might be replaced with the same image so both smileys
@@ -148,7 +169,7 @@ if not function_exists('get_clickable_smileys')
 			
 			$link.push "<a href=\"javascript:void(0);\" onclick=\"insert_smiley('" + $key + "', '" + $alias + "')\"><img src=\"" + $image_url + $smileys[$key][0] + "\" width=\"" + $smileys[$key][1] + "\" height=\"" + $smileys[$key][2] + "\" alt=\"" + $smileys[$key][3] + "\" style=\"border:0;\" /></a>"
 			
-			$used[$smileys[$key][0]] = TRUE
+			$used[$smileys[$key][0]] = true
 			
 		
 		return $link
@@ -168,13 +189,13 @@ if not function_exists('get_clickable_smileys')
 # @return	string
 #
 if not function_exists('parse_smileys')
-	global.parse_smileys = ($str = '', $image_url = '', $smileys = NULL) ->
+	exports.parse_smileys = parse_smileys = ($str = '', $image_url = '', $smileys = null) ->
 		if $image_url is ''
 			return $str
 			
 		
 		if not is_array($smileys)
-			if FALSE is ($smileys = _get_smiley_array())
+			if false is ($smileys = _get_smiley_array())
 				return $str
 				
 			
@@ -182,7 +203,7 @@ if not function_exists('parse_smileys')
 		#  Add a trailing slash to the file path if needed
 		$image_url = preg_replace("/(.+?)\/*$/", "\\1/", $image_url)
 		
-		for $val, $key in as
+		for $key, $val of $smileys
 			$str = str_replace($key, "<img src=\"" + $image_url + $smileys[$key][0] + "\" width=\"" + $smileys[$key][1] + "\" height=\"" + $smileys[$key][2] + "\" alt=\"" + $smileys[$key][3] + "\" style=\"border:0;\" />", $str)
 			
 		
@@ -201,19 +222,19 @@ if not function_exists('parse_smileys')
 # @return	mixed
 #
 if not function_exists('_get_smiley_array')
-	global._get_smiley_array =  ->
+	exports._get_smiley_array = _get_smiley_array =  ->
 		if defined('ENVIRONMENT') and file_exists(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
-			eval include_all(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
+			require(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
 			
 		else if file_exists(APPPATH + 'config/smileys' + EXT)
-			eval include_all(APPPATH + 'config/smileys' + EXT)
+			require(APPPATH + 'config/smileys' + EXT)
 			
 		
 		if $smileys?  and is_array($smileys)
 			return $smileys
 			
 		
-		return FALSE
+		return false
 		
 	
 
@@ -232,7 +253,7 @@ if not function_exists('_get_smiley_array')
 # @return	string
 #
 if not function_exists('js_insert_smiley')
-	global.js_insert_smiley = ($form_name = '', $form_field = '') ->
+	exports.js_insert_smiley = js_insert_smiley = ($form_name = '', $form_field = '') ->
 		return <<<<script type="text/javascript">
 function insert_smiley(smiley)
 {

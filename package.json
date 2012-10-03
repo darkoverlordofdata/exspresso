@@ -1,32 +1,40 @@
 {
-    "name": "exspresso",
-    "description": "CodeIgniter inspired web development framework",
-    "version": "0.1.1",
-    "author": "bruce davidson <darkoverlordofdata@gmail.com>",
-    "dependencies": {
-      "coffee-script": "*",
-      "connect-cache": "*",
-      "connect-flash": "*",
-      "connect-i18n": "*",
-      "connect-redis": "*",
-      "consolidate": "*",
-      "dispatch": "*",
-      "eco": "*",
-      "express": "*",
-      "express-partials": "*",
-      "jade": "*",
-      "locale": "*",
-      "moment": "*",
-      "pg": "*",
-      "redis": "*",
-      "sequelize": "*",
-      "sqlite3": "*",
-      "uglify-js-middleware": "*"
-    },
-    "repository": "git://github.com/darkoverlordofdata/exspresso",
-    "main": "server",
-    "engines": { 
-      "node": "0.8.x",
-      "npm": "1.1.x"
-    }
+  "name": "exspresso",
+  "description": "CodeIgniter inspired web development framework",
+  "version": "0.1.1",
+  "author": "bruce davidson <darkoverlordofdata@gmail.com>",
+  "dependencies": {
+    "coffee-script": "*",
+    "connect-cache": "*",
+    "connect-flash": "*",
+    "connect-i18n": "*",
+    "connect-redis": "*",
+    "consolidate": "*",
+    "dispatch": "*",
+    "eco": "*",
+    "express": "*",
+    "express-partials": "*",
+    "jade": "*",
+    "moment": "*",
+    "pg": "*",
+    "redis": "*",
+    "sequelize": "*",
+    "sqlite3": "*",
+    "uglify-js-middleware": "*"
+  },
+  "scripts": {
+    "start": "foreman start web",
+    "test": "cake test"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "repository": "git://github.com/darkoverlordofdata/exspresso",
+  "main": "server",
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.1.x"
+  },
+  "license": "MIT"
 }

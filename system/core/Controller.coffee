@@ -19,7 +19,7 @@
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
+{config_item, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 #
 # ------------------------------------------------------
@@ -51,7 +51,8 @@ class CI_Controller
 
 # END CI_Controller class
 
-Exspresso.CI_Controller = CI_Controller
+#Exspresso.CI_Controller = CI_Controller
+register_class 'CI_Controller', CI_Controller
 module.exports = CI_Controller
 
 # End of file Controller.coffee

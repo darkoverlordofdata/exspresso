@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  odbc_result.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{default, defined, function_exists, is_resource, max_length, name, odbc_fetch_array, odbc_fetch_into, odbc_fetch_object, odbc_field_len, odbc_field_name, odbc_field_type, odbc_free_result, odbc_num_fields, odbc_num_rows, primary_key, result_id, stdClass, type}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -24,7 +45,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_odbc_resultextends CI_DB_result
+class CI_DB_odbc_result extends CI_DB_result
 	
 	#
 	# Number of rows in the result set
@@ -32,8 +53,8 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	public
 	# @return	integer
 	#
-	num_rows :  =>
-		return odbc_num_rows(@.result_id)
+	num_rows :  ->
+		return odbc_num_rows(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -44,8 +65,8 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	public
 	# @return	integer
 	#
-	num_fields :  =>
-		return odbc_num_fields(@.result_id)
+	num_fields :  ->
+		return odbc_num_fields(@result_id)
 		
 	
 	#  --------------------------------------------------------------------
@@ -58,11 +79,11 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	public
 	# @return	array
 	#
-	list_fields :  =>
+	list_fields :  ->
 		$field_names = {}
-		($i = 0$i < @.num_fields()$i++)
+		($i = 0$i < @num_fields()$i++)
 		{
-		$field_names.push odbc_field_name(@.result_id, $i)
+		$field_names.push odbc_field_name(@result_id, $i)
 		}
 		
 		return $field_names
@@ -78,14 +99,14 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	public
 	# @return	array
 	#
-	field_data :  =>
+	field_data :  ->
 		$retval = {}
-		($i = 0$i < @.num_fields()$i++)
+		($i = 0$i < @num_fields()$i++)
 		{
 		$F = new stdClass()
-		$F.name = odbc_field_name(@.result_id, $i)
-		$F.type = odbc_field_type(@.result_id, $i)
-		$F.max_length = odbc_field_len(@.result_id, $i)
+		$F.name = odbc_field_name(@result_id, $i)
+		$F.type = odbc_field_type(@result_id, $i)
+		$F.max_length = odbc_field_len(@result_id, $i)
 		$F.primary_key = 0
 		$F.default = ''
 		
@@ -102,10 +123,10 @@ class CI_DB_odbc_resultextends CI_DB_result
 	#
 	# @return	null
 	#
-	free_result :  =>
-		if is_resource(@.result_id)
-			odbc_free_result(@.result_id)
-			@.result_id = FALSE
+	free_result :  ->
+		if is_resource(@result_id)
+			odbc_free_result(@result_id)
+			@result_id = false
 			
 		
 	
@@ -121,8 +142,8 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_data_seek : ($n = 0) =>
-		return FALSE
+	_data_seek : ($n = 0) ->
+		return false
 		
 	
 	#  --------------------------------------------------------------------
@@ -135,12 +156,12 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_fetch_assoc :  =>
+	_fetch_assoc :  ->
 		if function_exists('odbc_fetch_object')
-			return odbc_fetch_array(@.result_id)
+			return odbc_fetch_array(@result_id)
 			
 		else 
-			return @._odbc_fetch_array(@.result_id)
+			return @_odbc_fetch_array(@result_id)
 			
 		
 	
@@ -154,12 +175,12 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	private
 	# @return	object
 	#
-	_fetch_object :  =>
+	_fetch_object :  ->
 		if function_exists('odbc_fetch_object')
-			return odbc_fetch_object(@.result_id)
+			return odbc_fetch_object(@result_id)
 			
 		else 
-			return @._odbc_fetch_object(@.result_id)
+			return @_odbc_fetch_object(@result_id)
 			
 		
 	
@@ -173,11 +194,11 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	private
 	# @return	object
 	#
-	_odbc_fetch_object : ( and $odbc_result) =>
+	_odbc_fetch_object : ( and $odbc_result) ->
 		$rs = {}
-		$rs_obj = FALSE
+		$rs_obj = false
 		if odbc_fetch_into($odbc_result, $rs)
-			for $v, $k in as
+			for $k, $v of $rs
 				$field_name = odbc_field_name($odbc_result, $k + 1)
 				$rs_obj.$field_name = $v
 				
@@ -195,12 +216,12 @@ class CI_DB_odbc_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_odbc_fetch_array : ( and $odbc_result) =>
+	_odbc_fetch_array : ( and $odbc_result) ->
 		$rs = {}
-		$rs_assoc = FALSE
+		$rs_assoc = false
 		if odbc_fetch_into($odbc_result, $rs)
 			$rs_assoc = {}
-			for $v, $k in as
+			for $k, $v of $rs
 				$field_name = odbc_field_name($odbc_result, $k + 1)
 				$rs_assoc[$field_name] = $v
 				
@@ -209,6 +230,9 @@ class CI_DB_odbc_resultextends CI_DB_result
 		
 	
 	
+
+register_class 'CI_DB_odbc_result', CI_DB_odbc_result
+module.exports = CI_DB_odbc_result
 
 
 #  End of file odbc_result.php 

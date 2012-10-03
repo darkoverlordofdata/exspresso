@@ -1,4 +1,25 @@
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#+--------------------------------------------------------------------+
+#  Upload.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{__construct, _prep_filename, array_pop, array_shift, ceil, clean_file_name, copy, count, data, defined, display_errors, do_upload, do_xss_clean, end, explode, fclose, file_exists, file_get_contents, filesize, fopen, fread, function_exists, get_extension, get_instance, getimagesize, implode, in_array, ini_get, ini_set, initialize, is_allowed_dimensions, is_allowed_filesize, is_allowed_filetype, is_array, is_dir, is_file, is_uploaded_file, lang, limit_filename_length, line, load, ltrim, md5, memory_get_usage, method_exists, mimes_types, move_uploaded_file, mt_rand, mt_srand, number_format, preg_match, preg_replace, realpath, round, rtrim, security, set_allowed_types, set_error, set_filename, set_image_properties, set_max_filename, set_max_filesize, set_max_height, set_max_width, set_upload_path, set_xss_clean, str_replace, stripslashes, strlen, strpos, strtolower, substr, trim, uniqid, validate_upload_path}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
 #
 # CodeIgniter
 #
@@ -26,33 +47,33 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class CI_Upload
 	
-	$max_size: 0
-	$max_width: 0
-	$max_height: 0
-	$max_filename: 0
-	$allowed_types: ""
-	$file_temp: ""
-	$file_name: ""
-	$orig_name: ""
-	$file_type: ""
-	$file_size: ""
-	$file_ext: ""
-	$upload_path: ""
-	$overwrite: FALSE
-	$encrypt_name: FALSE
-	$is_image: FALSE
-	$image_width: ''
-	$image_height: ''
-	$image_type: ''
-	$image_size_str: ''
-	$error_msg: {}
-	$mimes: {}
-	$remove_spaces: TRUE
-	$xss_clean: FALSE
-	$temp_prefix: "temp_file_"
-	$client_name: ''
+	max_size: 0
+	max_width: 0
+	max_height: 0
+	max_filename: 0
+	allowed_types: ""
+	file_temp: ""
+	file_name: ""
+	orig_name: ""
+	file_type: ""
+	file_size: ""
+	file_ext: ""
+	upload_path: ""
+	overwrite: false
+	encrypt_name: false
+	is_image: false
+	image_width: ''
+	image_height: ''
+	image_type: ''
+	image_size_str: ''
+	error_msg: {}
+	mimes: {}
+	remove_spaces: true
+	xss_clean: false
+	temp_prefix: "temp_file_"
+	client_name: ''
 	
-	$_file_name_override: ''
+	_file_name_override: ''
 	
 	#
 	# Constructor
@@ -62,7 +83,7 @@ class CI_Upload
 	__construct($props = {})
 	{
 	if count($props) > 0
-		@.initialize($props)
+		@initialize($props)
 		
 	
 	log_message('debug', "Upload Class Initialized")
@@ -91,40 +112,40 @@ class CI_Upload
 		'file_size':""
 		'file_ext':""
 		'upload_path':""
-		'overwrite':FALSE
-		'encrypt_name':FALSE
-		'is_image':FALSE
+		'overwrite':false
+		'encrypt_name':false
+		'is_image':false
 		'image_width':''
 		'image_height':''
 		'image_type':''
 		'image_size_str':''
 		'error_msg':{}
 		'mimes':{}
-		'remove_spaces':TRUE
-		'xss_clean':FALSE
+		'remove_spaces':true
+		'xss_clean':false
 		'temp_prefix':"temp_file_"
 		'client_name':''
 		
 	
 	
-	for $val, $key in as
+	for $key, $val of $defaults
 		if $config[$key]? 
 			$method = 'set_' + $key
 			if method_exists(@, $method)
-				@.$method($config[$key])
+				@$method($config[$key])
 				
 			else 
-				@.$key = $config[$key]
+				@$key = $config[$key]
 				
 			
 		else 
-			@.$key = $val
+			@$key = $val
 			
 		
 	
 	#  if a file_name was provided in the config, use it instead of the user input
 	#  supplied file name for all uploads until initialized again
-	@._file_name_override = @.file_name
+	@_file_name_override = @file_name
 	}
 	
 	#  --------------------------------------------------------------------
@@ -139,14 +160,14 @@ class CI_Upload
 	
 	#  Is $_FILES[$field] set? If not, no reason to continue.
 	if not $_FILES[$field]? 
-		@.set_error('upload_no_file_selected')
-		return FALSE
+		@set_error('upload_no_file_selected')
+		return false
 		
 	
 	#  Is the upload path valid?
-	if not @.validate_upload_path()
+	if not @validate_upload_path()
 		#  errors will already be set by validate_upload_path() so just return FALSE
-		return FALSE
+		return false
 		
 	
 	#  Was the file able to be uploaded? If not, determine the reason why.
@@ -155,98 +176,98 @@ class CI_Upload
 		
 		switch $error
 			when 1#  UPLOAD_ERR_INI_SIZE#  UPLOAD_ERR_INI_SIZE
-				@.set_error('upload_file_exceeds_limit')
+				@set_error('upload_file_exceeds_limit')
 				
 			when 2#  UPLOAD_ERR_FORM_SIZE#  UPLOAD_ERR_FORM_SIZE
-				@.set_error('upload_file_exceeds_form_limit')
+				@set_error('upload_file_exceeds_form_limit')
 				
 			when 3#  UPLOAD_ERR_PARTIAL#  UPLOAD_ERR_PARTIAL
-				@.set_error('upload_file_partial')
+				@set_error('upload_file_partial')
 				
 			when 4#  UPLOAD_ERR_NO_FILE#  UPLOAD_ERR_NO_FILE
-				@.set_error('upload_no_file_selected')
+				@set_error('upload_no_file_selected')
 				
 			when 6#  UPLOAD_ERR_NO_TMP_DIR#  UPLOAD_ERR_NO_TMP_DIR
-				@.set_error('upload_no_temp_directory')
+				@set_error('upload_no_temp_directory')
 				
 			when 7#  UPLOAD_ERR_CANT_WRITE#  UPLOAD_ERR_CANT_WRITE
-				@.set_error('upload_unable_to_write_file')
+				@set_error('upload_unable_to_write_file')
 				
 			when 8#  UPLOAD_ERR_EXTENSION#  UPLOAD_ERR_EXTENSION
-				@.set_error('upload_stopped_by_extension')
+				@set_error('upload_stopped_by_extension')
 				
-			else@.set_error('upload_no_file_selected')
+			else@set_error('upload_no_file_selected')
 				
 				
 		
-		return FALSE
+		return false
 		
 	
 	
 	#  Set the uploaded data as class variables
-	@.file_temp = $_FILES[$field]['tmp_name']
-	@.file_size = $_FILES[$field]['size']
-	@.file_type = preg_replace("/^(.+?);.*$/", "\\1", $_FILES[$field]['type'])
-	@.file_type = strtolower(trim(stripslashes(@.file_type), '"'))
-	@.file_name = @._prep_filename($_FILES[$field]['name'])
-	@.file_ext = @.get_extension(@.file_name)
-	@.client_name = @.file_name
+	@file_temp = $_FILES[$field]['tmp_name']
+	@file_size = $_FILES[$field]['size']
+	@file_type = preg_replace("/^(.+?);.*$/", "\\1", $_FILES[$field]['type'])
+	@file_type = strtolower(trim(stripslashes(@file_type), '"'))
+	@file_name = @_prep_filename($_FILES[$field]['name'])
+	@file_ext = @get_extension(@file_name)
+	@client_name = @file_name
 	
 	#  Is the file type allowed to be uploaded?
-	if not @.is_allowed_filetype()
-		@.set_error('upload_invalid_filetype')
-		return FALSE
+	if not @is_allowed_filetype()
+		@set_error('upload_invalid_filetype')
+		return false
 		
 	
 	#  if we're overriding, let's now make sure the new name and type is allowed
-	if @._file_name_override isnt ''
-		@.file_name = @._prep_filename(@._file_name_override)
+	if @_file_name_override isnt ''
+		@file_name = @_prep_filename(@_file_name_override)
 		
 		#  If no extension was provided in the file_name config item, use the uploaded one
-		if strpos(@._file_name_override, '.') is FALSE
-			@.file_name+=@.file_ext
+		if strpos(@_file_name_override, '.') is false
+			@file_name+=@file_ext
 			
 		
 		#  An extension was provided, lets have it!
 		else 
-			@.file_ext = @.get_extension(@._file_name_override)
+			@file_ext = @get_extension(@_file_name_override)
 			
 		
-		if not @.is_allowed_filetype(TRUE)
-			@.set_error('upload_invalid_filetype')
-			return FALSE
+		if not @is_allowed_filetype(true)
+			@set_error('upload_invalid_filetype')
+			return false
 			
 		
 	
 	#  Convert the file size to kilobytes
-	if @.file_size > 0
-		@.file_size = round(@.file_size / 1024, 2)
+	if @file_size > 0
+		@file_size = round(@file_size / 1024, 2)
 		
 	
 	#  Is the file size within the allowed maximum?
-	if not @.is_allowed_filesize()
-		@.set_error('upload_invalid_filesize')
-		return FALSE
+	if not @is_allowed_filesize()
+		@set_error('upload_invalid_filesize')
+		return false
 		
 	
 	#  Are the image dimensions within the allowed size?
 	#  Note: This can fail if the server has an open_basdir restriction.
-	if not @.is_allowed_dimensions()
-		@.set_error('upload_invalid_dimensions')
-		return FALSE
+	if not @is_allowed_dimensions()
+		@set_error('upload_invalid_dimensions')
+		return false
 		
 	
 	#  Sanitize the file name for security
-	@.file_name = @.clean_file_name(@.file_name)
+	@file_name = @clean_file_name(@file_name)
 	
 	#  Truncate the file name if it's too long
-	if @.max_filename > 0
-		@.file_name = @.limit_filename_length(@.file_name, @.max_filename)
+	if @max_filename > 0
+		@file_name = @limit_filename_length(@file_name, @max_filename)
 		
 	
 	#  Remove white spaces in the name
-	if @.remove_spaces is TRUE
-		@.file_name = preg_replace("/\s+/", "_", @.file_name)
+	if @remove_spaces is true
+		@file_name = preg_replace("/\s+/", "_", @file_name)
 		
 	
 	#
@@ -255,13 +276,13 @@ class CI_Upload
 	# the file if one with the same name already exists.
 	# If it returns false there was a problem.
 	#
-	@.orig_name = @.file_name
+	@orig_name = @file_name
 	
-	if @.overwrite is FALSE
-		@.file_name = @.set_filename(@.upload_path, @.file_name)
+	if @overwrite is false
+		@file_name = @set_filename(@upload_path, @file_name)
 		
-		if @.file_name is FALSE
-			return FALSE
+		if @file_name is false
+			return false
 			
 		
 	
@@ -271,10 +292,10 @@ class CI_Upload
 	# embedded within a file.  Scripts can easily
 	# be disguised as images or other file types.
 	#
-	if @.xss_clean
-		if @.do_xss_clean() is FALSE
-			@.set_error('upload_unable_to_write_file')
-			return FALSE
+	if @xss_clean
+		if @do_xss_clean() is false
+			@set_error('upload_unable_to_write_file')
+			return false
 			
 		
 	
@@ -285,10 +306,10 @@ class CI_Upload
 	# we'll use move_uploaded_file().  One of the two should
 	# reliably work in most environments
 	#
-	if not copy(@.file_temp, @.upload_path + @.file_name)
-		if not move_uploaded_file(@.file_temp, @.upload_path + @.file_name)
-			@.set_error('upload_destination_error')
-			return FALSE
+	if not copy(@file_temp, @upload_path + @file_name)
+		if not move_uploaded_file(@file_temp, @upload_path + @file_name)
+			@set_error('upload_destination_error')
+			return false
 			
 		
 	
@@ -298,9 +319,9 @@ class CI_Upload
 	# file was an image).  We use this information
 	# in the "data" function.
 	#
-	@.set_image_properties(@.upload_path + @.file_name)
+	@set_image_properties(@upload_path + @file_name)
 	
-	return TRUE
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -316,20 +337,20 @@ class CI_Upload
 	data()
 	{
 	return 
-		'file_name':@.file_name
-		'file_type':@.file_type
-		'file_path':@.upload_path
-		'full_path':@.upload_path + @.file_name
-		'raw_name':str_replace(@.file_ext, '', @.file_name,
-	'orig_name':@.orig_name, 
-	'client_name':@.client_name, 
-	'file_ext':@.file_ext, 
-	'file_size':@.file_size, 
-	'is_image':@.is_image(), 
-	'image_width':@.image_width, 
-	'image_height':@.image_height, 
-	'image_type':@.image_type, 
-	'image_size_str':@.image_size_str, 
+		'file_name':@file_name
+		'file_type':@file_type
+		'file_path':@upload_path
+		'full_path':@upload_path + @file_name
+		'raw_name':str_replace(@file_ext, '', @file_name,
+	'orig_name':@orig_name, 
+	'client_name':@client_name, 
+	'file_ext':@file_ext, 
+	'file_size':@file_size, 
+	'is_image':@is_image(), 
+	'image_width':@image_width, 
+	'image_height':@image_height, 
+	'image_type':@image_type, 
+	'image_size_str':@image_size_str, 
 	)
 	}
 	
@@ -344,7 +365,7 @@ class CI_Upload
 	set_upload_path($path)
 	{
 	#  Make sure it has a trailing slash
-	@.upload_path = rtrim($path, '/') + '/'
+	@upload_path = rtrim($path, '/') + '/'
 	}
 	
 	#  --------------------------------------------------------------------
@@ -362,29 +383,29 @@ class CI_Upload
 	#
 	set_filename($path, $filename)
 	{
-	if @.encrypt_name is TRUE
+	if @encrypt_name is true
 		mt_srand()
-		$filename = md5(uniqid(mt_rand())) + @.file_ext
+		$filename = md5(uniqid(mt_rand())) + @file_ext
 		
 	
 	if not file_exists($path + $filename)
 		return $filename
 		
 	
-	$filename = str_replace(@.file_ext, '', $filename)
+	$filename = str_replace(@file_ext, '', $filename)
 	
 	$new_filename = ''
 	($i = 1$i < 100$i++)
 	{
-	if not file_exists($path + $filename + $i + @.file_ext)
-		$new_filename = $filename + $i + @.file_ext
+	if not file_exists($path + $filename + $i + @file_ext)
+		$new_filename = $filename + $i + @file_ext
 		break
 		
 	}
 	
 	if $new_filename is ''
-		@.set_error('upload_bad_filename')
-		return FALSE
+		@set_error('upload_bad_filename')
+		return false
 		
 	else 
 		return $new_filename
@@ -401,7 +422,7 @@ class CI_Upload
 	#
 	set_max_filesize($n)
 	{
-	@.max_size = if ($n < 0) then 0 else $n
+	@max_size = if ($n < 0) then 0 else $n
 	}
 	
 	#  --------------------------------------------------------------------
@@ -414,7 +435,7 @@ class CI_Upload
 	#
 	set_max_filename($n)
 	{
-	@.max_filename = if ($n < 0) then 0 else $n
+	@max_filename = if ($n < 0) then 0 else $n
 	}
 	
 	#  --------------------------------------------------------------------
@@ -427,7 +448,7 @@ class CI_Upload
 	#
 	set_max_width($n)
 	{
-	@.max_width = if ($n < 0) then 0 else $n
+	@max_width = if ($n < 0) then 0 else $n
 	}
 	
 	#  --------------------------------------------------------------------
@@ -440,7 +461,7 @@ class CI_Upload
 	#
 	set_max_height($n)
 	{
-	@.max_height = if ($n < 0) then 0 else $n
+	@max_height = if ($n < 0) then 0 else $n
 	}
 	
 	#  --------------------------------------------------------------------
@@ -454,10 +475,10 @@ class CI_Upload
 	set_allowed_types($types)
 	{
 	if not is_array($types) and $types is '*'
-		@.allowed_types = '*'
+		@allowed_types = '*'
 		return 
 		
-	@.allowed_types = explode('|', $types)
+	@allowed_types = explode('|', $types)
 	}
 	
 	#  --------------------------------------------------------------------
@@ -472,18 +493,18 @@ class CI_Upload
 	#
 	set_image_properties($path = '')
 	{
-	if not @.is_image()
+	if not @is_image()
 		return 
 		
 	
 	if function_exists('getimagesize')
-		if FALSE isnt ($D = getimagesize($path))
+		if false isnt ($D = getimagesize($path))
 			$types = 1:'gif', 2:'jpeg', 3:'png'
 			
-			@.image_width = $D['0']
-			@.image_height = $D['1']
-			@.image_type = if ( not $types[$D['2']]? ) then 'unknown' else $types[$D['2']]
-			@.image_size_str = $D['3']#  string containing height and width
+			@image_width = $D['0']
+			@image_height = $D['1']
+			@image_type = if ( not $types[$D['2']]? ) then 'unknown' else $types[$D['2']]
+			@image_size_str = $D['3']#  string containing height and width
 			
 		
 	}
@@ -499,9 +520,9 @@ class CI_Upload
 	# @param	bool
 	# @return	void
 	#
-	set_xss_clean($flag = FALSE)
+	set_xss_clean($flag = false)
 	{
-	@.xss_clean = if ($flag is TRUE) then TRUE else FALSE
+	@xss_clean = if ($flag is true) then true else false
 	}
 	
 	#  --------------------------------------------------------------------
@@ -519,12 +540,12 @@ class CI_Upload
 	$png_mimes = ['image/x-png']
 	$jpeg_mimes = ['image/jpg', 'image/jpe', 'image/jpeg', 'image/pjpeg']
 	
-	if in_array(@.file_type, $png_mimes)
-		@.file_type = 'image/png'
+	if in_array(@file_type, $png_mimes)
+		@file_type = 'image/png'
 		
 	
-	if in_array(@.file_type, $jpeg_mimes)
-		@.file_type = 'image/jpeg'
+	if in_array(@file_type, $jpeg_mimes)
+		@file_type = 'image/jpeg'
 		
 	
 	$img_mimes = [
@@ -533,7 +554,7 @@ class CI_Upload
 		'image/png'
 		]
 	
-	return if (in_array(@.file_type, $img_mimes, TRUE)) then TRUE else FALSE
+	return if (in_array(@file_type, $img_mimes, true)) then true else false
 	}
 	
 	#  --------------------------------------------------------------------
@@ -543,48 +564,48 @@ class CI_Upload
 	#
 	# @return	bool
 	#
-	is_allowed_filetype($ignore_mime = FALSE)
+	is_allowed_filetype($ignore_mime = false)
 	{
-	if @.allowed_types is '*'
-		return TRUE
+	if @allowed_types is '*'
+		return true
 		
 	
-	if count(@.allowed_types) is 0 or  not is_array(@.allowed_types)
-		@.set_error('upload_no_file_types')
-		return FALSE
+	if count(@allowed_types) is 0 or  not is_array(@allowed_types)
+		@set_error('upload_no_file_types')
+		return false
 		
 	
-	$ext = strtolower(ltrim(@.file_ext, '.'))
+	$ext = strtolower(ltrim(@file_ext, '.'))
 	
-	if not in_array($ext, @.allowed_types)
-		return FALSE
+	if not in_array($ext, @allowed_types)
+		return false
 		
 	
 	#  Images get some additional checks
 	$image_types = ['gif', 'jpg', 'jpeg', 'png', 'jpe']
 	
 	if in_array($ext, $image_types)
-		if getimagesize(@.file_temp) is FALSE
-			return FALSE
+		if getimagesize(@file_temp) is false
+			return false
 			
 		
 	
-	if $ignore_mime is TRUE
-		return TRUE
+	if $ignore_mime is true
+		return true
 		
 	
-	$mime = @.mimes_types($ext)
+	$mime = @mimes_types($ext)
 	
 	if is_array($mime)
-		if in_array(@.file_type, $mime, TRUE)
-			return TRUE
+		if in_array(@file_type, $mime, true)
+			return true
 			
 		
-	else if $mime is @.file_type
-		return TRUE
+	else if $mime is @file_type
+		return true
 		
 	
-	return FALSE
+	return false
 	}
 	
 	#  --------------------------------------------------------------------
@@ -596,11 +617,11 @@ class CI_Upload
 	#
 	is_allowed_filesize()
 	{
-	if @.max_size isnt 0 and @.file_size > @.max_size
-		return FALSE
+	if @max_size isnt 0 and @file_size > @max_size
+		return false
 		
 	else 
-		return TRUE
+		return true
 		
 	}
 	
@@ -613,25 +634,25 @@ class CI_Upload
 	#
 	is_allowed_dimensions()
 	{
-	if not @.is_image()
-		return TRUE
+	if not @is_image()
+		return true
 		
 	
 	if function_exists('getimagesize')
-		$D = getimagesize(@.file_temp)
+		$D = getimagesize(@file_temp)
 		
-		if @.max_width > 0 and $D['0'] > @.max_width
-			return FALSE
+		if @max_width > 0 and $D['0'] > @max_width
+			return false
 			
 		
-		if @.max_height > 0 and $D['1'] > @.max_height
-			return FALSE
+		if @max_height > 0 and $D['1'] > @max_height
+			return false
 			
 		
-		return TRUE
+		return true
 		
 	
-	return TRUE
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -646,27 +667,27 @@ class CI_Upload
 	#
 	validate_upload_path()
 	{
-	if @.upload_path is ''
-		@.set_error('upload_no_filepath')
-		return FALSE
+	if @upload_path is ''
+		@set_error('upload_no_filepath')
+		return false
 		
 	
-	if function_exists('realpath') and realpath(@.upload_path) isnt FALSE
-		@.upload_path = str_replace("\\", "/", realpath(@.upload_path))
+	if function_exists('realpath') and realpath(@upload_path) isnt false
+		@upload_path = str_replace("\\", "/", realpath(@upload_path))
 		
 	
-	if not is_dir(@.upload_path)
-		@.set_error('upload_no_filepath')
-		return FALSE
+	if not is_dir(@upload_path)
+		@set_error('upload_no_filepath')
+		return false
 		
 	
-	if not is_really_writable(@.upload_path)
-		@.set_error('upload_not_writable')
-		return FALSE
+	if not is_really_writable(@upload_path)
+		@set_error('upload_not_writable')
+		return false
 		
 	
-	@.upload_path = preg_replace("/(.+?)\/*$/", "\\1/", @.upload_path)
-	return TRUE
+	@upload_path = preg_replace("/(.+?)\/*$/", "\\1/", @upload_path)
+	return true
 	}
 	
 	#  --------------------------------------------------------------------
@@ -742,7 +763,7 @@ class CI_Upload
 		
 	
 	$ext = ''
-	if strpos($filename, '.') isnt FALSE
+	if strpos($filename, '.') isnt false
 		$parts = explode('.', $filename)
 		$ext = '.' + array_pop($parts)
 		$filename = implode('.', $parts)
@@ -764,10 +785,10 @@ class CI_Upload
 	#
 	do_xss_clean()
 	{
-	$file = @.file_temp
+	$file = @file_temp
 	
 	if filesize($file) is 0
-		return FALSE
+		return false
 		
 	
 	if function_exists('memory_get_usage') and memory_get_usage() and ini_get('memory_limit') isnt ''
@@ -789,9 +810,9 @@ class CI_Upload
 	#  processor power and time if it is actually a clean image, as it will be in nearly all instances _except_ an
 	#  attempted XSS attack.
 	
-	if function_exists('getimagesize') and getimagesize($file) isnt FALSE
-		if ($file = fopen($file, 'rb')) is FALSE#  "b" to force binary
-			return FALSE#  Couldn't open the file, return FALSE
+	if function_exists('getimagesize') and getimagesize($file) isnt false
+		if ($file = fopen($file, 'rb')) is false#  "b" to force binary
+			return false#  Couldn't open the file, return FALSE
 			
 		
 		$opening_bytes = fread($file, 256)
@@ -802,16 +823,16 @@ class CI_Upload
 		#  title is basically just in SVG, but we filter it anyhow
 		
 		if not preg_match('/<(a|body|head|html|img|plaintext|pre|script|table|title)[\s>]/i', $opening_bytes)
-			return TRUE#  its an image, no "triggers" detected in the first 256 bytes, we're good
+			return true#  its an image, no "triggers" detected in the first 256 bytes, we're good
 			
 		
 	
-	if ($data = file_get_contents($file)) is FALSE
-		return FALSE
+	if ($data = file_get_contents($file)) is false
+		return false
 		
 	
 	$CI = get_instance()
-	return $CI.security.xss_clean($data, TRUE)
+	return $CI.security.xss_clean($data, true)
 	}
 	
 	#  --------------------------------------------------------------------
@@ -828,15 +849,15 @@ class CI_Upload
 	$CI.lang.load('upload')
 	
 	if is_array($msg)
-		for $val in as
-			$msg = if ($CI.lang.line($val) is FALSE) then $val else $CI.lang.line($val)
-			@.error_msg.push $msg
+		for $val in $msg
+			$msg = if ($CI.lang.line($val) is false) then $val else $CI.lang.line($val)
+			@error_msg.push $msg
 			log_message('error', $msg)
 			
 		
 	else 
-		$msg = if ($CI.lang.line($msg) is FALSE) then $msg else $CI.lang.line($msg)
-		@.error_msg.push $msg
+		$msg = if ($CI.lang.line($msg) is false) then $msg else $CI.lang.line($msg)
+		@error_msg.push $msg
 		log_message('error', $msg)
 		
 	}
@@ -853,7 +874,7 @@ class CI_Upload
 	display_errors($open = '<p>',$close = '</p>')
 	{
 	$str = ''
-	for $val in as
+	for $val in @error_msg
 		$str+=$open + $val + $close
 		
 	
@@ -873,24 +894,24 @@ class CI_Upload
 	#
 	mimes_types($mime)
 	{
-	global.$mimes
+	exports.$mimes
 	
-	if count(@.mimes) is 0
+	if count(@mimes) is 0
 		if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-			eval include_all(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+			require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
 			
 		else if is_file(APPPATH + 'config/mimes' + EXT)
-			eval include_all(APPPATH + 'config//mimes' + EXT)
+			require(APPPATH + 'config//mimes' + EXT)
 			
 		else 
-			return FALSE
+			return false
 			
 		
-		@.mimes = $mimes
+		@mimes = $mimes
 		delete $mimes
 		
 	
-	return if ( not @.mimes[$mime]? ) then FALSE else @.mimes[$mime]
+	return if ( not @mimes[$mime]? ) then false else @mimes[$mime]
 	}
 	
 	#  --------------------------------------------------------------------
@@ -906,7 +927,7 @@ class CI_Upload
 	#
 	_prep_filename($filename)
 	{
-	if strpos($filename, '.') is FALSE or @.allowed_types is '*'
+	if strpos($filename, '.') is false or @allowed_types is '*'
 		return $filename
 		
 	
@@ -914,8 +935,8 @@ class CI_Upload
 	$ext = array_pop($parts)
 	$filename = array_shift($parts)
 	
-	for $part in as
-		if not in_array(strtolower($part), @.allowed_types) or @.mimes_types(strtolower($part)) is FALSE
+	for $part in $parts
+		if not in_array(strtolower($part), @allowed_types) or @mimes_types(strtolower($part)) is false
 			$filename+='.' + $part + '_'
 			
 		else 
@@ -931,6 +952,9 @@ class CI_Upload
 	#  --------------------------------------------------------------------
 	
 	
+
+register_class 'CI_Upload', CI_Upload
+module.exports = CI_Upload
 #  END Upload Class
 
 #  End of file Upload.php 

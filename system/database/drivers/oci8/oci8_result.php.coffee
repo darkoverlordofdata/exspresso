@@ -1,3 +1,24 @@
+#+--------------------------------------------------------------------+
+#  oci8_result.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee v6.6.6
+#
+#
+
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{count, defined, function_exists, is_array, is_resource, max_length, name, oci_fetch_object, ocicolumnname, ocicolumnsize, ocicolumntype, ociexecute, ocifetchinto, ocifreestatement, ocinumcols, result_id, stdClass, type}	= require(FCPATH + 'helper')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
@@ -24,11 +45,11 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_oci8_resultextends CI_DB_result
+class CI_DB_oci8_result extends CI_DB_result
 	
-	$stmt_id: {}
-	$curs_id: {}
-	$limit_used: {}
+	stmt_id: {}
+	curs_id: {}
+	limit_used: {}
 	
 	#
 	# Number of rows in the result set.
@@ -40,12 +61,12 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access  public
 	# @return  integer
 	#
-	num_rows :  =>
-		$rowcount = count(@.result_array())
-		ociexecute(@.stmt_id)
+	num_rows :  ->
+		$rowcount = count(@result_array())
+		ociexecute(@stmt_id)
 		
-		if @.curs_id
-			ociexecute(@.curs_id)
+		if @curs_id
+			ociexecute(@curs_id)
 			
 		
 		return $rowcount
@@ -59,11 +80,11 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access  public
 	# @return  integer
 	#
-	num_fields :  =>
-		$count = ocinumcols(@.stmt_id)
+	num_fields :  ->
+		$count = ocinumcols(@stmt_id)
 		
 		#  if we used a limit we subtract it
-		if @.limit_used
+		if @limit_used
 			$count = $count - 1
 			
 		
@@ -80,12 +101,12 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access	public
 	# @return	array
 	#
-	list_fields :  =>
+	list_fields :  ->
 		$field_names = {}
-		$fieldCount = @.num_fields()
+		$fieldCount = @num_fields()
 		($c = 1$c<=$fieldCount$c++)
 		{
-		$field_names.push ocicolumnname(@.stmt_id, $c)
+		$field_names.push ocicolumnname(@stmt_id, $c)
 		}
 		return $field_names
 		
@@ -100,15 +121,15 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access  public
 	# @return  array
 	#
-	field_data :  =>
+	field_data :  ->
 		$retval = {}
-		$fieldCount = @.num_fields()
+		$fieldCount = @num_fields()
 		($c = 1$c<=$fieldCount$c++)
 		{
 		$F = new stdClass()
-		$F.name = ocicolumnname(@.stmt_id, $c)
-		$F.type = ocicolumntype(@.stmt_id, $c)
-		$F.max_length = ocicolumnsize(@.stmt_id, $c)
+		$F.name = ocicolumnname(@stmt_id, $c)
+		$F.type = ocicolumntype(@stmt_id, $c)
+		$F.max_length = ocicolumnsize(@stmt_id, $c)
 		
 		$retval.push $F
 		}
@@ -123,10 +144,10 @@ class CI_DB_oci8_resultextends CI_DB_result
 	#
 	# @return	null
 	#
-	free_result :  =>
-		if is_resource(@.result_id)
-			ocifreestatement(@.result_id)
-			@.result_id = FALSE
+	free_result :  ->
+		if is_resource(@result_id)
+			ocifreestatement(@result_id)
+			@result_id = false
 			
 		
 	
@@ -140,8 +161,8 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access  private
 	# @return  array
 	#
-	_fetch_assoc : ( and $row) =>
-		$id = if (@.curs_id) then @.curs_id else @.stmt_id
+	_fetch_assoc : ( and $row) ->
+		$id = if (@curs_id) then @curs_id else @stmt_id
 		
 		return ocifetchinto($id, $row, OCI_ASSOC + OCI_RETURN_NULLS)
 		
@@ -156,21 +177,21 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access  private
 	# @return  object
 	#
-	_fetch_object :  =>
+	_fetch_object :  ->
 		$result = {}
 		
 		#  If PHP 5 is being used we can fetch an result object
 		if function_exists('oci_fetch_object')
-			$id = if (@.curs_id) then @.curs_id else @.stmt_id
+			$id = if (@curs_id) then @curs_id else @stmt_id
 			
 			return oci_fetch_object($id)
 			
 		
 		#  If PHP 4 is being used we have to build our own result
-		for $val, $key in as
+		for $key, $val of @result_array()
 			$obj = new stdClass()
 			if is_array($val)
-				for $v, $k in as
+				for $k, $v of $val
 					$obj.$k = $v
 					
 				
@@ -192,19 +213,19 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access  public
 	# @return  array
 	#
-	result_array :  =>
-		if count(@.result_array) > 0
-			return @.result_array
+	result_array :  ->
+		if count(@result_array) > 0
+			return @result_array
 			
 		
 		#  oracle's fetch functions do not return arrays.
 		#  The information is returned in reference parameters
-		$row = NULL
-		while @._fetch_assoc($row)
-			@.result_array.push $row
+		$row = null
+		while @_fetch_assoc($row)
+			@result_array.push $row
 			
 		
-		return @.result_array
+		return @result_array
 		
 	
 	#  --------------------------------------------------------------------
@@ -219,11 +240,14 @@ class CI_DB_oci8_resultextends CI_DB_result
 	# @access	private
 	# @return	array
 	#
-	_data_seek : ($n = 0) =>
-		return FALSE#  Not needed
+	_data_seek : ($n = 0) ->
+		return false#  Not needed
 		
 	
 	
+
+register_class 'CI_DB_oci8_result', CI_DB_oci8_result
+module.exports = CI_DB_oci8_result
 
 
 #  End of file oci8_result.php 
