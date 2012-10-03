@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{autoinit, class_exists, count, defined, file_exists, initialize, is_string, parse_str, parse_url, query, rawurldecode, strpos, strtoupper, substr}	= require(FCPATH + 'helper')
+{autoinit, class_exists, count, defined, file_exists, initialize, is_string, parse_str, parse_url, query, rawurldecode, strpos, strtoupper, substr}  = require(FCPATH + 'helper')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 
@@ -25,12 +25,12 @@
 #
 # An open source application development framework for PHP 5.1.6 or newer
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
-# @since		Version 1.0
+# @package    CodeIgniter
+# @author    ExpressionEngine Dev Team
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    http://codeigniter.com/user_guide/license.html
+# @link    http://codeigniter.com
+# @since    Version 1.0
 # @filesource
 #
 
@@ -39,83 +39,83 @@
 #
 # Initialize the database
 #
-# @category	Database
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/database/
+# @category  Database
+# @author    ExpressionEngine Dev Team
+# @link    http://codeigniter.com/user_guide/database/
 #
 exports.DB = DB = ($params = '', $active_record_override = null) ->
-	#  Load the DB config file if a DSN string wasn't passed
-	if is_string($params) and strpos($params, '://') is false
-		#  Is the config file in the environment folder?
-		if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
-			if not file_exists($file_path = APPPATH + 'config/database' + EXT)
-				show_error('The configuration file database' + EXT + ' does not exist.')
-				
-			
-		
-		$db = require($file_path)
-		
-		if not $db?  or count($db) is 0
-			show_error('No database connection settings were found in the database config file.')
-			
-		
-		if $params isnt ''
-			$active_group = $params
-			
-		
-		if not $active_group?  or  not $db[$active_group]? 
-			show_error('You have specified an invalid database connection group.')
-			
-		
-		$params = $db[$active_group]
-		
-	else if is_string($params)
-		
-		# parse the URL from the DSN string
-		#  Database settings can be passed as discreet
-		#  parameters or as a data source name in the first
-		#  parameter. DSNs must have this prototype:
-		#  $dsn = 'driver://username:password@hostname/database';
-		#
-		
-		if ($dns = parse_url($params)) is false
-			show_error('Invalid DB Connection String')
-			
-		
-		$params =
+  #  Load the DB config file if a DSN string wasn't passed
+  if is_string($params) and strpos($params, '://') is false
+    #  Is the config file in the environment folder?
+    if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
+      if not file_exists($file_path = APPPATH + 'config/database' + EXT)
+        show_error('The configuration file database' + EXT + ' does not exist.')
+        
+      
+    
+    $db = require($file_path)
+    
+    if not $db?  or count($db) is 0
+      show_error('No database connection settings were found in the database config file.')
+      
+    
+    if $params isnt ''
+      $active_group = $params
+      
+    
+    if not $active_group?  or  not $db[$active_group]? 
+      show_error('You have specified an invalid database connection group.')
+      
+    
+    $params = $db[$active_group]
+    
+  else if is_string($params)
+    
+    # parse the URL from the DSN string
+    #  Database settings can be passed as discreet
+    #  parameters or as a data source name in the first
+    #  parameter. DSNs must have this prototype:
+    #  $dsn = 'driver://username:password@hostname/database';
+    #
+    
+    if ($dns = parse_url($params)) is false
+      show_error('Invalid DB Connection String')
+      
+    
+    $params =
       'dbdriver': $dns['scheme']
       'hostname': if $dns['host']? then rawurldecode($dns['host']) else ''
       'username': if $dns['user']? then rawurldecode($dns['user']) else ''
       'password': if $dns['pass']? then rawurldecode($dns['pass']) else ''
       'database': if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
 
-		#  were additional config items set?
-		if $dns['query']? 
-			parse_str($dns['query'], $extra)
-			
-			for $key, $val of $extra
-				#  booleans please
-				if strtoupper($val) is "TRUE"
-					$val = true
-					
-				else if strtoupper($val) is "FALSE"
-					$val = false
-					
-				
-				$params[$key] = $val
-				
-			
-		
-	
-	#  No DB specified yet?  Beat them senseless...
-	if not $params['dbdriver']?  or $params['dbdriver'] is ''
-		show_error('You have not selected a database type to connect to.')
-		
-	
-	#  Load the DB classes.  Note: Since the active record class is optional
-	#  we need to dynamically create a class that extends proper parent class
-	#  based on whether we're using the active record class or not.
-	#  Kudos to Paul for discovering this clever use of eval()
+    #  were additional config items set?
+    if $dns['query']? 
+      parse_str($dns['query'], $extra)
+      
+      for $key, $val of $extra
+        #  booleans please
+        if strtoupper($val) is "TRUE"
+          $val = true
+          
+        else if strtoupper($val) is "FALSE"
+          $val = false
+          
+        
+        $params[$key] = $val
+        
+      
+    
+  
+  #  No DB specified yet?  Beat them senseless...
+  if not $params['dbdriver']?  or $params['dbdriver'] is ''
+    show_error('You have not selected a database type to connect to.')
+    
+  
+  #  Load the DB classes.  Note: Since the active record class is optional
+  #  we need to dynamically create a class that extends proper parent class
+  #  based on whether we're using the active record class or not.
+  #  Kudos to Paul for discovering this clever use of eval()
 
 
   if $active_record_override isnt null
@@ -135,21 +135,21 @@ exports.DB = DB = ($params = '', $active_record_override = null) ->
     class CI_DB extends CI_DB_driver
 
   $driver = require(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)(CI_DB)
-	
-	#  Instantiate the DB adapter
-	# $driver = 'CI_DB_' + $params['dbdriver'] + '_driver'
-	$DB = new $driver($params)
-	
-	if $DB.autoinit is true
-		$DB.initialize()
-		
-	
-	if $params['stricton']?  and $params['stricton'] is true
-		$DB.query('SET SESSION sql_mode="STRICT_ALL_TABLES"')
-		
-	
-	return $DB
-	
+  
+  #  Instantiate the DB adapter
+  # $driver = 'CI_DB_' + $params['dbdriver'] + '_driver'
+  $DB = new $driver($params)
+  
+  if $DB.autoinit is true
+    $DB.initialize()
+    
+  
+  if $params['stricton']?  and $params['stricton'] is true
+    $DB.query('SET SESSION sql_mode="STRICT_ALL_TABLES"')
+    
+  
+  return $DB
+  
 
 
 

@@ -23,15 +23,15 @@ class Parser {
   
   // Token Types:
   const TT_END            = 0;
-	const TT_DELIMITER      = 1;
-	const TT_IDENTIFIER     = 2;
-	const TT_NUMBER         = 3;
-	const TT_KEYWORD        = 4;
-	const TT_STRING         = 5;
+  const TT_DELIMITER      = 1;
+  const TT_IDENTIFIER     = 2;
+  const TT_NUMBER         = 3;
+  const TT_KEYWORD        = 4;
+  const TT_STRING         = 5;
   const TT_COMMENT        = 6;
   const TT_MARKUP         = 7;
   const TT_IGNORE         = 99;
-  
+
   const SCOPE_SUPERGLOBAL = 0;
   const SCOPE_GLOBAL      = 1;
   const SCOPE_FUNCTION    = 2;
@@ -250,12 +250,12 @@ class Parser {
    *
    * @var array
    */
-	private $symbols = array();
+  private $symbols = array();
 
-	private $is_config = FALSE;
+  private $is_config = FALSE;
 
-	private $members = array();
-  
+  private $members = array();
+
   private $ignore = array(
     'is_php'                          => 'is_php',
     'is_really_writable'              => 'is_really_writable',
