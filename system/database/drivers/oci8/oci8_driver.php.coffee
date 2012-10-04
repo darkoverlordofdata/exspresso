@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{OCIcommit, OCIrollback, _protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, array_key_exists, conn_id, count, db_debug, dbprefix, defined, display_error, escape_like_str, hostname, implode, is_array, is_resource, numrows, ocibindbyname, ocierror, ociexecute, ocilogoff, ocilogon, ocinewcursor, ociparse, ociplogon, ocirowcount, ociserverversion, ocisetprefetch, password, preg_replace, query, row, sprintf, str_replace, strpos, trans_enabled, trim, username}  = require(FCPATH + 'helper')
+{OCIcommit, OCIrollback, _protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, array_key_exists, conn_id, count, db_debug, dbprefix, defined, display_error, escape_like_str, hostname, implode, is_array, is_resource, numrows, ocibindbyname, ocierror, ociexecute, ocilogoff, ocilogon, ocinewcursor, ociparse, ociplogon, ocirowcount, ociserverversion, ocisetprefetch, password, preg_replace, query, row, sprintf, str_replace, strpos, trans_enabled, trim, username}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

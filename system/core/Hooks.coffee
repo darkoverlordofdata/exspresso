@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{class_exists, defined, file_exists, function_exists, is_array, is_file, item}	= require(FCPATH + 'helper')
+{class_exists, defined, file_exists, function_exists, is_array, is_file, item}	= require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 

@@ -3,7 +3,26 @@
 
 ### Exspresso is ...
 
-  CodeIgniter ported to coffee-script and wrapped around the Express core.
+  CodeIgniter (<http://codeigniter.com/>) MVC framework ported to coffee-script and wrapped around the Express core.
+
+
+## Status
+
+
+* Welcome page - working
+* Config - working
+* Loader - working
+* Router - working
+* Controller - working
+* Model - working (Travel demo)
+* Lang - in progress
+* Database - in progess
+* Hooks - under review
+* Input - uses express
+* Output - uses express
+* Security - uses express
+
+  In general, files with an extension of .php are not yet ported, and files with an extension of .php.coffee are in progress.
 
 ## Features
 
@@ -12,10 +31,28 @@
 * Bootstrap/LESS stylesheets
 * Sequelize ORM
 * Edit configuration defaults in application/config/config.coffee
-* Includes php2coffee command line tool
+* Includes php2coffee command line port tool
 
 
+## PHP2Coffee
 
+  Requires Zend compatible php runtime:
+
+    Usage: bin/php2coffee [OPTIONS] PATH [DESTINATION]
+
+      -h, --help          display this help
+      -j. --javascript    compiles resulting .coffee file
+      -r, --recursive     recurse source path
+      -t, --trace         trace output
+      -T, --tabs          use tab character in output (default is spaces)
+      -d, --dump          dump of tokens
+
+
+## PAL
+
+  Ported code uses pal.coffee, a php abstraction layer.
+  Pal is a group of helper functions that mimic the php api.
+  Use cake test to test pal.
 
 
 

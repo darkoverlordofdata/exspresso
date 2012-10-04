@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| test-helper.coffee
+#| pal-helper.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -7,16 +7,20 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
-#	Helper Tests
+#	PHP Abstraction Layer Tests
 #
-#   Tests for helper.coffee
+#   Tests for pal.coffee
 #
 #
-helper = require('../helper') #->  this is the module being tested  <-#
+helper = require('../pal') #->  this is the module being tested  <-#
+
+## --------------------------------------------------------------------
+
+# Test class for class_exists:
 
 class helper._classes.ScoobyDoo
 
@@ -60,6 +64,7 @@ describe 'helper', ->
 
       helper.class_exists('ScoobyDoo').should.equal true
 
+
     it "should return false for DynoMut", ->
 
       helper.class_exists('DynoMut').should.equal false
@@ -73,7 +78,7 @@ describe 'helper', ->
 
       helper.count(['shaggy','velma','daphne']).should.equal 3
 
-    #! ---------------------------------------------------------------+
+
     it "should return 3 for {shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}", ->
 
       helper.count({shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}).should.equal 3
@@ -125,7 +130,7 @@ describe 'helper', ->
 
       helper.in_array('fred', ['shaggy', 'velma', 'daphne']).should.equal false
 
-    #! ---------------------------------------------------------------+
+
     it 'should return the index when found', ->
 
       helper.in_array('fred', ['shaggy', 'velma', 'fred', 'daphne']).should.equal 2
@@ -139,7 +144,7 @@ describe 'helper', ->
 
       helper.is_array(['shaggy', 'velma', 'daphne']).should.equal.true
 
-    #! ---------------------------------------------------------------+
+
     it "should return false for a string", ->
 
       helper.is_array('shaggy, velma, daphne').should.equal.false
@@ -153,7 +158,7 @@ describe 'helper', ->
 
       helper.is_dir('./').should.equal.true
 
-    #! ---------------------------------------------------------------+
+
     it "should return false for ./readme.md", ->
 
       helper.is_dir('./readme.md').should.equal.false
@@ -167,7 +172,7 @@ describe 'helper', ->
 
       helper.is_null(null).should.equal.true
 
-    #! ---------------------------------------------------------------+
+
     it "should return false for a string", ->
 
       helper.is_null('scooby').should.equal.false
@@ -181,7 +186,7 @@ describe 'helper', ->
 
       helper.is_string('hex girlz rule').should.equal.true
 
-    #! ---------------------------------------------------------------+
+
     it 'should return false for number', ->
 
       helper.is_string(1).should.equal.false
@@ -195,7 +200,7 @@ describe 'helper', ->
 
       helper.is_object({name: 'fred'}).should.equal.true
 
-    #! ---------------------------------------------------------------+
+
     it "should return false for a string", ->
 
       helper.is_object('fred').should.equal.false
@@ -211,6 +216,51 @@ describe 'helper', ->
 
 
   #? -----------------------------------------------------------------+
+  describe 'microtime', ->
+
+    #! ---------------------------------------------------------------+
+    it "should return a number > 0", ->
+
+      helper.microtime().should.not.equal 0
+
+
+  #? -----------------------------------------------------------------+
+  describe 'parse_str', ->
+
+    #! ---------------------------------------------------------------+
+    it "should return a parsed query string", ->
+
+      $extra = {}
+      helper.parse_str "shaggy=norville", $extra
+      $extra.should.eql {shaggy: 'norville'}
+
+
+  #? -----------------------------------------------------------------+
+  describe 'parse_url', ->
+
+    #! ---------------------------------------------------------------+
+    it "should return a parsed url", ->
+
+      $url = "postgres://norville:rogers@zoinks:1620/shaggy"
+      helper.parse_url($url).scheme.should.equal "postgres"
+      helper.parse_url($url).host.should.equal "zoinks"
+      helper.parse_url($url).port.should.equal "1620"
+      helper.parse_url($url).user.should.equal "norville"
+      helper.parse_url($url).pass.should.equal "rogers"
+      helper.parse_url($url).path.should.equal "shaggy"
+
+
+
+  #? -----------------------------------------------------------------+
+  describe 'rawurldecode', ->
+
+    #! ---------------------------------------------------------------+
+    it "should return", ->
+
+      helper.rawurldecode("scooby%20doo").should.equal "scooby doo"
+
+
+#? -----------------------------------------------------------------+
   describe 'realpath', ->
 
     #! ---------------------------------------------------------------+
@@ -238,12 +288,22 @@ describe 'helper', ->
 
 
   #? -----------------------------------------------------------------+
+  describe 'stristr', ->
+
+    #! ---------------------------------------------------------------+
+    it "should find 'doo", ->
+
+      helper.stristr('Scooby Doo', 'doo').should.equal 'Doo'
+
+
+  #? -----------------------------------------------------------------+
   describe 'strpos', ->
 
     #! ---------------------------------------------------------------+
     it "should find the first 'oo'", ->
 
       helper.strpos('ScoobyDoo', 'oo').should.equal 2
+
 
     it "should find the next 'oo'", ->
 
@@ -258,6 +318,7 @@ describe 'helper', ->
     it "should find '*daphne'", ->
 
       helper.strrchr('shaggy*velma*daphne', '*').should.equal "*daphne"
+
 
     it "should also find '*daphne'", ->
 
@@ -283,6 +344,16 @@ describe 'helper', ->
       helper.strtolower('Mystery Machine').should.equal 'mystery machine'
 
 
+
+  #? -----------------------------------------------------------------+
+  describe 'strtoupper', ->
+
+    #! ---------------------------------------------------------------+
+    it "should return 'DOO'", ->
+
+      helper.strupper('doo').should.equal 'DOO'
+
+
   #? -----------------------------------------------------------------+
   describe 'substr', ->
 
@@ -290,6 +361,7 @@ describe 'helper', ->
     it "should return", ->
 
       helper.substr('shaggy', 1).should.equal 'haggy'
+
 
     it "should return", ->
 

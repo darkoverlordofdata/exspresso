@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| helper.coffee
+#| pal.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -7,16 +7,18 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
-#	helper - core PHP-apish helpers
+#	PAL - Php Abstraction Layer
 #
 fs              = require('fs')                         # Standard POSIX file i/o
 path            = require('path')                       # File path utilities
+querystring     = require('querystring')                # Utilities for dealing with query strings.
+url             = require('url')                        # Utilities for URL resolution and parsing.
 
-exports._classes = _classes = {}
+exports._classes = _classes = {}                        # class registry
 
 ## --------------------------------------------------------------------
 
@@ -148,8 +150,54 @@ exports.is_string = ($var) ->
 ## --------------------------------------------------------------------
 
 exports.ltrim = ltrim = ($str, $chars) ->
+
   $chars = $chars || "\s";
   $str.replace(new RegExp("^[" + $chars + "]+", "g"), "")
+
+
+## --------------------------------------------------------------------
+
+exports.microtime = () ->
+
+  return new Date().getTime()
+
+## --------------------------------------------------------------------
+
+exports.parse_str = ($str, $arr = {}) ->
+
+  $p = querystring.parse($str)
+  for $key, $val of $p
+    $arr[$key] = $val
+
+  return
+
+## --------------------------------------------------------------------
+
+exports.parse_url = ($url) ->
+
+  $p = url.parse($url)
+  if $p.auth?
+    [$username, $password] = $p.auth.split(':')
+  else
+    [$username, $password] = ['','']
+
+  return {
+    scheme:     $p.protocol.split(':')[0]
+    host:       $p.hostname
+    port:       $p.port
+    user:       $username
+    pass:       $password
+    path:       $p.pathname.substr(1)
+    query:      $p.query
+    fragment:   $p.hash
+  }
+
+
+## --------------------------------------------------------------------
+
+exports.rawurldecode = ($str) ->
+
+  querystring.unescape($str)
 
 ## --------------------------------------------------------------------
 
@@ -163,6 +211,7 @@ exports.realpath = ($path) ->
 ## --------------------------------------------------------------------
 
 exports.rtrim = rtrim = ($str, $chars) ->
+
   $chars = $chars || "\s";
   $str.replace(new RegExp("[" + $chars + "]+$", "g"), "")
 
@@ -171,6 +220,22 @@ exports.rtrim = rtrim = ($str, $chars) ->
 exports.str_replace = ($search, $replace, $subject) ->
 
   $subject.replace($search, $replace)
+
+## --------------------------------------------------------------------
+
+exports.stristr = ($haystack, $needle, $before_needle = false) ->
+
+  if typeof $needle isnt 'string'
+    $needle = String.fromCharCode(parseInt($needle, 10))
+
+  $pos = $haystack.search(new RegExp($needle, 'i'))
+  if $pos is -1
+    false
+  else
+    if $before_needle is true
+      $haystack.substr(0, $pos)
+    else
+      $haystack.substr($pos, $needle.length)
 
 ## --------------------------------------------------------------------
 
@@ -210,6 +275,12 @@ exports.strrpos = ($haystack, $needle, $offset = $haystack.length) ->
 exports.strtolower = ($str) ->
 
   $str.toLowerCase()
+
+## --------------------------------------------------------------------
+
+exports.strupper = ($str) ->
+
+  $str.toUpperCase()
 
 ## --------------------------------------------------------------------
 

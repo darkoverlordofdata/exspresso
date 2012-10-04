@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{ImageDestroy, ImageFilledRectangle, ImageJPEG, closedir, cos, defined, explode, extension_loaded, file_exists, function_exists, imagecolorallocate, imagecreate, imagecreatetruecolor, imageline, imagerectangle, imagestring, imagettftext, is_array, is_dir, is_writable, microtime, mt_rand, opendir, rand, readdir, sin, str_replace, strlen, substr, unlink}  = require(FCPATH + 'helper')
+{ImageDestroy, ImageFilledRectangle, ImageJPEG, closedir, cos, defined, explode, extension_loaded, file_exists, function_exists, imagecolorallocate, imagecreate, imagecreatetruecolor, imageline, imagerectangle, imagestring, imagettftext, is_array, is_dir, is_writable, microtime, mt_rand, opendir, rand, readdir, sin, str_replace, strlen, substr, unlink}  = require(FCPATH + 'pal')
 
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

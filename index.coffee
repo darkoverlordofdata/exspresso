@@ -7,7 +7,7 @@
 #| This file is a part of Expresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -15,7 +15,7 @@
 #
 #   Defines the global Exspresso environment
 #
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require('./helper')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require('./pal')
 
 #
 #---------------------------------------------------------------

@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, basename, defined, end, explode, file_exists, implode, in_array, is_array, item, preg_replace, rtrim, set_item, slash_item, str_replace, strtolower, trim}	= require(FCPATH + 'helper')
+{array_merge, basename, defined, end, explode, file_exists, implode, in_array, is_array, item, preg_replace, rtrim, set_item, slash_item, str_replace, strtolower, trim}	= require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 

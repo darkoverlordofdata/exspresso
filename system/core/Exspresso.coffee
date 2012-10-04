@@ -7,7 +7,7 @@
 #  This file is a part of Exspresso
 # 
 #  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the GNU General Public License Version 3
+#  it under the terms of the MIT License
 # 
 #+--------------------------------------------------------------------+
 #
@@ -17,7 +17,7 @@
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {array_merge, array_unshift, dirname, explode, file_exists, implode, in_array, is_dir, is_null, is_string,
-  ltrim, realpath, rtrim, strpos, strtolower, strrchr, str_replace, substr, trim, ucfirst} = require(FCPATH + 'helper')
+  ltrim, realpath, rtrim, strpos, strtolower, strrchr, str_replace, substr, trim, ucfirst} = require(FCPATH + 'pal')
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 

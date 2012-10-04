@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{count, defined, function_exists, is_array, is_resource, max_length, name, oci_fetch_object, ocicolumnname, ocicolumnsize, ocicolumntype, ociexecute, ocifetchinto, ocifreestatement, ocinumcols, result_id, stdClass, type}  = require(FCPATH + 'helper')
+{count, defined, function_exists, is_array, is_resource, max_length, name, oci_fetch_object, ocicolumnname, ocicolumnsize, ocicolumntype, ociexecute, ocifetchinto, ocifreestatement, ocinumcols, result_id, stdClass, type}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_keys, count, defined, explode, in_array, nl2br, preg_match, preg_match_all, preg_replace, preg_replace_callback, preg_split, rtrim, str_replace, strpos}  = require(FCPATH + 'helper')
+{array_keys, count, defined, explode, in_array, nl2br, preg_match, preg_match_all, preg_replace, preg_replace_callback, preg_split, rtrim, str_replace, strpos}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

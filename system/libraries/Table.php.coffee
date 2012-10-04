@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{__construct, array_splice, call_user_func, count, defined, fmod, func_get_args, is_array, is_callable, is_null, is_object, list_fields, method_exists, num_rows, result_array, str_replace, temp}  = require(FCPATH + 'helper')
+{__construct, array_splice, call_user_func, count, defined, fmod, func_get_args, is_array, is_callable, is_null, is_object, list_fields, method_exists, num_rows, result_array, str_replace, temp}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

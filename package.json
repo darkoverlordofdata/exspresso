@@ -1,7 +1,8 @@
 {
   "name": "exspresso",
-  "description": "CodeIgniter inspired web development framework",
-  "version": "0.1.1",
+  "version": "0.2.1",
+  "description": "A coffee-script port of CodeIgniter",
+  "keywords": ["framework", "web"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",
   "dependencies": {
     "coffee-script": "*",
@@ -31,7 +32,7 @@
     "mocha": "*"
   },
   "repository": "git://github.com/darkoverlordofdata/exspresso",
-  "main": "server",
+  "main": "index",
   "engines": {
     "node": "0.8.x",
     "npm": "1.1.x"

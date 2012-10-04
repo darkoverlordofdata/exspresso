@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{default, defined, function_exists, is_array, max_length, name, primary_key, result_id, sqlite_fetch_array, sqlite_fetch_object, sqlite_field_name, sqlite_num_fields, sqlite_num_rows, sqlite_seek, stdClass, type}  = require(FCPATH + 'helper')
+{default, defined, function_exists, is_array, max_length, name, primary_key, result_id, sqlite_fetch_array, sqlite_fetch_object, sqlite_field_name, sqlite_num_fields, sqlite_num_rows, sqlite_seek, stdClass, type}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

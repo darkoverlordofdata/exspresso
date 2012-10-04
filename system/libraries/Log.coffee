@@ -7,7 +7,7 @@
 #| This file is a part of Expresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -22,7 +22,7 @@
 {WEBROOT}       = require(FCPATH + 'index')            # '/var/www/Exspresso/public/'
 {EXT}           = require(FCPATH + 'index')            # '.coffee'
 {ENVIRONMENT}   = require(FCPATH + 'index')            # 'development'
-{is_dir}        = require(FCPATH + 'helper')           # Tells whether the filename is a directory.
+{is_dir}        = require(FCPATH + 'pal')           # Tells whether the filename is a directory.
 {get_config}    = require(BASEPATH + 'core/Common')     # Loads the main config.coffee file.
 {Exspresso}     = require(BASEPATH + 'core/Common')     # Core framework library
 

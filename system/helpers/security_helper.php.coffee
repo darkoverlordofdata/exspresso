@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, function_exists, get_instance, md5, preg_replace, security, sha1, str_replace}  = require(FCPATH + 'helper')
+{defined, function_exists, get_instance, md5, preg_replace, security, sha1, str_replace}  = require(FCPATH + 'pal')
 
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

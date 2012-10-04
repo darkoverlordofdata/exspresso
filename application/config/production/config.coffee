@@ -7,14 +7,12 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
 
-#exports['db_url'] = process.env.CLEARDB_DATABASE_URL
 exports['db_url'] = process.env.HEROKU_POSTGRESQL_ROSE_URL
-#exports['db_url'] = "sqlite:///tagsobe"
 
 
 #

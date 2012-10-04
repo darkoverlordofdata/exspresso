@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_config_paths, append_output, array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, class_exists, count, db, dbdriver, defined, end, explode, extract, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'helper')
+{_config_paths, append_output, array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, class_exists, count, db, dbdriver, defined, end, explode, extract, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 

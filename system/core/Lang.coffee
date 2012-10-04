@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, defined, file_exists, get_instance, get_package_paths, in_array, str_replace}	= require(FCPATH + 'helper')
+{array_merge, defined, file_exists, get_instance, get_package_paths, in_array, str_replace}	= require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 

@@ -7,7 +7,7 @@
 #| This file is a part of Expresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -16,7 +16,7 @@
 #
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, count, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{array_merge, count, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'pal')
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 
@@ -47,7 +47,7 @@ express         = require('express')                    # Express 3.0 Framework
 fs              = require('fs')                         # Standard POSIX file i/o
 path            = require('path')                       # File path utilities
 redis           = require('redis')                      # Redis client library.
-querystring     = require('querystring')
+querystring     = require('querystring')                # Utilities for dealing with query strings.
 Sequelize       = require("sequelize")                  # Sequelize 1.5 ORM
 url             = require('url')                        # Utilities for URL resolution and parsing.
 
@@ -57,14 +57,14 @@ url             = require('url')                        # Utilities for URL reso
 # Not-PHP helper API
 #
 
-{array_merge}   = require(FCPATH + 'helper')            # Merge one or more arrays.
-{file_exists}   = require(FCPATH + 'helper')            # Checks whether a file or directory exists.
-{is_dir}        = require(FCPATH + 'helper')            # Tells whether the filename is a directory.
-{ltrim}         = require(FCPATH + 'helper')            # Strip chars from end of a string.
-{realpath}      = require(FCPATH + 'helper')            # Returns canonicalized absolute pathname.
-{rtrim}         = require(FCPATH + 'helper')            # Strip chars from beginning of a string.
-{trim}          = require(FCPATH + 'helper')            # Strip chars from both ends of a string.
-{ucfirst}       = require(FCPATH + 'helper')            # Make a string's first character uppercase.
+{array_merge}   = require(FCPATH + 'pal')              # Merge one or more arrays.
+{file_exists}   = require(FCPATH + 'pal')              # Checks whether a file or directory exists.
+{is_dir}        = require(FCPATH + 'pal')              # Tells whether the filename is a directory.
+{ltrim}         = require(FCPATH + 'pal')              # Strip chars from end of a string.
+{realpath}      = require(FCPATH + 'pal')              # Returns canonicalized absolute pathname.
+{rtrim}         = require(FCPATH + 'pal')              # Strip chars from beginning of a string.
+{trim}          = require(FCPATH + 'pal')              # Strip chars from both ends of a string.
+{ucfirst}       = require(FCPATH + 'pal')              # Make a string's first character uppercase.
 
 ## --------------------------------------------------------------------
 

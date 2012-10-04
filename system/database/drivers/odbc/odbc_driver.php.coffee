@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, database, dbprefix, defined, hostname, implode, is_array, num_rows, numrows, odbc_autocommit, odbc_close, odbc_commit, odbc_connect, odbc_error, odbc_errormsg, odbc_exec, odbc_insert_id, odbc_num_rows, odbc_pconnect, odbc_rollback, parent, password, preg_replace, query, row, str_replace, strpos, time, trans_enabled, username}  = require(FCPATH + 'helper')
+{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, database, dbprefix, defined, hostname, implode, is_array, num_rows, numrows, odbc_autocommit, odbc_close, odbc_commit, odbc_connect, odbc_error, odbc_errormsg, odbc_exec, odbc_insert_id, odbc_num_rows, odbc_pconnect, odbc_rollback, parent, password, preg_replace, query, row, str_replace, strpos, time, trans_enabled, username}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

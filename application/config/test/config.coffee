@@ -1,20 +1,21 @@
 #+--------------------------------------------------------------------+
-#| test_helper.coffee
+#| config.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #|
-#| This file is a part of Expresso
+#| This file is a part of Exspresso
 #|
-#| Darklite is free software; you can copy, modify, and distribute
+#| Exspresso is free software; you can copy, modify, and distribute
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
-#	test_helper - Main application
+
+exports['db_url'] = "sqlite:///test/test.db"
+
+
 #
-#
-#
-global.should = require('chai').should()
-# End of file test_helper.coffee
-# Location: .test/test_helper.coffee
+
+# End of file config.coffee
+# Location: .application/config/development/config.coffee

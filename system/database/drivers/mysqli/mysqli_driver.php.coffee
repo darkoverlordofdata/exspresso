@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, addslashes, ar_where, array_keys, conn_id, count, database, dbprefix, defined, escape_like_str, function_exists, hostname, implode, is_array, is_object, mysql_escape_string, mysqli_affected_rows, mysqli_close, mysqli_connect, mysqli_errno, mysqli_error, mysqli_insert_id, mysqli_ping, mysqli_query, mysqli_real_escape_string, mysqli_select_db, num_rows, numrows, password, port, preg_match, preg_replace, query, row, simple_query, str_replace, strpos, substr, trans_enabled, username}  = require(FCPATH + 'helper')
+{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, addslashes, ar_where, array_keys, conn_id, count, database, dbprefix, defined, escape_like_str, function_exists, hostname, implode, is_array, is_object, mysql_escape_string, mysqli_affected_rows, mysqli_close, mysqli_connect, mysqli_errno, mysqli_error, mysqli_insert_id, mysqli_ping, mysqli_query, mysqli_real_escape_string, mysqli_select_db, num_rows, numrows, password, port, preg_match, preg_replace, query, row, simple_query, str_replace, strpos, substr, trans_enabled, username}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

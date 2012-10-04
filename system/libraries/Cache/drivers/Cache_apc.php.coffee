@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{apc_cache_info, apc_clear_cache, apc_delete, apc_fetch, apc_store, cache_info, clean, count, defined, delete, extension_loaded, function_exists, get, get_metadata, is_array, is_supported, save, time}  = require(FCPATH + 'helper')
+{apc_cache_info, apc_clear_cache, apc_delete, apc_fetch, apc_store, cache_info, clean, count, defined, delete, extension_loaded, function_exists, get, get_metadata, is_array, is_supported, save, time}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

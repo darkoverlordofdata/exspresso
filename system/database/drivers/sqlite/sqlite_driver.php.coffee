@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, database, db_debug, dbprefix, defined, display_error, escape_like_str, implode, is_array, num_rows, numrows, preg_replace, query, row, simple_query, sprintf, sqlite_changes, sqlite_close, sqlite_error_string, sqlite_escape_string, sqlite_last_error, sqlite_last_insert_rowid, sqlite_libversion, sqlite_open, sqlite_popen, sqlite_query, str_replace, strpos, trans_enabled}  = require(FCPATH + 'helper')
+{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, database, db_debug, dbprefix, defined, display_error, escape_like_str, implode, is_array, num_rows, numrows, preg_replace, query, row, simple_query, sprintf, sqlite_changes, sqlite_close, sqlite_error_string, sqlite_escape_string, sqlite_last_error, sqlite_last_insert_rowid, sqlite_libversion, sqlite_open, sqlite_popen, sqlite_query, str_replace, strpos, trans_enabled}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

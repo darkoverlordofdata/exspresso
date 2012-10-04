@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{autoinit, class_exists, count, defined, file_exists, initialize, is_string, parse_str, parse_url, query, rawurldecode, strpos, strtoupper, substr}  = require(FCPATH + 'helper')
+{autoinit, class_exists, count, defined, file_exists, initialize, is_string, parse_str, parse_url, query, rawurldecode, strpos, strtoupper, substr}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 
@@ -90,7 +90,8 @@ exports.DB = DB = ($params = '', $active_record_override = null) ->
       'database': if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
 
     #  were additional config items set?
-    if $dns['query']? 
+    if $dns['query']?
+      $extra = {}
       parse_str($dns['query'], $extra)
       
       for $key, $val of $extra
@@ -115,8 +116,6 @@ exports.DB = DB = ($params = '', $active_record_override = null) ->
   #  Load the DB classes.  Note: Since the active record class is optional
   #  we need to dynamically create a class that extends proper parent class
   #  based on whether we're using the active record class or not.
-  #  Kudos to Paul for discovering this clever use of eval()
-
 
   if $active_record_override isnt null
     $active_record = $active_record_override

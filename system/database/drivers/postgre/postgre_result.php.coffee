@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{default, defined, is_resource, max_length, name, pg_fetch_assoc, pg_fetch_object, pg_field_name, pg_field_size, pg_field_type, pg_free_result, pg_num_fields, pg_num_rows, pg_result_seek, primary_key, result_id, stdClass, type}  = require(FCPATH + 'helper')
+{default, defined, is_resource, max_length, name, pg_fetch_assoc, pg_fetch_object, pg_field_name, pg_field_size, pg_field_type, pg_free_result, pg_num_fields, pg_num_rows, pg_result_seek, primary_key, result_id, stdClass, type}  = require(FCPATH + 'pal')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

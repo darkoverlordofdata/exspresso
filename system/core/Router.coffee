@@ -7,7 +7,7 @@
 #  This file is a part of Expresso
 # 
 #  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the GNU General Public License Version 3
+#  it under the terms of the MIT License
 # 
 #+--------------------------------------------------------------------+
 #
@@ -16,7 +16,7 @@
 # Parses URIs and determines routing
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'helper')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'pal')
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 {load_object} = require(BASEPATH + 'core/Common')
 
