@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{count, defined, do_hash, func_get_args, func_num_args, function_exists, get_instance, helper, is_array, load, md5, mt_rand, preg_quote, preg_replace, str_repeat, str_replace, stripslashes, strlen, substr, trim, uniqid}	= require(FCPATH + 'helper')
+{count, defined, do_hash, func_get_args, func_num_args, function_exists, get_instance, helper, is_array, load, md5, mt_rand, preg_quote, preg_replace, str_repeat, str_replace, stripslashes, strlen, substr, trim, uniqid}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -64,10 +64,10 @@
 # @return	string
 #
 if not function_exists('trim_slashes')
-	exports.trim_slashes = trim_slashes = ($str) ->
-		return trim($str, '/')
-		
-	
+  exports.trim_slashes = trim_slashes = ($str) ->
+    return trim($str, '/')
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -81,19 +81,19 @@ if not function_exists('trim_slashes')
 # @return	mixed	string or array
 #
 if not function_exists('strip_slashes')
-	exports.strip_slashes = strip_slashes = ($str) ->
-		if is_array($str)
-			for $key, $val of $str
-				$str[$key] = strip_slashes($val)
-				
-			
-		else 
-			$str = stripslashes($str)
-			
-		
-		return $str
-		
-	
+  exports.strip_slashes = strip_slashes = ($str) ->
+    if is_array($str)
+      for $key, $val of $str
+        $str[$key] = strip_slashes($val)
+        
+      
+    else 
+      $str = stripslashes($str)
+      
+    
+    return $str
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -107,10 +107,10 @@ if not function_exists('strip_slashes')
 # @return	string
 #
 if not function_exists('strip_quotes')
-	exports.strip_quotes = strip_quotes = ($str) ->
-		return str_replace(['"', "'"], '', $str)
-		
-	
+  exports.strip_quotes = strip_quotes = ($str) ->
+    return str_replace(['"', "'"], '', $str)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -124,10 +124,10 @@ if not function_exists('strip_quotes')
 # @return	string
 #
 if not function_exists('quotes_to_entities')
-	exports.quotes_to_entities = quotes_to_entities = ($str) ->
-		return str_replace(["\'", "\"", "'", '"'], ["&#39;", "&quot;", "&#39;", "&quot;"], $str)
-		
-	
+  exports.quotes_to_entities = quotes_to_entities = ($str) ->
+    return str_replace(["\'", "\"", "'", '"'], ["&#39;", "&quot;", "&#39;", "&quot;"], $str)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -148,10 +148,10 @@ if not function_exists('quotes_to_entities')
 # @return	string
 #
 if not function_exists('reduce_double_slashes')
-	exports.reduce_double_slashes = reduce_double_slashes = ($str) ->
-		return preg_replace("#(^|[^:])//+#", "\\1/", $str)
-		
-	
+  exports.reduce_double_slashes = reduce_double_slashes = ($str) ->
+    return preg_replace("#(^|[^:])//+#", "\\1/", $str)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -173,16 +173,16 @@ if not function_exists('reduce_double_slashes')
 # @return	string
 #
 if not function_exists('reduce_multiples')
-	exports.reduce_multiples = reduce_multiples = ($str, $character = ',', $trim = false) ->
-		$str = preg_replace('#' + preg_quote($character, '#') + '{2,}#', $character, $str)
-		
-		if $trim is true
-			$str = trim($str, $character)
-			
-		
-		return $str
-		
-	
+  exports.reduce_multiples = reduce_multiples = ($str, $character = ',', $trim = false) ->
+    $str = preg_replace('#' + preg_quote($character, '#') + '{2,}#', $character, $str)
+    
+    if $trim is true
+      $str = trim($str, $character)
+      
+    
+    return $str
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -197,44 +197,44 @@ if not function_exists('reduce_multiples')
 # @return	string
 #
 if not function_exists('random_string')
-	exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
-		switch $type
-			when 'basic'return mt_rand()
-				
-			when 'alnum','numeric','nozero','alpha'
-				
-				switch $type
-					when 'alpha'$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-						
-					when 'alnum'$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-						
-					when 'numeric'$pool = '0123456789'
-						
-					when 'nozero'$pool = '123456789'
-						
-						
-				
-				$str = ''
-				($i = 0$i < $len$i++)
-				{
-				$str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
-				}
-				return $str
-				
-			when 'unique','md5'
-				
-				return md5(uniqid(mt_rand()))
-				
-			when 'encrypt','sha1'
-				
-				$CI = get_instance()
-				$CI.load.helper('security')
-				
-				return do_hash(uniqid(mt_rand(), true), 'sha1')
-				
-				
-		
-	
+  exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
+    switch $type
+      when 'basic'return mt_rand()
+        
+      when 'alnum','numeric','nozero','alpha'
+        
+        switch $type
+          when 'alpha'$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            
+          when 'alnum'$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            
+          when 'numeric'$pool = '0123456789'
+            
+          when 'nozero'$pool = '123456789'
+            
+            
+        
+        $str = ''
+        for ($i = 0$i < $len$i++)
+        {
+        $str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
+        }
+        return $str
+        
+      when 'unique','md5'
+        
+        return md5(uniqid(mt_rand()))
+        
+      when 'encrypt','sha1'
+        
+        $CI = get_instance()
+        $CI.load.helper('security')
+        
+        return do_hash(uniqid(mt_rand(), true), 'sha1')
+        
+        
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -248,17 +248,17 @@ if not function_exists('random_string')
 # @return	string
 #
 if not function_exists('alternator')
-	exports.alternator = alternator =  ->
-		exports.$i = $i ? {}
-		
-		if func_num_args() is 0
-			$i = 0
-			return ''
-			
-		$args = func_get_args()
-		return $args[($i++count($args))]
-		
-	
+  exports.alternator = alternator =  ->
+    exports.$i = $i ? {}
+    
+    if func_num_args() is 0
+      $i = 0
+      return ''
+      
+    $args = func_get_args()
+    return $args[($i++count($args))]
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -271,10 +271,10 @@ if not function_exists('alternator')
 # @return	string
 #
 if not function_exists('repeater')
-	exports.repeater = repeater = ($data, $num = 1) ->
-		return if (($num > 0) then str_repeat($data, $num) else '')
-		
-	
+  exports.repeater = repeater = ($data, $num = 1) ->
+    return if (($num > 0) then str_repeat($data, $num) else '')
+    
+  
 
 
 #  End of file string_helper.php 

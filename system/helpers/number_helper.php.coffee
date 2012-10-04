@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, function_exists, get_instance, lang, line, load, number_format, round}	= require(FCPATH + 'helper')
+{defined, function_exists, get_instance, lang, line, load, number_format, round}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -56,34 +56,34 @@
 # @return	string
 #
 if not function_exists('byte_format')
-	exports.byte_format = byte_format = ($num, $precision = 1) ->
-		$CI = get_instance()
-		$CI.lang.load('number')
-		
-		if $num>=1000000000000
-			$num = round($num / 1099511627776, $precision)
-			$unit = $CI.lang.line('terabyte_abbr')
-			
-		else if $num>=1000000000
-			$num = round($num / 1073741824, $precision)
-			$unit = $CI.lang.line('gigabyte_abbr')
-			
-		else if $num>=1000000
-			$num = round($num / 1048576, $precision)
-			$unit = $CI.lang.line('megabyte_abbr')
-			
-		else if $num>=1000
-			$num = round($num / 1024, $precision)
-			$unit = $CI.lang.line('kilobyte_abbr')
-			
-		else 
-			$unit = $CI.lang.line('bytes')
-			return number_format($num) + ' ' + $unit
-			
-		
-		return number_format($num, $precision) + ' ' + $unit
-		
-	
+  exports.byte_format = byte_format = ($num, $precision = 1) ->
+    $CI = get_instance()
+    $CI.lang.load('number')
+    
+    if $num>=1000000000000
+      $num = round($num / 1099511627776, $precision)
+      $unit = $CI.lang.line('terabyte_abbr')
+      
+    else if $num>=1000000000
+      $num = round($num / 1073741824, $precision)
+      $unit = $CI.lang.line('gigabyte_abbr')
+      
+    else if $num>=1000000
+      $num = round($num / 1048576, $precision)
+      $unit = $CI.lang.line('megabyte_abbr')
+      
+    else if $num>=1000
+      $num = round($num / 1024, $precision)
+      $unit = $CI.lang.line('kilobyte_abbr')
+      
+    else 
+      $unit = $CI.lang.line('bytes')
+      return number_format($num) + ' ' + $unit
+      
+    
+    return number_format($num, $precision) + ' ' + $unit
+    
+  
 
 
 #  End of file number_helper.php 

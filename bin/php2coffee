@@ -34,6 +34,8 @@ Usage: php2coffee [OPTIONS] PATH [DESTINATION]
   -j. --javascript    compiles resulting .coffee file
   -r, --recursive     recurse source path
   -t, --trace         trace output
+  -T, --tabs          use tab character in output (default is spaces)
+  -d, --dump          dump of tokens
   
  
 DOC;
@@ -47,6 +49,8 @@ $config       = false;    // config files (declares module globals)
 $javascript   = false;    // compiles resulting .coffee file
 $recursive    = false;    // recurse source path
 $trace        = false;    // trace output
+$tabs         = false;    // use tab char
+$dump         = false;    // dump token list
 $paths        = array();  // path arguments
 $src          = '';       // arg0 = source folder
 $dst          = '';       // arg1 = optional destination folder
@@ -80,8 +84,18 @@ foreach ($argv as $arg)   // decode the command line
     case '--trace':  
       $trace = true;  
       break;
-    
-    default:    
+
+    case '-T':
+    case '--tabs':
+      $tabs = true;
+      break;
+
+    case '-d':
+    case '--dump':
+      $dump = true;
+      break;
+
+    default:
       $paths[] = $arg;
   }
   
@@ -104,7 +118,12 @@ switch (count($paths)) {
 }
 // global flags
 define('CONFIG',    $config);
+define('DUMP',      $dump);
 define('TRACE',     $trace);
+if ($tabs == true)
+  define('TABS',    '\t');
+else
+  define('TABS',    '  ');
 
 $externs = new Externs();
 

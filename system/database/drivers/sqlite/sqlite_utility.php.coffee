@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{db, db_debug, defined, display_error}	= require(FCPATH + 'helper')
+{db, db_debug, defined, display_error}  = require(FCPATH + 'helper')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
@@ -44,69 +44,69 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link		http://codeigniter.com/user_guide/database/
 #
 class CI_DB_sqlite_utility extends CI_DB_utility
-	
-	#
-	# List databases
-	#
-	# I don't believe you can do a database listing with SQLite
-	# since each database is its own file.  I suppose we could
-	# try reading a directory looking for SQLite files, but
-	# that doesn't seem like a terribly good idea
-	#
-	# @access	private
-	# @return	bool
-	#
-	_list_databases :  ->
-		if @db_debug
-			return @db.display_error('db_unsuported_feature')
-			
-		return {}
-		
-	
-	#  --------------------------------------------------------------------
-	
-	#
-	# Optimize table query
-	#
-	# Is optimization even supported in SQLite?
-	#
-	# @access	private
-	# @param	string	the table name
-	# @return	object
-	#
-	_optimize_table : ($table) ->
-		return false
-		
-	
-	#  --------------------------------------------------------------------
-	
-	#
-	# Repair table query
-	#
-	# Are table repairs even supported in SQLite?
-	#
-	# @access	private
-	# @param	string	the table name
-	# @return	object
-	#
-	_repair_table : ($table) ->
-		return false
-		
-	
-	#  --------------------------------------------------------------------
-	
-	#
-	# SQLite Export
-	#
-	# @access	private
-	# @param	array	Preferences
-	# @return	mixed
-	#
-	_backup : ($params = {}) ->
-		#  Currently unsupported
-		return @db.display_error('db_unsuported_feature')
-		
-	
+  
+  #
+  # List databases
+  #
+  # I don't believe you can do a database listing with SQLite
+  # since each database is its own file.  I suppose we could
+  # try reading a directory looking for SQLite files, but
+  # that doesn't seem like a terribly good idea
+  #
+  # @access	private
+  # @return	bool
+  #
+  _list_databases :  ->
+    if @db_debug
+      return @db.display_error('db_unsuported_feature')
+      
+    return {}
+    
+  
+  #  --------------------------------------------------------------------
+  
+  #
+  # Optimize table query
+  #
+  # Is optimization even supported in SQLite?
+  #
+  # @access	private
+  # @param	string	the table name
+  # @return	object
+  #
+  _optimize_table : ($table) ->
+    return false
+    
+  
+  #  --------------------------------------------------------------------
+  
+  #
+  # Repair table query
+  #
+  # Are table repairs even supported in SQLite?
+  #
+  # @access	private
+  # @param	string	the table name
+  # @return	object
+  #
+  _repair_table : ($table) ->
+    return false
+    
+  
+  #  --------------------------------------------------------------------
+  
+  #
+  # SQLite Export
+  #
+  # @access	private
+  # @param	array	Preferences
+  # @return	mixed
+  #
+  _backup : ($params = {}) ->
+    #  Currently unsupported
+    return @db.display_error('db_unsuported_feature')
+    
+  
 
 register_class 'CI_DB_sqlite_utility', CI_DB_sqlite_utility
 module.exports = CI_DB_sqlite_utility

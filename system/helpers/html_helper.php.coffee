@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{config, defined, function_exists, get_instance, is_array, is_file, site_url, slash_item, str_repeat, strpos}	= require(FCPATH + 'helper')
+{config, defined, function_exists, get_instance, is_array, is_file, site_url, slash_item, str_repeat, strpos}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -60,10 +60,10 @@
 # @return	string
 #
 if not function_exists('heading')
-	exports.heading = heading = ($data = '', $h = '1') ->
-		return "<h" + $h + ">" + $data + "</h" + $h + ">"
-		
-	
+  exports.heading = heading = ($data = '', $h = '1') ->
+    return "<h" + $h + ">" + $data + "</h" + $h + ">"
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -78,10 +78,10 @@ if not function_exists('heading')
 # @return	string
 #
 if not function_exists('ul')
-	exports.ul = ul = ($list, $attributes = '') ->
-		return _list('ul', $list, $attributes)
-		
-	
+  exports.ul = ul = ($list, $attributes = '') ->
+    return _list('ul', $list, $attributes)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -96,10 +96,10 @@ if not function_exists('ul')
 # @return	string
 #
 if not function_exists('ol')
-	exports.ol = ol = ($list, $attributes = '') ->
-		return _list('ol', $list, $attributes)
-		
-	
+  exports.ol = ol = ($list, $attributes = '') ->
+    return _list('ol', $list, $attributes)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -116,58 +116,58 @@ if not function_exists('ol')
 # @return	string
 #
 if not function_exists('_list')
-	exports._list = _list = ($type = 'ul', $list, $attributes = '', $depth = 0) ->
-		#  If an array wasn't submitted there's nothing to do...
-		if not is_array($list)
-			return $list
-			
-		
-		#  Set the indentation based on the depth
-		$out = str_repeat(" ", $depth)
-		
-		#  Were any attributes submitted?  If so generate a string
-		if is_array($attributes)
-			$atts = ''
-			for $key, $val of $attributes
-				$atts+=' ' + $key + '="' + $val + '"'
-				
-			$attributes = $atts
-			
-		
-		#  Write the opening list tag
-		$out+="<" + $type + $attributes + ">\n"
-		
-		#  Cycle through the list elements.  If an array is
-		#  encountered we will recursively call _list()
-		
-		exports.$_last_list_item = $_last_list_item ? {}''
-		for $key, $val of $list
-			$_last_list_item = $key
-			
-			$out+=str_repeat(" ", $depth + 2)
-			$out+="<li>"
-			
-			if not is_array($val)
-				$out+=$val
-				
-			else 
-				$out+=$_last_list_item + "\n"
-				$out+=_list($type, $val, '', $depth + 4)
-				$out+=str_repeat(" ", $depth + 2)
-				
-			
-			$out+="</li>\n"
-			
-		
-		#  Set the indentation for the closing tag
-		$out+=str_repeat(" ", $depth)
-		
-		#  Write the closing list tag
-		$out+="</" + $type + ">\n"
-		
-		return $out
-		
-	
+  exports._list = _list = ($type = 'ul', $list, $attributes = '', $depth = 0) ->
+    #  If an array wasn't submitted there's nothing to do...
+    if not is_array($list)
+      return $list
+      
+    
+    #  Set the indentation based on the depth
+    $out = str_repeat(" ", $depth)
+    
+    #  Were any attributes submitted?  If so generate a string
+    if is_array($attributes)
+      $atts = ''
+      for $key, $val of $attributes
+        $atts+=' ' + $key + '="' + $val + '"'
+        
+      $attributes = $atts
+      
+    
+    #  Write the opening list tag
+    $out+="<" + $type + $attributes + ">\n"
+    
+    #  Cycle through the list elements.  If an array is
+    #  encountered we will recursively call _list()
+    
+    exports.$_last_list_item = $_last_list_item ? {}''
+    for $key, $val of $list
+      $_last_list_item = $key
+      
+      $out+=str_repeat(" ", $depth + 2)
+      $out+="<li>"
+      
+      if not is_array($val)
+        $out+=$val
+        
+      else 
+        $out+=$_last_list_item + "\n"
+        $out+=_list($type, $val, '', $depth + 4)
+        $out+=str_repeat(" ", $depth + 2)
+        
+      
+      $out+="</li>\n"
+      
+    
+    #  Set the indentation for the closing tag
+    $out+=str_repeat(" ", $depth)
+    
+    #  Write the closing list tag
+    $out+="</" + $type + ">\n"
+    
+    return $out
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -179,10 +179,10 @@ if not function_exists('_list')
 # @return	string
 #
 if not function_exists('br')
-	exports.br = br = ($num = 1) ->
-		return str_repeat("<br />", $num)
-		
-	
+  exports.br = br = ($num = 1) ->
+    return str_repeat("<br />", $num)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -196,40 +196,40 @@ if not function_exists('br')
 # @return	string
 #
 if not function_exists('img')
-	exports.img = img = ($src = '', $index_page = false) ->
-		if not is_array($src)
-			$src = 'src':$src
-			
-		
-		#  If there is no alt attribute defined, set it to an empty string
-		if not $src['alt']? 
-			$src['alt'] = ''
-			
-		
-		$img = '<img'
-		
-		for $k, $v of $src
-			
-			if $k is 'src' and strpos($v, '://') is false
-				$CI = get_instance()
-				
-				if $index_page is true
-					$img+=' src="' + $CI.config.site_url($v) + '"'
-					
-				else 
-					$img+=' src="' + $CI.config.slash_item('base_url') + $v + '"'
-					
-				
-			else 
-				$img+=$k=\"$v\"
-				
-			
-		
-		$img+='/>'
-		
-		return $img
-		
-	
+  exports.img = img = ($src = '', $index_page = false) ->
+    if not is_array($src)
+      $src = 'src':$src
+      
+    
+    #  If there is no alt attribute defined, set it to an empty string
+    if not $src['alt']? 
+      $src['alt'] = ''
+      
+    
+    $img = '<img'
+    
+    for $k, $v of $src
+      
+      if $k is 'src' and strpos($v, '://') is false
+        $CI = get_instance()
+        
+        if $index_page is true
+          $img+=' src="' + $CI.config.site_url($v) + '"'
+          
+        else 
+          $img+=' src="' + $CI.config.slash_item('base_url') + $v + '"'
+          
+        
+      else 
+        $img+=" $k=\"$v\""
+        
+      
+    
+    $img+='/>'
+    
+    return $img
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -247,30 +247,30 @@ if not function_exists('img')
 # @return	string
 #
 if not function_exists('doctype')
-	exports.doctype = doctype = ($type = 'xhtml1-strict') ->
-		exports.$_doctypes
-		
-		if not is_array($_doctypes)
-			if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
-				require(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
-				
-			else if is_file(APPPATH + 'config/doctypes' + EXT)
-				require(APPPATH + 'config/doctypes' + EXT)
-				
-			
-			if not is_array($_doctypes)
-				return false
-				
-			
-		
-		if $_doctypes[$type]? 
-			return $_doctypes[$type]
-			
-		else 
-			return false
-			
-		
-	
+  exports.doctype = doctype = ($type = 'xhtml1-strict') ->
+    exports.$_doctypes
+    
+    if not is_array($_doctypes)
+      if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
+        require(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
+        
+      else if is_file(APPPATH + 'config/doctypes' + EXT)
+        require(APPPATH + 'config/doctypes' + EXT)
+        
+      
+      if not is_array($_doctypes)
+        return false
+        
+      
+    
+    if $_doctypes[$type]? 
+      return $_doctypes[$type]
+      
+    else 
+      return false
+      
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -289,56 +289,56 @@ if not function_exists('doctype')
 # @return	string
 #
 if not function_exists('link_tag')
-	exports.link_tag = link_tag = ($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = false) ->
-		$CI = get_instance()
-		
-		$link = '<link '
-		
-		if is_array($href)
-			for $k, $v of $href
-				if $k is 'href' and strpos($v, '://') is false
-					if $index_page is true
-						$link+='href="' + $CI.config.site_url($v) + '" '
-						
-					else 
-						$link+='href="' + $CI.config.slash_item('base_url') + $v + '" '
-						
-					
-				else 
-					$link+=$k=\"$v\" 
-					
-				
-			
-			$link+="/>"
-			
-		else 
-			if strpos($href, '://') isnt false
-				$link+='href="' + $href + '" '
-				
-			else if $index_page is true
-				$link+='href="' + $CI.config.site_url($href) + '" '
-				
-			else 
-				$link+='href="' + $CI.config.slash_item('base_url') + $href + '" '
-				
-			
-			$link+='rel="' + $rel + '" type="' + $type + '" '
-			
-			if $media isnt ''
-				$link+='media="' + $media + '" '
-				
-			
-			if $title isnt ''
-				$link+='title="' + $title + '" '
-				
-			
-			$link+='/>'
-			
-		
-		
-		return $link
-		
-	
+  exports.link_tag = link_tag = ($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = false) ->
+    $CI = get_instance()
+    
+    $link = '<link '
+    
+    if is_array($href)
+      for $k, $v of $href
+        if $k is 'href' and strpos($v, '://') is false
+          if $index_page is true
+            $link+='href="' + $CI.config.site_url($v) + '" '
+            
+          else 
+            $link+='href="' + $CI.config.slash_item('base_url') + $v + '" '
+            
+          
+        else 
+          $link+="$k=\"$v\" "
+          
+        
+      
+      $link+="/>"
+      
+    else 
+      if strpos($href, '://') isnt false
+        $link+='href="' + $href + '" '
+        
+      else if $index_page is true
+        $link+='href="' + $CI.config.site_url($href) + '" '
+        
+      else 
+        $link+='href="' + $CI.config.slash_item('base_url') + $href + '" '
+        
+      
+      $link+='rel="' + $rel + '" type="' + $type + '" '
+      
+      if $media isnt ''
+        $link+='media="' + $media + '" '
+        
+      
+      if $title isnt ''
+        $link+='title="' + $title + '" '
+        
+      
+      $link+='/>'
+      
+    
+    
+    return $link
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -350,32 +350,32 @@ if not function_exists('link_tag')
 # @return	string
 #
 if not function_exists('meta')
-	exports.meta = meta = ($name = '', $content = '', $type = 'name', $newline = "\n") ->
-		#  Since we allow the data to be passes as a string, a simple array
-		#  or a multidimensional one, we need to do a little prepping.
-		if not is_array($name)
-			$name = ['name':$name, 'content':$content, 'type':$type, 'newline':$newline]
-			
-		else 
-			#  Turn single array into multidimensional
-			if $name['name']? 
-				$name = [$name]
-				
-			
-		
-		$str = ''
-		for $meta in $name
-			$type = if ( not $meta['type']?  or $meta['type'] is 'name') then 'name' else 'http-equiv'
-			$name = if ( not $meta['name']? ) then '' else $meta['name']
-			$content = if ( not $meta['content']? ) then '' else $meta['content']
-			$newline = if ( not $meta['newline']? ) then "\n" else $meta['newline']
-			
-			$str+='<meta ' + $type + '="' + $name + '" content="' + $content + '" />' + $newline
-			
-		
-		return $str
-		
-	
+  exports.meta = meta = ($name = '', $content = '', $type = 'name', $newline = "\n") ->
+    #  Since we allow the data to be passes as a string, a simple array
+    #  or a multidimensional one, we need to do a little prepping.
+    if not is_array($name)
+      $name = ['name':$name, 'content':$content, 'type':$type, 'newline':$newline]
+      
+    else 
+      #  Turn single array into multidimensional
+      if $name['name']? 
+        $name = [$name]
+        
+      
+    
+    $str = ''
+    for $meta in $name
+      $type = if ( not $meta['type']?  or $meta['type'] is 'name') then 'name' else 'http-equiv'
+      $name = if ( not $meta['name']? ) then '' else $meta['name']
+      $content = if ( not $meta['content']? ) then '' else $meta['content']
+      $newline = if ( not $meta['newline']? ) then "\n" else $meta['newline']
+      
+      $str+='<meta ' + $type + '="' + $name + '" content="' + $content + '" />' + $newline
+      
+    
+    return $str
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -387,10 +387,10 @@ if not function_exists('meta')
 # @return	string
 #
 if not function_exists('nbs')
-	exports.nbs = nbs = ($num = 1) ->
-		return str_repeat("&nbsp;", $num)
-		
-	
+  exports.nbs = nbs = ($num = 1) ->
+    return str_repeat("&nbsp;", $num)
+    
+  
 
 
 #  End of file html_helper.php 

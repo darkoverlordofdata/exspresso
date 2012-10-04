@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, function_exists, get_instance, md5, preg_replace, security, sha1, str_replace}	= require(FCPATH + 'helper')
+{defined, function_exists, get_instance, md5, preg_replace, security, sha1, str_replace}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -57,11 +57,11 @@
 # @return	string
 #
 if not function_exists('xss_clean')
-	exports.xss_clean = xss_clean = ($str, $is_image = false) ->
-		$CI = get_instance()
-		return $CI.security.xss_clean($str, $is_image)
-		
-	
+  exports.xss_clean = xss_clean = ($str, $is_image = false) ->
+    $CI = get_instance()
+    return $CI.security.xss_clean($str, $is_image)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -73,11 +73,11 @@ if not function_exists('xss_clean')
 # @return	string
 #
 if not function_exists('sanitize_filename')
-	exports.sanitize_filename = sanitize_filename = ($filename) ->
-		$CI = get_instance()
-		return $CI.security.sanitize_filename($filename)
-		
-	
+  exports.sanitize_filename = sanitize_filename = ($filename) ->
+    $CI = get_instance()
+    return $CI.security.sanitize_filename($filename)
+    
+  
 
 #  --------------------------------------------------------------------
 
@@ -89,15 +89,15 @@ if not function_exists('sanitize_filename')
 # @return	string
 #
 if not function_exists('do_hash')
-	exports.do_hash = do_hash = ($str, $type = 'sha1') ->
-		if $type is 'sha1'
-			return sha1($str)
-			
-		else 
-			return md5($str)
-			
-		
-	
+  exports.do_hash = do_hash = ($str, $type = 'sha1') ->
+    if $type is 'sha1'
+      return sha1($str)
+      
+    else 
+      return md5($str)
+      
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -109,13 +109,13 @@ if not function_exists('do_hash')
 # @return	string
 #
 if not function_exists('strip_image_tags')
-	exports.strip_image_tags = strip_image_tags = ($str) ->
-		$str = preg_replace("#<img\s+.*?src\s*=\s*[\"'](.+?)[\"'].*?\>#", "\\1", $str)
-		$str = preg_replace("#<img\s+.*?src\s*=\s*(.+?).*?\>#", "\\1", $str)
-		
-		return $str
-		
-	
+  exports.strip_image_tags = strip_image_tags = ($str) ->
+    $str = preg_replace("#<img\s+.*?src\s*=\s*[\"'](.+?)[\"'].*?\>#", "\\1", $str)
+    $str = preg_replace("#<img\s+.*?src\s*=\s*(.+?).*?\>#", "\\1", $str)
+    
+    return $str
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -127,10 +127,10 @@ if not function_exists('strip_image_tags')
 # @return	string
 #
 if not function_exists('encode_php_tags')
-	exports.encode_php_tags = encode_php_tags = ($str) ->
-		return str_replace(['<?php', '<?PHP', '<?', '?>'], ['&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'], $str)
-		
-	
+  exports.encode_php_tags = encode_php_tags = ($str) ->
+    return str_replace(['<?php', '<?PHP', '<?', '?>'], ['&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'], $str)
+    
+  
 
 
 #  End of file security_helper.php 

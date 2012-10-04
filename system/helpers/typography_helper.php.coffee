@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, function_exists, get_instance, library, load, typography}	= require(FCPATH + 'helper')
+{defined, function_exists, get_instance, library, load, typography}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -56,14 +56,14 @@
 # @return	string
 #
 if not function_exists('nl2br_except_pre')
-	exports.nl2br_except_pre = nl2br_except_pre = ($str) ->
-		$CI = get_instance()
-		
-		$CI.load.library('typography')
-		
-		return $CI.typography.nl2br_except_pre($str)
-		
-	
+  exports.nl2br_except_pre = nl2br_except_pre = ($str) ->
+    $CI = get_instance()
+    
+    $CI.load.library('typography')
+    
+    return $CI.typography.nl2br_except_pre($str)
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -78,12 +78,12 @@ if not function_exists('nl2br_except_pre')
 # @return	string
 #
 if not function_exists('auto_typography')
-	exports.auto_typography = auto_typography = ($str, $strip_js_event_handlers = true, $reduce_linebreaks = false) ->
-		$CI = get_instance()
-		$CI.load.library('typography')
-		return $CI.typography.auto_typography($str, $strip_js_event_handlers, $reduce_linebreaks)
-		
-	
+  exports.auto_typography = auto_typography = ($str, $strip_js_event_handlers = true, $reduce_linebreaks = false) ->
+    $CI = get_instance()
+    $CI.load.library('typography')
+    return $CI.typography.auto_typography($str, $strip_js_event_handlers, $reduce_linebreaks)
+    
+  
 
 
 #  --------------------------------------------------------------------
@@ -98,11 +98,11 @@ if not function_exists('auto_typography')
 # @return	string
 #
 if not function_exists('entity_decode')
-	exports.entity_decode = entity_decode = ($str, $charset = 'UTF-8') ->
-		exports.$SEC
-		return $SEC.entity_decode($str, $charset)
-		
-	
+  exports.entity_decode = entity_decode = ($str, $charset = 'UTF-8') ->
+    exports.$SEC
+    return $SEC.entity_decode($str, $charset)
+    
+  
 
 #  End of file typography_helper.php 
 #  Location: ./system/helpers/typography_helper.php 

@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{db, defined, display_error}	= require(FCPATH + 'helper')
+{db, defined, display_error}  = require(FCPATH + 'helper')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
@@ -44,62 +44,62 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link		http://codeigniter.com/user_guide/database/
 #
 class CI_DB_mssql_utility extends CI_DB_utility
-	
-	#
-	# List databases
-	#
-	# @access	private
-	# @return	bool
-	#
-	_list_databases :  ->
-		return "EXEC sp_helpdb"#  Can also be: EXEC sp_databases
-		
-	
-	#  --------------------------------------------------------------------
-	
-	#
-	# Optimize table query
-	#
-	# Generates a platform-specific query so that a table can be optimized
-	#
-	# @access	private
-	# @param	string	the table name
-	# @return	object
-	#
-	_optimize_table : ($table) ->
-		return false#  Is this supported in MS SQL?
-		
-	
-	#  --------------------------------------------------------------------
-	
-	#
-	# Repair table query
-	#
-	# Generates a platform-specific query so that a table can be repaired
-	#
-	# @access	private
-	# @param	string	the table name
-	# @return	object
-	#
-	_repair_table : ($table) ->
-		return false#  Is this supported in MS SQL?
-		
-	
-	#  --------------------------------------------------------------------
-	
-	#
-	# MSSQL Export
-	#
-	# @access	private
-	# @param	array	Preferences
-	# @return	mixed
-	#
-	_backup : ($params = {}) ->
-		#  Currently unsupported
-		return @db.display_error('db_unsuported_feature')
-		
-	
-	
+  
+  #
+  # List databases
+  #
+  # @access	private
+  # @return	bool
+  #
+  _list_databases :  ->
+    return "EXEC sp_helpdb"#  Can also be: EXEC sp_databases
+    
+  
+  #  --------------------------------------------------------------------
+  
+  #
+  # Optimize table query
+  #
+  # Generates a platform-specific query so that a table can be optimized
+  #
+  # @access	private
+  # @param	string	the table name
+  # @return	object
+  #
+  _optimize_table : ($table) ->
+    return false#  Is this supported in MS SQL?
+    
+  
+  #  --------------------------------------------------------------------
+  
+  #
+  # Repair table query
+  #
+  # Generates a platform-specific query so that a table can be repaired
+  #
+  # @access	private
+  # @param	string	the table name
+  # @return	object
+  #
+  _repair_table : ($table) ->
+    return false#  Is this supported in MS SQL?
+    
+  
+  #  --------------------------------------------------------------------
+  
+  #
+  # MSSQL Export
+  #
+  # @access	private
+  # @param	array	Preferences
+  # @return	mixed
+  #
+  _backup : ($params = {}) ->
+    #  Currently unsupported
+    return @db.display_error('db_unsuported_feature')
+    
+  
+  
 
 register_class 'CI_DB_mssql_utility', CI_DB_mssql_utility
 module.exports = CI_DB_mssql_utility

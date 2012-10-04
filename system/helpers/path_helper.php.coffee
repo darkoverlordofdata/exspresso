@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, function_exists, is_dir, preg_match, preg_replace, realpath}	= require(FCPATH + 'helper')
+{defined, function_exists, is_dir, preg_match, preg_replace, realpath}  = require(FCPATH + 'helper')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -57,30 +57,30 @@
 # @return	string
 #
 if not function_exists('set_realpath')
-	exports.set_realpath = set_realpath = ($path, $check_existance = false) ->
-		#  Security check to make sure the path is NOT a URL.  No remote file inclusion!
-		if preg_match("#^(http:\/\/|https:\/\/|www\.|ftp|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#i", $path)
-			show_error('The path you submitted must be a local server path, not a URL')
-			
-		
-		#  Resolve the path
-		if function_exists('realpath') and realpath($path) isnt false
-			$path = realpath($path) + '/'
-			
-		
-		#  Add a trailing slash
-		$path = preg_replace("#([^/])/*$#", "\\1/", $path)
-		
-		#  Make sure the path exists
-		if $check_existance is true
-			if not is_dir($path)
-				show_error('Not a valid path: ' + $path)
-				
-			
-		
-		return $path
-		
-	
+  exports.set_realpath = set_realpath = ($path, $check_existance = false) ->
+    #  Security check to make sure the path is NOT a URL.  No remote file inclusion!
+    if preg_match("#^(http:\/\/|https:\/\/|www\.|ftp|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#i", $path)
+      show_error('The path you submitted must be a local server path, not a URL')
+      
+    
+    #  Resolve the path
+    if function_exists('realpath') and realpath($path) isnt false
+      $path = realpath($path) + '/'
+      
+    
+    #  Add a trailing slash
+    $path = preg_replace("#([^/])/*$#", "\\1/", $path)
+    
+    #  Make sure the path exists
+    if $check_existance is true
+      if not is_dir($path)
+        show_error('Not a valid path: ' + $path)
+        
+      
+    
+    return $path
+    
+  
 
 
 #  End of file path_helper.php 

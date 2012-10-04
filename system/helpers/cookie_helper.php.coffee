@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{cookie, defined, function_exists, get_instance, input}	= require(FCPATH + 'helper')
+{cookie, defined, function_exists, get_instance, input}  = require(FCPATH + 'helper')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -64,12 +64,12 @@
 # @return	void
 #
 if not function_exists('set_cookie')
-	exports.set_cookie = set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
-		#  Set the config file options
-		$CI = get_instance()
-		$CI.input.set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure)
-		
-	
+  exports.set_cookie = set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
+    #  Set the config file options
+    $CI = get_instance()
+    $CI.input.set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure)
+    
+  
 
 #  --------------------------------------------------------------------
 
@@ -82,18 +82,18 @@ if not function_exists('set_cookie')
 # @return	mixed
 #
 if not function_exists('get_cookie')
-	exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
-		$CI = get_instance()
-		
-		$prefix = ''
-		
-		if not $_COOKIE[$index]?  and config_item('cookie_prefix') isnt ''
-			$prefix = config_item('cookie_prefix')
-			
-		
-		return $CI.input.cookie($prefix + $index, $xss_clean)
-		
-	
+  exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
+    $CI = get_instance()
+    
+    $prefix = ''
+    
+    if not $_COOKIE[$index]?  and config_item('cookie_prefix') isnt ''
+      $prefix = config_item('cookie_prefix')
+      
+    
+    return $CI.input.cookie($prefix + $index, $xss_clean)
+    
+  
 
 #  --------------------------------------------------------------------
 
@@ -107,10 +107,10 @@ if not function_exists('get_cookie')
 # @return	void
 #
 if not function_exists('delete_cookie')
-	exports.delete_cookie = delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
-		set_cookie($name, '', '', $domain, $path, $prefix)
-		
-	
+  exports.delete_cookie = delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
+    set_cookie($name, '', '', $domain, $path, $prefix)
+    
+  
 
 
 #  End of file cookie_helper.php 

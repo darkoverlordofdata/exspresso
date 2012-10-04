@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_rand, defined, function_exists, is_array}	= require(FCPATH + 'helper')
+{array_rand, defined, function_exists, is_array}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -61,14 +61,14 @@
 # @return	mixed	depends on what the array contains
 #
 if not function_exists('element')
-	exports.element = element = ($item, $array, $default = false) ->
-		if not $array[$item]?  or $array[$item] is ""
-			return $default
-			
-		
-		return $array[$item]
-		
-	
+  exports.element = element = ($item, $array, $default = false) ->
+    if not $array[$item]?  or $array[$item] is ""
+      return $default
+      
+    
+    return $array[$item]
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -80,14 +80,14 @@ if not function_exists('element')
 # @return	mixed	depends on what the array contains
 #
 if not function_exists('random_element')
-	exports.random_element = random_element = ($array) ->
-		if not is_array($array)
-			return $array
-			
-		
-		return $array[array_rand($array)]
-		
-	
+  exports.random_element = random_element = ($array) ->
+    if not is_array($array)
+      return $array
+      
+    
+    return $array[array_rand($array)]
+    
+  
 
 #  --------------------------------------------------------------------
 
@@ -104,25 +104,25 @@ if not function_exists('random_element')
 # @return	mixed	depends on what the array contains
 #
 if not function_exists('elements')
-	exports.elements = elements = ($items, $array, $default = false) ->
-		$return = {}
-		
-		if not is_array($items)
-			$items = [$items]
-			
-		
-		for $item in $items
-			if $array[$item]? 
-				$return[$item] = $array[$item]
-				
-			else 
-				$return[$item] = $default
-				
-			
-		
-		return $return
-		
-	
+  exports.elements = elements = ($items, $array, $default = false) ->
+    $return = {}
+    
+    if not is_array($items)
+      $items = [$items]
+      
+    
+    for $item in $items
+      if $array[$item]? 
+        $return[$item] = $array[$item]
+        
+      else 
+        $return[$item] = $default
+        
+      
+    
+    return $return
+    
+  
 
 #  End of file array_helper.php 
 #  Location: ./system/helpers/array_helper.php 

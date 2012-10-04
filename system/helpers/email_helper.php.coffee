@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, function_exists, mail, preg_match}	= require(FCPATH + 'helper')
+{defined, function_exists, mail, preg_match}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -55,10 +55,10 @@
 # @return	bool
 #
 if not function_exists('valid_email')
-	exports.valid_email = valid_email = ($address) ->
-		return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
-		
-	
+  exports.valid_email = valid_email = ($address) ->
+    return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
+    
+  
 
 #  ------------------------------------------------------------------------
 
@@ -69,10 +69,10 @@ if not function_exists('valid_email')
 # @return	bool
 #
 if not function_exists('send_email')
-	exports.send_email = send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
-		return mail($recipient, $subject, $message)
-		
-	
+  exports.send_email = send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
+    return mail($recipient, $subject, $message)
+    
+  
 
 
 #  End of file email_helper.php 

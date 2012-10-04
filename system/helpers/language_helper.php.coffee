@@ -16,10 +16,10 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, function_exists, get_instance, line}	= require(FCPATH + 'helper')
+{defined, function_exists, get_instance, line}  = require(FCPATH + 'helper')
 
 
-
+if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -59,17 +59,17 @@
 # @return	string
 #
 if not function_exists('lang')
-	exports.lang = lang = ($line, $id = '') ->
-		$CI = get_instance()
-		$line = $CI.lang.line($line)
-		
-		if $id isnt ''
-			$line = '<label for="' + $id + '">' + $line + "</label>"
-			
-		
-		return $line
-		
-	
+  exports.lang = lang = ($line, $id = '') ->
+    $CI = get_instance()
+    $line = $CI.lang.line($line)
+    
+    if $id isnt ''
+      $line = '<label for="' + $id + '">' + $line + "</label>"
+      
+    
+    return $line
+    
+  
 
 #  ------------------------------------------------------------------------
 #  End of file language_helper.php 

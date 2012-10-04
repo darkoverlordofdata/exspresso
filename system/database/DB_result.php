@@ -47,9 +47,15 @@ class CI_DB_result {
 	 */
 	function result($type = 'object')
 	{
-        if ($type == 'array') return $this->result_array();
-        else if ($type == 'object') return $this->result_object();
-        else return $this->custom_result_object($type);
+        if ($type == 'array') {
+          return $this->result_array();
+        }
+        else if ($type == 'object') {
+          return $this->result_object();
+        }
+        else {
+          return $this->custom_result_object($type);
+        }
 	}
 
 	// --------------------------------------------------------------------
