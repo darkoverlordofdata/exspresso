@@ -1,19 +1,3 @@
-//+--------------------------------------------------------------------+
-//| welcome_message.jade
-//+--------------------------------------------------------------------+
-//| Copyright DarkOverlordOfData (c) 2012
-//+--------------------------------------------------------------------+
-//|
-//| This file is a part of Exspresso
-//|
-//| Exspresso is free software you can copy, modify, and distribute
-//| it under the terms of the GNU General Public License Version 3
-//|
-//+--------------------------------------------------------------------+
-//|
-//|	welcome_message
-//|
-
 doctype 5
 html
 
@@ -36,17 +20,17 @@ html
     code application/controllers/welcome.coffee
 
     p Try the sample Travel database application
-      a(href="/travel") Springy Travel
+      a(href="/travel") Time Travel
 
 
     p
       | If you are exploring Exspresso for the very first time, you should start by reading the
-      a(href="user_guide/User Guide")  Documentation
+      a(href="https://github.com/darkoverlordofdata/exspresso/blob/master/readme.md")  Documentation
 
     p
       br
       | Page rendered in {elapsed_time} ms
 
-
-//End of file welcome_message.jade
-//Location: ./views/welcome_message.jade
+    p.footer
+      | powered by
+      a(href="https://npmjs.org/package/exspresso") exspresso
