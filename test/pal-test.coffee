@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| pal-helper.coffee
+#| pal-pal.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -16,18 +16,18 @@
 #   Tests for pal.coffee
 #
 #
-helper = require('../pal') #->  this is the module being tested  <-#
+pal = require('../pal') #->  this is the module being tested  <-#
 
 ## --------------------------------------------------------------------
 
 # Test class for class_exists:
 
-class helper._classes.ScoobyDoo
+class pal._classes.ScoobyDoo
 
   whereAreYou: ->
 
 #? -------------------------------------------------------------------+
-describe 'helper', ->
+describe 'pal', ->
 
   #? -----------------------------------------------------------------+
   describe 'array_merge', ->
@@ -35,7 +35,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it 'should return return all 4 names', ->
 
-      helper.array_merge({fred: 'Frank Welker'}, {shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}).should.eql {fred: 'Frank Welker', shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}
+      pal.array_merge({fred: 'Frank Welker'}, {shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}).should.eql {fred: 'Frank Welker', shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}
 
 
   #? -----------------------------------------------------------------+
@@ -44,8 +44,41 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return return first in ['shaggy', 'velma', 'daphne']", ->
 
-      helper.array_shift(['shaggy', 'velma', 'daphne']).should.equal 'shaggy'
+      pal.array_shift(['shaggy', 'velma', 'daphne']).should.equal 'shaggy'
 
+
+
+  #? -----------------------------------------------------------------+
+  describe 'array_slice', ->
+
+    #! ---------------------------------------------------------------+
+    it "should return return ['velma','fred']", ->
+
+      pal.array_slice(['shaggy', 'velma', 'fred', 'daphne'], 1, 2).should.eql ['velma','fred']
+
+
+
+
+  #? -----------------------------------------------------------------+
+  describe 'array_splice', ->
+
+    #! ---------------------------------------------------------------+
+    it "should change the array", ->
+
+      $array = ['shaggy', 'velma', 'fred', 'daphne']
+
+      pal.array_splice($array, 1, 2).should.eql ['velma','fred']
+      $array.should.eql ['shaggy', 'daphne']
+
+      $array = ['shaggy', 'velma', 'fred', 'daphne']
+
+      pal.array_splice($array, 1, 2, 'scooby').should.eql ['velma','fred']
+      $array.should.eql ['shaggy', 'scooby', 'daphne']
+
+      $array = ['shaggy', 'velma', 'fred', 'daphne']
+
+      pal.array_splice($array, 1, 2, ['scooby', 'doo']).should.eql ['velma','fred']
+      $array.should.eql ['shaggy', 'scooby', 'doo', 'daphne']
 
   #? -----------------------------------------------------------------+
   describe 'array_unshift', ->
@@ -53,7 +86,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should add 'shaggy' to ['velma', 'daphne']", ->
 
-      helper.array_unshift(['velma', 'daphne'], 'shaggy').should.equal 3
+      pal.array_unshift(['velma', 'daphne'], 'shaggy').should.equal 3
 
 
   #? -----------------------------------------------------------------+
@@ -62,12 +95,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return true for ScoobyDoo", ->
 
-      helper.class_exists('ScoobyDoo').should.equal true
+      pal.class_exists('ScoobyDoo').should.equal true
 
 
     it "should return false for DynoMut", ->
 
-      helper.class_exists('DynoMut').should.equal false
+      pal.class_exists('DynoMut').should.equal false
 
 
   #? -----------------------------------------------------------------+
@@ -76,12 +109,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 3 for ['shaggy','velma','daphne']", ->
 
-      helper.count(['shaggy','velma','daphne']).should.equal 3
+      pal.count(['shaggy','velma','daphne']).should.equal 3
 
 
     it "should return 3 for {shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}", ->
 
-      helper.count({shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}).should.equal 3
+      pal.count({shaggy: 'Casey Kasem', velma: 'Nicole Jaffe', daphne: 'Heather North'}).should.equal 3
 
 
   #? -----------------------------------------------------------------+
@@ -90,7 +123,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return current folder", ->
 
-      helper.dirname(__filename).should.equal process.cwd()+'/test'
+      pal.dirname(__filename).should.equal process.cwd()+'/test'
 
 
   #? -----------------------------------------------------------------+
@@ -99,7 +132,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return  ['shaggy','velma','daphne'] for 'shaggy,velma,daphne'", ->
 
-      helper.explode(',', 'shaggy,velma,daphne').should.eql ['shaggy','velma','daphne']
+      pal.explode(',', 'shaggy,velma,daphne').should.eql ['shaggy','velma','daphne']
 
 
   #? -----------------------------------------------------------------+
@@ -108,7 +141,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return true for current file", ->
 
-      helper.file_exists(__filename).should.equal true
+      pal.file_exists(__filename).should.equal true
 
 
 
@@ -118,7 +151,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'shaggy,velma,daphne' for ['shaggy','velma','daphne']", ->
 
-      helper.implode(',', ['shaggy','velma','daphne']).should.equal 'shaggy,velma,daphne'
+      pal.implode(',', ['shaggy','velma','daphne']).should.equal 'shaggy,velma,daphne'
 
 
 
@@ -128,12 +161,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it 'should return false when not found', ->
 
-      helper.in_array('fred', ['shaggy', 'velma', 'daphne']).should.equal false
+      pal.in_array('fred', ['shaggy', 'velma', 'daphne']).should.equal false
 
 
     it 'should return the index when found', ->
 
-      helper.in_array('fred', ['shaggy', 'velma', 'fred', 'daphne']).should.equal 2
+      pal.in_array('fred', ['shaggy', 'velma', 'fred', 'daphne']).should.equal 2
 
 
   #? -----------------------------------------------------------------+
@@ -142,12 +175,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return true for an array", ->
 
-      helper.is_array(['shaggy', 'velma', 'daphne']).should.equal.true
+      pal.is_array(['shaggy', 'velma', 'daphne']).should.equal.true
 
 
     it "should return false for a string", ->
 
-      helper.is_array('shaggy, velma, daphne').should.equal.false
+      pal.is_array('shaggy, velma, daphne').should.equal.false
 
 
   #? -----------------------------------------------------------------+
@@ -156,12 +189,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return true for ./", ->
 
-      helper.is_dir('./').should.equal.true
+      pal.is_dir('./').should.equal.true
 
 
     it "should return false for ./readme.md", ->
 
-      helper.is_dir('./readme.md').should.equal.false
+      pal.is_dir('./readme.md').should.equal.false
 
 
   #? -----------------------------------------------------------------+
@@ -170,12 +203,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return true for a null", ->
 
-      helper.is_null(null).should.equal.true
+      pal.is_null(null).should.equal.true
 
 
     it "should return false for a string", ->
 
-      helper.is_null('scooby').should.equal.false
+      pal.is_null('scooby').should.equal.false
 
 
   #? -----------------------------------------------------------------+
@@ -184,12 +217,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it 'should return true for string', ->
 
-      helper.is_string('hex girlz rule').should.equal.true
+      pal.is_string('hex girlz rule').should.equal.true
 
 
     it 'should return false for number', ->
 
-      helper.is_string(1).should.equal.false
+      pal.is_string(1).should.equal.false
 
 
   #? -----------------------------------------------------------------+
@@ -198,12 +231,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return true for an object", ->
 
-      helper.is_object({name: 'fred'}).should.equal.true
+      pal.is_object({name: 'fred'}).should.equal.true
 
 
     it "should return false for a string", ->
 
-      helper.is_object('fred').should.equal.false
+      pal.is_object('fred').should.equal.false
 
 
   #? -----------------------------------------------------------------+
@@ -212,7 +245,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'Mystery Machin' for 'Mystery Machine' - 'Me'", ->
 
-      helper.rtrim('Mystery Machine', 'Me').should.equal 'Mystery Machin'
+      pal.rtrim('Mystery Machine', 'Me').should.equal 'Mystery Machin'
 
 
   #? -----------------------------------------------------------------+
@@ -221,7 +254,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return a number > 0", ->
 
-      helper.microtime().should.not.equal 0
+      pal.microtime().should.not.equal 0
 
 
   #? -----------------------------------------------------------------+
@@ -231,7 +264,7 @@ describe 'helper', ->
     it "should return a parsed query string", ->
 
       $extra = {}
-      helper.parse_str "shaggy=norville", $extra
+      pal.parse_str "shaggy=norville", $extra
       $extra.should.eql {shaggy: 'norville'}
 
 
@@ -242,12 +275,12 @@ describe 'helper', ->
     it "should return a parsed url", ->
 
       $url = "postgres://norville:rogers@zoinks:1620/shaggy"
-      helper.parse_url($url).scheme.should.equal "postgres"
-      helper.parse_url($url).host.should.equal "zoinks"
-      helper.parse_url($url).port.should.equal "1620"
-      helper.parse_url($url).user.should.equal "norville"
-      helper.parse_url($url).pass.should.equal "rogers"
-      helper.parse_url($url).path.should.equal "shaggy"
+      pal.parse_url($url).scheme.should.equal "postgres"
+      pal.parse_url($url).host.should.equal "zoinks"
+      pal.parse_url($url).port.should.equal "1620"
+      pal.parse_url($url).user.should.equal "norville"
+      pal.parse_url($url).pass.should.equal "rogers"
+      pal.parse_url($url).path.should.equal "shaggy"
 
 
 
@@ -257,7 +290,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return", ->
 
-      helper.rawurldecode("scooby%20doo").should.equal "scooby doo"
+      pal.rawurldecode("scooby%20doo").should.equal "scooby doo"
 
 
 #? -----------------------------------------------------------------+
@@ -266,7 +299,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return current folder", ->
 
-      helper.realpath("./").should.equal process.cwd()
+      pal.realpath("./").should.equal process.cwd()
 
 
   #? -----------------------------------------------------------------+
@@ -275,7 +308,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'ystery Machine' for 'Mystery Machine' - 'Me'", ->
 
-      helper.ltrim('Mystery Machine', 'Me').should.equal 'ystery Machine'
+      pal.ltrim('Mystery Machine', 'Me').should.equal 'ystery Machine'
 
 
   #? -----------------------------------------------------------------+
@@ -284,7 +317,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'Hex Girls'", ->
 
-      helper.str_replace('Girlz', 'Girls', 'Hex Girlz').should.equal 'Hex Girls'
+      pal.str_replace('Girlz', 'Girls', 'Hex Girlz').should.equal 'Hex Girls'
 
 
   #? -----------------------------------------------------------------+
@@ -293,7 +326,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should find 'doo", ->
 
-      helper.stristr('Scooby Doo', 'doo').should.equal 'Doo'
+      pal.stristr('Scooby Doo', 'doo').should.equal 'Doo'
 
 
   #? -----------------------------------------------------------------+
@@ -302,12 +335,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should find the first 'oo'", ->
 
-      helper.strpos('ScoobyDoo', 'oo').should.equal 2
+      pal.strpos('ScoobyDoo', 'oo').should.equal 2
 
 
     it "should find the next 'oo'", ->
 
-      helper.strpos('ScoobyDoo', 'oo', 3).should.equal 7
+      pal.strpos('ScoobyDoo', 'oo', 3).should.equal 7
 
 
 
@@ -317,12 +350,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should find '*daphne'", ->
 
-      helper.strrchr('shaggy*velma*daphne', '*').should.equal "*daphne"
+      pal.strrchr('shaggy*velma*daphne', '*').should.equal "*daphne"
 
 
     it "should also find '*daphne'", ->
 
-      helper.strrchr('shaggy*velma*daphne', 42).should.equal "*daphne"
+      pal.strrchr('shaggy*velma*daphne', 42).should.equal "*daphne"
 
 
 
@@ -332,7 +365,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should find the last 'oo'", ->
 
-      helper.strrpos('ScoobyDoo', 'oo').should.equal 7
+      pal.strrpos('ScoobyDoo', 'oo').should.equal 7
 
 
   #? -----------------------------------------------------------------+
@@ -341,7 +374,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'mystery machine'", ->
 
-      helper.strtolower('Mystery Machine').should.equal 'mystery machine'
+      pal.strtolower('Mystery Machine').should.equal 'mystery machine'
 
 
 
@@ -351,7 +384,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'DOO'", ->
 
-      helper.strupper('doo').should.equal 'DOO'
+      pal.strupper('doo').should.equal 'DOO'
 
 
   #? -----------------------------------------------------------------+
@@ -360,12 +393,12 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return", ->
 
-      helper.substr('shaggy', 1).should.equal 'haggy'
+      pal.substr('shaggy', 1).should.equal 'haggy'
 
 
     it "should return", ->
 
-      helper.substr('shaggy', 1, 3).should.equal 'hag'
+      pal.substr('shaggy', 1, 3).should.equal 'hag'
 
 
   #? -----------------------------------------------------------------+
@@ -374,7 +407,7 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'ystery Machin' for 'Mystery Machine' - 'Me'", ->
 
-      helper.trim('Mystery Machine', 'Me').should.equal 'ystery Machin'
+      pal.trim('Mystery Machine', 'Me').should.equal 'ystery Machin'
 
 
   #? -----------------------------------------------------------------+
@@ -383,11 +416,11 @@ describe 'helper', ->
     #! ---------------------------------------------------------------+
     it "should return 'Mystery' for 'mystery'", ->
 
-      helper.ucfirst('mystery').should.equal 'Mystery'
+      pal.ucfirst('mystery').should.equal 'Mystery'
 
 
 
 
 
-# End of file test-helper.coffee
-# Location: ./test-helper.coffee
+# End of file test-pal.coffee
+# Location: ./test-pal.coffee

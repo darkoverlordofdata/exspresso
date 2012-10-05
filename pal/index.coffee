@@ -37,6 +37,29 @@ exports.array_shift = ($array) ->
 
   $array.shift()
 
+
+## --------------------------------------------------------------------
+
+exports.array_slice = ($array, $offset, $length = null) ->
+
+  if $length is null
+    $end = $array.length
+  else
+    $end = $offset + $length
+  $array.slice($offset, $end)
+
+
+## --------------------------------------------------------------------
+
+exports.array_splice = ($input, $offset, $length = 0, $replacement = null) ->
+
+    if $length is 0 then $length = $input.length
+    if $replacement is null
+      $input.splice($offset, $length)
+    else
+      Array::splice.apply($input, [$offset, $length].concat($replacement))
+
+
 ## --------------------------------------------------------------------
 
 exports.array_unshift = ($array, $var...) ->

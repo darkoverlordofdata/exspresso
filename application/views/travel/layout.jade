@@ -1,7 +1,6 @@
-//
-//  http://richweb.springsource.org/swf-booking-faces/spring/main?execution=c1v
 
-!!! transitional
+doctype 5
+
 html(xmlns='http://www.w3.org/1999/xhtml')
   head
     meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
@@ -18,7 +17,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
       #header.clearfix.spring
         #welcome
           .left Time Travel: An Exspresso Reference Application
-          .right
+          .right Page rendered in {elapsed_time} ms
         p
         #branding.spring
           a(href='/travel')
@@ -29,3 +28,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
 
         block content
       #footer.clearfix.spring
+
+    p.footer
+      | powered by &nbsp;
+      a(href="https://npmjs.org/package/exspresso")  e x s p r e s s o

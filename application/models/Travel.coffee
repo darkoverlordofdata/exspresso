@@ -14,12 +14,12 @@
 #	Travel Model Class
 #
 #
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{parse_url} = require(FCPATH + 'pal')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
+
 Sequelize       = require("sequelize")                  # Sequelize 1.5 ORM
 url             = require('url')                        # Utilities for URL resolution and parsing.
-{FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
-{BASEPATH}      = require(FCPATH + 'index')             # '/var/www/Exspresso/system/'
-{get_config}    = require(BASEPATH + 'core/Common')     # Loads the main config.coffee file.
-{log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 CI_Model        = require(BASEPATH + 'core/Model')      # Exspresso Model Base Class
 
 
@@ -60,25 +60,16 @@ class Travel extends CI_Model
 
   initialize: ->
 
-    $db     = url.parse @config._config.db_url
+    $db = parse_url(@config._config.db_url)
 
-    if $db.auth?
-      [$username, $password] = $db.auth.split(':')
-    else
-      [$username, $password] = ['','']
-
-    $database = $db.pathname.substr(1)
-    $hostname = $db.hostname
-    $dialect  = $db.protocol.split(':')[0]
-    $port     = $db.port
-
-    @_sequelize = new Sequelize($database, $username, $password,
-      host:     $hostname
-      port:     $port
-      dialect:  $dialect
+    @_sequelize = new Sequelize($db.path, $db.user, $db.pass,
+      host:     $db.host
+      port:     $db.port
+      dialect:  $db.scheme
       logging:  false
-      storage:  $database
+      storage:  $db.path
     )
+
 
     #
     # ------------------------------------------------------

@@ -16,7 +16,7 @@
 * Controller - working
 * Model - working (Travel demo)
 * Lang - in progress
-* Database - in progess
+* Database - reviewing mysql-activerecord as a replacement
 * Hooks - under review
 * Input - uses express
 * Output - uses express

@@ -29,7 +29,6 @@ $man = <<<DOC
 
 Usage: php2coffee [OPTIONS] PATH [DESTINATION]
  
-  -c, --config        config files (declares module globals)
   -h, --help          display this help
   -j. --javascript    compiles resulting .coffee file
   -r, --recursive     recurse source path
@@ -45,7 +44,6 @@ include_once 'lib/constants.php';
 include_once 'lib/file_helper.php';
 error_reporting(E_ALL);
 
-$config       = false;    // config files (declares module globals)
 $javascript   = false;    // compiles resulting .coffee file
 $recursive    = false;    // recurse source path
 $trace        = false;    // trace output
@@ -60,11 +58,6 @@ unset($argv[0]);          // scriptname: php2coffee.php
 foreach ($argv as $arg)   // decode the command line
   switch ($arg) {
   
-    case '-c':
-    case '--config':
-      $config = true;  
-      break;
-    
     case '-h':
     case '--help':
       echo $man;
@@ -103,11 +96,20 @@ foreach ($argv as $arg)   // decode the command line
 switch (count($paths)) {
   case 1:
     $src = $dst = realpath($paths[0]);
+    if ($src === FALSE) {
+      die("Invalid path: ".$paths[0].PHP_EOL);
+    }
     break;
   
   case 2:
     $src = realpath($paths[0]);
+    if ($src === FALSE) {
+      die("Invalid path: ".$paths[0].PHP_EOL);
+    }
     $dst = realpath($paths[1]);
+    if ($dst === FALSE) {
+      die("Invalid path: ".$paths[1].PHP_EOL);
+    }
     break;
 
   default:
@@ -117,7 +119,6 @@ switch (count($paths)) {
 
 }
 // global flags
-define('CONFIG',    $config);
 define('DUMP',      $dump);
 define('TRACE',     $trace);
 if ($tabs == true)
@@ -140,7 +141,6 @@ if (! is_dir($src)) {
 	catch (Exception $e) {
 		echo $e->getMessage();
 	}
-	echo "$dst\n";
 }
 else {
 

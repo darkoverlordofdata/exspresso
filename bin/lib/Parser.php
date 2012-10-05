@@ -256,7 +256,13 @@ class Parser {
 
   private $members = array();
 
+  private $ci_names = array();
+
   private $ignore = array(
+    'true'                            => 'true',
+    'false'                           => 'false',
+    'null'                            => 'null',
+    'delete'                          => 'delete',
     'is_php'                          => 'is_php',
     'is_really_writable'              => 'is_really_writable',
     'set_status_header'               => 'set_status_header',
@@ -435,6 +441,7 @@ DOC;
       $this->symbols = array_diff($this->symbols, $this->members, $this->ignore);
       $this->externs->table = array_merge($this->externs->table, $this->symbols);
       array_multisort(&$this->symbols);
+      array_multisort(&$this->ci_names);
 
       $declare = "{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')\n";
       if (count($this->symbols) > 0) {
@@ -443,8 +450,18 @@ DOC;
           $declare .= "{$key}, ";
         }
         $declare = substr($declare, 0, strlen($declare)-2);
-        $declare .= "}".TABS."= require(FCPATH + 'helper')\n";
+        $declare .= "}".TABS."= require(FCPATH + 'pal')\n";
       }
+      /**
+      if (count($this->ci_names) > 0) {
+        $declare .= '{';
+        foreach ($this->ci_names as $key => $item) {
+          $declare .= "{$key}, ";
+        }
+        $declare = substr($declare, 0, strlen($declare)-2);
+        $declare .= "}".TABS."= require(FCPATH + 'pal')._classes\n";
+      }
+      */
       if ($this->decl_common) {
         $declare .= "{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')";
       }
@@ -817,22 +834,49 @@ DOC;
         elseif ($value == 'NULL') {
           return 'null';
         }
+        elseif ($value == 'func_num_args') {
+          $this->is_next_token('(', TRUE);
+          $this->is_next_token(')', TRUE);
+          return 'arguments.length';
+        }
+        elseif ($value == 'func_get_args') {
+          $this->is_next_token('(', TRUE);
+          $this->is_next_token(')', TRUE);
+          return 'arguments';
+        }
+        elseif ($value == 'func_get_arg') {
+          $this->is_next_token('(', TRUE);
+          $cs = $this->parse_until(')');
+          return 'arguments['.$cs.']';
+        }
         if (strtoupper($value) != $value) {
           if (! in_array($value, $this->ignore)) {
             if (in_array($value, $this->common)) {
               $this->decl_common = TRUE;
             }
             else {
-              $this->symbols[$value] = $value;
+              if (substr($value,0,3) == 'CI_') {
+                $this->ci_names[$value] = $value;
+              }
+              else if (substr($value,0,1) !== '_') {
+                $this->symbols[$value] = $value;
+              }
             }
           }
         }
-
         return $value;
       case 'T_VARIABLE':
 				if ($value == '$this') {
           $tt = $this->get_next_token($token, $value);
-          if ($token != 'T_OBJECT_OPERATOR') $this->put_back();
+          if ($token != 'T_OBJECT_OPERATOR') {
+            $this->put_back();
+          }
+          else {
+            //  get member name
+            $tt = $this->get_next_token($token, $value);
+            $this->put_back();
+            $this->ignore[$value] = $value;
+          }
 					return '@';
 				}
 				else {
@@ -1572,6 +1616,7 @@ DOC;
 			$value = 'constructor';
 		}
 
+    $this->members[$value] = $value;
 		if ($this->class_name != '') {
       $cs = "$value : ";
       $arrow = '->';
