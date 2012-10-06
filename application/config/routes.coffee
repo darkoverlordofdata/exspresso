@@ -51,22 +51,36 @@
 #|
 #
 
+#----------------------------------------------------------------------
+#          Route                                   URI
+#----------------------------------------------------------------------
 exports['default_controller']                 = "welcome/index"
 exports['404_override']                       = 'welcome/not_found'
 
 exports['/about']                             = 'welcome/about'
 exports['/about/:id']                         = "welcome/about"
-exports['/travel']                            = 'travel/intro'
-exports['/travel/search']                     = 'travel/search'
-exports['/travel/hotels']                     = 'travel/hotels'
-exports['/travel/hotel/:id']                  = 'travel/hotel'
+
+# database application demo  - Sequelize (using default postgres)
+exports['/pgtravel']                          = 'pgtravel/search'
+exports['/pgtravel/search']                   = 'pgtravel/search'
+exports['/pgtravel/hotels']                   = 'pgtravel/hotels'
+exports['/pgtravel/hotel/:id']                = 'pgtravel/hotel'
+exports['/pgtravel/booking']                  = 'pgtravel/booking'
+exports['/pgtravel/confirm']                  = 'pgtravel/confirm'
+exports['/pgtravel/book']                     = 'pgtravel/book'
+
+# database application demo  - mysql-activerecord
+exports['/mytravel']                          = 'mytravel/search'
+exports['/mytravel/search']                   = 'mytravel/search'
+exports['/mytravel/hotels']                   = 'mytravel/hotels'
+exports['/mytravel/hotel/:id']                = 'mytravel/hotel'
+exports['/mytravel/booking']                  = 'mytravel/booking'
+exports['/mytravel/confirm']                  = 'mytravel/confirm'
+exports['/mytravel/book']                     = 'mytravel/book'
 
 exports['/login']                             = 'travel/login'
 exports['/logout']                            = 'travel/logout'
 exports['/authenticate']                      = 'travel/authenticate'
-exports['/travel/booking']                    = 'travel/booking'
-exports['/travel/confirm']                    = 'travel/confirm'
-exports['/travel/book']                       = 'travel/book'
 
 # End of file routes.coffee
 # Location: ./routes.coffee

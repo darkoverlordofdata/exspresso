@@ -1,0 +1,32 @@
+extends ./layout
+
+block content
+
+  #main
+    h1 Login Required
+    .section
+      br
+      p Valid username/passwords are:
+      ul
+        li keith/melbourne
+        li erwin/leuven
+        li jeremy/atlanta
+        li scott/rochester
+    .section
+      form(name='f', action='/authenticate', method='post')
+        input(type="hidden",name="url",id="url",value="#{url}")
+        fieldset
+          .field
+            .label User:
+            .output
+              input(type='text', name='username', value='')
+          .field
+            .label Password:
+            .output
+              input(type='password', name='password')
+          .field
+            .label Don't ask for my password for two weeks:
+            .output
+              input(type='checkbox', name='remember_me')
+        .buttonGroup
+          input(name='submit', type='submit', value='Login')

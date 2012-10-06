@@ -19,7 +19,6 @@
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 Sequelize       = require("sequelize")                  # Sequelize 1.5 ORM
-url             = require('url')                        # Utilities for URL resolution and parsing.
 CI_Model        = require(BASEPATH + 'core/Model')      # Exspresso Model Base Class
 
 

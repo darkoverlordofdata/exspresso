@@ -2,11 +2,10 @@
 extends ../layout
 
 block content
-  h1= settings.site_name
-  p
-  h3 500: Internal Server Error
+  center
+    h1 Zoiks!!!
+    p
+    h1 Like, Scoob - we broke the internet
   if settings['verbose errors']
     pre= error.stack
-  else
-    p An error ocurred!
 

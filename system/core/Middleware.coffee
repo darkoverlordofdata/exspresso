@@ -123,7 +123,8 @@ exports.profiler = ->
         #
         # replace metrics in output
         #
-        res.send html.replace(/{elapsed_time}/g, elapsed_time)
+        if html?
+          res.send html.replace(/{elapsed_time}/g, elapsed_time)
         return
 
     next()

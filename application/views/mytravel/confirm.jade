@@ -1,0 +1,46 @@
+extends ./layout
+
+block content
+
+  .hero-unit
+    h2 Confirm Hotel Booking
+      
+    table.table
+      tr
+        th Name:
+        td= hotel.name
+      tr
+        th Address:
+        td= hotel.address
+      tr
+        th City, State:
+        td= hotel.city
+      tr
+        th Zip:
+        td= hotel.zip
+      tr
+        th Country:
+        td= hotel.country
+      tr
+        th Total Payment:
+        td= booking.totalPayment
+      tr
+        th Check In Date:
+        td= booking.checkinDate
+      tr
+        th Check Out Date:
+        td= booking.checkoutDate
+      tr
+        th Credit Card #:
+        td= booking.creditCard
+
+    form.form(name="confirm", action="/mytravel/book", method="post")
+      input(type="hidden", name="hotelId", value="#{hotel.id}")
+      .control-group
+        input.btn.btn-primary(name="confirm", type="submit", value="Confirm")
+        &nbsp;
+        input.btn(name="revise", type="submit", value="Revise")
+        &nbsp;
+        input.btn(name="cancel", type="submit", value="Cancel")
+
+    p Page rendered in {elapsed_time} ms
