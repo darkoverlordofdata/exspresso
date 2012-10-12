@@ -50,7 +50,7 @@ class Travel extends CI_Controller
     query = @Travel.Booking.findAll(where: {state: "BOOKED"})
     query.on "success", (bookings) =>
 
-      @render "pgtravel/main",
+      @render "pgorm/main",
         bookings: bookings
 
   ## --------------------------------------------------------------------
@@ -68,7 +68,7 @@ class Travel extends CI_Controller
     query = @Travel.Hotel.findAll(where: ["name like ?", "%" + @req.param("searchString") + "%"])
     query.on "success", ($result) =>
 
-      @render "pgtravel/hotels",
+      @render "pgorm/hotels",
         hotels: $result
 
   ## --------------------------------------------------------------------
@@ -87,7 +87,7 @@ class Travel extends CI_Controller
     query = @Travel.Hotel.find(parseInt($id, 10))
     query.on "success", ($result) =>
 
-      @render "pgtravel/detail",
+      @render "pgorm/detail",
         hotel: $result
 
 
@@ -98,11 +98,11 @@ class Travel extends CI_Controller
   #
   booking: ->
 
-    if @req.body.cancel? then @res.redirect "/pgtravel/search"
+    if @req.body.cancel? then @res.redirect "/pgorm/search"
 
     query = @Travel.Hotel.find(parseInt(@req.param("hotelId")))
     query.on "success", (result) =>
-      @render "pgtravel/booking",
+      @render "pgorm/booking",
         hotel: result
 
   ## --------------------------------------------------------------------
@@ -113,7 +113,7 @@ class Travel extends CI_Controller
   confirm: ->
 
     moment = require('moment')
-    if @req.body.cancel? then @res.redirect "/pgtravel/search"
+    if @req.body.cancel? then @res.redirect "/pgorm/search"
     query = @Travel.Hotel.find(parseInt(@req.body.hotelId))
     query.on("success", (result) =>
 
@@ -134,7 +134,7 @@ class Travel extends CI_Controller
       booking.save().on("success", =>
         booking.numberOfNights = (booking.checkoutDate - booking.checkinDate) / (24 * 60 * 60 * 1000)
         booking.totalPayment = booking.numberOfNights * result.price
-        @res.render "pgtravel/confirm",
+        @res.render "pgorm/confirm",
           hotel: result
           booking: booking
 
@@ -159,7 +159,7 @@ class Travel extends CI_Controller
       if @req.body.confirm?
         booking.state = "BOOKED"
         booking.save().on("success", =>
-          @res.redirect "/pgtravel/search"
+          @res.redirect "/pgorm/search"
         ).on "failure", (error) =>
           console.log error
           @res.send error, 500
@@ -167,7 +167,7 @@ class Travel extends CI_Controller
       else if @req.body.cancel?
         booking.state = "CANCELLED"
         booking.save().on("success", =>
-          @res.redirect "/pgtravel/search"
+          @res.redirect "/pgorm/search"
         ).on "failure", (error) =>
           console.log error
           @res.send error, 500
@@ -176,7 +176,7 @@ class Travel extends CI_Controller
         @Travel.Hotel.find(booking.hotel).on "success", (hotel) =>
           booking.numberOfNights = (booking.checkoutDate - booking.checkinDate) / (24 * 60 * 60 * 1000)
           booking.totalPayment = booking.numberOfNights * hotel.price
-          @res.render "pgtravel/booking",
+          @res.render "pgorm/booking",
             hotel: hotel
             booking: booking
 

@@ -60,7 +60,16 @@ exports['404_override']                       = 'welcome/not_found'
 exports['/about']                             = 'welcome/about'
 exports['/about/:id']                         = "welcome/about"
 
-# database application demo  - Sequelize (using default postgres)
+# database application demo I - Postgres + Sequelize ORM
+exports['/pgorm']                             = 'pgorm/search'
+exports['/pgorm/search']                      = 'pgorm/search'
+exports['/pgorm/hotels']                      = 'pgorm/hotels'
+exports['/pgorm/hotel/:id']                   = 'pgorm/hotel'
+exports['/pgorm/booking']                     = 'pgorm/booking'
+exports['/pgorm/confirm']                     = 'pgorm/confirm'
+exports['/pgorm/book']                        = 'pgorm/book'
+
+# database application demo II - Postgres + CI_DB_active_rec
 exports['/pgtravel']                          = 'pgtravel/search'
 exports['/pgtravel/search']                   = 'pgtravel/search'
 exports['/pgtravel/hotels']                   = 'pgtravel/hotels'
@@ -69,7 +78,7 @@ exports['/pgtravel/booking']                  = 'pgtravel/booking'
 exports['/pgtravel/confirm']                  = 'pgtravel/confirm'
 exports['/pgtravel/book']                     = 'pgtravel/book'
 
-# database application demo  - mysql-activerecord
+# database application demo III - MySql + CI_DB_active_rec
 exports['/mytravel']                          = 'mytravel/search'
 exports['/mytravel/search']                   = 'mytravel/search'
 exports['/mytravel/hotels']                   = 'mytravel/hotels'
