@@ -34,8 +34,9 @@ module.exports = (CI_DB) ->
 
   class CI_DB_postgre_driver extends CI_DB
 
-    dbdriver: 'postgre'
-    pg:       null
+    dbdriver:   'postgres'
+    port:       5432
+    pg:         null
 
     _escape_char: '"'
 
@@ -59,7 +60,7 @@ module.exports = (CI_DB) ->
     #
     _connect_string:  ->
 
-      $connect_string = "postgres://#{@username}:#{@password}@#{@hostname}:#{@port}/#{@database}"
+      $connect_string = @dbdriver + "://#{@username}:#{@password}@#{@hostname}:#{@port}/#{@database}"
 
       return trim($connect_string)
 

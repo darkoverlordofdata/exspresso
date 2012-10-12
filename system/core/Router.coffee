@@ -200,21 +200,15 @@ controller_callback = ($class, $method) ->
     $CI.res       = $res # response object
     $CI.render    = $res.render  # shortcut
 
-    try
-
-      # was database added by the controller constructor?
-      if $CI.db?
-        # initialize the database connection
-        $CI.db.initialize ->
-          # now call the controller method
-          $CI[$method].apply $CI, $args
-      else
-        # just call the controller method
+    # was database added by the controller constructor?
+    if $CI.db?
+      # initialize the database connection
+      $CI.db.initialize ->
+        # now call the controller method
         $CI[$method].apply $CI, $args
-
-    catch ex
-      console.log ex
-      console.log "Method: "+$method
+    else
+      # just call the controller method
+      $CI[$method].apply $CI, $args
 
     return
 
