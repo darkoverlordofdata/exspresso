@@ -15,7 +15,7 @@
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
-{SELECT, FROM, WHERE, LIKE, LIMIT, OFFSET, GO} = require(FCPATH+'lib/sql')
+{DISTINCT, FROM, GO, INNER, INSERT, INTO, IS, JOIN, LEFT, LIKE, LIMIT, OFFSET, ON, ORDER_BY, OUTER, RIGHT, SELECT, SET, UPDATE, VALUES, WHERE} = require(FCPATH + 'lib/sql.dsl')
 
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 
