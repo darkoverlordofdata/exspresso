@@ -60,16 +60,7 @@ module.exports = (CI_DB) ->
     #
     _connect_string:  ->
 
-      console.log "postgres_driver: "
-      console.log "dbdriver = #{@dbdriver}"
-      console.log "@username = #{@username}"
-      console.log "@password = #{@password}"
-      console.log "@hostname = #{@hostname}"
-      console.log "@port = #{@port}"
-      console.log "@database = #{@database}"
       $connect_string = @dbdriver + "://#{@username}:#{@password}@#{@hostname}:#{@port}/#{@database}"
-      console.log $connect_string
-      console.log process.env.HEROKU_POSTGRESQL_ROSE_URL
       return trim($connect_string)
 
 
@@ -90,6 +81,10 @@ module.exports = (CI_DB) ->
           console.log $err
         else
           @pg = $client
+          console.log "postgres connected"
+          $callback()
+
+          ###
           $client.query @_version(), ($err, $result) ->
 
             if $err
@@ -97,7 +92,7 @@ module.exports = (CI_DB) ->
             else
               log_message 'debug', $result.rows[0].ver
             $callback()
-
+          ###
 
     #  --------------------------------------------------------------------
 
