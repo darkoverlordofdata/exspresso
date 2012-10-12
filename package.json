@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "A coffee-script port of CodeIgniter",
   "keywords": ["framework", "web"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",
@@ -24,8 +24,10 @@
     "eco": "*",
     "express": "*",
     "express-partials": "*",
+    "format-number": "*",
     "jade": "*",
     "moment": "*",
+    "mysql": "*",
     "mysql-activerecord": "",
     "pg": "*",
     "redis": "*",

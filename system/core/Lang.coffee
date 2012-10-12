@@ -16,39 +16,19 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, defined, file_exists, get_instance, get_package_paths, in_array, str_replace}	= require(FCPATH + 'pal')
+{array_merge, defined, file_exists, get_instance, get_package_paths, in_array, str_replace}	= require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
-
-#
-# CodeIgniter
-#
-# An open source application development framework for PHP 5.1.6 or newer
-#
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
-# @since		Version 1.0
-# @filesource
-#
 
 #  ------------------------------------------------------------------------
 
 #
 # Language Class
 #
-# @package		CodeIgniter
-# @subpackage	Libraries
-# @category	Language
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/language.html
 #
 class CI_Lang
 	
 	language: {}
-	is_loaded: {}
+	is_loaded: []
 	
 	#
 	# Constructor
@@ -56,7 +36,7 @@ class CI_Lang
 	# @access	public
 	#
 	constructor :  ->
-		log_message('debug', "Language Class Initialized")
+		log_message 'debug', "Language Class Initialized"
 		
 	
 	#  --------------------------------------------------------------------
@@ -91,14 +71,14 @@ class CI_Lang
 		
 		#  Determine where the language file is and load it
 		if $alt_path isnt '' and file_exists($alt_path + 'language/' + $idiom + '/' + $langfile)
-			require($alt_path + 'language/' + $idiom + '/' + $langfile)
+			$lang = require($alt_path + 'language/' + $idiom + '/' + $langfile)
 			
 		else 
 			$found = false
 			
-			for $package_path in get_instance().load.get_package_paths(true)
+			for $package_path in @_CI.load.get_package_paths(true)
 				if file_exists($package_path + 'language/' + $idiom + '/' + $langfile)
-					require($package_path + 'language/' + $idiom + '/' + $langfile)
+          $lang = require($package_path + 'language/' + $idiom + '/' + $langfile)
 					$found = true
 					break
 					
@@ -121,8 +101,7 @@ class CI_Lang
 		
 		@is_loaded.push $langfile
 		@language = array_merge(@language, $lang)
-		delete $lang
-		
+
 		log_message('debug', 'Language file loaded: language/' + $idiom + '/' + $langfile)
 		return true
 		

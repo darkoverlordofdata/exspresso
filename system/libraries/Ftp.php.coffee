@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{__construct, count, defined, end, explode, file_exists, ftp_chdir, ftp_chmod, ftp_close, ftp_connect, ftp_delete, ftp_get, ftp_login, ftp_mkdir, ftp_nlist, ftp_pasv, ftp_put, ftp_rename, ftp_rmdir, function_exists, get_instance, in_array, is_dir, is_null, is_resource, lang, line, load, opendir, preg_replace, readdir, strpos, substr}  = require(FCPATH + 'pal')
+{__construct, count, defined, end, explode, file_exists, ftp_chdir, ftp_chmod, ftp_close, ftp_connect, ftp_delete, ftp_get, ftp_login, ftp_mkdir, ftp_nlist, ftp_pasv, ftp_put, ftp_rename, ftp_rmdir, function_exists, get_instance, in_array, is_dir, is_null, is_resource, lang, line, load, opendir, preg_replace, readdir, strpos, substr}  = require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

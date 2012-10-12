@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_config_paths, append_output, array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, class_exists, count, db, dbdriver, defined, end, explode, extract, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'pal')
+{_config_paths, append_output, array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, class_exists, count, db, dbdriver, defined, end, explode, extract, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 
@@ -309,23 +309,27 @@ class CI_Loader
   #
   database: ($params = '', $return = false, $active_record = null) ->
 
+
     # Grab the super object
     # $CI = get_instance()
+
 
     # Do we even need to load the database class?
     if class_exists('CI_DB') and $return is false and $active_record is null and @_CI['db']?
       return false
 
-    DB = require(BASEPATH+'database/DB'+EXT)
+    DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
+    DB._CI = @_CI
 
-    if $return is true then return DB($params, $active_record)
+
+    if $return is true then return DB #($params, $active_record)
 
     # Initialize the db variable.  Needed to prevent
     # reference errors with some configurations
     @_CI.db = ''
 
     # Load the DB class
-    @_CI.db = DB($params, $active_record)
+    @_CI.db = DB #($params, $active_record)
 
   ## --------------------------------------------------------------------
   

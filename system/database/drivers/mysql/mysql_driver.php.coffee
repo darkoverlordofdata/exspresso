@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, addslashes, ar_where, array_keys, conn_id, count, database, dbprefix, defined, escape_like_str, function_exists, hostname, implode, is_array, is_resource, mysql_affected_rows, mysql_close, mysql_connect, mysql_errno, mysql_error, mysql_escape_string, mysql_insert_id, mysql_pconnect, mysql_ping, mysql_query, mysql_real_escape_string, mysql_select_db, num_rows, numrows, password, port, preg_match, preg_replace, query, row, simple_query, str_replace, strpos, substr, trans_enabled, username}  = require(FCPATH + 'pal')
+{_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, addslashes, ar_where, array_keys, conn_id, count, database, dbprefix, defined, escape_like_str, function_exists, hostname, implode, is_array, is_resource, mysql_affected_rows, mysql_close, mysql_connect, mysql_errno, mysql_error, mysql_escape_string, mysql_insert_id, mysql_pconnect, mysql_ping, mysql_query, mysql_real_escape_string, mysql_select_db, num_rows, numrows, password, port, preg_match, preg_replace, query, row, simple_query, str_replace, strpos, substr, trans_enabled, username}  = require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
@@ -169,9 +169,9 @@ class CI_DB_mysql_driver extends CI_DB
   # @param	string	an SQL query
   # @return	resource
   #
-  _execute : ($sql) ->
+  _execute : ($sql, $callback) ->
     $sql = @_prep_query($sql)
-    return mysql_query($sql, @conn_id)
+    return mysql_query($sql, @$callback)
     
   
   #  --------------------------------------------------------------------

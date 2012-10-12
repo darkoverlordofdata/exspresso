@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{def, default, defined, is_resource, max_length, mysql_data_seek, mysql_fetch_assoc, mysql_fetch_field, mysql_fetch_object, mysql_free_result, mysql_num_fields, mysql_num_rows, name, primary_key, result_id, stdClass, type}  = require(FCPATH + 'pal')
+{def, default, defined, is_resource, max_length, mysql_data_seek, mysql_fetch_assoc, mysql_fetch_field, mysql_fetch_object, mysql_free_result, mysql_num_fields, mysql_num_rows, name, primary_key, result_id, stdClass, type}  = require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

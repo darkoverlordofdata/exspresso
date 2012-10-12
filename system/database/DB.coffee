@@ -16,8 +16,8 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{autoinit, class_exists, count, defined, file_exists, initialize, is_string, parse_str, parse_url, query, rawurldecode, strpos, strtoupper, substr}  = require(FCPATH + 'pal')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{autoinit, class_exists, count, defined, file_exists, initialize, is_string, parse_str, parse_url, query, rawurldecode, strpos, strtoupper, substr}  = require(FCPATH + 'lib')
+{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class, show_error} = require(BASEPATH + 'core/Common')
 
 
 #
@@ -43,7 +43,7 @@
 # @author    ExpressionEngine Dev Team
 # @link    http://codeigniter.com/user_guide/database/
 #
-exports.DB = DB = ($params = '', $active_record_override = null) ->
+module.exports = ($params = '', $active_record_override = null) ->
   #  Load the DB config file if a DSN string wasn't passed
   if is_string($params) and strpos($params, '://') is false
     #  Is the config file in the environment folder?
@@ -101,18 +101,13 @@ exports.DB = DB = ($params = '', $active_record_override = null) ->
           
         else if strtoupper($val) is "FALSE"
           $val = false
-          
-        
+
         $params[$key] = $val
-        
-      
-    
-  
+
   #  No DB specified yet?  Beat them senseless...
   if not $params['dbdriver']?  or $params['dbdriver'] is ''
     show_error('You have not selected a database type to connect to.')
-    
-  
+
   #  Load the DB classes.  Note: Since the active record class is optional
   #  we need to dynamically create a class that extends proper parent class
   #  based on whether we're using the active record class or not.
@@ -122,6 +117,7 @@ exports.DB = DB = ($params = '', $active_record_override = null) ->
 
 
   CI_DB_driver = require(BASEPATH + 'database/DB_driver' + EXT)
+
 
   if not $active_record?  or $active_record is true
     CI_DB_active_record = require(BASEPATH + 'database/DB_active_rec' + EXT)
@@ -133,12 +129,16 @@ exports.DB = DB = ($params = '', $active_record_override = null) ->
   else if not class_exists('CI_DB')
     class CI_DB extends CI_DB_driver
 
+
+  if not file_exists(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)
+    throw new Error("Unsuported DB driver: " + $params['dbdriver'])
+
   $driver = require(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)(CI_DB)
-  
+
   #  Instantiate the DB adapter
   # $driver = 'CI_DB_' + $params['dbdriver'] + '_driver'
   $DB = new $driver($params)
-  
+
   if $DB.autoinit is true
     $DB.initialize()
     

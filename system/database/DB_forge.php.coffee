@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_alter_table, _create_database, _create_table, _drop_database, _drop_table, _rename_table, array_merge, count, db, dbprefix, defined, get_instance, is_array, is_bool, is_string, query, strpos}  = require(FCPATH + 'pal')
+{_alter_table, _create_database, _create_table, _drop_database, _drop_table, _rename_table, array_merge, count, db, dbprefix, defined, get_instance, is_array, is_bool, is_string, query, strpos}  = require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{__construct, _compile_, _compile_benchmarks, _compile_config, _compile_controller_info, _compile_get, _compile_http_headers, _compile_memory_usage, _compile_post, _compile_queries, _compile_uri_string, benchmark, config, count, database, defined, elapsed_time, fetch_class, fetch_method, function_exists, get_class, get_instance, get_object_vars, helper, highlight_code, htmlspecialchars, in_array, is_array, is_numeric, is_object, is_subclass_of, lang, language, line, load, marker, memory_get_usage, number_format, preg_match, print_r, queries, query_times, router, run, set_sections, str_replace, stripslashes, true, ucwords, uri, uri_string}  = require(FCPATH + 'pal')
+{__construct, _compile_, _compile_benchmarks, _compile_config, _compile_controller_info, _compile_get, _compile_http_headers, _compile_memory_usage, _compile_post, _compile_queries, _compile_uri_string, benchmark, config, count, database, defined, elapsed_time, fetch_class, fetch_method, function_exists, get_class, get_instance, get_object_vars, helper, highlight_code, htmlspecialchars, in_array, is_array, is_numeric, is_object, is_subclass_of, lang, language, line, load, marker, memory_get_usage, number_format, preg_match, print_r, queries, query_times, router, run, set_sections, str_replace, stripslashes, true, ucwords, uri, uri_string}  = require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

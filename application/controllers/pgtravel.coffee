@@ -14,17 +14,19 @@
 #	Travel Controller Class
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
+{DISTINCT, FROM, GO, INNER, INSERT, INTO, IS, JOIN, LEFT, LIKE, LIMIT, OFFSET, ON, ORDER_BY, OUTER, RIGHT, SELECT, SET, UPDATE, VALUES, WHERE} = require(FCPATH + 'lib/sql.dsl')
 
+moment          = require('moment')                     # Parse, manipulate, and display dates
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
+
 
 class Travel extends CI_Controller
 
   ## --------------------------------------------------------------------
 
   #
-  # Constructor
-  #
-  # Load the demo travel data model
+  # Load the configured database
   #
   #   @access	public
   #   @return	void
@@ -32,157 +34,221 @@ class Travel extends CI_Controller
   constructor: ->
 
     super()
-    @load.model 'PgTravel', 'Travel'
-    @Travel.initialize()
+    @load.database get_config().db_url, false, true
+
 
   ## --------------------------------------------------------------------
 
   #
-  # Search
-  #
-  # Search for hotels
+  # Search for Hotels
   #
   #   @access	public
   #   @return	void
   #
+  #
   search: ->
 
-    query = @Travel.Booking.findAll(where: {state: "BOOKED"})
-    query.on "success", (bookings) =>
+    SELECT 'Hotel.name', 'Hotel.address', 'Hotel.city', 'Hotel.state', 'Booking.checkinDate', 'Booking.checkoutDate', 'Booking.id',
+    FROM 'Booking',
+    WHERE 'Booking.state', IS 'BOOKED',
+    INNER JOIN 'Hotel', ON 'Hotel.id = Booking.hotel',
+    GO @db, ($err, $bookings) =>
+
+      if $err
+        console.log $err
+        @res.send $err, 500
+        return
 
       @render "pgtravel/main",
-        bookings: bookings
+        bookings: $bookings
 
   ## --------------------------------------------------------------------
 
   #
-  # Hotels
-  #
-  # Display search results
+  # Display Hotel search results
   #
   #   @access	public
   #   @return	void
   #
   hotels: ->
 
-    query = @Travel.Hotel.findAll(where: ["name like ?", "%" + @req.param("searchString") + "%"])
-    query.on "success", ($result) =>
+    $searchString = @req.param("searchString")
+    $pageSize = parseInt(@req.param('pageSize'),10)
+
+    SELECT '*',
+    FROM 'Hotel',
+    WHERE 'name', LIKE "%#{$searchString}%",
+    LIMIT $pageSize, OFFSET 0,
+    GO @db, ($err, $hotels) =>
+
+      if $err
+        console.log $err
+        @res.send $err, 500
+        return
 
       @render "pgtravel/hotels",
-        hotels: $result
+        hotels: $hotels
+
 
   ## --------------------------------------------------------------------
 
   #
-  # Hotel
-  #
-  # Display one hotel
+  # Display a Hotel
   #
   #   @access	public
-  #   @param string   The hotel record id#
+  #   @param string   The Hotel record id#
   #   @return	void
   #
   hotel: ($id) ->
 
-    query = @Travel.Hotel.find(parseInt($id, 10))
-    query.on "success", ($result) =>
+    SELECT '*',
+    FROM 'Hotel',
+    WHERE 'id', IS $id,
+    GO @db, ($err, $hotel) =>
+
+      if $err
+        console.log $err
+        @res.send $err, 500
+        return
 
       @render "pgtravel/detail",
-        hotel: $result
-
+        hotel: $hotel
 
   ## --------------------------------------------------------------------
 
   #
-  # Book Hotel
+  # Book the room
+  #
+  #   @access	public
+  #   @return	void
   #
   booking: ->
 
     if @req.body.cancel? then @res.redirect "/pgtravel/search"
 
-    query = @Travel.Hotel.find(parseInt(@req.param("hotelId")))
-    query.on "success", (result) =>
+    SELECT '*',
+    FROM 'Hotel',
+    WHERE 'id', IS @req.param("hotelId"),
+    GO @db, ($err, $hotel) =>
+
       @render "pgtravel/booking",
-        hotel: result
+        hotel: $hotel
 
   ## --------------------------------------------------------------------
 
   #
-  # Confirm
+  # Confirm the Booking
+  #
+  #   @access	public
+  #   @return	void
   #
   confirm: ->
 
-    moment = require('moment')
     if @req.body.cancel? then @res.redirect "/pgtravel/search"
-    query = @Travel.Hotel.find(parseInt(@req.body.hotelId))
-    query.on("success", (result) =>
 
-      booking = @Travel.Booking.build(
-        username:               'demo' #req.session.user
-        hotel:                  result.id
-        checkinDate:            moment(@req.body.checkinDate, "MM-DD-YYYY")
-        checkoutDate:           moment(@req.body.checkoutDate, "MM-DD-YYYY")
-        creditCard:             @req.body.creditCard
-        creditCardName:         @req.body.creditCardName
-        creditCardExpiryMonth:  parseInt(@req.body.creditCardExpiryMonth)
-        creditCardExpiryYear:   parseInt(@req.body.creditCardExpiryYear)
-        smoking:                @req.body.smoking
-        beds:                   1
-        amenities:              @req.body.amenities
-        state:                   "CREATED"
-      )
-      booking.save().on("success", =>
-        booking.numberOfNights = (booking.checkoutDate - booking.checkinDate) / (24 * 60 * 60 * 1000)
-        booking.totalPayment = booking.numberOfNights * result.price
-        @res.render "pgtravel/confirm",
-          hotel: result
-          booking: booking
+    $id = @req.param("hotelId")
 
-      ).on "failure", (error) =>
-        console.log error
-        @res.send error, 500
+    SELECT '*',
+    FROM 'Hotel',
+    WHERE 'id', IS $id,
+    GO @db, ($err, $hotel) =>
 
-    ).on "failure", (error) =>
-      console.log error
-      @res.send error, 500
+      if $err
+        console.log $err
+        @res.send $err, 500
+        return
+
+      checkinDate =             moment(@req.body.checkinDate, "MM-DD-YYYY")
+      checkoutDate =            moment(@req.body.checkoutDate, "MM-DD-YYYY")
+      creditCard =              @req.body.creditCard
+      creditCardName =          @req.body.creditCardName
+      creditCardExpiryMonth =   parseInt(@req.body.creditCardExpiryMonth)
+      creditCardExpiryYear =    parseInt(@req.body.creditCardExpiryYear)
+      smoking =                 @req.body.smoking
+      beds =                    1
+      amenities =               @req.body.amenities
+      state =                   "CREATED"
+
+      INSERT INTO 'Booking',
+      ['username', 'hotel', 'checkinDate', 'checkoutDate', 'creditCard', 'creditCardName', 'creditCardExpiryMonth', 'creditCardExpiryYear', 'smoking', 'beds', 'amenities', 'state'],
+      VALUES ['demo', $hotel.id, checkinDate, checkoutDate, creditCard, creditCardName, creditCardExpiryMonth, creditCardExpiryYear, smoking, beds, amenities, state],
+      GO @db, ($err) =>
+
+        if $err
+          @res.send $err, 500
+
+        else
+          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+          $booking.totalPayment = $booking.numberOfNights * $hotel.price
+          @res.render "pgtravel/confirm",
+
+            hotel: $hotel
+            booking: $booking
+
 
   ## --------------------------------------------------------------------
 
   #
-  # submit - revise - cancel
+  # Book/Revise/Cancel
+  #
+  #   @access	public
+  #   @return	void
   #
   book: ->
 
-    query = @Travel.Booking.find(parseInt(@req.body.bookingId))
-    query.on("success", (booking) =>
+    $id = @req.body.BookingId
 
-      if @req.body.confirm?
-        booking.state = "BOOKED"
-        booking.save().on("success", =>
-          @res.redirect "/pgtravel/search"
-        ).on "failure", (error) =>
-          console.log error
-          @res.send error, 500
+    SELECT '*',
+    FROM 'Booking',
+    WHERE 'id', IS $id,
+    GO @db, ($err, $booking) =>
 
-      else if @req.body.cancel?
-        booking.state = "CANCELLED"
-        booking.save().on("success", =>
-          @res.redirect "/pgtravel/search"
-        ).on "failure", (error) =>
-          console.log error
-          @res.send error, 500
+      if $err
+        @res.send $err, 500
 
-      else if @req.body.revise?
-        @Travel.Hotel.find(booking.hotel).on "success", (hotel) =>
-          booking.numberOfNights = (booking.checkoutDate - booking.checkinDate) / (24 * 60 * 60 * 1000)
-          booking.totalPayment = booking.numberOfNights * hotel.price
-          @res.render "pgtravel/booking",
-            hotel: hotel
-            booking: booking
+      else
 
-      ).on "failure", (error) =>
-      console.log error
-      @res.send error, 500
+        if @req.body.confirm?
+
+          $state = {state: 'BOOKED'}
+
+          UPDATE 'Booking',
+          WHERE 'id', IS $id,
+          SET $state,
+          GO @db, ($err) =>
+
+            @res.redirect "/pgtravel/search"
+
+        else if @req.body.cancel?
+
+          $state = {state: 'CANCELLED'}
+
+          UPDATE 'Booking',
+          WHERE 'id', IS $id,
+          SET $state,
+          GO @db, ($err) =>
+
+            @res.redirect "/pgtravel/search"
+
+
+        else if @req.body.revise?
+
+          SELECT '*',
+          FROM 'Hotel',
+          WHERE 'id', IS $booking.hotel,
+          GO @db, ($err, $hotel) =>
+
+            if $err
+              @res.send $err, 500
+
+            else
+
+              $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+              $booking.totalPayment = $booking.numberOfNights * $hotel.price
+              @render "pgtravel/booking",
+                hotel: $hotel
+                booking: $booking
+
 
 
 #

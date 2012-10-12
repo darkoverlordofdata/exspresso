@@ -16,7 +16,7 @@
 * Controller - working
 * Model - working (Travel demo)
 * Lang - in progress
-* Database - reviewing mysql-activerecord as a replacement
+* Database - mysql & postgre
 * Hooks - under review
 * Input - uses express
 * Output - uses express
@@ -29,9 +29,9 @@
 * Jade templating engine
 * Redis session storage
 * Bootstrap/LESS stylesheets
-* Sequelize ORM
+* CodeIgniter style ActiveRecord
 * Edit configuration defaults in application/config/config.coffee
-* Includes php2coffee command line port tool
+* Php2coffee command line port tool
 
 
 ## PHP2Coffee
@@ -48,11 +48,11 @@
       -d, --dump          dump of tokens
 
 
-## PAL
+## lib
 
-  Ported code uses pal.coffee, a php abstraction layer.
-  Pal is a group of helper functions that mimic the php api.
-  Use cake test to test pal.
+  Ported code uses lib.coffee, a php compatability layer.
+  A group of helper functions that mimic the php api.
+  Use cake test to test lib.
 
 
 

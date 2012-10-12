@@ -2,7 +2,7 @@
 
 {exec} = require "child_process"
 
-REPORTER = "min"
+REPORTER = "nyan"
 
 task "test", "run tests", ->
   exec "NODE_ENV=test
@@ -12,5 +12,6 @@ task "test", "run tests", ->
       --require coffee-script
       --require test/test_helper.coffee
     ", (err, output) ->
-    throw err if err
     console.log output
+    console.log err.message if err?
+

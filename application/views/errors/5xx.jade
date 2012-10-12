@@ -6,6 +6,8 @@ block content
     h1 Zoiks!!!
     p
     h1 Like, Scoob - we broke the internet
+    if message
+      p= message
   if settings['verbose errors']
     pre= error.stack
 

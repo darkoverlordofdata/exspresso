@@ -15,7 +15,7 @@
 #
 #   Defines the global Exspresso environment
 #
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require('./pal')
+{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require('./lib')
 
 #
 #---------------------------------------------------------------

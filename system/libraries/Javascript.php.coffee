@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{__add_event, __construct, __hover, _addClass, _animate, _blur, _change, _clear_compile, _click, _compile, _dblclick, _document_ready, _error, _fadeIn, _fadeOut, _hide, _keydown, _keyup, _load, _mousedown, _mouseout, _mouseover, _mouseup, _output, _removeClass, _resize, _scroll, _show, _slideDown, _slideToggle, _slideUp, _toggle, _toggleClass, _unload, _updater, array_keys, config, defined, extract, get_instance, implode, is_array, is_bool, is_null, is_object, is_scalar, is_string, item, js, library, result_array, slash_item, str_replace, strncmp, strpos, strtolower}  = require(FCPATH + 'pal')
+{__add_event, __construct, __hover, _addClass, _animate, _blur, _change, _clear_compile, _click, _compile, _dblclick, _document_ready, _error, _fadeIn, _fadeOut, _hide, _keydown, _keyup, _load, _mousedown, _mouseout, _mouseover, _mouseup, _output, _removeClass, _resize, _scroll, _show, _slideDown, _slideToggle, _slideUp, _toggle, _toggleClass, _unload, _updater, array_keys, config, defined, extract, get_instance, implode, is_array, is_bool, is_null, is_object, is_scalar, is_string, item, js, library, result_array, slash_item, str_replace, strncmp, strpos, strtolower}  = require(FCPATH + 'lib')
 {config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 if not defined('BASEPATH') then die 'No direct script access allowed'

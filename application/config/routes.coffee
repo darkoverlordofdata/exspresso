@@ -52,7 +52,7 @@
 #
 
 #----------------------------------------------------------------------
-#          Route                                   URI
+#          Route                                 Controller URI
 #----------------------------------------------------------------------
 exports['default_controller']                 = "welcome/index"
 exports['404_override']                       = 'welcome/not_found'
@@ -77,6 +77,10 @@ exports['/mytravel/hotel/:id']                = 'mytravel/hotel'
 exports['/mytravel/booking']                  = 'mytravel/booking'
 exports['/mytravel/confirm']                  = 'mytravel/confirm'
 exports['/mytravel/book']                     = 'mytravel/book'
+
+# database tests
+exports['/mysql']                             = 'query/mysql'
+exports['/pg']                                = 'query/pg'
 
 exports['/login']                             = 'travel/login'
 exports['/logout']                            = 'travel/logout'

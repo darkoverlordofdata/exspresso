@@ -15,7 +15,7 @@
 #
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{parse_url} = require(FCPATH + 'pal')
+{parse_url} = require(FCPATH + 'lib')
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 Sequelize       = require("sequelize")                  # Sequelize 1.5 ORM
@@ -61,12 +61,12 @@ class Travel extends CI_Model
 
     $db = parse_url(@config._config.db_url)
 
-    @_sequelize = new Sequelize($db.path, $db.user, $db.pass,
+
+    @_sequelize = new Sequelize($db.path.substr(1), $db.user, $db.pass,
       host:     $db.host
       port:     $db.port
       dialect:  $db.scheme
       logging:  false
-      storage:  $db.path
     )
 
 

@@ -231,7 +231,7 @@ exports['subclass_prefix'] = 'MY_'
 #| your log files will fill up very fast.
 #|
 #
-exports['log_threshold'] = 4
+exports['log_threshold'] = 0
 
 #
 #|--------------------------------------------------------------------------
