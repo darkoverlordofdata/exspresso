@@ -41,7 +41,8 @@
   },
   "devDependencies": {
     "chai": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "async": "*"
   },
   "repository": "git://github.com/darkoverlordofdata/exspresso",
   "main": "index",

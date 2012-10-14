@@ -52,7 +52,7 @@ class Travel extends CI_Controller
     FROM 'Booking',
     WHERE 'Booking.state', IS 'BOOKED',
     INNER JOIN 'Hotel', ON 'Hotel.id = Booking.hotel',
-    GO @db, ($err, $bookings) =>
+    GO @db,($err, $bookings) =>
 
       if $err
         console.log $err
@@ -79,7 +79,7 @@ class Travel extends CI_Controller
     FROM 'Hotel',
     WHERE 'name', LIKE "%#{$searchString}%",
     LIMIT $pageSize, OFFSET 0,
-    GO @db, ($err, $hotels) =>
+    GO @db,($err, $hotels) =>
 
       if $err
         console.log $err
@@ -104,7 +104,7 @@ class Travel extends CI_Controller
     SELECT '*',
     FROM 'Hotel',
     WHERE 'id', IS $id,
-    GO @db, ($err, $hotel) =>
+    GO @db,($err, $hotel) =>
 
       if $err
         console.log $err
@@ -129,7 +129,7 @@ class Travel extends CI_Controller
     SELECT '*',
     FROM 'Hotel',
     WHERE 'id', IS @req.param("hotelId"),
-    GO @db, ($err, $hotel) =>
+    GO @db,($err, $hotel) =>
 
       @render "pgtravel/booking",
         hotel: $hotel
@@ -151,7 +151,7 @@ class Travel extends CI_Controller
     SELECT '*',
     FROM 'Hotel',
     WHERE 'id', IS $id,
-    GO @db, ($err, $hotel) =>
+    GO @db,($err, $hotel) =>
 
       if $err
         console.log $err
@@ -172,7 +172,7 @@ class Travel extends CI_Controller
       INSERT INTO 'Booking',
       ['username', 'hotel', 'checkinDate', 'checkoutDate', 'creditCard', 'creditCardName', 'creditCardExpiryMonth', 'creditCardExpiryYear', 'smoking', 'beds', 'amenities', 'state'],
       VALUES ['demo', $hotel.id, checkinDate, checkoutDate, creditCard, creditCardName, creditCardExpiryMonth, creditCardExpiryYear, smoking, beds, amenities, state],
-      GO @db, ($err) =>
+      GO @db,($err) =>
 
         if $err
           @res.send $err, 500
@@ -201,7 +201,7 @@ class Travel extends CI_Controller
     SELECT '*',
     FROM 'Booking',
     WHERE 'id', IS $id,
-    GO @db, ($err, $booking) =>
+    GO @db,($err, $booking) =>
 
       if $err
         @res.send $err, 500
@@ -215,7 +215,7 @@ class Travel extends CI_Controller
           UPDATE 'Booking',
           WHERE 'id', IS $id,
           SET $state,
-          GO @db, ($err) =>
+          GO @db,($err) =>
 
             @res.redirect "/pgtravel/search"
 
@@ -226,7 +226,7 @@ class Travel extends CI_Controller
           UPDATE 'Booking',
           WHERE 'id', IS $id,
           SET $state,
-          GO @db, ($err) =>
+          GO @db,($err) =>
 
             @res.redirect "/pgtravel/search"
 
@@ -236,7 +236,7 @@ class Travel extends CI_Controller
           SELECT '*',
           FROM 'Hotel',
           WHERE 'id', IS $booking.hotel,
-          GO @db, ($err, $hotel) =>
+          GO @db,($err, $hotel) =>
 
             if $err
               @res.send $err, 500

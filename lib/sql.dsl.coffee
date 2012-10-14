@@ -17,7 +17,7 @@
 #
 
 exports.GO = ($db, $callback) ->
-  new SqlDsl($db, $callback)
+  new exports.Sql($db, $callback)
 
 exports.SELECT = ($columns..., $sql) ->
   $sql.select $columns
@@ -63,7 +63,6 @@ exports.ORDER_BY = ($column, $sql) ->
 
 exports.INNER = ($sql) ->
   $sql.inner()
-
 exports.OUTER = ($sql) ->
   $sql.outer()
 
@@ -79,25 +78,36 @@ exports.JOIN = ($table, $sql) ->
 exports.ON = ($relation, $sql) ->
   $sql.on $relation
 
-
+exports.CREATE = ($table, $columns, $sql) ->
+  $sql.create $table, $columns
 
 
 ## --------------------------------------------------------------------
 
 #
-# SqlDsl
+# Sql DSL
 #
 #   Tracks state and variables for one sql statement
 #
 #   @access	private
 #
-class SqlDsl
+class exports.Sql
 
-  db:                null    # a DB_active_rec object
-  callback:          null    # call when i/o completes
+
+  @STRING =           {type:'VARCHAR', constraint:255}
+  @TEXT =             {type: 'TEXT'}
+  @INTEGER =          {type: 'INT'}
+  @DATE =             {type: 'DATETIME'}
+  @BOOLEAN =          {type: 'TINYINT', constraint:1}
+  @FLOAT =            {type: 'FLOAT'}
+  @NOW =              {type: 'NOW'}
+
+  db:                 null    # a DB_active_rec object
+  callback:           null    # call when i/o completes
 
   constructor: (@db, @callback) ->
 
+    @_query_type =    0
     @_table =         ''      # table name
     @_distinct =      false   # return DISTINCT rows
     @_columns =       []      # list of column names
@@ -118,6 +128,13 @@ class SqlDsl
     @_tmp =           null    # temporary value
     @_data =          {}      # UPDATE/INSERT data
 
+
+  create: ($table, $columns) ->
+
+    @db.add_field 'id'
+    for $name, $type of $columns
+      @db.add_field array($name, $type)
+    @db.create_table $table, @callback
 
   #
   # SELECT

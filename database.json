@@ -1,0 +1,38 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "user": "demo",
+    "password": "demo",
+    "host": "localhost",
+    "database": "demo"
+  },
+
+  "herokupg": {
+    "driver": "pg",
+    "user": "hlfuzggerjzrro",
+    "password": "rUvg4LogyCdFUNzgliNogVhpjU",
+    "host": "ec2-54-243-200-16.compute-1.amazonaws.com",
+    "database": "d9a9tjubk8pttc"
+  },
+
+  "herokumy": {
+    "driver": "mysql",
+    "user": "b7fb74875b61a6",
+    "password": "a6e83239",
+    "host": "us-mm-auto-dca-02-a.cleardb.com",
+    "database": "heroku_3426d755c456baf"
+  },
+
+  "test": {
+    "driver": "sqlite3",
+    "filename": "demo.db"
+  },
+
+  "prod": {
+    "driver": "mysql",
+    "user": "demo",
+    "password": "demo",
+    "host": "localhost",
+    "database": "demo"
+  }
+}
