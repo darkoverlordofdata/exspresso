@@ -36,6 +36,39 @@ class Travel extends CI_Controller
     @load.database get_config().mysql_url, false, true
 
 
+  #
+  # Login
+  #
+  login: ->
+    @res.render "mytravel/login",
+      url: @req.param("url")
+
+  #
+  # Logout
+  #
+  logout: ->
+    @req.session.destroy()
+    @res.redirect "/"
+
+  #
+  # Do the authenthication
+  #
+  authenticate: =>
+
+    SELECT '*',
+    FROM 'customer',
+    WHERE 'username', IS @req.param("username"),
+    GO @db, ($err, $user) =>
+
+      if $err
+        console.log $err
+        @res.send $err, 500
+        return
+
+      @req.session.user = $user.username
+      @res.redirect @req.param("url")
+
+
   ## --------------------------------------------------------------------
 
   #

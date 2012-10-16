@@ -57,6 +57,7 @@
 exports['default_controller']                 = "welcome/index"
 exports['404_override']                       = 'welcome/not_found'
 
+exports['/readme']                            = 'welcome/readme'
 exports['/about']                             = 'welcome/about'
 exports['/about/:id']                         = "welcome/about"
 
@@ -86,14 +87,14 @@ exports['/mytravel/hotel/:id']                = 'mytravel/hotel'
 exports['/mytravel/booking']                  = 'mytravel/booking'
 exports['/mytravel/confirm']                  = 'mytravel/confirm'
 exports['/mytravel/book']                     = 'mytravel/book'
+#exports['/login']                             = 'mytravel/login'
+#exports['/logout']                            = 'mytravel/logout'
+#exports['/authenticate']                      = 'mytravel/authenticate'
 
 # database tests
 exports['/mysql']                             = 'query/mysql'
 exports['/pg']                                = 'query/pg'
 
-exports['/login']                             = 'travel/login'
-exports['/logout']                            = 'travel/logout'
-exports['/authenticate']                      = 'travel/authenticate'
 
 # End of file routes.coffee
 # Location: ./routes.coffee

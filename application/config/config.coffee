@@ -177,23 +177,15 @@ exports['cookie_key'] = process.env.CLIENT_SECRET ? 'ZAHvYIu8u1iRS6Hox7jADpnCMYK
 #|
 #|    option            npm install:
 #|    -------------------------------
-#|    cassandra         connect-cassandra
-#|    cookie            cookie-sessions
-#|    couchdb           connect-couchdb
-#|    memcached         connect-memcached
-#|    mongo             connect-mongo
-#|    mongodb           connect-mongodb
 #|    mysql             connect-mysql
-#|    nstore            nstore-session
-#|    orientdb          connect-orientdb
 #|    pg                connect-pg
 #|    redis             connect-redis
-#|    sqlite3           connect-sqlite3
+#|    none
 #|
 ##
-exports['session_db'] = 'redis'
+exports['session_db'] = 'mysql'
 
-exports['redis_url'] = process.env.REDISTOGO_URL ? 'redis://localhost:6379'
+#exports['redis_url'] = process.env.REDISTOGO_URL ? 'redis://localhost:6379'
 
 exports['cache'] = false
 

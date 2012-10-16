@@ -30,24 +30,24 @@ app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap mo
 #
 # 5xx Error Display
 #
-#   @param {Object} req
-#   @param {Object} res
-#   @param {Function} next
+#   @param {Object} $req
+#   @param {Object} $res
+#   @param {Function} $next
 #
 exports.error_5xx = ->
 
-  log_message 'debug',"5xx Middleware initialized"
+  log_message 'debug',"5xx middleware initialized"
 
-  (err, req, res, next) ->
+  ($err, $req, $res, $next) ->
 
     # treat as 404?
-    if err.message.indexOf('not found') >= 0 then return next()
+    if $err.message.indexOf('not found') >= 0 then return $next()
 
     # log it
-    console.error err.stack
+    console.error $err.stack
 
     # error page
-    res.status(500).render 'errors/5xx'
+    $res.status(500).render 'errors/5xx'
     return
 
 
@@ -56,41 +56,75 @@ exports.error_5xx = ->
 #
 # 404 Display
 #
-#   @param {Object} req
-#   @param {Object} res
-#   @param {Function} next
+#   @param {Object} $req
+#   @param {Object} $res
+#   @param {Function} $next
 #
 exports.error_404 = ->
 
-  log_message 'debug',"404 Middleware initialized"
+  log_message 'debug',"404 middleware initialized"
   #
   # handle 404 not found error
   #
-  (req, res, next) ->
+  ($req, $res, $next) ->
 
-    res.status(404).render 'errors/404', url: req.originalUrl
+    $res.status(404).render 'errors/404', url: $req.originalUrl
     return
+
+
+# --------------------------------------------------------------------
+
+#
+# Authentication
+#
+#   @param {Object} $req
+#   @param {Object} $res
+#   @param {Function} $next
+#
+
+# '$2a$10$Kx9nhYIRPNiUN1jvVIOsp.'
+# '$2a$10$Kx9nhYIRPNiUN1jvVIOsp..vEyapyRlc0AV/zqU9DVsedfydm68Rq'
+
+
+exports.authenticate = ->
+
+  log_message 'debug',"Authenticate middleware initialized"
+  #
+  # handle authentication
+  #
+  ($req, $res, $next) ->
+
+    ###
+    if $req.url.indexOf('/mytravel') is 0
+      if $req.session.user?
+        $next()
+      else
+        $res.redirect "/login?url="+$req.url
+    else
+      $next()
+    ###
+    $next()
 
 # --------------------------------------------------------------------
 
 #
 # Profile
 #
-#   @param {Object} req
-#   @param {Object} res
-#   @param {Function} next
+#   @param {Object} $req
+#   @param {Object} $res
+#   @param {Function} $next
 #
 exports.profiler = ->
 
-  log_message 'debug',"Profiler Middleware initialized"
+  log_message 'debug',"Profiler middleware initialized"
   #
   # profiler middleware
   #
   #   @param {Object} server request object
   #   @param {Object} server response object
-  #   @param {Object} next middleware
+  #   @param {Object} $next middleware
   #
-  (req, res, next) ->
+  ($req, $res, $next) ->
 
     #
     # profile snapshot
@@ -100,34 +134,34 @@ exports.profiler = ->
       mem: process.memoryUsage()
       time: new Date
 
-    start = snapshot() # starting metrics
+    $start = snapshot() # starting metrics
 
     #
     # link our custom render function into the call chain
     #
-    render = res.render
-    res.render = (view, data) ->
+    $render = $res.render
+    $res.render = ($view, $data) ->
 
-      res.render = render
-      data = data ? {}
+      $res.render = $render
+      $data = $data ? {}
 
       #
       # callback with rendered output
       #
-      res.render view, data, (err, html) ->
+      $res.render $view, $data, ($err, $html) ->
 
-        end = snapshot()
-        elapsed_time = end.time - start.time
+        $end = snapshot()
+        $elapsed_time = $end.time - $start.time
         #
-        # TODO: what if there is an err value?
+        # TODO: what if there is an $err value?
         #
         # replace metrics in output
         #
-        if html?
-          res.send html.replace(/{elapsed_time}/g, elapsed_time)
+        if $html?
+          $res.send $html.replace(/{elapsed_time}/g, $elapsed_time)
         return
 
-    next()
+    $next()
     return
 
 # --------------------------------------------------------------------
@@ -135,9 +169,9 @@ exports.profiler = ->
 #
 # Messages
 #
-#   @param {Object} req
-#   @param {Object} res
-#   @param {Function} next
+#   @param {Object} $req
+#   @param {Object} $res
+#   @param {Function} $next
 #
 exports.messages =  ->
 
@@ -145,31 +179,31 @@ exports.messages =  ->
   # add messages to the flash message
   # queue for this session
   ##
-  app.response.message = (msg) ->
+  app.response.message = ($msg) ->
 
-    sess = @req.session
+    $sess = @req.session
 
     # ensure the seesion has a messages queue
-    sess.messages = sess.messages ? []
+    $sess.messages = sess.messages ? []
 
     # add to the message queue
-    sess.messages.push msg
+    $sess.messages.push $msg
     return @
 
   ##
   # expose messages to template engine
   # while the views are rendering
   ##
-  (req, res, next) ->
+  ($req, $res, $next) ->
 
     # make the message queue available the template engine
-    res.locals.messages = req.session.messages ? []
+    $res.locals.messages = $req.session.messages ? []
 
-    # clear session messages for next time through
-    req.session.messages = []
+    # clear session messages for $next time through
+    $req.session.messages = []
 
-    # do the next middleware in the queue
-    next()
+    # do the $next middleware in the queue
+    $next()
     return
 
 # End of file Middleware.coffee

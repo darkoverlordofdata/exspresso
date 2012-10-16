@@ -21,11 +21,7 @@
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 
-cache           = require('connect-cache')              # Caching system for Connect
 express         = require('express')                    # Express 3.0 Framework
-url             = require('url')                        # node.url
-redis           = require('redis')                      # Redis client library.
-connectRedis    = require('connect-redis')              # Redis session store for Connect.
 middleware      = require(BASEPATH + 'core/Middleware') # Exspresso Middleware module
 
 log_message "debug", "Exspresso copyright 2012 Dark Overlord of Data"
@@ -43,82 +39,26 @@ app = module.exports = express()
 # ------------------------------------------------------
 #
 $config = load_class('Config', 'core')._config
-do ($config) ->
 
-  app.set 'env', ENVIRONMENT
-  app.set 'port', $config.port
-  app.set 'site_name', $config.site_name
-  app.use express.logger($config.logger)
+app.set 'env', ENVIRONMENT
+app.set 'port', $config.port
+app.set 'site_name', $config.site_name
+app.use express.logger($config.logger)
 
-  if $config.sessions
+load_object('Sessions', 'core').initialize(app)
+#
+# TODO: {BUG} 'express.csrf' fails
+# with Forbidden on route /travel/hotels
+#
+#app.use express.csrf()
+app.use express.bodyParser()
+app.use express.methodOverride()
 
-    app.use express.cookieParser($config.cookie_key)
-    #
-    # use redis to store session data?
-    #
-    if $config.session_db is 'redis'
+load_object('Cache', 'core').initialize(app)
+load_object('Output', 'core').initialize(app)
 
-      $r   = url.parse $config.redis_url
-      $client = redis.createClient $r.port, $r.hostname
-      if $r.auth?
-        $client.auth $r.auth.split(':')[1] # auth 1st part is username and 2nd is password separated by ":"
-
-
-      RedisStore = connectRedis(express)
-      app.use express.session
-        secret:   $config.cookie_key
-        maxAge:   new Date Date.now() + 7200000 # 2h Session lifetime
-        store:    new RedisStore(client: $client)
-
-    else
-
-      app.use express.session()
-
-  #
-  # TODO: {BUG} 'express.csrf' fails
-  # with Forbidden on route /travel/hotels
-  #
-  #app.use express.csrf()
-  app.use express.bodyParser()
-  app.use express.methodOverride()
-
-  if $config.cache
-
-    if app.get('env') is 'development'
-      app.use cache
-        rules: [{regex: /.*/, ttl: 3600000}]
-        loopback: 'localhost:' + $config.port
-
-    else
-      app.use cache
-        rules: [{regex: /.*/, ttl: 3600000}]
-
-
-  if $config.use_layouts
-    app.use require('express-partials')() # use 2.x layout style
-  app.set 'views', APPPATH + $config.views
-  app.use express.static(WEBROOT)
-  if $config.template is 'jade'
-    app.set 'view engine', 'jade'
-
-  else
-    consolidate = require('consolidate')    # for template support
-    app.engine $config.template, consolidate[$config.template]
-    app.set 'view engine', $config.view_ext
-  if $config.css is 'stylus'
-    app.use require('stylus').middleware(WEBROOT)
-
-  else if $config.css is 'less'
-    app.use require('less-middleware')({ src: WEBROOT })
-
-  if $config.favicon?
-    app.use express.favicon(WEBROOT + $config.favicon)
-
-  else
-    app.use express.favicon()
-
-  app.use require('connect-flash')()
-  app.use middleware.profiler()
+app.use require('connect-flash')()
+app.use middleware.profiler()
 
 
 #
@@ -139,13 +79,13 @@ if file_exists(APPPATH + 'core/' + $config['subclass_prefix'] + 'Controller' + E
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-load_object('Router', 'core').set_routing()
+load_object('Router', 'core').initialize(app)
 
 #
 # --------------------------------------------------------------------------
 #  Start me up...
 # --------------------------------------------------------------------------
-# 
+#
 app.listen app.get('port'), ->
 
   console.log ""
@@ -155,11 +95,12 @@ app.listen app.get('port'), ->
   console.log "listening on port #{app.get('port')}"
   console.log ""
 
-  if ENVIRONMENT is 'development'
+  if app.get('env') is 'development'
     console.log "View site at http://localhost:" + app.get('port')
 
   log_message "debug", "listening on port #{app.get('port')}"
   return
+
 
 
 # End of file Exspresso.coffee

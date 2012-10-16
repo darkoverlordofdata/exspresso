@@ -19,10 +19,11 @@
 {array_merge, file_exists, is_dir} = require(FCPATH + 'lib')
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
+POSTMARK_API_KEY = 'POSTMARK_API_TEST'
+
 dispatch        = require('dispatch')                   # URL dispatcher for Connect
 express         = require('express')                    # Web development framework 3.0
 
-app             = require(BASEPATH + 'core/Exspresso')  # Exspresso application module
 middleware      = require(BASEPATH + 'core/Middleware') # Exspresso Middleware module
 
 
@@ -41,23 +42,26 @@ $404_override           = false     # when the specified controller is not found
 # @access	private
 # @return	void
 #
-exports.set_routing = ->
+exports.initialize = ($app) ->
 
-  app.use dispatch(load_routes())
+  $app.use middleware.authenticate()
+
+  $app.use dispatch(load_routes())
 
   # wire up the error handlers
-  app.use middleware.error_5xx()
-  app.use middleware.error_404()
+  $app.use middleware.error_5xx()
+  $app.use middleware.error_404()
 
-  if app.get('env') is 'development'
-    app.use express.errorHandler
+  if $app.get('env') is 'development'
+    $app.use express.errorHandler
       dumpExceptions: true
       showStack: true
 
-  if app.get('env') is 'production'
-    app.use express.errorHandler()
+  if $app.get('env') is 'production'
+    $app.use express.errorHandler()
 
-  app.use app.router
+  $app.use $app.router
+
 
 # --------------------------------------------------------------------
 
@@ -108,7 +112,7 @@ load_routes = () ->
 # --------------------------------------------------------------------
 
 #
-#  Bind Route
+#  Bind the Route to a Controller
 #
 #   Finds the controller that maps to the uri
 #   and bind it to the path in a callback
@@ -139,7 +143,7 @@ bind_route = ($path, $uri, $routes) ->
   #  Security check
   # ------------------------------------------------------
   #
-  #  None of the functions in the app controller or the
+  #  None of the functions in the $app controller or the
   #  loader class can be called via the URI, nor can
   #  controller functions that begin with an underscore
   #

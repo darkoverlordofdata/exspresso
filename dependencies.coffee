@@ -89,7 +89,9 @@ url             = require('url')                        # Utilities for URL reso
 #
 
 app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
+cache           = require(BASEPATH + 'core/Cache')      # Exspresso Sessions module
 middleware      = require(BASEPATH + 'core/Middleware') # Exspresso Middleware module
+sessions        = require(BASEPATH + 'core/Sessions')   # Exspresso Sessions module
 CI_Benchmark    = require(BASEPATH + 'core/Benchmark')  # Exspresso Benchmark Base Class
 CI_Config       = require(BASEPATH + 'core/Config')     # Exspresso Config Base Class
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class

@@ -58,6 +58,31 @@ class Welcome extends CI_Controller
     @render 'about',
       id: $id
 
+  readme: () ->
+
+
+    md = require('github-flavored-markdown').parse
+    fs = require('fs')
+
+
+    fs.readFile './application/views/readme.md', 'utf8', ($err, $str) =>
+
+      if $err
+        console.log $err
+        return
+
+      $options =  title: 'Dark Overlord of Data'
+
+      try
+
+        $html = md($str)
+        $html = $html.replace /\{([^}]+)\}/g, (_, $name) -> $options[$name] ? ''
+        @render 'readme',
+          md: $html
+
+      catch $err
+        console.log $err
+
   ## --------------------------------------------------------------------
 
   #

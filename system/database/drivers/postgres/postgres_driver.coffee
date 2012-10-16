@@ -81,18 +81,7 @@ module.exports = (CI_DB) ->
           console.log $err
         else
           @pg = $client
-          console.log "postgres connected"
           $callback()
-
-          ###
-          $client.query @_version(), ($err, $result) ->
-
-            if $err
-              console.log $err
-            else
-              log_message 'debug', $result.rows[0].ver
-            $callback()
-          ###
 
     #  --------------------------------------------------------------------
 
