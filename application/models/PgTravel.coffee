@@ -59,7 +59,7 @@ class Travel extends CI_Model
 
   initialize: ->
 
-    $db = parse_url(@config._config.db_url)
+    $db = parse_url(process.env.HEROKU_POSTGRESQL_ROSE_URL ? "postgres://tagsobe:tagsobe@localhost:5432/tagsobe")
 
 
     @_sequelize = new Sequelize($db.path.substr(1), $db.user, $db.pass,
