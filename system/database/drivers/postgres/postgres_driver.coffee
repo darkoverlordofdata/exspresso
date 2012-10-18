@@ -36,7 +36,6 @@ module.exports = (CI_DB) ->
 
     dbdriver:   'postgres'
     port:       5432
-    pg:         null
 
     _escape_char: '"'
 
@@ -74,14 +73,13 @@ module.exports = (CI_DB) ->
     #
     db_connect: ($callback) =>
 
+      console.log 'db_connect'
       pg = require('pg')
       pg.connect @_connect_string(), ($err, $client) =>
 
-        if $err
-          console.log $err
-        else
-          @pg = $client
-          $callback()
+        if ($err)
+          console.log JSON.stringify($err)
+        $callback $client
 
     #  --------------------------------------------------------------------
 
@@ -161,7 +159,7 @@ module.exports = (CI_DB) ->
     #
     _execute: ($sql, $params, $callback) ->
       $sql = @_prep_query($sql)
-      @pg.query $sql, $params, $callback
+      @client.query $sql, $params, $callback
 
 
     #  --------------------------------------------------------------------
@@ -317,7 +315,7 @@ module.exports = (CI_DB) ->
         $sql = sprintf("SELECT CURRVAL('%s') as ins_id", $table)
 
       else
-        return @pg.last_oid(@result_id)
+        return @client.last_oid(@result_id)
 
       $query = @query($sql)
       $row = $query.row()
@@ -611,7 +609,7 @@ module.exports = (CI_DB) ->
     # @return	void
     #
     _close: ($callback) ->
-      @pg.end
+      @client.end
       $callback()
 
 

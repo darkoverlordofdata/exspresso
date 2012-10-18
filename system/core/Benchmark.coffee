@@ -17,8 +17,7 @@
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {defined, explode, microtime, number_format}	= require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
+{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 #
 # CodeIgniter
@@ -48,7 +47,7 @@
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/libraries/benchmark.html
 #
-class CI_Benchmark
+module exports class Exspresso.CI_Benchmark
 	
 	$marker: {}
 	
@@ -120,11 +119,6 @@ class CI_Benchmark
 		return '{memory_usage}'
 		
 	
-	
-
-register_class 'CI_Benchmark', CI_Benchmark
-module.exports = CI_Benchmark
-
 #  END CI_Benchmark class
 
 #  End of file Benchmark.php 

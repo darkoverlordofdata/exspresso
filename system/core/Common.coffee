@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, chmod, class_exists, count, defined, error_reporting, fclose, file_exists, fopen, header, ini_get, is_array, is_dir, is_file, is_numeric, is_writable, log_exception, md5, mt_rand, php_sapi_name, preg_replace, rtrim, show_php_error, strtolower, substr, unlink, version_compare, write_log}	= require(FCPATH + 'lib')
+{array_merge, chmod, class_exists, count, defined, die, error_reporting, fclose, file_exists, fopen, header, ini_get, is_array, is_dir, is_file, is_numeric, is_writable, log_exception, md5, mt_rand, php_sapi_name, preg_replace, rtrim, show_php_error, strtolower, substr, unlink, version_compare, write_log}	= require(FCPATH + 'lib')
 
 #
 # CodeIgniter
@@ -90,29 +90,47 @@ _error        = null
 #
 exports.Exspresso = Exspresso    = {}
 
-_objects      = {}
+#  ------------------------------------------------------------------------
 
+#
+# class_exists
+#
+# Returns true if the class has been defined
+#
+# @access public
+# @return	boolean
+#
+exports.class_exists = ($class_name) ->
+
+  Exspresso[$class_name]?
+
+#  ------------------------------------------------------------------------
+
+#
+# register_class
+#
+# Regsiter a class
+#
+# @access public
+# @param string class name
+# @param object the class
+# @return	void
+#
 exports.register_class = ($classname, $class) ->
 
   Exspresso[$classname] = $class
   return
-
 #  ------------------------------------------------------------------------
 
-exports.load_object = get_object = ($object, $directory = 'libraries') ->
-
-  #  Does the object exist?  If so, we're done...
-  if _objects[$object]?
-    return _objects[$object]
-
-  #  Look for the object first in the native system/libraries folder
-  #  then in the local application/libraries folder
-  for $path in [BASEPATH, APPPATH]
-    if file_exists($path + $directory + '/' + $object + EXT)
-      _objects[$object] = new require($path + $directory + '/' + $object + EXT)
-      return _objects[$object]
-
-  return null
+#
+# get_instance
+#
+# Returns the super object
+#
+# @access public
+# @return	object
+#
+exports.get_instance = () -> require(BASEPATH + 'core/Exspresso')
 
 #  ------------------------------------------------------------------------
 
@@ -315,7 +333,7 @@ exports.show_error = show_error = ($message, $status_code = 500, $heading = 'An 
   #_error = load_class('Exceptions', 'core')
   #require('./Exspresso').res.send  _error.show_error($heading, $message, 'error_general', $status_code)
   #die()
-  throw new Error($message)
+  console.log $message
 
 #  ------------------------------------------------------------------------
 
@@ -356,4 +374,4 @@ exports.log_message = log_message = ($level = 'error', $message, $js_error = fal
 
 
 # End of file Common.coffee
-# Location: ./Common.coffee
+# Location: ./system/core/Common.coffee

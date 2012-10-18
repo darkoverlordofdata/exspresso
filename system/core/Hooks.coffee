@@ -17,7 +17,7 @@
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {class_exists, defined, file_exists, function_exists, is_array, is_file, item}	= require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 
 #
@@ -47,7 +47,7 @@
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/libraries/encryption.html
 #
-class CI_Hooks
+module.exports = class Exspresso.CI_Hooks
 	
 	enabled: false
 	hooks: {}
@@ -83,7 +83,7 @@ class CI_Hooks
 		#  Grab the "hooks" definition file.
 		#  If there are no hooks, we're done.
 		
-		if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
+		if is_file(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
 			require(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
 			
 		else if is_file(APPPATH + 'config/hooks' + EXT)
@@ -221,11 +221,6 @@ class CI_Hooks
 		@in_progress = false
 		return true
 		
-	
-	
-
-register_class 'CI_Hooks', CI_Hooks
-module.exports = CI_Hooks
 
 #  END CI_Hooks class
 

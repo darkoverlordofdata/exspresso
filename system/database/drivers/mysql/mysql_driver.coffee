@@ -33,7 +33,6 @@ module.exports = (CI_DB) ->
     # by default, expect mysql to listen on port 3306
     dbdriver:   'mysql'
     port:       3306
-    mysql:      null
 
     #  The character used for escaping
     _escape_char: '`'
@@ -68,14 +67,14 @@ module.exports = (CI_DB) ->
 
       mysql = require('mysql')
 
-      @mysql = new mysql.createClient
+      @client = new mysql.createClient
         host: @hostname
         port: @port
         user: @username
         password: @password
         database: @database
 
-      $callback()
+      $callback() if $callback?
 
     #  --------------------------------------------------------------------
 
@@ -100,7 +99,7 @@ module.exports = (CI_DB) ->
     # @return	void
     #
     reconnect: ($callback) ->
-      @mysql.ping($callback)
+      @client.ping($callback)
 
     #  --------------------------------------------------------------------
 
@@ -111,7 +110,7 @@ module.exports = (CI_DB) ->
     # @return	resource
     #
     db_select: ($callback) ->
-      @mysql.useDatabase(@database, $callback)
+      @client.useDatabase(@database, $callback)
 
 
     #  --------------------------------------------------------------------
@@ -125,7 +124,7 @@ module.exports = (CI_DB) ->
     # @return	resource
     #
     db_set_charset: ($charset, $collation, $callback) ->
-      @mysql.query("SET NAMES '" + @escape_str($charset) + "' COLLATE '" + @escape_str($collation) + "'", $callback)
+      @client.query("SET NAMES '" + @escape_str($charset) + "' COLLATE '" + @escape_str($collation) + "'", $callback)
 
 
     #  --------------------------------------------------------------------
@@ -151,7 +150,7 @@ module.exports = (CI_DB) ->
     #
     _execute: ($sql, $params, $callback) ->
       $sql = @_prep_query($sql)
-      @mysql.query $sql, $params, $callback
+      @client.query $sql, $params, $callback
 
     #  --------------------------------------------------------------------
 
@@ -266,7 +265,7 @@ module.exports = (CI_DB) ->
 
         return $str
 
-      $str = @mysql.escape($str)
+      $str = @client.escape($str)
 
 
       #  escape LIKE condition wildcards
@@ -285,7 +284,7 @@ module.exports = (CI_DB) ->
     # @return	integer
     #
     affected_rows: ($callback) ->
-      #@mysql.affected_rows($callback)
+      #@client.affected_rows($callback)
 
 
     #  --------------------------------------------------------------------
@@ -297,7 +296,7 @@ module.exports = (CI_DB) ->
     # @return	integer
     #
     insert_id: ($callback) ->
-      #@mysql.insert_id($callback)
+      #@client.insert_id($callback)
 
 
     #  --------------------------------------------------------------------
@@ -381,7 +380,7 @@ module.exports = (CI_DB) ->
     #
     _error_message: () ->
       'sql error_message'
-      #@mysql.error()
+      #@client.error()
 
 
     #  --------------------------------------------------------------------
@@ -394,7 +393,7 @@ module.exports = (CI_DB) ->
     #
     _error_number: () ->
       'sql error_number'
-      #@mysql.errno()
+      #@client.errno()
 
 
     #  --------------------------------------------------------------------
@@ -605,9 +604,9 @@ module.exports = (CI_DB) ->
     # @return	void
     #
     _close: ($callback) ->
-      @mysql.end $callback
+      @client.end $callback
 
 # End Class CI_DB_mysql_driver
 
-#  End of file @mysql.driver.php
+#  End of file @client.driver.php
 #  Location: ./system/database/drivers/mysql/mysql_driver.php

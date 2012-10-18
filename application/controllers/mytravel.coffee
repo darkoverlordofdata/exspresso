@@ -33,7 +33,7 @@ class Travel extends CI_Controller
   constructor: ->
 
     super()
-    @load.database get_config().mysql_url, false, true
+    @load.database()
 
 
   #

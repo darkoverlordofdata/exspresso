@@ -20,8 +20,8 @@
 #| absolute minimal resources are loaded by default. For example,
 #| the database is not connected to automatically since no assumption
 #| is made regarding whether you intend to use it.  This file lets
-#| you globally define which systems you would like loaded with every
-#| request.
+#| you globally define which systems you would like loaded when the
+#| Exspresso server boots.
 #|
 #| -------------------------------------------------------------------
 #| Instructions
@@ -45,7 +45,7 @@
 #| -------------------------------------------------------------------
 #| Prototype:
 #|
-#|  $autoload['packages'] = array(APPPATH.'third_party', '/usr/local/shared');
+#|  $autoload['packages'] = [APPPATH+'third_party', '/usr/local/shared']
 #|
 #
 exports['packages'] = []
@@ -59,9 +59,9 @@ exports['packages'] = []
 #|
 #| Prototype:
 #|
-#|	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
+#|	$autoload['libraries'] = ['database', 'session']
 #
-exports['libraries'] = []
+exports['libraries'] = ['session']
 
 #
 #|--------------------------------------------------------------------------
@@ -79,7 +79,7 @@ exports['helper'] = []
 #| -------------------------------------------------------------------
 #| Prototype:
 #|
-#|	$autoload['config'] = array('config1', 'config2');
+#|	$autoload['config'] = ['config1', 'config2']
 #|
 #| NOTE: This item is intended for use ONLY if you have created custom
 #| config files.  Otherwise, leave it blank.
@@ -95,7 +95,7 @@ exports['config'] = []
 #| -------------------------------------------------------------------
 #| Prototype:
 #|
-#|	$autoload['language'] = array('lang1', 'lang2');
+#|	$autoload['language'] = ['lang1', 'lang2']
 #|
 #| NOTE: Do not include the "_lang" part of your file.  For example
 #| "codeigniter_lang.php" would be referenced as array('codeigniter');

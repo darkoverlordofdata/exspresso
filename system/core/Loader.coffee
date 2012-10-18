@@ -16,8 +16,8 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{_config_paths, append_output, array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, class_exists, count, db, dbdriver, defined, end, explode, extract, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, count, end, explode, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'lib')
+{Exspresso, class_exists, config_item, get_class, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class, show_error} = require(BASEPATH + 'core/Common')
 
 
 #
@@ -47,7 +47,7 @@
 # @category	Loader
 # @link		http://codeigniter.com/user_guide/libraries/loader.html
 #
-class CI_Loader
+class Exspresso.CI_Loader
 
   # All these are set automatically. Don't mess with them.
   #
@@ -166,7 +166,7 @@ class CI_Loader
   # @param 	object  CI  Controller Instance
   # @return 	object
   #
-  initialize: (@_CI) ->
+  initialize: (@_CI, $autoload = false) ->
 
     @_ci_classes        = {}
     @_ci_loaded_files   = []
@@ -174,7 +174,7 @@ class CI_Loader
     @_ci_middleware     = {}
     @_base_classes      = is_loaded()
 
-    @_ci_autoloader()
+    @_ci_autoloader() if $autoload
     return @
 
   ## --------------------------------------------------------------------
@@ -311,10 +311,15 @@ class CI_Loader
 
 
     # Grab the super object
-    # $CI = get_instance()
-
+    $CI = get_instance()
 
     # Do we even need to load the database class?
+    if $CI.db?
+      if not @_CI.db?
+        if $return is false
+          @_CI.db = $CI.db
+          return false
+
     if class_exists('CI_DB') and $return is false and $active_record is null and @_CI['db']?
       return false
 
@@ -778,10 +783,10 @@ class CI_Loader
     #  Instantiate the class
     # $CI = get_instance()
     if $config isnt null
-      @_CI[$classvar] = new $name($config)
+      @_CI[$classvar] = new Exspresso[$name]($config)
 
     else
-      @_CI[$classvar] = new $name
+      @_CI[$classvar] = new Exspresso[$name]
 
 
 
@@ -834,7 +839,7 @@ class CI_Loader
         #$autoload['libraries'] = array_diff($autoload['libraries'], ['database'])
       #  Load all other libraries
       for $item in $autoload['libraries']
-        @library $item unless $item = 'database'
+        @library $item unless $item is 'database'
 
     #  Autoload models
     if $autoload['model']?
@@ -900,9 +905,6 @@ class CI_Loader
       return $filename
 
 # END CI_Load class
-
-register_class 'CI_Loader', CI_Loader
-module.exports =  CI_Loader
-
+module.exports = Exspresso.CI_Loader
 # End of file Loader.coffee
-# Location: ./Loader.coffee
+# Location: ./system/core/Loader.coffee

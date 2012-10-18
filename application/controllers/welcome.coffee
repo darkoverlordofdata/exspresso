@@ -20,7 +20,6 @@
 {log_message}   = require(BASEPATH + 'core/Common')     # Error Logging Interface.
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 
-
 class Welcome extends CI_Controller
 
   ## --------------------------------------------------------------------

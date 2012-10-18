@@ -82,13 +82,24 @@ url             = require('url')                        # Utilities for URL reso
 {show_error}    = require(BASEPATH + 'core/Common')     # Error Handler.
 {show_404}      = require(BASEPATH + 'core/Common')     # 404 Page Handler.
 {Exspresso}     = require(BASEPATH + 'core/Common')     # Core framework library
+
+{app}           = require(BASEPATH + 'core/Exspresso')  # Exspresso: Inner express app
+{config}        = require(BASEPATH + 'core/Exspresso')  # Exspresso: Config instance
+{load}          = require(BASEPATH + 'core/Exspresso')  # Exspresso: Loader
+{lang}          = require(BASEPATH + 'core/Exspresso')  # Exspresso: Lang
+{security}      = require(BASEPATH + 'core/Exspresso')  # Exspresso: Security
+{input}         = require(BASEPATH + 'core/Exspresso')  # Exspresso: Input
+{cache}         = require(BASEPATH + 'core/Exspresso')  # Exspresso: Cache
+{input}         = require(BASEPATH + 'core/Exspresso')  # Exspresso: Input
+{controller}    = require(BASEPATH + 'core/Exspresso')  # Exspresso: Controller
+{router}        = require(BASEPATH + 'core/Exspresso')  # Exspresso: Router
+
 ## --------------------------------------------------------------------
 
 #
 # CodeIgniter core application modules
 #
 
-app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
 cache           = require(BASEPATH + 'core/Cache')      # Exspresso Sessions module
 middleware      = require(BASEPATH + 'core/Middleware') # Exspresso Middleware module
 sessions        = require(BASEPATH + 'core/Sessions')   # Exspresso Sessions module

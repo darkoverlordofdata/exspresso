@@ -43,31 +43,38 @@
 # @author    ExpressionEngine Dev Team
 # @link    http://codeigniter.com/user_guide/database/
 #
-module.exports = ($params = '', $active_record_override = null) ->
+module.exports = ($params = '', active_record_override = null) ->
   #  Load the DB config file if a DSN string wasn't passed
   if is_string($params) and strpos($params, '://') is false
     #  Is the config file in the environment folder?
     if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
       if not file_exists($file_path = APPPATH + 'config/database' + EXT)
         show_error('The configuration file database' + EXT + ' does not exist.')
-        
-      
-    
-    $db = require($file_path)
-    
-    if not $db?  or count($db) is 0
-      show_error('No database connection settings were found in the database config file.')
-      
-    
+
+    {db, active_group, active_record} = require($file_path)
+
+    if not db?  or count(db) is 0
+      show_error 'No database connection settings were found in the database config file.'
+
     if $params isnt ''
-      $active_group = $params
-      
-    
-    if not $active_group?  or  not $db[$active_group]? 
-      show_error('You have specified an invalid database connection group.')
-      
-    
-    $params = $db[$active_group]
+      active_group = $params
+
+    if not active_group?  or  not db[active_group]? 
+      show_error 'You have specified an invalid database connection group.'
+
+    $params = db[active_group]
+
+    if db[active_group]['url']?
+
+      if ($dns = parse_url(db[active_group]['url'])) is false
+        show_error 'Invalid DB Connection String'
+
+      $params.dbdriver = $dns['scheme']
+      $params.hostname = if $dns['host']? then rawurldecode($dns['host']) else ''
+      $params.username = if $dns['user']? then rawurldecode($dns['user']) else ''
+      $params.password = if $dns['pass']? then rawurldecode($dns['pass']) else ''
+      $params.database = if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+
     
   else if is_string($params)
     
@@ -79,9 +86,8 @@ module.exports = ($params = '', $active_record_override = null) ->
     #
     
     if ($dns = parse_url($params)) is false
-      show_error('Invalid DB Connection String')
-      
-    
+      show_error 'Invalid DB Connection String'
+
     $params =
       'dbdriver': $dns['scheme']
       'hostname': if $dns['host']? then rawurldecode($dns['host']) else ''
@@ -112,14 +118,14 @@ module.exports = ($params = '', $active_record_override = null) ->
   #  we need to dynamically create a class that extends proper parent class
   #  based on whether we're using the active record class or not.
 
-  if $active_record_override isnt null
-    $active_record = $active_record_override
+  if active_record_override isnt null
+    active_record = active_record_override
 
 
   CI_DB_driver = require(BASEPATH + 'database/DB_driver' + EXT)
 
 
-  if not $active_record?  or $active_record is true
+  if not active_record?  or active_record is true
     CI_DB_active_record = require(BASEPATH + 'database/DB_active_rec' + EXT)
 
     if not class_exists('CI_DB')
@@ -137,6 +143,7 @@ module.exports = ($params = '', $active_record_override = null) ->
 
   #  Instantiate the DB adapter
   # $driver = 'CI_DB_' + $params['dbdriver'] + '_driver'
+
   $DB = new $driver($params)
 
   if $DB.autoinit is true

@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 
 #
@@ -45,7 +45,7 @@
 # @link		http://codeigniter.com/user_guide/libraries/config.html
 #
 
-class CI_Model
+module.exports = class Exspresso.CI_Model
 
   ## --------------------------------------------------------------------
 
@@ -70,8 +70,5 @@ class CI_Model
 
 # END CI_Model class
 
-register_class 'CI_Model', CI_Model
-module.exports = CI_Model
-
 # End of file Model.coffee
-# Location: .system/core//Model.coffee
+# Location: ./system/core/Model.coffee

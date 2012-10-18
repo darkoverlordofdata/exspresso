@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| pal.coffee
+#| lib.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,7 +11,7 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	PAL - Php Abstraction Layer
+# php compatability lib
 #
 format          = require('format-number')              # Formats numbers with separators...
 fs              = require('fs')                         # Standard POSIX file i/o
@@ -20,6 +20,10 @@ querystring     = require('querystring')                # Utilities for dealing 
 url             = require('url')                        # Utilities for URL resolution and parsing.
 
 exports._classes = _classes = {}                        # class registry
+
+exports.die = ($message) ->
+  console.log $message
+  process.exit 1
 
 ## --------------------------------------------------------------------
 

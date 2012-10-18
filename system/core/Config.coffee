@@ -17,7 +17,7 @@
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {array_merge, basename, defined, end, explode, file_exists, implode, in_array, is_array, item, preg_replace, rtrim, set_item, slash_item, str_replace, strtolower, trim}	= require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 
 #
@@ -49,7 +49,7 @@
 #
 
 
-class CI_Config
+module.exports = class Exspresso.CI_Config
 
 
   _config:        {}
@@ -83,13 +83,32 @@ class CI_Config
       ###
       $base_url = 'http://localhost/'
 
-
       @set_item 'base_url', $base_url
 
+    @_initialize()
     log_message('debug', "Config Class Initialized")
 
+  #
+  # Initialize
+  #
+  # Initialize the Exspresso application config values
+  #
+  # @access   private
+  # @return  void
+  #
+  _initialize: () ->
 
-  #  --------------------------------------------------------------------
+    express = require('express')                    # Express 3.0 Framework
+    $app = require(BASEPATH + 'core/Exspresso').app
+
+    $app.set 'env', ENVIRONMENT
+    $app.set 'port', @_config.port
+    $app.set 'site_name', @_config.site_name
+    $app.use express.logger(@_config.logger)
+    return
+
+
+#  --------------------------------------------------------------------
 
   #
   # Load Config File
@@ -295,13 +314,7 @@ class CI_Config
       @set_item($key, $val)
 
 
-
-
-
 # END CI_Config class
 
-register_class 'CI_Config', CI_Config
-module.exports = CI_Config
-
 # End of file Config.coffee
-# Location: ./Config.coffee
+# Location: ./system/core/Config.coffee

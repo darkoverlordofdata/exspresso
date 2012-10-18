@@ -23,6 +23,7 @@
 #| EXPLANATION OF VARIABLES
 #| -------------------------------------------------------------------
 #|
+#|	['url']      Optional url. Overrides any of the following:
 #|	['hostname'] The hostname of your database server.
 #|	['username'] The username used to connect to the database
 #|	['password'] The password used to connect to the database
@@ -49,27 +50,81 @@
 #| the active record class
 #
 
-exports['active_group'] = 'default'
+
+exports['active_group'] = 'mysql'
 exports['active_record'] = true
+exports['db'] =
 
-exports['default'] =
+  default:
+    'hostname': 'localhost'
+    'username': ''
+    'password': ''
+    'database': ''
+    'dbdriver': 'mysql'
+    'dbprefix': ''
+    'pconnect': true
+    'db_debug': true
+    'cache_on': false
+    'cachedir': ''
+    'char_set': 'utf8'
+    'dbcollat': 'utf8_general_ci'
+    'swap_pre': ''
+    'autoinit': true
+    'stricton': false
 
-  'hostname': 'localhost'
-  'username': ''
-  'password': ''
-  'database': ''
-  'dbdriver': 'mysql'
-  'dbprefix': ''
-  'pconnect': true
-  'db_debug': true
-  'cache_on': false
-  'cachedir': ''
-  'char_set': 'utf8'
-  'dbcollat': 'utf8_general_ci'
-  'swap_pre': ''
-  'autoinit': true
-  'stricton': false
+  mysql:
+    'url': process.env.CLEARDB_DATABASE_URL ? "mysql://demo:demo@localhost:3306/demo"
+    'hostname': 'localhost'
+    'username': ''
+    'password': ''
+    'database': ''
+    'dbdriver': 'mysql'
+    'dbprefix': ''
+    'pconnect': true
+    'db_debug': true
+    'cache_on': false
+    'cachedir': ''
+    'char_set': 'utf8'
+    'dbcollat': 'utf8_general_ci'
+    'swap_pre': ''
+    'autoinit': true
+    'stricton': false
 
+  postgres:
+    'url': process.env.HEROKU_POSTGRESQL_ROSE_URL ? "postgres://tagsobe:tagsobe@localhost:5432/tagsobe"
+    'hostname': 'localhost'
+    'username': ''
+    'password': ''
+    'database': ''
+    'dbdriver': 'postgres'
+    'dbprefix': ''
+    'pconnect': true
+    'db_debug': true
+    'cache_on': false
+    'cachedir': ''
+    'char_set': 'utf8'
+    'dbcollat': 'utf8_general_ci'
+    'swap_pre': ''
+    'autoinit': false
+    'stricton': false
 
-#  End of file database.php 
+  redis:
+    'url': process.env.REDISTOGO_URL ? 'redis://localhost:6379'
+    'hostname': 'localhost'
+    'username': ''
+    'password': ''
+    'database': ''
+    'dbdriver': 'redis'
+    'dbprefix': ''
+    'pconnect': true
+    'db_debug': true
+    'cache_on': false
+    'cachedir': ''
+    'char_set': 'utf8'
+    'dbcollat': 'utf8_general_ci'
+    'swap_pre': ''
+    'autoinit': false
+    'stricton': false
+
+#  End of file database.php
 #  Location: ./application/config/database.php 

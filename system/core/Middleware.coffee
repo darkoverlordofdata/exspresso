@@ -23,7 +23,7 @@
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 {load_object} = require(BASEPATH + 'core/Common')
 
-app             = require(BASEPATH + 'core/Exspresso')  # Exspresso bootstrap module
+app             = require(BASEPATH + 'core/Exspresso').app  # Exspresso bootstrap module
 
 # --------------------------------------------------------------------
 

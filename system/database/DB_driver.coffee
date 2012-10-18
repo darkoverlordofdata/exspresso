@@ -24,6 +24,8 @@
 
 class CI_DB_driver
 
+  url: ''
+  client: null
   username: ''
   password: ''
   hostname: ''
@@ -90,8 +92,10 @@ class CI_DB_driver
   initialize: ($callback) =>
 
     if $callback?
-      @db_connect =>
-        @db_set_charset(@char_set, @dbcollat, $callback)
+      @db_connect $callback
+    else
+      @db_connect()
+
 
 
   #  --------------------------------------------------------------------

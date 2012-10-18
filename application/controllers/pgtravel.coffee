@@ -34,7 +34,7 @@ class Travel extends CI_Controller
   constructor: ->
 
     super()
-    @load.database get_config().db_url, false, true
+    @db = @load.database 'postgres', true
 
 
   ## --------------------------------------------------------------------
