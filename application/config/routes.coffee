@@ -61,15 +61,6 @@ exports['/readme']                            = 'welcome/readme'
 exports['/about']                             = 'welcome/about'
 exports['/about/:id']                         = "welcome/about"
 
-# database application demo I - Postgres + Sequelize ORM
-exports['/pgorm']                             = 'pgorm/search'
-exports['/pgorm/search']                      = 'pgorm/search'
-exports['/pgorm/hotels']                      = 'pgorm/hotels'
-exports['/pgorm/hotel/:id']                   = 'pgorm/hotel'
-exports['/pgorm/booking']                     = 'pgorm/booking'
-exports['/pgorm/confirm']                     = 'pgorm/confirm'
-exports['/pgorm/book']                        = 'pgorm/book'
-
 # database application demo II - Postgres + CI_DB_active_rec
 exports['/pgtravel']                          = 'pgtravel/search'
 exports['/pgtravel/search']                   = 'pgtravel/search'

@@ -24,7 +24,7 @@
 # Redis Session store driver
 #
 #
-class Session_redis extends require('connect-redis')(require('express'))
+class CI_Session_redis extends require('connect-redis')(require('express'))
 
   ## --------------------------------------------------------------------
 
@@ -46,6 +46,6 @@ class Session_redis extends require('connect-redis')(require('express'))
       pass: $dns.password
 
 
-module.exports = Session_redis
+module.exports = CI_Session_redis
 # End of file postgres.coffee
 # Location: ./system/libraries/Session/postgres.coffee

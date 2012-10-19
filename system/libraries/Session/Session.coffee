@@ -58,54 +58,53 @@ class Exspresso.CI_Session
     log_message 'debug', "Session Class Initialized"
 
     #  Set the super object to a local variable for use throughout the class
-    @CI = get_instance()
+    $CI = get_instance()
 
     #  Set all the session preferences, which can either be set
     #  manually via the $params array above or via the config file
     for $key in ['sess_encrypt_cookie', 'sess_use_database', 'sess_table_name', 'sess_expiration', 'sess_expire_on_close', 'sess_match_ip', 'sess_match_useragent', 'sess_cookie_name', 'cookie_path', 'cookie_domain', 'cookie_secure', 'sess_time_to_update', 'time_reference', 'cookie_prefix', 'encryption_key']
-      @[$key] = if ($params[$key]?) then $params[$key] else @CI.config.item($key)
+      @[$key] = if ($params[$key]?) then $params[$key] else $CI.config.item($key)
 
     if @encryption_key is ''
       show_error('In order to use the Session class you are required to set an encryption key in your config file.')
 
-    @CI.app.use express.cookieParser(@encryption_key)
+    $CI.app.use express.cookieParser(@encryption_key)
 
 
     #  Are we using a database?  If so, load it
     if @sess_use_database isnt false and @sess_table_name isnt ''
 
       if @sess_use_database is true
-        @CI.load.database()
-        $sess_driver = @CI.db.dbdriver
+        $CI.load.database()
+        $sess_driver = $CI.db.dbdriver
       else
         $sess_driver = parse_url(@sess_use_database).scheme
 
-      console.log '-->  session driver = '+$sess_driver
       $found = false
       for $path in [BASEPATH, APPPATH]
 
-        if file_exists($path+'libraries/Session/'+$sess_driver+EXT)
+        if file_exists($path+'libraries/Session/drivers/Session_'+$sess_driver+EXT)
 
           $found = true
 
-          $driver = require($path+'libraries/Session/'+$sess_driver+EXT)
+          $driver = require($path+'libraries/Session/drivers/Session_'+$sess_driver+EXT)
           $store = new $driver(@)
 
-          @CI.app.use express.session
+          $CI.app.use express.session
             secret:   @encryption_key
             maxAge:   Date.now() + (@sess_expiration * 1000)
             store:    $store
 
       if not $found
 
-        show_error "Session driver not found: "+$sess_driver
+        show_error "Driver not found: Session_"+$sess_driver
 
-        @CI.app.use express.session()
+        $CI.app.use express.session()
 
 
     else
 
-      @CI.app.use express.session()
+      $CI.app.use express.session()
 
 
 

@@ -61,7 +61,7 @@ exports['packages'] = []
 #|
 #|	$autoload['libraries'] = ['database', 'session']
 #
-exports['libraries'] = ['session']
+exports['libraries'] = ['Session/session']
 
 #
 #|--------------------------------------------------------------------------

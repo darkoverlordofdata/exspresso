@@ -17,15 +17,16 @@
 {file_exists}  = require(FCPATH + 'lib')
 {Exspresso, config_item, get_class, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, show_error, register_class} = require(BASEPATH + 'core/Common')
 
+
 #  ------------------------------------------------------------------------
 
 #
-# PostgreSql Session store driver
+# Mysql Session store driver
 #
 #
-class Session_postgres extends require('express').session.Store
+class CI_Session_mysql extends require('express').session.Store
 
-  postgres: null
+  mysql: null
   table: ''
 
   ## --------------------------------------------------------------------
@@ -37,19 +38,18 @@ class Session_postgres extends require('express').session.Store
   #
   # @return 	nothing
   #
-  constructor: ($parent) ->
+  constructor: ($config) ->
 
-    @table = $parent.sess_table_name
+    @table = $config.sess_table_name
 
-    $parent.CI.db.db_connect ($err, $client) =>
+    $CI = get_instance()
+    @mysql = $CI.db.client
+
+    @mysql.query 'CREATE TABLE IF NOT EXISTS `' + @table + '` (`sid` VARCHAR(255) NOT NULL, `session` TEXT NOT NULL, `expires` INT, PRIMARY KEY (`sid`) )', ($err) =>
 
       if $err then throw $err
 
-      @postgres = $client
-
-      @postgres.query 'CREATE TABLE IF NOT EXISTS "' + @table + '" ("sid" TEXT NOT NULL, "session" TEXT NOT NULL, "expires" INT, PRIMARY KEY ("sid") )', ($err) ->
-
-        if $err then throw $err
+      @mysql.query 'CREATE EVENT IF NOT EXISTS `sess_cleanup` ON SCHEDULE EVERY 15 MINUTE DO DELETE FROM `' + @table + '` WHERE `expires` < UNIX_TIMESTAMP()'
 
 
   ## --------------------------------------------------------------------
@@ -65,13 +65,13 @@ class Session_postgres extends require('express').session.Store
   #
   get: ($sid, $callback) ->
 
-    @postgres.query 'SELECT "session" FROM "' + @table + '" WHERE "sid" = $1', [$sid], ($err, $result) ->
+    @mysql.query 'SELECT `session` FROM `' + @table + '` WHERE `sid` = ?', [$sid], ($err, $result) =>
 
       if $err
         $callback $err
       else
-        if $result? and $result.rows? and $result.rows[0]? and $result.rows[0].session?
-          $callback null, JSON.parse($result.rows[0].session)
+        if $result? and $result[0]? and $result[0].session?
+          $callback null, JSON.parse($result[0].session)
         else
           $callback()
 
@@ -92,11 +92,8 @@ class Session_postgres extends require('express').session.Store
 
     $expires = new Date($session.cookie.expires).getTime() / 1000
     $session = JSON.stringify($session)
-    @postgres.query 'UPDATE "'+ @table + '" SET  "session" = $2, "expires" = $3 WHERE "sid" = $1', [$sid, $session, $expires], ($err) =>
-
-      @postgres.query 'INSERT INTO "' + @table + '" ("sid", "session", "expires") SELECT $1, $2, $3 WHERE NOT EXISTS (SELECT 1 FROM "' + @table + '" WHERE "sid"=$1)', [$sid, $session, $expires], ($err) ->
-
-        $callback $err
+    @mysql.query 'INSERT INTO `' + @table + '` (`sid`, `session`, `expires`) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE `session` = ?, `expires` = ?', [$sid, $session, $expires, $session, $expires], ($err) ->
+      $callback $err
 
 
   ## --------------------------------------------------------------------
@@ -112,10 +109,9 @@ class Session_postgres extends require('express').session.Store
   #
   destroy: ($sid, $callback) ->
 
-    @postgres.query 'DELETE FROM "' + @table + '" WHERE "sid" = $1', [$sid], ($err) ->
-
+    @mysql.query 'DELETE FROM `' + @table + '` WHERE `sid` = ?', [$sid], ($err) ->
       $callback $err
 
-module.exports = Session_postgres
+module.exports = CI_Session_mysql
 # End of file postgres.coffee
 # Location: ./system/libraries/Session/postgres.coffee
