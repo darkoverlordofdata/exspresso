@@ -32,7 +32,6 @@
     "mysql": "*",
     "pg": "*",
     "redis": "*",
-    "sequelize": "*",
     "sqlite3": "*",
     "uglify-js-middleware": "*"
   },
