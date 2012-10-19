@@ -80,21 +80,27 @@ class Exspresso.CI_Session
       else
         $sess_driver = parse_url(@sess_use_database).scheme
 
+      console.log '-->  session driver = '+$sess_driver
+      $found = false
+      for $path in [BASEPATH, APPPATH]
 
+        if file_exists($path+'libraries/Session/'+$sess_driver+EXT)
 
-      if file_exists(BASEPATH+'libraries/Session/'+$sess_driver+EXT)
+          $found = true
 
-        $driver = require(BASEPATH+'libraries/Session/'+$sess_driver+EXT)
-        $store = new $driver(@)
+          $driver = require($path+'libraries/Session/'+$sess_driver+EXT)
+          $store = new $driver(@)
 
-        @CI.app.use express.session
-          secret:   @encryption_key
-          maxAge:   Date.now() + (@sess_expiration * 1000)
-          store:    $store
+          @CI.app.use express.session
+            secret:   @encryption_key
+            maxAge:   Date.now() + (@sess_expiration * 1000)
+            store:    $store
 
-      else
+      if not $found
 
         show_error "Session driver not found: "+$sess_driver
+
+        @CI.app.use express.session()
 
 
     else

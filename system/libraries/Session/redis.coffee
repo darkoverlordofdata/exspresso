@@ -38,9 +38,9 @@ class Session_redis extends require('connect-redis')(require('express'))
   constructor: ($parent) ->
 
 
-    $dns = parse_url(@sess_use_database)
+    $dns = parse_url($parent.sess_use_database)
 
-    super $options
+    super
       host: $dns.hostname
       port: $dns.port
       pass: $dns.password
