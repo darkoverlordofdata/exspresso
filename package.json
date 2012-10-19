@@ -19,8 +19,6 @@
     "connect-cache": "*",
     "connect-flash": "*",
     "connect-i18n": "*",
-    "connect-mysql": "*",
-    "connect-pg": "*",
     "connect-redis": "*",
     "consolidate": "*",
     "dispatch": "*",

@@ -51,7 +51,7 @@
 #
 
 
-exports['active_group'] = 'mysql'
+exports['active_group'] = 'postgres'
 exports['active_record'] = true
 exports['db'] =
 

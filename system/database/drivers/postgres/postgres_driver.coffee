@@ -73,14 +73,13 @@ module.exports = (CI_DB) ->
     #
     db_connect: ($callback) =>
 
-      console.log 'db_connect'
       pg = require('pg')
       pg.connect @_connect_string(), ($err, $client) =>
 
         @client = $client
         if ($err)
           console.log JSON.stringify($err)
-        $callback $client
+        $callback $err, $client
 
     #  --------------------------------------------------------------------
 

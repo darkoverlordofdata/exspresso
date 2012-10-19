@@ -16,7 +16,7 @@
 #
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{explode, is_array, is_null, is_string, parse_url, str_replace, strlen, strpos, strtolower, substr}  = require(FCPATH + 'lib')
+{file_exists, parse_url}  = require(FCPATH + 'lib')
 {Exspresso, config_item, get_class, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, show_error, register_class} = require(BASEPATH + 'core/Common')
 
 express         = require('express')                    # Express 3.0 Framework
@@ -72,35 +72,34 @@ class Exspresso.CI_Session
 
 
     #  Are we using a database?  If so, load it
-    if @sess_use_database is true and @sess_table_name isnt ''
+    if @sess_use_database isnt false and @sess_table_name isnt ''
 
-      @CI.load.database()
-      $store = '_'+@CI.db.dbdriver
+      if @sess_use_database is true
+        @CI.load.database()
+        $sess_driver = @CI.db.dbdriver
+      else
+        $sess_driver = parse_url(@sess_use_database).scheme
 
-      if @[$store]?
+
+
+      if file_exists(BASEPATH+'libraries/Session/'+$sess_driver+EXT)
+
+        $driver = require(BASEPATH+'libraries/Session/'+$sess_driver+EXT)
+        $store = new $driver(@)
 
         @CI.app.use express.session
           secret:   @encryption_key
           maxAge:   Date.now() + (@sess_expiration * 1000)
-          store:    @[$store]()
+          store:    $store
 
       else
 
-        show_error "invalid db"
+        show_error "Session driver not found: "+$sess_driver
+
 
     else
 
       @CI.app.use express.session()
-
-  _mysql: ->
-
-    MysqlStore = require('connect-mysql')(express)
-    new MysqlStore(client: @CI.db.client)
-
-  _postgres: ->
-
-    PgStore = require('connect-pg')
-    new PgStore(@CI.db.db_connect)
 
 
 
