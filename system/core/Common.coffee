@@ -17,6 +17,7 @@
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {array_merge, chmod, class_exists, count, defined, die, error_reporting, fclose, file_exists, fopen, header, ini_get, is_array, is_dir, is_file, is_numeric, is_writable, log_exception, md5, mt_rand, php_sapi_name, preg_replace, rtrim, show_php_error, strtolower, substr, unlink, version_compare, write_log}	= require(FCPATH + 'lib')
+{format} = require('util')
 
 #
 # CodeIgniter
@@ -334,7 +335,7 @@ exports.show_error = show_error = ($err, $status_code = 500) ->
   #return
 
   _error = load_class('Exceptions', 'core')
-  _error.show_error($err, '5xx', $status_code)
+  _error.show_error $err, '5xx', $status_code
 
 #  ------------------------------------------------------------------------
 
@@ -350,7 +351,7 @@ exports.show_error = show_error = ($err, $status_code = 500) ->
 #
 exports.show_404 = show_404 = ($page = '', $log_error = TRUE) ->
   _error = load_class('Exceptions', 'core')
-  _error.show_404($page, $log_error)
+  _error.show_404 $page, $log_error
 
 
 #  ------------------------------------------------------------------------
@@ -364,13 +365,13 @@ exports.show_404 = show_404 = ($page = '', $log_error = TRUE) ->
 # @access	public
 # @return	void
 #
-exports.log_message = log_message = ($level = 'error', $message, $js_error = false) ->
+exports.log_message = log_message = ($level = 'error', $args...) ->
 
   if config_item('log_threshold') is 0
     return
 
   _log = load_class('Log')
-  _log.write_log($level, $message, $js_error)
+  _log.write_log $level, format.apply(undefined, $args)
 
 
 #  ------------------------------------------------------------------------

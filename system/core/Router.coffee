@@ -174,7 +174,7 @@ module.exports = class Exspresso.CI_Router
     #  Instantiate the requested controller
     # ------------------------------------------------------
     #
-    $class = require APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT
+    $class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
 
     $routes[$path] = @controller_callback($class, $method)
     return

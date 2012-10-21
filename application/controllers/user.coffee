@@ -41,19 +41,13 @@ class User extends CI_Controller
   #
   login: ->
 
-    console.log "LOGIN"
-    console.log "user = "+@input.cookie('user')
-    console.log "code = "+@input.cookie('code')
     if @input.cookie('user') is '' or @input.cookie('code') is ''
-
-      console.log "render login"
 
       @load.view "user/login",
         url: @input.post("url")
 
     else
 
-      console.log "read db"
       @db.from 'user'
       @db.where 'email', @input.cookie('user')
       @db.get ($err, $user) =>

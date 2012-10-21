@@ -17,10 +17,10 @@
 
   "herokupg": {
     "driver": "pg",
-    "user": "hlfuzggerjzrro",
-    "password": "rUvg4LogyCdFUNzgliNogVhpjU",
-    "host": "ec2-54-243-200-16.compute-1.amazonaws.com",
-    "database": "d9a9tjubk8pttc"
+    "user": "bdmedinxtmffbe",
+    "password": "kmRU789SCufmFNTD6Vvy88u9d8",
+    "host": "ec2-107-21-120-175.compute-1.amazonaws.com",
+    "database": "dqkb09ijgc7nu"
   },
 
   "herokumy": {

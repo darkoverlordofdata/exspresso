@@ -325,6 +325,8 @@ class Exspresso.CI_Loader
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
     DB._CI = @_CI
 
+    log_message 'debug', 'DSN Type: %s', DB.dbdriver
+    log_message 'debug', 'DSN User: %s', DB.username
 
     if $return is true then return DB #($params, $active_record)
 

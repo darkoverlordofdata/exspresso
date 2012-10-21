@@ -13,20 +13,16 @@
 #
 # Exspresso Config Class
 #
-# This class contains functions that enable config files to be managed
+# This class contains functions that enable $config files to be managed
 #
 #
-{FCPATH}        = require(process.cwd() + '/index')     # '/var/www/Exspresso/'
-{APPPATH}       = require(FCPATH + 'index')            # '/var/www/Exspresso/application/'
-{BASEPATH}      = require(FCPATH + 'index')            # '/var/www/Exspresso/system/'
-{WEBROOT}       = require(FCPATH + 'index')            # '/var/www/Exspresso/public/'
-{EXT}           = require(FCPATH + 'index')            # '.coffee'
-{ENVIRONMENT}   = require(FCPATH + 'index')            # 'development'
-{is_dir}        = require(FCPATH + 'lib')           # Tells whether the filename is a directory.
-{get_config}    = require(BASEPATH + 'core/Common')     # Loads the main config.coffee file.
-{Exspresso}     = require(BASEPATH + 'core/Common')     # Core framework library
+{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+{is_dir} = require(FCPATH + 'lib')
+{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
-class CI_Log
+fs              = require('fs')                         # Standard POSIX file i/o
+
+class Exspresso.CI_Log
 
   _log_path:    ''
   _threshold:   1
@@ -40,18 +36,18 @@ class CI_Log
 
   constructor: ->
 
-    config = get_config()
+    $config = get_config()
 
-    @_log_path = if config.log_path is '' then APPPATH + 'logs/' else config.log_path
+    @_log_path = $config.log_path or APPPATH + 'logs/'
 
     if not is_dir(@_log_path) # or not is_really_writable(@_log_path)
       @_enabled = false
 
-    if not isNaN(config.log_threshold)
-      @_threshold = config.log_threshold
+    if not isNaN($config.log_threshold)
+      @_threshold = $config.log_threshold
 
-    if config.log_date_format isnt ''
-      @_date_ftm = config.log_date_format
+    if $config.log_date_format isnt ''
+      @_date_ftm = $config.log_date_format
 
   ##
   # Write Log File
@@ -60,29 +56,28 @@ class CI_Log
   #
   # @param	string	the error level
   # @param	string	the error message
-  # @param	bool	whether the error is a native PHP error
+  # @param	bool	whether the error is a native error
   # @return	bool
   ##
-  write_log: (level = 'error', msg, js_error = false) ->
+  write_log: ($level = 'error', $msg, $native = false) ->
 
     if @_enabled is false then return false
 
-    level = level.toUpperCase()
-    if not @_levels[level]? then return false
-    if @_levels[level] > @_threshold then return false
+    $level = $level.toUpperCase()
+    if not @_levels[$level]? then return false
+    if @_levels[$level] > @_threshold then return false
 
 
-    d = new Date()
-    filepath = @_log_path + 'log-' + d.toISOString().substr(0,10) + '.log'
+    $d = new Date()
+    $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
 
-    message = level + (if level is 'INFO' then ' ' else '') + ' ' + d.toTimeString() + ' -->' + msg + "\n"
+    $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d.toISOString() + ' -->' + $msg + "\n"
 
-    fs = require('fs')
-    fs.appendFileSync filepath, message
+    console.log $message
+    fs.appendFileSync $filepath, $message
 
 # END Log Class
-Exspresso.CI_Log = CI_Log
-module.exports = CI_Log
+module.exports = Exspresso.CI_Log
 
 # End of file Log.coffee
 # Location: ./system/libraries/Log.coffee
