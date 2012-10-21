@@ -40,8 +40,8 @@ class Exspresso.CI_Log
 
     @_log_path = $config.log_path or APPPATH + 'logs/'
 
-    if not is_dir(@_log_path) # or not is_really_writable(@_log_path)
-      @_enabled = false
+    #if not is_dir(@_log_path) # or not is_really_writable(@_log_path)
+    #  @_enabled = false
 
     if not isNaN($config.log_threshold)
       @_threshold = $config.log_threshold
@@ -69,12 +69,12 @@ class Exspresso.CI_Log
 
 
     $d = new Date()
-    $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
+    # $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
 
     $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d.toISOString() + ' -->' + $msg + "\n"
 
     console.log $message
-    fs.appendFileSync $filepath, $message
+    # fs.appendFileSync $filepath, $message
 
 # END Log Class
 module.exports = Exspresso.CI_Log

@@ -87,6 +87,9 @@ class Exspresso.CI_Session
       else
         $sess_driver = parse_url(@sess_use_database).scheme
 
+      log_message 'debug','Session database : %s',@sess_use_database
+      log_message 'debug','Session driver   : %s',$sess_driver
+
       $found = false
       for $path in [BASEPATH, APPPATH]
 
