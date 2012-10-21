@@ -17,7 +17,7 @@
 
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {array_merge, basename, defined, end, explode, file_exists, implode, in_array, is_array, item, preg_replace, rtrim, set_item, slash_item, str_replace, strtolower, trim}	= require(FCPATH + 'lib')
-{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class, show_error} = require(BASEPATH + 'core/Common')
 
 
 #
@@ -26,6 +26,7 @@
 # An open source application development framework for PHP 5.1.6 or newer
 #
 # @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
 # @author		ExpressionEngine Dev Team
 # @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		http://codeigniter.com/user_guide/license.html

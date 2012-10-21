@@ -29,8 +29,9 @@ exports.app = app = express()     # Exspresso 0.4.x Framework
 #  Bootstrap the core classes
 # ------------------------------------------------------
 #
-exports.config      = load_class('Config', 'core')
-exports.load        = load_class('Loader', 'core')
+exports.exceptions  = load_class('Exceptions',  'core')
+exports.config      = load_class('Config',      'core')
+exports.load        = load_class('Loader',      'core')
 exports.load.initialize module.exports, true  # Autoload
 
 exports.lang        = load_class('Lang',        'core')
@@ -48,12 +49,12 @@ exports.router      = load_class('Router',      'core')
 
 app.listen app.get('port'), ->
 
-  console.log ""
-  console.log ""
+  console.log " "
+  console.log " "
   console.log "Exspresso copyright 2012 Dark Overlord of Data"
-  console.log ""
+  console.log " "
   console.log "listening on port #{app.get('port')}"
-  console.log ""
+  console.log " "
 
   if app.get('env') is 'development'
     console.log "View site at http://localhost:" + app.get('port')

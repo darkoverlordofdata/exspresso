@@ -17,7 +17,7 @@
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {array_merge, file_exists, is_dir} = require(FCPATH + 'lib')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 dispatch        = require('dispatch')                   # URL dispatcher for Connect
 express         = require('express')                    # Web development framework 3.0
@@ -55,14 +55,14 @@ module.exports = class Exspresso.CI_Router
   #
   _initialize: () ->
 
-    $app = require(BASEPATH + 'core/Exspresso').app
+    $CI = get_instance()
+    $app = $CI.app
+
+    $app.use $CI.exceptions.ready()
     $app.use middleware.authenticate()
-
-
-    $app.use dispatch(@load_routes())
-
-    # wire up the error handlers
+    $app.use $app.router
     $app.use middleware.error_5xx()
+    $app.use dispatch(@load_routes())
     $app.use middleware.error_404()
 
     if $app.get('env') is 'development'
@@ -73,7 +73,6 @@ module.exports = class Exspresso.CI_Router
     if $app.get('env') is 'production'
       $app.use express.errorHandler()
 
-    $app.use $app.router
     @
 
 
@@ -213,9 +212,12 @@ module.exports = class Exspresso.CI_Router
       $CI = new $class()
 
       # mix-ins:
-      $CI.req       = $req # request object
-      $CI.res       = $res # response object
-      $CI.render    = $res.render  # shortcut
+      #$CI.req       = $req # request object
+      #$CI.res       = $res # response object
+
+      $CI.load.view = $res.render
+      $CI.redirect = ($path) ->
+        $res.redirect $path
 
       # was database added by the controller constructor?
       if $CI.db?

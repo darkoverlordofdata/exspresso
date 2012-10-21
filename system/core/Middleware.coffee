@@ -24,6 +24,7 @@
 {load_object} = require(BASEPATH + 'core/Common')
 
 app             = require(BASEPATH + 'core/Exspresso').app  # Exspresso bootstrap module
+format = require('util').format
 
 # --------------------------------------------------------------------
 
@@ -40,14 +41,8 @@ exports.error_5xx = ->
 
   ($err, $req, $res, $next) ->
 
-    # treat as 404?
-    if $err.message.indexOf('not found') >= 0 then return $next()
-
-    # log it
-    console.error $err.stack
-
     # error page
-    $res.status(500).render 'errors/5xx'
+    $res.status($err.status or 500).render 'errors/5xx'
     return
 
 
@@ -82,10 +77,6 @@ exports.error_404 = ->
 #   @param {Function} $next
 #
 
-# '$2a$10$Kx9nhYIRPNiUN1jvVIOsp.'
-# '$2a$10$Kx9nhYIRPNiUN1jvVIOsp..vEyapyRlc0AV/zqU9DVsedfydm68Rq'
-
-
 exports.authenticate = ->
 
   log_message 'debug',"Authenticate middleware initialized"
@@ -114,7 +105,7 @@ exports.authenticate = ->
 #   @param {Object} $res
 #   @param {Function} $next
 #
-exports.profiler = ->
+exports.profiler = ($output) ->
 
   log_message 'debug',"Profiler middleware initialized"
   #
@@ -126,6 +117,8 @@ exports.profiler = ->
   #
   ($req, $res, $next) ->
 
+    if $output.parse_exec_vars is false
+      return $next()
     #
     # profile snapshot
     #
@@ -155,7 +148,10 @@ exports.profiler = ->
         #
         # TODO: what if there is an $err value?
         #
-        # replace metrics in output
+        # replace metrics in output:
+        #
+        #   {elapsed_time}
+        #   {memory_usage}
         #
         if $html?
           $res.send $html.replace(/{elapsed_time}/g, $elapsed_time)

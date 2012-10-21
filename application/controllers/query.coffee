@@ -69,7 +69,7 @@ class Query extends CI_Controller
         console.log $err
         @res.send $err, 500
 
-      @render 'query_result',
+      @load.view 'query_result',
         hotels: $results
 
   pg: ->
@@ -81,7 +81,7 @@ class Query extends CI_Controller
         @res.send $err, 500
 
       console.log $results
-      @render 'query_result',
+      @load.view 'query_result',
         hotels: $results.rows
 
 

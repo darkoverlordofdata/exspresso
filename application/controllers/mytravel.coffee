@@ -14,9 +14,9 @@
 #	Travel Controller Class
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
-{DISTINCT, FROM, GO, INNER, INSERT, INTO, IS, JOIN, LEFT, LIKE, LIMIT, OFFSET, ON, ORDER_BY, OUTER, RIGHT, SELECT, SET, UPDATE, VALUES, WHERE} = require(FCPATH + 'lib/sql.dsl')
+{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message, show_error} = require(BASEPATH + 'core/Common')
 
+moment          = require('moment')                     # Parse, manipulate, and display dates
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 
 
@@ -33,40 +33,7 @@ class Travel extends CI_Controller
   constructor: ->
 
     super()
-    @db = @load.database 'mysql', true
-
-
-  #
-  # Login
-  #
-  login: ->
-    @res.render "mytravel/login",
-      url: @req.param("url")
-
-  #
-  # Logout
-  #
-  logout: ->
-    @req.session.destroy()
-    @res.redirect "/"
-
-  #
-  # Do the authenthication
-  #
-  authenticate: =>
-
-    SELECT '*',
-    FROM 'customer',
-    WHERE 'username', IS @req.param("username"),
-    GO @db, ($err, $user) =>
-
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      @req.session.user = $user.username
-      @res.redirect @req.param("url")
+    @db = @load.database('mysql', true)
 
 
   ## --------------------------------------------------------------------
@@ -83,16 +50,11 @@ class Travel extends CI_Controller
     @db.select 'hotel.name', 'hotel.address', 'hotel.city', 'hotel.state', 'booking.checkinDate', 'booking.checkoutDate', 'booking.id'
     @db.from 'booking'
     @db.where 'booking.state', 'BOOKED'
-    @db.join 'hotel', 'hotel.id = booking.hotel', 'inner'
-    @db.get ($err, $results, $fields) =>
+    @db.join 'hotel', 'hotel.id = booking.hotel','inner'
+    @db.get ($err, $bookings) =>
 
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      @render "mytravel/main",
-        bookings: $results
+      @load.view "mytravel/main",
+        bookings: $bookings
 
   ## --------------------------------------------------------------------
 
@@ -104,22 +66,16 @@ class Travel extends CI_Controller
   #
   hotels: ->
 
-    $searchString = @req.param("searchString")
-    $pageSize = parseInt(@req.param('pageSize'),10)
+    $searchString = @input.post("searchString")
+    $pageSize = parseInt(@input.post('pageSize'),10)
 
-    SELECT '*',
-    FROM 'hotel',
-    WHERE 'name', LIKE "%#{$searchString}%",
-    LIMIT $pageSize, OFFSET 0,
-    GO @db, ($err, $results) =>
+    @db.from 'hotel'
+    @db.like 'name', "%#{$searchString}%"
+    @db.limit $pageSize, 0
+    @db.get @db, ($err, $hotels) =>
 
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      @render "mytravel/hotels",
-        hotels: $results
+      @load.view "mytravel/hotels",
+        hotels: $hotels
 
 
   ## --------------------------------------------------------------------
@@ -135,15 +91,10 @@ class Travel extends CI_Controller
 
     @db.from 'hotel'
     @db.where 'id', $id
-    @db.get ($err, $results, $fields) =>
+    @db.get ($err, $hotel) =>
 
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      @render "mytravel/detail",
-        hotel: $results
+      @load.view "mytravel/detail",
+        hotel: $hotel
 
   ## --------------------------------------------------------------------
 
@@ -155,14 +106,14 @@ class Travel extends CI_Controller
   #
   booking: ->
 
-    if @req.body.cancel? then @res.redirect "/mytravel/search"
+    if @input.post('cancel')? then @redirect "/mytravel/search"
 
     @db.from 'hotel'
-    @db.where 'id', @req.param("hotelId")
-    @db.get ($err, $results, $fields) =>
+    @db.where 'id', @input.post("hotelId")
+    @db.get ($err, $hotel) =>
 
-      @render "mytravel/booking",
-        hotel: $results
+      @load.view "mytravel/booking",
+        hotel: $hotel
 
   ## --------------------------------------------------------------------
 
@@ -174,51 +125,38 @@ class Travel extends CI_Controller
   #
   confirm: ->
 
-    if @req.body.cancel? then @res.redirect "/mytravel/search"
+    if @input.post('cancel')? then @redirect "/mytravel/search"
 
-    $id = @req.param("hotelId")
-    console.log "confirm hotel id = #{$id}"
+    $id = @input.post("hotelId")
 
     @db.from 'hotel'
     @db.where 'id', $id
-    @db.get ($err, $results, $fields) =>
-
-      moment = require('moment')
-      $hotel = $results
-
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      console.log $results
+    @db.get ($err, $hotel) =>
 
       $booking =
         username:               'demo' #req.session.user
         hotel:                  $hotel.id
-        checkinDate:            moment(@req.body.checkinDate, "MM-DD-YYYY")
-        checkoutDate:           moment(@req.body.checkoutDate, "MM-DD-YYYY")
-        creditCard:             @req.body.creditCard
-        creditCardName:         @req.body.creditCardName
-        creditCardExpiryMonth:  parseInt(@req.body.creditCardExpiryMonth)
-        creditCardExpiryYear:   parseInt(@req.body.creditCardExpiryYear)
-        smoking:                @req.body.smoking
+        checkinDate:            moment(@input.post('checkinDate'), "MM-DD-YYYY")
+        checkoutDate:           moment(@input.post('checkoutDate'), "MM-DD-YYYY")
+        creditCard:             @input.post('creditCard')
+        creditCardName:         @input.post('creditCardName')
+        creditCardExpiryMonth:  parseInt(@input.post('creditCardExpiryMonth'))
+        creditCardExpiryYear:   parseInt(@input.post('creditCardExpiryYear'))
+        smoking:                @input.post('smoking')
         beds:                   1
-        amenities:              @req.body.amenities
+        amenities:              @input.post('amenities')
         state:                  "CREATED"
 
-      @db.insert 'booking', $booking, ($err, $info) =>
+      @db.insert 'booking', $booking, ($err) =>
 
-        if $err
-          @res.send $err, 500
+        if $err then throw new Error($err)
 
-        else
-          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
-          $booking.totalPayment = $booking.numberOfNights * $hotel.price
-          @res.render "mytravel/confirm",
+        $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+        $booking.totalPayment = $booking.numberOfNights * $hotel.price
+        @load.view "mytravel/confirm",
 
-            hotel: $hotel
-            booking: $booking
+          hotel: $hotel
+          booking: $booking
 
 
   ## --------------------------------------------------------------------
@@ -231,49 +169,40 @@ class Travel extends CI_Controller
   #
   book: ->
 
-    $id = @req.body.bookingId
+    $id = @input.post('bookingId')
     @db.from 'booking'
     @db.where 'id', $id
-    @db.get ($err, $results, $fields) =>
+    @db.get ($err, $results) =>
 
-      if $err
-        @res.send $err, 500
+      $booking = $results
 
-      else
+      if @input.post('confirm')?
 
-        $booking = $results
+        @db.where 'id', $id
+        @db.update 'booking', state: 'BOOKED', ($err) =>
 
-        if @req.body.confirm?
+          @redirect "/mytravel/search"
 
-          @db.where 'id', $id
-          @db.update 'booking', state: 'BOOKED', ($err) =>
+      else if @input.post('cancel')?
 
-            @res.redirect "/mytravel/search"
+        @db.where 'id', $id
+        @db.update 'booking', state: 'CANCELLED', ($err) =>
 
-        else if @req.body.cancel?
-
-          @db.where 'id', $id
-          @db.update 'booking', state: 'CANCELLED', ($err) =>
-
-            @res.redirect "/mytravel/search"
+          @redirect "/mytravel/search"
 
 
-        else if @req.body.revise?
+      else if @input.post('revise')?
 
-          @db.from 'hotel'
-          @db.where 'id', $booking.hotel
-          @db.get ($err, $results, $fields) =>
+        @db.from 'hotel'
+        @db.where 'id', $booking.hotel
+        @db.get ($err, $results) =>
 
-            if $err
-              @res.send $err, 500
-
-            else
-              $hotel = $results
-              $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
-              $booking.totalPayment = $booking.numberOfNights * $hotel.price
-              @render "mytravel/booking",
-                hotel: $hotel
-                booking: $booking
+          $hotel = $results
+          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+          $booking.totalPayment = $booking.numberOfNights * $hotel.price
+          @load.view "mytravel/booking",
+            hotel: $hotel
+            booking: $booking
 
 
 

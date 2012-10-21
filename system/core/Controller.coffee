@@ -18,7 +18,7 @@
 #
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 #
 # ------------------------------------------------------
@@ -37,10 +37,13 @@ module.exports = class Exspresso.CI_Controller
     for $var, $class of is_loaded()
       @[$var] = load_class($class) unless $class is 'Controller'
 
+    @session = get_instance().session
+
     # each controller has it's own loader
     # so that callbacks run in the controller context
     @load = load_new('Loader', 'core')
-    @load.initialize(@)
+    @load.initialize(@) # NO AUTOLOAD!!!
+
 
     log_message 'debug', "Controller Class Initialized"
 

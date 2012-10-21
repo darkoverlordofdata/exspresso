@@ -34,7 +34,7 @@ class Welcome extends CI_Controller
   #
   index: ->
 
-    @render 'welcome_message'
+    @load.view 'welcome_message'
 
 
   ## --------------------------------------------------------------------
@@ -54,7 +54,7 @@ class Welcome extends CI_Controller
 
     $id = parseInt($id,10)
 
-    @render 'about',
+    @load.view 'about',
       id: $id
 
   readme: () ->
@@ -76,7 +76,7 @@ class Welcome extends CI_Controller
 
         $html = md($str)
         $html = $html.replace /\{([^}]+)\}/g, (_, $name) -> $options[$name] ? ''
-        @render 'readme',
+        @load.view 'readme',
           md: $html
 
       catch $err
@@ -94,7 +94,7 @@ class Welcome extends CI_Controller
   #
   not_found: ->
 
-    @render 'errors/404',
+    @load.view 'errors/404',
       url: 'invalid uri'
 
 #

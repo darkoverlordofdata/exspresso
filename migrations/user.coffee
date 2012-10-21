@@ -16,8 +16,8 @@
 #
 #
 APPPATH = process.cwd()+'/application/'
-{User} = require(APPPATH+'models/demo/User')
-
+{User} = require(APPPATH+'models/User')
+console.log User
 ## --------------------------------------------------------------------
 
 #
@@ -36,6 +36,7 @@ exports.up = ($db, $callback) ->
     if $err then return $callback($err)
     new User($db).insert require('./data/User.json'), ($err) ->
       if $err then $callback $err
+      $callback()
 
 ## --------------------------------------------------------------------
 
@@ -53,6 +54,7 @@ exports.down = ($db, $callback) ->
 
   new User($db).drop ($err) ->
     if $err then return $callback($err)
+    $callback()
 
 
 

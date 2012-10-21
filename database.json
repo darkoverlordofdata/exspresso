@@ -7,6 +7,14 @@
     "database": "demo"
   },
 
+  "pg": {
+    "driver": "pg",
+    "user": "tagsobe",
+    "password": "tagsobe",
+    "host": "localhost",
+    "database": "tagsobe"
+  },
+
   "herokupg": {
     "driver": "pg",
     "user": "hlfuzggerjzrro",

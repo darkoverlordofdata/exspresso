@@ -15,6 +15,7 @@
 #
 #
 #
+
 class exports.User extends require('./Table').Table
 
   name: 'user'

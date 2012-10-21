@@ -34,7 +34,7 @@ class Travel extends CI_Controller
   constructor: ->
 
     super()
-    @db = @load.database 'postgres', true
+    @db = @load.database('postgres', true)
 
 
   ## --------------------------------------------------------------------
@@ -48,24 +48,19 @@ class Travel extends CI_Controller
   #
   search: ->
 
-    SELECT 'Hotel.name', 'Hotel.address', 'Hotel.city', 'Hotel.state', 'Booking.checkinDate', 'Booking.checkoutDate', 'Booking.id',
-    FROM 'Booking',
-    WHERE 'Booking.state', IS 'BOOKED',
-    INNER JOIN 'Hotel', ON 'Hotel.id = Booking.hotel',
+    SELECT 'hotel.name', 'hotel.address', 'hotel.city', 'hotel.state', 'booking.checkinDate', 'booking.checkoutDate', 'booking.id',
+    FROM 'booking',
+    WHERE 'booking.state', IS 'BOOKED',
+    INNER JOIN 'hotel', ON 'hotel.id = booking.hotel',
     GO @db,($err, $bookings) =>
 
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      @render "pgtravel/main",
+      @load.view "pgtravel/main",
         bookings: $bookings
 
   ## --------------------------------------------------------------------
 
   #
-  # Display Hotel search results
+  # Display hotel search results
   #
   #   @access	public
   #   @return	void
@@ -76,42 +71,32 @@ class Travel extends CI_Controller
     $pageSize = parseInt(@req.param('pageSize'),10)
 
     SELECT '*',
-    FROM 'Hotel',
+    FROM 'hotel',
     WHERE 'name', LIKE "%#{$searchString}%",
     LIMIT $pageSize, OFFSET 0,
     GO @db,($err, $hotels) =>
 
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      @render "pgtravel/hotels",
+      @load.view "pgtravel/hotels",
         hotels: $hotels
 
 
   ## --------------------------------------------------------------------
 
   #
-  # Display a Hotel
+  # Display a hotel
   #
   #   @access	public
-  #   @param string   The Hotel record id#
+  #   @param string   The hotel record id#
   #   @return	void
   #
   hotel: ($id) ->
 
     SELECT '*',
-    FROM 'Hotel',
+    FROM 'hotel',
     WHERE 'id', IS $id,
     GO @db,($err, $hotel) =>
 
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
-
-      @render "pgtravel/detail",
+      @load.view "pgtravel/detail",
         hotel: $hotel
 
   ## --------------------------------------------------------------------
@@ -124,39 +109,34 @@ class Travel extends CI_Controller
   #
   booking: ->
 
-    if @req.body.cancel? then @res.redirect "/pgtravel/search"
+    if @req.body.cancel? then @redirect "/pgtravel/search"
 
     SELECT '*',
-    FROM 'Hotel',
+    FROM 'hotel',
     WHERE 'id', IS @req.param("hotelId"),
     GO @db,($err, $hotel) =>
 
-      @render "pgtravel/booking",
+      @load.view "pgtravel/booking",
         hotel: $hotel
 
   ## --------------------------------------------------------------------
 
   #
-  # Confirm the Booking
+  # Confirm the booking
   #
   #   @access	public
   #   @return	void
   #
   confirm: ->
 
-    if @req.body.cancel? then @res.redirect "/pgtravel/search"
+    if @req.body.cancel? then @redirect "/pgtravel/search"
 
     $id = @req.param("hotelId")
 
     SELECT '*',
-    FROM 'Hotel',
+    FROM 'hotel',
     WHERE 'id', IS $id,
     GO @db,($err, $hotel) =>
-
-      if $err
-        console.log $err
-        @res.send $err, 500
-        return
 
       checkinDate =             moment(@req.body.checkinDate, "MM-DD-YYYY")
       checkoutDate =            moment(@req.body.checkoutDate, "MM-DD-YYYY")
@@ -169,21 +149,19 @@ class Travel extends CI_Controller
       amenities =               @req.body.amenities
       state =                   "CREATED"
 
-      INSERT INTO 'Booking',
+      INSERT INTO 'booking',
       ['username', 'hotel', 'checkinDate', 'checkoutDate', 'creditCard', 'creditCardName', 'creditCardExpiryMonth', 'creditCardExpiryYear', 'smoking', 'beds', 'amenities', 'state'],
       VALUES ['demo', $hotel.id, checkinDate, checkoutDate, creditCard, creditCardName, creditCardExpiryMonth, creditCardExpiryYear, smoking, beds, amenities, state],
       GO @db,($err) =>
 
-        if $err
-          @res.send $err, 500
+        if $err then throw new Error($err)
 
-        else
-          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
-          $booking.totalPayment = $booking.numberOfNights * $hotel.price
-          @res.render "pgtravel/confirm",
+        $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+        $booking.totalPayment = $booking.numberOfNights * $hotel.price
+        @load.view "pgtravel/confirm",
 
-            hotel: $hotel
-            booking: $booking
+          hotel: $hotel
+          booking: $booking
 
 
   ## --------------------------------------------------------------------
@@ -199,55 +177,45 @@ class Travel extends CI_Controller
     $id = @req.body.BookingId
 
     SELECT '*',
-    FROM 'Booking',
+    FROM 'booking',
     WHERE 'id', IS $id,
     GO @db,($err, $booking) =>
 
-      if $err
-        @res.send $err, 500
+      if @req.body.confirm?
 
-      else
+        $state = {state: 'BOOKED'}
 
-        if @req.body.confirm?
+        UPDATE 'booking',
+        WHERE 'id', IS $id,
+        SET $state,
+        GO @db,($err) =>
 
-          $state = {state: 'BOOKED'}
+          @redirect "/pgtravel/search"
 
-          UPDATE 'Booking',
-          WHERE 'id', IS $id,
-          SET $state,
-          GO @db,($err) =>
+      else if @req.body.cancel?
 
-            @res.redirect "/pgtravel/search"
+        $state = {state: 'CANCELLED'}
 
-        else if @req.body.cancel?
+        UPDATE 'booking',
+        WHERE 'id', IS $id,
+        SET $state,
+        GO @db,($err) =>
 
-          $state = {state: 'CANCELLED'}
-
-          UPDATE 'Booking',
-          WHERE 'id', IS $id,
-          SET $state,
-          GO @db,($err) =>
-
-            @res.redirect "/pgtravel/search"
+          @redirect "/pgtravel/search"
 
 
-        else if @req.body.revise?
+      else if @req.body.revise?
 
-          SELECT '*',
-          FROM 'Hotel',
-          WHERE 'id', IS $booking.hotel,
-          GO @db,($err, $hotel) =>
+        SELECT '*',
+        FROM 'hotel',
+        WHERE 'id', IS $booking.hotel,
+        GO @db,($err, $hotel) =>
 
-            if $err
-              @res.send $err, 500
-
-            else
-
-              $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
-              $booking.totalPayment = $booking.numberOfNights * $hotel.price
-              @render "pgtravel/booking",
-                hotel: $hotel
-                booking: $booking
+          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+          $booking.totalPayment = $booking.numberOfNights * $hotel.price
+          @load.view "pgtravel/booking",
+            hotel: $hotel
+            booking: $booking
 
 
 

@@ -226,7 +226,6 @@ class Exspresso.CI_Loader
 
     @_ci_load_class $library, $params, $object_name
 
-
   ## --------------------------------------------------------------------
 
   #
@@ -372,7 +371,7 @@ class Exspresso.CI_Loader
   #
   file: ($path, $return = false) ->
 
-    return @_ci_load({_ci_path: $path, _ci_return: $return})
+    @_ci_load({_ci_path: $path, _ci_return: $return})
 
   ## --------------------------------------------------------------------
 
@@ -414,9 +413,16 @@ class Exspresso.CI_Loader
           log_message 'debug', 'Helper loaded: '+$helper
           break
 
-      # unable to load the helper
-      if not @_ci_helpers[$helper]
-        show_error 'Unable to load the requested file: helpers/'+$helper+EXT
+    # unable to load the helper
+    if not @_ci_helpers[$helper]
+      show_error 'Unable to load the requested file: helpers/'+$helper+EXT
+
+    # expose the helpers
+    $app = require(BASEPATH+'core/Exspresso'+EXT)
+    for $name, $value of @_ci_helpers[$helper]
+      $app.locals[$name] = $value
+
+    @_ci_helpers[$helper]
 
   ## --------------------------------------------------------------------
 
@@ -509,7 +515,7 @@ class Exspresso.CI_Loader
     if $library.indexOf('/') is -1
       $library = $library+'/'+$library
 
-    return @library($library, $params, $object_name)
+    @library($library, $params, $object_name)
 
   ## --------------------------------------------------------------------
 

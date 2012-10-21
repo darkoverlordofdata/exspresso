@@ -329,11 +329,12 @@ exports.config_item = config_item = ($item) ->
 # @access	public
 # @return	void
 #
-exports.show_error = show_error = ($message, $status_code = 500, $heading = 'An Error Was Encountered') ->
-  #_error = load_class('Exceptions', 'core')
-  #require('./Exspresso').res.send  _error.show_error($heading, $message, 'error_general', $status_code)
-  #die()
-  console.log $message
+exports.show_error = show_error = ($err, $status_code = 500) ->
+  console.log $err
+  #return
+
+  _error = load_class('Exceptions', 'core')
+  _error.show_error($err, '5xx', $status_code)
 
 #  ------------------------------------------------------------------------
 
@@ -350,7 +351,6 @@ exports.show_error = show_error = ($message, $status_code = 500, $heading = 'An 
 exports.show_404 = show_404 = ($page = '', $log_error = TRUE) ->
   _error = load_class('Exceptions', 'core')
   _error.show_404($page, $log_error)
-  die()
 
 
 #  ------------------------------------------------------------------------
@@ -371,6 +371,104 @@ exports.log_message = log_message = ($level = 'error', $message, $js_error = fal
 
   _log = load_class('Log')
   _log.write_log($level, $message, $js_error)
+
+
+#  ------------------------------------------------------------------------
+
+#
+# Set HTTP Status Header
+#
+# @access	public
+# @param	int		the status code
+# @param	string
+# @return	void
+#
+exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
+  $stati =
+    200:'OK',
+    201:'Created',
+    202:'Accepted',
+    203:'Non-Authoritative Information',
+    204:'No Content',
+    205:'Reset Content',
+    206:'Partial Content',
+
+    300:'Multiple Choices',
+    301:'Moved Permanently',
+    302:'Found',
+    304:'Not Modified',
+    305:'Use Proxy',
+    307:'Temporary Redirect',
+
+    400:'Bad Request',
+    401:'Unauthorized',
+    403:'Forbidden',
+    404:'Not Found',
+    405:'Method Not Allowed',
+    406:'Not Acceptable',
+    407:'Proxy Authentication Required',
+    408:'Request Timeout',
+    409:'Conflict',
+    410:'Gone',
+    411:'Length Required',
+    412:'Precondition Failed',
+    413:'Request Entity Too Large',
+    414:'Request-URI Too Long',
+    415:'Unsupported Media Type',
+    416:'Requested Range Not Satisfiable',
+    417:'Expectation Failed',
+
+    500:'Internal Server Error',
+    501:'Not Implemented',
+    502:'Bad Gateway',
+    503:'Service Unavailable',
+    504:'Gateway Timeout',
+    505:'HTTP Version Not Supported'
+
+
+  if $code is '' or  not is_numeric($code)
+    show_error('Status codes must be numeric', 500)
+
+
+  if $stati[$code]?  and $text is ''
+    $text = $stati[$code]
+
+
+  if $text is ''
+    show_error('No status text available.  Please check your status code number or supply your own message text.', 500)
+
+  $text
+
+
+#  --------------------------------------------------------------------
+
+#
+# Exception Handler
+#
+# This is the custom exception handler that is declaired at the top
+# of Codeigniter.php.  The main reason we use this is to permit
+# PHP errors to be logged in our own log files since the user may
+# not have access to server logs. Since this function
+# effectively intercepts PHP errors, however, we also need
+# to display errors based on the current error_reporting level.
+# We do that with the use of a PHP error template.
+#
+# @access	private
+# @return	void
+#
+exports._exception_handler = _exception_handler = ($severity, $message, $filepath, $line) ->
+
+  $_error = load_class('Exceptions', 'core')
+
+  #$_error.show_php_error($severity, $message, $filepath, $line)
+
+
+  #  Should we log the error?  No?  We're done...
+  if config_item('log_threshold') is 0
+    return
+
+
+  $_error.log_exception($severity, $message, $filepath, $line)
 
 
 # End of file Common.coffee

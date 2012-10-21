@@ -30,6 +30,15 @@ class exports.Table
   #
   constructor: (@db) ->
 
+    #
+    # fix names so that reserved words, etc. will be accepted
+    #
+    @name = @_escape(@name)
+    $columns = {}
+    for $name, $data of @columns
+      $columns[@_escape($name)] = $data
+    @columns = $columns
+
     @list = []
     for $name of @columns
       @list.push $name
@@ -89,6 +98,25 @@ class exports.Table
           if $err then return $callback($err)
 
     $callback()
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Escape
+  #
+  #   Escape an identifier as required by the db driver
+  #
+  #   @access	private
+  #   @param string value to escape
+  #   @return	void
+  #
+  _escape: ($value) ->
+
+    switch @db.connection._config.driver
+
+      when 'pg'     then '"' + $value + '"'
+      when 'mysql'  then '`' + $value + '`'
+      else $value
 
 
 # End of file Table.coffee

@@ -17,7 +17,6 @@
     "bcrypt": "*",
     "coffee-script": "*",
     "connect-cache": "*",
-    "connect-flash": "*",
     "connect-i18n": "*",
     "connect-redis": "*",
     "consolidate": "*",

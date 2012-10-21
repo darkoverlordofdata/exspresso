@@ -260,7 +260,9 @@ class CI_DB_driver
     if $results.rows?
       $results = $results.rows
     if $results.length?
-      if $results.length is 1 then $results = $results[0]
+      switch $results.length
+        when 0 then $results = []
+        when 1 then $results = $results[0]
     $callback $err, $results, $info
 
 
