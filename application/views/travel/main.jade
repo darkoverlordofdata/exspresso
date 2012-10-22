@@ -4,7 +4,7 @@ block content
   .hero-unit
     span.errors
     h2 Search Hotels
-    form.form-search(name='mainForm', method='post', action='/travel/hotels/#{db}')
+    form.form-search(name='mainForm', method='post', action='/travel/#{db}/hotels')
       input(type='hidden', name='mainForm', value='mainForm')
       input.input-medium.search-query(type="text", name='searchString', value='')
       button.btn.btn-primary(name='findHotels', type='submit', value='Find Hotels') Search
@@ -40,7 +40,7 @@ block content
               td= booking.checkoutDate
               td= booking.id
               td
-                a.btn(href="/travel/cancel/#{db}/#{booking.id}") Cancel
+                a.btn(href="/travel/#{db}/cancel/#{booking.id}") Cancel
 
 
     p Page rendered in {elapsed_time} ms

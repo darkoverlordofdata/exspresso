@@ -34,7 +34,7 @@ block content
         th Credit Card #:
         td= booking.creditCard
 
-    form.form(name="confirm", action="/travel/book/#{db}", method="post")
+    form.form(name="confirm", action="/travel/#{db}/book", method="post")
       input(type="hidden", name="bookingId", value="#{booking.id}")
       .control-group
         input.btn.btn-primary(name="confirm", type="submit", value="Confirm")

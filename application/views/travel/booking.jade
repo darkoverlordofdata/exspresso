@@ -23,7 +23,7 @@ block content
         th Nightly rate:
         td= hotel.price
 
-    form.form(id="booking",action="/travel/confirm/#{db}",method="post")
+    form.form(id="booking",action="/travel/#{db}/confirm",method="post")
       input(type="hidden",name="hotelId",value="#{hotel.id}")
       .control-group
         label.control-label(for="checkinDate") Check In:

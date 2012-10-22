@@ -98,10 +98,17 @@ class User extends CI_Controller
     @db.where 'email', $email
     @db.get ($err, $user) =>
 
+      $user = $user[0]
+
       if $user.length? and $user.length is 0
         @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
         @redirect "/login"
         return
+
+
+      log_message 'debug', "User: %j", $user
+      log_message 'debug', 'Pwd : %s', $password
+      log_message 'debug', "Code: %s", $user.code
 
       if bcrypt.compareSync($password, $user.code)
         @session.set_userdata 'user', $user

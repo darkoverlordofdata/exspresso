@@ -22,7 +22,7 @@ block content
               td= hotel.city + ', ' + hotel.state
               td= hotel.zip
               td
-                a.btn(href="/travel/hotel/#{db}/#{hotel.id}") View
+                a.btn(href="/travel/#{db}/hotel/#{hotel.id}") View
 
     a.btn.btn-primary(id="changeSearchLink",href="/travel/#{db}?searchString=a&pageSize=5") Change Search
     p

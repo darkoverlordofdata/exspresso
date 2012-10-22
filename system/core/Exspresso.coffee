@@ -11,9 +11,9 @@
 # 
 #+--------------------------------------------------------------------+
 #
-#	Boot an Express server using the Exspresso framework
+#	the Exspresso framework
 #
-#   http://0.0.0.0:5000/
+#
 #
 {APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
 {is_loaded, load_class, log_message, show_error} = require(BASEPATH + 'core/Common')
@@ -23,12 +23,14 @@ log_message "debug", "Exspresso copyright 2012 Dark Overlord of Data"
 
 express = require('express')      # Express 3.0 Framework
 
-exports.app = app = express()     # Exspresso 0.4.x Framework
+exports.app = app = express()     # Exspresso 0.5.x Framework
+
 #
 # ------------------------------------------------------
 #  Bootstrap the core classes
 # ------------------------------------------------------
 #
+
 exports.exceptions  = load_class('Exceptions',  'core')
 exports.config      = load_class('Config',      'core')
 exports.load        = load_class('Loader',      'core')
