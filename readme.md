@@ -10,24 +10,25 @@
 
 
 * Welcome page - working
+* Cache - use express
+* Common - working
 * Config - working
-* Loader - working
-* Router - working
 * Controller - working
-* Model - working (Travel demo)
-* Lang - in progress
 * Database - mysql & postgre; replace dbforge and dbutil with db-migrate
-* Hooks - under review
-* Input - uses express
-* Output - uses express
-* Security - uses express
+* Exceptions - working
+* Hooks - in progres
+* Input - working
+* Lang - in progress
+* Loader - working
+* Model - working
+* Output - working
+* Router - working
 
   In general, files with an extension of .php are not yet ported, and files with an extension of .php.coffee are in progress.
 
 ## Features
 
 * Jade templating engine
-* Redis session storage
 * Bootstrap/LESS stylesheets
 * CodeIgniter style ActiveRecord
 * Edit configuration defaults in application/config/config.coffee
@@ -36,7 +37,7 @@
 
 ## PHP2Coffee
 
-  Requires Zend compatible php runtime:
+  Requires Zend compatible php runtime:s
 
     Usage: bin/php2coffee [OPTIONS] PATH [DESTINATION]
 
