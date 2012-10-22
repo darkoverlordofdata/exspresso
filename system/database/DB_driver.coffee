@@ -200,7 +200,7 @@ class CI_DB_driver
         @_query2 $err, $results, $info, $time_start, $sql, $binds
 
     else
-      console.log "No callback in query"
+      log_message 'error', 'DB_driver::query -->No callback in query'
       throw "No callback in query"
 
   _query2: ($err, $results, $info, $time_start, $sql, $callback) =>
@@ -259,10 +259,6 @@ class CI_DB_driver
     # unwrap the recordset:
     if $results.rows?
       $results = $results.rows
-    if $results.length?
-      switch $results.length
-        when 0 then $results = []
-        when 1 then $results = $results[0]
     $callback $err, $results, $info
 
 

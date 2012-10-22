@@ -331,9 +331,6 @@ exports.config_item = config_item = ($item) ->
 # @return	void
 #
 exports.show_error = show_error = ($err, $status_code = 500) ->
-  console.log $err
-  #return
-
   _error = load_class('Exceptions', 'core')
   _error.show_error $err, '5xx', $status_code
 

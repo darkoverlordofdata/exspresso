@@ -296,7 +296,14 @@ module.exports = (CI_DB) ->
     # @return	integer
     #
     insert_id: ($callback) ->
-      #@client.insert_id($callback)
+
+      @query "SELECT LAST_INSERT_ID() AS id;", ($err, $insert) =>
+
+        if $err
+          $callback $err
+        else
+          $callback null, $insert.id
+
 
 
     #  --------------------------------------------------------------------
@@ -466,7 +473,7 @@ module.exports = (CI_DB) ->
     # @return	string
     #
     _insert: ($table, $keys, $values) ->
-      return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
+      return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ");" #SELECT LAST_INSERT_ID() AS id;"
 
 
     #  --------------------------------------------------------------------
@@ -504,6 +511,7 @@ module.exports = (CI_DB) ->
     # @return	string
     #
     _update: ($table, $values, $where, $orderby = {}, $limit = false) ->
+      $valstr = []
       for $key, $val of $values
         $valstr.push $key + ' = ' + $val
 

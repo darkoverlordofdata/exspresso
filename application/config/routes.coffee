@@ -67,6 +67,15 @@ exports['/authenticate']                      = 'user/authenticate'
 exports['/forgot_password']                   = 'user/forgot_password'
 
 
+# database application demo I - Postgres + CI_DB_active_rec
+exports['/travel/:db']                        = 'travel/search'
+exports['/travel/search/:db']                 = 'travel/search'
+exports['/travel/hotels/:db']                 = 'travel/hotels'
+exports['/travel/hotel/:db/:id']              = 'travel/hotel'
+exports['/travel/booking/:db']                = 'travel/booking'
+exports['/travel/confirm/:db']                = 'travel/confirm'
+exports['/travel/book/:db']                   = 'travel/book'
+
 
 # database application demo I - Postgres + CI_DB_active_rec
 exports['/pgtravel']                          = 'pgtravel/search'
@@ -77,7 +86,7 @@ exports['/pgtravel/booking']                  = 'pgtravel/booking'
 exports['/pgtravel/confirm']                  = 'pgtravel/confirm'
 exports['/pgtravel/book']                     = 'pgtravel/book'
 
-# database application demo I - MySql + CI_DB_active_rec
+# database application demo II - MySql + CI_DB_active_rec
 exports['/mytravel']                          = 'mytravel/search'
 exports['/mytravel/search']                   = 'mytravel/search'
 exports['/mytravel/hotels']                   = 'mytravel/hotels'
@@ -85,6 +94,7 @@ exports['/mytravel/hotel/:id']                = 'mytravel/hotel'
 exports['/mytravel/booking']                  = 'mytravel/booking'
 exports['/mytravel/confirm']                  = 'mytravel/confirm'
 exports['/mytravel/book']                     = 'mytravel/book'
+
 # database tests
 exports['/mysql']                             = 'query/mysql'
 exports['/pg']                                = 'query/pg'

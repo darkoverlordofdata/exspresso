@@ -21,6 +21,7 @@
 {Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 fs              = require('fs')                         # Standard POSIX file i/o
+util            = require('util')
 
 class Exspresso.CI_Log
 
@@ -40,8 +41,8 @@ class Exspresso.CI_Log
 
     @_log_path = $config.log_path or APPPATH + 'logs/'
 
-    #if not is_dir(@_log_path) # or not is_really_writable(@_log_path)
-    #  @_enabled = false
+    if not is_dir(@_log_path) # or not is_really_writable(@_log_path)
+      @_enabled = false
 
     if not isNaN($config.log_threshold)
       @_threshold = $config.log_threshold
@@ -59,22 +60,21 @@ class Exspresso.CI_Log
   # @param	bool	whether the error is a native error
   # @return	bool
   ##
-  write_log: ($level = 'error', $msg, $native = false) ->
+  write_log: ($level = 'error', $msg) ->
 
-    if @_enabled is false then return false
 
     $level = $level.toUpperCase()
     if not @_levels[$level]? then return false
     if @_levels[$level] > @_threshold then return false
 
-
     $d = new Date()
-    # $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
-
     $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d.toISOString() + ' -->' + $msg + "\n"
-
     console.log $message
-    # fs.appendFileSync $filepath, $message
+
+    if @_enabled
+      $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
+      fs.appendFileSync $filepath, $message
+
 
 # END Log Class
 module.exports = Exspresso.CI_Log

@@ -944,7 +944,12 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	array	an associative array of insert values
   # @return	object
   #
-  insert: ($table = '', $set = null) ->
+  insert: ($table = '', $set = null, $callback = null) ->
+
+    if $callback is null
+      $callback = $set
+      $set = null
+
     if not is_null($set)
       @set($set)
     
@@ -966,7 +971,7 @@ class CI_DB_active_record extends CI_DB_driver
     $sql = @_insert(@_protect_identifiers($table, true, null, false), array_keys(@ar_set), array_values(@ar_set))
     
     @_reset_write()
-    return @query($sql)
+    return @query($sql, $callback)
   
   replace: ($table = '', $set = null) ->
     if not is_null($set)
@@ -992,9 +997,10 @@ class CI_DB_active_record extends CI_DB_driver
       
     
     $sql = @_replace(@_protect_identifiers($table, true, null, false), array_keys(@ar_set), array_values(@ar_set))
-    
+
+    log_message 'debug', 'SQL: %s', $sql
     @_reset_write()
-    return @query($sql)
+    return @query($sql, $callback)
     
   
   #  --------------------------------------------------------------------
@@ -1010,7 +1016,20 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	mixed	the where clause
   # @return	object
   #
-  update: ($table = '', $set = null, $where = null, $limit = null) ->
+  update: ($table = '', $set = null, $where = null, $limit = null, $callback = null) ->
+
+    if $callback is null
+      $callback = $limit
+      $limit = null
+
+    if $callback is null
+      $callback = $where
+      $where = null
+
+    if $callback is null
+      throw Error('DB_active_rec::update No callback passed to update')
+
+
     #  Combine any cached components with the current statements
     @_merge_cache()
     
@@ -1045,9 +1064,9 @@ class CI_DB_active_record extends CI_DB_driver
       
     
     $sql = @_update(@_protect_identifiers($table, true, null, false), @ar_set, @ar_where, @ar_orderby, @ar_limit)
-    
+
     @_reset_write()
-    return @query($sql)
+    @query($sql, $callback)
     
   
 

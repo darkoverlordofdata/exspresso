@@ -28,7 +28,7 @@ block content
         th Nightly rate:
         td= hotel.price
 
-    form(action="/pgtravel/booking",method="post")
+    form(action="/travel/booking/#{db}",method="post")
       input(type="hidden",name="hotelId",value="#{hotel.id}")
       control-group
         button.btn.btn-primary(name="submit", type="submit") Book Hotel
