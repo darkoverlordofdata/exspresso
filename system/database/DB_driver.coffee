@@ -208,7 +208,7 @@ class CI_DB_driver
     $time_end = [$em, $es] = explode(' ', String(microtime()))
 
     if $err
-      throw $err
+      return $callback($err)
       if @save_queries is true
         @query_times.push 0
 
@@ -256,11 +256,57 @@ class CI_DB_driver
       if @cache_on is true and @cache_autodel is true and @_cache_init()
         @CACHE.delete()
 
-    # unwrap the recordset:
-    if $results.rows?
-      $results = $results.rows
-    $callback $err, $results, $info
+    #  Load and instantiate the result driver
 
+    $driver = @load_rdriver()
+
+    $RES = new $driver($results, $info)
+    $RES.conn_id = @conn_id
+    $RES.result_id = @result_id
+
+    #  oci8 vars must be set before calling this
+    $RES.num_rows = $RES.num_rows()
+
+    #  Is query caching enabled?  If so, we'll serialize the
+    #  result object and save it to a cache file.
+    if @cache_on is true and @_cache_init()
+      #  We'll create a new instance of the result object
+      #  only without the platform specific driver since
+      #  we can't use it with cached data (the query result
+      #  resource ID won't be any good once we've cached the
+      #  result object, so we'll have to compile the data
+      #  and save it)
+      $CR = new CI_DB_result()
+      $CR.num_rows = $RES.num_rows()
+      $CR.result_object = $RES.result_object()
+      $CR.result_array = $RES.result_array()
+
+      #  Reset these since cached objects can not utilize resource IDs.
+      $CR.conn_id = null
+      $CR.result_id = null
+
+      @CACHE.write($sql, $CR)
+
+    $callback $err, $RES, $info
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Load the result drivers
+  #
+  # @access	public
+  # @return	string	the name of the result class
+  #
+  load_rdriver :  ->
+    $driver = 'CI_DB_' + @dbdriver + '_result'
+
+    if not class_exists($driver)
+      CI_DB_result = require(BASEPATH + 'database/DB_result' + EXT)
+      $driver = require(BASEPATH + 'database/drivers/' + @dbdriver + '/' + @dbdriver + '_result' + EXT)(CI_DB_result)
+    else
+      $driver = Exspresso[$driver]
+
+    return $driver
 
 
 

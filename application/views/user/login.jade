@@ -7,6 +7,7 @@ block content
       h2 Sign In
 
       form#new_user_session.new_user_session(action='/authenticate', method='post')
+        input(type="hidden",name="url",value="#{url}")
         .field
           .label
             label(for='email') Email

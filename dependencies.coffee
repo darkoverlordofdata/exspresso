@@ -40,6 +40,7 @@ FCPATH, SYSDIR, WEBROOT}
 # 3rd Party Node modules
 #
 
+bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
 cache           = require('connect-cache')              # Caching system for Connect
 connectRedis    = require('connect-redis')              # Redis session store for Connect.
 dispatch        = require('dispatch')                   # URL dispatcher for Connect

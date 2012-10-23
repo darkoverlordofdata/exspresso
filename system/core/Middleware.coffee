@@ -24,7 +24,6 @@
 {load_object} = require(BASEPATH + 'core/Common')
 
 app             = require(BASEPATH + 'core/Exspresso').app  # Exspresso bootstrap module
-format = require('util').format
 
 # --------------------------------------------------------------------
 
@@ -80,20 +79,8 @@ exports.error_404 = ->
 exports.authenticate = ->
 
   log_message 'debug',"Authenticate middleware initialized"
-  #
-  # handle authentication
-  #
   ($req, $res, $next) ->
 
-    ###
-    if $req.url.indexOf('/mytravel') is 0
-      if $req.session.user?
-        $next()
-      else
-        $res.redirect "/login?url="+$req.url
-    else
-      $next()
-    ###
     $next()
 
 # --------------------------------------------------------------------

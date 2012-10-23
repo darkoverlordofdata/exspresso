@@ -27,11 +27,11 @@ block content
       input(type="hidden",name="hotelId",value="#{hotel.id}")
       .control-group
         label.control-label(for="checkinDate") Check In:
-        input(id="checkinDate",name="checkinDate",type="text")
+        input.datepicker(id="checkinDate",name="checkinDate",type="text")
 
       .control-group
         label.control-label(for="checkoutDate") Check Out:
-        input(id="checkoutDate",name="checkoutDate",type="text")
+        input.datepicker(id="checkoutDate",name="checkoutDate",type="text")
 
       .control-group
         label.control-label(for="beds") Room Preference:

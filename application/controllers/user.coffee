@@ -19,7 +19,7 @@
 {Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
 
 CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
-bcrypt          = require('bcrypt')
+bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
 
 class User extends CI_Controller
 
@@ -41,10 +41,14 @@ class User extends CI_Controller
   #
   login: ->
 
+    $url = @input.get_post("url") ? '/'
+
+    log_message 'debug', '$url = %s', $url
+
     if @input.cookie('user') is '' or @input.cookie('code') is ''
 
       @load.view "user/login",
-        url: @input.post("url")
+        url: $url
 
     else
 
@@ -54,22 +58,21 @@ class User extends CI_Controller
 
         if $err
           @load.view "user/login",
-            url: @input.post("url")
+            url: $url
           return
 
-        if not $user?
+        if $user.num_rows is 0
           @load.view "user/login",
-            url: @input.post("url")
+            url: $url
           return
 
+        $user = $user.row()
         if $user.code is @input.cookie('code')
           @session.set_userdata 'user', $user
-
           @session.set_flashdata 'info', 'Hello '+$user.name
-          if @input.post("url")?
-            @redirect @input.post("url")
-          else
-            @redirect $user.path
+
+          $url = @input.get_post("url") ? $user.path ? '/'
+          @redirect $url
         else
           @redirect "/logout"
 
@@ -98,24 +101,20 @@ class User extends CI_Controller
     @db.where 'email', $email
     @db.get ($err, $user) =>
 
-      $user = $user[0]
-
-      if $user.length? and $user.length is 0
+      if $user.num_rows is 0
         @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
         @redirect "/login"
         return
 
-
-      log_message 'debug', "User: %j", $user
-      log_message 'debug', 'Pwd : %s', $password
-      log_message 'debug', "Code: %s", $user.code
-
+      $user = $user.row()
       if bcrypt.compareSync($password, $user.code)
-        @session.set_userdata 'user', $user
 
         if $remember_me
           @input.set_cookie 'user', $email, 900000
           @input.set_cookie 'code', $user.code, 900000
+
+        delete $user.code
+        @session.set_userdata 'user', $user
 
         @session.set_flashdata  'info', 'Hello '+$user.name
         if @input.post("url")?

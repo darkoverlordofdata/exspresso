@@ -301,35 +301,7 @@ module.exports = (CI_DB) ->
         if $err
           $callback $err
         else
-          $callback null, $insert.id
-
-    _insert_id: ->
-      $v = @_version()
-      $v = $v['server']
-
-      $table = if func_num_args() > 0 then func_get_arg(0) else null
-      $column = if func_num_args() > 1 then func_get_arg(1) else null
-
-      if $table is null and $v>='8.1'
-        $sql = 'SELECT LASTVAL() as ins_id'
-
-      else if $table isnt null and $column isnt null and $v>='8.0'
-        $sql = sprintf("SELECT pg.get_serial_sequence('%s','%s') as seq", $table, $column)
-        $query = @query($sql)
-        $row = $query.row()
-        $sql = sprintf("SELECT CURRVAL('%s') as ins_id", $row.seq)
-
-      else if $table isnt null
-        #  seq_name passed in table parameter
-        $sql = sprintf("SELECT CURRVAL('%s') as ins_id", $table)
-
-      else
-        return @client.last_oid(@result_id)
-
-      $query = @query($sql)
-      $row = $query.row()
-      return $row.ins_id
-
+          $callback null, $insert.row().id
 
     #  --------------------------------------------------------------------
 

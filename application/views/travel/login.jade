@@ -1,10 +1,10 @@
 extends ./layout
 
 block content
-
-  #main
-    h1 Login Required
-    .section
+  h1 Login Required
+  .row
+    .span1
+    .span4
       br
       p Valid username/passwords are:
       ul
@@ -12,21 +12,21 @@ block content
         li erwin/leuven
         li jeremy/atlanta
         li scott/rochester
-    .section
-      form(name='f', action='/authenticate', method='post')
-        input(type="hidden",name="url",id="url",value="#{url}")
-        fieldset
-          .field
-            .label User:
-            .output
-              input(type='text', name='username', value='')
-          .field
-            .label Password:
-            .output
-              input(type='password', name='password')
-          .field
-            .label Don't ask for my password for two weeks:
-            .output
-              input(type='checkbox', name='remember_me')
-        .buttonGroup
-          input(name='submit', type='submit', value='Login')
+
+  .hero-unit
+    form(name='f', action='/travel/#{db}/authenticate', method='post')
+      input(type="hidden",name="url",id="url",value="#{url}")
+      input(type="hidden",name="hotelId",id="hotelId",value="#{hotelId}")
+      input(type="hidden",name="bookingId",id="bookingId",value="#{bookingId}")
+      .control-group
+        label.control-label(for="username") User:
+        input(id="username",name="username",type="text")
+      .control-group
+        label.control-label(for="password") Password:
+        input(id="password",name="password",type="text")
+      .control-group
+        label.control-label(for="remember") Don't ask for my password for two weeks:
+        input(id="password",name="remember",type="checkbox")
+      .control-group
+      input(name='submit', type='submit', value='Login')
+

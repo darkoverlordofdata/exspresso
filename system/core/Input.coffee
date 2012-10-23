@@ -235,9 +235,17 @@ module.exports = class Exspresso.CI_Input
             null
 
       # --------------------------------------------------------------------
-      @get_post = ($index = '', $xss_clean = false) ->
+      @get_post = ($index, $xss_clean = false) ->
 
-        $req.param($index)
+        if not $req.body[$index]?
+          if $req.query[$index]?
+            $req.query[$index]
+          else
+            null
+        else
+          $req.body[$index]
+
+
 
 
       # --------------------------------------------------------------------

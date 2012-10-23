@@ -302,7 +302,7 @@ module.exports = (CI_DB) ->
         if $err
           $callback $err
         else
-          $callback null, $insert.id
+          $callback null, $insert.row().id
 
 
 

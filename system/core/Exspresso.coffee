@@ -23,7 +23,7 @@ log_message "debug", "Exspresso copyright 2012 Dark Overlord of Data"
 
 express = require('express')      # Express 3.0 Framework
 
-exports.app = app = express()     # Exspresso 0.5.x Framework
+exports.app = app = express()     # Exspresso 0.5.x" Framework
 
 #
 # ------------------------------------------------------

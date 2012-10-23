@@ -66,7 +66,6 @@ exports['/logout']                            = 'user/logout'
 exports['/authenticate']                      = 'user/authenticate'
 exports['/forgot_password']                   = 'user/forgot_password'
 
-
 # database application demo
 exports['/travel/:db']                        = 'travel/search'
 exports['/travel/:db/search']                 = 'travel/search'
@@ -75,8 +74,9 @@ exports['/travel/:db/hotel/:id']              = 'travel/hotel'
 exports['/travel/:db/booking']                = 'travel/booking'
 exports['/travel/:db/confirm']                = 'travel/confirm'
 exports['/travel/:db/book']                   = 'travel/book'
-
-
+exports['/travel/:db/login']                  = 'travel/login'
+exports['/travel/:db/logout']                 = 'travel/logout'
+exports['/travel/:db/authenticate']           = 'travel/authenticate'
 
 # database tests
 exports['/mysql']                             = 'query/mysql'
