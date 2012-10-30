@@ -2,11 +2,11 @@ Globals
 
 Globals in Exspresso are read only and immutable.
 They are set once using 'define' and cannot be re-defined.
-There are 4 categories:
 
   Constants           index.coffee
   PHP Compatability   lib/index.coffee
   Common Methods      system/core/Common.coffee
+  stdio               application/config/constants.coffee
   Classes
 
         CI_Config         system/core/Config.coffee

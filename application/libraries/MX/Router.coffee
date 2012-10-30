@@ -65,9 +65,6 @@ class global.MX_Router extends CI_Router
   # @access	private
   # @return	object table of route bindings
   #
-  _parse_routes: () ->
-
-    super()
 
 
   fetch_module: ->
@@ -76,17 +73,17 @@ class global.MX_Router extends CI_Router
   _validate_request: ($segments) ->
 
     if (count($segments) is 0) then return $segments
-  
+
     # locate module controller
     if ($located = @locate($segments)) then return $located
-  
+
     # use a default 404_override controller 
     if @_404_override
       $segments = explode('/', @_404_override)
       if ($located = @locate($segments)) then return $located
     
   
-    # no controller found 
+    # no controller found
     show_404()
   
 
@@ -101,7 +98,6 @@ class global.MX_Router extends CI_Router
     if $segments[0]? and $routes = Modules.parse_routes($segments[0], implode('/', $segments))
       $segments = $routes
 
-
     # get the segments array elements
     [$module, $directory, $controller] = array_pad($segments, 3, null)
 
@@ -115,13 +111,13 @@ class global.MX_Router extends CI_Router
         @_directory = $offset.$module+'/controllers/'
 
         # module sub-controller exists?
-        if($directory and is_file($source.$directory.$ext))
+        if($directory and is_file($source+$directory+$ext))
           return array_slice($segments, 1)
 
           # module sub-directory exists?
           if($directory and is_dir($source+$directory+'/'))
 
-            $source = $source.$directory+'/'
+            $source = $source+$directory+'/'
             @_directory += $directory+'/'
 
             # module sub-directory controller exists?

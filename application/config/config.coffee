@@ -158,7 +158,7 @@ exports['cache'] = false
 # http://codeigniter.com/user_guide/general/creating_libraries.html
 #
 #
-exports['subclass_prefix'] = 'ES_'
+exports['subclass_prefix'] = 'EX_'
 
 #
 #--------------------------------------------------------------------------

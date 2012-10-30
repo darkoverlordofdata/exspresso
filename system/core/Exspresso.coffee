@@ -54,35 +54,35 @@ exports.config = global.$SRV = load_class('Server', 'core')
 # Instantiate the config class
 #------------------------------------------------------
 #
-exports.config = global.$CFG = load_class('Config',  'core')
+exports.config = global.$CFG = load_class('Config', 'core')
 
 #
 # ------------------------------------------------------
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-exports.router = global.$RTR = load_class('Router',  'core')
+exports.router = global.$RTR = load_class('Router', 'core')
 
 #
 # ------------------------------------------------------
 #  Instantiate the output class
 # ------------------------------------------------------
 #
-exports.output = global.$OUT = load_class('Output',  'core')
+exports.output = global.$OUT = load_class('Output', 'core')
 
 #
 # ------------------------------------------------------
 #  Load the Input class and sanitize globals
 # ------------------------------------------------------
 #
-exports.input = global.$IN = load_class('Input',   'core')
+exports.input = global.$IN = load_class('Input', 'core')
 
 #
 # ------------------------------------------------------
 #  Load the Language class
 # ------------------------------------------------------
 #
-exports.lang = global.$LANG = load_class('Lang',    'core')
+exports.lang = global.$LANG = load_class('Lang', 'core')
 
 #
 # ------------------------------------------------------
@@ -91,7 +91,7 @@ exports.lang = global.$LANG = load_class('Lang',    'core')
 #
 #
 # Load the base controller class
-require BASEPATH+'core/Controller.coffee';
+require BASEPATH+'core/Controller.coffee'
 
 global.get_instance = ->
   CI_Controller.get_instance()
@@ -110,7 +110,7 @@ for $path, $uri of $SRV.routes()
 
     console.log 'Unable to load controller for ' + $uri
     console.log 'Please make sure the controller specified in your Routes.coffee   file is valid.'
-    return
+    continue
 
   #
   # ------------------------------------------------------
@@ -128,7 +128,7 @@ for $path, $uri of $SRV.routes()
   if $method[0] is '_' or CI_Controller.__proto__[$method]?
 
     console.log "Controller not found: #{$class}/#{$method}"
-    return
+    continue
 
   #
   # ------------------------------------------------------

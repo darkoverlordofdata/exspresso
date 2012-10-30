@@ -162,18 +162,18 @@ class global.CI_Config
   item : ($item, $index = '') ->
     if $index is ''
       if not @config[$item]?
-        return false
+        return '' #false
 
 
       $pref = @config[$item]
 
     else
       if not @config[$index]?
-        return false
+        return '' #false
 
 
       if not @config[$index][$item]?
-        return false
+        return '' #false
 
 
       $pref = @config[$index][$item]

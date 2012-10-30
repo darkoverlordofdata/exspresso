@@ -13,7 +13,7 @@
 #
 # Modules
 #
-##
+#
 # Modular Extensions - HMVC
 #
 # Adapted from the CodeIgniter Core Classes
@@ -45,20 +45,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-##
-express         = require('express')                    # Express 3.0 Framework
+#
 
-$CFG = require(BASEPATH + 'core/Exspresso').config
 
 MODPATH = APPPATH+'modules/'
 
 exports.locations = locations = $CFG.item('modules_locations') or [MODPATH: '../modules/']
 exports.routes = routes = {}
 
-##
+#
 # Run a module controller method
 # Output from module is buffered and returned.
-##
+#
 exports.run = run = ($module, $args...) ->
   
   $method = 'index'
@@ -75,7 +73,7 @@ exports.run = run = ($module, $args...) ->
       $class[$method].apply($class, $args)
 
 
-## Load a module controller ##
+# Load a module controller #
 exports.load = load = ($module) ->
 
   if Array.isArray($module)
@@ -114,7 +112,7 @@ exports.load = load = ($module) ->
   $registry[$alias] = new $controller($params)
   $registry[$alias]
 
-  ## Load a module file ##
+  # Load a module file #
 exports.load_file = load_file = ($file, $path, $type = 'other', $result = true) ->
 
   $file = str_replace(EXT, '', $file)
@@ -129,12 +127,12 @@ exports.load_file = load_file = ($file, $path, $type = 'other', $result = true) 
   log_message 'debug', "File loaded: #{$location}"
   return $result
 
-##
+#
 # Find a file
 # Scans for files located within modules directories.
 # Also scans application directories for models, plugins and views.
 # Generates fatal error if file not found.
-##
+#
 exports.find = find = ($file, $module, $base) ->
 
   $modules = {}
@@ -169,12 +167,10 @@ exports.find = find = ($file, $module, $base) ->
 
   [false, $file]
 
-## Parse module routes ##
+# Parse module routes #
 exports.parse_routes = parse_routes = ($module, $uri) ->
 
-  log_message 'debug', 'Modules::parse_routes module = %s', $module
-
-  # load the route file 
+  # load the route file
   if not exports.routes[$module]?
     if ([$path] = find('routes', $module, 'config/')) and $path
       exports.routes[$module] = load_file('routes', $path, 'route')

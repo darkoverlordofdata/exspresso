@@ -241,7 +241,8 @@ class global.CI_Server
 
       console.log " "
       console.log " "
-      console.log "Exspresso copyright 2012 Dark Overlord of Data"
+      console.log "Exspresso v"+CI_VERSION
+      console.log "copyright 2012 Dark Overlord of Data"
       console.log " "
       console.log "listening on port #{@app.get('port')}"
       console.log " "
