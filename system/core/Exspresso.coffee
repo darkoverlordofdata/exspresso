@@ -11,60 +11,140 @@
 # 
 #+--------------------------------------------------------------------+
 #
-#	the Exspresso framework
+#	the Exspresso framework :)
 #
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{is_loaded, load_class, log_message, show_error} = require(BASEPATH + 'core/Common')
-
-
-log_message "debug", "Exspresso copyright 2012 Dark Overlord of Data"
-
-express = require('express')      # Express 3.0 Framework
-
-exports.app = app = express()     # Exspresso 0.5.x" Framework
+#
+# Exspresso Version
+#
+# @var string
+#
+#
+define 'CI_VERSION', require(FCPATH + 'package.json').version
 
 #
 # ------------------------------------------------------
-#  Bootstrap the core classes
+#  Load the global functions
 # ------------------------------------------------------
 #
+require BASEPATH + 'core/Common'
 
-exports.exceptions  = load_class('Exceptions',  'core')
-exports.config      = load_class('Config',      'core')
-exports.load        = load_class('Loader',      'core')
-exports.load.initialize module.exports, true  # Autoload
+log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", CI_VERSION
+#
+# ------------------------------------------------------
+#  Load the framework constants
+# ------------------------------------------------------
+#
+if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
+  require APPPATH+'config/'+ENVIRONMENT+'/constants.coffee'
+else
+  require APPPATH+'config/constants.coffee'
 
-exports.lang        = load_class('Lang',        'core')
-exports.input       = load_class('Input',       'core')
-exports.cache       = load_class('Cache',       'core')
-exports.output      = load_class('Output',      'core')
-exports.controller  = load_class('Controller',  'core')
-exports.router      = load_class('Router',      'core')
+
+#
+# ------------------------------------------------------
+#  Instantiate the core express app
+# ------------------------------------------------------
+#
+exports.config = global.$SRV = load_class('Server', 'core')
+
+#
+#------------------------------------------------------
+# Instantiate the config class
+#------------------------------------------------------
+#
+exports.config = global.$CFG = load_class('Config',  'core')
+
+#
+# ------------------------------------------------------
+#  Instantiate the routing class and set the routing
+# ------------------------------------------------------
+#
+exports.router = global.$RTR = load_class('Router',  'core')
+
+#
+# ------------------------------------------------------
+#  Instantiate the output class
+# ------------------------------------------------------
+#
+exports.output = global.$OUT = load_class('Output',  'core')
+
+#
+# ------------------------------------------------------
+#  Load the Input class and sanitize globals
+# ------------------------------------------------------
+#
+exports.input = global.$IN = load_class('Input',   'core')
+
+#
+# ------------------------------------------------------
+#  Load the Language class
+# ------------------------------------------------------
+#
+exports.lang = global.$LANG = load_class('Lang',    'core')
+
+#
+# ------------------------------------------------------
+#  Load the app controller and local controllers
+# ------------------------------------------------------
+#
+#
+# Load the base controller class
+require BASEPATH+'core/Controller.coffee';
+
+global.get_instance = ->
+  CI_Controller.get_instance()
+
+if file_exists(APPPATH+'core/'+$CFG.config['subclass_prefix']+'Controller.coffee')
+
+  require APPPATH+'core/'+$CFG.config['subclass_prefix']+'Controller.coffee'
+
+for $path, $uri of $SRV.routes()
+
+  $RTR._set_routing($uri)
+  # Load the local application controller
+  # Note: The Router class automatically validates the controller path using the router->_validate_request().
+  # If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
+  if not file_exists(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
+
+    console.log 'Unable to load controller for ' + $uri
+    console.log 'Please make sure the controller specified in your Routes.coffee   file is valid.'
+    return
+
+  #
+  # ------------------------------------------------------
+  #  Security check
+  # ------------------------------------------------------
+  #
+  #  None of the functions in the $app controller or the
+  #  loader class can be called via the URI, nor can
+  #  controller functions that begin with an underscore
+  #
+  $class  = $RTR.fetch_class()
+  $method = $RTR.fetch_method()
+
+
+  if $method[0] is '_' or CI_Controller.__proto__[$method]?
+
+    console.log "Controller not found: #{$class}/#{$method}"
+    return
+
+  #
+  # ------------------------------------------------------
+  #  Instantiate the requested controller
+  # ------------------------------------------------------
+  #
+  $class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
+
+  $RTR.routes[$path] = $SRV.controller($class, $method)
 
 #
 # ------------------------------------------------------
 #  Start me up...
 # ------------------------------------------------------
 #
-
-app.listen app.get('port'), ->
-
-  console.log " "
-  console.log " "
-  console.log "Exspresso copyright 2012 Dark Overlord of Data"
-  console.log " "
-  console.log "listening on port #{app.get('port')}"
-  console.log " "
-
-  if app.get('env') is 'development'
-    console.log "View site at http://localhost:" + app.get('port')
-
-  log_message "debug", "listening on port #{app.get('port')}"
-  return
-
-
+$SRV.start $RTR
 
 # End of file Exspresso.coffee
 # Location: ./system/core/Exspresso.coffee

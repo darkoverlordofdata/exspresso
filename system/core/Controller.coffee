@@ -17,16 +17,12 @@
 # This class object is the super class for all controllers
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
 #
 # ------------------------------------------------------
 #  Instantiate the loader class and initialize
 # ------------------------------------------------------
 #
-
-module.exports = class Exspresso.CI_Controller
+class global.CI_Controller
 
   constructor: ->
 
@@ -35,12 +31,12 @@ module.exports = class Exspresso.CI_Controller
     # so that CI can run as one big super object.
 
     for $var, $class of is_loaded()
-      @[$var] = load_class($class) unless $class is 'Controller'
+      @[$var] = load_class($class)
 
     @session = get_instance().session
 
-    # each controller has it's own loader
-    # so that callbacks run in the controller context
+    # from this point on, each controller has it's own loader
+    # so that callbacks will run in the controller context
     @load = load_new('Loader', 'core')
     @load.initialize(@) # NO AUTOLOAD!!!
 
@@ -48,7 +44,10 @@ module.exports = class Exspresso.CI_Controller
     log_message 'debug', "Controller Class Initialized"
 
 
-# END CI_Controller class
+CI_Controller.get_instance = () -> require(BASEPATH + 'core/Exspresso')
 
+
+# END CI_Controller class
+module.exports = CI_Controller
 # End of file Controller.coffee
 # Location: ./system/core/Controller.coffee

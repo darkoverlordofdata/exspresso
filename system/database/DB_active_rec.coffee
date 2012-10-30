@@ -15,9 +15,9 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {array_keys, array_merge, array_slice, array_unique, array_values, count, current, end, explode, implode, in_array, is_array, is_bool, is_null, is_numeric, is_object, is_string, preg_match, preg_replace, strpos, strrchr, strtolower, strtoupper, trim}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 
 CI_DB_driver   = require(BASEPATH + 'database/DB_driver') # Exspresso DB driver Base Class
 

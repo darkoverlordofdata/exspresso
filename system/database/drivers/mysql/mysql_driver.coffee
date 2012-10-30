@@ -14,9 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{count, implode, is_array, preg_match, preg_replace, str_replace, strpos, substr}  = require(FCPATH + 'lib')
-{config_item, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 #
 # MySQL Database Adapter Class
 #

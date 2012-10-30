@@ -15,9 +15,9 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {count, implode, is_array, preg_replace, str_replace, strpos}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 
 #
 # SQLite Database Adapter Class

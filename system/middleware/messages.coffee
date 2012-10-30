@@ -13,10 +13,10 @@
 #
 #	cache a flash message queue
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require(FCPATH + 'lib')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
-{load_object} = require(BASEPATH + 'core/Common')
+
+
+
+
 
 app             = require(BASEPATH + 'core/Exspresso').app  # Exspresso bootstrap module
 

@@ -14,11 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, chmod, class_exists, count, defined, die, error_reporting, fclose, file_exists, fopen, header, ini_get, is_array, is_dir, is_file, is_numeric, is_writable, log_exception, md5, mt_rand, php_sapi_name, preg_replace, rtrim, show_php_error, strtolower, substr, unlink, version_compare, write_log}	= require(FCPATH + 'lib')
-{format} = require('util')
-
 #
 # CodeIgniter
 #
@@ -84,43 +79,6 @@ _log          = null
 # @var object
 #
 _error        = null
-#
-# framework class defenition registry
-#
-# @var object
-#
-exports.Exspresso = Exspresso    = {}
-
-#  ------------------------------------------------------------------------
-
-#
-# class_exists
-#
-# Returns true if the class has been defined
-#
-# @access public
-# @return	boolean
-#
-exports.class_exists = ($class_name) ->
-
-  Exspresso[$class_name]?
-
-#  ------------------------------------------------------------------------
-
-#
-# register_class
-#
-# Regsiter a class
-#
-# @access public
-# @param string class name
-# @param object the class
-# @return	void
-#
-exports.register_class = ($classname, $class) ->
-
-  Exspresso[$classname] = $class
-  return
 #  ------------------------------------------------------------------------
 
 #
@@ -131,7 +89,7 @@ exports.register_class = ($classname, $class) ->
 # @access public
 # @return	object
 #
-exports.get_instance = () -> require(BASEPATH + 'core/Exspresso')
+exports.get_instance = get_instance = () -> require(BASEPATH + 'core/Exspresso')
 
 #  ------------------------------------------------------------------------
 
@@ -150,8 +108,8 @@ exports.get_instance = () -> require(BASEPATH + 'core/Exspresso')
 exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_') ->
 
   #  Does the class exist?  If so, we're done...
-  if Exspresso[$class]?
-    return new Exspresso[$class]()
+  if class_exists($class)
+    return new (get_class($class))()
 
   $name = false
 
@@ -161,8 +119,8 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
     if file_exists($path + $directory + '/' + $class + EXT)
       $name = $prefix + $class
 
-      if not Exspresso[$name]?
-        Exspresso[$name] = require($path + $directory + '/' + $class + EXT)
+      if not class_exists($name)
+        require $path + $directory + '/' + $class + EXT
 
       break
 
@@ -170,14 +128,14 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
   if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
     $name = config_item('subclass_prefix') + $class
 
-    if not Exspresso[$name]?
-      Exspresso[$name] = require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
+    if not class_exists($name)
+      require APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT
 
   #  Did we find the class?
-  if not Exspresso[$name]?
+  if not class_exists($name)
     die 'Unable to locate the specified class: ' + $class + EXT
 
-  return new Exspresso[$name]()
+  return new (get_class($name))()
 
 #  ------------------------------------------------------------------------
 
@@ -207,9 +165,8 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
   for $path in [BASEPATH, APPPATH]
     if file_exists($path + $directory + '/' + $class + EXT)
       $name = $prefix + $class
-
-      if not Exspresso[$name]?
-        Exspresso[$name] = require($path + $directory + '/' + $class + EXT)
+      if not class_exists($name)
+        require $path + $directory + '/' + $class + EXT
 
       break
 
@@ -217,18 +174,17 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
   if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
     $name = config_item('subclass_prefix') + $class
 
-    if not Exspresso[$name]?
-      Exspresso[$name] = require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
+    if not class_exists($name)
+      require APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT
 
   #  Did we find the class?
-  if not Exspresso[$name]?
+  if not class_exists($name)
     die 'Unable to locate the specified class: ' + $class + EXT
-
 
   #  Keep track of what we just loaded
   is_loaded($class)
 
-  _classes[$class] = new Exspresso[$name]()
+  _classes[$class] = new (get_class($name))()
   return _classes[$class]
 
 
@@ -346,7 +302,7 @@ exports.show_error = show_error = ($err, $status_code = 500) ->
 # @access	public
 # @return	void
 #
-exports.show_404 = show_404 = ($page = '', $log_error = TRUE) ->
+exports.show_404 = show_404 = ($page = '', $log_error = true) ->
   _error = load_class('Exceptions', 'core')
   _error.show_404 $page, $log_error
 
@@ -364,6 +320,7 @@ exports.show_404 = show_404 = ($page = '', $log_error = TRUE) ->
 #
 exports.log_message = log_message = ($level = 'error', $args...) ->
 
+  {format} = require('util')
   if config_item('log_threshold') is 0
     return
 
@@ -468,6 +425,13 @@ exports._exception_handler = _exception_handler = ($severity, $message, $filepat
 
   $_error.log_exception($severity, $message, $filepath, $line)
 
+#  ------------------------------------------------------------------------
+#
+# Export module to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 # End of file Common.coffee
 # Location: ./system/core/Common.coffee

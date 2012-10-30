@@ -14,11 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{defined, explode, microtime, number_format}	= require(FCPATH + 'lib')
-{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
 #
 # CodeIgniter
 #
@@ -47,7 +42,7 @@
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/libraries/benchmark.html
 #
-module exports class Exspresso.CI_Benchmark
+class global.CI_Benchmark
 	
 	$marker: {}
 	
@@ -120,6 +115,6 @@ module exports class Exspresso.CI_Benchmark
 		
 	
 #  END CI_Benchmark class
-
+module.exports = CI_Benchmark
 #  End of file Benchmark.php 
 #  Location: ./system/core/Benchmark.php 

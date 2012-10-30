@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_diff, array_merge, array_search, array_shift, array_unique, array_unshift, count, end, explode, file_exists, file_get_contents, get_instance, get_object_vars, in_array, ini_get, is_array, is_null, is_object, is_string, lang, load, ob_end_clean, ob_end_flush, ob_get_contents, ob_get_level, ob_start, output, pathinfo, preg_replace, rtrim, str_replace, strpos, strrpos, strtolower, substr, trim, ucfirst}	= require(FCPATH + 'lib')
-{Exspresso, class_exists, config_item, get_class, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class, show_error} = require(BASEPATH + 'core/Common')
-
-
 #
 # CodeIgniter
 #
@@ -47,7 +41,7 @@
 # @category	Loader
 # @link		http://codeigniter.com/user_guide/libraries/loader.html
 #
-class Exspresso.CI_Loader
+class global.CI_Loader
 
   # All these are set automatically. Don't mess with them.
   #
@@ -167,6 +161,7 @@ class Exspresso.CI_Loader
   # @return 	object
   #
   initialize: (@_CI, $autoload = false) ->
+
 
     @_ci_classes        = {}
     @_ci_loaded_files   = []
@@ -537,7 +532,7 @@ class Exspresso.CI_Loader
 
     #  Add config file path
     $config = @_ci_get_component('config')
-    array_unshift($config._config_paths, $path)
+    array_unshift($config.config_paths, $path)
 
 
 
@@ -575,7 +570,7 @@ class Exspresso.CI_Loader
       $void = array_shift(@_ci_library_paths)
       $void = array_shift(@_ci_model_paths)
       $void = array_shift(@_ci_helper_paths)
-      $void = array_shift($config._config_paths)
+      $void = array_shift($config.config_paths)
 
     else
       $path = rtrim($path, '/') + '/'
@@ -586,8 +581,8 @@ class Exspresso.CI_Loader
 
 
 
-      if ($key = array_search($path, $config._config_paths)) isnt false
-        delete $config._config_paths[$key]
+      if ($key = array_search($path, $config.config_paths)) isnt false
+        delete $config.config_paths[$key]
 
 
 
@@ -595,7 +590,7 @@ class Exspresso.CI_Loader
     @_ci_library_paths = array_unique(array_merge(@_ci_library_paths, [APPPATH, BASEPATH]))
     @_ci_helper_paths = array_unique(array_merge(@_ci_helper_paths, [APPPATH, BASEPATH]))
     @_ci_model_paths = array_unique(array_merge(@_ci_model_paths, [APPPATH]))
-    $config._config_paths = array_unique(array_merge($config._config_paths, [APPPATH]))
+    $config.config_paths = array_unique(array_merge($config.config_paths, [APPPATH]))
 
   #  --------------------------------------------------------------------
 
@@ -731,10 +726,10 @@ class Exspresso.CI_Loader
     #  Fetch the config paths containing any package paths
       $config_component = @_ci_get_component('config')
 
-      if is_array($config_component._config_paths)
+      if is_array($config_component.config_paths)
         #  Break on the first found file, thus package files
         #  are not overridden by default paths
-        for $path in $config_component._config_paths
+        for $path in $config_component.config_paths
           #  We test for both uppercase and lowercase, for servers that
           #  are case-sensitive with regard to file names. Check for environment
           #  first, global next
@@ -788,10 +783,10 @@ class Exspresso.CI_Loader
     #  Instantiate the class
     # $CI = get_instance()
     if $config isnt null
-      @_CI[$classvar] = new Exspresso[$name]($config)
+      @_CI[$classvar] = new global[$name]($config)
 
     else
-      @_CI[$classvar] = new Exspresso[$name]
+      @_CI[$classvar] = new global[$name]()
 
 
 
@@ -910,6 +905,6 @@ class Exspresso.CI_Loader
       return $filename
 
 # END CI_Load class
-module.exports = Exspresso.CI_Loader
+module.exports = CI_Loader
 # End of file Loader.coffee
 # Location: ./system/core/Loader.coffee

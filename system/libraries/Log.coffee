@@ -16,14 +16,14 @@
 # This class contains functions that enable $config files to be managed
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{is_dir} = require(FCPATH + 'lib')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
+
+
 
 fs              = require('fs')                         # Standard POSIX file i/o
 util            = require('util')
 
-class Exspresso.CI_Log
+class global.CI_Log
 
   _log_path:    ''
   _threshold:   1
@@ -77,7 +77,7 @@ class Exspresso.CI_Log
 
 
 # END Log Class
-module.exports = Exspresso.CI_Log
+module.exports = CI_Log
 
 # End of file Log.coffee
 # Location: ./system/libraries/Log.coffee

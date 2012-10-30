@@ -112,7 +112,7 @@ class exports.Table
   #
   _escape: ($value) ->
 
-    switch @db.connection._config.driver
+    switch @db.connection.config.driver
 
       when 'pg'     then '"' + $value + '"'
       when 'mysql'  then '`' + $value + '`'

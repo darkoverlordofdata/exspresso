@@ -15,44 +15,19 @@
 #
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{parse_url, rawurldecode, substr} = require(FCPATH + 'lib')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
-express         = require('express')                    # Express 3.0 Framework
 
 #  ------------------------------------------------------------------------
 
 #
 # Exspresso Input Class
 #
-module.exports = class Exspresso.CI_Input
+module.exports = class global.CI_Input
 
   constructor: ->
 
-    @_initialize()
-
+    $SRV.input @
     log_message('debug', "Input Class Initialized")
 
-
-  ## --------------------------------------------------------------------
-
-  #
-  # Initialize Input
-  #
-  #
-  #   @access	private
-  #   @return	void
-  #
-  _initialize: () ->
-
-    #  Set the super object to a local variable for use throughout the class
-    $CI = get_instance()
-
-    $CI.app.use express.bodyParser()
-    $CI.app.use express.methodOverride()
-    $CI.app.use @_overrides()
-    return
 
   #  --------------------------------------------------------------------
 
@@ -206,7 +181,7 @@ module.exports = class Exspresso.CI_Input
   #
   #   @returns function middlware callback
   #
-  _overrides: ()->
+  middleware: ()->
 
     log_message 'debug',"Input middleware initialized"
 

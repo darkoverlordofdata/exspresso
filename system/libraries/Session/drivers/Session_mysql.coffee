@@ -13,11 +13,6 @@
 #
 #	postgres driver for sessions
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{file_exists}  = require(FCPATH + 'lib')
-{Exspresso, config_item, get_class, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, show_error, register_class} = require(BASEPATH + 'core/Common')
-
-
 #  ------------------------------------------------------------------------
 
 #

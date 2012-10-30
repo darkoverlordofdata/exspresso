@@ -18,9 +18,6 @@
 # class for the specific database will extend and instantiate it.
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_shift, array_slice, class_exists, count, current, end, explode, implode, in_array, is_array, is_bool, is_null, is_object, is_string, microtime, number_format, preg_match, preg_replace, str_replace, stristr, strlen, strncmp, strpos, strstr, substr, trim}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
 
 class CI_DB_driver
 
@@ -304,7 +301,7 @@ class CI_DB_driver
       CI_DB_result = require(BASEPATH + 'database/DB_result' + EXT)
       $driver = require(BASEPATH + 'database/drivers/' + @dbdriver + '/' + @dbdriver + '_result' + EXT)(CI_DB_result)
     else
-      $driver = Exspresso[$driver]
+      $driver = global[$driver]
 
     return $driver
 

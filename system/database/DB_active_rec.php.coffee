@@ -15,9 +15,9 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {_count_string, _delete, _from_tables, _has_operator, _insert, _insert_batch, _like_escape_chr, _like_escape_str, _limit, _protect_identifiers, _random_keyword, _replace, _truncate, _update, _update_batch, array_diff, array_keys, array_merge, array_slice, array_unique, array_values, count, current, db_debug, defined, display_error, end, escape, escape_like_str, escape_str, explode, get_object_vars, implode, in_array, is_array, is_bool, is_null, is_numeric, is_object, is_string, ksort, num_rows, numrows, preg_match, preg_replace, query, row, sort, sprintf, strpos, strrchr, strtolower, strtoupper, trim}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 
 
 #

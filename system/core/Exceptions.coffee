@@ -14,11 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{count, end, explode, implode, is_array, str_replace, strpos}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class, set_status_header} = require(BASEPATH + 'core/Common')
-
 #  ------------------------------------------------------------------------
 
 #
@@ -117,7 +112,7 @@ class CI_Exceptions
   #
   #   @returns function middlware callback
   #
-  ready: ()->
+  middleware: ()->
 
     log_message 'debug',"Exceptions middleware initialized"
 

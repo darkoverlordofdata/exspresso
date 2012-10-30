@@ -19,6 +19,30 @@ path            = require('path')                       # File path utilities
 querystring     = require('querystring')                # Utilities for dealing with query strings.
 url             = require('url')                        # Utilities for URL resolution and parsing.
 
+exports.define = (name, value, scope = global) ->
+
+  if scope[name]?
+    return false # already defined
+
+  Object.defineProperty scope, name,
+    'value':			value
+    'enumerable': true
+    'writable':		false
+
+  return true # success
+
+exports.defined = (name, scope = global) ->
+
+  return scope[name]?
+
+exports.constant = (name, scope = global) ->
+
+  if scope[name]?
+    return scope[name]
+  else
+    return null
+
+
 exports._classes = _classes = {}                        # class registry
 
 exports.die = ($message) ->
@@ -89,6 +113,16 @@ mergeObjects = () ->
   return arguments[0]
 ###
 
+## --------------------------------------------------------------------
+
+exports.array_pad = ($input, $pad_size, $pad_value) ->
+
+  if $input.length < $pad_size
+    $start = $input.length
+    for $i in [$start..$pad_size-1]
+      $input[$i] = $pad_value
+
+  $input
 
 ## --------------------------------------------------------------------
 
@@ -127,9 +161,10 @@ exports.array_unshift = ($array, $var...) ->
 
 ## --------------------------------------------------------------------
 
-exports.class_exists = ($class_name) ->
+#exports.class_exists = ($class_name) ->
 
-  _classes[$class_name]?
+
+  #_classes[$class_name]?
 
 ## --------------------------------------------------------------------
 
@@ -233,6 +268,18 @@ exports.is_array = ($var) ->
 exports.is_bool = ($var) ->
 
   if typeof $var is 'boolean' then true else false
+
+## --------------------------------------------------------------------
+
+exports.is_file = ($path) ->
+
+  try
+    $stats = fs.statSync($path)
+    $b = $stats.isFile()
+  catch ex
+    $b = false
+  finally
+    return $b
 
 ## --------------------------------------------------------------------
 
@@ -470,13 +517,15 @@ exports.strstr = ($haystack, $needle, $before_needle = false) ->
 
 exports.strtolower = ($str) ->
 
-  $str.toLowerCase()
+  if $str?
+    $str.toLowerCase()
 
 ## --------------------------------------------------------------------
 
 exports.strtoupper = ($str) ->
 
-  $str.toUpperCase()
+  if $str?
+    $str.toUpperCase()
 
 ## --------------------------------------------------------------------
 
@@ -499,8 +548,52 @@ exports.ucfirst = ($str) ->
   $str.charAt(0).toUpperCase() + $str.substr(1)
 
 
+#  ------------------------------------------------------------------------
+
+#
+# class_exists
+#
+# Returns true if the class has been defined
+#
+# @access public
+# @return	boolean
+#
+exports.class_exists = class_exists = ($classname) -> typeof global[$classname] is 'function'
+
+#  ------------------------------------------------------------------------
+
+#
+# register_class
+#
+# Regsiter a class
+#
+# @access public
+# @param string class name
+# @param object the class
+# @return	void
+#
+exports.register_class = register_class = ($classname, $class) -> define $classname, $class
+
+#  ------------------------------------------------------------------------
+
+#
+# get_class
+#
+# Returns the registered class
+#
+# @access public
+# @return	object
+#
+exports.get_class = get_class = ($classname) -> global[$classname]
 
 
 
 
+#  ------------------------------------------------------------------------
+#
+# Export module to the global namespace
+#
+#
+for $name, $body of module.exports
+  exports.define $name, $body
 

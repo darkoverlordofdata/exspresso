@@ -14,18 +14,13 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, defined, file_exists, get_instance, get_package_paths, in_array, str_replace}	= require(FCPATH + 'lib')
-{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
 #  ------------------------------------------------------------------------
 
 #
 # Language Class
 #
 #
-module.exports = class Exspresso.CI_Lang
+module.exports = class global.CI_Lang
 	
 	language: {}
 	is_loaded: []

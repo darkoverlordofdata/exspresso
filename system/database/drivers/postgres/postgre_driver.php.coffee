@@ -15,9 +15,9 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {_protect_identifiers, _reserved_identifiers, _trans_depth, _trans_failure, ar_where, conn_id, count, dbprefix, defined, escape_like_str, func_get_arg, func_num_args, implode, ins_id, is_array, num_rows, numrows, pg_affected_rows, pg_close, pg_connect, pg_escape_string, pg_exec, pg_last_error, pg_last_oid, pg_pconnect, pg_ping, pg_query, preg_replace, query, result_id, row, seq, sprintf, str_replace, strpos, trans_enabled, trim}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #

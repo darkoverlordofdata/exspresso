@@ -15,9 +15,9 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {Memcached, _default_options, _setup_memcached, add, addServer, array_key_exists, cache_info, clean, config, count, defined, delete, extension_loaded, flush, get, getStats, get_instance, get_metadata, is_array, is_supported, load, save, time}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #

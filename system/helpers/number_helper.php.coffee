@@ -15,7 +15,7 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {defined, function_exists, get_instance, lang, line, load, number_format, round}  = require(FCPATH + 'lib')
 
 

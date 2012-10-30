@@ -15,9 +15,9 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {__construct, _build_headers, _build_message, _get_alt_message, _get_content_type, _get_encoding, _get_hostname, _get_ip, _get_message_id, _get_mime_message, _get_protocol, _get_smtp_data, _mime_types, _prep_q_encoding, _prep_quoted_printable, _remove_nl_callback, _send_command, _send_data, _send_with_mail, _send_with_sendmail, _send_with_smtp, _set_boundaries, _set_date, _set_error_message, _set_header, _smtp_authenticate, _spool_email, _str_to_array, _unwrap_specials, _write_headers, abs, addcslashes, attach, base64_encode, basename, batch_bcc_send, bcc, cc, chunk_split, clean_email, clear, count, date, dechex, defined, end, explode, fclose, fgets, file_exists, filesize, floor, fopen, fputs, fread, from, fsockopen, fwrite, get_instance, htmlspecialchars, implode, in_array, ini_get, initialize, is_array, is_numeric, is_resource, lang, line, load, mail, message, method_exists, next, ord, pclose, popen, preg_match, preg_match_all, preg_replace, preg_replace_callback, preg_split, print_debugger, reply_to, reset, rtrim, send, set_alt_message, set_crlf, set_mailtype, set_newline, set_priority, set_protocol, set_wordwrap, settype, sprintf, str_replace, strip_tags, stripslashes, strlen, strncmp, strpos, strstr, strtolower, strtoupper, subject, substr, to, trim, uniqid, valid_email, validate_email, version_compare, word_wrap}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #

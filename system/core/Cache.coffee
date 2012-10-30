@@ -15,10 +15,6 @@
 #
 #
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{parse_url, rawurldecode, substr} = require(FCPATH + 'lib')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
 cache           = require('connect-cache')              # Caching system for Connect
 
 #  ------------------------------------------------------------------------
@@ -26,7 +22,7 @@ cache           = require('connect-cache')              # Caching system for Con
 #
 # Exspresso Cache Class
 #
-module.exports = class Exspresso.CI_Cache
+module.exports = class global.CI_Cache
 
   constructor: ->
 
@@ -47,7 +43,7 @@ module.exports = class Exspresso.CI_Cache
   _initialize: () ->
 
     $app      = require(BASEPATH + 'core/Exspresso').app
-    $config   = require(BASEPATH + 'core/Exspresso').config._config
+    $config   = require(BASEPATH + 'core/Exspresso').config.config
 
     if $config.cache
 

@@ -13,11 +13,6 @@
 #
 #	Query Controller Class
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{parse_url} = require(FCPATH + 'lib')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message} = require(BASEPATH + 'core/Common')
-
-CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 
 mysql = require('mysql')
 pg = require('pg')
@@ -39,7 +34,7 @@ class Query extends CI_Controller
   constructor: ->
 
     super()
-    $settings = parse_url(@config._config.mysql_url)
+    $settings = parse_url(@config.config.mysql_url)
 
     @_mysql = new mysql.createClient
       host: $settings.host

@@ -15,7 +15,8 @@
 #
 #   Defines the global Exspresso environment
 #
-{array_merge, dirname, file_exists, is_dir, ltrim, realpath, rtrim, strrchr, trim, ucfirst} = require('./lib')
+require './lib'
+
 
 #
 #---------------------------------------------------------------
@@ -35,7 +36,7 @@
 # NOTE: If you change these, also change the error_reporting() code below
 #
 #
-exports.ENVIRONMENT = ENVIRONMENT = 'development'
+define 'ENVIRONMENT', 'development'
 
 #
 #
@@ -114,21 +115,21 @@ if not is_dir($public_path)
 
 #  The coffee-script file extension
 
-exports.EXT = EXT = '.coffee'
+define 'EXT', '.coffee'
 
 #  Path to the system folder
-exports.BASEPATH = BASEPATH = $system_path
+define 'BASEPATH', $system_path
 
 #  Path to the front controller (this file)
 $fc_path = rtrim(__dirname + '/', '/') + '/';
 #$fc_path = rtrim($fc_path, '/') + '/';
-exports.FCPATH = FCPATH = $fc_path
+define 'FCPATH', $fc_path
 
 # Name of the "system folder"
-exports.SYSDIR = SYSDIR = trim(strrchr(trim(BASEPATH, '/'), '/'), '/')
+define 'SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/')
 
 #  The path to the "webroot" folder
-exports.WEBROOT = WEBROOT = $public_path
+define 'WEBROOT', $public_path
 
 #  The path to the "application" folder
 $application_path = realpath($application_folder) + '/';
@@ -144,7 +145,7 @@ if not is_dir($application_path)
     process.exit 1
 
 
-exports.APPPATH = APPPATH = $application_path
+define 'APPPATH', $application_path
 
 # --------------------------------------------------------------------
 # LOAD THE BOOTSTRAP FILE

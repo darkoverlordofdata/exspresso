@@ -15,243 +15,26 @@
 #
 # Parses URIs and determines routing
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, file_exists, is_dir} = require(FCPATH + 'lib')
-{Exspresso, config_item, get_config, get_instance, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
-
-dispatch        = require('dispatch')                   # URL dispatcher for Connect
-express         = require('express')                    # Web development framework 3.0
-
-middleware      = require(BASEPATH + 'core/Middleware') # Exspresso Middleware module
-
-
-
-$default_controller     = false     # matches route '/'
-$404_override           = false     # when the specified controller is not found
 
 #  ------------------------------------------------------------------------
-
 #
 # Exspresso Router Class
 #
-module.exports = class Exspresso.CI_Router
+class global.CI_Router
+
+  routes:                 {}          # route dispatch bindings
+
+  _default_controller:    false       # matches route '/'
+  _404_override:          false       # when the specified controller is not found
+  _directory:             ''          # parsed directory
+  _class:                 ''          # parsed class
+  _method:                ''          # parsed method
 
   constructor: ->
 
-    @_initialize()
+    @config = load_class('Config', 'core')
     log_message('debug', "Router Class Initialized")
 
-
-  # --------------------------------------------------------------------
-
-  #
-  # Set the route mapping
-  #
-  # This determines what should be served based on the URI request,
-  # as well as any "routes" that have been set in the routing config file.
-  #
-  # @access	private
-  # @return	void
-  #
-  _initialize: () ->
-
-    $CI = get_instance()
-    $app = $CI.app
-
-    $app.use $CI.exceptions.ready()
-    $app.use middleware.authenticate()
-    $app.use $app.router
-    $app.use middleware.error_5xx()
-    $app.use dispatch(@load_routes())
-    $app.use middleware.error_404()
-
-    if $app.get('env') is 'development'
-      $app.use express.errorHandler
-        dumpExceptions: true
-        showStack: true
-
-    if $app.get('env') is 'production'
-      $app.use express.errorHandler()
-
-    @
-
-
-  # --------------------------------------------------------------------
-
-  #
-  #  Load Routes
-  #
-  #   load routes from config/routes
-  #   bind each route to the associated cntroller/method
-  #
-  # @access	private
-  # @return	object table of route bindings
-  #
-  load_routes: () ->
-
-    $config = {}
-    $routes = {}
-    $found = false
-
-    # Load the routes.coffee file.
-    $check_files = ['routes', ENVIRONMENT + '/routes']
-    for $file in $check_files
-
-      $file_path = APPPATH + 'config/' + $file + EXT
-
-      if file_exists($file_path)
-        $config = array_merge($config, require($file_path))
-        $found = true
-
-    if not $found
-      #
-      # ------------------------------------------------------
-      #  No paths have been defined!!!
-      # ------------------------------------------------------
-      #
-      console.log 'The config/routes file does not exist.'
-      process.exit 1
-
-    # Set the default controller so we can display it in the event
-    # the URI doesn't correlated to a valid controller.
-    $default_controller = $config['default_controller'] ? false
-    $404_override = $config['404_override'] ? false
-
-    for $path, $uri of $config
-      @bind_route $path, $uri, $routes
-
-    return $routes
-
-  # --------------------------------------------------------------------
-
-  #
-  #  Bind the Route to a Controller
-  #
-  #   Finds the controller that maps to the uri
-  #   and bind it to the path in a callback
-  #
-  #
-  # @access	private
-  # @return	void
-  #
-  bind_route: ($path, $uri, $routes) ->
-
-    if $path is '404_override' then return
-    if $path is 'default_controller' then $path = '/'
-
-    $RTR = new Router($uri)
-    $RTR._set_routing()
-
-    # Load the local application controller
-    # Note: The Router class automatically validates the controller path using the router->_validate_request().
-    # If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
-    if not file_exists(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
-
-      console.log 'Unable to load controller for ' + $uri
-      console.log 'Please make sure the controller specified in your Routes.php file is valid.'
-      return
-
-    #
-    # ------------------------------------------------------
-    #  Security check
-    # ------------------------------------------------------
-    #
-    #  None of the functions in the $app controller or the
-    #  loader class can be called via the URI, nor can
-    #  controller functions that begin with an underscore
-    #
-    $class  = $RTR.fetch_class()
-    $method = $RTR.fetch_method()
-
-
-    if $method[0] is '_' or Exspresso.CI_Controller.__proto__[$method]?
-
-      console.log "Controller not found: #{$class}/#{$method}"
-      return
-
-    #
-    # ------------------------------------------------------
-    #  Instantiate the requested controller
-    # ------------------------------------------------------
-    #
-    $class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
-
-    $routes[$path] = @controller_callback($class, $method)
-    return
-
-  # --------------------------------------------------------------------
-
-  #
-  # Controller Callback
-  #
-  #   Routing call back to invoke the controller when the request is received
-  #
-  #   @param object $class
-  #   @param string method
-  #   @return void
-  #
-  controller_callback: ($class, $method) ->
-
-    # --------------------------------------------------------------------
-
-    #
-    # Invoke the contoller
-    #
-    #   Instantiates the controller and calls the requested method.
-    #   Any URI segments present (besides the class/function) will be passed
-    #   to the method for convenience
-    #
-    #   @param {Object} the server request object
-    #   @param {Object} the server response object
-    #   @param {Function} the next middleware on the stack
-    #   @param {Array} the remaining arguments
-    #
-    return ($req, $res, $next, $args...) ->
-
-      # a new copy of the controller class for each request:
-      $CI = new $class()
-
-      # mix-ins:
-      #$CI.req       = $req # request object
-      #$CI.res       = $res # response object
-
-      $CI.load.view = $res.render
-      $CI.redirect = ($path) ->
-        $res.redirect $path
-
-      # was database added by the controller constructor?
-      if $CI.db?
-        # initialize the database connection
-        $CI.db.initialize ->
-          # now call the controller method
-          $CI[$method].apply $CI, $args
-      else
-        # just call the controller method
-        $CI[$method].apply $CI, $args
-
-      return
-
-# END CI_Router class
-
-
-# --------------------------------------------------------------------
-
-#
-# Map a route:
-#
-#   route.fetch_directory()
-#   route.fetch_class()
-#   route.fetch_method()
-#
-#
-class Router
-
-  _path:                  false
-  _directory:             ''
-  _class:                 ''
-  _method:                ''
-
-  constructor: (@_path) ->
 
   # --------------------------------------------------------------------
 
@@ -264,9 +47,12 @@ class Router
   # @access	private
   # @return	void
   #
-  _set_routing: ->
+  _set_routing: ($uri) ->
 
-    @_set_request @_path.split('/')
+    @_directory = ''
+    @_class = ''
+    @_method = ''
+    @_set_request $uri.split('/')
 
   # --------------------------------------------------------------------
 
@@ -278,22 +64,22 @@ class Router
   #
   _set_default_controller: ->
     
-    if $default_controller is false
+    if @_default_controller is false
       show_error "Unable to determine what should be displayed. A default route has not been specified in the routing file."
 
     # Is the method being specified?
-    if $default_controller.indexOf('/') isnt -1
+    if @_default_controller.indexOf('/') isnt -1
 
-      $x = $default_controller.split('/')
+      $x = @_default_controller.split('/')
       @set_class $x[0]
       @set_method $x[1]
       @_set_request $x
       
     else
       
-      @set_class $default_controller
+      @set_class @_default_controller
       @set_method 'index'
-      @_set_request [$default_controller, 'index']
+      @_set_request [@_default_controller, 'index']
 
     log_message 'debug', "No URI present. Default controller set."
 
@@ -367,30 +153,30 @@ class Router
       else
 
         # Is the method being specified in the route?
-        if $default_controller.indexOf('/') isnt -1
+        if @_default_controller.indexOf('/') isnt -1
 
-          $x = $default_controller.split('/')
+          $x = @_default_controller.split('/')
 
           @set_class $x[0]
           @set_method $x[1]
 
         else
 
-          @set_class $default_controller
+          @set_class @_default_controller
           @set_method 'index'
 
         # Does the default controller exist in the sub-folder?
-        if not file_exists(APPPATH + 'controllers/' + @fetch_directory() + $default_controller + EXT)
-          @directory = ''
+        if not file_exists(APPPATH + 'controllers/' + @fetch_directory() + @_default_controller + EXT)
+          @_directory = ''
           return []
 
       return $segments
 
     # If we've gotten this far it means that the URI does not correlate to a valid
     # controller class.  We will now see if there is an override
-    if $404_override isnt false
+    if @_404_override isnt false
 
-      $x = $404_override.split('/')
+      $x = @_404_override.split('/')
 
       @set_class $x[0]
       @set_method $x[1] ? 'index'
@@ -477,9 +263,35 @@ class Router
   fetch_directory: ->
     return @_directory
 
+  #  --------------------------------------------------------------------
+
+  #
+  #  Set the controller overrides
+  #
+  # @access	public
+  # @param	array
+  # @return	null
+  #
+  _set_overrides : ($routing) ->
+    if not is_array($routing)
+      return
+
+
+    if $routing['directory']?
+      @set_directory($routing['directory'])
+
+
+    if $routing['controller']?  and $routing['controller'] isnt ''
+      @set_class($routing['controller'])
+
+
+    if $routing['function']?
+      $routing['function'] = if ($routing['function'] is '') then 'index' else $routing['function']
+      @set_method($routing['function'])
 
 # END CI_Router class
 
+module.exports = CI_Router
 
 # End of file Router.coffee
 # Location: ./system/core/Router.coffee

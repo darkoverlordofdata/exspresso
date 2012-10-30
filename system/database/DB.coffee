@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{autoinit, class_exists, count, defined, file_exists, initialize, is_string, parse_str, parse_url, query, rawurldecode, strpos, strtoupper, substr}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class, show_error} = require(BASEPATH + 'core/Common')
-
-
 #
 # CodeIgniter
 #

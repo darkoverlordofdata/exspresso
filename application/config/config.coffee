@@ -12,6 +12,7 @@
 #+--------------------------------------------------------------------+
 #
 
+
 #exports['db_url'] = process.env.CLEARDB_DATABASE_URL ? "mysql://tagsobe:tagsobe@localhost/tagsobe"
 #exports['db_url'] = process.env.HEROKU_POSTGRESQL_ROSE_URL ? "postgres://tagsobe:tagsobe@localhost:5432/tagsobe"
 #exports['db_url'] = "sqlite:///tagsobe"
@@ -157,7 +158,7 @@ exports['cache'] = false
 # http://codeigniter.com/user_guide/general/creating_libraries.html
 #
 #
-exports['subclass_prefix'] = 'MY_'
+exports['subclass_prefix'] = 'ES_'
 
 #
 #--------------------------------------------------------------------------
@@ -268,9 +269,9 @@ exports['cookie_secure']	= false
 # Modular Extensions: Where are modules located?
 #
 #
-###
 exports['modules_locations'] =
   APPPATH+'modules/':                 '../modules/'
+###
   ADDON_FOLDER+'default/modules/':    '../../../addons/default/modules/'
   SHARED_ADDONPATH+'modules/':        '../../../addons/shared_addons/modules/'
 ###

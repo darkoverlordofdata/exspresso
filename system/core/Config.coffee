@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{array_merge, basename, defined, end, explode, file_exists, implode, in_array, is_array, item, preg_replace, rtrim, set_item, slash_item, str_replace, strtolower, trim}	= require(FCPATH + 'lib')
-{Exspresso, config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class, show_error} = require(BASEPATH + 'core/Common')
-
-
 #
 # CodeIgniter
 #
@@ -50,11 +44,11 @@
 #
 
 
-module.exports = class Exspresso.CI_Config
+class global.CI_Config
 
 
-  _config:        {}
-  _is_loaded:     {}
+  config:         {}
+  is_loaded:      []
   _config_paths:  [APPPATH]
 
   #
@@ -69,10 +63,10 @@ module.exports = class Exspresso.CI_Config
   # @return  boolean  if the file was successfully loaded or not
   #
   constructor :  ->
-    @_config = get_config()
+    @config = get_config()
 
     #  Set the base_url automatically if none was provided
-    if @_config['base_url'] is ''
+    if @config['base_url'] is ''
       ###
       if $_SERVER['HTTP_HOST']?
         $base_url = if $_SERVER['HTTPS']?  and strtolower($_SERVER['HTTPS']) isnt 'off' then 'https' else 'http'
@@ -86,30 +80,11 @@ module.exports = class Exspresso.CI_Config
 
       @set_item 'base_url', $base_url
 
-    @_initialize()
+    $SRV.config @
     log_message('debug', "Config Class Initialized")
 
-  #
-  # Initialize
-  #
-  # Initialize the Exspresso application config values
-  #
-  # @access   private
-  # @return  void
-  #
-  _initialize: () ->
 
-    express = require('express')                    # Express 3.0 Framework
-    $app = require(BASEPATH + 'core/Exspresso').app
-
-    $app.set 'env', ENVIRONMENT
-    $app.set 'port', @_config.port
-    $app.set 'site_name', @_config.site_name
-    $app.use express.logger(@_config.logger)
-    return
-
-
-#  --------------------------------------------------------------------
+  #  --------------------------------------------------------------------
 
   #
   # Load Config File
@@ -124,16 +99,17 @@ module.exports = class Exspresso.CI_Config
     $file = if $file is '' then 'config' else $file.replace(EXT, '')
     $loaded = false
 
-    for $path of @_config_paths
+    for $path in @_config_paths
 
       $config = {}
       $found = false
       $check_locations = [$file, ENVIRONMENT + '/' + $file]
-      for $location of $check_locations
+      for $location in $check_locations
 
         $file_path = $path + 'config/' + $location + EXT
 
         if file_exists($file_path)
+          $found = true
           $config = array_merge($config, require($file_path))
 
 
@@ -145,21 +121,20 @@ module.exports = class Exspresso.CI_Config
 
 
       if $use_sections is true
-        if @_config[$file]?
-          @_config[$file] = array_merge(@_config[$file], $config)
+        if @config[$file]?
+          @config[$file] = array_merge(@config[$file], $config)
 
         else
-          @_config[$file] = $config
+          @config[$file] = $config
 
 
       else
-        @_config = array_merge(@_config, $config)
+        @config = array_merge(@config, $config)
 
 
-      @_is_loaded.push $file_path
+      @is_loaded.push $file_path
 
       $loaded = true
-      log_message('debug', 'Config file loaded: ' + $file_path)
 
 
     if $loaded is false
@@ -186,22 +161,22 @@ module.exports = class Exspresso.CI_Config
   #
   item : ($item, $index = '') ->
     if $index is ''
-      if not @_config[$item]?
+      if not @config[$item]?
         return false
 
 
-      $pref = @_config[$item]
+      $pref = @config[$item]
 
     else
-      if not @_config[$index]?
+      if not @config[$index]?
         return false
 
 
-      if not @_config[$index][$item]?
+      if not @config[$index][$item]?
         return false
 
 
-      $pref = @_config[$index][$item]
+      $pref = @config[$index][$item]
 
 
     return $pref
@@ -221,11 +196,11 @@ module.exports = class Exspresso.CI_Config
   # @return	string
   #
   slash_item : ($item) ->
-    if not @_config[$item]?
+    if not @config[$item]?
       return false
 
 
-    return rtrim(@_config[$item], '/') + '/'
+    return rtrim(@config[$item], '/') + '/'
 
 
   #  --------------------------------------------------------------------
@@ -294,7 +269,7 @@ module.exports = class Exspresso.CI_Config
   # @return	void
   #
   set_item : ($item, $value) ->
-    @_config[$item] = $value
+    @config[$item] = $value
 
 
   #  --------------------------------------------------------------------
@@ -310,12 +285,13 @@ module.exports = class Exspresso.CI_Config
   # @param	array
   # @return	void
   #
-  _assign_to_config : ($items = {}) ->
+  _assign_toconfig : ($items = {}) ->
     for $val, $key of $items
       @set_item($key, $val)
 
 
 # END CI_Config class
+module.exports = CI_Config
 
 # End of file Config.coffee
 # Location: ./system/core/Config.coffee

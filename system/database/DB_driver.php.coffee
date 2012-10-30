@@ -15,9 +15,9 @@
 #
 #
 
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
+
 {CI_DB_Cache, CI_DB_result, _close, _db_set_charset, _error_message, _error_number, _escape_identifiers, _execute, _field_data, _insert, _list_columns, _list_tables, _update, _version, ar_aliased_tables, array_shift, array_slice, array_splice, call_user_func_array, class_exists, count, current, db_connect, db_pconnect, db_select, debug_backtrace, defined, delete, delete_all, end, escape_str, explode, false, func_get_args, func_num_args, function_exists, implode, in_array, is_array, is_bool, is_null, is_object, is_resource, is_string, line, load, microtime, null, num_rows, number_format, preg_match, preg_replace, read, result_array, result_object, row, str_replace, stristr, strlen, strncmp, strpos, strstr, substr, trans_begin, trans_commit, trans_rollback, trim, write}  = require(FCPATH + 'lib')
-{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')
+
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #

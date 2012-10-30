@@ -13,10 +13,6 @@
 #
 #	Travel Controller Class
 #
-{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')
-{Exspresso, config_item, get_config, is_loaded, load_class, load_new, load_object, log_message, show_error} = require(BASEPATH + 'core/Common')
-
-CI_Controller   = require(BASEPATH + 'core/Controller') # Exspresso Controller Base Class
 moment          = require('moment')                     # Parse, manipulate, and display dates
 bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
 
