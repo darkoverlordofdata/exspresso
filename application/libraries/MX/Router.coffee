@@ -16,6 +16,7 @@
 #
 #  load the MX core module class
 Modules = require(dirname(__filename)+'/Modules.coffee')
+fs = require('fs')
 
 #
 # Modular Extensions - HMVC
@@ -50,16 +51,36 @@ Modules = require(dirname(__filename)+'/Modules.coffee')
 # THE SOFTWARE.
 #
 
-fs = require('fs')
-
 class global.MX_Router extends CI_Router
 
   _module: ''
 
+  # --------------------------------------------------------------------
+
+  #
+  # Set the route mapping
+  #
+  # This function determines what should be served based on the URI request,
+  # as well as any "routes" that have been set in the routing config file.
+  #
+  # @access	private
+  # @return	void
+  #
   _set_routing: ($uri) ->
     @_module = ''
     super $uri
 
+  # --------------------------------------------------------------------
+
+  #
+  #  Load Routes
+  #
+  # This function loads routes that may exist in
+  # the module/config/routes.php file
+  #
+  # @access	private
+  # @return	object routes
+  #
   _load_routes: ->
 
     $routes = super()
@@ -117,7 +138,12 @@ class global.MX_Router extends CI_Router
         $CI = new $class()
 
         $CI.load.view = ($view, $data, $fn) ->
-          $res.render $views+$view, $data, $fn
+          # check if the view is in this module
+          if $views and (file_exists($views+$view) or file_exists($views+$view+'.jade'))
+            $res.render $views+$view, $data, $fn
+          # otherwise use an application view
+          else
+            $res.render $view, $data, $fn
 
         $CI.redirect = ($path) ->
           $res.redirect $path
@@ -134,11 +160,16 @@ class global.MX_Router extends CI_Router
 
         return
 
+  # --------------------------------------------------------------------
 
-
-  fetch_module: ->
-    @_module
-
+  #
+  # Validates the supplied segments.  Attempts to determine the path to
+  # the controller.
+  #
+  # @access	private
+  # @param	array
+  # @return	array
+  #
   _validate_request: ($segments) ->
 
     if (count($segments) is 0) then return $segments
@@ -222,7 +253,28 @@ class global.MX_Router extends CI_Router
       @_directory = $module+'/'
       return array(@default_controller)
 
+  # --------------------------------------------------------------------
+
+  #
+  # Set the class name
+  #
+  # @access	public
+  # @param	string
+  # @return	void
+  #
   set_class: ($class) ->
     @_class = $class+@config.item('controller_suffix')
+
+  # --------------------------------------------------------------------
+
+  #
+  # Fetch the current module
+  #
+  # @access	public
+  # @return	string
+  #
+  fetch_module: ->
+    @_module
+
 
 module.exports = MX_Router
