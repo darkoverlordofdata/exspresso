@@ -79,18 +79,6 @@ class global.MX_Router extends CI_Router
     return $routes
 
 
-  load_view: ($res, $view, $data, $fn) =>
-    log_message 'debug', 'render %s', $view
-    log_message 'debug', 'module: %s', @fetch_module()
-    log_message 'debug', 'dir   : %s', @fetch_directory()
-    log_message 'debug', 'class : %s', @fetch_class()
-    log_message 'debug', 'method: %s', @fetch_method()
-    if @fetch_module() is ''
-      $res.render $view, $data, $fn
-    else
-      log_message 'debug', 'render: '+Modules.views[@fetch_module()]+'/'+$view
-      $res.render Modules.views[@fetch_module()]+'/'+$view, $data, $fn
-
   # --------------------------------------------------------------------
 
   #
@@ -108,46 +96,45 @@ class global.MX_Router extends CI_Router
     else
       $views = Modules.views[@fetch_module()]+'/'
 
-    @routes[$path] = @_bind($class, $method, $views)
+    @routes[$path] = do($class, $method, $views) ->
+      # --------------------------------------------------------------------
 
-  _bind: ($class, $method, $views) ->
+      #
+      # Invoke the contoller
+      #
+      #   Instantiates the controller and calls the requested method.
+      #   Any URI segments present (besides the class/function) will be passed
+      #   to the method for convenience
+      #
+      #   @param {Object} the server request object
+      #   @param {Object} the server response object
+      #   @param {Function} the next middleware on the stack
+      #   @param {Array} the remaining arguments
+      #
+      return ($req, $res, $next, $args...) ->
 
-    # --------------------------------------------------------------------
+        # a new copy of the controller class for each request:
+        $CI = new $class()
 
-    #
-    # Invoke the contoller
-    #
-    #   Instantiates the controller and calls the requested method.
-    #   Any URI segments present (besides the class/function) will be passed
-    #   to the method for convenience
-    #
-    #   @param {Object} the server request object
-    #   @param {Object} the server response object
-    #   @param {Function} the next middleware on the stack
-    #   @param {Array} the remaining arguments
-    #
-    return ($req, $res, $next, $args...) ->
+        $CI.load.view = ($view, $data, $fn) ->
+          $res.render $views+$view, $data, $fn
 
-      # a new copy of the controller class for each request:
-      $CI = new $class()
+        $CI.redirect = ($path) ->
+          $res.redirect $path
 
-      $CI.load.view = ($view, $data, $fn) ->
-        $res.render $views+$view, $data, $fn
-
-      $CI.redirect = ($path) ->
-        $res.redirect $path
-
-      # was database added by the controller constructor?
-      if $CI.db?
-        # initialize the database connection
-        $CI.db.initialize ->
-          # now call the controller method
+        # was database added by the controller constructor?
+        if $CI.db?
+          # initialize the database connection
+          $CI.db.initialize ->
+            # now call the controller method
+            $CI[$method].apply $CI, $args
+        else
+          # just call the controller method
           $CI[$method].apply $CI, $args
-      else
-        # just call the controller method
-        $CI[$method].apply $CI, $args
 
-      return
+        return
+
+
 
   fetch_module: ->
     @_module
