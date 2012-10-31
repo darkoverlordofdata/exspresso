@@ -49,23 +49,105 @@ Modules = require(dirname(__filename)+'/Modules.coffee')
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
+
+fs = require('fs')
+
 class global.MX_Router extends CI_Router
 
-  _module: {}
+  _module: ''
+
+  _set_routing: ($uri) ->
+    @_module = ''
+    super $uri
+
+  _load_routes: ->
+
+    $routes = super()
+
+    for $location, $offset of Modules.locations
+      $modules = fs.readdirSync($location)
+      for $module in $modules
+        $path = $location + $module + '/config/'
+
+        if file_exists($path+'routes.coffee')
+          $routes = array_merge($routes, Modules.load_file('routes', $path, 'route'))
+
+          # set module view location:
+          if is_dir($loc = $location + $module + '/views')
+            Modules.views[$module] = $loc
+
+    return $routes
+
+
+  load_view: ($res, $view, $data, $fn) =>
+    log_message 'debug', 'render %s', $view
+    log_message 'debug', 'module: %s', @fetch_module()
+    log_message 'debug', 'dir   : %s', @fetch_directory()
+    log_message 'debug', 'class : %s', @fetch_class()
+    log_message 'debug', 'method: %s', @fetch_method()
+    if @fetch_module() is ''
+      $res.render $view, $data, $fn
+    else
+      log_message 'debug', 'render: '+Modules.views[@fetch_module()]+'/'+$view
+      $res.render Modules.views[@fetch_module()]+'/'+$view, $data, $fn
 
   # --------------------------------------------------------------------
 
   #
-  #  Load Routes
+  # Controller binding
   #
-  #   load routes from module/config/routes
-  #   bind each route to the associated cntroller/method
-  #   append everything to the existing routes table
+  #   Routing call back to invoke the controller when the request is received
   #
-  # @access	private
-  # @return	object table of route bindings
+  #   @param object $class
+  #   @param string method
+  #   @return function
   #
+  bind: ($path, $class, $method) ->
+    if @fetch_module() is ''
+      $views = ''
+    else
+      $views = Modules.views[@fetch_module()]+'/'
 
+    @routes[$path] = @_bind($class, $method, $views)
+
+  _bind: ($class, $method, $views) ->
+
+    # --------------------------------------------------------------------
+
+    #
+    # Invoke the contoller
+    #
+    #   Instantiates the controller and calls the requested method.
+    #   Any URI segments present (besides the class/function) will be passed
+    #   to the method for convenience
+    #
+    #   @param {Object} the server request object
+    #   @param {Object} the server response object
+    #   @param {Function} the next middleware on the stack
+    #   @param {Array} the remaining arguments
+    #
+    return ($req, $res, $next, $args...) ->
+
+      # a new copy of the controller class for each request:
+      $CI = new $class()
+
+      $CI.load.view = ($view, $data, $fn) ->
+        $res.render $views+$view, $data, $fn
+
+      $CI.redirect = ($path) ->
+        $res.redirect $path
+
+      # was database added by the controller constructor?
+      if $CI.db?
+        # initialize the database connection
+        $CI.db.initialize ->
+          # now call the controller method
+          $CI[$method].apply $CI, $args
+      else
+        # just call the controller method
+        $CI[$method].apply $CI, $args
+
+      return
 
   fetch_module: ->
     @_module
@@ -75,7 +157,10 @@ class global.MX_Router extends CI_Router
     if (count($segments) is 0) then return $segments
 
     # locate module controller
-    if ($located = @locate($segments)) then return $located
+    #if ($located = @locate($segments)) then return $located
+    $located = @locate($segments)
+    if ($located) then return $located
+
 
     # use a default 404_override controller 
     if @_404_override
@@ -84,8 +169,11 @@ class global.MX_Router extends CI_Router
     
   
     # no controller found
-    show_404()
-  
+    #show_404()
+    # Nothing else to do at this point but show a 404
+    log_message 'error', "Unable to validate uri %j", $segments
+    return []
+
 
   # Locate the controller 
   locate: ($segments) ->
@@ -95,8 +183,8 @@ class global.MX_Router extends CI_Router
     $ext = @config.item('controller_suffix')+EXT
 
     # use module route if available
-    if $segments[0]? and $routes = Modules.parse_routes($segments[0], implode('/', $segments))
-      $segments = $routes
+    #if $segments[0]? and $routes = Modules.parse_routes($segments[0], implode('/', $segments))
+      #$segments = $routes
 
     # get the segments array elements
     [$module, $directory, $controller] = array_pad($segments, 3, null)
@@ -108,30 +196,30 @@ class global.MX_Router extends CI_Router
       if (is_dir($source = $location+$module+'/controllers/'))
 
         @_module = $module
-        @_directory = $offset.$module+'/controllers/'
+        @_directory = $offset+$module+'/controllers/'
 
         # module sub-controller exists?
         if($directory and is_file($source+$directory+$ext))
           return array_slice($segments, 1)
 
-          # module sub-directory exists?
-          if($directory and is_dir($source+$directory+'/'))
+        # module sub-directory exists?
+        if($directory and is_dir($source+$directory+'/'))
 
-            $source = $source+$directory+'/'
-            @_directory += $directory+'/'
+          $source = $source+$directory+'/'
+          @_directory += $directory+'/'
 
-            # module sub-directory controller exists?
-            if(is_file($source+$directory+$ext))
-              return array_slice($segments, 1)
+          # module sub-directory controller exists?
+          if(is_file($source+$directory+$ext))
+            return array_slice($segments, 1)
 
 
-            # module sub-directory sub-controller exists?
-            if($controller and is_file($source+$controller+$ext))
-              return array_slice($segments, 2)
+          # module sub-directory sub-controller exists?
+          if($controller and is_file($source+$controller+$ext))
+            return array_slice($segments, 2)
 
-          # module controller exists?
-          if(is_file($source+$module+$ext))
-            return $segments
+        # module controller exists?
+        if(is_file($source+$module+$ext))
+          return $segments
 
     # application controller exists?
     if (is_file(APPPATH+'controllers/'+$module+$ext))

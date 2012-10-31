@@ -586,6 +586,10 @@ exports.register_class = register_class = ($classname, $class) -> define $classn
 #
 exports.get_class = get_class = ($classname) -> global[$classname]
 
+exports.array = ($key, $value) ->
+  $array = {}
+  $array[$key] = $value
+  return $array
 
 
 

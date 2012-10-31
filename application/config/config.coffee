@@ -270,7 +270,7 @@ exports['cookie_secure']	= false
 #
 #
 exports['modules_locations'] =
-  APPPATH+'modules/':                 '../modules/'
+  array(APPPATH+'modules/',                 '../modules/')
 ###
   ADDON_FOLDER+'default/modules/':    '../../../addons/default/modules/'
   SHARED_ADDONPATH+'modules/':        '../../../addons/shared_addons/modules/'

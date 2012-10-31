@@ -48,10 +48,10 @@
 #
 
 
-MODPATH = APPPATH+'modules/'
-
-exports.locations = locations = $CFG.item('modules_locations') or [MODPATH: '../modules/']
+exports.locations = locations = $CFG.item('modules_locations') or array(APPPATH+'modules/', '../modules/')
 exports.routes = routes = {}
+exports.views = {}
+exports.controllers = {}
 
 #
 # Run a module controller method

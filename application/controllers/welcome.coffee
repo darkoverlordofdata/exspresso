@@ -98,5 +98,5 @@ class Welcome extends CI_Controller
 #
 module.exports = Welcome
 
-# End of file Travel.coffee
+# End of file Welcome.coffee
 # Location: .application/controllers/Welcome.coffee

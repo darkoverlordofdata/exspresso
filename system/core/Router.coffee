@@ -185,8 +185,88 @@ class global.CI_Router
 
 
     # Nothing else to do at this point but show a 404
-    console.log "Unable to validate" + $segments[0]
+    log_message 'error', "Unable to validate uri %j", $segments
     return []
+
+  # --------------------------------------------------------------------
+
+  #
+  #  Load Routes
+  #
+  # This function loads routes that may exist in
+  # the config/routes.php file
+  #
+  # @access	private
+  # @return	object routes
+  #
+  _load_routes: ->
+
+    if not @config.load('routes', true, true)
+      show_error 'The config/routes file does not exist.'
+
+    $routes = @config.config.routes
+
+    # Set the default controller so we can display it in the event
+    # the URI doesn't correlated to a valid controller.
+    @_default_controller = $routes['default_controller'] ? false
+    @_404_override = $routes['404_override'] ? false
+
+    delete $routes['default_controller']
+    delete $routes['404_override']
+    $routes['/'] = @_default_controller
+    $routes
+
+
+  # --------------------------------------------------------------------
+
+  #
+  # Controller binding
+  #
+  #   Invoke the controller when the request is received
+  #
+  #   @param string path
+  #   @param object $class
+  #   @param string method
+  #   @return void
+  #
+  bind: ($path, $class, $method) ->
+
+    # --------------------------------------------------------------------
+
+    #
+    # Invoke the contoller
+    #
+    #   Instantiates the controller and calls the requested method.
+    #   Any URI segments present (besides the class/function) will be passed
+    #   to the method for convenience
+    #
+    #   @param {Object} the server request object
+    #   @param {Object} the server response object
+    #   @param {Function} the next middleware on the stack
+    #   @param {Array} the remaining arguments
+    #
+    @routes[$path] = ($req, $res, $next, $args...) ->
+      # a new copy of the controller class for each request:
+      $CI = new $class()
+
+      $CI.load.view = ($view, $data, $fn) ->
+        $res.render $view, $data, $fn
+
+      $CI.redirect = ($path) ->
+        $res.redirect $path
+
+      # was database added by the controller constructor?
+      if $CI.db?
+        # initialize the database connection
+        $CI.db.initialize ->
+          # now call the controller method
+          $CI[$method].apply $CI, $args
+      else
+        # just call the controller method
+        $CI[$method].apply $CI, $args
+
+      return
+
 
   # --------------------------------------------------------------------
 

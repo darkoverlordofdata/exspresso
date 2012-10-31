@@ -7,6 +7,16 @@ They are set once using 'define' and cannot be re-defined.
   PHP Compatability   lib/index.coffee
   Common Methods      system/core/Common.coffee
   stdio               application/config/constants.coffee
+  singletons
+
+        $CFG              CI_Config
+        $EXT              CI_Hooks
+        $LANG             CI_Lang
+        $IN               CI_Input
+        $OUT              CI_Output
+        $RTR              CI_Router
+        $SRV              CI_Server
+
   Classes
 
         CI_Config         system/core/Config.coffee

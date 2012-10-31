@@ -47,42 +47,42 @@ else
 #  Instantiate the core express app
 # ------------------------------------------------------
 #
-exports.config = global.$SRV = load_class('Server', 'core')
+define '$SRV', load_class('Server', 'core')
 
 #
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------
 #
-exports.config = global.$CFG = load_class('Config', 'core')
+define '$CFG', (exports.config = load_class('Config', 'core'))
 
 #
 # ------------------------------------------------------
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-exports.router = global.$RTR = load_class('Router', 'core')
+define '$RTR', (exports.router = load_class('Router', 'core'))
 
 #
 # ------------------------------------------------------
 #  Instantiate the output class
 # ------------------------------------------------------
 #
-exports.output = global.$OUT = load_class('Output', 'core')
+define '$OUT', (exports.output = load_class('Output', 'core'))
 
 #
 # ------------------------------------------------------
 #  Load the Input class and sanitize globals
 # ------------------------------------------------------
 #
-exports.input = global.$IN = load_class('Input', 'core')
+define '$IN', (exports.input = load_class('Input', 'core'))
 
 #
 # ------------------------------------------------------
 #  Load the Language class
 # ------------------------------------------------------
 #
-exports.lang = global.$LANG = load_class('Lang', 'core')
+define '$LANG', (exports.lang = load_class('Lang', 'core'))
 
 #
 # ------------------------------------------------------
@@ -93,16 +93,20 @@ exports.lang = global.$LANG = load_class('Lang', 'core')
 # Load the base controller class
 require BASEPATH+'core/Controller.coffee'
 
-global.get_instance = ->
-  CI_Controller.get_instance()
-
 if file_exists(APPPATH+'core/'+$CFG.config['subclass_prefix']+'Controller.coffee')
 
   require APPPATH+'core/'+$CFG.config['subclass_prefix']+'Controller.coffee'
 
-for $path, $uri of $SRV.routes()
+for $path, $uri of $RTR._load_routes()
 
   $RTR._set_routing($uri)
+  #log_message 'debug', 'uri:  : %s', $uri
+  #log_message 'debug', 'module: %s', $RTR.fetch_module()
+  #log_message 'debug', 'dir   : %s', $RTR.fetch_directory()
+  #log_message 'debug', 'class : %s', $RTR.fetch_class()
+  #log_message 'debug', 'method: %s', $RTR.fetch_method()
+  #log_message 'debug', '----------------------------------'
+
   # Load the local application controller
   # Note: The Router class automatically validates the controller path using the router->_validate_request().
   # If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
@@ -124,7 +128,6 @@ for $path, $uri of $SRV.routes()
   $class  = $RTR.fetch_class()
   $method = $RTR.fetch_method()
 
-
   if $method[0] is '_' or CI_Controller.__proto__[$method]?
 
     console.log "Controller not found: #{$class}/#{$method}"
@@ -137,7 +140,7 @@ for $path, $uri of $SRV.routes()
   #
   $class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
 
-  $RTR.routes[$path] = $SRV.controller($class, $method)
+  $RTR.bind $path, $class, $method
 
 #
 # ------------------------------------------------------

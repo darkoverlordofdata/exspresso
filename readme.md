@@ -31,7 +31,7 @@
 * Jade templating engine
 * Bootstrap/LESS stylesheets
 * CodeIgniter style ActiveRecord
-* HMVC (Wiredesignz)
+* Port of HMVC extension by Wiredesignz
 * Edit configuration defaults in application/config/config.coffee
 * Php2coffee command line port tool
 

@@ -58,18 +58,9 @@ class global.MX_Loader extends CI_Loader
   _ci_plugins: {}
   _ci_cached_vars: {}
   
-  initialize: (@_CI, $autoload = false) ->
+  initialize: ($CI, $autoload = false) ->
 
-
-    # find all modules
-    #if $autload
-    #  for  $location, $offset of Modules.locations
-
-
-    # Call CI_Loader::initialize
-    super(@_CI, $autoload)
-
-    return
+    super($CI, $autoload)
 
     #  set the module name
     @_module = CI.$APP.router.fetch_module()

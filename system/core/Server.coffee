@@ -11,9 +11,15 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Server
+#	Server Class
 #
-#   bridge to the express server object
+#   this class is an adapter to the inner express app
+#   it exposes adapter registration points for each of these core classes:
+#
+#       * Config
+#       * Output
+#       * Input
+#       * Session
 #
 dispatch        = require('dispatch')                   # URL dispatcher for Connect
 express         = require('express')                    # Web development framework 3.0
@@ -30,36 +36,18 @@ class global.CI_Server
   #
   constructor: ->
 
-    @CI = get_instance()
-    @CI.app = @app = express()
+    @CI = get_instance()        # the Expresso core instance
+    @app = express()            # inner express object
 
   #  --------------------------------------------------------------------
 
   #
-  # Initialize Express Config
+  # Start me up ...
   #
   # @access	public
-  # @param	object $CFG
   # @return	void
   #
-  config: ($config) ->
-
-    @app.set 'env', ENVIRONMENT
-    @app.set 'port', $config.config.port
-    @app.set 'site_name', $config.config.site_name
-    @app.use express.logger($config.config.logger)
-    return
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Initialize Express Router
-  #
-  # @access	public
-  # @param	object $RTR
-  # @return	void
-  #
-  router: ($router) ->
+  start: ($router) ->
 
     load = load_class('Loader', 'core')
     load.initialize @CI, true  # Autoload
@@ -78,12 +66,47 @@ class global.CI_Server
     if @app.get('env') is 'production'
       @app.use express.errorHandler()
 
+    @app.listen @app.get('port'), =>
+
+      console.log " "
+      console.log " "
+      console.log "Exspresso v"+CI_VERSION
+      console.log "copyright 2012 Dark Overlord of Data"
+      console.log " "
+      console.log "listening on port #{@app.get('port')}"
+      console.log " "
+
+      if @app.get('env') is 'development'
+        console.log "View site at http://localhost:" + @app.get('port')
+
+      log_message "debug", "listening on port #{@app.get('port')}"
+      return
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Config registration
+  #
+  #   called by the core/Config class constructor
+  #
+  # @access	public
+  # @param	object $CFG
+  # @return	void
+  #
+  config: ($config) ->
+
+    @app.set 'env', ENVIRONMENT
+    @app.set 'port', $config.config.port
+    @app.set 'site_name', $config.config.site_name
+    @app.use express.logger($config.config.logger)
     return
 
   #  --------------------------------------------------------------------
 
   #
-  # Initialize Express Output
+  # Output registration
+  #
+  #   called by the core/Output class constructor
   #
   # @access	public
   # @param	object $OUT
@@ -144,7 +167,9 @@ class global.CI_Server
   #  --------------------------------------------------------------------
 
   #
-  # Initialize Express Input
+  # Input registration
+  #
+  #   called by the core/Input class constructor
   #
   # @access	public
   # @param	object $IN
@@ -160,7 +185,9 @@ class global.CI_Server
   #  --------------------------------------------------------------------
 
   #
-  # Initialize Express Sessions
+  # Sessions registration
+  #
+  #   called by the libraries/Session/Session class constructor
   #
   # @access	public
   # @param	object $IN
@@ -209,84 +236,16 @@ class global.CI_Server
     return
 
 
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Start the express server app
-  #
-  # @access	public
-  # @return	void
-  #
-  start: ($router) ->
-
-    load = load_class('Loader', 'core')
-    load.initialize @CI, true  # Autoload
-    @app.use load_class('Exceptions',  'core').middleware()
-    @app.use @authenticate()
-    @app.use @app.router
-    @app.use @error_5xx()
-    @app.use dispatch($router.routes)
-    @app.use @error_404()
-
-    if @app.get('env') is 'development'
-      @app.use express.errorHandler
-        dumpExceptions: true
-        showStack: true
-
-    if @app.get('env') is 'production'
-      @app.use express.errorHandler()
-
-    @app.listen @app.get('port'), =>
-
-      console.log " "
-      console.log " "
-      console.log "Exspresso v"+CI_VERSION
-      console.log "copyright 2012 Dark Overlord of Data"
-      console.log " "
-      console.log "listening on port #{@app.get('port')}"
-      console.log " "
-
-      if @app.get('env') is 'development'
-        console.log "View site at http://localhost:" + @app.get('port')
-
-      log_message "debug", "listening on port #{@app.get('port')}"
-      return
-
-  # --------------------------------------------------------------------
-
-  # Load routes
-  #
-  #
-  #   @return object config/routes ...
-  #
-  routes: () ->
-
-    if not @CI.config.load('routes', true, true)
-      show_error 'The config/routes file does not exist.'
-
-    $routes = @CI.config.config.routes
-
-    # Set the default controller so we can display it in the event
-    # the URI doesn't correlated to a valid controller.
-    $RTR._default_controller = $routes['default_controller'] ? false
-    $RTR._404_override = $routes['404_override'] ? false
-
-    delete $routes['default_controller']
-    delete $routes['404_override']
-    $routes['/'] = $RTR._default_controller
-    $routes
-
   # --------------------------------------------------------------------
 
   #
-  # Controller Callback
+  # Controller binding
   #
   #   Routing call back to invoke the controller when the request is received
   #
   #   @param object $class
   #   @param string method
-  #   @return void
+  #   @return function
   #
   controller: ($class, $method) ->
 
@@ -309,11 +268,12 @@ class global.CI_Server
       # a new copy of the controller class for each request:
       $CI = new $class()
 
-      # mix-ins:
-      #$CI.req       = $req # request object
-      #$CI.res       = $res # response object
+      #$CI.load.view = ($view, $data, $fn) ->
+      #  $res.render $view, $data, $fn
 
-      $CI.load.view = $res.render
+      $CI.load.view = ($view, $data, $fn) ->
+        $RTR.load_view $res, $view, $data, $fn
+
       $CI.redirect = ($path) ->
         $res.redirect $path
 
@@ -335,6 +295,8 @@ class global.CI_Server
 
   #
   # 5xx Error Display
+  #
+  #   middleware error handler
   #
   #   @param {Object} $req
   #   @param {Object} $res
@@ -358,6 +320,8 @@ class global.CI_Server
   #
   # 404 Display
   #
+  #   middleware page not found
+  #
   #   @param {Object} $req
   #   @param {Object} $res
   #   @param {Function} $next
@@ -379,6 +343,8 @@ class global.CI_Server
   #
   # Authentication
   #
+  #   middleware hook for authentication
+  #
   #   @param {Object} $req
   #   @param {Object} $res
   #   @param {Function} $next
@@ -395,6 +361,8 @@ class global.CI_Server
 
   #
   # Profile
+  #
+  #   middleware profile metrics collector
   #
   #   @param {Object} $req
   #   @param {Object} $res
