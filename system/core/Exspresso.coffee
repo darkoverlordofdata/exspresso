@@ -100,12 +100,6 @@ if file_exists(APPPATH+'core/'+$CFG.config['subclass_prefix']+'Controller.coffee
 for $path, $uri of $RTR._load_routes()
 
   $RTR._set_routing($uri)
-  #log_message 'debug', 'uri:  : %s', $uri
-  #log_message 'debug', 'module: %s', $RTR.fetch_module()
-  #log_message 'debug', 'dir   : %s', $RTR.fetch_directory()
-  #log_message 'debug', 'class : %s', $RTR.fetch_class()
-  #log_message 'debug', 'method: %s', $RTR.fetch_method()
-  #log_message 'debug', '----------------------------------'
 
   # Load the local application controller
   # Note: The Router class automatically validates the controller path using the router->_validate_request().

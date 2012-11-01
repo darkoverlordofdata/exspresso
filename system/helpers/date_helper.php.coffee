@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{config, date, defined, explode, floor, function_exists, get_instance, gmdate, is_numeric, item, lang, line, load, mktime, preg_match, preg_replace, str_replace, strlen, strtolower, substr, time, trim}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #

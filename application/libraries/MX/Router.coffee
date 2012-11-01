@@ -114,10 +114,12 @@ class global.MX_Router extends CI_Router
   bind: ($path, $class, $method) ->
     if @fetch_module() is ''
       $views = ''
+      $ext = ''
     else
       $views = Modules.views[@fetch_module()]+'/'
+      $ext = '.'+@config.config['view_ext']
 
-    @routes[$path] = do($class, $method, $views) ->
+    @routes[$path] = do($class, $method, $views, $ext) ->
       # --------------------------------------------------------------------
 
       #
@@ -137,16 +139,40 @@ class global.MX_Router extends CI_Router
         # a new copy of the controller class for each request:
         $CI = new $class()
 
+        # --------------------------------------------------------------------
+
+        #
+        # Load View
+        #
+        #   Load & render the view with optional data
+        #
+        #   @param string path to view
+        #   @param object data hash table of data
+        #   @param function optional callback
+        #   @return void
+        #
         $CI.load.view = ($view, $data, $fn) ->
           # check if the view is in this module
-          if $views and (file_exists($views+$view) or file_exists($views+$view+'.jade'))
+          if $views and (file_exists($views+$view) or file_exists($views+$view+$ext))
             $res.render $views+$view, $data, $fn
           # otherwise use an application view
           else
             $res.render $view, $data, $fn
+          return
 
+        # --------------------------------------------------------------------
+
+        #
+        # Redirect
+        #
+        #   redirect to another url
+        #
+        #   @param string path to redirect
+        #   @return void
+        #
         $CI.redirect = ($path) ->
           $res.redirect $path
+          return
 
         # was database added by the controller constructor?
         if $CI.db?

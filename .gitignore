@@ -2,3 +2,4 @@
 /.idea
 /application/logs
 /cache
+database.json

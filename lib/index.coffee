@@ -103,15 +103,6 @@ exports.array_merge = ($array1, $array2) ->
   for $key, $item of $array2
     $ret[$key] = $item
   return $ret
-###
-mergeObjects = () ->
-
-  for $i in [1..arguments.length-1] by 1
-    for $key of arguments[$i]
-      if (arguments[$i].hasOwnProperty($key))
-        arguments[0][$key] = arguments[$i][$key]
-  return arguments[0]
-###
 
 ## --------------------------------------------------------------------
 
@@ -559,6 +550,8 @@ exports.ucfirst = ($str) ->
 # @return	boolean
 #
 exports.class_exists = class_exists = ($classname) -> typeof global[$classname] is 'function'
+
+exports.function_exists = function_exists = ($funcname) -> typeof global[$funcname] is 'function'
 
 #  ------------------------------------------------------------------------
 

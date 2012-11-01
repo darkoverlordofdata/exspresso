@@ -35,7 +35,6 @@
 #| 4. Custom config files
 #| 5. Language files
 #| 6. Models
-#| 7. Middleware
 #|
 #
 
@@ -85,9 +84,7 @@ exports['helper'] = []
 #| config files.  Otherwise, leave it blank.
 #|
 #
-
 exports['config'] = []
-
 
 #
 #| -------------------------------------------------------------------
@@ -101,7 +98,6 @@ exports['config'] = []
 #| "codeigniter_lang.php" would be referenced as array('codeigniter');
 #|
 #
-
 exports['language'] = []
 
 #
@@ -114,15 +110,6 @@ exports['language'] = []
 #
 exports['model'] = []
 
-#
-#|--------------------------------------------------------------------------
-#|  Auto-load Middleware
-#|--------------------------------------------------------------------------
-#| Prototype:
-#|
-#|	exports['middleware'] = ['messages', ...]
-#
-exports['middleware'] = []
 
 # End of file autoload.coffee
 # Location: ./application/config/autoload.coffee

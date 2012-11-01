@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| Hotel.coffee
+#| User.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,7 +11,7 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Hotel - Main application
+#	User - Main application
 #
 #
 #
@@ -41,5 +41,5 @@ class exports.User extends require('./Table').Table
 
 
 
-# End of file Hotel.coffee
-# Location: ./Hotel.coffee
+# End of file User.coffee
+# Location: ./User.coffee

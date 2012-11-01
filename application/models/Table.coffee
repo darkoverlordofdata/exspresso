@@ -30,6 +30,7 @@ class exports.Table
   #
   constructor: (@db) ->
 
+    console.log "Table::constructor"
     #
     # fix names so that reserved words, etc. will be accepted
     #
@@ -112,7 +113,7 @@ class exports.Table
   #
   _escape: ($value) ->
 
-    switch @db.connection.config.driver
+    switch @db.connection.driver
 
       when 'pg'     then '"' + $value + '"'
       when 'mysql'  then '`' + $value + '`'
