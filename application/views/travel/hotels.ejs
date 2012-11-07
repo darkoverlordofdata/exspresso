@@ -1,0 +1,34 @@
+<div class="hero-unit">
+    <span class="errors"></span>
+    <h2>Hotel Results</h2>
+    <div class="row">
+        <table class="table table striped table-hover table-condensed">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>City, State</th>
+                <th>Zip</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (i in hotels) { %>
+            <%     hotel = hotels[i] %>
+            <tr>
+                <td><%= hotel.name %></td>
+                <td><%= hotel.address %></td>
+                <td><%= hotel.city + ', ' + hotel.state %></td>
+                <td><%= hotel.zip %></td>
+                <td>
+                    <a href="/travel/<%= db %>/hotel/<%= hotel.id %>" class="btn">View</a>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+    <a id="changeSearchLink" href="/travel/<%= db %>?searchString=a&amp;pageSize=5" class="btn btn-primary">Change Search</a>
+    <p></p>
+    <p>Page rendered in {elapsed_time} ms</p>
+</div>

@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{ImageDestroy, ImageFilledRectangle, ImageJPEG, closedir, cos, defined, explode, extension_loaded, file_exists, function_exists, imagecolorallocate, imagecreate, imagecreatetruecolor, imageline, imagerectangle, imagestring, imagettftext, is_array, is_dir, is_writable, microtime, mt_rand, opendir, rand, readdir, sin, str_replace, strlen, substr, unlink}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -60,31 +54,31 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 if not function_exists('create_captcha')
   exports.create_captcha = create_captcha = ($data = '', $img_path = '', $img_url = '', $font_path = '') ->
-    $defaults = 'word':'', 'img_path':'', 'img_url':'', 'img_width':'150', 'img_height':'30', 'font_path':'', 'expiration':7200
+    $defaults =
+      word:       ''
+      img_path:   ''
+      img_url:    ''
+      img_width:  '150'
+      img_height: '30'
+      font_path:  ''
+      expiration: 7200
     
     for $key, $val of $defaults
       if not is_array($data)
         if not $key?  or $key is ''
           $key = $val
-          
-        
-      else 
-        $key = if ( not $data[$key]? ) then $val else $data[$key]
-        
-      
-    
+      else
+        $key = if not $data[$key]? then $val else $data[$key]
+
     if $img_path is '' or $img_url is ''
       return false
-      
-    
+
     if not is_dir($img_path)
       return false
-      
-    
+
     if not is_writable($img_path)
       return false
-      
-    
+
     if not extension_loaded('gd')
       return false
       
@@ -98,13 +92,14 @@ if not function_exists('create_captcha')
     
     $current_dir = opendir($img_path)
     
-    while $filename = readdir($current_dir))if $filename isnt "." and $filename isnt ".." and $filename isnt "index.html"
-      $name = str_replace(".jpg", "", $filename)
+    while ($filename = readdir($current_dir))
+      if $filename isnt "." and $filename isnt ".." and $filename isnt "index.html"
+        $name = str_replace(".jpg", "", $filename)
       
-      if ($name + $expiration) < $now
-        unlink($img_path + $filename)
+        if ($name + $expiration) < $now
+          unlink($img_path + $filename)
         
-      }closedir($current_dir)
+    closedir($current_dir)
     
     #  -----------------------------------
     #  Do we have a "word" yet?
@@ -114,11 +109,9 @@ if not function_exists('create_captcha')
       $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
       
       $str = ''
-      for ($i = 0$i < 8$i++)
-      {
-      $str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
-      }
-      
+      for $i in [0..7]
+        $str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
+
       $word = $str
       
     
@@ -169,20 +162,18 @@ if not function_exists('create_captcha')
     $circles = 20
     $points = 32
     
-    for ($i = 0$i < ($circles * $points) - 1$i++)
-    {
-    $theta = $theta + $thetac
-    $rad = $radius * ($i / $points)
-    $x = ($rad * cos($theta)) + $x_axis
-    $y = ($rad * sin($theta)) + $y_axis
-    $theta = $theta + $thetac
-    $rad1 = $radius * (($i + 1) / $points)
-    $x1 = ($rad1 * cos($theta)) + $x_axis
-    $y1 = ($rad1 * sin($theta)) + $y_axis
-    imageline($im, $x, $y, $x1, $y1, $grid_color)
-    $theta = $theta - $thetac
-    }
-    
+    for $i in [0 .. ($circles * $points) - 1]
+      $theta = $theta + $thetac
+      $rad = $radius * ($i / $points)
+      $x = ($rad * cos($theta)) + $x_axis
+      $y = ($rad * sin($theta)) + $y_axis
+      $theta = $theta + $thetac
+      $rad1 = $radius * (($i + 1) / $points)
+      $x1 = ($rad1 * cos($theta)) + $x_axis
+      $y1 = ($rad1 * sin($theta)) + $y_axis
+      imageline($im, $x, $y, $x1, $y1, $grid_color)
+      $theta = $theta - $thetac
+
     #  -----------------------------------
     #   Write the text
     #  -----------------------------------
@@ -200,20 +191,18 @@ if not function_exists('create_captcha')
       $y = $font_size + 2
       
     
-    for ($i = 0$i < strlen($word)$i++)
-    {
-    if $use_font is false
-      $y = rand(0, $img_height / 2)
-      imagestring($im, $font_size, $x, $y, substr($word, $i, 1), $text_color)
-      $x+=($font_size * 2)
+    for $i in [0 .. strlen($word)-1]
+      if $use_font is false
+        $y = rand(0, $img_height / 2)
+        imagestring($im, $font_size, $x, $y, substr($word, $i, 1), $text_color)
+        $x+=($font_size * 2)
+
+      else
+        $y = rand($img_height / 2, $img_height - 3)
+        imagettftext($im, $font_size, $angle, $x, $y, $text_color, $font_path, substr($word, $i, 1))
+        $x+=$font_size
       
-    else 
-      $y = rand($img_height / 2, $img_height - 3)
-      imagettftext($im, $font_size, $angle, $x, $y, $text_color, $font_path, substr($word, $i, 1))
-      $x+=$font_size
-      
-    }
-    
+
     
     #  -----------------------------------
     #   Create the border

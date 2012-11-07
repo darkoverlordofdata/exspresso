@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{config, defined, function_exists, get_instance, is_array, is_file, site_url, slash_item, str_repeat, strpos}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -115,6 +109,8 @@ if not function_exists('ol')
 # @param	integer
 # @return	string
 #
+$_last_list_item = {}
+
 if not function_exists('_list')
   exports._list = _list = ($type = 'ul', $list, $attributes = '', $depth = 0) ->
     #  If an array wasn't submitted there's nothing to do...
@@ -140,7 +136,7 @@ if not function_exists('_list')
     #  Cycle through the list elements.  If an array is
     #  encountered we will recursively call _list()
     
-    exports.$_last_list_item = $_last_list_item ? {}''
+    $_last_list_item = $_last_list_item ? {}
     for $key, $val of $list
       $_last_list_item = $key
       
@@ -389,9 +385,8 @@ if not function_exists('meta')
 if not function_exists('nbs')
   exports.nbs = nbs = ($num = 1) ->
     return str_repeat("&nbsp;", $num)
-    
-  
 
 
-#  End of file html_helper.php 
+
+#  End of file html_helper.php
 #  Location: ./system/helpers/html_helper.php 

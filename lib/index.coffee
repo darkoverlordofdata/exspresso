@@ -325,6 +325,13 @@ exports.microtime = () ->
 
 ## --------------------------------------------------------------------
 
+exports.mt_rand = ($min = 0, $max = 2147483647) ->
+
+  Math.floor(Math.random() * $max) - $min
+
+
+## --------------------------------------------------------------------
+
 exports.parse_str = ($str, $arr = {}) ->
 
   $p = querystring.parse($str)

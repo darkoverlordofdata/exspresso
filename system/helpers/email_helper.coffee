@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  language_helper.coffee
+#  email_helper.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -31,48 +31,43 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Language Helpers
+# CodeIgniter Email Helpers
 #
 # @package		CodeIgniter
 # @subpackage	Helpers
 # @category	Helpers
 # @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/helpers/language_helper.html
+# @link		http://codeigniter.com/user_guide/helpers/email_helper.html
 #
 
 #  ------------------------------------------------------------------------
 
 #
-# Lang
-#
-# Fetches a language variable and optionally outputs a form label
+# Validate email address
 #
 # @access	public
-# @param	string	the language line
-# @param	string	the id of the form element
-# @return	string
+# @return	bool
 #
-if not function_exists('lang')
-  exports.lang = lang = ($line, $id = '') ->
-    $CI = get_instance()
-    $line = $CI.lang.line($line)
+if not function_exists('valid_email')
+  exports.valid_email = valid_email = ($address) ->
+    return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
     
-    if $id isnt ''
-      $line = '<label for="' + $id + '">' + $line + "</label>"
-      
-    
-    return $line
+  
 
 #  ------------------------------------------------------------------------
+
 #
-# Export helpers to the global namespace
+# Send an email
 #
+# @access	public
+# @return	bool
 #
-for $name, $body of module.exports
-  define $name, $body
+if not function_exists('send_email')
+  exports.send_email = send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
+    return mail($recipient, $subject, $message)
+    
+  
 
 
-
-#  ------------------------------------------------------------------------
-#  End of file language_helper.php 
-#  Location: ./system/helpers/language_helper.php 
+#  End of file email_helper.php 
+#  Location: ./system/helpers/email_helper.php 

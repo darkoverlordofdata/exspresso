@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  path_helper.coffee
+#  xml_helper.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{defined, function_exists, is_dir, preg_match, preg_replace, realpath}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -37,7 +31,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Path Helpers
+# CodeIgniter XML Helpers
 #
 # @package		CodeIgniter
 # @subpackage	Helpers
@@ -49,39 +43,40 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #  ------------------------------------------------------------------------
 
 #
-# Set Realpath
+# Convert Reserved XML characters to Entities
 #
 # @access	public
 # @param	string
-# @param	bool	checks to see if the path exists
 # @return	string
 #
-if not function_exists('set_realpath')
-  exports.set_realpath = set_realpath = ($path, $check_existance = false) ->
-    #  Security check to make sure the path is NOT a URL.  No remote file inclusion!
-    if preg_match("#^(http:\/\/|https:\/\/|www\.|ftp|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#i", $path)
-      show_error('The path you submitted must be a local server path, not a URL')
+if not function_exists('xml_convert')
+  exports.xml_convert = xml_convert = ($str, $protect_all = false) ->
+    $temp = '__TEMP_AMPERSANDS__'
+    
+    #  Replace entities to temporary markers so that
+    #  ampersands won't get messed up
+    $str = preg_replace("/&#(\d+);/", "$temp\\1;", $str)
+    
+    if $protect_all is true
+      $str = preg_replace("/&(\w+);/", "$temp\\1;", $str)
       
     
-    #  Resolve the path
-    if function_exists('realpath') and realpath($path) isnt false
-      $path = realpath($path) + '/'
+    $str = str_replace(["&", "<", ">", "\"", "'", "-"], 
+    ["&amp;", "&lt;", "&gt;", "&quot;", "&apos;", "&#45;"], 
+    $str)
+    
+    #  Decode the temp markers back to entities
+    $str = preg_replace("/$temp(\d+);/", "&#\\1;", $str)
+    
+    if $protect_all is true
+      $str = preg_replace("/$temp(\w+);/", "&\\1;", $str)
       
     
-    #  Add a trailing slash
-    $path = preg_replace("#([^/])/*$#", "\\1/", $path)
-    
-    #  Make sure the path exists
-    if $check_existance is true
-      if not is_dir($path)
-        show_error('Not a valid path: ' + $path)
-        
-      
-    
-    return $path
+    return $str
     
   
 
+#  ------------------------------------------------------------------------
 
-#  End of file path_helper.php 
-#  Location: ./system/helpers/path_helper.php 
+#  End of file xml_helper.php 
+#  Location: ./system/helpers/xml_helper.php 

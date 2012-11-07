@@ -1,0 +1,36 @@
+<h1>Login Required</h1>
+<div class="row">
+    <div class="span1"></div>
+    <div class="span4">
+        <br />
+        <p>Valid username/passwords are:</p>
+        <ul>
+            <li>keith/melbourne</li>
+            <li>erwin/leuven</li>
+            <li>jeremy/atlanta</li>
+            <li>scott/rochester</li>
+        </ul>
+    </div>
+</div>
+<div class="hero-unit">
+    <form name='f' action='/travel/<%= db %>/authenticate' method='post'>
+        <input type="hidden" name="url" id="url" value="<%= url %>" />
+        <input type="hidden" name="hotelId" id="hotelId" value="#{hotelId}" />
+        <input type="hidden" name="bookingId" id="bookingId" value="#{bookingId}" />
+        <div class="control-group">
+            <label class="control-label" for="username">User:</label>
+            <input id="username" name="username" type="text" />
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Password:</label>
+            <input id="password" name="password" type="text" />
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="remember">Don't ask for my password for two weeks:</label>
+            <input id="password" name="remember" type="checkbox" />
+        </div>
+        <div class="control-group">
+            <input name='submit' type='submit' value='Login' />
+        </div>
+    </form>
+</div>

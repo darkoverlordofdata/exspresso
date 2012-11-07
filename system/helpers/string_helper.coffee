@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{count, defined, do_hash, func_get_args, func_num_args, function_exists, get_instance, helper, is_array, load, md5, mt_rand, preg_quote, preg_replace, str_repeat, str_replace, stripslashes, strlen, substr, trim, uniqid}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -199,26 +193,26 @@ if not function_exists('reduce_multiples')
 if not function_exists('random_string')
   exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
     switch $type
-      when 'basic'return mt_rand()
-        
+      when 'basic' then return mt_rand()
+
       when 'alnum','numeric','nozero','alpha'
         
         switch $type
-          when 'alpha'$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+          when 'alpha' then $pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
             
-          when 'alnum'$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+          when 'alnum' then $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
             
-          when 'numeric'$pool = '0123456789'
+          when 'numeric' then $pool = '0123456789'
             
-          when 'nozero'$pool = '123456789'
+          when 'nozero'then $pool = '123456789'
             
             
         
         $str = ''
-        for ($i = 0$i < $len$i++)
-        {
-        $str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
-        }
+        for $i in [0..$len-1]
+
+          $str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
+
         return $str
         
       when 'unique','md5'
@@ -247,16 +241,17 @@ if not function_exists('random_string')
 # @param	string (as many parameters as needed)
 # @return	string
 #
+_alternator = 0
+
 if not function_exists('alternator')
   exports.alternator = alternator =  ->
-    exports.$i = $i ? {}
-    
+
     if func_num_args() is 0
-      $i = 0
+      _alternator = 0
       return ''
       
     $args = func_get_args()
-    return $args[($i++count($args))]
+    return $args[(_alternator++ % count($args))]
     
   
 
@@ -272,7 +267,7 @@ if not function_exists('alternator')
 #
 if not function_exists('repeater')
   exports.repeater = repeater = ($data, $num = 1) ->
-    return if (($num > 0) then str_repeat($data, $num) else '')
+    return if $num > 0 then str_repeat($data, $num) else ''
     
   
 

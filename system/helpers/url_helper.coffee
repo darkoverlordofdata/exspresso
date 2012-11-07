@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{array_reverse, config, count, defined, function_exists, get_instance, header, is_array, is_string, item, ob_end_clean, ob_get_contents, ob_start, ord, parse_url, preg_match, preg_match_all, preg_replace, slash_item, str_replace, strip_tags, stripslashes, strlen, strtolower, substr, trim, uri}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -201,7 +195,7 @@ if not function_exists('anchor_popup')
       $attributes = {}
       
     
-    for $key, $val of 'width':'800', 'height':'600', 'scrollbars':'yes', 'status':'yes', 'resizable':'yes', 'screenx':'0', 'screeny':'0', 
+    for $key, $val of {width:'800', height:'600', scrollbars:'yes', status:'yes', resizable:'yes', screenx:'0', screeny:'0'}
       $atts[$key] = if ( not $attributes[$key]? ) then $val else $attributes[$key]
       delete $attributes[$key]
       
@@ -259,74 +253,55 @@ if not function_exists('safe_mailto')
     if $title is ""
       $title = $email
       
-    
-    for ($i = 0$i < 16$i++)
-    {
-    $x.push substr('<a href="mailto:', $i, 1)
-    }
-    
-    for ($i = 0$i < strlen($email)$i++)
-    {
-    $x.push "|" + ord(substr($email, $i, 1))
-    }
-    
+    $x = []
+    $x.push $c for $c in '<a href="mailto:'
+    $x.push "|" + $c.charCodeAt(0) for $c in $email
     $x.push '"'
     
     if $attributes isnt ''
       if is_array($attributes)
         for $key, $val of $attributes
           $x.push ' ' + $key + '="'
-          for ($i = 0$i < strlen($val)$i++)
-          {
-          $x.push "|" + ord(substr($val, $i, 1))
-          }
+          $x.push "|" + $c.charCodeAt(0) for $c in $val
           $x.push '"'
           
         
-      else 
-        for ($i = 0$i < strlen($attributes)$i++)
-        {
-        $x.push substr($attributes, $i, 1)
-        }
-        
-      
+      else
+        $x.push $c for $c in $attributes
+
     
     $x.push '>'
     
-    $temp = {}
-    for ($i = 0$i < strlen($title)$i++)
-    {
-    $ordinal = ord($title[$i])
-    
-    if $ordinal < 128
-      $x.push "|" + $ordinal
+    $temp = []
+    for $c in $title
+      $ordinal = $c.charCodeAt(0)
+
+      if $ordinal < 128
+        $x.push "|" + $ordinal
+
+      else
+        if count($temp) is 0
+          $count = if ($ordinal < 224) then 2 else 3
+
+
+        $temp.push $ordinal
+        if count($temp) is $count
+          $number = if ($count is 3) then (($temp['0'] % 16) * 4096) + (($temp['1'] % 64) * 64) + ($temp['2'] % 64) else (($temp['0'] % 32) * 64) + ($temp['1'] % 64)
+          $x.push "|" + $number
+          $count = 1
+          $temp = []
+
       
-    else 
-      if count($temp) is 0
-        $count = if ($ordinal < 224) then 2 else 3
-        
-      
-      $temp.push $ordinal
-      if count($temp) is $count
-        $number = if ($count is 3) then (($temp['0']16) * 4096) + (($temp['1']64) * 64) + ($temp['2']64) else (($temp['0']32) * 64) + ($temp['1']64)
-        $x.push "|" + $number
-        $count = 1
-        $temp = {}
-        
-      
-    }
-    
-    $x.push '<'$x.push '/'$x.push 'a'$x.push '>'
+
+    $x.push '<'
+    $x.push '/'
+    $x.push 'a'
+    $x.push '>'
     
     $x = array_reverse($x)
-    ob_start()
-    
-    $i = 0
-    for $val in $x echo $i++echo $val
-    $buffer = ob_get_contents()
-    ob_end_clean()
-    return $buffer
-    
+
+    return $x.join('')
+
   
 
 #  ------------------------------------------------------------------------
@@ -348,35 +323,32 @@ if not function_exists('safe_mailto')
 if not function_exists('auto_link')
   exports.auto_link = auto_link = ($str, $type = 'both', $popup = false) ->
     if $type isnt 'email'
-      if preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches)
+      $matches = preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str)
+      if $matches.length
         $pop = if ($popup is true) then " target=\"_blank\" " else ""
         
-        for ($i = 0$i < count($matches['0'])$i++)
-        {
-        $period = ''
-        if preg_match("|\.$|", $matches['6'][$i])
-          $period = '.'
-          $matches['6'][$i] = substr($matches['6'][$i], 0,  - 1)
-          
-        
-        $str = str_replace($matches['0'][$i], $matches['1'][$i] + '<a href="http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '"' + $pop + '>http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '</a>' + $period, $str)
-        }
-        
+        for $i in [0..count($matches['0'])-1]
+          $period = ''
+          if preg_match("|\.$|", $matches['6'][$i])
+            $period = '.'
+            $matches['6'][$i] = substr($matches['6'][$i], 0,  - 1)
+
+
+          $str = str_replace($matches['0'][$i], $matches['1'][$i] + '<a href="http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '"' + $pop + '>http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '</a>' + $period, $str)
+
       
     
     if $type isnt 'url'
       if preg_match_all("/([a-zA-Z0-9_\.\-\+]+)@([a-zA-Z0-9\-]+)\.([a-zA-Z0-9\-\.]*)/i", $str, $matches)
-        for ($i = 0$i < count($matches['0'])$i++)
-        {
-        $period = ''
-        if preg_match("|\.$|", $matches['3'][$i])
-          $period = '.'
-          $matches['3'][$i] = substr($matches['3'][$i], 0,  - 1)
-          
-        
-        $str = str_replace($matches['0'][$i], safe_mailto($matches['1'][$i] + '@' + $matches['2'][$i] + '.' + $matches['3'][$i]) + $period, $str)
-        }
-        
+        for $i in [0..count($matches['0'])-1]
+          $period = ''
+          if preg_match("|\.$|", $matches['3'][$i])
+            $period = '.'
+            $matches['3'][$i] = substr($matches['3'][$i], 0,  - 1)
+
+
+          $str = str_replace($matches['0'][$i], safe_mailto($matches['1'][$i] + '@' + $matches['2'][$i] + '.' + $matches['3'][$i]) + $period, $str)
+
       
     
     return $str
@@ -427,24 +399,19 @@ if not function_exists('prep_url')
 if not function_exists('url_title')
   exports.url_title = url_title = ($str, $separator = 'dash', $lowercase = false) ->
     if $separator is 'dash'
-      $search = '_'
-      $replace = '-'
-      
-    else 
-      $search = '-'
-      $replace = '_'
-      
-    
-    $trans = 
-      '&\#\d+?;':'', 
-      '&\S+?;':'', 
-      '\s+':$replace, 
-      '[^a-z0-9\-\._]':'', 
-      $replace + '+':$replace, 
-      $replace + '$':$replace, 
-      '^' + $replace:$replace, 
-      '\.+$':''
-      
+      $separator = '-'
+    else if $separator is 'underscore'
+      $separator = '_'
+
+    $q_separator = preg_quote($separator)
+
+    $trans =
+      '&.+?;': ''
+      '[^a-z0-9 _-]': ''
+      '\\s+': $separator
+
+    $trans['('+$q_separator+')+'] = $separator
+
     
     $str = strip_tags($str)
     
@@ -454,39 +421,9 @@ if not function_exists('url_title')
     
     if $lowercase is true
       $str = strtolower($str)
-      
-    
-    return trim(stripslashes($str))
-    
-  
 
-#  ------------------------------------------------------------------------
 
-#
-# Header Redirect
-#
-# Header redirect in two flavors
-# For very fine grained control over headers, you could use the Output
-# Library's set_header() function.
-#
-# @access	public
-# @param	string	the URL
-# @param	string	the method: location or redirect
-# @return	string
-#
-if not function_exists('redirect')
-  exports.redirect = redirect = ($uri = '', $method = 'location', $http_response_code = 302) ->
-    if not preg_match('#^https?://#i', $uri)
-      $uri = site_url($uri)
-      
-    
-    switch $method
-      when 'refresh'header("Refresh:0;url=" + $uri)
-        
-      elseheader("Location: " + $uri, true, $http_response_code)
-        
-        
-    die()
+    return trim($str, $separator)
     
   
 

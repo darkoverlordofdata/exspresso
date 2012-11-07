@@ -411,10 +411,9 @@ class global.CI_Loader
     if not @_ci_helpers[$helper]
       show_error 'Unable to load the requested file: helpers/'+$helper+EXT
 
-    # expose the helpers
-    $app = require(BASEPATH+'core/Exspresso'+EXT)
+    # expose the helpers to template engine
     for $name, $value of @_ci_helpers[$helper]
-      $app.locals[$name] = $value
+      $SRV.app.locals[$name] = $value
 
     @_ci_helpers[$helper]
 

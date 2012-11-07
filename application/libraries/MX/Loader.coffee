@@ -111,8 +111,16 @@ class global.MX_Loader extends CI_Loader
 
     if $path is false then return super($helper)
 
-    Modules.load_file($_helper, $path)
-    @_ci_helpers[$_helper] = true
+    #Modules.load_file($_helper, $path)
+    #@_ci_helpers[$_helper] = true
+
+    @_ci_helpers[$_helper] = Modules.load_file($_helper, $path)
+
+    # expose the helpers to template engine
+    for $name, $value of @_ci_helpers[$helper]
+      $SRV.app.locals[$name] = $value
+
+    @_ci_helpers[$helper]
 
   # Load an array of helpers *
   helpers: ($helpers) ->

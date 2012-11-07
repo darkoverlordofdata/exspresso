@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Time Travel</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/cupertino/jquery-ui-1.8.24.custom.css">
+</head>
+<body>
+<div class="container">
+    <h1>Time Travel</h1>
+    <h3>CI_DB_active_rec / postgres</h3>
+    <% err = flashdata('error') %>
+    <% if (err !== '') { %>
+    <div class='alert alert-error'>
+        <p><b>Error:</b><%= err %></p>
+    </div>
+    <% } %>
+    <% info = flashdata('error') %>
+    <% if (info !== '') { %>
+    <div class='alert alert-error'>
+        <p><b>Info:</b><%= info %></p>
+    </div>
+    <% } %>
+    <%- body %>
+    <footer>powered by &nbsp;
+        <a href="https://npmjs.org/package/exspresso"> e x s p r e s s o</a>
+    </footer>
+</div>
+<script type="text/javascript" src="/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.24.custom.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">$(function() {
+    $(".datepicker").datepicker();
+});</script>
+</body>
+</html>

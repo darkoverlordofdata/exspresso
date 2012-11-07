@@ -1,0 +1,97 @@
+<div class="hero-unit">
+    <h2>Book Hotel</h2>
+    <table class="table">
+        <tr>
+            <th>Name:</th>
+            <td><%= hotel.name %></td>
+        </tr>
+        <tr>
+            <th>Address:</th>
+            <td><%= hotel.address %></td>
+        </tr>
+        <tr>
+            <th>City, State:</th>
+            <td><%= hotel.city + ', ' + hotel.state %></td>
+        </tr>
+        <tr>
+            <th>Zip:</th>
+            <td><%= hotel.zip %></td>
+        </tr>
+        <tr>
+            <th>Country:</th>
+            <td><%= hotel.country %></td>
+        </tr>
+        <tr>
+            <th>Nightly rate:</th>
+            <td><%= hotel.price %></td>
+        </tr>
+    </table>
+
+    <form class="form" id="booking" action="/travel/<%= db%>/confirm" method="post">
+      <input type="hidden" name="hotelId" value="<%= hotel.id %>" />
+      <div class="control-group">
+        <label class="control-label" for="checkinDate">Check In:</label>
+        <input class="datepicker"  id="checkinDate" name="checkinDate" type="text"/>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="checkoutDate">Check Out:</label>
+        <input class="datepicker"  id="checkoutDate" name="checkinDate" type="text"/>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="beds">Room Preference:</label>
+        <select id="beds",name="beds">
+          <option value="1">One king-size bed</option>
+          <option value="2">Two double beds</option>
+          <option value="3">Three beds</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="smoking">Smoking Preference:</label>
+        <input id="smoking" name="smoking" type="radio" value="true" />
+        <label class="control-label" for="smoking">Smoking</label>
+        <input id="non-smoking" name="smoking" type="radio" value="false" checked="checked" />
+        <label class="control-label" for="non-smoking">Non Smoking</label>
+     </div>
+      <div class="control-group">
+        <label class="control-label" for="creditCard">Credit Card #:</label>
+        <input id="creditCard" name="creditCard" type="text" value="" />
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="creditCardName">Credit Card Name:</label>
+        <input id="creditCardName" name="creditCardName" type="text" value="" maxlength="40" />
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="creditCardExpiryMonth">Expiration Date:</label>
+        <div class="controls">
+          <select id="creditCardExpiryMonth" name="creditCardExpiryMonth" style="width:5.5em">
+            <option value="1">Jan</option>
+            <option value="2">Feb</option>
+            <option value="3">Mar</option>
+            <option value="4">Apr</option>
+            <option value="5">May</option>
+            <option value="6">Jun</option>
+            <option value="7">Jul</option>
+            <option value="8">Aug</option>
+            <option value="9">Sep</option>
+            <option value="10">Oct</option>
+            <option value="11">Nov</option>
+            <option value="12">Dec</option>
+          </select>              
+          <select id="creditCardExpiryYear" name="creditCardExpiryYear" style="width:5.5em">
+            <option value="1">2012</option>
+            <option value="2">2013</option>
+            <option value="3">2014</option>
+            <option value="4">2015</option>
+            <option value="5">2016</option>
+          </select>            
+        </div>
+
+      </div>
+      <div class="control-group">
+        <input class="btn btn-primary" name="proceed" type="submit" value="Proceed" />
+        &nbsp;
+        <input class="btn" name="cancel" type="submit" value="Cancel" />
+      </div>
+    </form>
+    <p>Page rendered in {elapsed_time} ms</p>
+</div>

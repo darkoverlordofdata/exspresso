@@ -117,7 +117,10 @@ class global.MX_Router extends CI_Router
       $ext = ''
     else
       $views = Modules.views[@fetch_module()]+'/'
-      $ext = '.'+@config.config['view_ext']
+      if @config.config['view_ext'][0] is '.'
+        $ext = @config.config['view_ext']
+      else
+        $ext = '.'+@config.config['view_ext']
 
     @routes[$path] = do($class, $method, $views, $ext) ->
       # --------------------------------------------------------------------

@@ -1,0 +1,21 @@
+<%- form_open('users/login', {'id': 'login-small'}) %>
+<%  if (typeof $redirect_hash !=='undefined') { %>
+<%- form_hidden('redirect_hash', $redirect_hash) %>
+<% } %>
+<ul>
+	<li class="email">
+		<label for="email"><%= lang('user_email') %></label>
+		<input type="text" id="email" name="email" maxlength="120" />
+	</li>
+	<li class="pword">
+		<label for="password"><%= lang('user_password') %></label>
+		<input type="password" id="password" name="password" maxlength="20" />
+	</li>
+	<li class="form-buttons">
+		<input type="submit" value="<%= lang('user_login_btn') %>" name="btnLogin" /> | <%- anchor('register', lang('user_register_btn'))%>
+	</li>
+	<li class="remember-me">
+		<%- form_checkbox('remember', '1', FALSE) %><span><%= lang('user_remember')%></span>
+	</li>
+</ul>
+<%- form_close() %>
