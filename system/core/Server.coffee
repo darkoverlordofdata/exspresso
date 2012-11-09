@@ -272,15 +272,12 @@ class global.CI_Server
       $CI = new $class()
 
       #$CI.load.view = ($view, $data, $fn) ->
-      #  $res.render $view, $data, $fn
-
-      $CI.load.view = ($view, $data, $fn) ->
-        $RTR.load_view $res, $view, $data, $fn
+      #  $RTR.load_view $res, $view, $data, $fn
 
       $CI.redirect = ($path) ->
         $res.redirect $path
 
-      # was database added by the controller constructor?
+      # is there a database connection?
       if $CI.db?
         # initialize the database connection
         $CI.db.initialize ->

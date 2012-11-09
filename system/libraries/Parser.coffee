@@ -39,7 +39,7 @@
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/libraries/parser.html
 #
-class CI_Parser
+class global.CI_Parser
   
   l_delim: '{'
   r_delim: '}'
@@ -57,14 +57,12 @@ class CI_Parser
   # @param	bool
   # @return	string
   #
-  parse($template, $data, $return = false)
-  {
-  $CI = get_instance()
-  $template = $CI.load.view($template, $data, true)
-  
-  return @_parse($template, $data, $return)
-  }
-  
+  parse: ($template, $data, $return = false) ->
+    $CI = get_instance()
+    $template = $CI.load.view($template, $data, true)
+
+    return @_parse($template, $data, $return)
+
   #  --------------------------------------------------------------------
   
   #
@@ -205,7 +203,6 @@ class CI_Parser
   
   
 
-register_class 'CI_Parser', CI_Parser
 module.exports = CI_Parser
 #  END Parser Class
 

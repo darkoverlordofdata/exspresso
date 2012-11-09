@@ -43,6 +43,8 @@
 #
 class global.CI_Loader
 
+  path = require('path')
+
   # All these are set automatically. Don't mess with them.
   #
   # List of loaeded base classes
@@ -278,11 +280,15 @@ class global.CI_Loader
 
       # Allows models to access CI's loaded classes using the same
       # syntax as controllers:
-      # TODO: use ownProperty?
-      #       copy libraries
-      @_CI[$name]         = new $Model()
-      @_CI[$name].load    = @_CI.load
-      @_CI[$name].config  = @_CI.config
+      $model = new $Model()
+      for $var, $value of @_CI
+        if typeof @_CI[$var] isnt 'function'
+          if not $model[$var]?
+            $model[$var] = $value
+
+      @_CI[$name]         = $model
+      #@_CI[$name].load    = @_CI.load
+      #@_CI[$name].config  = @_CI.config
 
       @_ci_models.push $name
       return
@@ -351,6 +357,71 @@ class global.CI_Loader
 
     @_CI.dbutil = new $class()
 
+  #  --------------------------------------------------------------------
+
+  #
+  # Load the Database Forge Class
+  #
+  # @access	public
+  # @return	string
+  #
+  dbforge :  ->
+    if not class_exists('CI_DB')
+      @database()
+
+
+    # $CI = get_instance()
+
+    require(BASEPATH + 'database/DB_forge' + EXT)
+    require(BASEPATH + 'database/drivers/' + $CI.db.dbdriver + '/' + $CI.db.dbdriver + '_forge' + EXT)
+    $class = 'CI_DB_' + $CI.db.dbdriver + '_forge'
+
+    @_CI.dbforge = new $class()
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Load View
+  #
+  # This function is used to load a "view" file.  It has three parameters:
+  #
+  # 1. The name of the "view" file to be included.
+  # 2. An associative array of data to be extracted for use in the view.
+  # 3. TRUE/FALSE - whether to return the data or load it.  In
+  # some cases it's advantageous to be able to return data so that
+  # a developer can process it in some way.
+  #
+  # @access	public
+  # @param	string
+  # @param	array
+  # @param	bool
+  # @return	void
+  #
+  view: ($view, $vars = {}, $callback = null) ->
+    @_ci_load('', $view, $vars, $callback)
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Set Variables
+  #
+  # Once variables are set they become available within
+  # the controller class and its "view" files.
+  #
+  # @access	public
+  # @param	array
+  # @return	void
+  #
+  vars: ($vars = {}, $val = '') ->
+    if $val isnt '' and is_string($vars)
+      $vars = array($vars, $val)
+
+
+    if is_array($vars) and count($vars) > 0
+      for $key, $val of $vars
+        @_ci_cached_vars[$key] = $val
+
+
   ## --------------------------------------------------------------------
 
   #
@@ -363,9 +434,8 @@ class global.CI_Loader
   # @param	bool
   # @return	string
   #
-  file: ($path, $return = false) ->
-
-    @_ci_load({_ci_path: $path, _ci_return: $return})
+  file: ($path, $callback) ->
+    @_ci_load($path, '', {}, $callback)
 
   ## --------------------------------------------------------------------
 
@@ -416,36 +486,6 @@ class global.CI_Loader
       $SRV.app.locals[$name] = $value
 
     @_ci_helpers[$helper]
-
-  ## --------------------------------------------------------------------
-
-  #
-  # Load Middleware
-  #
-  # This function loads the specified connect middleware
-  #
-  # @access	public
-  # @param	mixed
-  # @return	void
-  #
-  middleware: ($middlewares = []) ->
-
-    for $middleware in $middlewares
-      if @_ci_middleware[$middleware]?
-        continue
-
-      # Try to load the middleware
-      $loaded = false
-      for $path in @_ci_middleware_paths
-        if file_exists($path+'middleware/'+$middleware+EXT)
-          require($path+'middleware/'+$middleware+EXT)()
-          $loaded = true
-          console.log 'Middleware loaded: '+$middleware
-          break
-
-      # unable to load the helper
-      if not $loaded
-        show_error 'Unable to load the requested file: middleware/'+$middleware+EXT
 
   ## --------------------------------------------------------------------
 
@@ -591,7 +631,73 @@ class global.CI_Loader
     @_ci_model_paths = array_unique(array_merge(@_ci_model_paths, [APPPATH]))
     $config.config_paths = array_unique(array_merge($config.config_paths, [APPPATH]))
 
+
+
   #  --------------------------------------------------------------------
+
+  #
+  # Loader
+  #
+  # This function is used to load views and files.
+  # Variables are prefixed with _ci_ to avoid symbol collision with
+  # variables made available to view files
+  #
+  # @access	private
+  # @param	array
+  # @return	void
+  #
+  _ci_load : ($_ci_path = '', $_ci_view = '', $_ci_vars = {}, $_ci_return = null) ->
+
+    #  Set the path to the requested file
+    if $_ci_path is ''
+      $_ci_ext = path.extname($_ci_view)
+      $_ci_file = if ($_ci_ext is '') then $_ci_view + EXT else $_ci_view
+      $_ci_path = @_ci_view_path + $_ci_file
+
+    else
+      $_ci_x = explode('/', $_ci_path)
+      $_ci_file = end($_ci_x)
+
+
+    if not file_exists($_ci_path)
+      show_error('Unable to load the requested file: ' + $_ci_file)
+
+
+    #  This allows anything loaded using $this->load (views, files, etc.)
+    #  to become accessible from within the Controller and Model functions.
+
+    #$_ci_CI = get_instance()
+    for $_ci_key, $_ci_var of @_CI
+      if typeof @_CI[$_ci_key] isnt 'function'
+        if not @[$_ci_key]?
+          @[$_ci_key] = @_CI[$_ci_key]
+
+
+
+    #
+    # Extract and cache variables
+    #
+    # You can either set variables using the dedicated $this->load_vars()
+    # function or via the second parameter of this function. We'll merge
+    # the two types and cache them so that views that are embedded within
+    # other views can have access to these variables.
+    #
+    if is_array($_ci_vars)
+      @_ci_cached_vars = array_merge(@_ci_cached_vars, $_ci_vars)
+
+    #extract(@_ci_cached_vars)
+
+    #require($_ci_path)#  include() vs include_once() allows for multiple views with the same name
+
+    $SRV.app.render $_ci_path, @_ci_cached_vars, $_ci_return
+
+    log_message('debug', 'File loaded: ' + $_ci_path)
+
+
+
+
+
+#  --------------------------------------------------------------------
 
   #
   # Load class
