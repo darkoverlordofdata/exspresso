@@ -63,7 +63,8 @@ class global.MX_Loader extends CI_Loader
     super($CI, $autoload)
 
     #  set the module name
-    @_module = CI.$APP.router.fetch_module()
+    #@_module = @_CI.router.fetch_module()
+    @_module = $CI.router.fetch_module()
 
     #  add this module path to the loader variables
     @_add_module_paths(@_module)
@@ -84,21 +85,21 @@ class global.MX_Loader extends CI_Loader
   # Load a module config file *
   config: ($file = 'config', $use_sections = false, $fail_gracefully = false) ->
     
-    CI.$APP.config.load($file, $use_sections, $fail_gracefully, @_module)
+    @_CI.config.load($file, $use_sections, $fail_gracefully, @_module)
 
 
   #  Load the database drivers *
   database: ($params = '',$return = false,$active_record = null) ->
 
     
-    if class_exists('CI_DB') and $return is false and $active_record is null and CI.$APP.db?  and is_object(CI.$APP.db)
+    if class_exists('CI_DB') and $return is false and $active_record is null and @_CI.db?  and is_object(@_CI.db)
       return
 
     DB = require(BASEPATH + 'database/DB' + EXT)
 
     if $return is true then return DB($params, $active_record)
 
-    CI.$APP.db = DB($params, $active_record)
+    @_CI.db = DB($params, $active_record)
 
   # Load a module helper *
   helper: ($helper) ->
@@ -129,8 +130,7 @@ class global.MX_Loader extends CI_Loader
 
   # Load a module language file *
   language: ($langfile, $idiom = '', $return = false, $add_suffix = true, $alt_path = '') ->
-    
-    return CI.$APP.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
+    return @_CI.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
 
     
   languages: ($languages) ->
@@ -140,13 +140,12 @@ class global.MX_Loader extends CI_Loader
   #  Load a module library *
   library: ($library, $params = null,$object_name = null) ->
 
-
     if is_array($library) then return @libraries($library)
 
     $class = strtolower(end(explode('/', $library)))
 
     if @_ci_classes[$class]? and ($_alias = @_ci_classes[$class])
-      return CI.$APP.$_alias
+      return @_CI[$_alias]
 
     ($_alias = strtolower($object_name)) or ($_alias = $class)
 
@@ -168,11 +167,11 @@ class global.MX_Loader extends CI_Loader
       Modules.load_file($_library, $path)
 
       $library = ucfirst($_library)
-      CI.$APP.$_alias = new (get_class($library)($params))
+      @_CI[$_alias] = new (get_class($library)($params))
 
       @_ci_classes[$class] = $_alias
 
-    return CI.$APP.$_alias
+    return @_CI[$_alias]
 
   
   # Load an array of libraries *
@@ -183,14 +182,13 @@ class global.MX_Loader extends CI_Loader
   
   #  Load a module model *
   model: ($model, $object_name = null,$connect = false) ->
-    
 
     if (is_array($model)) then return @models($model)
   
     ($_alias = $object_name) or ($_alias = end(explode('/', $model)))
     
     if in_array($_alias, @_ci_models, true)
-      return CI.$APP.$_alias
+      return @_CI[$_alias]
     
     # check module *
     [$path, $_model] = Modules.find(strtolower($model), @_module, 'models/')
@@ -212,11 +210,11 @@ class global.MX_Loader extends CI_Loader
       Modules.load_file($_model, $path)
 
       $model = ucfirst($_model)
-      CI.$APP.$_alias = new $model()
+      @_CI[$_alias] = new $model()
 
       @_ci_models.push $_alias
 
-    return CI.$APP.$_alias
+    return @_CI[$_alias]
 
   #* Load an array of models *
   models: ($models) ->
@@ -230,8 +228,8 @@ class global.MX_Loader extends CI_Loader
     if is_array($module) then return @modules($module)
   
     $_alias = strtolower(end(explode('/', $module)))
-    CI.$APP.$_alias = Modules.load(array($module , $params))
-    return CI.$APP.$_alias
+    @_CI[$_alias] = Modules.load(array($module , $params))
+    return @_CI[$_alias]
 
 
     # Load an array of controllers
@@ -259,16 +257,20 @@ class global.MX_Loader extends CI_Loader
     for $_plugin in $plugins
       @plugin($_plugin)
 
+  # Load a module view
+  view: ($view, $vars = {}, $callback = null) ->
+    [$path, $view] = Modules.find($view, @_module, 'views/')
+    @_ci_view_path = if $path then $path else APPPATH + config_item('views')
+    @_ci_load('', $view, $vars, $callback)
+
   _ci_is_instance: ->
     return
   
   _ci_get_component: ($component) ->
-    
-    return CI.$APP.$component
+    return @_CI[$component]
 
   # Autoload module items
   _autoloader: ($autoload) ->
-    
 
     $path = false
 
@@ -302,7 +304,7 @@ class global.MX_Loader extends CI_Loader
     if $autoload['libraries']?
       if in_array('database', $autoload['libraries'])
         #  autoload database
-        if not ($db = CI.$APP.config.item('database'))
+        if not ($db = @_CI.config.item('database'))
           $db['params'] = 'default'
           $db['active_record'] = true
 

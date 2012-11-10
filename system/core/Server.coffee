@@ -250,9 +250,7 @@ class global.CI_Server
   #   @param string method
   #   @return function
   #
-  controller: ($class, $method) ->
-
-    # --------------------------------------------------------------------
+  controllerz: ($class, $method) ->
 
     #
     # Invoke the contoller
@@ -266,25 +264,16 @@ class global.CI_Server
     #   @param {Function} the next middleware on the stack
     #   @param {Array} the remaining arguments
     #
-    return ($req, $res, $next, $args...) ->
+    ($req, $res, $next, $args...) ->
 
       # a new copy of the controller class for each request:
       $CI = new $class()
 
-      #$CI.load.view = ($view, $data, $fn) ->
-      #  $RTR.load_view $res, $view, $data, $fn
+      $CI.redirect = ($path) -> $res.redirect $path
 
-      $CI.redirect = ($path) ->
-        $res.redirect $path
-
-      # is there a database connection?
       if $CI.db?
-        # initialize the database connection
-        $CI.db.initialize ->
-          # now call the controller method
-          $CI[$method].apply $CI, $args
+        $CI.db.initialize -> $CI[$method].apply $CI, $args
       else
-        # just call the controller method
         $CI[$method].apply $CI, $args
 
       return

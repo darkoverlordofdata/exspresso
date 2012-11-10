@@ -94,16 +94,18 @@ exports.load = load = ($module) ->
   $segments = explode('/', $module)
 
   # find the controller 
-  $class = CI.$APP.router.locate($segments)
+  # $class = CI.$APP.router.locate($segments)
+  $class = $RTR.locate($segments)
 
   # controller cannot be located
   if not $class? then return
 
   # set the module directory
-  $path = APPPATH+'controllers/'+CI.$APP.router.fetch_directory()
+  # $path = APPPATH+'controllers/'+CI.$APP.router.fetch_directory()
+  $path = APPPATH+'controllers/'+$RTR.fetch_directory()
 
   # load the controller class
-  $class = $class+CI.$APP.config.item('controller_suffix')
+  # $class = $class+CI.$APP.config.item('controller_suffix')
   load_file $class, $path
 
   # create and register the new controller
@@ -140,7 +142,10 @@ exports.find = find = ($file, $module, $base) ->
 
   $file = $segments.pop()
 
-  $file_ext = if strpos($file, '.') then $file else $file+EXT
+  if $base is 'views/'
+    $file_ext = if strpos($file, '.') then $file else $file+config_item('view_ext')
+  else
+    $file_ext = if strpos($file, '.') then $file else $file+EXT
 
   $path = ltrim(implode('/', $segments)+'/', '/')
   if $module then $modules[$module] = $path else $modules = {}
@@ -164,7 +169,7 @@ exports.find = find = ($file, $module, $base) ->
     if is_file(APPPATH+$base+$path+$file_ext) then return [APPPATH+$base+$path, $file]
     show_error "Unable to locate the file: #{$path}#{$file_ext}"
 
-  [false, $file]
+  return [false, $file]
 
 # Parse module routes #
 exports.parse_routes = parse_routes = ($module, $uri) ->

@@ -286,10 +286,7 @@ class global.CI_Loader
           if not $model[$var]?
             $model[$var] = $value
 
-      @_CI[$name]         = $model
-      #@_CI[$name].load    = @_CI.load
-      #@_CI[$name].config  = @_CI.config
-
+      @_CI[$name] = $model
       @_ci_models.push $name
       return
 
@@ -651,8 +648,8 @@ class global.CI_Loader
     #  Set the path to the requested file
     if $_ci_path is ''
       $_ci_ext = path.extname($_ci_view)
-      $_ci_file = if ($_ci_ext is '') then $_ci_view + EXT else $_ci_view
-      $_ci_path = @_ci_view_path + $_ci_file
+      $_ci_file = if ($_ci_ext is '') then $_ci_view + config_item('view_ext') else $_ci_view
+      $_ci_path = @_ci_view_path + '/' + $_ci_file
 
     else
       $_ci_x = explode('/', $_ci_path)
@@ -672,8 +669,6 @@ class global.CI_Loader
         if not @[$_ci_key]?
           @[$_ci_key] = @_CI[$_ci_key]
 
-
-
     #
     # Extract and cache variables
     #
@@ -685,11 +680,8 @@ class global.CI_Loader
     if is_array($_ci_vars)
       @_ci_cached_vars = array_merge(@_ci_cached_vars, $_ci_vars)
 
-    #extract(@_ci_cached_vars)
 
-    #require($_ci_path)#  include() vs include_once() allows for multiple views with the same name
-
-    $SRV.app.render $_ci_path, @_ci_cached_vars, $_ci_return
+    @_CI.render $_ci_path, @_ci_cached_vars, $_ci_return
 
     log_message('debug', 'File loaded: ' + $_ci_path)
 
