@@ -28,8 +28,7 @@
 
 ## Features
 
-* Jade templating engine
-* Bootstrap/LESS stylesheets
+* Ejs templating engine
 * CodeIgniter style ActiveRecord
 * Port of HMVC extension by Wiredesignz
 * Edit configuration defaults in application/config/config.coffee
