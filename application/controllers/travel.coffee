@@ -32,19 +32,16 @@ class Travel extends CI_Controller
   login: ($db) ->
 
     $url        = @input.get_post('url')
-    $hotelId    = @input.get_post('hotelId')
-    $bookingId  = @input.get_post('bookingId')
 
     @db = @load.database($db, true)
     @db.initialize =>
 
+
       if @input.cookie('username') is ''
 
         @load.view "travel/login",
-          db:  $db
+          db: $db
           url: $url
-          hotelId: $hotelId
-          bookingId: $bookingId
 
       else
 
@@ -52,20 +49,10 @@ class Travel extends CI_Controller
         @db.where 'username', @input.cookie('username')
         @db.get ($err, $customer) =>
 
-          if $err
+          if $err or $customer.num_rows is 0
             @load.view "travel/login",
-              db:  $db
+              db: $db
               url: $url
-              hotelId: $hotelId
-              bookingId: $bookingId
-            return
-
-          if $customer.num_rows is 0
-            @load.view "travel/login",
-              db:  $db
-              url: $url
-              hotelId: $hotelId
-              bookingId: $bookingId
             return
 
           $customer = $customer.row()
@@ -75,7 +62,7 @@ class Travel extends CI_Controller
             @session.set_flashdata 'info', 'Hello '+$customer.name
             @redirect $url
           else
-            @redirect "/travel/#{db}/logout"
+            @redirect "/travel/#{$db}/logout"
 
 
   ## --------------------------------------------------------------------
@@ -164,31 +151,14 @@ class Travel extends CI_Controller
 
         @load.view "travel/main",
 
-          db:       $db
-          bookings: $bookings.result()
-          form:
-            action:       "/travel/#{$db}/hotels"
-            attrs:
-              name:       'mainForm'
-              class:      'form-search'
-            hidden:
-              mainForm:   'mainForm'
-            submit:
-              name:       'findHotels'
-              value:      'Search'
-              class:      'btn btn-primary'
-          searchString:
-            name:         'searchString'
-            value:        @input.get("searchString")
-            class:        'input-medium search-query'
-          pageSize:
-            name:         'pageSize'
-            options:
+          db:             $db
+          bookings:       $bookings.result()
+          searchString:   @input.get("searchString")
+          pageSize:       ''+parseInt(@input.get('pageSize'),10)
+          pageSizes:
               '5':    5
               '10':   10
               '20':   20
-            selected: ''+parseInt(@input.get('pageSize'),10)
-            extras:   'id="pageSize" size="1"'
 
 
 
@@ -216,9 +186,10 @@ class Travel extends CI_Controller
 
         @load.view "travel/hotels",
 
-          db:     $db
-          hotels: $hotels.result()
-          change: "/travel/#{$db}?searchString=#{$searchString}&pageSize=#{$pageSize}"
+          db:           $db
+          hotels:       $hotels.result()
+          searchString: $searchString
+          pageSize:     $pageSize
 
 
 
@@ -243,21 +214,9 @@ class Travel extends CI_Controller
 
         @load.view "travel/detail",
 
-          db:     $db
-          hotel:  $hotel.row()
-          form:
-            action: "/travel/#{$db}/booking/#{$id}"
-            attrs:  ''
-            hidden:
-                    hotelId:    $id
-            submit:
-                    name:       'submit'
-                    value:      'Book Hotel'
-                    class:      'btn btn-primary'
-            cancel:
-                    name:       'cancel'
-                    value:      'Back to Search'
-                    class:      'btn'
+          db:       $db
+          id:       $id
+          hotel:    $hotel.row()
 
 
   ## --------------------------------------------------------------------
@@ -283,84 +242,32 @@ class Travel extends CI_Controller
       @db.get ($err, $hotel) =>
 
         @load.view "travel/booking",
-          db:     $db
-          hotel:  $hotel.row()
-          form:
-            action: "/travel/#{$db}/confirm/#{$id}"
-            attrs:
-                    class:      'form'
-            hidden:
-                    hotelId:    $id
-            submit:
-                    name:       'submit'
-                    value:      'Proceed'
-                    class:      'btn btn-primary'
-            cancel:
-                    name:       'cancel'
-                    value:      'Cancel'
-                    class:      'btn'
-          checkinDate:
-                    name:       'checkinDate'
-                    class:      'datepicker'
-          checkoutDate:
-                    name:       'checkoutDate'
-                    class:      'datepicker'
-          control_label:
-                    class:      'control-label'
+          db:       $db
+          id:       $id
+          hotel:    $hotel.row()
           beds:
-                    name:       'beds'
-                    options:
-                                '1':    'One king-size bed'
-                                '2':    'Two double beds'
-                                '3':    'Three beds'
-                    selected:   ''
-                    extras:     ''
-          smoking:
-                    name:       'smoking'
-                    id:         'smoking'
-                    value:      true
-                    checked:    false
-          nonSmoking:
-                    name:       'smoking'
-                    id:         'non-smoking'
-                    value:      false
-                    checked:    true
-          cardNumber:
-                    name:       'cardNumber'
-                    id:         'cardNumber'
-                    value:      ''
-          cardName:
-                    name:       'cardName'
-                    id:         'cardName'
-                    value:      ''
-                    maxlength:  '40'
+                    '1':    'One king-size bed'
+                    '2':    'Two double beds'
+                    '3':    'Three beds'
           cardMonth:
-                    name:       'cardMonth'
-                    options:
-                                '1':    'Jan'
-                                '2':    'Feb'
-                                '3':    'Mar'
-                                '4':    'Apr'
-                                '5':    'May'
-                                '6':    'Jun'
-                                '7':    'Jul'
-                                '8':    'Aug'
-                                '9':    'Sep'
-                                '10':   'Oct'
-                                '11':   'Nov'
-                                '12':   'Dev'
-                    selected:   ''
-                    extras:     'style="width:5.5em"'
+                    '1':    'Jan'
+                    '2':    'Feb'
+                    '3':    'Mar'
+                    '4':    'Apr'
+                    '5':    'May'
+                    '6':    'Jun'
+                    '7':    'Jul'
+                    '8':    'Aug'
+                    '9':    'Sep'
+                    '10':   'Oct'
+                    '11':   'Nov'
+                    '12':   'Dev'
           cardYear:
-                    name:       'cardYear'
-                    options:
-                                '1':    '2012'
-                                '2':    '2013'
-                                '3':    '2014'
-                                '4':    '2015'
-                                '5':    '2016'
-                    selected:   ''
-                    extras:     'style="width:5.5em"'
+                    '1':    '2012'
+                    '2':    '2013'
+                    '3':    '2014'
+                    '4':    '2015'
+                    '5':    '2016'
 
 
 
@@ -393,18 +300,18 @@ class Travel extends CI_Controller
         $hotel = $hotel.row()
         $customer = @session.userdata('customer')
         $booking =
-          username:               $customer.username
-          hotel:                  $hotel.id
-          checkinDate:            moment(@input.post('checkinDate'), "MM-DD-YYYY")
-          checkoutDate:           moment(@input.post('checkoutDate'), "MM-DD-YYYY")
-          card:             @input.post('card')
-          cardName:         @input.post('cardName')
-          cardExpiryMonth:  parseInt(@input.post('cardExpiryMonth'))
-          cardExpiryYear:   parseInt(@input.post('cardExpiryYear'))
-          smoking:                @input.post('smoking')
-          beds:                   1
-          amenities:              @input.post('amenities')
-          state:                  "CREATED"
+          username:       $customer.username
+          hotel:          $hotel.id
+          checkinDate:    moment(@input.post('checkinDate'), "MM-DD-YYYY")
+          checkoutDate:   moment(@input.post('checkoutDate'), "MM-DD-YYYY")
+          cardNumber:     @input.post('cardNumber')
+          cardName:       @input.post('cardName')
+          cardMonth:      parseInt(@input.post('cardMonth'))
+          cardYear:       parseInt(@input.post('cardYear'))
+          smoking:        @input.post('smoking')
+          beds:           1
+          amenities:      @input.post('amenities')
+          state:          "CREATED"
 
         @db.insert 'booking', $booking, ($err) =>
 

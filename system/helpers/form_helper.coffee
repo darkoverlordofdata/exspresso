@@ -164,9 +164,15 @@ if not function_exists('form_input')
       name:   if not is_array($data) then $data else ''
       value:  $value
     
-    return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
+    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
     
-  
+
+_parse_extra = ($extra = '') ->
+
+  if typeof $extra is 'string' then return ' '+$extra
+  if is_array($extra) then return ' '+_parse_form_attributes($extra, {})
+  return ''
+
 
 #  ------------------------------------------------------------------------
 
@@ -243,7 +249,7 @@ if not function_exists('form_textarea')
       
     
     $name = if (is_array($data)) then $data['name'] else $data
-    return "<textarea " + _parse_form_attributes($data, $defaults) + $extra + ">" + form_prep($val, $name) + "</textarea>"
+    return "<textarea " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + ">" + form_prep($val, $name) + "</textarea>"
     
   
 
@@ -298,9 +304,9 @@ if not function_exists('form_dropdown')
 
       
     
-    if $extra isnt '' then $extra = ' ' + $extra
+    #if $extra isnt '' then $extra = ' ' + $extra
     $multiple = if (count($selected) > 1 and strpos($extra, 'multiple') is false) then ' multiple="multiple"' else ''
-    $form = '<select name="' + $name + '"' + $extra + $multiple + ">\n"
+    $form = '<select name="' + $name + '"' + _parse_extra($extra) + $multiple + ">\n"
     for $key, $val of $options
       $key = ''+$key
 
@@ -360,8 +366,7 @@ if not function_exists('form_checkbox')
     else 
       delete $defaults['checked']
 
-    return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
-    return "<input  />"
+    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
 
   
 
@@ -406,7 +411,7 @@ if not function_exists('form_submit')
       name:   if not is_array($data) then $data else ''
       value:  $value
     
-    return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
+    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
     
   
 
@@ -428,7 +433,7 @@ if not function_exists('form_reset')
       name:   if not is_array($data) then $data else ''
       value:  $value
     
-    return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
+    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
     
   
 
@@ -454,7 +459,7 @@ if not function_exists('form_button')
       delete $data['content']#  content is not an attribute
       
     
-    return "<button " + _parse_form_attributes($data, $defaults) + $extra + ">" + $content + "</button>"
+    return "<button " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + ">" + $content + "</button>"
     
   
 

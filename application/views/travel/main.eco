@@ -1,13 +1,13 @@
  <div class="hero-unit">
      <span class="errors"></span>
      <h2>Search Hotels</h2>
-     <%- form_open(@form.action, @form.attrs, @form.hidden) %>
-        <%- form_input(@searchString) %>
-        <%- form_submit(@form.submit) %>
+     <%- form_open("/travel/#{@db}/hotels", class:'form-search') %>
+        <%- form_input('searchString', @searchString, class:'input-medium search-query') %>
+        <%- form_submit('submit', 'Search', class:'btn btn-primary') %>
         <p></p>
-        <%- form_label('Maximum results:', @pageSize.name) %>
+        <%- form_label('Maximum results:', 'pageSize') %>
         <p></p>
-        <%- form_dropdown(@pageSize.name, @pageSize.options, @pageSize.selected, @pageSize.extras) %>
+        <%- form_dropdown('pageSize', @pageSizes, @pageSize, size:1) %>
      <%- form_close() %>
      <h2>Current Hotel Bookings</h2>
      <div class="row">
@@ -32,7 +32,7 @@
                  <td><%= $booking.checkinDate %></td>
                  <td><%= $booking.checkoutDate %></td>
                  <td><%= $booking.id %></td>
-                 <td><%- anchor('/travel'+@db+'/cancel/'+$booking.id, 'Cancel', 'class="btn"') %></td>
+                 <td><%- anchor("/travel/#{@db}/cancel/#{$booking.id}", 'Cancel', class:'btn') %></td>
              </tr>
              <% end %>
              </tbody>

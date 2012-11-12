@@ -5,6 +5,11 @@
     <title>Time Travel</title>
     <link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="stylesheet" href="/css/cupertino/jquery-ui-1.8.24.custom.css">
+    <style>
+        .card-exp {
+            width:5.5em;
+        }
+    </style>
 </head>
 <body>
 <div class="container">

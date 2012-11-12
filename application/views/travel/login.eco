@@ -13,24 +13,26 @@
     </div>
 </div>
 <div class="hero-unit">
-    <form name='f' action='/travel/<%= @db %>/authenticate' method='post'>
-        <input type="hidden" name="url" id="url" value="<%= @url %>" />
-        <input type="hidden" name="hotelId" id="hotelId" value="<%= @hotelId %>" />
-        <input type="hidden" name="bookingId" id="bookingId" value="<%= @bookingId %>" />
+    <%- form_open("/travel/#{@db}/authenticate", '', url:@url) %>
+
         <div class="control-group">
-            <label class="control-label" for="username">User:</label>
-            <input id="username" name="username" type="text" />
+            <%- form_label('User:', 'username', class:'control-label') %>
+            <%- form_input('username') %>
         </div>
+
         <div class="control-group">
-            <label class="control-label" for="password">Password:</label>
-            <input id="password" name="password" type="text" />
+            <%- form_label('Password:', 'password', class:'control-label') %>
+            <%- form_input('password') %>
         </div>
+
         <div class="control-group">
-            <label class="control-label" for="remember">Don't ask for my password for two weeks:</label>
-            <input id="password" name="remember" type="checkbox" />
+            <%- form_checkbox('remember', false, false) %>
+            <%- form_label('Don\'t ask for my password for two weeks:', 'remember', class:'control-label') %>
         </div>
+
         <div class="control-group">
-            <input name='submit' type='submit' value='Login' />
+            <%- form_submit('submit', 'Login', class:'btn btn-primary') %>
         </div>
-    </form>
+
+    <%- form_close() %>
 </div>

@@ -19,13 +19,13 @@
                 <td><%= $hotel.address %></td>
                 <td><%= $hotel.city + ', ' + $hotel.state %></td>
                 <td><%= $hotel.zip %></td>
-                <td><%- anchor('/travel/'+@db+'/hotel/'+$hotel.id, 'View', 'class="btn"') %></td>
+                <td><%- anchor("/travel/#{@db}/hotel/#{$hotel.id}", 'View', class:'btn') %></td>
             </tr>
             <% end %>
             </tbody>
         </table>
     </div>
-    <%- anchor(@change, 'Change Search', 'class="btn btn-primary"') %>
+    <%- anchor("/travel/#{@db}?searchString=#{@searchString}&pageSize=#{@pageSize}", 'Change Search', class:'btn btn-primary') %>
     <p></p>
     <p>Page rendered in {elapsed_time} ms</p>
 </div>
