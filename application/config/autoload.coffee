@@ -70,7 +70,7 @@ exports['libraries'] = ['Session/session']
 #|
 #|	exports['helper'] = ['url', 'file']
 #
-exports['helper'] = ['form']
+exports['helper'] = ['form', 'url']
 
 #
 #| -------------------------------------------------------------------

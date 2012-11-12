@@ -6,7 +6,7 @@
 #|
 #| This file is a part of Exspresso
 #|
-#| Exspresso is free software; you can copy, modify, and distribute
+#| Exspresso is free software you can copy, modify, and distribute
 #| it under the terms of the GNU General Public License Version 3
 #|
 #+--------------------------------------------------------------------+
@@ -50,7 +50,10 @@
 
 exports.locations = locations = $CFG.item('modules_locations') or array(APPPATH+'modules/', '../modules/')
 exports.routes = routes = {}
+exports.registry = registry = {}
 exports.views = {}
+
+## --------------------------------------------------------------------
 
 #
 # Run a module controller method
@@ -71,49 +74,48 @@ exports.run = run = ($module, $args...) ->
 
       $class[$method].apply($class, $args)
 
+## --------------------------------------------------------------------
 
-# Load a module controller #
+#
+# Load a module controller
+#
 exports.load = load = ($module) ->
 
-  if Array.isArray($module)
+  if is_array($module) then [$module, $params] = each($module) else $params = null
 
-    $params = $module.slice(1)
-    $module = $module[0]
-
-  else
-
-    $params = null
-    
-  # get the requested controller class name 
+  # get the requested controller class name
   $alias = strtolower(end(explode('/', $module)))
 
-  # return an existing controller from the registry 
-  if $registry[$alias]? then return $registry[$alias]
+  # return an existing controller from the registry
+  if (isset($registry[$alias])) then return $registry[$alias]
 
-  # get the module path 
+  # get the module path
   $segments = explode('/', $module)
 
-  # find the controller 
-  # $class = CI.$APP.router.locate($segments)
-  $class = $RTR.locate($segments)
-
+  # find the controller
+  [$class] = CI.$APP.router.locate($segments)
+  
   # controller cannot be located
   if not $class? then return
 
   # set the module directory
-  # $path = APPPATH+'controllers/'+CI.$APP.router.fetch_directory()
-  $path = APPPATH+'controllers/'+$RTR.fetch_directory()
+  $path = APPPATH+'controllers/'+CI.$APP.router.fetch_directory()
 
   # load the controller class
-  # $class = $class+CI.$APP.config.item('controller_suffix')
-  load_file $class, $path
+  $class = $class+CI.$APP.config.item('controller_suffix')
+  load_file($class, $path)
 
   # create and register the new controller
   $controller = ucfirst($class)
   $registry[$alias] = new $controller($params)
-  $registry[$alias]
+  return $registry[$alias]
 
-  # Load a module file #
+
+## --------------------------------------------------------------------
+
+#
+# Load a module file
+#
 exports.load_file = load_file = ($file, $path, $type = 'other', $result = true) ->
 
   $file = str_replace(EXT, '', $file)
@@ -127,6 +129,8 @@ exports.load_file = load_file = ($file, $path, $type = 'other', $result = true) 
   $result = require($location)
   log_message 'debug', "File loaded: #{$location}"
   return $result
+
+## --------------------------------------------------------------------
 
 #
 # Find a file
@@ -155,6 +159,7 @@ exports.find = find = ($file, $module, $base) ->
 
 
   for $location, $offset of exports.locations
+
     for $module, $subpath of $modules
 
       $fullpath = $location+$module+'/'+$base+$subpath
@@ -171,27 +176,6 @@ exports.find = find = ($file, $module, $base) ->
 
   return [false, $file]
 
-# Parse module routes #
-exports.parse_routes = parse_routes = ($module, $uri) ->
-
-  # load the route file
-  if not exports.routes[$module]?
-    if ([$path] = find('routes', $module, 'config/')) and $path
-      exports.routes[$module] = load_file('routes', $path, 'route')
-
-
-  if not exports.routes[$module] then return
-
-  # parse module routes
-  for $key, $val of exports.routes[$module]
-
-    $key = str_replace(':any', '.+', str_replace(':num', '[0-9]+', $key))
-
-    if preg_match('#^'+$key+'$#', $uri)
-      if strpos($val, '$') isnt false and strpos($key, '(') isnt false
-        $val = preg_replace('#^'+$key+'$#', $val, $uri)
-
-      explode('/', $module+'/'+$val)
 
 # End of file Modules.coffee
 # Location: ./application/libraries/MX/Modules.coffee

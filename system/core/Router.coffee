@@ -224,14 +224,12 @@ class global.CI_Router
   #
   #   Invoke the controller when the request is received
   #
-  #   @param string path
+  #   @param string route
   #   @param object $class
   #   @param string method
   #   @return void
   #
-  bind: ($path, $class, $method) ->
-
-    # --------------------------------------------------------------------
+  bind: ($route, $class, $method) ->
 
     #
     # Invoke the contoller
@@ -240,12 +238,13 @@ class global.CI_Router
     #   Any URI segments present (besides the class/function) will be passed
     #   to the method for convenience
     #
-    #   @param {Object} the server request object
-    #   @param {Object} the server response object
-    #   @param {Function} the next middleware on the stack
-    #   @param {Array} the remaining arguments
+    #   @param object   the server request object
+    #   @param object   the server response object
+    #   @param function the next middleware on the stack
+    #   @param array    the remaining arguments
+    #   @return void
     #
-    @routes[$path] = ($req, $res, $next, $args...) ->
+    @routes[$route] = ($req, $res, $next, $args...) ->
       # a new copy of the controller class for each request:
       $CI = new $class()
 

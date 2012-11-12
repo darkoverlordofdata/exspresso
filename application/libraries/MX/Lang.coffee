@@ -54,7 +54,17 @@ require BASEPATH+'core/Lang.coffee'
 
 class global.MX_Lang extends CI_Lang
 
-  load: ($langfile, $lang = '',$return = false,$add_suffix = true,$alt_path = '') ->
+  #  --------------------------------------------------------------------
+
+  #
+  # Load a module language file
+  #
+  # @access	public
+  # @param	mixed	the name of the language file to be loaded. Can be an array
+  # @param	string	the language (english, etc.)
+  # @return	mixed
+  #
+  load: ($langfile, $lang = '',$return = false, $add_suffix = true, $alt_path = '') ->
   
     if is_array($langfile)
       for $_lang in $langfile

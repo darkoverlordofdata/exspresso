@@ -1,3 +1,3 @@
 <h1>About Exspresso!</h1>
-<p><%= id%></p>
+<p><%= id %></p>
 

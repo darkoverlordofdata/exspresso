@@ -53,25 +53,54 @@ Modules = require(dirname(__filename)+'/Modules.coffee')
 
 class global.MX_Loader extends CI_Loader
 
+  #
+  # Module state
+  #
+  # @var array
+  #
   _module: {}
-  
+  #
+  # List of paths to load plugins from
+  #
+  # @var array
+  #
   _ci_plugins: {}
+  #
+  # List of variables for rendering templates
+  #
+  # @var array
+  #
   _ci_cached_vars: {}
-  
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Initialize the Loader
+  #
+  #
+  # @param 	object  controller instance
+  # @param  boolean call autoload
+  # @return object
+  #
   initialize: ($CI, $autoload = false) ->
 
     super($CI, $autoload)
 
     #  set the module name
-    #@_module = @_CI.router.fetch_module()
     @_module = $CI.router.fetch_module()
 
     #  add this module path to the loader variables
     @_add_module_paths(@_module)
 
+  ## --------------------------------------------------------------------
 
-
-  #  Add a module path loader variables *
+  #
+  # Add a module path loader variables
+  #
+  #
+  # @param 	string  module to add
+  # @return void
+  #
   _add_module_paths: ($module = '') ->
 
     if $module is '' #  Load a module config file *
@@ -82,14 +111,34 @@ class global.MX_Loader extends CI_Loader
       if is_dir($module_path = $location+$module+'/')
         array_unshift(@_ci_model_paths, $module_path)
 
-  # Load a module config file *
+  ## --------------------------------------------------------------------
+
+  #
+  # Load a module config file
+  #
+  #
+  # @param  string  filename
+  # @param  boolean loads each config file into a sub-array
+  # @param  boolean don't raise hard errors
+  # @return object the configration array that was loaded
+  #
   config: ($file = 'config', $use_sections = false, $fail_gracefully = false) ->
     
     @_CI.config.load($file, $use_sections, $fail_gracefully, @_module)
 
 
-  #  Load the database drivers *
-  database: ($params = '',$return = false,$active_record = null) ->
+  ## --------------------------------------------------------------------
+
+  #
+  # Load a module database
+  #
+  # @access	public
+  # @param	string	the DB credentials
+  # @param	bool	whether to return the DB object
+  # @param	bool	whether to enable active record (this allows us to override the config setting)
+  # @return	object
+  #
+  database: ($params = '',$return = false, $active_record = null) ->
 
     
     if class_exists('CI_DB') and $return is false and $active_record is null and @_CI.db?  and is_object(@_CI.db)
@@ -101,7 +150,17 @@ class global.MX_Loader extends CI_Loader
 
     @_CI.db = DB($params, $active_record)
 
-  # Load a module helper *
+  ## --------------------------------------------------------------------
+
+  #
+  # Load a module helper
+  #
+  # This function loads the specified helper file.
+  #
+  # @access	public
+  # @param	mixed
+  # @return	object module reference to the helpers
+  #
   helper: ($helper) ->
 
     if is_array($helper) then return @helpers($helper)
@@ -112,33 +171,69 @@ class global.MX_Loader extends CI_Loader
 
     if $path is false then return super($helper)
 
-    #Modules.load_file($_helper, $path)
-    #@_ci_helpers[$_helper] = true
-
     @_ci_helpers[$_helper] = Modules.load_file($_helper, $path)
 
     # expose the helpers to template engine
-    for $name, $value of @_ci_helpers[$helper]
-      $SRV.app.locals[$name] = $value
+    # for $name, $value of @_ci_helpers[$helper]
+    #   $SRV.app.locals[$name] = $value
 
     @_ci_helpers[$helper]
 
-  # Load an array of helpers *
+  ## --------------------------------------------------------------------
+
+  #
+  # Load an array of helpers
+  #
+  # @access	public
+  # @param	array
+  # @return	void
+  #
   helpers: ($helpers) ->
     for $_helper in $helpers
       @helper $_helper
 
-  # Load a module language file *
+  ## --------------------------------------------------------------------
+
+  #
+  # Load a module language file
+  #
+  # @access	public
+  # @param	array
+  # @param	string
+  # @return	void
+  #
   language: ($langfile, $idiom = '', $return = false, $add_suffix = true, $alt_path = '') ->
     return @_CI.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
 
-    
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Load an array of languages
+  #
+  # @access	public
+  # @param	array
+  # @return	void
+  #
   languages: ($languages) ->
     for $_language in $languages
       @language($language)
       
-  #  Load a module library *
-  library: ($library, $params = null,$object_name = null) ->
+  ## --------------------------------------------------------------------
+
+  #
+  # Module Class Loader
+  #
+  # This function lets users load and instantiate classes.
+  # It is designed to be called from a user's app controllers.
+  #
+  # @access	public
+  # @param	string	the name of the class
+  # @param	mixed	the optional parameters
+  # @param	string	an optional object name
+  # @return	void
+  #
+  library: ($library, $params = null, $object_name = null) ->
 
     if is_array($library) then return @libraries($library)
 
@@ -174,13 +269,33 @@ class global.MX_Loader extends CI_Loader
     return @_CI[$_alias]
 
   
-  # Load an array of libraries *
+  ## --------------------------------------------------------------------
+
+  #
+  # Load an array of libraries
+  #
+  # @access	public
+  # @param	array
+  # @return	void
+  #
   libraries: ($libraries) ->
     for $_library in $libraries
       @library($_library)
     
   
-  #  Load a module model *
+  ## --------------------------------------------------------------------
+
+  #
+  # Module Model Loader
+  #
+  # This function lets users load and instantiate models.
+  #
+  # @access	public
+  # @param	string	the name of the class
+  # @param	string	name for the model
+  # @param	bool	database connection
+  # @return	void
+  #
   model: ($model, $object_name = null,$connect = false) ->
 
     if (is_array($model)) then return @models($model)
@@ -216,14 +331,31 @@ class global.MX_Loader extends CI_Loader
 
     return @_CI[$_alias]
 
-  #* Load an array of models *
+  ## --------------------------------------------------------------------
+
+  #
+  # Load an array of models
+  #
+  # @access	public
+  # @param	array
+  # @return	void
+  #
   models: ($models) ->
     for $_model in $models
       @model($_model)
 
-  # Load a module controller 
+  ## --------------------------------------------------------------------
+
+  #
+  # Load a module controller
+  #
+  # @access	public
+  # @param	string	the name of the class
+  # @param	string	name for the model
+  # @param	bool	database connection
+  # @return	void
+  #
   module: ($module, $params = null)	->
-    
 
     if is_array($module) then return @modules($module)
   
@@ -232,12 +364,30 @@ class global.MX_Loader extends CI_Loader
     return @_CI[$_alias]
 
 
-    # Load an array of controllers
+  ## --------------------------------------------------------------------
+
+  #
+  # Load an array of controllers
+  #
+  # @access	public
+  # @param	array
+  # @return	void
+  #
   modules: ($modules) ->
     for $_module in $modules
       @module($_module)
 
-  # Load a module plugin 
+  ## --------------------------------------------------------------------
+
+  #
+  # Load a module plugin
+  #
+  # @access	public
+  # @param	string	the name of the class
+  # @param	string	name for the model
+  # @param	bool	database connection
+  # @return	void
+  #
   plugin: ($plugin)	->
   
     if (is_array($plugin)) then return @plugins($plugin)
@@ -252,24 +402,55 @@ class global.MX_Loader extends CI_Loader
     Modules.load_file($_plugin, $path)
     @_ci_plugins[$plugin] = true
 
-  # Load an array of plugins 
+  ## --------------------------------------------------------------------
+
+  #
+  # Load an array of plugins
+  #
+  # @access	public
+  # @param	array
+  # @return	void
+  #
   plugins: ($plugins) ->
     for $_plugin in $plugins
       @plugin($_plugin)
 
-  # Load a module view
+  #  --------------------------------------------------------------------
+
+  #
+  # Load a module View
+  #
+  # This function is used to load a "view" file.  It has three parameters:
+  #
+  # 1. The name of the "view" file to be included.
+  # 2. An associative array of data to be extracted for use in the view.
+  # 3. TRUE/FALSE - whether to return the data or load it.  In
+  # some cases it's advantageous to be able to return data so that
+  # a developer can process it in some way.
+  #
+  # @access	public
+  # @param	string
+  # @param	array
+  # @param	bool
+  # @return	void
+  #
   view: ($view, $vars = {}, $callback = null) ->
     [$path, $view] = Modules.find($view, @_module, 'views/')
     @_ci_view_path = if $path then $path else APPPATH + config_item('views')
     @_ci_load('', $view, $vars, $callback)
 
-  _ci_is_instance: ->
-    return
-  
-  _ci_get_component: ($component) ->
-    return @_CI[$component]
+  #  --------------------------------------------------------------------
 
+  #
   # Autoload module items
+  #
+  # The config/autoload.php file contains an array that permits sub-systems,
+  # libraries, and helpers to be loaded automatically.
+  #
+  # @access	private
+  # @param	array
+  # @return	void
+  #
   _autoloader: ($autoload) ->
 
     $path = false

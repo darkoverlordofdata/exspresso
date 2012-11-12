@@ -13,22 +13,19 @@
             </tr>
             </thead>
             <tbody>
-            <% for (i in hotels) { %>
-            <%     hotel = hotels[i] %>
+            <% for $hotel in @hotels: %>
             <tr>
-                <td><%= hotel.name %></td>
-                <td><%= hotel.address %></td>
-                <td><%= hotel.city + ', ' + hotel.state %></td>
-                <td><%= hotel.zip %></td>
-                <td>
-                    <a href="/travel/<%= db %>/hotel/<%= hotel.id %>" class="btn">View</a>
-                </td>
+                <td><%= $hotel.name %></td>
+                <td><%= $hotel.address %></td>
+                <td><%= $hotel.city + ', ' + $hotel.state %></td>
+                <td><%= $hotel.zip %></td>
+                <td><%- anchor('/travel/'+@db+'/hotel/'+$hotel.id, 'View', 'class="btn"') %></td>
             </tr>
-            <% } %>
+            <% end %>
             </tbody>
         </table>
     </div>
-    <a id="changeSearchLink" href="/travel/<%= db %>?searchString=a&amp;pageSize=5" class="btn btn-primary">Change Search</a>
+    <%- anchor(@change, 'Change Search', 'class="btn btn-primary"') %>
     <p></p>
     <p>Page rendered in {elapsed_time} ms</p>
 </div>

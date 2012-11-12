@@ -1,0 +1,79 @@
+<div class="hero-unit">
+    <h2>Book Hotel</h2>
+    <table class="table">
+        <tr>
+            <th>Name:</th>
+            <td><%= @hotel.name %></td>
+        </tr>
+        <tr>
+            <th>Address:</th>
+            <td><%= @hotel.address %></td>
+        </tr>
+        <tr>
+            <th>City, State:</th>
+            <td><%= @hotel.city + ', ' + @hotel.state %></td>
+        </tr>
+        <tr>
+            <th>Zip:</th>
+            <td><%= @hotel.zip %></td>
+        </tr>
+        <tr>
+            <th>Country:</th>
+            <td><%= @hotel.country %></td>
+        </tr>
+        <tr>
+            <th>Nightly rate:</th>
+            <td><%= @hotel.price %></td>
+        </tr>
+    </table>
+    <%- form_open(@form.action, @form.attrs, @form.hidden) %>
+
+        <div class="control-group">
+            <%- form_label('Check In:', @checkinDate.name, @control_label) %>
+            <%- form_input(@checkinDate) %>
+        </div>
+
+        <div class="control-group">
+            <%- form_label('Check Out:', @checkoutDate.name, @control_label) %>
+            <%- form_input(@checkoutDate) %>
+        </div>
+
+        <div class="control-group">
+            <%- form_label('Room Preference:', @beds.name, @control_label) %>
+            <%- form_dropdown(@beds.name, @beds.options, @beds.selected, @beds.extras) %>
+        </div>
+
+        <div class="control-group">
+            <%- form_label('Smoking Preference:', @smoking.name, @control_label) %>
+            <%- form_radio(@smoking, true, false) %>
+            <%- form_label('Smoking', @smoking.name, @control_label) %>
+            <%- form_radio(@nonSmoking, false, true) %>
+            <%- form_label('Non Smoking', @nonSmoking.name, @control_label) %>
+        </div>
+
+        <div class="control-group">
+            <%- form_label('Credit Card #:', @cardNumber.name, @control_label) %>
+            <%- form_input(@cardNumber) %>
+        </div>
+
+        <div class="control-group">
+            <%- form_label('Credit Card Name:', @cardName.name, @control_label) %>
+            <%- form_input(@cardName) %>
+        </div>
+
+        <div class="control-group">
+            <%- form_label('Expiration Date:', @cardMonth.name, @control_label) %>
+            <div class="controls">
+                <%- form_dropdown(@cardMonth.name, @cardMonth.options, @cardMonth.selected, @cardMonth.extras) %>
+                <%- form_dropdown(@cardYear.name, @cardYear.options, @cardYear.selected, @cardYear.extras) %>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <%- form_submit(@form.submit) %>
+            &nbsp;
+            <%- form_submit(@form.cancel) %>
+        </div>
+    <%- form_close() %>
+    <p>Page rendered in {elapsed_time} ms</p>
+</div>

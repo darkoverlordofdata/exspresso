@@ -145,11 +145,13 @@ if not function_exists('anchor')
     $title = ''+$title
     
     if not is_array($uri)
-      $site_url = if ( not preg_match('!^\w+://! i', $uri)) then site_url($uri) else $uri
+      #$site_url = if ( not preg_match('!^\w+://! i', $uri)) then site_url($uri) else $uri
+      $site_url = $uri
       
     else 
-      $site_url = site_url($uri)
-      
+      #$site_url = site_url($uri)
+      $site_url = $uri.join('/')
+
     
     if $title is ''
       $title = $site_url
@@ -460,8 +462,16 @@ if not function_exists('_parse_attributes')
       
     
     return $att
-    
-  
+
+#  ------------------------------------------------------------------------
+#
+# Export module to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
+
+
 
 
 #  End of file url_helper.php 

@@ -58,8 +58,9 @@ class global.CI_Parser
   # @return	string
   #
   parse: ($template, $data, $return = false) ->
-    $CI = get_instance()
-    $template = $CI.load.view($template, $data, true)
+
+    #$CI = get_instance()
+    $template = @_CI.load.view($template, $data, true)
 
     return @_parse($template, $data, $return)
 
@@ -77,7 +78,7 @@ class global.CI_Parser
   # @param	bool
   # @return	string
   #
-  parse_string : ($template, $data, $return = false) ->
+  parse_string: ($template, $data, $return = false) ->
     return @_parse($template, $data, $return)
     
   
@@ -95,7 +96,7 @@ class global.CI_Parser
   # @param	bool
   # @return	string
   #
-  _parse : ($template, $data, $return = false) ->
+  _parse: ($template, $data, $return = false) ->
     if $template is ''
       return false
       
@@ -127,7 +128,7 @@ class global.CI_Parser
   # @param	string
   # @return	void
   #
-  set_delimiters : ($l = '{', $r = '}') ->
+  set_delimiters: ($l = '{', $r = '}') ->
     @l_delim = $l
     @r_delim = $r
     
@@ -143,7 +144,7 @@ class global.CI_Parser
   # @param	string
   # @return	string
   #
-  _parse_single : ($key, $val, $string) ->
+  _parse_single: ($key, $val, $string) ->
     return str_replace(@l_delim + $key + @r_delim, $val, $string)
     
   
@@ -160,7 +161,7 @@ class global.CI_Parser
   # @param	string
   # @return	string
   #
-  _parse_pair : ($variable, $data, $string) ->
+  _parse_pair: ($variable, $data, $string) ->
     if false is ($match = @_match_pair($string, $variable))
       return $string
       
@@ -193,7 +194,7 @@ class global.CI_Parser
   # @param	string
   # @return	mixed
   #
-  _match_pair : ($string, $variable) ->
+  _match_pair: ($string, $variable) ->
     if not preg_match("|" + preg_quote(@l_delim) + $variable + preg_quote(@r_delim) + "(.+?)" + preg_quote(@l_delim) + '/' + $variable + preg_quote(@r_delim) + "|s", $string, $match)
       return false
       

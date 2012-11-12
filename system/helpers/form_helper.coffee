@@ -61,8 +61,8 @@ if not function_exists('form_open')
 
 
     #  If an action is not a full URL then turn it into one
-    if $action and strpos($action, '://') is false
-      $action = $CI.config.site_url($action)
+    #if $action and strpos($action, '://') is false
+    #  $action = $CI.config.site_url($action)
 
 
     #  If no action is provided then set to the current url
@@ -79,7 +79,8 @@ if not function_exists('form_open')
       $hidden[$CI.security.get_csrf_token_name()] = $CI.security.get_csrf_hash()
 
     if is_array($hidden) and count($hidden) > 0
-      $form+=sprintf("\n<div class=\"hidden\">%s</div>", form_hidden($hidden))
+      {format} = require('util')
+      $form+=format("\n<div class=\"hidden\">%s</div>", form_hidden($hidden))
 
     return $form
     
@@ -125,17 +126,12 @@ if not function_exists('form_open_multipart')
 # @return	string
 #
 if not function_exists('form_hidden')
-  exports.form_hidden = form_hidden = ($name, $value = '', $recursing = false) ->
-    exports.$form = $form ? {}
-    
-    if $recursing is false
-      $form = "\n"
-      
-    
+  exports.form_hidden = form_hidden = ($name, $value = '', $form = "\n") ->
+
     if is_array($name)
       for $key, $val of $name
-        form_hidden($key, $val, true)
-        
+        $form += form_hidden($key, $val, $form)
+
       return $form
       
     
@@ -144,11 +140,8 @@ if not function_exists('form_hidden')
       
     else 
       for $k, $v of $value
-        $k = if (is_int($k)) then '' else $k
-        form_hidden($name + '[' + $k + ']', $v, true)
-        
-      
-    
+        $form += form_hidden($name + '[' + $k + ']', $v, $form)
+
     return $form
     
   
@@ -290,7 +283,7 @@ if not function_exists('form_multiselect')
 #
 if not function_exists('form_dropdown')
   exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = {}, $extra = '') ->
-    if not is_array($selected)
+    if not Array.isArray($selected)
       $selected = [$selected]
       
     
@@ -311,21 +304,21 @@ if not function_exists('form_dropdown')
     for $key, $val of $options
       $key = ''+$key
 
-    if is_array($val) and  not empty($val)
-      $form+='<optgroup label="' + $key + '">' + "\n"
+      if is_array($val) and count($val) > 0
+        $form+='<optgroup label="' + $key + '">' + "\n"
 
-      for $optgroup_key, $optgroup_val of $val
-        $sel = if (in_array($optgroup_key, $selected)) then ' selected="selected"' else ''
+        for $optgroup_key, $optgroup_val of $val
+          $sel = if (in_array($optgroup_key, $selected)) then ' selected="selected"' else ''
 
-        $form+='<option value="' + $optgroup_key + '"' + $sel + '>' + ''+$optgroup_val + "</option>\n"
+          $form+='<option value="' + $optgroup_key + '"' + $sel + '>' + ''+$optgroup_val + "</option>\n"
 
 
-      $form+='</optgroup>' + "\n"
+        $form+='</optgroup>' + "\n"
 
-    else
-      $sel = if (in_array($key, $selected)) then ' selected="selected"' else ''
+      else
+        $sel = if ($selected.indexOf($key) isnt -1) then ' selected="selected"' else ''
 
-      $form+='<option value="' + $key + '"' + $sel + '>' + ''+$val + "</option>\n"
+        $form+='<option value="' + $key + '"' + $sel + '>' + ''+$val + "</option>\n"
 
     $form+='</select>'
     
@@ -351,8 +344,8 @@ if not function_exists('form_checkbox')
       type:   'checkbox'
       name:   if not is_array($data) then $data else ''
       value:  $value
-    
-    if is_array($data) and array_key_exists('checked', $data)
+
+    if is_array($data) and $data['checked']?
       $checked = $data['checked']
       
       if $checked is false
@@ -360,18 +353,16 @@ if not function_exists('form_checkbox')
         
       else 
         $data['checked'] = 'checked'
-        
-      
-    
+
     if $checked is true
       $defaults['checked'] = 'checked'
       
     else 
       delete $defaults['checked']
-      
-    
+
     return "<input " + _parse_form_attributes($data, $defaults) + $extra + " />"
-    
+    return "<input  />"
+
   
 
 #  ------------------------------------------------------------------------
@@ -484,7 +475,7 @@ if not function_exists('form_label')
     $label = '<label'
     
     if $id isnt ''
-      $label+=" for=\"$id\""
+      $label+=" for=\"#{$id}\""
       
     
     if is_array($attributes) and count($attributes) > 0
@@ -493,7 +484,7 @@ if not function_exists('form_label')
         
       
     
-    $label+=">$label_text</label>"
+    $label+=">#{$label_text}</label>"
     
     return $label
     
@@ -568,7 +559,6 @@ if not function_exists('form_close')
 # @param	string
 # @return	string
 #
-$prepped_fields = {}
 if not function_exists('form_prep')
   exports.form_prep = form_prep = ($str = '', $field_name = '') ->
 
@@ -576,32 +566,13 @@ if not function_exists('form_prep')
     if is_array($str)
       for $key, $val of $str
         $str[$key] = form_prep($val)
-        
-      
       return $str
-      
-    
+
     if $str is ''
       return ''
-      
-    
-    #  we've already prepped a field with this name
-    #  @todo need to figure out a way to namespace this so
-    #  that we know the *exact* field and not just one with
-    #  the same name
-    if $prepped_fields[$field_name]? 
-      return $str
-      
-    
-    $str = htmlspecialchars($str)
-    
-    #  In case htmlspecialchars misses these.
-    $str = str_replace(["'", '"'], ["&#39;", "&quot;"], $str)
-    
-    if $field_name isnt ''
-      $prepped_fields[$field_name] = $field_name
-      
-    
+
+    $str = htmlspecialchars(''+$str)
+
     return $str
     
   
@@ -841,24 +812,18 @@ if not function_exists('_parse_form_attributes')
         if $attributes[$key]? 
           $default[$key] = $attributes[$key]
           delete $attributes[$key]
-          
-        
-      
+
       if count($attributes) > 0
         $default = array_merge($default, $attributes)
-        
-      
-    
+
     $att = ''
     
     for $key, $val of $default
       if $key is 'value'
         $val = form_prep($val, $default['name'])
-        
-      
+
       $att+=$key + '="' + $val + '" '
-      
-    
+
     return $att
     
   
@@ -942,6 +907,15 @@ if not function_exists('_get_validation_object')
       
     
     return $CI.$object
+
+#  ------------------------------------------------------------------------
+#
+# Export module to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
+
 
 #  End of file form_helper.php 
 #  Location: ./system/helpers/form_helper.php 

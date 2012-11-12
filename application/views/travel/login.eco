@@ -13,10 +13,10 @@
     </div>
 </div>
 <div class="hero-unit">
-    <form name='f' action='/travel/<%= db %>/authenticate' method='post'>
-        <input type="hidden" name="url" id="url" value="<%= url %>" />
-        <input type="hidden" name="hotelId" id="hotelId" value="#{hotelId}" />
-        <input type="hidden" name="bookingId" id="bookingId" value="#{bookingId}" />
+    <form name='f' action='/travel/<%= @db %>/authenticate' method='post'>
+        <input type="hidden" name="url" id="url" value="<%= @url %>" />
+        <input type="hidden" name="hotelId" id="hotelId" value="<%= @hotelId %>" />
+        <input type="hidden" name="bookingId" id="bookingId" value="<%= @bookingId %>" />
         <div class="control-group">
             <label class="control-label" for="username">User:</label>
             <input id="username" name="username" type="text" />

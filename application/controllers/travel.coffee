@@ -89,14 +89,7 @@ class Travel extends CI_Controller
   #
   authenticate: ($db) ->
 
-    $url        = @input.get_post('url')
-    $hotelId    = @input.get_post('hotelId')
-    $bookingId  = @input.get_post('bookingId')
-
-    if $hotelId is null
-      $url = "#{$url}?bookingId=#{$bookingId}"
-    else
-      $url = "#{$url}?hotelId=#{$hotelId}"
+    $url = @input.get_post('url')
 
     @db = @load.database($db, true)
     @db.initialize =>
@@ -111,7 +104,7 @@ class Travel extends CI_Controller
 
         if $customer.num_rows is 0
           @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-          @redirect "/travel/#{db}/login"
+          @redirect "/travel/#{$db}/login"
           return
 
         $customer = $customer.row()
@@ -128,7 +121,7 @@ class Travel extends CI_Controller
           @redirect $url
         else
           @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-          @redirect "/travel/#{db}/login"
+          @redirect "/travel/#{$db}/login"
 
 
   ## --------------------------------------------------------------------
@@ -170,8 +163,34 @@ class Travel extends CI_Controller
       @db.get ($err, $bookings) =>
 
         @load.view "travel/main",
+
           db:       $db
           bookings: $bookings.result()
+          form:
+            action:       "/travel/#{$db}/hotels"
+            attrs:
+              name:       'mainForm'
+              class:      'form-search'
+            hidden:
+              mainForm:   'mainForm'
+            submit:
+              name:       'findHotels'
+              value:      'Search'
+              class:      'btn btn-primary'
+          searchString:
+            name:         'searchString'
+            value:        @input.get("searchString")
+            class:        'input-medium search-query'
+          pageSize:
+            name:         'pageSize'
+            options:
+              '5':    5
+              '10':   10
+              '20':   20
+            selected: ''+parseInt(@input.get('pageSize'),10)
+            extras:   'id="pageSize" size="1"'
+
+
 
   ## --------------------------------------------------------------------
 
@@ -182,6 +201,7 @@ class Travel extends CI_Controller
   #   @return	void
   #
   hotels: ($db) ->
+
 
     @db = @load.database($db, true)
     @db.initialize =>
@@ -195,8 +215,12 @@ class Travel extends CI_Controller
       @db.get @db, ($err, $hotels) =>
 
         @load.view "travel/hotels",
+
           db:     $db
           hotels: $hotels.result()
+          change: "/travel/#{$db}?searchString=#{$searchString}&pageSize=#{$pageSize}"
+
+
 
 
   ## --------------------------------------------------------------------
@@ -218,8 +242,23 @@ class Travel extends CI_Controller
       @db.get ($err, $hotel) =>
 
         @load.view "travel/detail",
+
           db:     $db
           hotel:  $hotel.row()
+          form:
+            action: "/travel/#{$db}/booking/#{$id}"
+            attrs:  ''
+            hidden:
+                    hotelId:    $id
+            submit:
+                    name:       'submit'
+                    value:      'Book Hotel'
+                    class:      'btn btn-primary'
+            cancel:
+                    name:       'cancel'
+                    value:      'Back to Search'
+                    class:      'btn'
+
 
   ## --------------------------------------------------------------------
 
@@ -229,14 +268,12 @@ class Travel extends CI_Controller
   #   @access	public
   #   @return	void
   #
-  booking: ($db) ->
+  booking: ($db, $id) ->
 
     if @input.post('cancel')? then @redirect "/travel/#{$db}"
 
-    $id = @input.get_post("hotelId")
-
     if not @session.userdata('customer')
-      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/booking&hotelId=#{$id}"
+      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/booking/#{$id}"
 
     @db = @load.database($db, true)
     @db.initialize =>
@@ -248,6 +285,87 @@ class Travel extends CI_Controller
         @load.view "travel/booking",
           db:     $db
           hotel:  $hotel.row()
+          form:
+            action: "/travel/#{$db}/confirm/#{$id}"
+            attrs:
+                    class:      'form'
+            hidden:
+                    hotelId:    $id
+            submit:
+                    name:       'submit'
+                    value:      'Proceed'
+                    class:      'btn btn-primary'
+            cancel:
+                    name:       'cancel'
+                    value:      'Cancel'
+                    class:      'btn'
+          checkinDate:
+                    name:       'checkinDate'
+                    class:      'datepicker'
+          checkoutDate:
+                    name:       'checkoutDate'
+                    class:      'datepicker'
+          control_label:
+                    class:      'control-label'
+          beds:
+                    name:       'beds'
+                    options:
+                                '1':    'One king-size bed'
+                                '2':    'Two double beds'
+                                '3':    'Three beds'
+                    selected:   ''
+                    extras:     ''
+          smoking:
+                    name:       'smoking'
+                    id:         'smoking'
+                    value:      true
+                    checked:    false
+          nonSmoking:
+                    name:       'smoking'
+                    id:         'non-smoking'
+                    value:      false
+                    checked:    true
+          cardNumber:
+                    name:       'cardNumber'
+                    id:         'cardNumber'
+                    value:      ''
+          cardName:
+                    name:       'cardName'
+                    id:         'cardName'
+                    value:      ''
+                    maxlength:  '40'
+          cardMonth:
+                    name:       'cardMonth'
+                    options:
+                                '1':    'Jan'
+                                '2':    'Feb'
+                                '3':    'Mar'
+                                '4':    'Apr'
+                                '5':    'May'
+                                '6':    'Jun'
+                                '7':    'Jul'
+                                '8':    'Aug'
+                                '9':    'Sep'
+                                '10':   'Oct'
+                                '11':   'Nov'
+                                '12':   'Dev'
+                    selected:   ''
+                    extras:     'style="width:5.5em"'
+          cardYear:
+                    name:       'cardYear'
+                    options:
+                                '1':    '2012'
+                                '2':    '2013'
+                                '3':    '2014'
+                                '4':    '2015'
+                                '5':    '2016'
+                    selected:   ''
+                    extras:     'style="width:5.5em"'
+
+
+
+
+
 
   ## --------------------------------------------------------------------
 
@@ -257,14 +375,12 @@ class Travel extends CI_Controller
   #   @access	public
   #   @return	void
   #
-  confirm: ($db) ->
+  confirm: ($db, $id) ->
 
     if @input.get_post('cancel')? then @redirect "/travel/#{$db}"
 
-    $id = @input.post("hotelId")
-
     if not @session.userdata('customer')
-      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/confirm&hotelId=#{$id}"
+      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/confirm/#{$id}"
 
     @db = @load.database($db, true)
     @db.initialize =>
@@ -281,10 +397,10 @@ class Travel extends CI_Controller
           hotel:                  $hotel.id
           checkinDate:            moment(@input.post('checkinDate'), "MM-DD-YYYY")
           checkoutDate:           moment(@input.post('checkoutDate'), "MM-DD-YYYY")
-          creditCard:             @input.post('creditCard')
-          creditCardName:         @input.post('creditCardName')
-          creditCardExpiryMonth:  parseInt(@input.post('creditCardExpiryMonth'))
-          creditCardExpiryYear:   parseInt(@input.post('creditCardExpiryYear'))
+          card:             @input.post('card')
+          cardName:         @input.post('cardName')
+          cardExpiryMonth:  parseInt(@input.post('cardExpiryMonth'))
+          cardExpiryYear:   parseInt(@input.post('cardExpiryYear'))
           smoking:                @input.post('smoking')
           beds:                   1
           amenities:              @input.post('amenities')
@@ -315,12 +431,10 @@ class Travel extends CI_Controller
   #   @access	public
   #   @return	void
   #
-  book: ->
-
-    $id = @input.get_post('bookingId')
+  book: ($db, $id) ->
 
     if not @session.userdata('customer')
-      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/book&bookingId=#{$id}"
+      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/book/#{$id}"
 
     @db = @load.database($db, true)
     @db.initialize =>

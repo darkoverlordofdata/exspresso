@@ -47,7 +47,7 @@ class global.CI_Loader
 
   # All these are set automatically. Don't mess with them.
   #
-  # List of loaeded base classes
+  # List of loaded base classes
   #
   # @var array
   #
@@ -157,10 +157,10 @@ class global.CI_Loader
   #
   # Initialize the Loader
   #
-  # This method is called once in CI_Controller.
   #
-  # @param 	object  CI  Controller Instance
-  # @return 	object
+  # @param 	object  controller instance
+  # @param  boolean call autoload
+  # @return object
   #
   initialize: (@_CI, $autoload = false) ->
 
@@ -171,7 +171,7 @@ class global.CI_Loader
     @_ci_middleware     = {}
     @_base_classes      = is_loaded()
 
-    @_ci_autoloader() if $autoload
+    @_ci_autoloader() if $autoload # should only be called during bootstrap
     return @
 
   ## --------------------------------------------------------------------
@@ -649,7 +649,7 @@ class global.CI_Loader
     if $_ci_path is ''
       $_ci_ext = path.extname($_ci_view)
       $_ci_file = if ($_ci_ext is '') then $_ci_view + config_item('view_ext') else $_ci_view
-      $_ci_path = @_ci_view_path + '/' + $_ci_file
+      $_ci_path = rtrim(@_ci_view_path, '/') + '/' + $_ci_file
 
     else
       $_ci_x = explode('/', $_ci_path)
@@ -658,7 +658,6 @@ class global.CI_Loader
 
     if not file_exists($_ci_path)
       show_error('Unable to load the requested file: ' + $_ci_file)
-
 
     #  This allows anything loaded using $this->load (views, files, etc.)
     #  to become accessible from within the Controller and Model functions.
@@ -818,7 +817,7 @@ class global.CI_Loader
   #
   _ci_init_class : ($class, $prefix = '', $config = false, $object_name = null) ->
     #  Is there an associated config file for this class?  Note: these should always be lowercase
-    if $config is null
+    if $config is false
       $config = {}
     #  Fetch the config paths containing any package paths
       $config_component = @_ci_get_component('config')
@@ -879,12 +878,9 @@ class global.CI_Loader
 
     #  Instantiate the class
     # $CI = get_instance()
-    if $config isnt null
-      @_CI[$classvar] = new global[$name]($config)
-
-    else
-      @_CI[$classvar] = new global[$name]()
-
+    @_CI[$classvar] = new global[$name]($config)
+    @_CI[$classvar]._CI = @_CI
+    return @_CI[$classvar]
 
 
   #  --------------------------------------------------------------------

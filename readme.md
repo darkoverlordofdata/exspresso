@@ -28,7 +28,7 @@
 
 ## Features
 
-* Ejs templating engine
+* Eco templating engine
 * CodeIgniter style ActiveRecord
 * Port of HMVC extension by Wiredesignz
 * Edit configuration defaults in application/config/config.coffee

@@ -55,7 +55,18 @@ require BASEPATH+'core/Config.coffee'
 
 class global.MX_Config extends CI_Config
 
-  load: ($file = 'config',$use_sections = false,$fail_gracefully = false) ->
+  #  --------------------------------------------------------------------
+
+  #
+  # Load Module Config File
+  #
+  # @access	public
+  # @param	string	the config file name
+  # @param   boolean  if configuration values should be loaded into their own section
+  # @param   boolean  true if errors should just return false, false if an error message should be displayed
+  # @return	boolean	if the file was loaded correctly
+  #
+  load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
 
     log_message 'debug', 'MX_Config::load'
   

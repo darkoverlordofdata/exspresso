@@ -85,7 +85,7 @@ exports['views'] = 'views'
 # The consolidate templating engine to use:
 #
 #
-exports['template'] = 'ejs'
+exports['template'] = 'eco'
 
 #
 #--------------------------------------------------------------------------
@@ -95,7 +95,7 @@ exports['template'] = 'ejs'
 # The default file extension used for view templates
 #
 #
-exports['view_ext'] = '.ejs'
+exports['view_ext'] = '.eco'
 
 #
 #--------------------------------------------------------------------------

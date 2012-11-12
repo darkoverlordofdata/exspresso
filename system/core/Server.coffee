@@ -139,8 +139,8 @@ class global.CI_Server
       @app.engine $config.view_ext, consolidate[$config.template]
       @app.set 'view engine', $config.template
 
-    #if $config.use_layouts
-    #  require('express-partials').register($config.view_ext, $config.template)
+    if $config.use_layouts
+      require('express-partials').register($config.view_ext, $config.template)
 
     #
     # CSS asset middleware

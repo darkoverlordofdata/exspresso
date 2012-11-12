@@ -4,43 +4,43 @@
     <table class="table">
         <tr>
             <th>Name:</th>
-            <td><%= hotel.name %></td>
+            <td><%= @hotel.name %></td>
         </tr>
         <tr>
             <th>Address:</th>
-            <td><%= hotel.address %></td>
+            <td><%= @hotel.address %></td>
         </tr>
         <tr>
             <th>City, State:</th>
-            <td><%= hotel.city %></td>
+            <td><%= @hotel.city %></td>
         </tr>
         <tr>
             <th>Zip:</th>
-            <td><%= hotel.zip %></td>
+            <td><%= @hotel.zip %></td>
         </tr>
         <tr>
             <th>Country:</th>
-            <td><%= hotel.country %></td>
+            <td><%= @hotel.country %></td>
         </tr>
         <tr>
             <th>Total Payment:</th>
-            <td><%= booking.totalPayment %></td>
+            <td><%= @booking.totalPayment %></td>
         </tr>
         <tr>
             <th>Check In Date:</th>
-            <td><%= booking.checkinDate %></td>
+            <td><%= @booking.checkinDate %></td>
         </tr>
         <tr>
             <th>Check Out Date:</th>
-            <td><%= booking.checkoutDate %></td>
+            <td><%= @booking.checkoutDate %></td>
         </tr>
         <tr>
             <th>Credit Card #:</th>
-            <td><%= booking.creditCard %></td>
+            <td><%= @booking.creditCard %></td>
         </tr>
     </table>
-    <form class="form" name="confirm" action="/travel/<%= db %>/book" method="post">
-      <input type="hidden" name="bookingId" value="<%= booking.id %>" />
+    <form class="form" name="confirm" action="/travel/<%= @db %>/book" method="post">
+      <input type="hidden" name="bookingId" value="<%= @booking.id %>" />
       <div class="control-group">
         <input class="btn btn-primary" name="confirm" type="submit" value="Confirm" />
         &nbsp;

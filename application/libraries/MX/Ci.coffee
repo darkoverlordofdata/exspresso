@@ -13,7 +13,8 @@
 #
 #	Ci
 #
-#   Modified the bootstrap
+#   Modifies the bootstrap sequance with modularized
+#   versions of CI_Lang and CI_Config
 #
 # load MX core classes
 require dirname(__filename)+'/Lang.coffee'

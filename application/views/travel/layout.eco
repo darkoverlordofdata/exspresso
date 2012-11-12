@@ -9,20 +9,20 @@
 <body>
 <div class="container">
     <h1>Time Travel</h1>
-    <h3>CI_DB_active_rec / postgres</h3>
-    <% err = flashdata('error') %>
-    <% if (err !== '') { %>
+    <h3>CI_DB_active_rec / <%= @db %></h3>
+    <% err = @flashdata('error') %>
+    <% if err isnt '' : %>
     <div class='alert alert-error'>
         <p><b>Error:</b><%= err %></p>
     </div>
-    <% } %>
-    <% info = flashdata('error') %>
-    <% if (info !== '') { %>
+    <% end %>
+    <% info = @flashdata('info') %>
+    <% if info isnt '' : %>
     <div class='alert alert-error'>
         <p><b>Info:</b><%= info %></p>
     </div>
-    <% } %>
-    <%- body %>
+    <% end %>
+    <%- @body %>
     <footer>powered by &nbsp;
         <a href="https://npmjs.org/package/exspresso"> e x s p r e s s o</a>
     </footer>

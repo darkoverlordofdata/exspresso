@@ -16,6 +16,7 @@
 #
 #
 # load MX core classes
+
 MX_Lang = require(dirname(__filename)+'/Lang.coffee')
 MX_Config = require(dirname(__filename)+'/Config.coffee')
 

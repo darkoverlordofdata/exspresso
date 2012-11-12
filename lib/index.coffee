@@ -592,6 +592,11 @@ exports.array = ($key, $value) ->
   return $array
 
 
+exports.htmlspecialchars = ($str) ->
+
+  $str.replace("&", "&amp;").replace("'", "&#39;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 
 #  ------------------------------------------------------------------------
 #
