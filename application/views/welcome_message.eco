@@ -4,7 +4,7 @@
         <h1>Welcome to Exspresso!!!</h1>
         <p>The page you are looking at is being generated dynamically by Exspresso.</p>
         <p>If you would like to edit this page you'll find it located at:</p>
-        <pre><code>application/views/welcome_message.jade</code></pre>
+        <pre><code>application/views/welcome_message.eco</code></pre>
         <p>The corresponding controller for this page is found at:</p>
         <pre><code>application/controllers/welcome.coffee</code></pre>
         <p></p>

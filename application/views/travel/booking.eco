@@ -28,7 +28,7 @@
     </table>
     <%- form_open(@form.action, @form.attrs, @form.hidden) %>
 
-        <div class="control-group">
+        <div classl="control-group">
             <%- form_label('Check In:', @checkinDate.name, @control_label) %>
             <%- form_input(@checkinDate) %>
         </div>
