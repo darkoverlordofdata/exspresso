@@ -60,9 +60,9 @@ class Travel extends CI_Controller
             @session.set_userdata 'usercode', $customer
 
             @session.set_flashdata 'info', 'Hello '+$customer.name
-            @redirect $url
+            return @redirect $url
           else
-            @redirect "/travel/#{$db}/logout"
+            return @redirect "/travel/#{$db}/logout"
 
 
   ## --------------------------------------------------------------------
@@ -91,7 +91,7 @@ class Travel extends CI_Controller
 
         if $customer.num_rows is 0
           @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-          @redirect "/travel/#{$db}/login"
+          return @redirect "/travel/#{$db}/login"
           return
 
         $customer = $customer.row()
@@ -105,10 +105,10 @@ class Travel extends CI_Controller
           @session.set_userdata 'customer', $customer
 
           @session.set_flashdata  'info', 'Hello '+$customer.name
-          @redirect $url
+          return @redirect $url
         else
           @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-          @redirect "/travel/#{$db}/login"
+          return @redirect "/travel/#{$db}/login"
 
 
   ## --------------------------------------------------------------------
@@ -126,7 +126,7 @@ class Travel extends CI_Controller
     @session.unset_userdata 'customer'
     @input.set_cookie 'username', ''
     @input.set_cookie 'usercode', ''
-    @redirect "travel/#{$db}"
+    return @redirect "travel/#{$db}"
 
 
   ## --------------------------------------------------------------------
@@ -229,10 +229,10 @@ class Travel extends CI_Controller
   #
   booking: ($db, $id) ->
 
-    if @input.post('cancel')? then @redirect "/travel/#{$db}"
+    if @input.post('cancel')? then return @redirect "/travel/#{$db}"
 
     if not @session.userdata('customer')
-      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/booking/#{$id}"
+      return @redirect "/travel/#{$db}/login?url=/travel/#{$db}/booking/#{$id}"
 
     @db = @load.database($db, true)
     @db.initialize =>
@@ -284,10 +284,10 @@ class Travel extends CI_Controller
   #
   confirm: ($db, $id) ->
 
-    if @input.get_post('cancel')? then @redirect "/travel/#{$db}"
+    if @input.get_post('cancel')? then return @redirect "/travel/#{$db}"
 
     if not @session.userdata('customer')
-      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/confirm/#{$id}"
+      return @redirect "/travel/#{$db}/login?url=/travel/#{$db}/confirm/#{$id}"
 
     @db = @load.database($db, true)
     @db.initialize =>
@@ -341,7 +341,7 @@ class Travel extends CI_Controller
   book: ($db, $id) ->
 
     if not @session.userdata('customer')
-      @redirect "/travel/#{$db}/login?url=/travel/#{$db}/book/#{$id}"
+      return @redirect "/travel/#{$db}/login?url=/travel/#{$db}/book/#{$id}"
 
     @db = @load.database($db, true)
     @db.initialize =>
@@ -357,14 +357,14 @@ class Travel extends CI_Controller
           @db.where 'id', $id
           @db.update 'booking', state: 'BOOKED', ($err) =>
 
-            @redirect "/travel/#{$db}"
+            return @redirect "/travel/#{$db}"
 
         else if @input.post('cancel')?
 
           @db.where 'id', $id
           @db.update 'booking', state: 'CANCELLED', ($err) =>
 
-            @redirect "/travel/#{$db}"
+            return @redirect "/travel/#{$db}"
 
         else if @input.post('revise')?
 

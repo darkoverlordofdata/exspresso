@@ -55,18 +55,18 @@
 #
 if not function_exists('form_open')
   exports.form_open = form_open = ($action = '', $attributes = '', $hidden = {}) ->
-    $CI = get_instance()
+    
     if $attributes is ''
       $attributes = 'method="post"'
 
 
     #  If an action is not a full URL then turn it into one
     #if $action and strpos($action, '://') is false
-    #  $action = $CI.config.site_url($action)
+    #  $action = @CI.config.site_url($action)
 
 
     #  If no action is provided then set to the current url
-    $action or ($action = $CI.config.site_url($CI.uri.uri_string()))
+    $action or ($action = @CI.config.site_url(@CI.uri.uri_string()))
 
     $form = '<form action="' + $action + '"'
 
@@ -75,8 +75,8 @@ if not function_exists('form_open')
     $form+='>'
 
     #  CSRF
-    if $CI.config.item('csrf_protection') is true
-      $hidden[$CI.security.get_csrf_token_name()] = $CI.security.get_csrf_hash()
+    if @CI.config.item('csrf_protection') is true
+      $hidden[@CI.security.get_csrf_token_name()] = @CI.security.get_csrf_hash()
 
     if is_array($hidden) and count($hidden) > 0
       {format} = require('util')
@@ -165,13 +165,7 @@ if not function_exists('form_input')
       value:  $value
     
     return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
-    
 
-_parse_extra = ($extra = '') ->
-
-  if typeof $extra is 'string' then return ' '+$extra
-  if is_array($extra) then return ' '+_parse_form_attributes($extra, {})
-  return ''
 
 
 #  ------------------------------------------------------------------------
@@ -298,9 +292,9 @@ if not function_exists('form_dropdown')
       #  If the form name appears in the $_POST array we have a winner!
       #if $_POST[$name]?
       #  $selected = [$_POST[$name]]
-      $CI = get_instance()
-      if $CI.input.post($name)
-        $selected = $CI.input.post($name)
+      
+      if @CI.input.post($name)
+        $selected = @CI.input.post($name)
 
       
     
@@ -597,15 +591,13 @@ if not function_exists('form_prep')
 #
 if not function_exists('set_value')
   exports.set_value = set_value = ($field = '', $default = '') ->
-    if false is ($OBJ = _get_validation_object())
-      $CI = get_instance()
-      if not $CI.input.post($field)
+    if false is ($OBJ = @_get_validation_object())
+      
+      if not @CI.input.post($field)
         return $default
-        
-      
-      return form_prep($CI.input.post($field), $field)
-      
-    
+
+      return form_prep(@CI.input.post($field), $field)
+
     return form_prep($OBJ.set_value($field, $default), $field)
     
   
@@ -626,33 +618,28 @@ if not function_exists('set_value')
 #
 if not function_exists('set_select')
   exports.set_select = set_select = ($field = '', $value = '', $default = false) ->
-    $OBJ = _get_validation_object()
+    $OBJ = @_get_validation_object()
 
-    $CI = get_instance()
+    
     if $OBJ is false
-      if not $CI.input.post($field)
-        if count($CI.input.post()) is 0 and $default is true
+      if not @CI.input.post($field)
+        if count(@CI.input.post()) is 0 and $default is true
           return ' selected="selected"'
           
         return ''
-        
-      
-      $field = $CI.input.post($field)
+
+      $field = @CI.input.post($field)
       
       if is_array($field)
         if not in_array($value, $field)
           return ''
-          
-        
+
       else 
         if ($field is '' or $value is '') or ($field isnt $value)
           return ''
-          
-        
-      
+
       return ' selected="selected"'
-      
-    
+
     return $OBJ.set_select($field, $value, $default)
     
   
@@ -673,18 +660,18 @@ if not function_exists('set_select')
 #
 if not function_exists('set_checkbox')
   exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = false) ->
-    $OBJ = _get_validation_object()
+    $OBJ = @_get_validation_object()
 
-    $CI = get_instance()
+    
     if $OBJ is false
-      if not $CI.input.post($field)
-        if count($CI.input.post()) is 0 and $default is true
+      if not @CI.input.post($field)
+        if count(@CI.input.post()) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
         
       
-      $field = $CI.input.post()[$field]
+      $field = @CI.input.post()[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -720,18 +707,18 @@ if not function_exists('set_checkbox')
 #
 if not function_exists('set_radio')
   exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
-    $OBJ = _get_validation_object()
+    $OBJ = @_get_validation_object()
 
-    $CI = get_instance()
+    
     if $OBJ is false
-      if not $CI.input.post($field)
-        if count($CI.input.post()) is 0 and $default is true
+      if not @CI.input.post($field)
+        if count(@CI.input.post()) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
         
       
-      $field = $CI.input.post()[$field]
+      $field = @CI.input.post()[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -767,10 +754,9 @@ if not function_exists('set_radio')
 #
 if not function_exists('form_error')
   exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
-    if false is ($OBJ = _get_validation_object())
+    if false is ($OBJ = @_get_validation_object())
       return ''
-      
-    
+
     return $OBJ.error($field, $prefix, $suffix)
     
   
@@ -790,10 +776,11 @@ if not function_exists('form_error')
 #
 if not function_exists('validation_errors')
   exports.validation_errors = validation_errors = ($prefix = '', $suffix = '') ->
-    if false is ($OBJ = _get_validation_object())
+
+    if false is ($OBJ = @_get_validation_object())
       return ''
-      
-    
+
+    log_message 'debug', 'validation_errors %s', $OBJ.error_string($prefix, $suffix)
     return $OBJ.error_string($prefix, $suffix)
     
   
@@ -896,30 +883,34 @@ if not function_exists('_attributes_to_string')
 #
 if not function_exists('_get_validation_object')
   exports._get_validation_object = _get_validation_object =  ->
-    $CI = get_instance()
     
     #  We set this as a variable since we're returning by reference
     $return = false
-    
-    if not $CI.load._ci_classes?  or  not $CI.load._ci_classes['form_validation']? 
+
+    if not @CI.load._ci_classes?  or  not @CI.load._ci_classes['form_validation']?
       return $return
-      
+
+    $object = @CI.load._ci_classes['form_validation']
     
-    $object = $CI.load._ci_classes['form_validation']
-    
-    if not $CI.$object?  or  not is_object($CI.$object)
+    if not @CI[$object]?  or  not is_object(@CI[$object])
       return $return
-      
-    
-    return $CI.$object
+
+    return @CI[$object]
+
 
 #  ------------------------------------------------------------------------
+
 #
-# Export module to the global namespace
+# parse extra
 #
+# @access	private
+# @return	string
 #
-for $name, $body of module.exports
-  define $name, $body
+_parse_extra = ($extra = '') ->
+
+  if typeof $extra is 'string' then return ' '+$extra
+  if is_array($extra) then return ' '+_parse_form_attributes($extra, {})
+  return ''
 
 
 #  End of file form_helper.php 

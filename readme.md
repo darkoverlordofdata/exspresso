@@ -18,11 +18,16 @@
 * Exceptions - working
 * Hooks - in progres
 * Input - working
-* Lang - in progress
+* Lang - testing
 * Loader - working
 * Model - working
 * Output - working
 * Router - working
+* Parser class - in progress
+* Session class - working
+* Form_validation class - testing
+* form_helper - testing
+* url_helper - testing
 
   In general, files with an extension of .php are not yet ported, and files with an extension of .php.coffee are in progress.
 

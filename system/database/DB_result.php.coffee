@@ -101,7 +101,7 @@ class CI_DB_result
     while $row = @_fetch_object()
       $object = new $class_name()
       for $key, $value of $row
-        $object.$key = $value
+        $object[$key] = $value
       $result_object.push $object
 
     

@@ -202,7 +202,7 @@ module.exports = class global.CI_Hooks
 				
 			
 			$HOOK = new $class
-			$HOOK.$function($params)
+			$HOOK[$function]($params)
 			
 		else 
 			if not function_exists($function)

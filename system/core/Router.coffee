@@ -248,7 +248,9 @@ class global.CI_Router
       # a new copy of the controller class for each request:
       $CI = new $class()
 
-      $CI.render = ($view, $data, $fn) -> $res.render $view, $data, $fn
+      $CI.render = ($view, $data = {}, $fn) ->
+        $data['CI'] = $CI
+        $res.render $view, $data, $fn
       $CI.redirect = ($path) -> $res.redirect $path
 
       if $CI.db?

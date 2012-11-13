@@ -66,7 +66,7 @@ class CI_Javascript
   #  load the requested js library
   @CI.load.library('javascript/' + $js_library_driver, 'autoload':$autoload)
   #  make js to refer to current library
-  @js = @CI.$js_library_driver
+  @js = @CI[$js_library_driver]
   
   log_message('debug', "Javascript Class Initialized and loaded.  Driver used: $js_library_driver")
   }

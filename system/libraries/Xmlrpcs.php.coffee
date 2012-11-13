@@ -347,10 +347,10 @@ class CI_Xmlrpcs extends CI_Xmlrpc
       else 
         if @object is false
           $CI = get_instance()
-          return $CI.$method_parts['1']($m)
+          return $CI[$method_parts]['1']($m)
           
         else 
-          return @object.$method_parts['1']($m)
+          return @object[$method_parts]['1']($m)
           # return call_user_func(array(&$method_parts['0'],$method_parts['1']), $m);
           
         

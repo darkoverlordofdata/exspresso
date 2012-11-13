@@ -161,10 +161,10 @@ if not function_exists('delete_files')
 # @param	bool	internal variable to determine recursion status - do not use in calls
 # @return	array
 #
+$_filedata = {}
 if not function_exists('get_filenames')
   exports.get_filenames = get_filenames = ($source_dir, $include_path = false, $_recursion = false) ->
-    exports.$_filedata = $_filedata ? {}{}
-    
+
     if $fp = opendir($source_dir)) then if $_recursion is false
       $_filedata = {}
       $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
@@ -179,7 +179,6 @@ if not function_exists('get_filenames')
       return false
       }}if not function_exists('get_dir_file_info')
       exports.get_dir_file_info = get_dir_file_info = ($source_dir, $top_level_only = true, $_recursion = false) ->
-        exports.$_filedata = $_filedata ? {}{}
         $relative_path = $source_dir
         
         if $fp = opendir($source_dir)) then if $_recursion is false

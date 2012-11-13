@@ -663,10 +663,10 @@ class global.CI_Loader
     #  to become accessible from within the Controller and Model functions.
 
     #$_ci_CI = get_instance()
-    for $_ci_key, $_ci_var of @_CI
-      if typeof @_CI[$_ci_key] isnt 'function'
-        if not @[$_ci_key]?
-          @[$_ci_key] = @_CI[$_ci_key]
+    #for $_ci_key, $_ci_var of @_CI
+    #  if typeof @_CI[$_ci_key] isnt 'function'
+    #    if not @[$_ci_key]?
+    #      @[$_ci_key] = @_CI[$_ci_key]
 
     #
     # Extract and cache variables
@@ -878,8 +878,7 @@ class global.CI_Loader
 
     #  Instantiate the class
     # $CI = get_instance()
-    @_CI[$classvar] = new global[$name]($config)
-    @_CI[$classvar]._CI = @_CI
+    @_CI[$classvar] = new global[$name]($config, @_CI)
     return @_CI[$classvar]
 
 

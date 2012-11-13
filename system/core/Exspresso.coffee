@@ -136,6 +136,13 @@ for $path, $uri of $RTR._load_routes()
 
   $RTR.bind $path, $class, $method
 
+
+Object.defineProperties global,
+  $GLOBALS: get: -> global
+  $_POST:   get: -> $IN.post()
+  $_GET:    get: -> $IN.get()
+  $_COOKIE: get: -> $IN.cookie()
+
 #
 # ------------------------------------------------------
 #  Start me up...

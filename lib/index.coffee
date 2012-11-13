@@ -31,6 +31,7 @@ exports.define = (name, value, scope = global) ->
 
   return true # success
 
+
 exports.defined = (name, scope = global) ->
 
   return scope[name]?
@@ -188,6 +189,25 @@ exports.dirname = ($str) ->
 
 ## --------------------------------------------------------------------
 
+exports.empty = ($var) ->
+
+  switch typeof $var
+    when 'undefined' then false
+    when 'string'
+      if $var.length is 0 then false else true
+    when 'number'
+      if $var is 0 then false else true
+    when 'boolean'
+      $var
+    when 'object'
+      if Array.isArray($var)
+        if $var.length is 0 then false else true
+      else
+        if $var is null then false else true
+    else false
+
+## --------------------------------------------------------------------
+
 exports.end = ($array) ->
 
   if Array.isArray($array)
@@ -244,15 +264,18 @@ exports.in_array = ($needle, $haystack, $strict = false) ->
   $pos = $haystack.indexOf($needle)
   if $pos is -1 then return false
   if $strict
-    if typeof $needle is typeof $haystack[$pos] then $pos else false
+    if typeof $needle is typeof $haystack[$pos] then true else false
   else
-    $pos
+    true
 
 ## --------------------------------------------------------------------
 
 exports.is_array = ($var) ->
 
-  if typeof $var is 'object' then true else false
+  if typeof $var is 'object'
+    if $var is null then false else true
+  else
+    false
 
 ## --------------------------------------------------------------------
 
@@ -559,6 +582,16 @@ exports.ucfirst = ($str) ->
 exports.class_exists = class_exists = ($classname) -> typeof global[$classname] is 'function'
 
 exports.function_exists = function_exists = ($funcname) -> typeof global[$funcname] is 'function'
+
+exports.method_exists = method_exists = ($object, $method_name) -> typeof $object[$method_name] is 'function'
+
+exports.stripslashes = stripslashes = ($str) ->
+  return ($str + '').replace /\\(.?)/g, ($s, $p) ->
+    switch $p
+      when '\\' then '\\'
+      when '0'  then '\u0000'
+      when ''   then ''
+      else $p
 
 #  ------------------------------------------------------------------------
 

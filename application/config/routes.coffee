@@ -62,6 +62,9 @@ exports['/readme']                            = 'welcome/readme'
 exports['/about']                             = 'welcome/about'
 exports['/about/:id']                         = "welcome/about"
 
+# form_validation demo
+exports['/form']                              = 'form/index'
+
 # user controller
 exports['/login']                             = 'user/login'
 exports['/logout']                            = 'user/logout'

@@ -257,9 +257,9 @@ class CI_Typography
   # @param	string
   # @return	string
   #
+  exports.$table = $table ? {}
   format_characters : ($str) ->
-    exports.$table = $table ? {}
-    
+
     if not $table? 
       $table = 
         #  nested smart quotes, opening and closing

@@ -27,6 +27,13 @@
             <a href="/test" class="btn">Example &raquo;</a>
         </div>
     </div>
+    <div class="row">
+        <div class="span4">
+            <h3>Form Validation</h3>
+            <p>Demo using the CI_Form_validation class (.../user_guide/libraries/form_validation.html)</p>
+            <a href="/form" class="btn">Try It &raquo;</a>
+        </div>
+    </div>
     <p class="row"></p>
     <div class="row">
         <div class="span8"></div>
