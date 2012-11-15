@@ -290,11 +290,8 @@ if not function_exists('form_dropdown')
     #  If no selected state was submitted we will attempt to set it automatically
     if count($selected) is 0
       #  If the form name appears in the $_POST array we have a winner!
-      #if $_POST[$name]?
-      #  $selected = [$_POST[$name]]
-      
-      if @CI.input.post($name)
-        $selected = @CI.input.post($name)
+      if $_POST[$name]?
+        $selected = $_POST[$name]
 
       
     
@@ -593,10 +590,10 @@ if not function_exists('set_value')
   exports.set_value = set_value = ($field = '', $default = '') ->
     if false is ($OBJ = @_get_validation_object())
       
-      if not @CI.input.post($field)
+      if not $_POST[$field]
         return $default
 
-      return form_prep(@CI.input.post($field), $field)
+      return form_prep($_POST[$field], $field)
 
     return form_prep($OBJ.set_value($field, $default), $field)
     
@@ -622,13 +619,13 @@ if not function_exists('set_select')
 
     
     if $OBJ is false
-      if not @CI.input.post($field)
-        if count(@CI.input.post()) is 0 and $default is true
+      if not $_POST[$field]
+        if count($_POST) is 0 and $default is true
           return ' selected="selected"'
           
         return ''
 
-      $field = @CI.input.post($field)
+      $field = $_POST[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -662,31 +659,25 @@ if not function_exists('set_checkbox')
   exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = false) ->
     $OBJ = @_get_validation_object()
 
-    
     if $OBJ is false
-      if not @CI.input.post($field)
-        if count(@CI.input.post()) is 0 and $default is true
+      if not $_POST[$field]
+        if count($_POST) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
-        
-      
-      $field = @CI.input.post()[$field]
+
+      $field = $_POST[$field]
       
       if is_array($field)
         if not in_array($value, $field)
           return ''
-          
-        
+
       else 
         if ($field is '' or $value is '') or ($field isnt $value)
           return ''
-          
-        
-      
+
       return ' checked="checked"'
-      
-    
+
     return $OBJ.set_checkbox($field, $value, $default)
     
   
@@ -709,31 +700,25 @@ if not function_exists('set_radio')
   exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
     $OBJ = @_get_validation_object()
 
-    
     if $OBJ is false
-      if not @CI.input.post($field)
-        if count(@CI.input.post()) is 0 and $default is true
+      if not $_POST[$field]
+        if count($_POST) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
-        
-      
-      $field = @CI.input.post()[$field]
+
+      $field = $_POST[$field]
       
       if is_array($field)
         if not in_array($value, $field)
           return ''
-          
-        
+
       else 
         if ($field is '' or $value is '') or ($field isnt $value)
           return ''
-          
-        
-      
+
       return ' checked="checked"'
-      
-    
+
     return $OBJ.set_radio($field, $value, $default)
     
   
@@ -756,7 +741,6 @@ if not function_exists('form_error')
   exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
     if false is ($OBJ = @_get_validation_object())
       return ''
-
     return $OBJ.error($field, $prefix, $suffix)
     
   

@@ -13,22 +13,37 @@
 #
 #	form - controller
 #
+#
 #   @see user_guide/libraries/form_validation.html
 #
 class Form extends CI_Controller
 
+  constructor: ->
+
+    super()
+    @load.library 'form_validation'
+    @form_validation.set_error_delimiters "<div class='alert alert-error'><p><b>Error:</b>&nbsp;", "</p></div>"
+
+
   index: ->
 
-    @load.library 'form_validation'
-    @form_validation.set_rules 'username', 'Username', 'required'
+    @form_validation.set_rules 'username', 'Username', 'required|callback_username_check'
     @form_validation.set_rules 'password', 'Password', 'required'
     @form_validation.set_rules 'passconf', 'Password Confirmation', 'required'
     @form_validation.set_rules 'email', 'Email', 'required'
-
     if @form_validation.run() is false
       @load.view 'myform'
     else
       @load.view 'formsuccess'
+
+  username_check: ($str) =>
+
+    if $str is 'test'
+      @form_validation.set_message 'username_check', 'The %s field can not be the word "test".'
+      false
+    else
+      true
+
 
 module.exports = Form
 

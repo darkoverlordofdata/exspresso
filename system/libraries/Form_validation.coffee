@@ -166,7 +166,7 @@ class global.CI_Form_validation
   #
   set_message: ($lang, $val = '') ->
     if not is_array($lang)
-      $lang = $lang:$val
+      $lang = array($lang, $val)
 
     @_error_messages = array_merge(@_error_messages, $lang)
     
@@ -204,6 +204,9 @@ class global.CI_Form_validation
   # @return	void
   #
   error: ($field = '', $prefix = '', $suffix = '') ->
+
+    if not @_field_data[$field]? then return ''
+
     if not @_field_data[$field]['error']?  or @_field_data[$field]['error'] is ''
       return ''
 

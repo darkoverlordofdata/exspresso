@@ -395,10 +395,32 @@ createRegExp = ($pattern) ->
 
 ## --------------------------------------------------------------------
 
+exports.preg_quote = ($str, $delimiter = '') ->
+
+  $array = $str.split('')
+  for $i, $char of $array
+    if ".\+*?[^]$(){}=!<>|:-".indexOf($char) isnt -1
+      $array[$i] = "\\"+$char
+  $array.join()
+
+## --------------------------------------------------------------------
+
 exports.preg_match = ($pattern, $subject) ->
 
   $regex = createRegExp($pattern)
   $subject.match($regex)
+
+
+## --------------------------------------------------------------------
+
+exports.preg_match_all = ($pattern, $subject) ->
+
+  $regex = createRegExp($pattern)
+  $matches = []
+  while ($match = $regex.exec($subject)) isnt null
+    $matches.push $match
+  $matches
+
 
 
 ## --------------------------------------------------------------------

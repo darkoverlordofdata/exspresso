@@ -59,8 +59,7 @@ class global.CI_Parser
   #
   parse: ($template, $data, $return = false) ->
 
-    #$CI = get_instance()
-    $template = @_CI.load.view($template, $data, true)
+    $template = @CI.load.view($template, $data, true)
 
     return @_parse($template, $data, $return)
 
@@ -78,7 +77,7 @@ class global.CI_Parser
   # @param	bool
   # @return	string
   #
-  parse_string: ($template, $data, $return = false) ->
+  parse_string: ($template, $data, $return = null) ->
     return @_parse($template, $data, $return)
     
   
@@ -96,7 +95,7 @@ class global.CI_Parser
   # @param	bool
   # @return	string
   #
-  _parse: ($template, $data, $return = false) ->
+  _parse: ($template, $data, $return = null) ->
     if $template is ''
       return false
       
@@ -107,14 +106,10 @@ class global.CI_Parser
         
       else 
         $template = @_parse_single($key, ''+$val, $template)
-        
-      
-    
+
     if $return is false
-      $CI = get_instance()
-      $CI.output.append_output($template)
-      
-    
+      @CI.output.append_output($template)
+
     return $template
     
   
@@ -164,8 +159,7 @@ class global.CI_Parser
   _parse_pair: ($variable, $data, $string) ->
     if false is ($match = @_match_pair($string, $variable))
       return $string
-      
-    
+
     $str = ''
     for $row in $data
       $temp = $match['1']
@@ -175,12 +169,9 @@ class global.CI_Parser
           
         else 
           $temp = @_parse_pair($key, $val, $temp)
-          
-        
-      
+
       $str+=$temp
-      
-    
+
     return str_replace($match['0'], $str, $string)
     
   
@@ -195,10 +186,10 @@ class global.CI_Parser
   # @return	mixed
   #
   _match_pair: ($string, $variable) ->
-    if not preg_match("|" + preg_quote(@l_delim) + $variable + preg_quote(@r_delim) + "(.+?)" + preg_quote(@l_delim) + '/' + $variable + preg_quote(@r_delim) + "|s", $string, $match)
+    $match = preg_match("|" + preg_quote(@l_delim) + $variable + preg_quote(@r_delim) + "(.+?)" + preg_quote(@l_delim) + '/' + $variable + preg_quote(@r_delim) + "|s", $string)
+    if $match.length is 0
       return false
-      
-    
+
     return $match
     
   

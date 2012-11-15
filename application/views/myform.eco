@@ -1,19 +1,91 @@
-<%- @validation_errors() %>
+<div class="container">
+    <div class="hero-unit">
+        <h2>class CI_Form_validation</h2>
+        <%- @form_open('form', '', class:'form') %>
 
-<%- @form_open('form') %>
+            <%- @form_label('Username', 'username') %>
+            <%- @form_input('username', @set_value('username'), size:50) %>
+            <%- @form_error('username') %>
 
-<h5>Username</h5>
-<input type="text" name="username" value="<%= @set_value('username') %>" size="50" />
+            <%- @form_label('Password', 'password') %>
+            <%- @form_input('password', @set_value('password'), size:50) %>
+            <%- @form_error('password') %>
 
-<h5>Password</h5>
-<input type="text" name="password" value="<%= @set_value('password') %>" size="50" />
+            <%- @form_label('Password Confirm', 'passconf') %>
+            <%- @form_input('passconf', @set_value('passconf'), size:50) %>
+            <%- @form_error('passconf') %>
 
-<h5>Password Confirm</h5>
-<input type="text" name="passconf" value="<%= @set_value('passconf') %>" size="50" />
+            <%- @form_label('Email Address', 'email') %>
+            <%- @form_input('email', @set_value('email'), size:50) %>
+            <%- @form_error('email') %>
 
-<h5>Email Address</h5>
-<input type="text" name="email" value="<%= @set_value('email') %>" size="50" />
+            <div><%- @form_submit('submit', 'Submit', class:'btn btn-primary') %></div>
 
-<div><input type="submit" value="Submit" /></div>
+        <%- @form_close() %>
+    </div>
+    <h4>Form [myform.eco]</h4>
+    <div class="row">
+        <pre class="prettyprint"><code class="lang-html">
+&lt;div class="hero-unit"&gt;
+    &lt;h2&gt;class CI_Form_validation&lt;/h2&gt;
+    &lt;%- @form_open('form', '', class:'form') %&gt;
 
-</form>
+        &lt;%- @form_label('Username', 'username') %&gt;
+        &lt;%- @form_input('username', @set_value('username'), size:50) %&gt;
+        &lt;%- @form_error('username') %&gt;
+
+        &lt;%- @form_label('Password', 'password') %&gt;
+        &lt;%- @form_input('password', @set_value('password'), size:50) %&gt;
+        &lt;%- @form_error('password') %&gt;
+
+        &lt;%- @form_label('Password Confirm', 'passconf') %&gt;
+        &lt;%- @form_input('passconf', @set_value('passconf'), size:50) %&gt;
+        &lt;%- @form_error('passconf') %&gt;
+
+        &lt;%- @form_label('Email Address', 'email') %&gt;
+        &lt;%- @form_input('email', @set_value('email'), size:50) %&gt;
+        &lt;%- @form_error('email') %&gt;
+
+        &lt;div&gt;&lt;%- @form_submit('submit', 'Submit', class:'btn btn-primary') %&gt;&lt;/div&gt;
+
+    &lt;%- @form_close() %&gt;
+&lt;/div&gt;
+        </code></pre>
+        </div>
+    <h4>Controller [form.coffee]</h4>
+    <div class="row">
+        <pre class="prettyprint"><code class="lang-coffee">
+class Form extends CI_Controller
+
+    constructor: ->
+
+        super()
+        @load.library 'form_validation'
+        @form_validation.set_error_delimiters "&lt;div class='alert alert-error'&gt;&lt;p&gt;&lt;b&gt;Error:&lt;/b&gt;&nbsp;", "&lt;/p&gt;&lt;/div&gt;"
+
+
+    index: ->
+
+        @form_validation.set_rules 'username', 'Username', 'required|callback_username_check'
+        @form_validation.set_rules 'password', 'Password', 'required'
+        @form_validation.set_rules 'passconf', 'Password Confirmation', 'required'
+        @form_validation.set_rules 'email', 'Email', 'required'
+        if @form_validation.run() is false
+            @load.view 'myform'
+        else
+            @load.view 'formsuccess'
+
+    username_check: ($str) =>
+
+        if $str is 'test'
+            @form_validation.set_message 'username_check', 'The %s field can not be the word "test".'
+            false
+        else
+            true
+
+
+    module.exports = Form
+
+        </code></pre>
+    </div>
+</div>

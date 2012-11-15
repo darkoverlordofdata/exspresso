@@ -242,31 +242,24 @@ if not function_exists('img')
 # @param	string	type	The doctype to be generated
 # @return	string
 #
-$_doctypes = {}
 if not function_exists('doctype')
-  exports.doctype = doctype = ($type = 'xhtml1-strict') ->
+  exports.doctype = doctype = ($type = 'html5') ->
 
     if not is_array($_doctypes)
       if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
-        require(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
+        $_doctypes = require(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
         
       else if is_file(APPPATH + 'config/doctypes' + EXT)
-        require(APPPATH + 'config/doctypes' + EXT)
-        
-      
+        $_doctypes = require(APPPATH + 'config/doctypes' + EXT)
+
       if not is_array($_doctypes)
         return false
-        
-      
-    
+
     if $_doctypes[$type]? 
       return $_doctypes[$type]
       
     else 
       return false
-      
-    
-  
 
 #  ------------------------------------------------------------------------
 
