@@ -20,6 +20,8 @@
 #
 # Exspresso Router Class
 #
+require BASEPATH+'core/URI.coffee'
+
 class global.CI_Router
 
   routes:                 {}          # route dispatch bindings
@@ -254,9 +256,11 @@ class global.CI_Router
       $CI.redirect = ($path) -> $res.redirect $path
 
       if $CI.db?
-        $CI.db.initialize -> $CI[$method].apply $CI, $args
+        $CI.db.initialize -> call_user_func_array [$CI, $method], $args
+        #$CI.db.initialize -> $CI[$method].apply $CI, $args
       else
-        $CI[$method].apply $CI, $args
+        call_user_func_array [$CI, $method], $args
+        #$CI[$method].apply $CI, $args
 
       return
 

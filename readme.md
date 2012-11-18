@@ -3,7 +3,7 @@
 
 ### Exspresso is ...
 
-  The best parts of CodeIgniter (<http://codeigniter.com/>) MVC framework ported to coffee-script and wrapped around the Express core.
+  The CodeIgniter (<http://codeigniter.com/>) MVC framework ported to coffee-script and wrapped around the Express core.
 
 
 ## Status
@@ -14,7 +14,13 @@
 * Common - working
 * Config - working
 * Controller - working
-* Database - mysql & postgre; replace dbforge and dbutil with db-migrate
+* Database - mysql & postgresql
+    * DB_active_rec - working
+    * DB_cache      - in progress
+    * DB_driver     - working
+    * DB_forge      - in progress
+    * DB_result     - working
+    * DB_utility    - in progress
 * Exceptions - working
 * Hooks - in progres
 * Input - working

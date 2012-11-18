@@ -49,7 +49,16 @@
 #| The $active_record variables lets you determine whether or not to load
 #| the active record class
 #
-
+# appfog
+if process.env.VCAP_SERVICES?
+  $env = JSON.parse(process.env.VCAP_SERVICES)
+  $mysql = $env['mysql-5.1'][0]['credentials'] ? {}
+  $postgres = $env['postgresql-9.1'][0]['credentials'] ? {}
+  $postgres = $env['redis-2.2'][0]['credentials'] ? {}
+else
+  $mysql    = {}
+  $postgres = {}
+  $redis    = {}
 
 exports['active_group'] = 'postgres'
 exports['active_record'] = true
@@ -74,10 +83,10 @@ exports['db'] =
 
   mysql:
     'url': process.env.CLEARDB_DATABASE_URL ? "mysql://demo:demo@localhost:3306/demo"
-    'hostname': 'localhost'
-    'username': ''
-    'password': ''
-    'database': ''
+    'hostname': $mysql.host ? ''
+    'username': $mysql.user ? ''
+    'password': $mysql.password ? ''
+    'database': $mysql.name ? ''
     'dbdriver': 'mysql'
     'dbprefix': ''
     'pconnect': true
@@ -92,10 +101,10 @@ exports['db'] =
 
   postgres:
     'url': process.env.HEROKU_POSTGRESQL_ROSE_URL ? "postgres://tagsobe:tagsobe@localhost:5432/tagsobe"
-    'hostname': 'localhost'
-    'username': ''
-    'password': ''
-    'database': ''
+    'hostname': $postgres.host ? ''
+    'username': $postgres.user ? ''
+    'password': $postgres.password ? ''
+    'database': $postgres.name ? ''
     'dbdriver': 'postgres'
     'dbprefix': ''
     'pconnect': true
@@ -110,10 +119,10 @@ exports['db'] =
 
   redis:
     'url': process.env.REDISTOGO_URL ? 'redis://localhost:6379'
-    'hostname': 'localhost'
+    'hostname': $redis.host ? ''
     'username': ''
-    'password': ''
-    'database': ''
+    'password': $redis.password ? ''
+    'database': $redis.name ? ''
     'dbdriver': 'redis'
     'dbprefix': ''
     'pconnect': true

@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{_backup, _database_exists, _list_databases, _optimize_table, _repair_table, add_data, array_keys, count, current, database, date, db_debug, defined, display_error, extract, function_exists, get_instance, get_zip, gzencode, helper, in_array, is_bool, is_object, is_string, library, list_fields, list_tables, load, method_exists, num_rows, preg_match, query, result_array, rtrim, str_replace, time, xml_convert, zip}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Code Igniter
 #
@@ -43,9 +37,9 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_utility extends CI_DB_forge
+class global.CI_DB_utility extends CI_DB_forge
   
-  db: {}
+  db: null
   data_cache: {}
   
   #
@@ -54,10 +48,9 @@ class CI_DB_utility extends CI_DB_forge
   # Grabs the CI super object instance so we can access it.
   #
   #
-  CI_DB_utility :  ->
+  constructor: (@CI) ->
     #  Assign the main database object to $this->db
-    $CI = get_instance()
-    @db = $CI.db
+    @db = @CI.db
     
     log_message('debug', "Database Utility Class Initialized")
     
@@ -70,22 +63,22 @@ class CI_DB_utility extends CI_DB_forge
   # @access	public
   # @return	bool
   #
-  list_databases :  ->
+  list_databases: ($callback) ->
     #  Is there a cached result?
-    if @data_cache['db_names']? 
-      return @data_cache['db_names']
-      
-    
-    $query = @db.query(@_list_databases())
-    $dbs = {}
-    if $query.num_rows() > 0
-      for $row in $query.result_array()
-        $dbs.push current($row)
-        
-      
-    
-    @data_cache['db_names'] = $dbs
-    return @data_cache['db_names']
+    if @data_cache['db_names']?
+      $callback null, @data_cache['db_names']
+
+    @db.query @_list_databases(), ($err, $query) =>
+
+      if not $err
+        $dbs = []
+        if $query.num_rows() > 0
+          for $row in $query.result_array()
+            $dbs.push current($row)
+
+        @data_cache['db_names'] = $dbs
+
+      $callback $err, @data_cache['db_names']
     
   
   #  --------------------------------------------------------------------
@@ -97,7 +90,7 @@ class CI_DB_utility extends CI_DB_forge
   # @param	string
   # @return	boolean
   #
-  database_exists : ($database_name) ->
+  database_exists: ($database_name) ->
     #  Some databases won't have access to the list_databases() function, so
     #  this is intended to allow them to override with their own functions as
     #  defined in $driver_utility.php
@@ -105,7 +98,7 @@ class CI_DB_utility extends CI_DB_forge
       return @_database_exists($database_name)
       
     else 
-      return if ( not in_array($database_name, @list_databases())) then false else true
+      return if not in_array($database_name, @list_databases()) then false else true
       
     
   
@@ -119,19 +112,17 @@ class CI_DB_utility extends CI_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  optimize_table : ($table_name) ->
+  optimize_table: ($table_name, $callback) ->
     $sql = @_optimize_table($table_name)
     
     if is_bool($sql)
-      show_error('db_must_use_set')
-      
-    
-    $query = @db.query($sql)
-    $res = $query.result_array()
-    
-    #  Note: Due to a bug in current() that affects some versions
-    #  of PHP we can not pass function call directly into it
-    return current($res)
+      $callback('db_must_use_set')
+
+    @db.query $sql, ($err, $query) ->
+
+      $res = $query.result_array() unless $err
+
+      $callback current($err, $res)
     
   
   #  --------------------------------------------------------------------
@@ -142,30 +133,30 @@ class CI_DB_utility extends CI_DB_forge
   # @access	public
   # @return	array
   #
-  optimize_database :  ->
+  optimize_database: ($callback) ->
+    async = require('async')
     $result = {}
-    for $table_name in @db.list_tables()
-      $sql = @_optimize_table($table_name)
-      
-      if is_bool($sql)
-        return $sql
-        
-      
-      $query = @db.query($sql)
-      
-      #  Build the result array...
-      #  Note: Due to a bug in current() that affects some versions
-      #  of PHP we can not pass function call directly into it
-      $res = $query.result_array()
-      $res = current($res)
-      $key = str_replace(@db.database + '.', '', current($res))
-      $keys = array_keys($res)
-      delete $res[$keys[0]]
-      
-      $result[$key] = $res
-      
-    
-    return $result
+    @db.list_tables ($table_list) =>
+
+      $sql_list = []
+      for $table_name in $table_list
+        $sql = @_optimize_table($table_name)
+        $sql_list.push $sql unless is_bool($sql)
+
+      async.mapSeries $sql_list, @db.query, ($err, $results) =>
+
+        if not $err
+          for $query in $results
+
+            #  Build the result array...
+            $res = $query.result_array()
+            $res = current($res)
+            $key = str_replace(@db.database + '.', '', current($res))
+            $keys = array_keys($res)
+            delete $res[$keys[0]]
+            $result[$key] = $res
+
+        $callback $err, $result
     
   
   #  --------------------------------------------------------------------
@@ -177,19 +168,15 @@ class CI_DB_utility extends CI_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  repair_table : ($table_name) ->
+  repair_table: ($table_name, $callback) ->
     $sql = @_repair_table($table_name)
     
     if is_bool($sql)
-      return $sql
-      
-    
-    $query = @db.query($sql)
-    
-    #  Note: Due to a bug in current() that affects some versions
-    #  of PHP we can not pass function call directly into it
-    $res = $query.result_array()
-    return current($res)
+      $callback $sql, []
+
+    @db.query $sql, ($err, $query) ->
+      $res = $query.result_array() unless $err
+      $callback $err, current($res)
     
   
   #  --------------------------------------------------------------------
@@ -204,7 +191,7 @@ class CI_DB_utility extends CI_DB_forge
   # @param	string	The enclosure - double quote by default
   # @return	string
   #
-  csv_from_result : ($query, $delim = ",", $newline = "\n", $enclosure = '"') ->
+  csv_from_result: ($query, $delim = ",", $newline = "\n", $enclosure = '"') ->
     if not is_object($query) or  not method_exists($query, 'list_fields')
       show_error('You must submit a valid result object')
       
@@ -241,36 +228,30 @@ class CI_DB_utility extends CI_DB_forge
   # @param	array	Any preferences
   # @return	string
   #
-  xml_from_result : ($query, $params = {}) ->
+  xml_from_result: ($query, $params = {}) ->
     if not is_object($query) or  not method_exists($query, 'list_fields')
       show_error('You must submit a valid result object')
       
     
-    #  Set our default values
-    for $key, $val of 'root':'root', 'element':'element', 'newline':"\n", 'tab':"\t"
-      if not $params[$key]? 
-        $params[$key] = $val
-        
-      
-    
-    #  Create variables for convenience
-    extract($params)
-    
+    $root     = $params.root ? 'root'
+    $element  = $params.element ? 'element'
+    $newline  = $params.newline ? "\n"
+    $tab      = $params.tab ? "\t"
+
     #  Load the xml helper
-    $CI = get_instance()
-    $CI.load.helper('xml')
+    @CI.load.helper('xml')
     
     #  Generate the result
-    $xml = "<{$root}>" + $newline
+    $xml = "<#{$root}>" + $newline
     for $row in $query.result_array()
-      $xml+=$tab + "<{$element}>" + $newline
+      $xml+=$tab + "<#{$element}>" + $newline
       
       for $key, $val of $row
-        $xml+=$tab + $tab + "<{$key}>" + xml_convert($val) + "</{$key}>" + $newline
+        $xml+=$tab + $tab + "<#{$key}>" + xml_convert($val) + "</#{$key}>" + $newline
         
-      $xml+=$tab + "</{$element}>" + $newline
+      $xml+=$tab + "</#{$element}>" + $newline
       
-    $xml+="</$root>" + $newline
+    $xml+="</#{$root}>" + $newline
     
     return $xml
     
@@ -283,44 +264,40 @@ class CI_DB_utility extends CI_DB_forge
   # @access	public
   # @return	void
   #
-  backup : ($params = {}) ->
+  backup: ($prefs = {}, $callback) ->
     #  If the parameters have not been submitted as an
     #  array then we know that it is simply the table
     #  name, which is a valid short cut.
-    if is_string($params)
-      $params = 'tables':$params
+    if is_string($prefs)
+      $prefs = array('tables', $prefs)
       
     
     #  ------------------------------------------------------
     
     #  Set up our default preferences
-    $prefs = 
-      'tables':{}, 
-      'ignore':{}, 
+    $prefs.__proto__ =
+      'tables':[],
+      'ignore':[],
       'filename':'', 
       'format':'gzip', #  gzip, zip, txt
       'add_drop':true, 
       'add_insert':true, 
       'newline':"\n"
       
-    
-    #  Did the user submit any preferences? If so set them....
-    if count($params) > 0
-      for $key, $val of $prefs
-        if $params[$key]? 
-          $prefs[$key] = $params[$key]
-          
-        
-      
-    
+
     #  ------------------------------------------------------
     
     #  Are we backing up a complete database or individual tables?
     #  If no table names were submitted we'll fetch the entire table list
     if count($prefs['tables']) is 0
-      $prefs['tables'] = @db.list_tables()
-      
-    
+      @db.list_tables ($err, $result) =>
+        if $err then $callback $err
+        if count($result) is 0 then $callback 'no tables to backup'
+        $prefs['tables'] = $result
+        @backup $prefs, $callback
+      return
+
+
     #  ------------------------------------------------------
     
     #  Validate the format
@@ -378,17 +355,10 @@ class CI_DB_utility extends CI_DB_forge
       
       #  Load the Zip class and output it
       
-      $CI = get_instance()
-      $CI.load.library('zip')
-      $CI.zip.add_data($prefs['filename'], @_backup($prefs))
-      return $CI.zip.get_zip()
+      @CI.load.library('zip')
+      @CI.zip.add_data($prefs['filename'], @_backup($prefs))
+      return @CI.zip.get_zip()
       
-    
-    
-  
-  
-
-register_class 'CI_DB_utility', CI_DB_utility
 module.exports = CI_DB_utility
 
 

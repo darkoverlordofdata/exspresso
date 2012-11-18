@@ -58,6 +58,13 @@ define '$CFG', (exports.config = load_class('Config', 'core'))
 
 #
 # ------------------------------------------------------
+#  Instantiate the URI class
+# ------------------------------------------------------
+#
+#define '$URI', (exports.uri = load_class('URI', 'core'))
+
+#
+# ------------------------------------------------------
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #

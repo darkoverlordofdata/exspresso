@@ -131,7 +131,7 @@ class global.CI_Loader
   #
   # @var object
   #
-  _CI:                   null
+  CI:                     null
   ## --------------------------------------------------------------------
 
   #
@@ -162,7 +162,7 @@ class global.CI_Loader
   # @param  boolean call autoload
   # @return object
   #
-  initialize: (@_CI, $autoload = false) ->
+  initialize: (@CI, $autoload = false) ->
 
 
     @_ci_classes        = {}
@@ -261,7 +261,7 @@ class global.CI_Loader
     if in_array($name, @_ci_models, true)
       return
 
-    if @_CI[$name]?
+    if @CI[$name]?
       show_error 'The model name you are loading is the name of a resource that is already being used: '+$name
 
 
@@ -271,7 +271,7 @@ class global.CI_Loader
 
       if $db_conn isnt false and not class_exists('CI_DB')
         if $db_conn is true then $db_conn = ''
-        @_CI.load.database $db_conn, false, true
+        @CI.load.database $db_conn, false, true
 
       if not class_exists('CI_Model')
         load_class 'Model', 'core'
@@ -281,12 +281,12 @@ class global.CI_Loader
       # Allows models to access CI's loaded classes using the same
       # syntax as controllers:
       $model = new $Model()
-      for $var, $value of @_CI
-        if typeof @_CI[$var] isnt 'function'
+      for $var, $value of @CI
+        if typeof @CI[$var] isnt 'function'
           if not $model[$var]?
             $model[$var] = $value
 
-      @_CI[$name] = $model
+      @CI[$name] = $model
       @_ci_models.push $name
       return
 
@@ -312,25 +312,25 @@ class global.CI_Loader
 
     # Do we even need to load the database class?
     if $CI.db?
-      if not @_CI.db?
+      if not @CI.db?
         if $return is false
-          @_CI.db = $CI.db
+          @CI.db = $CI.db
           return false
 
-    if class_exists('CI_DB') and $return is false and $active_record is null and @_CI['db']?
+    if class_exists('CI_DB') and $return is false and $active_record is null and @CI['db']?
       return false
 
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
-    DB._CI = @_CI
+    DB._CI = @CI
 
     if $return is true then return DB #($params, $active_record)
 
     # Initialize the db variable.  Needed to prevent
     # reference errors with some configurations
-    @_CI.db = ''
+    @CI.db = ''
 
     # Load the DB class
-    @_CI.db = DB #($params, $active_record)
+    @CI.db = DB #($params, $active_record)
 
   ## --------------------------------------------------------------------
   
@@ -345,14 +345,12 @@ class global.CI_Loader
     if not class_exists('CI_DB')
       @database()
 
-    # $CI = get_instance()
-
-    require BASEPATH+'database/DB_utility'+EXT
-    $class = require(BASEPATH+'database/drivers/'+@_CI.db.dbdriver+'/'+@_CI.db.dbdriver+'_utility'+EXT)
-    # $class = 'CI_DB_'+@_CI.db.dbdriver+'_utility'
+    require(BASEPATH + 'database/DB_forge' + EXT)
+    require BASEPATH + 'database/DB_utility'+ EXT
+    $class = require(BASEPATH + 'database/drivers/' + @CI.db.dbdriver + '/' + @CI.db.dbdriver + '_utility' + EXT)
     # ex: CI_DB_sqlite_utility
 
-    @_CI.dbutil = new $class()
+    @CI.dbutil = new $class(@CI)
 
   #  --------------------------------------------------------------------
 
@@ -363,17 +361,14 @@ class global.CI_Loader
   # @return	string
   #
   dbforge :  ->
+
     if not class_exists('CI_DB')
       @database()
 
-
-    # $CI = get_instance()
-
     require(BASEPATH + 'database/DB_forge' + EXT)
-    require(BASEPATH + 'database/drivers/' + $CI.db.dbdriver + '/' + $CI.db.dbdriver + '_forge' + EXT)
-    $class = 'CI_DB_' + $CI.db.dbdriver + '_forge'
+    $class = require(BASEPATH + 'database/drivers/' + @CI.db.dbdriver + '/' + @CI.db.dbdriver + '_forge' + EXT)
 
-    @_CI.dbforge = new $class()
+    @CI.dbforge = new $class(@CI)
 
   #  --------------------------------------------------------------------
 
@@ -496,13 +491,11 @@ class global.CI_Loader
   #
   language: ($file = [], $lang = '') ->
 
-    # $CI = get_instance()
-
     if  not is_array($file)
       $file = [$file]
 
     for $langfile in $file
-      @_CI.lang.load $langfile, $lang
+      @CI.lang.load $langfile, $lang
 
 
   ## --------------------------------------------------------------------
@@ -516,8 +509,7 @@ class global.CI_Loader
   #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
 
-    # $CI = get_instance()
-    @_CI.config.load $file, $use_sections, $fail_gracefully
+    @CI.config.load $file, $use_sections, $fail_gracefully
 
 
   ## --------------------------------------------------------------------
@@ -663,10 +655,10 @@ class global.CI_Loader
     #  to become accessible from within the Controller and Model functions.
 
     #$_ci_CI = get_instance()
-    #for $_ci_key, $_ci_var of @_CI
-    #  if typeof @_CI[$_ci_key] isnt 'function'
+    #for $_ci_key, $_ci_var of @CI
+    #  if typeof @CI[$_ci_key] isnt 'function'
     #    if not @[$_ci_key]?
-    #      @[$_ci_key] = @_CI[$_ci_key]
+    #      @[$_ci_key] = @CI[$_ci_key]
 
     #
     # Extract and cache variables
@@ -680,7 +672,7 @@ class global.CI_Loader
       @_ci_cached_vars = array_merge(@_ci_cached_vars, $_ci_vars)
 
 
-    @_CI.render $_ci_path, @_ci_cached_vars, $_ci_return
+    @CI.render $_ci_path, @_ci_cached_vars, $_ci_return
 
     log_message('debug', 'File loaded: ' + $_ci_path)
 
@@ -737,8 +729,7 @@ class global.CI_Loader
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
-            # $CI = get_instance()
-            if not @_CI[$object_name]?
+            if not @CI[$object_name]?
               return @_ci_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
 
@@ -771,8 +762,7 @@ class global.CI_Loader
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
-            # $CI = get_instance()
-            if not @_CI[$object_name]?
+            if not @CI[$object_name]?
               return @_ci_init_class($class, '', $params, $object_name)
 
 
@@ -877,9 +867,8 @@ class global.CI_Loader
     @_ci_classes[$class] = $classvar
 
     #  Instantiate the class
-    # $CI = get_instance()
-    @_CI[$classvar] = new global[$name]($config, @_CI)
-    return @_CI[$classvar]
+    @CI[$classvar] = new global[$name]($config, @CI)
+    return @CI[$classvar]
 
 
   #  --------------------------------------------------------------------
@@ -914,9 +903,8 @@ class global.CI_Loader
 
     #  Load any custom config file
     if $autoload['config'].length > 0
-      # $CI = get_instance()
       for $val, $key in as
-        @_CI.config.load $val
+        @CI.config.load $val
 
     #  Autoload helpers and languages
     for $type in ['helper', 'language']
@@ -968,8 +956,7 @@ class global.CI_Loader
   # @return	bool
   #
   _ci_get_component : ($component) ->
-    # $CI = get_instance()
-    return @_CI[$component]
+    return @CI[$component]
 
 
   #  --------------------------------------------------------------------

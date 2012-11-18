@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{_escape_identifiers, _protect_identifiers, array_change_key_case, array_key_exists, count, db, defined, implode, is_array, is_numeric}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -43,7 +37,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_mysql_forge extends CI_DB_forge
+class global.CI_DB_mysql_forge extends CI_DB_forge
   
   #
   # Create database
@@ -126,7 +120,7 @@ class CI_DB_mysql_forge extends CI_DB_forge
           
         
         if array_key_exists('NULL', $attributes)
-          $sql+=($attributes['NULL'] is true) then ' NULL' else ' NOT NULL'
+          $sql+=if ($attributes['NULL'] is true) then ' NULL' else ' NOT NULL'
           
         
         if array_key_exists('AUTO_INCREMENT', $attributes) and $attributes['AUTO_INCREMENT'] is true
@@ -188,7 +182,7 @@ class CI_DB_mysql_forge extends CI_DB_forge
         
       
     
-    $sql+="\n) DEFAULT CHARACTER SET {$this->db->char_set} COLLATE {$this->db->dbcollat};"
+    $sql+="\n) DEFAULT CHARACTER SET #{@db.char_set} COLLATE #{@db.dbcollat};"
     
     return $sql
     
@@ -253,11 +247,7 @@ class CI_DB_mysql_forge extends CI_DB_forge
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
     return $sql
     
-  
-  
-
-register_class 'CI_DB_mysql_forge', CI_DB_mysql_forge
 module.exports = CI_DB_mysql_forge
 
-#  End of file mysql_forge.php 
-#  Location: ./system/database/drivers/mysql/mysql_forge.php 
+#  End of file mysql_forge.coffee
+#  Location: ./system/database/drivers/mysql/mysql_forge.coffee

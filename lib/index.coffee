@@ -50,6 +50,14 @@ exports.die = ($message) ->
   console.log $message
   process.exit 1
 
+
+exports.array_diff = ($array1, $array2) ->
+
+  $ret = []
+  for $val in $array1
+    if $array2.indexOf($val) is -1 then $ret.push $val
+  $ret
+
 ## --------------------------------------------------------------------
 
 exports.array_keys = ($input, $search = null) ->
@@ -153,10 +161,27 @@ exports.array_unshift = ($array, $var...) ->
 
 ## --------------------------------------------------------------------
 
-#exports.class_exists = ($class_name) ->
+exports.call_user_func = ($callback, $parameter...) ->
 
+  if Array.isArray($callback)
+    $object = $callback[0]
+    $method = $callback[1]
+  else
+    $object = global
+    $method = $callback
+  $object[$method].apply($object, $parameter)
 
-  #_classes[$class_name]?
+## --------------------------------------------------------------------
+
+exports.call_user_func_array = ($callback, $param_arr) ->
+
+  if Array.isArray($callback)
+    $object = $callback[0]
+    $method = $callback[1]
+  else
+    $object = global
+    $method = $callback
+  $object[$method].apply($object, $param_arr)
 
 ## --------------------------------------------------------------------
 
@@ -282,6 +307,17 @@ exports.is_array = ($var) ->
 exports.is_bool = ($var) ->
 
   if typeof $var is 'boolean' then true else false
+
+## --------------------------------------------------------------------
+
+exports.is_callable = ($class, $method) ->
+
+  $def = global[$class]
+  if typeof $def is 'function'
+    if typeof $def.__proto__[$method] is method
+      true
+  false
+
 
 ## --------------------------------------------------------------------
 

@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{cache_off, cachedir, chmod, defined, delete_files, get_instance, helper, is_dir, load, md5, mkdir, preg_replace, read_file, segment, serialize, unserialize, uri, write_file}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -43,7 +37,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_Cache
+class global.CI_DB_Cache
   
   CI: {}
   db: {}#  allows passing of db object so that multiple database connections and returned db objects can be supported
@@ -54,11 +48,9 @@ class CI_DB_Cache
   # Grabs the CI super object instance so we can access it.
   #
   #
-  CI_DB_Cache : ( and $db) ->
+  constructor: (@db, @CI) ->
     #  Assign the main CI object to $this->CI
     #  and load the file helper since we use it a lot
-    @CI = get_instance()
-    @db = $db
     @CI.load.helper('file')
     
   
@@ -71,7 +63,7 @@ class CI_DB_Cache
   # @param	string	the path to the cache directory
   # @return	bool
   #
-  check_path : ($path = '') ->
+  check_path: ($path = '') ->
     if $path is ''
       if @db.cachedir is ''
         return @db.cache_off()
@@ -81,9 +73,10 @@ class CI_DB_Cache
       
     
     #  Add a trailing slash to the path if needed
-    $path = preg_replace("/(.+?)\/*$/", "\\1/", $path)
+    $path = preg_replace("/(.+?)\\/*$/", "$1/", $path)
+
     
-    if not is_dir($path) or  not is_really_writable($path)
+    if not is_dir($path) or not is_really_writable($path)
       #  If the path is wrong we'll turn off caching
       return @db.cache_off()
       
@@ -103,7 +96,7 @@ class CI_DB_Cache
   # @access	public
   # @return	string
   #
-  read : ($sql) ->
+  read: ($sql) ->
     if not @check_path()
       return @db.cache_off()
       
@@ -129,7 +122,7 @@ class CI_DB_Cache
   # @access	public
   # @return	bool
   #
-  write : ($sql, $object) ->
+  write: ($sql, $object) ->
     if not @check_path()
       return @db.cache_off()
       
@@ -166,7 +159,7 @@ class CI_DB_Cache
   # @access	public
   # @return	bool
   #
-  delete : ($segment_one = '', $segment_two = '') ->
+  delete: ($segment_one = '', $segment_two = '') ->
     if $segment_one is ''
       $segment_one = if (@CI.uri.segment(1) is false) then 'default' else @CI.uri.segment(1)
       
@@ -190,11 +183,7 @@ class CI_DB_Cache
   #
   delete_all :  ->
     delete_files(@db.cachedir, true)
-    
-  
-  
 
-register_class 'CI_DB_Cache', CI_DB_Cache
 module.exports = CI_DB_Cache
 
 

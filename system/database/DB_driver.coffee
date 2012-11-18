@@ -919,7 +919,7 @@ class CI_DB_driver
   display_error : ($error = '', $swap = '', $native = false) ->
 
     $LANG = load_class('Lang', 'core')
-    $LANG._CI = @_CI
+    #$LANG._CI = @_CI
     $LANG.load('db')
 
     $heading = $LANG.line('db_error_heading')

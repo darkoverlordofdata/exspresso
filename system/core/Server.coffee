@@ -188,6 +188,22 @@ class global.CI_Server
   #  --------------------------------------------------------------------
 
   #
+  # URI registration
+  #
+  #   called by the core/URI class constructor
+  #
+  # @access	public
+  # @param	object $IN
+  # @return	void
+  #
+  uri: ($uri) ->
+
+    @app.use $uri.middleware()
+    return
+
+  #  --------------------------------------------------------------------
+
+  #
   # Sessions registration
   #
   #   called by the libraries/Session/Session class constructor
@@ -237,47 +253,6 @@ class global.CI_Server
       @app.use express.session()
 
     return
-
-
-  # --------------------------------------------------------------------
-
-  #
-  # Controller binding
-  #
-  #   Routing call back to invoke the controller when the request is received
-  #
-  #   @param object $class
-  #   @param string method
-  #   @return function
-  #
-  controllerz: ($class, $method) ->
-
-    #
-    # Invoke the contoller
-    #
-    #   Instantiates the controller and calls the requested method.
-    #   Any URI segments present (besides the class/function) will be passed
-    #   to the method for convenience
-    #
-    #   @param {Object} the server request object
-    #   @param {Object} the server response object
-    #   @param {Function} the next middleware on the stack
-    #   @param {Array} the remaining arguments
-    #
-    ($req, $res, $next, $args...) ->
-
-      # a new copy of the controller class for each request:
-      $CI = new $class()
-
-      $CI.redirect = ($path) -> $res.redirect $path
-
-      if $CI.db?
-        $CI.db.initialize -> $CI[$method].apply $CI, $args
-      else
-        $CI[$method].apply $CI, $args
-
-      return
-
 
 
   # --------------------------------------------------------------------

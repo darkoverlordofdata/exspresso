@@ -39,7 +39,7 @@
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/libraries/pagination.html
 #
-class CI_Pagination
+class global.CI_Pagination
   
   base_url: ''#  The page we are linking to
   prefix: ''#  A custom prefix added to the path.
@@ -80,7 +80,7 @@ class CI_Pagination
   # @access	public
   # @param	array	initialization parameters
   #
-  constructor: ($params = {}) ->
+  constructor: ($params = {}, @CI) ->
     if count($params) > 0
       @initialize($params)
 
@@ -103,11 +103,7 @@ class CI_Pagination
       for $key, $val of $params
         if @$key? 
           @$key = $val
-          
-        
-      
-    
-  
+
   #  --------------------------------------------------------------------
   
   #
@@ -131,19 +127,17 @@ class CI_Pagination
       
     
     #  Determine the current page number.
-    $CI = get_instance()
-    
-    if $CI.config.item('enable_query_strings') is true or @page_query_string is true
-      if $CI.input.get(@query_string_segment) isnt 0
-        @cur_page = $CI.input.get(@query_string_segment)
+    if @CI.config.item('enable_query_strings') is true or @page_query_string is true
+      if @CI.input.get(@query_string_segment) isnt 0
+        @cur_page = @CI.input.get(@query_string_segment)
         
         #  Prep the current page - no funny business!
         @cur_page = @cur_page
         
       
     else 
-      if $CI.uri.segment(@uri_segment) isnt 0
-        @cur_page = $CI.uri.segment(@uri_segment)
+      if @CI.uri.segment(@uri_segment) isnt 0
+        @cur_page = @CI.uri.segment(@uri_segment)
         
         #  Prep the current page - no funny business!
         @cur_page = @cur_page
@@ -176,7 +170,7 @@ class CI_Pagination
     
     #  Is pagination being used over GET or POST?  If get, add a per_page query
     #  string. If post, add a trailing slash to the base URL if needed
-    if $CI.config.item('enable_query_strings') is true or @page_query_string is true
+    if @CI.config.item('enable_query_strings') is true or @page_query_string is true
       @base_url = rtrim(@base_url) + '&amp;' + @query_string_segment + '='
       
     else 
@@ -209,30 +203,25 @@ class CI_Pagination
     #  Render the pages
     if @display_pages isnt false
       #  Write the digit links
-      for ($loop = $start - 1$loop<=$end$loop++)
-      {
-      $i = ($loop * @per_page) - @per_page
-      
-      if $i>=0
-        if @cur_page is $loop
-          $output+=@cur_tag_open + $loop + @cur_tag_close#  Current page
-          
-        else 
-          $n = if ($i is 0) then '' else $i
-          
-          if $n is '' and @first_url isnt ''
-            $output+=@num_tag_open + '<a ' + @anchor_class + 'href="' + @first_url + '">' + $loop + '</a>' + @num_tag_close
+      for $loop in [$start - 1..$end]
+        $i = ($loop * @per_page) - @per_page
+
+        if $i>=0
+          if @cur_page is $loop
+            $output+=@cur_tag_open + $loop + @cur_tag_close#  Current page
+
+          else
+            $n = if ($i is 0) then '' else $i
+
+            if $n is '' and @first_url isnt ''
+              $output+=@num_tag_open + '<a ' + @anchor_class + 'href="' + @first_url + '">' + $loop + '</a>' + @num_tag_close
+
+            else
+              $n = if ($n is '') then '' else @prefix + $n + @suffix
+
+              $output+=@num_tag_open + '<a ' + @anchor_class + 'href="' + @base_url + $n + '">' + $loop + '</a>' + @num_tag_close
             
-          else 
-            $n = if ($n is '') then '' else @prefix + $n + @suffix
-            
-            $output+=@num_tag_open + '<a ' + @anchor_class + 'href="' + @base_url + $n + '">' + $loop + '</a>' + @num_tag_close
-            
-          
-        
-      }
-      
-    
+
     #  Render the "next" link
     if @next_link isnt false and @cur_page < $num_pages
       $output+=@next_tag_open + '<a ' + @anchor_class + 'href="' + @base_url + @prefix + (@cur_page * @per_page) + @suffix + '">' + @next_link + '</a>' + @next_tag_close
@@ -246,18 +235,15 @@ class CI_Pagination
     
     #  Kill double slashes.  Note: Sometimes we can end up with a double slash
     #  in the penultimate link so we'll kill all double slashes.
-    $output = preg_replace("#([^:])//+#", "\\1/", $output)
+    $output = preg_replace("#([^:])//+#", "$1/", $output)
     
     #  Add the wrapper HTML if exists
     $output = @full_tag_open + $output + @full_tag_close
     
     return $output
     
-  
-
-register_class 'CI_Pagination', CI_Pagination
 module.exports = CI_Pagination
 #  END Pagination Class
 
-#  End of file Pagination.php 
-#  Location: ./system/libraries/Pagination.php 
+#  End of file Pagination.coffee
+#  Location: ./system/libraries/Pagination.coffee
