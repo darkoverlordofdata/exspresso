@@ -321,7 +321,8 @@ class global.CI_Loader
       return false
 
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
-    DB._CI = @CI
+
+    @CI._ctor.push ($callback) -> DB.initialize $callback
 
     if $return is true then return DB #($params, $active_record)
 
@@ -340,17 +341,21 @@ class global.CI_Loader
   # @access	public
   # @return	string
   #@
-  dbutil: ->
+  dbutil: ($params = '') ->
 
-    if not class_exists('CI_DB')
-      @database()
+    if $params is ''
+      if not class_exists('CI_DB')
+        @database()
+      $db = @db
+    else
+      $db = @database($params, true)
 
     require(BASEPATH + 'database/DB_forge' + EXT)
     require BASEPATH + 'database/DB_utility'+ EXT
-    $class = require(BASEPATH + 'database/drivers/' + @CI.db.dbdriver + '/' + @CI.db.dbdriver + '_utility' + EXT)
+    $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_utility' + EXT)
     # ex: CI_DB_sqlite_utility
 
-    @CI.dbutil = new $class(@CI)
+    @CI.dbutil = new $class(@CI, $db)
 
   #  --------------------------------------------------------------------
 
@@ -360,15 +365,19 @@ class global.CI_Loader
   # @access	public
   # @return	string
   #
-  dbforge :  ->
+  dbforge: ($params = '') ->
 
-    if not class_exists('CI_DB')
-      @database()
+    if $params is ''
+      if not class_exists('CI_DB')
+        @database()
+      $db = @db
+    else
+      $db = @database($params, true)
 
     require(BASEPATH + 'database/DB_forge' + EXT)
-    $class = require(BASEPATH + 'database/drivers/' + @CI.db.dbdriver + '/' + @CI.db.dbdriver + '_forge' + EXT)
+    $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_forge' + EXT)
 
-    @CI.dbforge = new $class(@CI)
+    @CI.dbforge = new $class(@CI, $db)
 
   #  --------------------------------------------------------------------
 
@@ -560,7 +569,7 @@ class global.CI_Loader
 
     #  Add config file path
     $config = @_ci_get_component('config')
-    array_unshift($config.config_paths, $path)
+    array_unshift($config._config_paths, $path)
 
 
 
@@ -598,7 +607,7 @@ class global.CI_Loader
       $void = array_shift(@_ci_library_paths)
       $void = array_shift(@_ci_model_paths)
       $void = array_shift(@_ci_helper_paths)
-      $void = array_shift($config.config_paths)
+      $void = array_shift($config._config_paths)
 
     else
       $path = rtrim($path, '/') + '/'
@@ -609,8 +618,8 @@ class global.CI_Loader
 
 
 
-      if ($key = array_search($path, $config.config_paths)) isnt false
-        delete $config.config_paths[$key]
+      if ($key = array_search($path, $config._config_paths)) isnt false
+        delete $config._config_paths[$key]
 
 
 
@@ -618,7 +627,7 @@ class global.CI_Loader
     @_ci_library_paths = array_unique(array_merge(@_ci_library_paths, [APPPATH, BASEPATH]))
     @_ci_helper_paths = array_unique(array_merge(@_ci_helper_paths, [APPPATH, BASEPATH]))
     @_ci_model_paths = array_unique(array_merge(@_ci_model_paths, [APPPATH]))
-    $config.config_paths = array_unique(array_merge($config.config_paths, [APPPATH]))
+    $config._config_paths = array_unique(array_merge($config._config_paths, [APPPATH]))
 
 
 
@@ -806,33 +815,33 @@ class global.CI_Loader
   # @return	null
   #
   _ci_init_class : ($class, $prefix = '', $config = false, $object_name = null) ->
+
     #  Is there an associated config file for this class?  Note: these should always be lowercase
     if $config is false
       $config = {}
     #  Fetch the config paths containing any package paths
-      $config_component = @_ci_get_component('config')
+    $config_component = @_ci_get_component('config')
+    if Array.isArray($config_component._config_paths)
+      #  Break on the first found file, thus package files
+      #  are not overridden by default paths
+      for $path in $config_component._config_paths
+        #  We test for both uppercase and lowercase, for servers that
+        #  are case-sensitive with regard to file names. Check for environment
+        #  first, global next
 
-      if is_array($config_component.config_paths)
-        #  Break on the first found file, thus package files
-        #  are not overridden by default paths
-        for $path in $config_component.config_paths
-          #  We test for both uppercase and lowercase, for servers that
-          #  are case-sensitive with regard to file names. Check for environment
-          #  first, global next
+        if file_exists($path + 'config/' + $class.toLowerCase() + EXT)
+          $config = array_merge(require($path + 'config/' + $class.toLowerCase() + EXT), $config)
 
-          if file_exists($path + 'config/' + $class.toLowerCase() + EXT)
-            $config = require($path + 'config/' + $class.toLowerCase() + EXT)
+        else if file_exists($path + 'config/' + ucfirst($class.toLowerCase()) + EXT)
+          $config = array_merge(require($path + 'config/' + ucfirst($class.toLowerCase()) + EXT), $config)
 
-          else if file_exists($path + 'config/' + ucfirst($class.toLowerCase()) + EXT)
-            $config = require($path + 'config/' + ucfirst($class.toLowerCase()) + EXT)
+        if file_exists($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT)
+          $config = array_merge(require($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT), $config)
+          break
 
-          if file_exists($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT)
-            $config = array_merge($config, require($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT))
-            break
-
-          else if file_exists($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT)
-            $config = array_merge($config, require($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT))
-            break
+        else if file_exists($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT)
+          $config = array_merge(require($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT), $config)
+          break
 
     if $prefix is ''
       if class_exists('CI_' + $class)

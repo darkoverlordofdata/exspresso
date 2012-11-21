@@ -24,7 +24,7 @@
 #
 class global.CI_Controller
 
-  constructor: ->
+  constructor: (@res) ->
 
     # Assign all the class objects that were instantiated by the
     # bootstrap file (Exspresso.coffee) to local class variables
@@ -39,10 +39,37 @@ class global.CI_Controller
     # so that callbacks will run in the controller context
     @load = load_new('Loader', 'core')
     @load.initialize(@) # NO AUTOLOAD!!!
-
+    @_ctor = []
 
     log_message 'debug', "Controller Class Initialized"
 
+
+  # --------------------------------------------------------------------
+
+  #
+  # Render a view
+  #
+  # @access	public
+  # @param	string
+  # @param	object
+  # @param	function
+  # @return	void
+  #
+  render: ($view, $data = {}, $fn) =>
+    $data.CI = @
+    @res.render $view, $data, $fn
+
+  # --------------------------------------------------------------------
+
+  #
+  # Redirect to another url
+  #
+  # @access	public
+  # @param	string
+  # @return	void
+  #
+  redirect: ($url) =>
+    @res.redirect $url
 
 CI_Controller.get_instance = () -> require(BASEPATH + 'core/Exspresso')
 

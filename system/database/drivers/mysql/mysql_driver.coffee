@@ -30,6 +30,7 @@ module.exports = (CI_DB) ->
     # by default, expect mysql to listen on port 3306
     dbdriver:   'mysql'
     port:       3306
+    connected:  false
 
     #  The character used for escaping
     _escape_char: '`'
@@ -60,16 +61,19 @@ module.exports = (CI_DB) ->
     # @access	private called by the base class
     # @return	resource
     #
-    db_connect: ($callback) ->
+    db_connect: ($callback) =>
 
-      mysql = require('mysql')
+      if not @connected
+        mysql = require('mysql')
 
-      @client = new mysql.createClient
-        host: @hostname
-        port: @port
-        user: @username
-        password: @password
-        database: @database
+        @client = new mysql.createClient
+          host: @hostname
+          port: @port
+          user: @username
+          password: @password
+          database: @database
+
+        @connected = true
 
       $callback() if $callback?
 
@@ -493,6 +497,23 @@ module.exports = (CI_DB) ->
 
     #  --------------------------------------------------------------------
 
+    #
+    # Insert_batch statement
+    #
+    # Generates a platform-specific insert string from the supplied data
+    #
+    # @access	public
+    # @param	string	the table name
+    # @param	array	the insert keys
+    # @param	array	the insert values
+    # @return	string
+    #
+    _insert_batch : ($table, $keys, $values) ->
+      return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
+
+
+    #  --------------------------------------------------------------------
+
 
     #
     # Update statement
@@ -522,6 +543,53 @@ module.exports = (CI_DB) ->
       $sql+= if ($where isnt '' and count($where)>=1) then " WHERE " + implode(" ", $where) else ''
 
       $sql+=$orderby + $limit
+
+      return $sql
+
+
+    #  --------------------------------------------------------------------
+
+
+    #
+    # Update_Batch statement
+    #
+    # Generates a platform-specific batch update string from the supplied data
+    #
+    # @access	public
+    # @param	string	the table name
+    # @param	array	the update data
+    # @param	array	the where clause
+    # @return	string
+    #
+    _update_batch : ($table, $values, $index, $where = null) ->
+      $ids = []
+      $where = if ($where isnt '' and count($where)>=1) then implode(" ", $where) + ' AND ' else ''
+
+      for $key, $val of $values
+        $ids.push $val[$index]
+
+        for $field in array_keys($val)
+          if $field isnt $index
+            $final[$field].push 'WHEN ' + $index + ' = ' + $val[$index] + ' THEN ' + $val[$field]
+
+
+
+
+      $sql = "UPDATE " + $table + " SET "
+      $cases = ''
+
+      for $k, $v of $final
+        $cases+=$k + ' = CASE ' + "\n"
+        for $row in $v
+          $cases+=$row + "\n"
+
+
+        $cases+='ELSE ' + $k + ' END, '
+
+
+      $sql+=substr($cases, 0,  - 2)
+
+      $sql+=' WHERE ' + $where + $index + ' IN (' + implode(',', $ids) + ')'
 
       return $sql
 

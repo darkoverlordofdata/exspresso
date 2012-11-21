@@ -610,26 +610,26 @@ class CI_DB_driver
 
     #  Is there a cached result?
     if @data_cache['table_names']?
-      return @data_cache['table_names']
+      return $callback null,  @data_cache['table_names']
 
 
     if false is ($sql = @_list_tables($constrain_by_prefix))
       if @db_debug
-        return @display_error('db_unsupported_function')
+        return $callback @display_error('db_unsupported_function')
 
-      return false
+      return $callback false
 
 
     $retval = []
-    @query $sql, ($err, $results) ->
+    @query $sql, ($err, $query) =>
 
-      if $results.length > 0
-        for $row in $results
+      if $query.num_rows > 0
+        for $row in $query.result_array()
           if $row['TABLE_NAME']?
             $retval.push $row['TABLE_NAME']
 
           else
-            $retval.push array_shift($row)
+            $retval.push current($row)
 
       @data_cache['table_names'] = $retval
       $callback $err, @data_cache['table_names']
@@ -642,8 +642,14 @@ class CI_DB_driver
   # @access	public
   # @return	boolean
   #
-  table_exists : ($table_name) ->
-    return if ( not in_array(@_protect_identifiers($table_name, true, false, false), @list_tables())) then false else true
+  table_exists : ($table_name, $callback) ->
+
+    @list_tables ($err, $table_names) =>
+
+      if $err then return $callback $err
+
+      $table_exists = if ( not in_array(@_protect_identifiers($table_name, true, false, false), $table_names)) then false else true
+      $callback null, $table_exists
 
 
   #  --------------------------------------------------------------------

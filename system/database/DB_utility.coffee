@@ -48,9 +48,9 @@ class global.CI_DB_utility extends CI_DB_forge
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: (@CI) ->
+  constructor: ($CI) ->
     #  Assign the main database object to $this->db
-    @db = @CI.db
+    super($CI)
     
     log_message('debug', "Database Utility Class Initialized")
     

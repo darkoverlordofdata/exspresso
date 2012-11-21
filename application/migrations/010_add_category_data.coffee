@@ -1,0 +1,44 @@
+#+--------------------------------------------------------------------+
+#| 010_add_category_data.coffee
+#+--------------------------------------------------------------------+
+#| Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#|
+#| This file is a part of Exspresso
+#|
+#| Exspresso is free software; you can copy, modify, and distribute
+#| it under the terms of the GNU General Public License Version 3
+#|
+#+--------------------------------------------------------------------+
+#
+#	010_add_category_data - Migration
+#
+#
+#
+class Migration_add_category_data extends CI_Migration
+
+  seq: '010'
+  description: 'Initialize the category data'
+
+  up: ($callback) ->
+
+    @db.insert_batch 'category', @data, $callback
+
+  down: ($callback) ->
+
+    @db.delete 'category', @keys, $callback
+
+  keys:
+    [
+      {id: 1}
+    ]
+
+
+  data:
+    [
+      {id: 1, name: "Article"}
+    ]
+
+
+# End of file 010_add_category_data.coffee
+# Location: ./010_add_category_data.coffee

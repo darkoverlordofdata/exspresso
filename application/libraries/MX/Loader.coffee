@@ -144,11 +144,13 @@ class global.MX_Loader extends CI_Loader
     if class_exists('CI_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
       return
 
-    DB = require(BASEPATH + 'database/DB' + EXT)
+    DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
 
-    if $return is true then return DB($params, $active_record)
+    @CI._ctor.push ($callback) -> DB.initialize $callback
 
-    @CI.db = DB($params, $active_record)
+    if $return is true then return DB #($params, $active_record)
+
+    @CI.db = DB #($params, $active_record)
 
   ## --------------------------------------------------------------------
 

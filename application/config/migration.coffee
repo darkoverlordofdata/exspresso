@@ -53,5 +53,17 @@ exports['migration_version'] = 0
 exports['migration_path'] = APPPATH + 'migrations/'
 
 
+
+#
+#--------------------------------------------------------------------------
+# Migrations DB
+#--------------------------------------------------------------------------
+#
+# Database group name to use
+# If not set, migrations will use the default database settings.
+#
+#
+exports['migration_db'] = ''
+
 # End of file migration.coffee.coffee
 # Location: ./application/config/migration.coffee.coffee

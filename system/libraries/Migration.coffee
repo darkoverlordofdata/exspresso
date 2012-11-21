@@ -28,20 +28,21 @@
 #
 class global.CI_Migration
 
-  sprintf = require('sprintf').sprintf
-  glob = require('glob').sync
-  basename = require('fs').basename
-
   _migration_enabled: false
   _migration_path: ''
   _migration_version: 0
-
+  _migration_db: ''
   _error_string: ''
+
+  db: null
+  connected: false
 
   constructor: ($config = {}, @CI) ->
 
     # Only run this constructor on main library load
-    if (get_parent_class(@) isnt false)
+    #if (get_parent_class(@) isnt false)
+    #  return
+    if @constructor isnt CI_Migration
       return
 
     for $key, $val of $config
@@ -63,12 +64,23 @@ class global.CI_Migration
     @CI.lang.load('migration')
 
     # They'll probably be using dbforge
-    @CI.load.dbforge()
+    @CI.load.dbforge(@_migration_db)
+    @db = @CI.dbforge.db
+
+    @CI._ctor.push ($callback) => @initialize $callback
+
 
   initialize: ($callback) ->
 
+    if @connected is true then return $callback null
+    @connected = true
+
     # If the migrations table is missing, make it
-    if not @CI.db.table_exists('migrations')
+    @db.table_exists 'migrations', ($err, $table_exists) =>
+
+      if $err then return $callback $err
+      if $table_exists then return $callback null
+
       @CI.dbforge.add_field
         'version' :
           'type' : 'INT'
@@ -76,8 +88,8 @@ class global.CI_Migration
 
       @CI.dbforge.create_table 'migrations', true, ($err) =>
 
-        if $err then $callback $err
-        @CI.db.insert 'migrations', version: 0, $callback
+        if $err then return $callback $err
+        @db.insert 'migrations', version: 0, $callback
 
   #-------------------------------------------------------------------
 
@@ -117,7 +129,7 @@ class global.CI_Migration
       # Only one migration per step is permitted
       if (count($f) > 1)
         @_error_string = sprintf(@CI.lang.line('migration_multiple_version'), $i)
-        return false
+        $callback @_error_string
 
       # Migration step not found
       if (count($f) is 0)
@@ -129,7 +141,7 @@ class global.CI_Migration
         # If trying to migrate down but we're missing a step,
         # something must definitely be wrong.
         @_error_string = sprintf(@CI.lang.line('migration_not_found'), $i)
-        return false
+        $callback @_error_string
 
       $file = basename($f[0])
       $name = basename($f[0], '.coffee')
@@ -142,24 +154,24 @@ class global.CI_Migration
         # Cannot repeat a migration at different steps
         if (in_array($match[1], $migrations))
           @_error_string = sprintf(@CI.lang.line('migration_multiple_version'), $match[1])
-          return false
+          $callback @_error_string
 
         require $f[0]
         $class = 'Migration_' . ucfirst($match[1])
 
         if ( not class_exists($class))
           @_error_string = sprintf(@CI.lang.line('migration_class_doesnt_exist'), $class)
-          return false
+          $callback @_error_string
 
         if ( not is_callable(array($class, $method)))
           @_error_string = sprintf(@CI.lang.line('migration_missing_'+$method+'_method'), $class)
-          return false
+          $callback @_error_string
 
         $migrations.push $match[1]
       else
 
         @_error_string = sprintf(@CI.lang.line('migration_invalid_filename'), $file)
-        return false
+        $callback @_error_string
 
     log_message('debug', 'Current migration: ' + $current_version)
 
@@ -167,14 +179,14 @@ class global.CI_Migration
 
     # If there is nothing to do so quit
     if $migrations.length is 0
-      return true
+      $callback null, ''
 
     log_message('debug', 'Migrating from ' + $method + ' to version ' + $version)
 
 
     $steps = []
     for $migration in $migrations
-      $steps.push ($migration) ->
+      $steps.push do ($migration) ->
         $class = 'Migration_' + ucfirst(strtolower($migration))
         call_user_func [new $class(), $method], ($err) ->
           if $err then $callback $err
@@ -261,7 +273,8 @@ class global.CI_Migration
   #
   _get_version: ($callback) ->
 
-    $row = @CI.db.get 'migrations', ($err, $result) ->
+    $row = @db.get 'migrations', ($err, $result) ->
+
       if $err then $callback $err
       $row = $result.row()
       $callback null, if $row then $row.version else 0
@@ -277,7 +290,7 @@ class global.CI_Migration
   #
   _update_version: ($migrations, $callback) ->
 
-    @CI.db.update 'migrations'
+    @db.update 'migrations'
       'version': $migrations, $callback
 
 module.exports = CI_Migration

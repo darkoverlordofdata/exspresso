@@ -142,8 +142,7 @@ module.exports = ($params = '', active_record_override = null) ->
 
   if $DB.autoinit is true
     $DB.initialize()
-    
-  
+
   if $params['stricton']?  and $params['stricton'] is true
     $DB.query('SET SESSION sql_mode="STRICT_ALL_TABLES"')
     

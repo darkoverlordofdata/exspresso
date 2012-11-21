@@ -19,6 +19,7 @@ path            = require('path')                       # File path utilities
 querystring     = require('querystring')                # Utilities for dealing with query strings.
 url             = require('url')                        # Utilities for URL resolution and parsing.
 
+
 exports.define = (name, value, scope = global) ->
 
   if scope[name]?
@@ -687,7 +688,27 @@ exports.htmlspecialchars = ($str) ->
 
   $str.replace("&", "&amp;").replace("'", "&#39;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
 
+exports.CASE_LOWER = CASE_LOWER = 0
+exports.CASE_UPPER = CASE_UPPER = 1
 
+exports.array_change_key_case = ($input, $case = CASE_LOWER) ->
+
+  $ret = {}
+  for $key, $val of $input
+    if $case = CASE_LOWER
+      $ret[$key.toLowerCase()] = $val
+    else if $case = CASE_UPPER
+      $ret[$key.toUpperCase()] = $val
+  $ret
+
+exports.array_key_exists = ($key, $search) ->
+  $search[$key]?
+
+
+
+exports.sprintf = require('sprintf').sprintf
+exports.glob = require('glob').sync
+exports.basename = require('path').basename
 
 #  ------------------------------------------------------------------------
 #

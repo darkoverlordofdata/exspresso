@@ -96,7 +96,7 @@ exports['db'] =
     'char_set': 'utf8'
     'dbcollat': 'utf8_general_ci'
     'swap_pre': ''
-    'autoinit': true
+    'autoinit': false
     'stricton': false
 
   postgres:

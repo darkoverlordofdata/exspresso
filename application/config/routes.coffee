@@ -65,6 +65,12 @@ exports['/about/:id']                         = "welcome/about"
 # form_validation demo
 exports['/form']                              = 'form/index'
 
+# migrations
+exports['/migrate']                           = 'migrate/index'
+exports['/migrate/up/:to']                    = 'migrate/up'
+exports['/migrate/down/:to']                  = 'migrate/down'
+
+
 # user controller
 exports['/login']                             = 'user/login'
 exports['/logout']                            = 'user/logout'

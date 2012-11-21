@@ -21,6 +21,7 @@
 # Exspresso Router Class
 #
 require BASEPATH+'core/URI.coffee'
+async = require('async')
 
 class global.CI_Router
 
@@ -234,7 +235,7 @@ class global.CI_Router
   bind: ($route, $class, $method) ->
 
     #
-    # Invoke the contoller
+    # Invoke the contoller method
     #
     #   Instantiates the controller and calls the requested method.
     #   Any URI segments present (besides the class/function) will be passed
@@ -247,22 +248,10 @@ class global.CI_Router
     #   @return void
     #
     @routes[$route] = ($req, $res, $next, $args...) ->
-      # a new copy of the controller class for each request:
-      $CI = new $class()
 
-      $CI.render = ($view, $data = {}, $fn) ->
-        $data['CI'] = $CI
-        $res.render $view, $data, $fn
-      $CI.redirect = ($path) -> $res.redirect $path
-
-      if $CI.db?
-        $CI.db.initialize -> call_user_func_array [$CI, $method], $args
-        #$CI.db.initialize -> $CI[$method].apply $CI, $args
-      else
+      $CI = new $class($res)
+      async.series $CI._ctor, ($err) ->
         call_user_func_array [$CI, $method], $args
-        #$CI[$method].apply $CI, $args
-
-      return
 
 
   # --------------------------------------------------------------------

@@ -81,11 +81,11 @@ class global.CI_DB_mysql_forge extends CI_DB_forge
       #  numeric, we know it was assigned by PHP and the developer manually
       #  entered the field information, so we'll simply add it to the list
       if is_numeric($field)
-        $sql+="\n\t$attributes"
+        $sql+="\n\t#{$attributes}"
         
-      else 
+      else
         $attributes = array_change_key_case($attributes, CASE_UPPER)
-        
+
         $sql+="\n\t" + @db._protect_identifiers($field)
         
         if array_key_exists('NAME', $attributes)
@@ -99,41 +99,27 @@ class global.CI_DB_mysql_forge extends CI_DB_forge
             switch $attributes['TYPE']
               when 'decimal','float','numeric'
                 $sql+='(' + implode(',', $attributes['CONSTRAINT']) + ')'
-                
-                
               when 'enum','set'
                 $sql+='("' + implode('","', $attributes['CONSTRAINT']) + '")'
-                
-                
               else
                 $sql+='(' + $attributes['CONSTRAINT'] + ')'
                 
-            
-          
-        
         if array_key_exists('UNSIGNED', $attributes) and $attributes['UNSIGNED'] is true
           $sql+=' UNSIGNED'
           
-        
         if array_key_exists('DEFAULT', $attributes)
           $sql+=' DEFAULT \'' + $attributes['DEFAULT'] + '\''
-          
-        
+
         if array_key_exists('NULL', $attributes)
           $sql+=if ($attributes['NULL'] is true) then ' NULL' else ' NOT NULL'
           
-        
         if array_key_exists('AUTO_INCREMENT', $attributes) and $attributes['AUTO_INCREMENT'] is true
           $sql+=' AUTO_INCREMENT'
-          
-        
-      
+
       #  don't add a comma on the end of the last field
       if ++$current_field_count < count($fields)
         $sql+=','
-        
-      
-    
+
     return $sql
     
   

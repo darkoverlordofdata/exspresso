@@ -40,6 +40,7 @@
 class global.CI_DB_forge
 
   CI: null
+  db: null
   fields: []
   keys: []
   primary_keys: []
@@ -51,11 +52,11 @@ class global.CI_DB_forge
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: (@CI) ->
-    @db = @CI.db
+  constructor: (@CI, @db) ->
+
     log_message('debug', "Database Forge Class Initialized")
     
-  
+
   #  --------------------------------------------------------------------
   
   #
@@ -150,8 +151,8 @@ class global.CI_DB_forge
 
         @fields.push $field
 
-    if Array.isArray($field)
-      @fields = @fields.concat($field)
+    if is_array($field)
+      @fields = array_merge(@fields, $field)
 
     
   
@@ -164,8 +165,8 @@ class global.CI_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  create_table: ($table = '', $if_not_exists = false, $callback) ->
-    if typeof $callback is 'undefined'
+  create_table: ($table = '', $if_not_exists = false, $callback = null) ->
+    if $callback is null
       $callback = $if_not_exists
       $if_not_exists = false
 
@@ -176,10 +177,10 @@ class global.CI_DB_forge
       $callback('Field information is required.')
 
     $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, $if_not_exists)
-    
+
     @_reset()
-    @db.query($sql, $callback)
-    
+    @db.query $sql, $callback
+
   
   #  --------------------------------------------------------------------
   

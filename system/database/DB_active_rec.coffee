@@ -16,7 +16,7 @@
 #
 
 
-{array_keys, array_merge, array_slice, array_unique, array_values, count, current, end, explode, implode, in_array, is_array, is_bool, is_null, is_numeric, is_object, is_string, preg_match, preg_replace, strpos, strrchr, strtolower, strtoupper, trim}  = require(FCPATH + 'lib')
+#{array_keys, array_merge, array_slice, array_unique, array_values, count, current, end, explode, implode, in_array, is_array, is_bool, is_null, is_numeric, is_object, is_string, preg_match, preg_replace, strpos, strrchr, strtolower, strtoupper, trim}  = require(FCPATH + 'lib')
 
 
 CI_DB_driver   = require(BASEPATH + 'database/DB_driver') # Exspresso DB driver Base Class
@@ -930,8 +930,110 @@ class CI_DB_active_record extends CI_DB_driver
     $result = @query($sql)
     @_reset_select()
     return $result
-    
-  
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Insert_Batch
+  #
+  # Compiles batch insert strings and runs the queries
+  #
+  # @access	public
+  # @param	string	the table to retrieve the results from
+  # @param	array	an associative array of insert values
+  # @return	object
+  #
+  insert_batch : ($table = '', $set = null, $callback) ->
+
+    if $callback is null
+      $callback = $set
+      $set = null
+
+    if not is_null($set)
+      @set_insert_batch($set)
+
+    if count(@ar_set) is 0
+      if @db_debug
+        # No valid data array.  Folds in cases where keys and values did not match up
+        return @display_error('db_must_use_set')
+
+      return false
+
+    if $table is ''
+      if not @ar_from[0]?
+        if @db_debug
+          return @display_error('db_must_set_table')
+
+        return false
+
+      $table = @ar_from[0]
+
+    #  Batch this baby
+    $sql = []
+    for $i in [0..count(@ar_set)-1] by 100
+
+      $sql.push @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, array_slice(@ar_set, $i, 100))
+
+    async = require('asynch')
+    async.mapSerial $sql, @query, ($err) ->
+
+      @_reset_write()
+      $callback $err
+
+
+  #  --------------------------------------------------------------------
+
+  #
+  # The "set_insert_batch" function.  Allows key/value pairs to be set for batch inserts
+  #
+  # @access	public
+  # @param	mixed
+  # @param	string
+  # @param	boolean
+  # @return	object
+  #
+
+  set_insert_batch : ($key, $value = '', $escape = true) ->
+    $key = @_object_to_array_batch($key)
+
+    if not is_array($key)
+      $key = $key:$value
+
+
+    $keys = array_keys(current($key))
+    sort($keys)
+
+    for $row in $key
+      if count(array_diff($keys, array_keys($row))) > 0 or count(array_diff(array_keys($row), $keys)) > 0
+        #  batch function above returns an error on an empty array
+        @ar_set.push {}
+        return
+
+
+      ksort($row)#  puts $row in the same order as our keys
+
+      if $escape is false
+        @ar_set.push '(' + implode(',', $row) + ')'
+
+      else
+        $clean = {}
+
+        for $value in $row
+          $clean.push @escape($value)
+
+
+        @ar_set.push '(' + implode(',', $clean) + ')'
+
+
+
+    for $k in $keys
+      @ar_keys.push @_protect_identifiers($k)
+
+
+    return @
+
+
+
   #  --------------------------------------------------------------------
   
   #
@@ -1067,8 +1169,118 @@ class CI_DB_active_record extends CI_DB_driver
 
     @_reset_write()
     @query($sql, $callback)
-    
-  
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Update_Batch
+  #
+  # Compiles an update string and runs the query
+  #
+  # @access	public
+  # @param	string	the table to retrieve the results from
+  # @param	array	an associative array of update values
+  # @param	string	the where key
+  # @return	object
+  #
+  update_batch : ($table = '', $set = null, $index = null) ->
+    #  Combine any cached components with the current statements
+    @_merge_cache()
+
+    if is_null($index)
+      if @db_debug
+        return @display_error('db_myst_use_index')
+
+
+      return false
+
+
+    if not is_null($set)
+      @set_update_batch($set, $index)
+
+
+    if count(@ar_set) is 0
+      if @db_debug
+        return @display_error('db_must_use_set')
+
+
+      return false
+
+
+    if $table is ''
+      if not @ar_from[0]?
+        if @db_debug
+          return @display_error('db_must_set_table')
+
+        return false
+
+
+      $table = @ar_from[0]
+
+
+    #  Batch this baby
+    $sql = []
+    for $i in [0..count(@ar_set)-1] by 100
+      $sql.push @_update_batch(@_protect_identifiers($table, true, null, false), array_slice(@ar_set, $i, 100), @_protect_identifiers($index), @ar_where)
+
+    async = require('asynch')
+    async.mapSerial $sql, @query, ($err) ->
+
+      @_reset_write()
+      $callback $err
+
+
+
+  #  --------------------------------------------------------------------
+
+  #
+  # The "set_update_batch" function.  Allows key/value pairs to be set for batch updating
+  #
+  # @access	public
+  # @param	array
+  # @param	string
+  # @param	boolean
+  # @return	object
+  #
+
+  set_update_batch : ($key, $index = '', $escape = true) ->
+    $key = @_object_to_array_batch($key)
+
+    #if not is_array($key)
+      #  @todo error
+
+
+    for $k, $v of $key
+      $index_set = false
+      $clean = {}
+
+      for $k2, $v2 of $v
+        if $k2 is $index
+          $index_set = true
+
+        else
+          $not.push $k + '-' + $v
+
+
+        if $escape is false
+          $clean[@_protect_identifiers($k2)] = $v2
+
+        else
+          $clean[@_protect_identifiers($k2)] = @escape($v2)
+
+
+
+      if $index_set is false
+        return @display_error('db_batch_missing_index')
+
+
+      @ar_set.push $clean
+
+
+    return @
+
+
+
 
   #  --------------------------------------------------------------------
   

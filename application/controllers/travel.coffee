@@ -19,7 +19,6 @@ bcrypt          = require('bcrypt')                     # A bcrypt library for N
 
 class Travel extends CI_Controller
 
-
   ## --------------------------------------------------------------------
 
   #
