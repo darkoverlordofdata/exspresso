@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_create_blog_table extends CI_Migration
+class Migration_Create_blog_table extends CI_Migration
 
   seq: '009'
   description: 'Create the blog table'
@@ -40,15 +40,20 @@ class Migration_create_blog_table extends CI_Migration
         type: 'DATETIME'
       title:
         type: 'VARCHAR'
+        constraint: 255
       body:
         type: 'TEXT'
 
+
+    @dbforge.add_key 'id', true
 
     @dbforge.create_table 'blog', $callback
 
   down: ($callback) ->
 
     @dbforge.drop_table 'blog', $callback
+
+module.exports = Migration_Create_blog_table
 
 # End of file 009_create_blog_table.coffee
 # Location: ./application/migrations/009_create_blog_table.coffee

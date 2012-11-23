@@ -178,6 +178,7 @@ class global.CI_DB_forge
 
     $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, $if_not_exists)
 
+    log_message 'debug', $sql
     @_reset()
     @db.query $sql, $callback
 

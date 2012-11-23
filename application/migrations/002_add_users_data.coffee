@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_add_users_data extends CI_Migration
+class Migration_Add_users_data extends CI_Migration
 
   seq: '002'
   description: 'Initialize the users data'
@@ -67,6 +67,6 @@ class Migration_add_users_data extends CI_Migration
       }
     ]
 
-
+module.exports = Migration_Add_users_data
 # End of file 002_add_users_data.coffee
 # Location: ./002_add_users_data.coffee

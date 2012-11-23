@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_add_hotels_data extends CI_Migration
+class Migration_Add_hotels_data extends CI_Migration
 
   seq: '006'
   description: 'Initialize the hotels data'
@@ -80,6 +80,8 @@ class Migration_add_hotels_data extends CI_Migration
       {id: 22}
       {id: 23}
     ]
+
+module.exports = Migration_Add_hotels_data
 
 # End of file 006_add_hotels_data.coffee
 # Location: ./006_add_hotels_data.coffee

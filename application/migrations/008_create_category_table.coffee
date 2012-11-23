@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_create_category_table extends CI_Migration
+class Migration_Create_category_table extends CI_Migration
 
   seq: '008'
   description: 'Create the category table'
@@ -30,12 +30,17 @@ class Migration_create_category_table extends CI_Migration
         auto_increment: true
       name:
         type: 'VARCHAR'
+        constraint: 255
+
+    @dbforge.add_key 'id', true
 
     @dbforge.create_table 'category', $callback
 
   down: ($callback) ->
 
     @dbforge.drop_table 'category', $callback
+
+module.exports = Migration_Create_category_table
 
 # End of file 008_create_category_table.coffee
 # Location: ./application/migrations/008_create_category_table.coffee

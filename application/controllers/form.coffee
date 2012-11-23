@@ -18,9 +18,9 @@
 #
 class Form extends CI_Controller
 
-  constructor: ->
+  constructor: ($args...) ->
 
-    super()
+    super($args...)
     @load.library 'form_validation'
     @form_validation.set_error_delimiters "<div class='alert alert-error'><p><b>Error:</b>&nbsp;", "</p></div>"
 

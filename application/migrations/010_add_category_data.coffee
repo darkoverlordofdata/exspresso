@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_add_category_data extends CI_Migration
+class Migration_Add_category_data extends CI_Migration
 
   seq: '010'
   description: 'Initialize the category data'
@@ -39,6 +39,8 @@ class Migration_add_category_data extends CI_Migration
       {id: 1, name: "Article"}
     ]
 
+
+module.exports = Migration_Add_category_data
 
 # End of file 010_add_category_data.coffee
 # Location: ./010_add_category_data.coffee

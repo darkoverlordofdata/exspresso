@@ -72,7 +72,7 @@ class Migrate extends CI_Controller
     @migration.version $version, ($err, $current_version) =>
       if $err then return show_error $err
 
-      @redirect '/migrate/index'
+      @redirect '/migrate'
 
   ## --------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ class Migrate extends CI_Controller
     @migration.version $version, ($err, $current_version) =>
       if $err then return show_error $err
 
-      @redirect '/migrate/index'
+      @redirect '/migrate'
 
 #
 # Export the class:

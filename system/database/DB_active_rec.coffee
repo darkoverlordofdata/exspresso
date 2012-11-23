@@ -943,7 +943,7 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	array	an associative array of insert values
   # @return	object
   #
-  insert_batch : ($table = '', $set = null, $callback) ->
+  insert_batch : ($table = '', $set = null, $callback = null) ->
 
     if $callback is null
       $callback = $set
@@ -974,11 +974,13 @@ class CI_DB_active_record extends CI_DB_driver
 
       $sql.push @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, array_slice(@ar_set, $i, 100))
 
-    async = require('asynch')
-    async.mapSerial $sql, @query, ($err) ->
-
-      @_reset_write()
-      $callback $err
+    @_reset_write()
+    console.log '--------------------------------------------------------'
+    console.log $sql[0]
+    console.log '--------------------------------------------------------'
+    #async = require('async')
+    #async.mapSeries $sql, @query, ($err) =>
+    @query $sql[0], $callback
 
 
   #  --------------------------------------------------------------------
@@ -994,21 +996,21 @@ class CI_DB_active_record extends CI_DB_driver
   #
 
   set_insert_batch : ($key, $value = '', $escape = true) ->
+
     $key = @_object_to_array_batch($key)
 
-    if not is_array($key)
-      $key = $key:$value
-
+    if not Array.isArray($key)
+      $key = [array($key, $value)]
 
     $keys = array_keys(current($key))
     sort($keys)
 
     for $row in $key
+
       if count(array_diff($keys, array_keys($row))) > 0 or count(array_diff(array_keys($row), $keys)) > 0
         #  batch function above returns an error on an empty array
         @ar_set.push {}
         return
-
 
       ksort($row)#  puts $row in the same order as our keys
 
@@ -1016,19 +1018,15 @@ class CI_DB_active_record extends CI_DB_driver
         @ar_set.push '(' + implode(',', $row) + ')'
 
       else
-        $clean = {}
+        $clean = []
 
-        for $value in $row
+        for $k, $value of $row
           $clean.push @escape($value)
-
 
         @ar_set.push '(' + implode(',', $clean) + ')'
 
-
-
     for $k in $keys
       @ar_keys.push @_protect_identifiers($k)
-
 
     return @
 
@@ -1596,8 +1594,41 @@ class CI_DB_active_record extends CI_DB_driver
       $sql = @_limit($sql, @ar_limit, @ar_offset)
 
     return $sql
-    
-  
+
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Object to Array
+  #
+  # Takes an object as input and converts the class variables to array key/vals
+  #
+  # @access	public
+  # @param	object
+  # @return	array
+  #
+  _object_to_array_batch: ($object) ->
+    if Array.isArray($object)
+      return $object
+    if not is_object($object)
+      return $object
+
+    $array = []
+    $out = get_object_vars($object)
+    $fields = array_keys($out)
+
+    for $val in $fields
+      #  There are some built in keys we need to ignore for this conversion
+      if $val isnt '_parent_name'
+
+        $i = 0
+        for $data in $out[$val]
+          if not $array[$i]? then $array[$i] = {}
+          $array[$i][$val] = $data
+          $i++
+
+    return $array
+
   #  --------------------------------------------------------------------
   
   #

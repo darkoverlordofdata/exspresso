@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_add_blog_data extends CI_Migration
+class Migration_Add_blog_data extends CI_Migration
 
   seq: '011'
   description: 'Initialize the blog data'
@@ -47,6 +47,8 @@ class Migration_add_blog_data extends CI_Migration
         body: "<p>Dark Overlord of Data is:</p><dl><dt><strong>a web page</strong></dt><dd><em>created using e x s p r e s s o</em></dd><dt><strong>bruce davidson</strong></dt><dd><em>a software developer who lives in seattle with his wife and daughter, two cats, one dog, and an electric guitar</em></dd></dl>"
       }
     ]
+
+module.exports = Migration_Add_blog_data
 
 # End of file 011_add_blog_data.coffee
 # Location: ./011_add_blog_data.coffee

@@ -34,6 +34,7 @@
     "mysql": "*",
     "pg": "*",
     "redis": "*",
+    "sort-component": "*",
     "sprintf": "*",
     "sqlite3": "*",
     "uglify-js-middleware": "*"

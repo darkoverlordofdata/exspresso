@@ -141,33 +141,28 @@ class global.CI_DB_mysql_forge extends CI_DB_forge
     
     if $if_not_exists is true
       $sql+='IF NOT EXISTS '
-      
-    
+
     $sql+=@db._escape_identifiers($table) + " ("
     
     $sql+=@_process_fields($fields)
-    
+
     if count($primary_keys) > 0
       $key_name = @db._protect_identifiers(implode('_', $primary_keys))
       $primary_keys = @db._protect_identifiers($primary_keys)
       $sql+=",\n\tPRIMARY KEY " + $key_name + " (" + implode(', ', $primary_keys) + ")"
-      
-    
+
     if is_array($keys) and count($keys) > 0
       for $key in $keys
         if is_array($key)
           $key_name = @db._protect_identifiers(implode('_', $key))
           $key = @db._protect_identifiers($key)
-          
-        else 
+
+        else
           $key_name = @db._protect_identifiers($key)
           $key = [$key_name]
-          
-        
+
         $sql+=",\n\tKEY {$key_name} (" + implode(', ', $key) + ")"
-        
-      
-    
+
     $sql+="\n) DEFAULT CHARACTER SET #{@db.char_set} COLLATE #{@db.dbcollat};"
     
     return $sql

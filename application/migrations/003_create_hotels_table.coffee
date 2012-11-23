@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_create_hotels_table extends CI_Migration
+class Migration_Create_hotels_table extends CI_Migration
 
   seq:'003'
   description: 'Create the hotels table'
@@ -32,22 +32,32 @@ class Migration_create_hotels_table extends CI_Migration
         type: 'INT'
       name:
         type: 'VARCHAR'
+        constraint: 255
       address:
         type: 'VARCHAR'
+        constraint: 255
       city:
         type: 'VARCHAR'
+        constraint: 255
       state:
         type: 'VARCHAR'
+        constraint: 255
       zip:
         type: 'VARCHAR'
+        constraint: 255
       country:
         type: 'VARCHAR'
+        constraint: 255
+
+    @dbforge.add_key 'id', true
 
     @dbforge.create_table 'hotel', $callback
 
   down: ($callback) ->
 
     @dbforge.drop_table 'hotel', $callback
+
+module.exports = Migration_Create_hotels_table
 
 # End of file 003_create_hotels_table.coffee
 # Location: ./application/migrations/003_create_hotels_table.coffee

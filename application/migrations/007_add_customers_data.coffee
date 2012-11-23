@@ -15,9 +15,9 @@
 #
 #
 #
-class Migration_add_customer_data extends CI_Migration
+class Migration_Add_customer_data extends CI_Migration
 
-  seq '007'
+  seq: '007'
   description: 'Initialize the customer data'
 
   up: ($callback) ->
@@ -45,6 +45,7 @@ class Migration_add_customer_data extends CI_Migration
       {id: 4, username: "scott", password: "", name: "Scott"}
     ]
 
+module.exports = Migration_Add_customer_data
 
 # End of file 007_add_customer_data.coffee
 # Location: ./007_add_customer_data.coffee

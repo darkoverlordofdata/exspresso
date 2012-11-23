@@ -129,7 +129,7 @@ for $path, $uri of $RTR._load_routes()
   $class  = $RTR.fetch_class()
   $method = $RTR.fetch_method()
 
-  if $method[0] is '_' or CI_Controller.__proto__[$method]?
+  if $method[0] is '_' or CI_Controller::[$method]?
 
     console.log "Controller not found: #{$class}/#{$method}"
     continue

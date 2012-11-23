@@ -202,7 +202,7 @@ class global.CI_Session
         $data = $req.session.flashdata = $req.session.flashdata ? {}
 
         if arguments.length > 2
-          $args = Array.prototype.slice.call(arguments, 1)
+          $args = Array::slice.call(arguments, 1)
           $value = format.apply(undefined, $args)
 
         $data[$item] = $value

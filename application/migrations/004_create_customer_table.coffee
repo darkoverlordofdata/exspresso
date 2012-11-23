@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_create_customer_table extends CI_Migration
+class Migration_Create_customer_table extends CI_Migration
 
   seq: '004'
   description: 'Create the customer table'
@@ -30,10 +30,15 @@ class Migration_create_customer_table extends CI_Migration
         auto_increment: true
       username:
         type: 'VARCHAR'
+        constraint: 255
       password:
         type: 'VARCHAR'
+        constraint: 255
       name:
         type: 'VARCHAR'
+        constraint: 255
+
+    @dbforge.add_key 'id', true
 
     @dbforge.create_table 'customer', $callback
 
@@ -41,5 +46,7 @@ class Migration_create_customer_table extends CI_Migration
 
     @dbforge.drop_table 'customer', $callback
 
+
+module.exports = Migration_Create_customer_table
 # End of file 004_create_customer_table.coffee
 # Location: ./application/migrations/004_create_customer_table.coffee

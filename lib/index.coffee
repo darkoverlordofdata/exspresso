@@ -61,7 +61,7 @@ exports.array_diff = ($array1, $array2) ->
 
 ## --------------------------------------------------------------------
 
-exports.array_keys = ($input, $search = null) ->
+exports.array_keys = array_keys = ($input, $search = null) ->
 
   $ret = []
   $keys = Object.keys($input)
@@ -105,7 +105,7 @@ exports.array_values = ($input) ->
 
 ## --------------------------------------------------------------------
 
-exports.array_merge = ($array1, $array2) ->
+exports.array_merge = array_merge = ($array1, $array2) ->
 
   $ret = {}
   for $key, $item of $array1
@@ -281,7 +281,13 @@ exports.implode = ($glue, $pieces = null) ->
     $pieces = $glue
     $glue = ''
 
-  $pieces.join($glue)
+  if Array.isArray($pieces)
+    $pieces.join($glue)
+  else
+    $ret = []
+    for $key, $val of $pieces
+      $ret.push $val
+    $ret.join($glue)
 
 ## --------------------------------------------------------------------
 
@@ -704,11 +710,33 @@ exports.array_change_key_case = ($input, $case = CASE_LOWER) ->
 exports.array_key_exists = ($key, $search) ->
   $search[$key]?
 
+exports.get_object_vars = ($object) ->
+  $res = {}
+  for $key, $val of $object
+    if $key.substr(0,1) isnt '_' and typeof $object[$key] isnt 'function'
+      $res[$key] = $val
+  $res
 
 
 exports.sprintf = require('sprintf').sprintf
 exports.glob = require('glob').sync
 exports.basename = require('path').basename
+exports.sort = ($array) ->
+  $array.sort()
+  true
+
+exports.ksort = ($array) ->
+
+  $keys = Object.keys($array)
+  $copy = {}
+  for $key in $keys
+    $copy[$key] = $array[$key]
+    delete $array[$key]
+  $keys.sort()
+  for $key in $keys
+    $array[$key] = $copy[$key]
+  true
+
 
 #  ------------------------------------------------------------------------
 #
