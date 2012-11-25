@@ -22,45 +22,7 @@ class Migration_Create_bookings_table extends CI_Migration
 
   up: ($callback) ->
 
-    @dbforge.add_field
-      id:
-        type: 'INT'
-        constraint: 5
-        unsigned: true
-        auto_increment: true
-      email:
-        type: 'VARCHAR'
-        constraint: 255
-      username:
-        type: 'VARCHAR'
-        constraint: 255
-      hotel:
-        type: 'INT'
-      checkinDate:
-        type: 'DATETIME'
-      checkoutDate:
-        type: 'DATETIME'
-      creditCard:
-        type: 'VARCHAR'
-        constraint: 255
-      creditCardName:
-        type: 'VARCHAR'
-        constraint: 255
-      creditCardExpiryMonth:
-        type: 'INT'
-      creditCardExpiryYear:
-        type: 'INT'
-      smoking:
-        type: 'VARCHAR'
-        constraint: 255
-      beds:
-        type: 'INT'
-      amenities:
-        type: 'VARCHAR'
-        constraint: 255
-      state:
-        type: 'VARCHAR'
-        constraint: 255
+    @dbforge.add_field @data
 
     @dbforge.add_key 'id', true
 
@@ -69,6 +31,47 @@ class Migration_Create_bookings_table extends CI_Migration
   down: ($callback) ->
 
     @dbforge.drop_table 'booking', $callback
+
+
+  data:
+    id:
+      type: 'INT'
+      constraint: 5
+      unsigned: true
+      auto_increment: true
+    email:
+      type: 'VARCHAR'
+      constraint: 255
+    username:
+      type: 'VARCHAR'
+      constraint: 255
+    hotel:
+      type: 'INT'
+    checkinDate:
+      type: 'DATETIME'
+    checkoutDate:
+      type: 'DATETIME'
+    creditCard:
+      type: 'VARCHAR'
+      constraint: 255
+    creditCardName:
+      type: 'VARCHAR'
+      constraint: 255
+    creditCardExpiryMonth:
+      type: 'INT'
+    creditCardExpiryYear:
+      type: 'INT'
+    smoking:
+      type: 'VARCHAR'
+      constraint: 255
+    beds:
+      type: 'INT'
+    amenities:
+      type: 'VARCHAR'
+      constraint: 255
+    state:
+      type: 'VARCHAR'
+      constraint: 255
 
 
 module.exports = Migration_Create_bookings_table

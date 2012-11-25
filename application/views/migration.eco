@@ -1,0 +1,24 @@
+<div class="container">
+    <p></p>
+    <div class="hero-unit">
+        <h3>Migration: <%= @migration.seq %></h3>
+        <p></p>
+        <table class="table table striped table-hover table-condensed">
+            <tr>
+                <th>path</th>
+                <td><%= @path %></td>
+            </tr>
+            <tr>
+                <th>desc</th>
+                <td><%= @migration.description %></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="span12">
+            <h4>Data:</h4>
+            <pre class="prettyprint"><code class="lang-json"><%- @inspect(@migration.data)  %></code></pre>
+        </div>
+    </div>
+</div>

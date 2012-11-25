@@ -26,15 +26,8 @@ class Migration_Add_customer_data extends CI_Migration
 
   down: ($callback) ->
 
-    @db.delete 'customer', @keys, $callback
+    @db.truncate 'customer', $callback
 
-  keys:
-    [
-      {id: 1}
-      {id: 2}
-      {id: 3}
-      {id: 4}
-    ]
 
 
   data:

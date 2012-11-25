@@ -22,40 +22,41 @@ class Migration_Create_hotels_table extends CI_Migration
 
   up: ($callback) ->
 
-    @dbforge.add_field
-      id:
-        type: 'INT'
-        constraint: 5
-        unsigned: true
-        auto_increment: true
-      price:
-        type: 'INT'
-      name:
-        type: 'VARCHAR'
-        constraint: 255
-      address:
-        type: 'VARCHAR'
-        constraint: 255
-      city:
-        type: 'VARCHAR'
-        constraint: 255
-      state:
-        type: 'VARCHAR'
-        constraint: 255
-      zip:
-        type: 'VARCHAR'
-        constraint: 255
-      country:
-        type: 'VARCHAR'
-        constraint: 255
-
+    @dbforge.add_field @data
     @dbforge.add_key 'id', true
-
     @dbforge.create_table 'hotel', $callback
 
   down: ($callback) ->
 
     @dbforge.drop_table 'hotel', $callback
+
+
+  data:
+    id:
+      type: 'INT'
+      constraint: 5
+      unsigned: true
+      auto_increment: true
+    price:
+      type: 'INT'
+    name:
+      type: 'VARCHAR'
+      constraint: 255
+    address:
+      type: 'VARCHAR'
+      constraint: 255
+    city:
+      type: 'VARCHAR'
+      constraint: 255
+    state:
+      type: 'VARCHAR'
+      constraint: 255
+    zip:
+      type: 'VARCHAR'
+      constraint: 255
+    country:
+      type: 'VARCHAR'
+      constraint: 255
 
 module.exports = Migration_Create_hotels_table
 

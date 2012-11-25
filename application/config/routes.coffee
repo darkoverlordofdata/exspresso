@@ -67,8 +67,11 @@ exports['/form']                              = 'form/index'
 
 # migrations
 exports['/migrate']                           = 'migrate/index'
+exports['/migrate/current']                   = 'migrate/current'
+exports['/migrate/latest']                    = 'migrate/latest'
 exports['/migrate/up/:to']                    = 'migrate/up'
 exports['/migrate/down/:to']                  = 'migrate/down'
+exports['/migrate/info/:name']                = 'migrate/info'
 
 
 # user controller

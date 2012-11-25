@@ -26,13 +26,7 @@ class Migration_Add_users_data extends CI_Migration
 
   down: ($callback) ->
 
-    @db.delete 'user', @keys, $callback
-
-  keys:
-    [
-      {id: 1}
-      {id: 2}
-    ]
+    @db.truncate 'user', $callback
 
 
   data:

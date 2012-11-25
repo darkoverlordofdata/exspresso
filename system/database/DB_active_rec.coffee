@@ -15,10 +15,6 @@
 #
 #
 
-
-#{array_keys, array_merge, array_slice, array_unique, array_values, count, current, end, explode, implode, in_array, is_array, is_bool, is_null, is_numeric, is_object, is_string, preg_match, preg_replace, strpos, strrchr, strtolower, strtoupper, trim}  = require(FCPATH + 'lib')
-
-
 CI_DB_driver   = require(BASEPATH + 'database/DB_driver') # Exspresso DB driver Base Class
 
 array = ($field, $match) ->
@@ -77,10 +73,8 @@ class CI_DB_active_record extends CI_DB_driver
   #
   constructor: ($params = {}) ->
     super($params)
-    @_reset_select()  # make sure the member var's are own properties
-                      # of 'this' - otherwise it fails somewhere,
-                      # and we get inconsistent error messages
-  
+    @_reset_select()  # always initialize arrays in the constructor!
+
   #  --------------------------------------------------------------------
   
   #
@@ -400,7 +394,7 @@ class CI_DB_active_record extends CI_DB_driver
     #  If the escape value was not set will will base it on the global setting
     if not is_bool($escape)
       $escape = @_protect_identifiers_default
-    
+
     for $k, $v of $key
       $prefix = if (count(@ar_where) is 0 and count(@ar_cache_where) is 0) then '' else $type
       
@@ -1326,7 +1320,11 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	string	the table to truncate
   # @return	object
   #
-  truncate: ($table = '') ->
+  truncate: ($table = '', $callback = null) ->
+    if $callback is null
+      $callback = $table
+      $table = ''
+
     if $table is ''
       if not @ar_from[0]? 
         if @db_debug
@@ -1345,7 +1343,7 @@ class CI_DB_active_record extends CI_DB_driver
     
     @_reset_write()
     
-    return @query($sql)
+    @query($sql, $callback)
     
   
   #  --------------------------------------------------------------------
@@ -1362,7 +1360,21 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	boolean
   # @return	object
   #
-  delete: ($table = '', $where = '', $limit = null, $reset_data = true) ->
+  delete: ($table = '', $where = '', $limit = null, $reset_data = true, $callback = null) ->
+
+    if $callback is null
+      if typeof $limit is 'function'
+        $callback = $limit
+        $limit = null
+        $reset_data = true
+
+      else if typeof $reset_data is 'function'
+        $callback = $reset_data
+        $reset_data = true
+
+      else
+        return show_error 'No callback in active_rec::delete'
+
     #  Combine any cached components with the current statements
     @_merge_cache()
     
@@ -1379,38 +1391,30 @@ class CI_DB_active_record extends CI_DB_driver
     else if is_array($table)
       for $single_table in $table
         @['delete']($single_table, $where, $limit, false)
-        
-      
+
       @_reset_write()
       return 
       
     else 
       $table = @_protect_identifiers($table, true, null, false)
-      
-    
+
     if $where isnt ''
       @where($where)
-      
-    
+
     if $limit isnt null
       @limit($limit)
-      
-    
+
     if count(@ar_where) is 0 and count(@ar_wherein) is 0 and count(@ar_like) is 0
       if @db_debug
         return @display_error('db_del_must_use_where')
-        
-      
       return false
-      
-    
+
     $sql = @_delete($table, @ar_where, @ar_like, @ar_limit)
     
     if $reset_data
       @_reset_write()
-      
-    
-    return @query($sql)
+
+    @query($sql, $callback)
     
   
   #  --------------------------------------------------------------------
@@ -1704,11 +1708,11 @@ class CI_DB_active_record extends CI_DB_driver
       $ar_variable = 'ar_' + $val
       $ar_cache_var = 'ar_cache_' + $val
       
-      if count(@$ar_cache_var) is 0
+      if count(@[$ar_cache_var]) is 0
         continue
         
       
-      @$ar_variable = array_unique(array_merge(@$ar_cache_var, @$ar_variable))
+      @[$ar_variable] = array_unique(array_merge(@[$ar_cache_var], @[$ar_variable]))
       
     
     #  If we are "protecting identifiers" we need to examine the "from"

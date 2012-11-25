@@ -26,7 +26,7 @@ class Migration_Add_hotels_data extends CI_Migration
 
   down: ($callback) ->
 
-    @db.delete 'hotel', @keys, $callback
+    @db.truncate 'hotel', $callback
 
   data:
     [
@@ -53,32 +53,6 @@ class Migration_Add_hotels_data extends CI_Migration
       {id: 21, price: 220, name: "Swissotel", address: "68 Market Street", city: "Sydney", state: "NSW", zip: "2000", country: "Australia"},
       {id: 22, price: 250, name: "Meli� White House", address: "Albany Street", city: "Regents Park London", state: "", zip: "NW13UP", country: "Great Britain"},
       {id: 23, price: 210, name: "hotel Allegro", address: "171 West Randolph Street", city: "Chicago", state: "IL", zip: "60601", country: "USA"}
-    ]
-  keys:
-    [
-      {id: 1}
-      {id: 2}
-      {id: 3}
-      {id: 4}
-      {id: 5}
-      {id: 6}
-      {id: 7}
-      {id: 8}
-      {id: 9}
-      {id: 10}
-      {id: 11}
-      {id: 12}
-      {id: 13}
-      {id: 14}
-      {id: 15}
-      {id: 16}
-      {id: 17}
-      {id: 18}
-      {id: 19}
-      {id: 20}
-      {id: 21}
-      {id: 22}
-      {id: 23}
     ]
 
 module.exports = Migration_Add_hotels_data

@@ -22,15 +22,7 @@ class Migration_Create_category_table extends CI_Migration
 
   up: ($callback) ->
 
-    @dbforge.add_field
-      id:
-        type: 'INT'
-        constraint: 5
-        unsigned: true
-        auto_increment: true
-      name:
-        type: 'VARCHAR'
-        constraint: 255
+    @dbforge.add_field @data
 
     @dbforge.add_key 'id', true
 
@@ -39,6 +31,16 @@ class Migration_Create_category_table extends CI_Migration
   down: ($callback) ->
 
     @dbforge.drop_table 'category', $callback
+
+  data:
+    id:
+      type: 'INT'
+      constraint: 5
+      unsigned: true
+      auto_increment: true
+    name:
+      type: 'VARCHAR'
+      constraint: 255
 
 module.exports = Migration_Create_category_table
 

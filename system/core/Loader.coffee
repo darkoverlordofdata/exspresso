@@ -77,12 +77,6 @@ class global.CI_Loader
   #
   _ci_helper_paths:     []
   #
-  # List of paths to load middleware from
-  #
-  # @var array
-  #
-  _ci_middleware_paths: []
-  #
   # Cached variables
   #
   # @var object
@@ -113,12 +107,6 @@ class global.CI_Loader
   #
   _ci_helpers:          {}
   #
-  # List of loaded middleware
-  #
-  # @var array
-  #
-  _ci_middleware:       {}
-  #
   # List of class name mappings
   #
   # @var array
@@ -146,7 +134,6 @@ class global.CI_Loader
     config = get_config()
     @_ci_view_path          = APPPATH + config.views
     @_ci_library_paths      = [APPPATH, BASEPATH]
-    @_ci_middleware_paths   = [APPPATH, BASEPATH]
     @_ci_helper_paths       = [APPPATH, BASEPATH]
     @_ci_model_paths        = [APPPATH]
   
@@ -168,7 +155,6 @@ class global.CI_Loader
     @_ci_classes        = {}
     @_ci_loaded_files   = []
     @_ci_models         = []
-    @_ci_middleware     = {}
     @_base_classes      = is_loaded()
 
     @_ci_autoloader() if $autoload # should only be called during bootstrap
@@ -341,7 +327,7 @@ class global.CI_Loader
   # @access	public
   # @return	string
   #@
-  dbutil: ($params = '') ->
+  dbutil: ($params = '', $return = false) ->
 
     if $params is ''
       if not class_exists('CI_DB')
@@ -355,6 +341,7 @@ class global.CI_Loader
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_utility' + EXT)
     # ex: CI_DB_sqlite_utility
 
+    if $return is true then return new $class(@CI, $db)
     @CI.dbutil = new $class(@CI, $db)
 
   #  --------------------------------------------------------------------
@@ -365,7 +352,7 @@ class global.CI_Loader
   # @access	public
   # @return	string
   #
-  dbforge: ($params = '') ->
+  dbforge: ($params = '', $return = false) ->
 
     if $params is ''
       if not class_exists('CI_DB')
@@ -377,6 +364,7 @@ class global.CI_Loader
     require(BASEPATH + 'database/DB_forge' + EXT)
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_forge' + EXT)
 
+    if $return is true then return new $class(@CI, $db)
     @CI.dbforge = new $class(@CI, $db)
 
   #  --------------------------------------------------------------------

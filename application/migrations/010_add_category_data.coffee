@@ -26,12 +26,7 @@ class Migration_Add_category_data extends CI_Migration
 
   down: ($callback) ->
 
-    @db.delete 'category', @keys, $callback
-
-  keys:
-    [
-      {id: 1}
-    ]
+    @db.delete 'category', {id: 1}, $callback
 
 
   data:

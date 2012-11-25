@@ -122,6 +122,7 @@ class global.CI_Migration
       else
         # Moving Down
         $step = -1
+        --$stop # ending loop index is excluded: ...
 
       $method = if $step is 1 then 'up' else 'down'
       $migrations = []
@@ -129,8 +130,6 @@ class global.CI_Migration
       # We now prepare to actually DO the migrations
       # But first let's make sure that everything is the way it should be
       for $i in [$start...$stop] by $step
-
-        log_message 'debug', 'migrate step %d', $i
 
         $f = glob(sprintf(@_migration_path + '%03d_*.coffee', $i))
 
@@ -174,7 +173,7 @@ class global.CI_Migration
             @_error_string = sprintf(@CI.lang.line('migration_missing_'+$method+'_method'), $class)
             return $callback @_error_string
 
-          $migrations.push new $class({}, @CI, @db, @dbforge)
+          $migrations.push $class
 
         else
 
@@ -191,9 +190,9 @@ class global.CI_Migration
 
       log_message('debug', 'Migrating from' + $method + ' to version ' + $version)
 
-      $iterator = ($migration, $callback) =>
+      $iterator = ($class, $callback) =>
 
-        log_message 'debug', 'seq %s desc %s', $migration.seq, $migration.description
+        $migration = new $class({}, @CI, @db, @dbforge)
         call_user_func [$migration, $method], ($err) =>
           if $err then return $callback $err
           $current_version += $step

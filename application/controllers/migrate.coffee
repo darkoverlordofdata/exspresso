@@ -59,6 +59,40 @@ class Migrate extends CI_Controller
   ## --------------------------------------------------------------------
 
   #
+  # Current
+  #
+  # Migrate up to the current version
+  #
+  #   @access	public
+  #   @return	void
+  #
+  current: () ->
+
+    @migration.current ($err) =>
+      if $err then return show_error $err
+
+      @redirect '/migrate'
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Latest
+  #
+  # Migrate up to the latest version
+  #
+  #   @access	public
+  #   @return	void
+  #
+  latest: () ->
+
+    @migration.latest ($err) =>
+      if $err then return show_error $err
+
+      @redirect '/migrate'
+
+  ## --------------------------------------------------------------------
+
+  #
   # Up
   #
   # Migrate up to a version
@@ -91,6 +125,27 @@ class Migrate extends CI_Controller
       if $err then return show_error $err
 
       @redirect '/migrate'
+
+
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Details
+  #
+  # Display a migration details
+  #
+  #   @access	public
+  #   @param string
+  #   @return	void
+  #
+  info: ($name) ->
+
+    $class = require(@migration._migration_path + $name + EXT)
+    @load.view 'migration'
+      inspect:    require('util').inspect
+      path:       @migration._migration_path + $name + EXT
+      migration:  new $class
 
 #
 # Export the class:

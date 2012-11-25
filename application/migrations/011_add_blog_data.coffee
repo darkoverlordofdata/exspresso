@@ -26,12 +26,8 @@ class Migration_Add_blog_data extends CI_Migration
 
   down: ($callback) ->
 
-    @db.delete 'blog', @keys, $callback
-
-  keys:
-    [
-      {id: 1}
-    ]
+    log_message 'debug', '011 - down'
+    @db.delete 'blog', {id: 1}, $callback
 
 
   data:

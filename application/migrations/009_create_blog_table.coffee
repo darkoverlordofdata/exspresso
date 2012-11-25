@@ -22,28 +22,7 @@ class Migration_Create_blog_table extends CI_Migration
 
   up: ($callback) ->
 
-    @dbforge.add_field
-      id:
-        type: 'INT'
-        constraint: 5
-        unsigned: true
-        auto_increment: true
-      author_id:
-        type: 'INT'
-      category_id:
-        type: 'INT'
-      status:
-        type: 'INT'
-      created_on:
-        type: 'DATETIME'
-      updated_on:
-        type: 'DATETIME'
-      title:
-        type: 'VARCHAR'
-        constraint: 255
-      body:
-        type: 'TEXT'
-
+    @dbforge.add_field @data
 
     @dbforge.add_key 'id', true
 
@@ -52,6 +31,31 @@ class Migration_Create_blog_table extends CI_Migration
   down: ($callback) ->
 
     @dbforge.drop_table 'blog', $callback
+
+
+  data:
+    id:
+      type: 'INT'
+      constraint: 5
+      unsigned: true
+      auto_increment: true
+    author_id:
+      type: 'INT'
+    category_id:
+      type: 'INT'
+    status:
+      type: 'INT'
+    created_on:
+      type: 'DATETIME'
+    updated_on:
+      type: 'DATETIME'
+    title:
+      type: 'VARCHAR'
+      constraint: 255
+    body:
+      type: 'TEXT'
+
+
 
 module.exports = Migration_Create_blog_table
 

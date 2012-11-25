@@ -54,6 +54,7 @@ class global.CI_DB_forge
   #
   constructor: (@CI, @db) ->
 
+    @_reset() # always initialize arrays in the constructor!
     log_message('debug', "Database Forge Class Initialized")
     
 
@@ -178,7 +179,6 @@ class global.CI_DB_forge
 
     $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, $if_not_exists)
 
-    log_message 'debug', $sql
     @_reset()
     @db.query $sql, $callback
 
@@ -326,7 +326,7 @@ class global.CI_DB_forge
     @fields = []
     @keys = []
     @primary_keys = []
-    
+
 module.exports = CI_DB_forge
 
 #  End of file DB_forge.coffee

@@ -22,50 +22,51 @@ class global.Migration_Create_users_table extends CI_Migration
 
   up: ($callback) ->
 
-    @dbforge.add_field
-      id:
-        type: 'INT'
-        constraint: 5
-        unsigned: true
-        auto_increment: true
-      email:
-        type: 'VARCHAR'
-        constraint: 255
-      name:
-        type: 'VARCHAR'
-        constraint: 255
-      code:
-        type: 'VARCHAR'
-        constraint: 255
-      last_logon:
-        type: 'DATETIME'
-      created_on:
-        type: 'DATETIME'
-      created_by:
-        type: 'VARCHAR'
-        constraint: 255
-      active:
-        type: 'INT'
-      timezone:
-        type: 'VARCHAR'
-        constraint: 255
-      language:
-        type: 'VARCHAR'
-        constraint: 255
-      theme:
-        type: 'VARCHAR'
-        constraint: 255
-      path:
-        type: 'VARCHAR'
-        constraint: 255
-
+    @dbforge.add_field @data
     @dbforge.add_key 'id', true
-
     @dbforge.create_table 'user', true, $callback
 
   down: ($callback) ->
 
     @dbforge.drop_table 'user', $callback
+
+
+  data:
+    id:
+      type: 'INT'
+      constraint: 5
+      unsigned: true
+      auto_increment: true
+    email:
+      type: 'VARCHAR'
+      constraint: 255
+    name:
+      type: 'VARCHAR'
+      constraint: 255
+    code:
+      type: 'VARCHAR'
+      constraint: 255
+    last_logon:
+      type: 'DATETIME'
+    created_on:
+      type: 'DATETIME'
+    created_by:
+      type: 'VARCHAR'
+      constraint: 255
+    active:
+      type: 'INT'
+    timezone:
+      type: 'VARCHAR'
+      constraint: 255
+    language:
+      type: 'VARCHAR'
+      constraint: 255
+    theme:
+      type: 'VARCHAR'
+      constraint: 255
+    path:
+      type: 'VARCHAR'
+      constraint: 255
 
 module.exports = Migration_Create_users_table
 
