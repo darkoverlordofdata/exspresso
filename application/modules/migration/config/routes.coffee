@@ -54,35 +54,15 @@
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-exports['default_controller']                 = "welcome/index"
-exports['404_override']                       = 'welcome/not_found'
 
-# welcome controller
-exports['/readme']                            = 'welcome/readme'
-exports['/about']                             = 'welcome/about'
-exports['/about/:id']                         = "welcome/about"
+# migrations
+exports['/migrate']                           = 'migrate/index'
+exports['/migrate/current']                   = 'migrate/current'
+exports['/migrate/latest']                    = 'migrate/latest'
+exports['/migrate/up/:to']                    = 'migrate/up'
+exports['/migrate/down/:to']                  = 'migrate/down'
+exports['/migrate/info/:name']                = 'migrate/info'
 
-# form_validation demo
-exports['/form']                              = 'form/index'
-
-
-# user controller
-exports['/login']                             = 'user/login'
-exports['/logout']                            = 'user/logout'
-exports['/authenticate']                      = 'user/authenticate'
-exports['/forgot_password']                   = 'user/forgot_password'
-
-# database application demo
-exports['/travel/:db']                        = 'travel/search'
-exports['/travel/:db/search']                 = 'travel/search'
-exports['/travel/:db/hotels']                 = 'travel/hotels'
-exports['/travel/:db/hotel/:id']              = 'travel/hotel'
-exports['/travel/:db/booking/:id']            = 'travel/booking'
-exports['/travel/:db/confirm/:id']            = 'travel/confirm'
-exports['/travel/:db/book/:id']               = 'travel/book'
-exports['/travel/:db/login']                  = 'travel/login'
-exports['/travel/:db/logout']                 = 'travel/logout'
-exports['/travel/:db/authenticate']           = 'travel/authenticate'
 
 # End of file routes.coffee
 # Location: ./routes.coffee

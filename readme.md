@@ -18,7 +18,7 @@
     * DB_active_rec - working
     * DB_cache      - in progress
     * DB_driver     - working
-    * DB_forge      - in progress
+    * DB_forge      - testing mysql
     * DB_result     - working
     * DB_utility    - in progress
 * Exceptions - working
@@ -29,6 +29,7 @@
 * Model - working
 * Output - working
 * Router - working
+* Migrations class - working
 * Parser class - in progress
 * Session class - working
 * Form_validation class - testing

@@ -52,9 +52,8 @@
 # appfog
 if process.env.VCAP_SERVICES?
   $env = JSON.parse(process.env.VCAP_SERVICES)
-  $mysql = $env['mysql-5.1'][0]['credentials'] ? {}
-  $postgres = $env['postgresql-9.1'][0]['credentials'] ? {}
-  $postgres = $env['redis-2.2'][0]['credentials'] ? {}
+  $mysql = $env['mysql-53c96'][0]['credentials'] ? {}
+  $postgres = $env['postgresql-913e'][0]['credentials'] ? {}
 else
   $mysql    = {}
   $postgres = {}
