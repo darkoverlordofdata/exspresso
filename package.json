@@ -51,8 +51,8 @@
   "repository": "git://github.com/darkoverlordofdata/exspresso",
   "main": "index",
   "engines": {
-    "node": "0.8.x",
-    "npm": "1.1.x"
+    "node": "<= 0.8.14",
+    "npm": "<= 1.1.65"
   },
   "license": "MIT"
 }
