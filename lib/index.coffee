@@ -269,9 +269,12 @@ exports.format_number = ($number, $decimals = 0, $dec_point = '.', $thousands_se
 
 ## --------------------------------------------------------------------
 
-exports.file_exists = ($path) ->
+exports.file_exists = file_exists = ($path) ->
 
-  fs.existsSync($path)
+  if fs.existsSync?
+    fs.existsSync($path)
+  else
+    path.existsSync($path)
 
 ## --------------------------------------------------------------------
 
@@ -484,7 +487,7 @@ exports.rawurldecode = ($str) ->
 
 exports.realpath = ($path) ->
 
-  if fs.existsSync($path)
+  if file_exists($path)
     return fs.realpathSync($path)
   else
     return false

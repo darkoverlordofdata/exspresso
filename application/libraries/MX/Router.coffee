@@ -50,10 +50,21 @@ fs = require('fs')
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
+async = require('async')
 
 class global.MX_Router extends CI_Router
 
   _module: ''
+
+  bind: ($route, $class, $method) ->
+
+    $module = @fetch_module()
+    @routes[$route] = ($req, $res, $next, $args...) ->
+
+      $CI = new $class($res)
+      $CI._module = $module
+      async.series $CI._ctor, ($err) ->
+        call_user_func_array [$CI, $method], $args
 
   # --------------------------------------------------------------------
 
@@ -168,7 +179,6 @@ class global.MX_Router extends CI_Router
           # module sub-directory controller exists?
           if(is_file($source+$directory+$ext))
             return array_slice($segments, 1)
-
 
           # module sub-directory sub-controller exists?
           if($controller and is_file($source+$controller+$ext))

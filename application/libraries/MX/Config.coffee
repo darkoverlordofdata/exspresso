@@ -81,11 +81,14 @@ class global.MX_Config extends CI_Config
       $current_config = @config
       if $use_sections is true
         if $current_config[$file]?
+          log_message 'debug', 'CONFIG 1'
           $current_config[$file] = array_merge($current_config[$file], $config)
         else
+          log_message 'debug', 'CONFIG 2'
           $current_config[$file] = $config
 
       else
+        log_message 'debug', 'CONFIG 3'
         $current_config = array_merge($current_config, $config)
         @is_loaded.push $file
         return @item($file)
