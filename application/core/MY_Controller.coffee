@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| MY_Router.coffee
+#| MY_Controller.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,20 +11,17 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	MY_Router - Main application
+#	MY_Controller
 #
 #
 #
-require APPPATH + 'third_party/MX/Router.coffee'
 
-class global.MY_Router extends MX_Router
+class global.MY_Controller extends CI_Controller
 
-  constructor: ->
-
-    log_message 'debug', 'MY_Router initialized'
-    super()
+  constructor: ($res, @_module) ->
+    super($res)
 
 
-module.exports = MY_Router
-# End of file MY_Router.coffee
-# Location: ./application/core/MY_Router.coffee
+module.exports = MY_Controller
+# End of file MY_Controller.coffee
+# Location: ./MY_Controller.coffee

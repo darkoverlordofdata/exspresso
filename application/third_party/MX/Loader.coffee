@@ -123,7 +123,7 @@ class global.MX_Loader extends CI_Loader
   # @return object the configration array that was loaded
   #
   config: ($file = 'config', $use_sections = false, $fail_gracefully = false) ->
-    
+
     @CI.config.load($file, $use_sections, $fail_gracefully, @_module)
 
 
@@ -140,7 +140,7 @@ class global.MX_Loader extends CI_Loader
   #
   database: ($params = '',$return = false, $active_record = null) ->
 
-    
+
     if class_exists('CI_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
       return
 
@@ -220,7 +220,7 @@ class global.MX_Loader extends CI_Loader
   languages: ($languages) ->
     for $_language in $languages
       @language($language)
-      
+
   ## --------------------------------------------------------------------
 
   #
@@ -246,19 +246,20 @@ class global.MX_Loader extends CI_Loader
 
     ($_alias = strtolower($object_name)) or ($_alias = $class)
 
-    [$path, $_library] = Modules.find($library, @_module, 'libraries/')
+    [$path, $_library] = Modules.find($library, @CI._module, 'libraries/')
 
     # load library config file as params *
     if $params is null
-      [$path2, $file] = Modules.find($_alias, @_module, 'config/')
-      ($path2) and ($params = Modules.load_file($file, $path2, 'config'))
+      $params = {}
 
+    [$path2, $file] = Modules.find($_alias, @CI._module, 'config/')
+    ($path2) and ($params = array_merge(Modules.load_file($file, $path2, 'config'), $params))
 
     if $path is false
 
       @_ci_load_class($library, $params, $object_name)
       $_alias = @_ci_classes[$class]
-  
+
     else
 
       Modules.load_file($_library, $path)
@@ -270,7 +271,7 @@ class global.MX_Loader extends CI_Loader
 
     return @CI[$_alias]
 
-  
+
   ## --------------------------------------------------------------------
 
   #
@@ -283,8 +284,8 @@ class global.MX_Loader extends CI_Loader
   libraries: ($libraries) ->
     for $_library in $libraries
       @library($_library)
-    
-  
+
+
   ## --------------------------------------------------------------------
 
   #
@@ -301,24 +302,24 @@ class global.MX_Loader extends CI_Loader
   model: ($model, $object_name = null,$connect = false) ->
 
     if (is_array($model)) then return @models($model)
-  
+
     ($_alias = $object_name) or ($_alias = end(explode('/', $model)))
-    
+
     if in_array($_alias, @_ci_models, true)
       return @CI[$_alias]
-    
+
     # check module *
     [$path, $_model] = Modules.find(strtolower($model), @_module, 'models/')
-    
+
     if $path is false
-    
+
       # check application & packages *
       super($model, $object_name)
-    
+
     else
-    
+
       class_exists('CI_Model') or load_class('Model', 'core')
-    
+
       if $connect isnt false and not class_exists('CI_DB')
         if $connect is true then $connect = ''
         @database($connect, false, true)
@@ -360,7 +361,7 @@ class global.MX_Loader extends CI_Loader
   module: ($module, $params = null)	->
 
     if is_array($module) then return @modules($module)
-  
+
     $_alias = strtolower(end(explode('/', $module)))
     @CI[$_alias] = Modules.load(array($module , $params))
     return @CI[$_alias]
@@ -391,9 +392,9 @@ class global.MX_Loader extends CI_Loader
   # @return	void
   #
   plugin: ($plugin)	->
-  
+
     if (is_array($plugin)) then return @plugins($plugin)
-  
+
     if @_ci_plugins[$plugin]?
       return
 

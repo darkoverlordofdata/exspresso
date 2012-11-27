@@ -15,7 +15,7 @@
 #
 #
 #
-require APPPATH + 'libraries/MX/Loader.coffee'
+require APPPATH + 'third_party/MX/Loader.coffee'
 
 class global.MY_Loader extends MX_Loader
 

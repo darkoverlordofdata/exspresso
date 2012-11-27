@@ -16,7 +16,7 @@
 # This is the test controller
 #
 
-class Test extends CI_Controller
+class Test extends MY_Controller
 
   ## --------------------------------------------------------------------
 

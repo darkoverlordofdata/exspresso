@@ -56,13 +56,37 @@ class global.MX_Router extends CI_Router
 
   _module: ''
 
+  # --------------------------------------------------------------------
+
+  #
+  # Controller binding
+  #
+  #   Invoke the controller when the request is received
+  #
+  #   @param string route
+  #   @param object $class
+  #   @param string method
+  #   @return void
+  #
   bind: ($route, $class, $method) ->
 
     $module = @fetch_module()
+    #
+    # Invoke the contoller method
+    #
+    #   Instantiates the controller and calls the requested method.
+    #   Any URI segments present (besides the class/function) will be passed
+    #   to the method for convenience
+    #
+    #   @param object   the server request object
+    #   @param object   the server response object
+    #   @param function the next middleware on the stack
+    #   @param array    the remaining arguments
+    #   @return void
+    #
     @routes[$route] = ($req, $res, $next, $args...) ->
 
-      $CI = new $class($res)
-      $CI._module = $module
+      $CI = new $class($res, $module)
       async.series $CI._ctor, ($err) ->
         call_user_func_array [$CI, $method], $args
 

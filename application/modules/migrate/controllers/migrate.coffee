@@ -15,8 +15,7 @@
 #
 # This is the default controller
 #
-
-class Migrate extends CI_Controller
+class Migrate extends MY_Controller
 
   ## --------------------------------------------------------------------
 
