@@ -2,3 +2,4 @@
 /.idea
 /application/logs
 /application/cache
+manifest.yml
