@@ -16,7 +16,7 @@
 # This is the default controller
 #
 
-class Welcome extends CI_Controller
+class Welcome extends MY_Controller
 
   ## --------------------------------------------------------------------
 

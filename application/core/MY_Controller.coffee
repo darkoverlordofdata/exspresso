@@ -18,10 +18,12 @@
 
 class global.MY_Controller extends CI_Controller
 
+  _module: ''
+
   constructor: ($res, @_module) ->
     super($res)
 
 
 module.exports = MY_Controller
 # End of file MY_Controller.coffee
-# Location: ./MY_Controller.coffee
+# Location: ./application/core/MY_Controller.coffee

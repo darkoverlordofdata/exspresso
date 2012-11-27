@@ -16,7 +16,7 @@
 #
 #   @see user_guide/libraries/form_validation.html
 #
-class Form extends CI_Controller
+class Form extends MY_Controller
 
   constructor: ($args...) ->
 

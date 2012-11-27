@@ -17,7 +17,7 @@
 #
 bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
 
-class User extends CI_Controller
+class User extends MY_Controller
 
   ## --------------------------------------------------------------------
 

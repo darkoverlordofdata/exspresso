@@ -17,7 +17,7 @@ moment          = require('moment')                     # Parse, manipulate, and
 bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
 
 
-class Travel extends CI_Controller
+class Travel extends MY_Controller
 
   ## --------------------------------------------------------------------
 
