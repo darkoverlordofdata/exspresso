@@ -54,9 +54,17 @@
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-
-# test controller
-exports['/test']                              = 'test/index'
+# travel database application demo
+exports['/travel/:db']                        = 'travel/search'
+exports['/travel/:db/search']                 = 'travel/search'
+exports['/travel/:db/hotels']                 = 'travel/hotels'
+exports['/travel/:db/hotel/:id']              = 'travel/hotel'
+exports['/travel/:db/booking/:id']            = 'travel/booking'
+exports['/travel/:db/confirm/:id']            = 'travel/confirm'
+exports['/travel/:db/book/:id']               = 'travel/book'
+exports['/travel/:db/login']                  = 'travel/login'
+exports['/travel/:db/logout']                 = 'travel/logout'
+exports['/travel/:db/authenticate']           = 'travel/authenticate'
 
 # End of file routes.coffee
-# Location: ./routes.coffee
+# Location: ./application/modules/travel/config/routes.coffee

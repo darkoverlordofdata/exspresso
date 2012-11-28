@@ -33,50 +33,6 @@ class Welcome extends MY_Controller
     @load.view 'welcome_message'
 
 
-  ## --------------------------------------------------------------------
-
-  #
-  # About
-  #
-  # About this site:
-  #
-  #   http://0.0.0.0:5000/about/42
-  #
-  #   @access	public
-  #   @param string test id to echo back
-  #   @return	void
-  #
-  about: ($id) ->
-
-    $id = parseInt($id,10)
-
-    @load.view 'about',
-      id: $id
-
-  readme: () ->
-
-
-    md = require('github-flavored-markdown').parse
-    fs = require('fs')
-
-
-    fs.readFile './application/views/readme.md', 'utf8', ($err, $str) =>
-
-      if $err
-        console.log $err
-        return
-
-      $options =  title: 'Dark Overlord of Data'
-
-      try
-
-        $html = md($str)
-        $html = $html.replace /\{([^}]+)\}/g, (_, $name) -> $options[$name] ? ''
-        @load.view 'readme',
-          md: $html
-
-      catch $err
-        console.log $err
 
   ## --------------------------------------------------------------------
 

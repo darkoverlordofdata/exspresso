@@ -65,5 +65,5 @@ exports['migration_path'] = APPPATH + 'migrations/'
 #
 exports['migration_db'] = ''
 
-# End of file migration.coffee.coffee
-# Location: ./application/config/migration.coffee.coffee
+# End of file migration.coffee
+# Location: ./application/modules/migrate/config/migration.coffee

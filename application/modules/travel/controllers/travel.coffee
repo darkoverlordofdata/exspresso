@@ -386,4 +386,4 @@ class Travel extends MY_Controller
 module.exports = Travel
 
 # End of file Travel.coffee
-# Location: .application/controllers/Travel.coffee
+# Location: ./application/modules/travel/controllers/Travel.coffee

@@ -138,4 +138,4 @@ module.exports = User
 
 
 # End of file user.coffee
-# Location: ./user.coffee
+# Location: ./application/modules/user/controllers/user.coffee

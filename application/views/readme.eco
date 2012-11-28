@@ -1,8 +1,0 @@
-<div class='container'>
-    <p>
-       <div class='hero-unit'></div>
-       <h1>Welcome to Exspresso!</h1>
-
-       <p><%= @md %></p>
-     </p>
-</div>

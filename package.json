@@ -1,8 +1,8 @@
 {
   "name": "exspresso",
-  "version": "0.6.18",
+  "version": "0.6.20",
   "description": "A coffee-script port of CodeIgniter",
-  "keywords": ["framework", "web"],
+  "keywords": ["framework", "web", "coffee-script"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",
   "contributors": [
     {
@@ -26,7 +26,6 @@
     "express": "*",
     "express-partials": "*",
     "format-number": "*",
-    "github-flavored-markdown": "*",
     "glob": "*",
     "jade": "*",
     "marked": "*",
@@ -34,10 +33,7 @@
     "mysql": "*",
     "pg": "*",
     "redis": "*",
-    "sort-component": "*",
-    "sprintf": "*",
-    "sqlite3": "*",
-    "uglify-js-middleware": "*"
+    "sprintf": "*"
   },
   "scripts": {
     "start": "foreman start web",

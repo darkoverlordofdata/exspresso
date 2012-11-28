@@ -152,4 +152,4 @@ class Migrate extends MY_Controller
 module.exports = Migrate
 
 # End of file Migrate.coffee
-# Location: .application/controllers/Migrate.coffee
+# Location: .application/modules/migrate/controllers/Migrate.coffee

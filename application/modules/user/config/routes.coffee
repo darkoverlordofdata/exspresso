@@ -54,15 +54,12 @@
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-
-# migrations
-exports['/migrate']                           = 'migrate/index'
-exports['/migrate/current']                   = 'migrate/current'
-exports['/migrate/latest']                    = 'migrate/latest'
-exports['/migrate/up/:to']                    = 'migrate/up'
-exports['/migrate/down/:to']                  = 'migrate/down'
-exports['/migrate/info/:name']                = 'migrate/info'
+# user controller
+exports['/login']                             = 'user/login'
+exports['/logout']                            = 'user/logout'
+exports['/authenticate']                      = 'user/authenticate'
+exports['/forgot_password']                   = 'user/forgot_password'
 
 
 # End of file routes.coffee
-# Location: ./application/modules/migrate/config/routes.coffee
+# Location: ./application/modules/user/config/routes.coffee
