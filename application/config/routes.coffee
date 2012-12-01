@@ -57,8 +57,7 @@
 exports['default_controller']                 = "welcome/index"
 exports['404_override']                       = 'welcome/not_found'
 
-# form_validation demo
-exports['/form']                              = 'form/index'
-
+exports['/edit']                               = 'welcome/edit'
+exports['/varz']                               = 'welcome/varz'
 # End of file routes.coffee
 # Location: ./application/config/routes.coffee

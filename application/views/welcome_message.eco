@@ -11,14 +11,14 @@
         <p>Page rendered in {elapsed_time} ms</p>
     </div>
     <div class="row">
-        <div class="span4">
+        <div class="span6">
             <h3>PostgreSql ActiveRecord Demo</h3>
             <p>Travel database application using CI_DB_active_rec & postgres_driver</p>
             <p>The corresponding controller for this page is found at:</p>
             <pre><code>application/modules/travel/controllers/travel.coffee</code></pre>
             <a href="/travel/postgres" class="btn">Start Demo &raquo;</a>
         </div>
-        <div class="span4">
+        <div class="span6">
             <h3>MySql ActiveRecord Demo</h3>
             <p>Travel database application using CI_DB_active_rec & mysql_driver</p>
             <p>The corresponding view for this page is found at:</p>

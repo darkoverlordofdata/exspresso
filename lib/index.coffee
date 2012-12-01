@@ -45,7 +45,7 @@ exports.constant = (name, scope = global) ->
     return null
 
 
-exports._classes = _classes = {}                        # class registry
+#exports._classes = _classes = {}                        # class registry
 
 exports.die = ($message) ->
   console.log $message
@@ -186,7 +186,7 @@ exports.call_user_func_array = ($callback, $param_arr) ->
 
 ## --------------------------------------------------------------------
 
-exports.count = ($var) ->
+exports.count = count = ($var) ->
 
   if typeof $var is 'string' or typeof $var is 'number' or typeof $var is 'boolean'
     return 1
@@ -217,7 +217,7 @@ exports.dirname = ($str) ->
 
 exports.empty = ($var) ->
 
-  switch typeof $var
+  not switch typeof $var
     when 'undefined' then false
     when 'string'
       if $var.length is 0 then false else true
@@ -229,7 +229,7 @@ exports.empty = ($var) ->
       if Array.isArray($var)
         if $var.length is 0 then false else true
       else
-        if $var is null then false else true
+        if count($var) is 0 then false else true
     else false
 
 ## --------------------------------------------------------------------
@@ -269,12 +269,14 @@ exports.format_number = ($number, $decimals = 0, $dec_point = '.', $thousands_se
 
 ## --------------------------------------------------------------------
 
-exports.file_exists = file_exists = ($path) ->
+exports.file_exists = file_exists = fs.existsSync || path.existsSync
 
-  if fs.existsSync?
-    fs.existsSync($path)
-  else
-    path.existsSync($path)
+#exports.file_exists = file_exists = ($path) ->
+
+  #if fs.existsSync?
+  #  fs.existsSync($path)
+  #else
+  #  path.existsSync($path)
 
 ## --------------------------------------------------------------------
 

@@ -135,7 +135,7 @@ Unstable.
         * text_helper           ?
         * typography_helper     ?
         * url_helper            X
-        * xml_helper            ?
+        * xml_helper            X
     * Libraries
         * Calendar              ?
         * Cart                  ?

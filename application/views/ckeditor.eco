@@ -1,0 +1,18 @@
+<div class="container">
+    <p></p>
+    <div class="hero-unit">
+        <h3>Edit Blog</h3>
+    </div>
+    <div class="row">
+<%- @ckeditor("body", @blog.body) %>
+    </row>
+    <p class="row"></p>
+    <div class="row">
+        <div class="span8"></div>
+        <div class="span4">
+            <footer>powered by &nbsp;
+                <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
+            </footer>
+        </div>
+    </div>
+</div>

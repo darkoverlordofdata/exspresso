@@ -68,21 +68,6 @@ $system_folder = 'system'
 $application_folder = 'application'
 
 #
-#---------------------------------------------------------------
-# PUBLIC FOLDER NAME
-#---------------------------------------------------------------
-#
-# If you want this front controller to use a different "public"
-# folder then the default one you can set its name here. The folder
-# can also be renamed or relocated anywhere on your server.  If
-# you do, use a full server path.
-#
-# NO TRAILING SLASH!
-#
-#
-$public_folder = 'public'
-
-#
 # ---------------------------------------------------------------
 #  Resolve the path's for increased reliability
 # ---------------------------------------------------------------
@@ -94,15 +79,6 @@ $system_path = rtrim($system_path, '/') + '/';
 
 if not is_dir($system_path)
   console.log "Your system folder path is not set correctly:"
-  console.log "Please open the following file and correct this: "
-  console.log "\t#{__filename}"
-  process.exit 1
-
-$public_path = realpath($public_folder) + '/';
-$public_path = rtrim($public_path, '/') + '/';
-
-if not is_dir($public_path)
-  console.log "Your public folder path is not set correctly."
   console.log "Please open the following file and correct this: "
   console.log "\t#{__filename}"
   process.exit 1
@@ -127,9 +103,6 @@ define 'FCPATH', $fc_path
 
 # Name of the "system folder"
 define 'SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/')
-
-#  The path to the "webroot" folder
-define 'WEBROOT', $public_path
 
 #  The path to the "application" folder
 $application_path = realpath($application_folder) + '/';

@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee v6.6.6
 #
 #
-
-
-{array_key_exists, closedir, current, defined, explode, fclose, file_exists, file_get_contents, filemtime, fileperms, filesize, flock, fopen, fread, function_exists, fwrite, is_array, is_dir, is_executable, is_file, is_readable, is_string, is_writable, opendir, readdir, realpath, rmdir, rtrim, sprintf, strncmp, strrchr, strtolower, substr, unlink}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -67,7 +61,8 @@ if not function_exists('read_file')
       return file_get_contents($file)
       
     
-    if not $fp = fopen($file, FOPEN_READ)) then return false}flock($fp, LOCK_SH)
+    if not ($fp = fopen($file, FOPEN_READ)) then return false
+    flock($fp, LOCK_SH)
     
     $data = ''
     if filesize($file) > 0

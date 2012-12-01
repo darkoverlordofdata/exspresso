@@ -35,7 +35,7 @@ exports['site_name'] = 'Dark Overlord of Data'
 # Path to application icon
 #
 #
-exports['favicon'] = '/icons/favicon.png'
+exports['favicon'] = 'favicon.png'
 
 #
 #--------------------------------------------------------------------------

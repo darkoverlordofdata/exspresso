@@ -34,6 +34,34 @@ class Welcome extends MY_Controller
 
 
 
+  varz: ->
+
+    console.log $_SERVER
+
+    @load.view 'server_vars', server_vars: $_SERVER
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Edit
+  #
+  # ckedit demo
+  #
+  #   @access	public
+  #   @return	void
+  #
+  edit: ->
+
+    @db = @load.database('mysql', true)
+    @db.initialize =>
+
+      @db.from 'blog'
+      @db.where 'id', '1'
+      @db.get ($err, $blog) =>
+
+        @load.view 'ckeditor', blog: $blog.row()
+
+
   ## --------------------------------------------------------------------
 
   #

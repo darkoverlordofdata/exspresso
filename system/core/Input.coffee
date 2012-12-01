@@ -187,6 +187,43 @@ module.exports = class global.CI_Input
 
     ($req, $res, $next) =>
 
+      $server_array =
+        argv:                   $req.query
+        argc:                   count($req.query)
+        GATEWAY_INTERFACE:      false
+        SERVER_ADDR:            false
+        SERVER_NAME:            $req.host
+        SERVER_SOFTWARE:        false
+        SERVER_PROTOCOL:        strtoupper($req.protocol)+"/"+$req.httpVersion
+        REQUEST_METHOD:         $req.method
+        REQUEST_TIME:           $req._startTime
+        QUERY_STRING:           $req.url.split('?')[1]? || ''
+        DOCUMENT_ROOT:          process.cwd()
+        HTTP_ACCEPT:            $req.headers['accept']
+        HTTP_ACCEPT_CHARSET:    $req.headers['accept-charset']
+        HTTP_ACCEPT_ENCODING:   $req.headers['accept-encoding']
+        HTTP_ACCEPT_LANGUAGE:   $req.headers['accept-language']
+        HTTP_CONNECTION:        $req.headers['connection']
+        HTTP_HOST:              $req.headers['host']
+        HTTP_REFERER:           $req.headers['referer']
+        HTTP_USER_AGENT:        $req.headers['user-agent']
+        HTTPS:                  $req.secure
+        REMOTE_ADDR:            $req.ip
+        REMOTE_HOST:            false
+        REMOTE_PORT:            false
+        REMOTE_USER:            false
+        REDIRECT_REMOTE_USER:   false
+        SCRIPT_FILENAME:        false
+        SERVER_ADMIN:           false
+        SERVER_PORT:            false
+        SERVER_SIGNATURE:       false
+        PATH_TRANSLATED:        false
+        SCRIPT_NAME:            false
+        REQUEST_URI:            $req.path
+        AUTH_TYPE:              false
+        PATH_INFO:              $req.path
+        ORIG_PATH_INFO:         $req.path
+
       # --------------------------------------------------------------------
       @get = ($index = null, $xss_clean = false) ->
 
@@ -220,9 +257,6 @@ module.exports = class global.CI_Input
         else
           $req.body[$index]
 
-
-
-
       # --------------------------------------------------------------------
       @cookie = ($index = null, $xss_clean = false) ->
 
@@ -246,17 +280,23 @@ module.exports = class global.CI_Input
       # --------------------------------------------------------------------
       @server = ($index = '', $xss_clean = false) ->
 
+        if $index is ''
+          $server_array
+        else
+          if $server_array[$index]?
+            $server_array[$index]
+          else
+            ''
+
       # --------------------------------------------------------------------
       @ip_address = () -> $req.ip
 
       # --------------------------------------------------------------------
-      @user_agent =  ->
+      @user_agent =  -> $req.useragent["Browser"]
 
       $next()
 
-
-
-      # END CI_Input class
+# END CI_Input class
 
 # End of file Input.coffee
 # Location: ./system/core/Input.coffee

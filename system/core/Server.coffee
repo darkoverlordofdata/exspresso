@@ -119,11 +119,15 @@ class global.CI_Server
     if $config.use_layouts
       @app.use require('express-partials')() # use 2.x layout style
 
+    $theme ='default'
+    $webroot = APPPATH+"themes/"+$theme+"/assets/"
     #
     # Expose folders
     #
     @app.set 'views', APPPATH + $config.views
-    @app.use express.static(WEBROOT)
+    @app.use express.static(APPPATH+"themes/all/assets/")
+    @app.use express.static($webroot)
+
 
     #
     # Use Jade templating?
@@ -146,16 +150,16 @@ class global.CI_Server
     # CSS asset middleware
     #
     if $config.css is 'stylus'
-      @app.use require('stylus').middleware(WEBROOT)
+      @app.use require('stylus').middleware($webroot)
 
     else if $config.css is 'less'
-      @app.use require('less-middleware')({ src: WEBROOT })
+      @app.use require('less-middleware')({ src: $webroot })
 
     #
     # Favorites icon
     #
     if $config.favicon?
-      @app.use express.favicon(WEBROOT + $config.favicon)
+      @app.use express.favicon($webroot + $config.favicon)
 
     else
       @app.use express.favicon()
@@ -165,6 +169,7 @@ class global.CI_Server
     #
     @app.use @profiler($output)
     @app.use $output.middleware()
+
     return
 
   #  --------------------------------------------------------------------

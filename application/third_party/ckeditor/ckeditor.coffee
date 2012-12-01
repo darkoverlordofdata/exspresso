@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  ckeditor_php5.coffee
+#  ckeditor.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -21,13 +21,13 @@
 
 #
 # \brief CKEditor class that can be used to create editor
-# instances in PHP pages on server side.
+# instances in coffee pages on server side.
 # @see http://ckeditor.com
 #
 # Sample usage:
 # @code
-# $CKEditor = new CKEditor();
-# $CKEditor->editor("editor1", "<p>Initial value.</p>");
+# <% $CKEditor = new CKEditor() %>
+# <%- $CKEditor.editor("editor1", "<p>Initial value.</p>") %>
 # @endcode
 #
 class CKEditor
@@ -47,7 +47,7 @@ class CKEditor
   #
   # Example usage:
   # @code
-  # $CKEditor->basePath = '/ckeditor/';
+  # $CKEditor.basePath = '/ckeditor/'
   # @endcode
   #
   basePath: ''
@@ -57,9 +57,9 @@ class CKEditor
   #
   # Example usage:
   # @code
-  # $CKEditor->config['height'] = 400;
+  # $CKEditor.config['height'] = 400
   # // Use @@ at the beggining of a string to ouput it without surrounding quotes.
-  # $CKEditor->config['width'] = '@@screen.width * 0.8';
+  # $CKEditor.config['width'] = '@@screen.width * 0.8'
   # @endcode
   #
   config: {}
@@ -74,11 +74,12 @@ class CKEditor
   #
   # Example 1: get the code creating %CKEditor instance and print it on a page with the "echo" function.
   # @code
-  # $CKEditor = new CKEditor();
-  # $CKEditor->returnOutput = true;
-  # $code = $CKEditor->editor("editor1", "<p>Initial value.</p>");
-  # echo "<p>Editor 1:</p>";
-  # echo $code;
+  # $CKEditor = new CKEditor()
+  # $CKEditor.returnOutput = true
+  # $code = $CKEditor.editor("editor1", "<p>Initial value.</p>")
+  # ...
+  # <p>Editor 1:</p>
+  # <%- $code %>
   # @endcode
   #
   returnOutput: false
@@ -88,7 +89,7 @@ class CKEditor
   # When %CKEditor is created with the editor() method, a HTML &lt;textarea&gt; element is created,
   # it will be displayed to anyone with JavaScript disabled or with incompatible browser.
   #
-  textareaAttributes: "rows":8, "cols":60
+  textareaAttributes: rows:'8', cols:'60'
   #
   # A string indicating the creation date of %CKEditor.
   # Do not change it unless you want to force browsers to not use previously cached version of %CKEditor.
@@ -131,46 +132,46 @@ class CKEditor
   # Example usage:
   # @code
   # $CKEditor = new CKEditor()
-  # $CKEditor->editor("field1", "<p>Initial value.</p>");
+  # $CKEditor.editor("field1", "<p>Initial value.</p>")
   # @endcode
   #
   # Advanced example:
   # @code
-  # $CKEditor = new CKEditor();
-  # $config = array();
-  # $config['toolbar'] = array(
-  #     array( 'Source', '-', 'Bold', 'Italic', 'Underline', 'Strike' ),
-  #     array( 'Image', 'Link', 'Unlink', 'Anchor' )
-  # );
-  # $events['instanceReady'] = 'function (ev) {
+  # $CKEditor = new CKEditor()
+  # $config =
+  #   toolbar: [
+  #     [ 'Source', '-', 'Bold', 'Italic', 'Underline', 'Strike' ]
+  #     [ 'Image', 'Link', 'Unlink', 'Anchor' ]
+  #   ]
+  # $events['instanceReady'] = """function (ev) {
   #     alert("Loaded: " + ev.editor.name);
-  # }';
-  # $CKEditor->editor("field1", "<p>Initial value.</p>", $config, $events);
+  #   }"""
+  # $CKEditor.editor("field1", "<p>Initial value.</p>", $config, $events)
   # @endcode
   #
   editor: ($name, $value = "",$config = {},$events = {}) ->
 
-      $attr = ""
-      for $key, $val of @textareaAttributes
-        $attr+=" " + $key + '="' + str_replace('"', '&quot;', $val) + '"'
+    $attr = ""
+    for $key, $val of @textareaAttributes
+      $attr+=" " + $key + '="' + str_replace('"', '&quot;', $val) + '"'
 
-      $out = "<textarea name=\"" + $name + "\"" + $attr + ">" + htmlspecialchars($value) + "</textarea>\n"
-      if not @initialized
-        $out+=@init()
+    $out = "<textarea name=\"" + $name + "\"" + $attr + ">" + htmlspecialchars($value) + "</textarea>\n"
+    if not @initialized
+      $out+=@init()
 
-      $_config = @configSettings($config, $events)
+    $_config = @configSettings($config, $events)
 
-      $js = @returnGlobalEvents()
-      if not empty($_config) then $js+="CKEDITOR.replace('" + $name + "', " + @jsEncode($_config) + ");"
-      else $js+="CKEDITOR.replace('" + $name + "');"
+    $js = @returnGlobalEvents()
+    if not empty($_config) then $js+="CKEDITOR.replace('" + $name + "', " + @jsEncode($_config) + ");"
+    else $js+="CKEDITOR.replace('" + $name + "');"
 
-      $out+=@script($js)
+    $out+=@script($js)
 
-      if not @returnOutput
-        print $out
-        $out = ""
+    if not @returnOutput
+      print $out
+      $out = ""
 
-      return $out
+    return $out
 
   #
   # Replaces a &lt;textarea&gt; with a %CKEditor instance.
@@ -181,8 +182,8 @@ class CKEditor
   #
   # Example 1: adding %CKEditor to &lt;textarea name="article"&gt;&lt;/textarea&gt; element:
   # @code
-  # $CKEditor = new CKEditor();
-  # $CKEditor->replace("article");
+  # $CKEditor = new CKEditor()
+  # $CKEditor.replace("article")
   # @endcode
   #
   replace: ($id, $config = {},$events = {}) ->
@@ -213,14 +214,14 @@ class CKEditor
   #
   # Example 1: replace all &lt;textarea&gt; elements in the page.
   # @code
-  # $CKEditor = new CKEditor();
-  # $CKEditor->replaceAll();
+  # $CKEditor = new CKEditor()
+  # $CKEditor.replaceAll()
   # @endcode
   #
   # Example 2: replace all &lt;textarea class="myClassName"&gt; elements in the page.
   # @code
-  # $CKEditor = new CKEditor();
-  # $CKEditor->replaceAll( 'myClassName' );
+  # $CKEditor = new CKEditor()
+  # $CKEditor.replaceAll( 'myClassName' )
   # @endcode
   #
   replaceAll: ($className = null) ->
@@ -266,14 +267,14 @@ class CKEditor
   #
   # Example usage:
   # @code
-  # $CKEditor->addEventHandler('instanceReady', 'function (ev) {
+  # $CKEditor.addEventHandler('instanceReady', """function (ev) {
   #     alert("Loaded: " + ev.editor.name);
-  # }');
+  #   }""")
   # @endcode
   #
   addEventHandler: ($event, $javascriptCode) ->
     if not @events[$event]?
-      @events[$event] = {}
+      @events[$event] = []
 
     #  Avoid duplicates.
     if not in_array($javascriptCode, @events[$event])
@@ -288,7 +289,7 @@ class CKEditor
   #
   clearEventHandlers: ($event = null) ->
     if not empty($event)
-      @events[$event] = {}
+      @events[$event] = []
 
     else
       @events = {}
@@ -302,9 +303,9 @@ class CKEditor
   #
   # Example usage:
   # @code
-  # $CKEditor->addGlobalEventHandler('dialogDefinition', 'function (ev) {
+  # $CKEditor.addGlobalEventHandler('dialogDefinition', """function (ev) {
   #     alert("Loading dialog: " + ev.data.name);
-  # }');
+  #   }""")
   # @endcode
   #
   addGlobalEventHandler: ($event, $javascriptCode) ->
@@ -399,7 +400,7 @@ class CKEditor
       for $eventName, $handlers of @globalEvents
         for $handler, $code of $handlers
           if not $returnedEvents[$eventName]?
-            $returnedEvents[$eventName] = {}
+            $returnedEvents[$eventName] = []
 
           #  Return only new events
           if not in_array($code, $returnedEvents[$eventName])
@@ -451,39 +452,7 @@ class CKEditor
 
     if not empty(@basePath)
       return @basePath
-
-    #
-    # The absolute pathname of the currently executing script.
-    # Note: If a script is executed with the CLI, as a relative path, such as file.php or ../file.php,
-    # $_SERVER['SCRIPT_FILENAME'] will contain the relative path specified by the user.
-    #
-    if $_SERVER['SCRIPT_FILENAME']?
-      $realPath = dirname($_SERVER['SCRIPT_FILENAME'])
-
-    else
-      #
-      # realpath - Returns canonicalized absolute pathname
-      #
-      $realPath = realpath('./')
-
-
-    #
-    # The filename of the currently executing script, relative to the document root.
-    # For instance, $_SERVER['PHP_SELF'] in a script at the address http://example.com/test.php/foo.bar
-    # would be /test.php/foo.bar.
-    #
-    $selfPath = dirname($_SERVER['PHP_SELF'])
-    $file = str_replace("\\", "/", __filename)
-
-    if not $selfPath or  not $realPath or  not $file
-      return "/ckeditor/"
-
-
-    $documentRoot = substr($realPath, 0, strlen($realPath) - strlen($selfPath))
-    $fileUrl = substr($file, strlen($documentRoot))
-    $ckeditorUrl = str_replace("ckeditor_php5.php", "", $fileUrl)
-
-    return $ckeditorUrl
+    return "/ckeditor/"
 
   #
   # This little function provides a basic JSON support.
@@ -509,7 +478,7 @@ class CKEditor
       if is_array($val) and (array_keys($val) is range(0, count($val) - 1))
         return '[' + implode(',', array_map([@, 'jsEncode'], $val)) + ']'
 
-      $temp = {}
+      $temp = []
       for $k, $v of $val
         $temp.push @jsEncode("{$k}") + ':' + @jsEncode($v)
 

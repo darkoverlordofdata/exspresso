@@ -70,7 +70,7 @@ exports['libraries'] = ['Session/session']
 #|
 #|	exports['helper'] = ['url', 'file']
 #
-exports['helper'] = ['form', 'url']
+exports['helper'] = ['form', 'url', 'ckeditor']
 
 #
 #| -------------------------------------------------------------------
