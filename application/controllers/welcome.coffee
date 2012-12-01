@@ -34,7 +34,7 @@ class Welcome extends MY_Controller
 
 
 
-  varz: ->
+  varz: ($name) ->
 
     console.log $_SERVER
 

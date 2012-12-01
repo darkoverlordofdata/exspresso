@@ -58,6 +58,6 @@ exports['default_controller']                 = "welcome/index"
 exports['404_override']                       = 'welcome/not_found'
 
 exports['/edit']                               = 'welcome/edit'
-exports['/varz']                               = 'welcome/varz'
+exports['/varz/:name']                               = 'welcome/varz'
 # End of file routes.coffee
 # Location: ./application/config/routes.coffee
