@@ -1,5 +1,6 @@
 <div class="hero-unit">
     <span class="errors"></span>
+    <h3><%= ENVIRONMENT %></h3>
     <p>Page rendered in {elapsed_time} ms</p>
     <p>Memory Used: {memory_usage}</p>
     <div class="row">
