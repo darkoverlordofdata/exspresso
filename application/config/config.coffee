@@ -141,7 +141,7 @@ exports['cache'] = false
 #| path to your installation.
 #|
 #
-exports['base_url'] = 'http://localhost:5000/'
+exports['base_url'] = ''
 
 #
 #|--------------------------------------------------------------------------
