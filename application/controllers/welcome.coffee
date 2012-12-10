@@ -36,9 +36,8 @@ class Welcome extends MY_Controller
 
   varz: ($name) ->
 
-    console.log $_SERVER
-
-    @load.view 'server_vars', server_vars: $_SERVER
+    @load.library 'template', title:  'Server Variables'
+    @template.view 'server_vars', server_vars: $_SERVER
 
   ## --------------------------------------------------------------------
 
@@ -52,6 +51,8 @@ class Welcome extends MY_Controller
   #
   edit: ->
 
+
+    @load.library 'template', title:  'Editor'
     @db = @load.database('mysql', true)
     @db.initialize =>
 
@@ -59,7 +60,8 @@ class Welcome extends MY_Controller
       @db.where 'id', '1'
       @db.get ($err, $blog) =>
 
-        @load.view 'ckeditor', blog: $blog.row()
+        @template.view 'ckeditor', blog: $blog.row()
+
 
 
   ## --------------------------------------------------------------------
@@ -76,6 +78,7 @@ class Welcome extends MY_Controller
 
     @load.view 'errors/404',
       url: 'invalid uri'
+
 
 #
 # Export the class:

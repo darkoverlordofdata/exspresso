@@ -185,46 +185,52 @@ class global.CI_Migration
       $version = $i + (if $step is 1 then -1 else 0)
 
       # If there is nothing to do so quit
+      if $migrations.length is 0
+        $callback null, ''
+
       log_message('debug', 'Migrating from' + $method + ' to version ' + $version)
 
-      $index = 0
-      #
-      # Migrate: run each migration
-      #
-      #   @access	private
-      #   @param	function callback
-      #   @return	void
-      #
-      migrate = ($callback) =>
-        if $migrations.length is 0 then $callback null
-        else
-          #
-          # run the migration at index
-          #
-          $class = $migrations[$index]
-          $migration = new $class({}, @CI, @db, @dbforge)
-          call_user_func [$migration, $method], ($err) =>
-            if $err then $callback $err
-            else
-              #
-              # bump the version number
-              #
-              $current_version += $step
-              @_update_version $current_version, ($err) =>
-                if $err then $callback $err
-                else
-                  #
-                  # do the next migration
-                  #
-                  $index += 1
-                  if $index is $migrations.length then $callback null
-                  else migrate $callback
+      $iterator = ($class, $callback) =>
 
+        $migration = new $class({}, @CI, @db, @dbforge)
+        call_user_func [$migration, $method], ($err) =>
+          if $err then return $callback $err
+          $current_version += $step
+          @_update_version $current_version, ($err) ->
+            if $err then return $callback $err
+            $callback null, $current_version
 
-      migrate ($err) ->
+      async.mapSeries $migrations, $iterator, ($err) ->
 
         log_message('debug', 'Finished migrating to '+$current_version)
         $callback $err, $current_version
+
+
+  _run: ->
+
+    #
+    # Process each micration
+    #
+    #   @access	private
+    #   @param	function callback
+    #   @return	void
+    #
+    $index = 0
+    __run = ($migrations, $callback) =>
+
+      if $migrations.length is 0 then $callback null
+      else
+        # process the migration at index
+        $class = migrations[$index]
+        $migration = new $class({}, @CI, @db, @dbforge)
+        call_user_func [$migration, $method], ($err) =>
+          if $err then $callback $err
+          else
+            $current_version += $step
+            @_update_version $current_version, ($err) ->
+              if $err then $callback $err
+              else $callback null, $current_version
+
 
 
   #-------------------------------------------------------------------

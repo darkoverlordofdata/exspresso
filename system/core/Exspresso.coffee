@@ -79,7 +79,7 @@ define '$OUT', (exports.output = load_class('Output', 'core'))
 
 #
 # ------------------------------------------------------
-#  Load the Input class and sanitize globals
+#  Load the Input class
 # ------------------------------------------------------
 #
 define '$IN', (exports.input = load_class('Input', 'core'))

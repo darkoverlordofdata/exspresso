@@ -394,7 +394,6 @@ exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
 
   $text
 
-
 #  --------------------------------------------------------------------
 
 #

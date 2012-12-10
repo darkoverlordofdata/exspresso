@@ -107,7 +107,7 @@ exports['view_ext'] = '.eco'
 #    true              use Express.js 2.x layouts
 #    false             use Templating Engine default style
 #
-exports['use_layouts'] = true
+exports['use_layouts'] = false
 
 #
 #--------------------------------------------------------------------------
@@ -141,7 +141,7 @@ exports['cache'] = false
 #| path to your installation.
 #|
 #
-exports['base_url'] = ''
+exports['base_url'] = 'http://localhost:5000/'
 
 #
 #|--------------------------------------------------------------------------

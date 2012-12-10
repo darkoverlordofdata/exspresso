@@ -15,7 +15,7 @@
 #
 #
 #
-require APPPATH + 'third_party/MX/Router.coffee'
+require APPPATH + 'libraries/MX/Router.coffee'
 
 class global.MY_Router extends MX_Router
 

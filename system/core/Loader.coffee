@@ -387,6 +387,7 @@ class global.CI_Loader
   # @return	void
   #
   view: ($view, $vars = {}, $callback = null) ->
+    log_message 'debug', 'CI_Loader::view'
     @_ci_load('', $view, $vars, $callback)
 
   #  --------------------------------------------------------------------
@@ -669,9 +670,14 @@ class global.CI_Loader
       @_ci_cached_vars = array_merge(@_ci_cached_vars, $_ci_vars)
 
 
-    @CI.render $_ci_path, @_ci_cached_vars, $_ci_return
+    @CI.render $_ci_path, @_ci_cached_vars, ($err, $html) =>
 
-    log_message('debug', 'File loaded: ' + $_ci_path)
+      log_message('debug', 'File loaded: ' + $_ci_path)
+      if $_ci_return isnt null
+        $_ci_return $err, $html
+      else
+        @CI.output.append_output $html
+        @CI.output._display()
 
 
 

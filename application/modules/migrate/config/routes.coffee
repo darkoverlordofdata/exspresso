@@ -57,6 +57,7 @@
 
 # migrations
 exports['/migrate']                           = 'migrate/index'
+exports['/migrate.alt']                       = 'migrate/alt'
 exports['/migrate/current']                   = 'migrate/current'
 exports['/migrate/latest']                    = 'migrate/latest'
 exports['/migrate/up/:to']                    = 'migrate/up'

@@ -59,9 +59,10 @@ class global.CI_Parser
   #
   parse: ($template, $data, $return = false) ->
 
-    $template = @CI.load.view($template, $data, true)
+    $template =
+    @CI.load.view $template, $data, ($err, $template) =>
 
-    return @_parse($template, $data, $return)
+      @_parse($template, $data, $return)
 
   #  --------------------------------------------------------------------
   

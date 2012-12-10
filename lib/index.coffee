@@ -116,6 +116,20 @@ exports.array_merge = array_merge = ($array1, $array2) ->
 
 ## --------------------------------------------------------------------
 
+exports.array_merge_recursive = array_merge_recursive = ($array1, $array2) ->
+
+  $ret = {}
+  for $key, $item of $array1
+    $ret[$key] = $item
+  for $key, $item of $array2
+    if typeof $array1[$key] is 'object' or typeof $item is 'object'
+      $ret[$key] = array_merge($array1[$key], $item)
+    else
+      $ret[$key] = $item
+  return $ret
+
+## --------------------------------------------------------------------
+
 exports.array_pad = ($input, $pad_size, $pad_value) ->
 
   if $input.length < $pad_size
@@ -441,6 +455,36 @@ createRegExp = ($pattern) ->
   new RegExp($pattern, $flags)
 
 
+exports.PATHINFO_DIRNAME    = PATHINFO_DIRNAME    = 1
+exports.PATHINFO_BASENAME   = PATHINFO_BASENAME   = 2
+exports.PATHINFO_EXTENSION  = PATHINFO_EXTENSION  = 4
+exports.PATHINFO_FILENAME   = PATHINFO_FILENAME   = 8
+
+exports.pathinfo = ($path, $options = PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME) ->
+
+  $result = {}
+
+  if ($options & PATHINFO_DIRNAME) is PATHINFO_DIRNAME
+    $result['dirname'] = path.dirname($path)
+    return $result['dirname'] if $options is PATHINFO_DIRNAME
+
+  if ($options & PATHINFO_BASENAME) is PATHINFO_BASENAME
+    $result['basename'] = path.basename($path)
+    return $result['basename'] if $options is PATHINFO_BASENAME
+
+  if ($options & PATHINFO_EXTENSION) is PATHINFO_EXTENSION
+    $result['extension'] = path.extname($path)
+    return $result['extension'] if $options is PATHINFO_EXTENSION
+
+  if ($options & PATHINFO_FILENAME) is PATHINFO_FILENAME
+    $result['filename'] = path.basename($path, path.extname($path))
+    return $result['filename'] if $options is PATHINFO_FILENAME
+
+  return $result
+
+
+
+
 ## --------------------------------------------------------------------
 
 exports.preg_quote = ($str, $delimiter = '') ->
@@ -742,6 +786,19 @@ exports.ksort = ($array) ->
     $array[$key] = $copy[$key]
   true
 
+exports.memory_get_usage = ($real_usage = false) ->
+
+  if $real_usage
+    process.memoryUsage().heapTotal
+  else
+    process.memoryUsage().heapUsed
+
+exports.round = ($val, $precision = 0) ->
+
+  if $precision is 0
+    Math.round($val)
+  else
+    Math.round($val*Math.pow(10,$precision)) / Math.pow(10,$precision)
 
 #  ------------------------------------------------------------------------
 #

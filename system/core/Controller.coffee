@@ -24,6 +24,8 @@
 #
 class global.CI_Controller
 
+  res: null
+
   constructor: (@res) ->
 
     # Assign all the class objects that were instantiated by the
@@ -57,7 +59,13 @@ class global.CI_Controller
   #
   render: ($view, $data = {}, $fn) =>
     $data.CI = @
-    @res.render $view, $data, $fn
+    @res.render $view, $data, ($err, $html) =>
+
+      if $fn? then $fn $err, $html
+      else
+        if $err then show_error $err
+        else
+          @res.send $html
 
   # --------------------------------------------------------------------
 

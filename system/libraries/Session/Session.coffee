@@ -209,6 +209,7 @@ class global.CI_Session
         return
 
       # --------------------------------------------------------------------
+
       $res.locals.flashdata = @flashdata = ($item) ->
 
         $data = $req.session.flashdata = $req.session.flashdata ? {}

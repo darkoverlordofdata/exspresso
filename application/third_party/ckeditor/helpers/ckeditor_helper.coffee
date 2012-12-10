@@ -31,8 +31,7 @@
 if not function_exists('ckeditor')
   exports.ckeditor = ckeditor = ($name, $value = "", $config = {}, $events = {}) ->
 
-
-    CKEditor = require(APPPATH+'third_party/ckeditor/ckeditor.coffee')
+    CKEditor = require('../CKEditor.coffee')
     $ckeditor = new CKEditor('/ckeditor/')
     $ckeditor.returnOutput = true
     return $ckeditor.editor($name, $value, $config, $events)

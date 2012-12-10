@@ -437,7 +437,7 @@ class global.MX_Loader extends CI_Loader
   # @param	bool
   # @return	void
   #
-  view: ($view, $vars = {}, $callback = null) ->
+  view: ($view, $vars = {}, $callback) ->
     [$path, $view] = Modules.find($view, @CI._module, 'views/')
     @_ci_view_path = if $path then $path else APPPATH + config_item('views')
     @_ci_load('', $view, $vars, $callback)

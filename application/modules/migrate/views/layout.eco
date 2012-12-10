@@ -1,0 +1,24 @@
+<%- @$doctype %>
+<html>
+<head>
+    <title><%= @$title %></title>
+    <%- @$meta %>
+    <%- @$style %>
+</head>
+<body>
+<% err = @flashdata('error') %>
+<% if err isnt '' : %>
+<div class='alert alert-error'>
+    <p><b>Error:</b><%= err %></p>
+</div>
+<% end %>
+<% info = @flashdata('info') %>
+<% if info isnt '' : %>
+<div class='alert alert-error'>
+    <p><b>Info:</b><%= info %></p>
+</div>
+<% end %>
+<%- @body %>
+<%- @$script %>
+</body>
+</html>

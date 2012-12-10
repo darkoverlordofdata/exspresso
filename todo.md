@@ -17,11 +17,13 @@
 
 ### Templates
 
-    Need a template class to manage injection of script, css, and html blocks.
-    This will be in addition to the eco templates.
+    Use an asset manager to package scripts, css, etc.
 
 ### Modules / Addins
 
+### Architecture
 
+    CI_Input, Output, Sesstion -do classes need to be instantiated per controller? Or does node hold
+    on to the correct closure? How can I test this?
 
 

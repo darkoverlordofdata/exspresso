@@ -30,6 +30,8 @@ class Travel extends MY_Controller
   #
   login: ($db) ->
 
+    @load.library 'template', title:  'Login'
+
     $url        = @input.get_post('url')
 
     @db = @load.database($db, true)
@@ -38,7 +40,7 @@ class Travel extends MY_Controller
 
       if @input.cookie('username') is ''
 
-        @load.view "travel/login",
+        @template.view "travel/login",
           db: $db
           url: $url
 
@@ -49,7 +51,7 @@ class Travel extends MY_Controller
         @db.get ($err, $customer) =>
 
           if $err or $customer.num_rows is 0
-            @load.view "travel/login",
+            @template.view "travel/login",
               db: $db
               url: $url
             return
@@ -139,6 +141,7 @@ class Travel extends MY_Controller
   #
   search: ($db) ->
 
+    @load.library 'template', title:  'Search'
     @db = @load.database($db, true)
     @db.initialize =>
 
@@ -148,7 +151,7 @@ class Travel extends MY_Controller
       @db.join 'hotel', 'hotel.id = booking.hotel','inner'
       @db.get ($err, $bookings) =>
 
-        @load.view "travel/main",
+        @template.view "travel/main",
 
           db:             $db
           bookings:       $bookings.result()
@@ -172,6 +175,7 @@ class Travel extends MY_Controller
   hotels: ($db) ->
 
 
+    @load.library 'template', title:  'Hotels'
     @db = @load.database($db, true)
     @db.initialize =>
 
@@ -183,7 +187,7 @@ class Travel extends MY_Controller
       @db.limit $pageSize, 0
       @db.get @db, ($err, $hotels) =>
 
-        @load.view "travel/hotels",
+        @template.view "travel/hotels",
 
           db:           $db
           hotels:       $hotels.result()
@@ -204,6 +208,7 @@ class Travel extends MY_Controller
   #
   hotel: ($db, $id) ->
 
+    @load.library 'template', title:  'Hotel'
     @db = @load.database($db, true)
     @db.initialize =>
 
@@ -211,7 +216,7 @@ class Travel extends MY_Controller
       @db.where 'id', $id
       @db.get ($err, $hotel) =>
 
-        @load.view "travel/detail",
+        @template.view "travel/detail",
 
           db:       $db
           id:       $id
@@ -228,6 +233,7 @@ class Travel extends MY_Controller
   #
   booking: ($db, $id) ->
 
+    @load.library 'template', title:  'Booking'
     if @input.post('cancel')? then return @redirect "/travel/#{$db}"
 
     if not @session.userdata('customer')
@@ -240,7 +246,7 @@ class Travel extends MY_Controller
       @db.where 'id', $id
       @db.get ($err, $hotel) =>
 
-        @load.view "travel/booking",
+        @template.view "travel/booking",
           db:       $db
           id:       $id
           hotel:    $hotel.row()
@@ -283,6 +289,7 @@ class Travel extends MY_Controller
   #
   confirm: ($db, $id) ->
 
+    @load.library 'template', title:  'Confirm'
     if @input.get_post('cancel')? then return @redirect "/travel/#{$db}"
 
     if not @session.userdata('customer')
@@ -322,7 +329,7 @@ class Travel extends MY_Controller
             $booking.id = $booking_id
             $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
             $booking.totalPayment = $booking.numberOfNights * $hotel.price
-            @load.view "travel/confirm",
+            @template.view "travel/confirm",
 
               db:       $db
               hotel:    $hotel
@@ -339,6 +346,7 @@ class Travel extends MY_Controller
   #
   book: ($db, $id) ->
 
+    @load.library 'template', title:  'Book'
     if not @session.userdata('customer')
       return @redirect "/travel/#{$db}/login?url=/travel/#{$db}/book/#{$id}"
 
@@ -373,7 +381,7 @@ class Travel extends MY_Controller
 
             $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
             $booking.totalPayment = $booking.numberOfNights * $hotel.price
-            @load.view "travel/booking",
+            @template.view "travel/booking",
               db:       $db
               hotel:    $hotel.row()
               booking:  $booking

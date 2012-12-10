@@ -30,6 +30,8 @@ class Migrate extends MY_Controller
   constructor: ($args...) ->
 
     super($args...)
+
+    @load.library 'template', title:  'Migrations'
     @load.library 'migration',
       migration_enabled:  true
       migration_db:       'mysql'
@@ -46,13 +48,19 @@ class Migrate extends MY_Controller
   #
   index: ->
 
-    @migration._get_version ($err, $version) =>
-      if $err then return show_error $err
+    $path = @migration._migration_path + '*.coffee'
 
-      @load.view 'migrations'
-        path:     @migration._migration_path
-        files:    glob(@migration._migration_path + '*.coffee')
-        version:  $version
+    @migration._get_version ($err, $version) =>
+
+      if $err then show_error $err
+      else
+
+        $data =
+          path:     $path
+          files:    glob($path)
+          version:  $version
+
+        @template.view 'migrations', $data
 
 
   ## --------------------------------------------------------------------
@@ -68,9 +76,8 @@ class Migrate extends MY_Controller
   current: () ->
 
     @migration.current ($err) =>
-      if $err then return show_error $err
-
-      @redirect '/migrate'
+      if $err then show_error $err
+      else @redirect '/migrate'
 
   ## --------------------------------------------------------------------
 
@@ -85,9 +92,8 @@ class Migrate extends MY_Controller
   latest: () ->
 
     @migration.latest ($err) =>
-      if $err then return show_error $err
-
-      @redirect '/migrate'
+      if $err then show_error $err
+      else @redirect '/migrate'
 
   ## --------------------------------------------------------------------
 
@@ -103,9 +109,8 @@ class Migrate extends MY_Controller
   up: ($version) ->
 
     @migration.version $version, ($err, $current_version) =>
-      if $err then return show_error $err
-
-      @redirect '/migrate'
+      if $err then show_error $err
+      else @redirect '/migrate'
 
   ## --------------------------------------------------------------------
 
@@ -121,9 +126,8 @@ class Migrate extends MY_Controller
   down: ($version) ->
 
     @migration.version $version, ($err, $current_version) =>
-      if $err then return show_error $err
-
-      @redirect '/migrate'
+      if $err then show_error $err
+      else @redirect '/migrate'
 
 
 
@@ -141,7 +145,7 @@ class Migrate extends MY_Controller
   info: ($name) ->
 
     $class = require(@migration._migration_path + $name + EXT)
-    @load.view 'migration'
+    @template.view 'migration'
       inspect:    require('util').inspect
       path:       @migration._migration_path + $name + EXT
       migration:  new $class

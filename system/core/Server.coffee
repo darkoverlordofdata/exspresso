@@ -159,7 +159,7 @@ class global.CI_Server
     # Favorites icon
     #
     if $config.favicon?
-      @app.use express.favicon($webroot + $config.favicon)
+      @app.use express.favicon(APPPATH+"themes/all/assets/" + $config.favicon)
 
     else
       @app.use express.favicon()
@@ -167,7 +167,7 @@ class global.CI_Server
     #
     # Profiler
     #
-    @app.use @profiler($output)
+    #@app.use @profiler($output)
     @app.use $output.middleware()
 
     return
@@ -365,7 +365,17 @@ class global.CI_Server
       # link our custom render function into the call chain
       #
       $render = $res.render
-      $res.render = ($view, $data) ->
+
+      #
+      # render a template
+      #
+      #   @access	public
+      #   @param	string	view
+      #   @param	array   data
+      #   @param	function callback
+      #   @return	void
+      #
+      $res.render = ($view, $data, $fn) ->
 
         $res.render = $render
         $data = $data ? {}
@@ -373,21 +383,26 @@ class global.CI_Server
         #
         # callback with rendered output
         #
+        log_message 'debug',"Profiler $view %s", $view
         $res.render $view, $data, ($err, $html) ->
 
-          $end = snapshot()
-          $elapsed_time = $end.time - $start.time
-          #
-          # TODO: what if there is an $err value?
-          #
-          # replace metrics in output:
-          #
-          #   {elapsed_time}
-          #   {memory_usage}
-          #
-          if $html?
-            $res.send $html.replace(/{elapsed_time}/g, $elapsed_time)
-          return
+          if $err? then $fn $err, $html
+          else
+            $end = snapshot()
+            $elapsed_time = $end.time - $start.time
+            #
+            # replace metrics in output:
+            #
+            #   {elapsed_time}
+            #   {memory_usage}
+            #
+            if $fn? then $fn $err, $html.replace(/{elapsed_time}/g, $elapsed_time)
+            else
+              if $html?
+                $res.send $html.replace(/{elapsed_time}/g, $elapsed_time)
+              else
+                $res.send ''
+              return
 
       $next()
       return

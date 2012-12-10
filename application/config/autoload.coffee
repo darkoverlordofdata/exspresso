@@ -47,7 +47,7 @@
 #|  $autoload['packages'] = [APPPATH+'third_party', '/usr/local/shared']
 #|
 #
-exports['packages'] = []
+exports['packages'] = [APPPATH+'third_party/ckeditor/']
 
 #
 #| -------------------------------------------------------------------

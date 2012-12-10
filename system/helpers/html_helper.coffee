@@ -242,8 +242,10 @@ if not function_exists('img')
 # @param	string	type	The doctype to be generated
 # @return	string
 #
+$_doctypes = null # static cache for doctypes
+
 if not function_exists('doctype')
-  exports.doctype = doctype = ($type = 'html5') ->
+  exports.doctype = doctype = ($type = 'xhtml1-strict') ->
 
     if not is_array($_doctypes)
       if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
@@ -342,24 +344,24 @@ if not function_exists('meta')
   exports.meta = meta = ($name = '', $content = '', $type = 'name', $newline = "\n") ->
     #  Since we allow the data to be passes as a string, a simple array
     #  or a multidimensional one, we need to do a little prepping.
-    if not is_array($name)
+    if is_string($name)
       $name = ['name':$name, 'content':$content, 'type':$type, 'newline':$newline]
       
     else 
       #  Turn single array into multidimensional
       if $name['name']? 
         $name = [$name]
-        
-      
-    
+
     $str = ''
-    for $meta in $name
-      $type = if ( not $meta['type']?  or $meta['type'] is 'name') then 'name' else 'http-equiv'
-      $name = if ( not $meta['name']? ) then '' else $meta['name']
-      $content = if ( not $meta['content']? ) then '' else $meta['content']
-      $newline = if ( not $meta['newline']? ) then "\n" else $meta['newline']
-      
-      $str+='<meta ' + $type + '="' + $name + '" content="' + $content + '" />' + $newline
+    for $meta in ($data = $name)
+
+      $type = if not $meta['type']? then 'name' else $meta['type']
+      $name = if not $meta['name']? then '' else $meta['name']
+      $content = if not $meta['content']? then '' else $meta['content']
+      $newline = if not $meta['newline']? then "\n" else $meta['newline']
+
+      $content = ' content="' + $content + '"' if $content
+      $str+='<meta ' + $type + '="' + $name + '"' + $content + ' />' + $newline
       
     
     return $str
