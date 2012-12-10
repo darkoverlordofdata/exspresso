@@ -66,19 +66,6 @@ class global.CI_Config
     @config = get_config()
 
     #  Set the base_url automatically if none was provided
-    if @config['base_url'] is ''
-      ###
-      if $_SERVER['HTTP_HOST']?
-        $base_url = if $_SERVER['HTTPS']?  and strtolower($_SERVER['HTTPS']) isnt 'off' then 'https' else 'http'
-        $base_url+='://' + $_SERVER['HTTP_HOST']
-        $base_url+=str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME'])
-
-
-      else
-      ###
-      $base_url = 'http://localhost/'
-
-      @set_item 'base_url', $base_url
 
     $SRV.config @
     log_message('debug', "Config Class Initialized")

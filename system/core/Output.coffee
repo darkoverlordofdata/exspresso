@@ -240,6 +240,7 @@ module.exports = class global.CI_Output
 
     ($req, $res, $next) =>
 
+      $CFG.config.base_url = $req.protocol+'://'+$req.headers['host']
 
       $BM = load_new('Benchmark', 'core')
       $BM.mark 'total_execution_time_start'

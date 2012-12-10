@@ -26,7 +26,7 @@
 #| path to your installation.
 #|
 #
-exports['base_url'] = "http://localhost:#{process.env.PORT}/"
+#exports['base_url'] =  "http://localhost:#{process.env.PORT}/"
 
 
 # End of file config.coffee

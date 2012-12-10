@@ -26,7 +26,7 @@
 #| path to your installation.
 #|
 #
-exports['base_url'] = "http://exspresso.herokuapp.com/"
+#exports['base_url'] = "http://exspresso.herokuapp.com/"
 
 
 # End of file config.coffee
