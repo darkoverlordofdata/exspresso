@@ -6,6 +6,16 @@
     <%- @$style %>
 </head>
 <body>
+<header>
+    <%- @anchor("", @img("images/logo.png"), title: "Home", rel: "home", id: "logo" ) %>
+    <hgroup id="name-and-slogan">
+        <h1 id="site-name">
+            <%- @anchor("", @site_name, title: "Home", rel: "home") %>
+        </h1>
+        <h2 id="site-slogan"><%= @site_slogan %></h2>
+    </hgroup>
+</header>
+<div class="clearfix"></div>
 <% err = @flashdata('error') %>
 <% if err isnt '' : %>
 <div class='alert alert-error'>

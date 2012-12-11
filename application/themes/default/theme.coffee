@@ -37,6 +37,7 @@ exports.css =
   default: [
     'css/bootstrap.min.css'
     'css/jquery-ui-1.8.24.custom.css'
+    'css/site.css'
   ]
 
 # End of file theme.coffee

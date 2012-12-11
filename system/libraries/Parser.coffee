@@ -43,8 +43,11 @@ class global.CI_Parser
   
   l_delim: '{'
   r_delim: '}'
-  object: {}
-  
+
+  constructor: ($config = {}, @CI) ->
+
+    @[$key] = $val for $key, $val of $config
+
   #
   #  Parse a template
   #
@@ -54,15 +57,21 @@ class global.CI_Parser
   # @access	public
   # @param	string
   # @param	array
-  # @param	bool
-  # @return	string
+  # @param	function
+  # @return	void
   #
-  parse: ($template, $data, $return = false) ->
+  parse: ($template, $data, $callback) ->
 
-    $template =
+    $fn_err = $callback ? show_error
+
     @CI.load.view $template, $data, ($err, $template) =>
 
-      @_parse($template, $data, $return)
+      if $err then $fn_err $err
+      else
+        if $callback? then $callback null, @_parse($template, $data, true)
+        else
+          @_parse($template, $data, false)
+
 
   #  --------------------------------------------------------------------
   
@@ -78,8 +87,8 @@ class global.CI_Parser
   # @param	bool
   # @return	string
   #
-  parse_string: ($template, $data, $return = null) ->
-    return @_parse($template, $data, $return)
+  parse_string: ($template, $data, $return = false) ->
+    @_parse($template, $data, $return)
     
   
   #  --------------------------------------------------------------------
@@ -96,9 +105,9 @@ class global.CI_Parser
   # @param	bool
   # @return	string
   #
-  _parse: ($template, $data, $return = null) ->
+  _parse: ($template, $data, $return = false) ->
     if $template is ''
-      return false
+      return ''
       
     
     for $key, $val of $data
@@ -110,6 +119,7 @@ class global.CI_Parser
 
     if $return is false
       @CI.output.append_output($template)
+      @CI.output._display()
 
     return $template
     
@@ -127,6 +137,7 @@ class global.CI_Parser
   set_delimiters: ($l = '{', $r = '}') ->
     @l_delim = $l
     @r_delim = $r
+    return
     
   
   #  --------------------------------------------------------------------

@@ -25,8 +25,8 @@ module.exports = class global.CI_Input
 
   constructor: ->
 
-    $SRV.input @
     log_message('debug', "Input Class Initialized")
+    $SRV.input @
 
 
   #  --------------------------------------------------------------------
@@ -186,6 +186,8 @@ module.exports = class global.CI_Input
     log_message 'debug',"Input middleware initialized"
 
     ($req, $res, $next) =>
+
+      $CFG.config.base_url = $req.protocol+'://'+$req.headers['host']
 
       $server_array =
         argv:                   $req.query

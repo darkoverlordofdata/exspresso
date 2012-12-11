@@ -236,11 +236,9 @@ module.exports = class global.CI_Output
   #
   middleware: ()->
 
-    log_message 'debug',"Input middleware initialized"
+    log_message 'debug',"Output middleware initialized"
 
     ($req, $res, $next) =>
-
-      $CFG.config.base_url = $req.protocol+'://'+$req.headers['host']
 
       $BM = load_new('Benchmark', 'core')
       $BM.mark 'total_execution_time_start'

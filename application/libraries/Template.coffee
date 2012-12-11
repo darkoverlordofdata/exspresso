@@ -20,8 +20,8 @@ class global.Template
   CI: null
   html: null
 
-  _doctype:         'html5'
   _title:           ''
+  _doctype:         'html5'
   _layout:          'layout'
   _theme_name:      'default'
   _theme_locations: null
@@ -256,6 +256,8 @@ class global.Template
     @set '$style', $css.join("\n")
     @set '$script', $script.join("\n")
     @set '$title', @_title
+    @set 'site_name', config_item('site_name')
+    @set 'site_slogan', config_item('site_slogan')
     @set $data
     $index = 0
 
@@ -267,6 +269,7 @@ class global.Template
     #   @return	void
     #
     get_partials = ($callback) =>
+
       if @_partials.length is 0 then $callback null
       else
         #
@@ -274,25 +277,29 @@ class global.Template
         #
         $partial = @_partials[$index]
         @CI.load.view $partial.view, $partial.data, ($err, $html) =>
+
           if $err then $callback $err
           else
             #
-            # save the result and then do next
+            # save the result and do the next
             #
             @_data[$partial.name] = $html
             $index += 1
             if $index is $partials.length then $callback null
             else get_partials $callback
 
-
-    # get the partials
+    #
+    # load all partials
+    #
     get_partials ($err) =>
+
       if $err then $fn_err $err
       else
         #
-        # load the body view
+        # load the body view & merge with partials
         #
         @CI.load.view $view, @_data, ($err, $content) =>
+
           if $err then $fn_err $err
           else
             #

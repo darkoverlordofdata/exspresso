@@ -36,8 +36,8 @@
                     <tr>
                         <td><%= basename($file).substr(0,3) %></td>
                         <td><%= if $index >= @version then 'ready' else 'done' %></td>
-                        <td><%- @anchor("/migrate/info/" + basename($file, EXT), basename($file, EXT).substr(4)) %></td>
-                        <td><%- @anchor("/migrate/#{$action}/#{$seq}", $action, class: "btn #{$cls}") %></td>
+                        <td><%- @anchor("migrate/info/" + basename($file, EXT), basename($file, EXT).substr(4)) %></td>
+                        <td><%- @anchor("migrate/#{$action}/#{$seq}", $action, class: "btn #{$cls}") %></td>
                     </tr>
                 <% end %>
                 </tbody>
@@ -45,10 +45,10 @@
         </div>
         <div class="span4">
             <p>
-                <%- @anchor("/migrate/current", "current", class: "btn") %>
+                <%- @anchor("migrate/current", "current", class: "btn") %>
             </p>
             <p>
-                <%- @anchor("/migrate/latest", "latest", class: "btn") %>
+                <%- @anchor("migrate/latest", "latest", class: "btn") %>
             </p>
         </div>
     </div>

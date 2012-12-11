@@ -145,8 +145,8 @@ if not function_exists('anchor')
     $title = ''+$title
     
     if not is_array($uri)
-      #$site_url = if ( not preg_match('!^\w+://! i', $uri)) then site_url($uri) else $uri
-      $site_url = $uri
+      $site_url = if ( not preg_match('!^\w+://!i', $uri)) then @site_url($uri) else $uri
+      #$site_url = $uri
       
     else 
       #$site_url = site_url($uri)

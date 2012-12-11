@@ -217,7 +217,7 @@ if not function_exists('img')
           
         
       else 
-        $img+=" $k=\"$v\""
+        $img+=" #{$k}=\"#{$v}\""
         
       
     

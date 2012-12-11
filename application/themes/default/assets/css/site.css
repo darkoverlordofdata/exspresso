@@ -1,0 +1,41 @@
+/*
+ * Header
+ */
+#logo {
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+
+#logo img {
+    vertical-align: bottom;
+    padding: 20px;
+}
+
+#name-and-slogan {
+    float: left;
+    padding: 20px;
+}
+
+#site-name {
+    margin: 0;
+    font-size: 2em;
+    line-height: 1.5em;
+}
+
+#site-name a:link,
+#site-name a:visited {
+    color: #000;
+    text-decoration: none;
+}
+
+#site-name a:hover,
+#site-name a:focus {
+    text-decoration: underline;
+}
+
+
+#site-slogan {
+    margin: 0;
+    font-size: 1em;
+}

@@ -98,6 +98,7 @@ class global.CI_Server
     @app.set 'env', ENVIRONMENT
     @app.set 'port', $config.config.port
     @app.set 'site_name', $config.config.site_name
+    @app.set 'site_slogan', $config.config.site_slogan
     @app.use express.logger($config.config.logger)
     return
 
