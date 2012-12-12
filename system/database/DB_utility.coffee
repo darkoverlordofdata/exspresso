@@ -126,7 +126,7 @@ class global.CI_DB_utility extends CI_DB_forge
     
   
   #  --------------------------------------------------------------------
-  
+
   #
   # Optimize Database
   #
@@ -134,7 +134,7 @@ class global.CI_DB_utility extends CI_DB_forge
   # @return	array
   #
   optimize_database: ($callback) ->
-    async = require('async')
+
     $result = {}
     @db.list_tables ($table_list) =>
 
@@ -143,7 +143,7 @@ class global.CI_DB_utility extends CI_DB_forge
         $sql = @_optimize_table($table_name)
         $sql_list.push $sql unless is_bool($sql)
 
-      async.mapSeries $sql_list, @db.query, ($err, $results) =>
+      @db.query_list $sql_list, ($err, $results) =>
 
         if not $err
           for $query in $results
@@ -157,8 +157,8 @@ class global.CI_DB_utility extends CI_DB_forge
             $result[$key] = $res
 
         $callback $err, $result
-    
-  
+
+
   #  --------------------------------------------------------------------
   
   #

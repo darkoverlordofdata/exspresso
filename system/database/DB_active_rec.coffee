@@ -969,12 +969,7 @@ class CI_DB_active_record extends CI_DB_driver
       $sql.push @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, array_slice(@ar_set, $i, 100))
 
     @_reset_write()
-    console.log '--------------------------------------------------------'
-    console.log $sql[0]
-    console.log '--------------------------------------------------------'
-    #async = require('async')
-    #async.mapSeries $sql, @query, ($err) =>
-    @query $sql[0], $callback
+    @query_list $sql, $callback
 
 
   #  --------------------------------------------------------------------
@@ -1215,8 +1210,7 @@ class CI_DB_active_record extends CI_DB_driver
     for $i in [0..count(@ar_set)-1] by 100
       $sql.push @_update_batch(@_protect_identifiers($table, true, null, false), array_slice(@ar_set, $i, 100), @_protect_identifiers($index), @ar_where)
 
-    async = require('asynch')
-    async.mapSerial $sql, @query, ($err) ->
+    @query_list $sql, ($err) ->
 
       @_reset_write()
       $callback $err

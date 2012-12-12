@@ -107,7 +107,6 @@ class global.CI_Migration
   #
   version: ($target_version, $callback) ->
 
-    async = require('async')
     @_get_version ($err, $current_version) =>
       if $err then return $callback $err
 

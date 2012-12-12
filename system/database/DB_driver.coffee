@@ -139,6 +139,37 @@ class CI_DB_driver
 
 
 
+  #  --------------------------------------------------------------------
+
+  #
+  # Execute a list of sql statements
+  #
+  # @access	public
+  # @return	array
+  #
+  query_list: ($sql, $callback) ->
+
+    $results = []
+    $index = 0
+    $query = @query
+
+    $iterate = ->
+
+      if $sql.length is 0 then $callback null, $results
+      else
+        #
+        # execute sql
+        #
+        $query $sql[$index], ($err, $result)->
+          if $err then $callback $err
+          else
+            $results.push $result
+            $index += 1
+            if $index is $sql.length then $callback null, $results
+            else $iterate()
+
+    $iterate()
+
 
 
   #  --------------------------------------------------------------------

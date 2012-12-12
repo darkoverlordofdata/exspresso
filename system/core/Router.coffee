@@ -21,7 +21,6 @@
 # Exspresso Router Class
 #
 require BASEPATH+'core/URI.coffee'
-#async = require('async')
 
 class global.CI_Router
 
@@ -250,7 +249,6 @@ class global.CI_Router
     @routes[$route] = ($req, $res, $next, $args...) =>
 
       $CI = new $class($res)
-      #async.series $CI._ctor, ($err) ->
       @ctor_queue $CI._ctor, ->
         call_user_func_array [$CI, $method], $args
 
@@ -269,7 +267,7 @@ class global.CI_Router
       if $queue.length is 0 then $next null
       else
         #
-        # process the initialization at index
+        # call the function at index
         #
         $ctor = $queue[$index]
         $ctor ($err) ->

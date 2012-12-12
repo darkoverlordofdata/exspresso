@@ -46,9 +46,7 @@ class global.Template
     log_message('debug', "Template Class Initialized")
 
     @["_#{$key}"] = $val for $key, $val of $config
-
-    if @_theme_locations is null
-      @_theme_locations = [APPPATH + 'themes/']
+    @_theme_locations = [APPPATH + 'themes/'] if @_theme_locations is null
     @_data = {}
     @_metadata = []
     @_partials = []

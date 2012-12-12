@@ -50,7 +50,6 @@ fs = require('fs')
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-#async = require('async')
 
 class global.MX_Router extends CI_Router
 
@@ -87,7 +86,6 @@ class global.MX_Router extends CI_Router
     @routes[$route] = ($req, $res, $next, $args...) =>
 
       $CI = new $class($res, $module)
-      #async.series $CI._ctor, ($err) ->
       @ctor_queue $CI._ctor, ->
         call_user_func_array [$CI, $method], $args
 

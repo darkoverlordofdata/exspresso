@@ -91,8 +91,6 @@ class global.CI_DB_mysql_utility extends CI_DB_utility
     if count($params) is 0
       return false
 
-    async = require('async')
-
     #  Extract the prefs for simplicity
     #extract($params)
     $tables = $params.tables
@@ -112,7 +110,7 @@ class global.CI_DB_mysql_utility extends CI_DB_utility
       $sql_list.push "SHOW CREATE TABLE `" + @db.database + '`.' + $table
       $sql_list.push "SELECT * FROM #{$table}"
 
-    async.mapSeries $sql_list, @db.query, ($err, $results) =>
+    @db.queries $sql_list, ($err, $results) =>
 
       #  No result means the table name was invalid
       if $err then $callback $err
