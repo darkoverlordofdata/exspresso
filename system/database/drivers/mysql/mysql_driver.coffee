@@ -66,7 +66,7 @@ module.exports = (CI_DB) ->
       if not @connected
         mysql = require('mysql')
 
-        @client = new mysql.createClient
+        @client = new mysql.createConnection
           host: @hostname
           port: @port
           user: @username
@@ -75,7 +75,10 @@ module.exports = (CI_DB) ->
 
         @connected = true
 
-      $callback() if $callback?
+      @client.connect $callback, ($err) ->
+        if ($err)
+          console.log JSON.stringify($err)
+        $callback $err, @client
 
     #  --------------------------------------------------------------------
 

@@ -242,7 +242,6 @@ module.exports = class global.CI_Output
 
       $BM = load_new('Benchmark', 'core')
       $BM.mark 'total_execution_time_start'
-      log_message 'debug',"The clock is ticking..."
 
       # --------------------------------------------------------------------
       @set_status_header = ($code = 200, $text = '') ->

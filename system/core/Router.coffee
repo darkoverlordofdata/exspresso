@@ -272,7 +272,11 @@ class global.CI_Router
         # process the initialization at index
         #
         $ctor = $queue[$index]
-        $ctor ->
+        $ctor ($err) ->
+          if $err
+            log_message 'debug', 'Router::ctor_queue'
+            console.log $err
+
           $index += 1
           if $index is $queue.length then $next null
           else $iterate()
