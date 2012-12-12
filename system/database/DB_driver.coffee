@@ -88,6 +88,7 @@ class CI_DB_driver
   #
   initialize: ($callback) =>
 
+    log_message 'debug', 'CI_DB_%s_driver initialize', @dbdriver
     if $callback?
       @db_connect $callback
     else

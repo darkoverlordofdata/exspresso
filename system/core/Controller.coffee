@@ -57,11 +57,11 @@ class global.CI_Controller
   # @param	function
   # @return	void
   #
-  render: ($view, $data = {}, $fn) =>
+  render: ($view, $data = {}, $callback) =>
     $data.CI = @
     @res.render $view, $data, ($err, $html) =>
 
-      if $fn? then $fn $err, $html
+      if $callback? then $callback $err, $html
       else
         if $err then show_error $err
         else

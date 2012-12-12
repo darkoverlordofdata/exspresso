@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "A coffee-script port of CodeIgniter",
   "keywords": ["framework", "web", "coffee-script"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",
@@ -14,20 +14,15 @@
     "php2coffee": "./bin/php2coffee"
   },
   "dependencies": {
-    "async": "*",
     "bcrypt": "*",
     "coffee-script": "*",
     "connect-cache": "*",
     "connect-redis": "*",
-    "consolidate": "*",
     "dispatch": "*",
     "eco": "*",
-    "ejs": "*",
     "express": "*",
     "format-number": "*",
     "glob": "*",
-    "jade": "*",
-    "less-middleware": "*",
     "marked": "*",
     "moment": "*",
     "mysql": "*",

@@ -23,6 +23,8 @@
 #
 dispatch        = require('dispatch')                   # URL dispatcher for Connect
 express         = require('express')                    # Web development framework 3.0
+fs              = require('fs')
+eco             = require('eco')
 
 class global.CI_Server
 
@@ -117,44 +119,29 @@ class global.CI_Server
 
     $config = @CI.config.config
 
-    if $config.use_layouts
-      @app.use require('express-partials')() # use 2.x layout style
-
     $theme ='default'
     $webroot = APPPATH+"themes/"+$theme+"/assets/"
     #
-    # Expose folders
+    # Expose asset folders
     #
     @app.set 'views', APPPATH + $config.views
     @app.use express.static(APPPATH+"themes/all/assets/")
     @app.use express.static($webroot)
-
-
     #
-    # Use Jade templating?
+    # Embedded coffee-script rendering engine
     #
-    if $config.template is 'jade'
-      @app.set 'view engine', 'jade'
+    @app.set 'view engine', $config.view_ext
+    @app.engine $config.view_ext, ($view, $data, $callback) ->
 
-      #
-      # Use some other templating?
-      #
-    else
-      consolidate = require('consolidate')    # for template support
-      @app.engine $config.view_ext, consolidate[$config.template]
-      @app.set 'view engine', $config.template
+      fs.readFile $view, 'utf8', ($err, $str) ->
+        if $err then $callback($err)
+        else
+          try
+            $data.filename = $view
+            $callback null, eco.render($str, $data)
+          catch $err
+            $callback $err
 
-    if $config.use_layouts
-      require('express-partials').register($config.view_ext, $config.template)
-
-    #
-    # CSS asset middleware
-    #
-    if $config.css is 'stylus'
-      @app.use require('stylus').middleware($webroot)
-
-    else if $config.css is 'less'
-      @app.use require('less-middleware')({ src: $webroot })
 
     #
     # Favorites icon
@@ -165,15 +152,11 @@ class global.CI_Server
     else
       @app.use express.favicon()
 
-    #
-    # Profiler
-    #
-    #@app.use @profiler($output)
     @app.use $output.middleware()
 
     return
 
-  #  --------------------------------------------------------------------
+        #  --------------------------------------------------------------------
 
   #
   # Input registration
@@ -326,88 +309,6 @@ class global.CI_Server
     ($req, $res, $next) ->
 
       $next()
-
-  # --------------------------------------------------------------------
-
-  #
-  # Profile
-  #
-  #   middleware profile metrics collector
-  #
-  #   @param {Object} $req
-  #   @param {Object} $res
-  #   @param {Function} $next
-  #
-  profiler: ($output) ->
-
-    log_message 'debug',"Profiler middleware initialized"
-    #
-    # profiler middleware
-    #
-    #   @param {Object} server request object
-    #   @param {Object} server response object
-    #   @param {Object} $next middleware
-    #
-    ($req, $res, $next) ->
-
-      if $output.parse_exec_vars is false
-        return $next()
-      #
-      # profile snapshot
-      #
-      snapshot = ->
-
-        mem: process.memoryUsage()
-        time: new Date
-
-      $start = snapshot() # starting metrics
-
-      #
-      # link our custom render function into the call chain
-      #
-      $render = $res.render
-
-      #
-      # render a template
-      #
-      #   @access	public
-      #   @param	string	view
-      #   @param	array   data
-      #   @param	function callback
-      #   @return	void
-      #
-      $res.render = ($view, $data, $fn) ->
-
-        $res.render = $render
-        $data = $data ? {}
-
-        #
-        # callback with rendered output
-        #
-        log_message 'debug',"Profiler $view %s", $view
-        $res.render $view, $data, ($err, $html) ->
-
-          if $err? then $fn $err, $html
-          else
-            $end = snapshot()
-            $elapsed_time = $end.time - $start.time
-            #
-            # replace metrics in output:
-            #
-            #   {elapsed_time}
-            #   {memory_usage}
-            #
-            if $fn? then $fn $err, $html.replace(/{elapsed_time}/g, $elapsed_time)
-            else
-              if $html?
-                $res.send $html.replace(/{elapsed_time}/g, $elapsed_time)
-              else
-                $res.send ''
-              return
-
-      $next()
-      return
-
 
 
 module.exports = CI_Server

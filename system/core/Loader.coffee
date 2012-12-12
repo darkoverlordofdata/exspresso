@@ -292,7 +292,6 @@ class global.CI_Loader
   #
   database: ($params = '', $return = false, $active_record = null) ->
 
-
     # Grab the super object
     $CI = get_instance()
 
