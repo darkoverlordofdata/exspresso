@@ -38,5 +38,4 @@
              </tbody>
          </table>
      </div>
-     <p>Page rendered in {elapsed_time} ms</p>
  </div>

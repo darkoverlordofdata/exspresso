@@ -54,10 +54,13 @@
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-exports['default_controller']                 = "welcome/index"
+exports['default_controller']                 = "home/index"
 exports['404_override']                       = 'welcome/not_found'
 
-exports['/edit']                               = 'welcome/edit'
-exports['/varz/:name']                               = 'welcome/varz'
+exports['/edit']                              = 'welcome/edit'
+exports['/varz/:name']                        = 'welcome/varz'
+
+exports['/home']                              = 'home/index'
+exports['/welcome']                           = 'welcome/index'
 # End of file routes.coffee
 # Location: ./application/config/routes.coffee

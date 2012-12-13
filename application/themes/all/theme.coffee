@@ -30,6 +30,7 @@ exports.meta = [
   {name: 'copyright',     content: 'darkoverlordofdata'}
   {name: 'resource-type', content: 'document'}
   {name: 'language',      content: 'en'}
+  {name: 'viewport',      content: 'width=device-width, initial-scale=1.0'}
 ]
 
 exports.script =

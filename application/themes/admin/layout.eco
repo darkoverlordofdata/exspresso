@@ -1,0 +1,46 @@
+<%- @$doctype %>
+<html>
+<head>
+    <title><%= @$title %></title>
+    <%- @$meta %>
+    <%- @$style %>
+</head>
+<body>
+<div id="wrap">
+    <div class="container">
+        <header>
+            <%- @anchor("", @img("images/logo.png"), title: "Home", rel: "home", id: "logo" ) %>
+            <hgroup id="name-and-slogan">
+                <div class="page-header">
+                    <h1 id="site-name"><%= @site_name %></h1>
+                    <h2 id="site-slogan"><%= @site_slogan %></h2>
+                </div>
+            </hgroup>
+        </header>
+        <div class="clearfix"></div>
+        <% err = @flashdata('error') %>
+        <% if err isnt '' : %>
+        <div class='alert alert-error'>
+            <p><b>Error:</b><%= err %></p>
+        </div>
+        <% end %>
+        <% info = @flashdata('info') %>
+        <% if info isnt '' : %>
+        <div class='alert alert-error'>
+            <p><b>Info:</b><%= info %></p>
+        </div>
+        <% end %>
+        <%- @$content %>
+    </div>
+
+    <div id="push"></div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="credit">powered by &nbsp;
+            <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
+        </p>
+    </div>
+</div><%- @$script %>
+</body>
+</html>

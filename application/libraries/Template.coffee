@@ -89,7 +89,7 @@ class global.Template
     for $location in @_theme_locations
       if file_exists($location + @_theme_name)
         @_theme_path = rtrim($location + @_theme_name + '/')
-        @CI.load.library('theme', 'location': $location, name: $theme_name)
+        @CI.load.library 'theme', location: $location, name: $theme_name
         @CI.theme.init @, $extra
         break
     @

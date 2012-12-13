@@ -28,17 +28,16 @@ exports.layout = 'layout.eco'
 
 exports.script =
   default: [
+    'js/bootstrap.min.js'
     'js/jquery-1.8.1.min.js'
     'js/jquery-ui-1.8.24.custom.min.js'
-    'js/bootstrap.min.js'
   ]
 
 exports.css =
   default: [
     'css/bootstrap.min.css'
-    'css/site.css'
-    'css/bootstrap-responsive.min.css'
     'css/jquery-ui-1.8.24.custom.css'
+    'css/site.css'
   ]
 
 # End of file theme.coffee

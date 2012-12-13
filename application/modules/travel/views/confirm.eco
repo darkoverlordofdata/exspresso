@@ -49,5 +49,4 @@
         <input class="btn" name="cancel" type="submit" value="Cancel" />
       </div>
     </form>
-    <p>Page rendered in {elapsed_time} ms</p>
 </div>

@@ -27,5 +27,4 @@
     </div>
     <%- @anchor("/travel/#{@db}?searchString=#{@searchString}&pageSize=#{@pageSize}", 'Change Search', class:'btn btn-primary') %>
     <p></p>
-    <p>Page rendered in {elapsed_time} ms</p>
 </div>

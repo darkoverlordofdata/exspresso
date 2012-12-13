@@ -301,6 +301,8 @@ module.exports = class global.CI_Output
         if @parse_exec_vars is true
           $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
           $output = str_replace('{elapsed_time}', $elapsed, $output)
+          $output = str_replace('{elapsed_time}', $elapsed, $output)
+          $output = str_replace('{memory_usage}', $memory, $output)
           $output = str_replace('{memory_usage}', $memory, $output)
 
 
