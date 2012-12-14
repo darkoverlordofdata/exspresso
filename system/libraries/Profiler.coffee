@@ -149,16 +149,13 @@ class global.CI_Profiler
   _compile_queries: () ->
     $dbs = []
 
-    log_message 'debug', 'profile queries %d', 1
     #  Let's determine which databases are currently connected to
     for $name, $CI_object of get_object_vars(@CI)
       #if is_object($CI_object) # and $CI_object instanceof CI_DB is true
       if $CI_object['dbdriver']?
         $dbs.push $CI_object
 
-    log_message 'debug', 'profile queries %d', 2
     if count($dbs) is 0
-      log_message 'debug', 'profile queries %d', 3
       $output = "\n\n"
       $output+='<fieldset id="ci_profiler_queries" style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
       $output+="\n"
@@ -170,20 +167,16 @@ class global.CI_Profiler
       $output+="</fieldset>"
       return $output
 
-    log_message 'debug', 'profile queries %d', 10
 
     #  Load the text helper so we can highlight the SQL
     @CI.load.helper('text')
-    log_message 'debug', 'profile queries %d', 12
 
     #  Key words we want bolded
     $highlight = ['SELECT', 'DISTINCT', 'FROM', 'WHERE', 'AND', 'LEFT&nbsp;JOIN', 'ORDER&nbsp;BY', 'GROUP&nbsp;BY', 'LIMIT', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'OR&nbsp;', 'HAVING', 'OFFSET', 'NOT&nbsp;IN', 'IN', 'LIKE', 'NOT&nbsp;LIKE', 'COUNT', 'MAX', 'MIN', 'ON', 'AS', 'AVG', 'SUM', '(', ')']
-    log_message 'debug', 'profile queries %d', 13
 
     $output = "\n\n"
 
     for $db in $dbs
-      log_message 'debug', 'profile queries %d', 14
       $output+='<fieldset style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
       $output+="\n"
       $output+='<legend style="color:#0000FF;">&nbsp;&nbsp;' + @CI.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;&nbsp;&nbsp;' + @CI.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;&nbsp;&nbsp;</legend>'
@@ -191,12 +184,10 @@ class global.CI_Profiler
       $output+="\n\n<table style='width:100%;'>\n"
 
       if count($db.queries) is 0
-        log_message 'debug', 'profile queries %d', 15
         $output+="<tr><td style='width:100%;color:#0000FF;font-weight:normal;background-color:#eee;padding:5px;'>" + @CI.lang.line('profiler_no_queries') + "</td></tr>\n"
 
       else
         for $key, $val of $db.queries
-          log_message 'debug', 'profile queries %d', 16
           $time = number_format($db.query_times[$key], 4)
 
           #$val = highlight_code($val, ENT_QUOTES)

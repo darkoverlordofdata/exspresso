@@ -73,10 +73,14 @@ class global.Theme
   #
   #   @access	public
   #   @param	string	template
-  #   @param	array   extra params
+  #   @param	array   extra theme elements
   #   @return	object
   #
-  init: ($template, $extra...) ->
+  init: ($template, $extra) ->
+
+    $template._metadata = []
+    $template._script = []
+    $template._css = []
 
     if @_layout?
       $template.set_layout @_layout
@@ -90,6 +94,9 @@ class global.Theme
     if @_script? and @_script.default?
       $template.set_script @_script.default
 
+    if not Array.isArray($extra) then $extra = [$extra]
+
+    log_message 'debug', '$extra = %j', $extra
     for $name in $extra
       if @_css[$name]?
         $template.set_css @_css[$name]

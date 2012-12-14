@@ -234,7 +234,7 @@ if ( not function_exists('word_censor'))
 # ------------------------------------------------------------------------
 
 #
-#  Code Highlighter
+#  Code Highlighter - use google-code-prettify on the client
 #
 #  Colorizes code strings
 #

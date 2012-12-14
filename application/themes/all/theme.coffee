@@ -35,20 +35,23 @@ exports.meta = [
 
 exports.script =
   ckeditor: 'ckeditor/ckeditor.js'
-  prettify:  [
+  prettify: [
     'google-code-prettify/prettify.js'
     """
     $(function() {
     prettyPrint();
     });
     """
-  ]
+    ]
 
-exports.css = [
-  prettify:  """
-    code {font-size: 90%};
+
+exports.css =
+  prettify:  [
+    'google-code-prettify/prettify.css'
     """
-  ]
+    code {font-size: 100%};
+    """
+    ]
 
 # End of file theme.coffee
 # Location = .application/themes/default/theme.coffee

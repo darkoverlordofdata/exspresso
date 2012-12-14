@@ -23,6 +23,7 @@ class global.PublicController extends MY_Controller
     super($args...)
 
     @load.library 'template'
+    @template.set_theme 'default', 'prettify'
     @load.database 'mysql'
 
 module.exports = PublicController

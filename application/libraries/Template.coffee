@@ -54,7 +54,7 @@ class global.Template
     @_script = []
     @_css = []
     @html = @CI.load.helper('html')
-    @set_theme @_theme
+    @set_theme @_theme_name
 
 
   ## --------------------------------------------------------------------
@@ -84,7 +84,7 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_theme: ($theme_name, $extra...) ->
+  set_theme: ($theme_name = 'default', $extra) ->
     @_theme_name = $theme_name
     for $location in @_theme_locations
       if file_exists($location + @_theme_name)

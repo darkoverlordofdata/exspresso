@@ -79,13 +79,13 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_benchmarks">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_benchmarks') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_benchmarks') + '</dt>'
     $output+="\n"
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $key, $val of $profile
       $key = ucwords(str_replace(['_', '-'], ' ', $key))
-      $output+="<tr><td>" + $key + "&nbsp;&nbsp;</td><td>" + $val + "</td></tr>\n"
+      $output+="<tr><td>" + $key + "</td><td>" + $val + "</td></tr>\n"
 
 
     $output+="</table></dd>\n"
@@ -113,10 +113,10 @@ class global.MY_Profiler extends CI_Profiler
       $output = "\n\n"
       $output+='<dl id="ci_profiler_queries">'
       $output+="\n"
-      $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_queries') + '&nbsp;&nbsp;</dt>'
+      $output+='<dt>' + @CI.lang.line('profiler_queries') + '</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
-      $output+="<tr><td>" + @CI.lang.line('profiler_no_db') + "</td></tr>\n"
+      $output+="<tr><td><em>" + @CI.lang.line('profiler_no_db') + "</em></td></tr>\n"
       $output+="</table></dd>\n"
       $output+="</dl>"
       return $output
@@ -133,12 +133,12 @@ class global.MY_Profiler extends CI_Profiler
     for $db in $dbs
       $output+='<dl>'
       $output+="\n"
-      $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;&nbsp;&nbsp;' + @CI.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;&nbsp;&nbsp;</dt>'
+      $output+='<dt>' + @CI.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @CI.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       if count($db.queries) is 0
-        $output+="<tr><td>" + @CI.lang.line('profiler_no_queries') + "</td></tr>\n"
+        $output+="<tr><td><em>" + @CI.lang.line('profiler_no_queries') + "</em></td></tr>\n"
 
       else
         for $key, $val of $db.queries
@@ -149,7 +149,7 @@ class global.MY_Profiler extends CI_Profiler
           for $bold in $highlight
             $val = str_replace($bold, '<strong>' + $bold + '</strong>', $val)
 
-          $output+="<tr><td>" + $time + "&nbsp;&nbsp;</td><td><pre><code>" + $val + "</code></pre></td></tr>\n"
+          $output+="<tr><td>" + $time + "</td><td><pre class='prettyprint'><code class='lang-sql'>" + $val + "</code></pre></td></tr>\n"
 
       $output+="</table></dd>\n"
       $output+="</dl>"
@@ -168,11 +168,11 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_get">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_get_data') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_get_data') + '</dt>'
     $output+="\n"
 
     if count($_GET) is 0
-      $output+="<dd>" + @CI.lang.line('profiler_no_get') + "</dd>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_get') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -181,7 +181,7 @@ class global.MY_Profiler extends CI_Profiler
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
-        $output+="<tr><td>&#36;_GET[" + $key + "]&nbsp;&nbsp; </td><td>"
+        $output+="<tr><td>&#36;_GET[" + $key + "] </td><td>"
         if is_array($val)
           $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
@@ -208,11 +208,11 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_post">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_post_data') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_post_data') + '</dt>'
     $output+="\n"
 
     if count($_POST) is 0
-      $output+="<dd>" + @CI.lang.line('profiler_no_post') + "</dd>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_post') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -222,7 +222,7 @@ class global.MY_Profiler extends CI_Profiler
           $key = "'" + $key + "'"
 
 
-        $output+="<tr><td>&#36;_POST[" + $key + "]&nbsp;&nbsp; </td><td>"
+        $output+="<tr><td>&#36;_POST[" + $key + "] </td><td>"
         if is_array($val)
           $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
@@ -249,11 +249,11 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_uri_string">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_uri_string') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_uri_string') + '</dt>'
     $output+="\n"
 
     if @CI.uri.uri_string() is ''
-      $output+="<dd>" + @CI.lang.line('profiler_no_uri') + "</dd>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_uri') + "</em></dd>"
 
     else
       $output+="<dd>" + @CI.uri.uri_string() + "</dd>"
@@ -273,7 +273,7 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_controller_info">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_controller_info') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_controller_info') + '</dt>'
     $output+="\n"
 
     $output+="<dd>" + @CI.router.fetch_class() + "/" + @CI.router.fetch_method() + "</dd>"
@@ -295,14 +295,14 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_memory_usage">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_memory_usage') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_memory_usage') + '</dt>'
     $output+="\n"
 
     if function_exists('memory_get_usage') and ($usage = memory_get_usage()) isnt ''
       $output+="<dd>" + number_format($usage) + ' bytes</dd>'
 
     else
-      $output+="<dd>" + @CI.lang.line('profiler_no_memory_usage') + "</dd>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_memory_usage') + "</em></dd>"
 
     $output+="</dl>"
 
@@ -321,14 +321,14 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_http_headers">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_headers') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_headers') + '</dt>'
     $output+="\n"
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $header in ['HTTP_ACCEPT', 'HTTP_USER_AGENT', 'HTTP_CONNECTION', 'SERVER_PORT', 'SERVER_NAME', 'REMOTE_ADDR', 'SERVER_SOFTWARE', 'HTTP_ACCEPT_LANGUAGE', 'SCRIPT_NAME', 'REQUEST_METHOD', ' HTTP_HOST', 'REMOTE_HOST', 'CONTENT_TYPE', 'SERVER_PROTOCOL', 'QUERY_STRING', 'HTTP_ACCEPT_ENCODING', 'HTTP_X_FORWARDED_FOR']
       $val = if ($_SERVER[$header]? ) then $_SERVER[$header] else ''
-      $output+="<tr><td>" + $header + "&nbsp;&nbsp;</td><td>" + $val + "</td></tr>\n"
+      $output+="<tr><td>" + $header + "</td><td>" + $val + "</td></tr>\n"
 
     $output+="</table></dd>\n"
     $output+="</dl>"
@@ -348,7 +348,7 @@ class global.MY_Profiler extends CI_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_config">'
     $output+="\n"
-    $output+='<dt>&nbsp;&nbsp;' + @CI.lang.line('profiler_config') + '&nbsp;&nbsp;</dt>'
+    $output+='<dt>' + @CI.lang.line('profiler_config') + '</dt>'
     $output+="\n"
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -357,7 +357,7 @@ class global.MY_Profiler extends CI_Profiler
       if is_array($val)
         $val = print_r($val, true)
 
-      $output+="<tr><td>" + $config + "&nbsp;&nbsp;</td><td>" + htmlspecialchars($val) + "</td></tr>\n"
+      $output+="<tr><td>" + $config + "</td><td>" + htmlspecialchars($val) + "</td></tr>\n"
 
     $output+="</table></dd>\n"
     $output+="</dl>"
