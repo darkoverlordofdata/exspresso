@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  Profiler.coffee
+#  MY_Profiler.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -10,41 +10,20 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-# This file was ported from php to coffee-script using php2coffee v6.6.6
-#
-#
-#
-# CodeIgniter
-#
-# An open source application development framework for PHP 5.1.6 or newer
-#
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
-# @since		Version 1.0
-# @filesource
-#
 
 #  ------------------------------------------------------------------------
 
+#   Exspresso Profiler Class
 #
-# CodeIgniter Profiler Class
+#     UI updates:
 #
-# This class enables you to display benchmark, query, and other data
-# in order to help with debugging and optimization.
+#       Use definition list <DL> semantics
+#       Twitter Bootstrap css
+#       google-code-prettify for SQL highliting
+#       display modaly from a bottom toolbar
 #
-# Note: At some point it would be good to move all the HTML in this class
-# into a set of template files in order to allow customization.
 #
-# @package		CodeIgniter
-# @subpackage	Libraries
-# @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/general/profiling.html
-#
+
 class global.MY_Profiler extends CI_Profiler
 
 #  --------------------------------------------------------------------
@@ -85,7 +64,7 @@ class global.MY_Profiler extends CI_Profiler
 
     for $key, $val of $profile
       $key = ucwords(str_replace(['_', '-'], ' ', $key))
-      $output+="<tr><td>" + $key + "</td><td>" + $val + "</td></tr>\n"
+      $output+="<tr><td>" + $key + "</td><td>" + $val + "&nbsp;ms</td></tr>\n"
 
 
     $output+="</table></dd>\n"

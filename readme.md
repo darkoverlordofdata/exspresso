@@ -3,19 +3,17 @@
 
 ### Exspresso is ...
 
-  The CodeIgniter (<http://codeigniter.com/>) MVC framework ported to coffee-script and wrapped around the Express core.
+  A CMS built on a port of the CodeIgniter (<http://codeigniter.com/>) framework ported to coffee-script.
 
+    Exspresso is opinionated -
 
-## Features
+      * uses express as http server
+      * embedded coffee-script (ECO) for views.
+      * twitter bootstrap css styles
+      * HMVC by Wiredesignz
+      * Mutiple configs per topic are merged
 
-* Eco templating engine
-* CodeIgniter style ActiveRecord - MySQL & PostgreSQL
-* Port of HMVC extension by Wiredesignz
-* Edit configuration defaults in application/config/config.coffee, etc
-    ! Mutiple configs per topic are merged
-* Php2coffee command line port tool
-
-## lib
+## PHP api (formerly not-php)
 
   lib/index.coffee, a php compatability layer used by the ported code,
   is a group of helper functions that mimic the php api.
@@ -23,6 +21,8 @@
 
 
 ## PHP2Coffee
+
+  Use the Php2coffee command line port tool to kick start php ports.
 
   Requires Zend compatible php runtime
 
@@ -42,9 +42,10 @@ Globals in Exspresso are read only and immutable.
 They are set once using 'define' and cannot be re-defined.
 
     Constants           index.coffee
-    PHP Compatability   lib/index.coffee
+    PHP api             lib/index.coffee
     Common Methods      system/core/Common.coffee
     stdio               application/config/constants.coffee
+
     singletons
 
           $CFG              CI_Config
@@ -54,29 +55,39 @@ They are set once using 'define' and cannot be re-defined.
           $OUT              CI_Output
           $RTR              CI_Router
           $SRV              CI_Server
+          $URI              CI_URI
 
     Classes
 
-          CI_Config         system/core/Config.coffee
-          CI_Controller     system/core/Controller.coffee
-          CI_Exceptions     system/core/Exceptions.coffee
-          CI_Hooks          system/core/Hooks.coffee
-          CI_Input          system/core/Input.coffee
-          CI_Lang           system/core/Lang.coffee
-          CI_Loader         system/core/Loader.coffee
-          CI_Model          system/core/Model.coffee
-          CI_Output         system/core/Output.coffee
-          CI_Router         system/core/Router.coffee
-          CI_Log            system/libraries/Log.coffee
-          CI_Session        system/Libraries/Session.coffee
-          MX_Config         application/Libraries/Config.coffee
-          MX_Lang           application/Libraries/Lang.coffee
-          MX_Loader         application/Libraries/Loader.coffee
-          MX_Modules        application/Libraries/Modules.coffee
-          MX_Router         application/Libraries/Router.coffee
-          MY_Controller     application/core/Controller.coffee
-          MY_Loader         application/core/Loader.coffee
-          MY_Router         application/core/Router.coffee
+          CI_Benchmark        system/core/Benchmark.coffee
+          CI_Config           system/core/Config.coffee
+          CI_Controller       system/core/Controller.coffee
+          CI_Exceptions       system/core/Exceptions.coffee
+          CI_Input            system/core/Input.coffee
+          CI_Lang             system/core/Lang.coffee
+          CI_Loader           system/core/Loader.coffee
+          CI_Model            system/core/Model.coffee
+          CI_Output           system/core/Output.coffee
+          CI_Router           system/core/Router.coffee
+          CI_URI              system/core/URI.coffee
+          CI_Form_validation  system/libraries/Form_validation.coffee
+          CI_Log              system/libraries/Log.coffee
+          CI_Migration        system/libraries/Migration.coffee
+          CI_Parse            system/libraries/Parser.coffee
+          CI_Profiler         system/libraries/Profiler.coffee
+          CI_Session          system/libraries/Sesion/Session.coffee
+          CI                  application/libraries/MX/Ci.coffee
+          MX_Config           application/Libraries/MX/Config.coffee
+          MX_Lang             application/Libraries/MX/Lang.coffee
+          MX_Loader           application/Libraries/MX/Loader.coffee
+          MX_Modules          application/Libraries/MX/Modules.coffee
+          MX_Router           application/Libraries/MX/Router.coffee
+          MY_Controller       application/core/Controller.coffee
+          MY_Loader           application/core/Loader.coffee
+          MY_Router           application/core/Router.coffee
+          MY_Profiler         application/libraries/MY_Profiler.coffee
+          Template            application/libraries/Template.coffee
+          Theme               application/libraries/Theme.coffee
 
 
 
@@ -93,7 +104,7 @@ Unstable.
     CI System Framework files
     -----------------------------------------------------------
     * Core
-        * Benchmark             ?
+        * Benchmark             X
         * Cache                 ?
         * Common                X
         * Config                X
@@ -107,7 +118,7 @@ Unstable.
         * Output                X
         * Router                X
         * Security              ?
-        * URI                   ?
+        * URI                   X
     * Database                  mysql   postgresql
         * DB_active_rec         X       X
         * DB_cache              ?       ?
@@ -126,13 +137,13 @@ Unstable.
         * file_helper           ?
         * form_helper           X
         * inflector_helper      ?
-        * language_heler        ?
+        * language_heler        X
         * number_helper         ?
         * path_helper           ?
         * security_helper       -
         * smiley_helper         -
         * string_helper         ?
-        * text_helper           ?
+        * text_helper           X
         * typography_helper     ?
         * url_helper            X
         * xml_helper            X
@@ -150,7 +161,7 @@ Unstable.
         * Migration             X
         * Pagination            ?
         * Parser                ?
-        * Profiler              -
+        * Profiler              X
         * Session               X
         * Sha1                  -
         * Table                 -
@@ -158,7 +169,7 @@ Unstable.
         * Typography            ?
         * Unit_test             -
         * Upload                ?
-        * User_agent            -
+        * User_agent            X
         * Xmlrpc                -
         * Zip                   -
 
