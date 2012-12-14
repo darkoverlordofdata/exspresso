@@ -378,8 +378,7 @@ class global.MY_Profiler extends CI_Profiler
         <div class="container">
           <div class="credit">
             <span class="pull-left muted">
-              <i class="icon-time"></i>
-              <a data-toggle="modal" href="#codeigniter_profiler" class="btn btn-link btn-mini"> Profiler</a>
+              <a data-toggle="modal" href="#codeigniter_profiler" class="btn btn-mini"><i class="icon-time"></i> Profiler</a>
             </span>
             <span class="pull-right">powered by &nbsp;
               <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
