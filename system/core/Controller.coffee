@@ -26,7 +26,10 @@ class global.CI_Controller
 
   res: null
 
-  constructor: (@res) ->
+  constructor: ($res) ->
+
+    $res.CI = @
+    @res = $res
 
     # Assign all the class objects that were instantiated by the
     # bootstrap file (Exspresso.coffee) to local class variables

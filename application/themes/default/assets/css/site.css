@@ -68,6 +68,18 @@ body {
     font-size: 18px;
 }
 
+#codeigniter_profiler {
+    width: 80%;
+    left: 10%;
+    top: 40%;
+    z-index: 1050;
+    margin-left: 0px;
+
+}
+#codeigniter_profiler-body {
+    max-height: 600px;
+}
+
 #performance {
     width: 80%;
     left: 10%;

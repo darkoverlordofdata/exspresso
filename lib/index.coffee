@@ -18,6 +18,7 @@ fs              = require('fs')                         # Standard POSIX file i/
 path            = require('path')                       # File path utilities
 querystring     = require('querystring')                # Utilities for dealing with query strings.
 url             = require('url')                        # Utilities for URL resolution and parsing.
+util            = require('util')                       # misc
 
 
 exports.define = (name, value, scope = global) ->
@@ -276,7 +277,7 @@ exports.explode = ($delimiter, $string, $limit) ->
 
 ## --------------------------------------------------------------------
 
-exports.format_number = ($number, $decimals = 0, $dec_point = '.', $thousands_sep = ',') ->
+exports.number_format = ($number, $decimals = 0, $dec_point = '.', $thousands_sep = ',') ->
 
   $format = format(seperator: $thousands_sep, decimal: $dec_point, padRight: $decimals, truncate: $decimals)
   $format($number)
@@ -741,7 +742,7 @@ exports.array = ($key, $value) ->
 
 exports.htmlspecialchars = ($str) ->
 
-  $str.replace("&", "&amp;").replace("'", "&#39;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+  (''+$str).replace("&", "&amp;").replace("'", "&#39;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
 
 exports.CASE_LOWER = CASE_LOWER = 0
 exports.CASE_UPPER = CASE_UPPER = 1
@@ -799,6 +800,15 @@ exports.round = ($val, $precision = 0) ->
     Math.round($val)
   else
     Math.round($val*Math.pow(10,$precision)) / Math.pow(10,$precision)
+
+exports.print_r = ($expression, $return = false) ->
+
+  if $return is true
+    util.inspect($expression)
+
+exports.ucwords = ($str) ->
+
+  ''+$str.replace /^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, ($1) -> $1.toUpperCase()
 
 #  ------------------------------------------------------------------------
 #

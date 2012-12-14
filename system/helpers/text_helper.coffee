@@ -217,7 +217,7 @@ if ( not function_exists('word_censor'))
     # set for performance reasons. As a result words like über
     # will not match on a word boundary. Instead, we'll assume that
     # a bad word will be bookeneded by any of these characters.
-    $delim = '[-_\\\'\\\"`()<>\\[\\]|not?@#%&,.:;^~*+=\\/ 0-9\\n\\r\\t]'
+    $delim = '[-_\'\"`(){}<>\[\]|!?@#%&,.:;^~*+=\/ 0-9\n\r\t]'
 
     for $badword in $censored
 
@@ -246,40 +246,8 @@ if ( not function_exists('highlight_code'))
 
   exports.highlight_code = highlight_code = ($str) ->
 
-    # The highlight string function encodes and highlights
-    # brackets so we need them to start raw
-    $str = str_replace(['&lt;', '&gt;'], ['<', '>'], $str)
-
-    # Replace any existing PHP tags to temporary markers so they don't accidentally
-    # break the string out of PHP, and thus, thwart the highlighting.
-
-    $str = str_replace(array('<?', '?>', '<%', '%>', '\\', '</script>'),
-              ['phptagopen', 'phptagclose', 'asptagopen', 'asptagclose', 'backslashtmp', 'scriptclose'], $str)
-
-    # The highlight_string function requires that the text be surrounded
-    # by PHP tags, which we will remove later
-    $str = '<?php '+$str+' ?>' # <?
-
     # All the magic happens here, babynot
-    $str = highlight_string($str, true)
-
-    # Prior to PHP 5, the highligh function used icky <font> tags
-    # so we'll replace them with <span> tags.
-
-    #if (abs(PHP_VERSION) < 5)
-
-      #$str = str_replace(array('<font ', '</font>'), array('<span ', '</span>'), $str);
-      #$str = preg_replace('#color="(.*?)"#', 'style="color: \\1"', $str);
-
-
-    # Remove our artificially added PHP, and the syntax highlighting that came with it
-    $str = preg_replace('/<span style="color: #([A-Z0-9]+)">&lt;\\?php(&nbsp;| )/i', '<span style="color: #$1">', $str)
-    $str = preg_replace('/(<span style="color: #[A-Z0-9]+">.*?)\\?&gt;<\\/span>\\n<\\/span>\\n<\\/code>/is', "$1</span>\\n</span>\\n</code>", $str)
-    $str = preg_replace('/<span style="color: #[A-Z0-9]+"\\><\\/span>/i', '', $str)
-
-    # Replace our markers back to PHP tags.
-    $str = str_replace(['phptagopen', 'phptagclose', 'asptagopen', 'asptagclose', 'backslashtmp', 'scriptclose'],
-              ['&lt;?', '?&gt;', '&lt;%', '%&gt;', '\\\\', '&lt;/script&gt;'], $str)
+    #$str = highlight_string($str, true)
 
     return $str
 
@@ -373,13 +341,13 @@ if ( not function_exists('word_wrap'))
     # If the current word is surrounded by unwrap tags we'll
     # strip the entire chunk and replace it with a marker.
     $unwrap = []
-    $matches = preg_match_all("|(\unwrap\.+?\/unwrap\)|s", $str)
+    $matches = preg_match_all("|(\{unwrap\}.+?\{/unwrap\})|s", $str)
     if $matches.length > 0
 
       for $i in [0..$matches['0'].length-1]
 
         $unwrap.push $matches['1'][$i]
-        $str = str_replace($matches['1'][$i], "unwrapped"+$i+"", $str)
+        $str = str_replace($matches['1'][$i], "{{unwrapped"+$i+"}}", $str)
 
     # Use PHP's native function to do the initial wordwrap.
     # We set the cut flag to false so that any individual words that are
@@ -400,7 +368,7 @@ if ( not function_exists('word_wrap'))
       while strlen($line) > $charlim
 
         # If the over-length word is a URL we won't wrap it
-        if preg_match("not\\[url.+\\]|://|wwww.not", $line)
+        if preg_match("!\[url.+\]|://|wwww.!", $line)
           break
 
         # Trim the word down
@@ -421,10 +389,10 @@ if ( not function_exists('word_wrap'))
     if count($unwrap) > 0
 
       for $key, $val of $unwrap
-        $output = str_replace("unwrapped"+$key+"", $val, $output)
+        $output = str_replace("{{unwrapped"+$key+"}}", $val, $output)
 
     # Remove the unwrap tags
-    $output = str_replace(array('unwrap', '/unwrap'), '', $output)
+    $output = str_replace(['{unwrap}', '{/unwrap}'], '', $output)
     return $output
 
 

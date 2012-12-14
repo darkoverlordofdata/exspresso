@@ -240,6 +240,7 @@ module.exports = class global.CI_Output
 
     ($req, $res, $next) =>
 
+      #$CI = $res.CI
       $BM = load_new('Benchmark', 'core')
       $BM.mark 'total_execution_time_start'
 
@@ -273,7 +274,6 @@ module.exports = class global.CI_Output
         #  Grab the super object if we can.
         if class_exists('CI_Controller')
           $CI = get_instance()
-
 
         #  --------------------------------------------------------------------
 
@@ -337,27 +337,28 @@ module.exports = class global.CI_Output
           log_message('debug', "Total execution time: " + $elapsed)
           return true
 
-
         #  --------------------------------------------------------------------
 
         #  Do we need to generate profile data?
         #  If so, load the Profile class and run it.
         if @_enable_profiler is true
-          $CI.load.library('profiler')
+          $res.CI.benchmark = $BM
+          $res.CI.load.library('profiler')
 
           if not empty(@_profiler_sections)
-            $CI.profiler.set_sections(@_profiler_sections)
+            $res.CI.profiler.set_sections(@_profiler_sections)
 
 
           #  If the output data contains closing </body> and </html> tags
           #  we will remove them and add them back after we insert the profile data
-          if preg_match("|</body>.*?</html>|is", $output)
-            $output = preg_replace("|</body>.*?</html>|is", '', $output)
-            $output+=$CI.profiler.run()
+          $match = preg_match("|</body>[^]*?</html>|igm", $output)
+          if $match?
+            $output = preg_replace("|</body>[^]*?</html>|igm", '', $output)
+            $output+=$res.CI.profiler.run()
             $output+='</body></html>'
 
           else
-            $output+=$CI.profiler.run()
+            $output+=$res.CI.profiler.run()
 
 
 
@@ -365,8 +366,8 @@ module.exports = class global.CI_Output
 
         #  Does the controller contain a function named _output()?
         #  If so send the output there.  Otherwise, echo it.
-        if method_exists($CI, '_output')
-          $CI._output($output)
+        if method_exists($res.CI, '_output')
+          $res.CI._output($output)
 
         else
           $res.send $output #  Send it to the browser!
@@ -385,7 +386,7 @@ module.exports = class global.CI_Output
       # @return	void
       #
       @_write_cache = ($output) ->
-        $CI = get_instance()
+        #$CI = get_instance()
         $path = $CI.config.item('cache_path')
 
         $cache_path = if ($path is '') then APPPATH + 'cache/' else $path

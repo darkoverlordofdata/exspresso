@@ -39,55 +39,6 @@
     <div id="push"></div>
 </div>
 
-
-<footer id="footer">
-    <div class="container">
-        <div class="credit">
-            <span class="pull-left muted">
-                <i class="icon-time"></i>
-                rendered in {elapsed_time} ms &nbsp;
-                <a data-toggle="modal" href="#performance" class="btn btn-link btn-mini"> more...</a>
-            </span>
-            <span class="pull-right">powered by &nbsp;
-                <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
-            </span>
-        </div>
-    </div>
-</footer>
-
-
-<div id="performance" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="performanceLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="performanceLabel"><%= ucfirst(ENVIRONMENT) %> Performance</h3>
-    </div>
-    <div id="performance-body" class="modal-body">
-        <div class="hero-unit">
-            <div class="row">
-                <table class="table table striped table-hover table-condensed">
-                    <tbody>
-                    <tr>
-                        <th>Rendered in</th>
-                        <td>{elapsed_time} ms</td>
-                    </tr>
-                    <tr>
-                        <th>Memory used</th>
-                        <td>{memory_usage}</td>
-                    </tr>
-                    <% for $key, $val of $_SERVER: %>
-                    <tr>
-                        <th><%- ucfirst($key.toLowerCase().replace(/_/g, '&nbsp;')) %></th>
-                        <td><%= $val %></td>
-                    </tr>
-                    <% end %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <%- @$script %>
 </body>
 </html>

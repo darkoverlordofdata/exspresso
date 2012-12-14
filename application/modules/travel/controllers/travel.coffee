@@ -17,7 +17,7 @@ moment          = require('moment')                     # Parse, manipulate, and
 bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
 
 
-class Travel extends MY_Controller
+class Travel extends PublicController
 
   ## --------------------------------------------------------------------
 
@@ -141,6 +141,7 @@ class Travel extends MY_Controller
   #
   search: ($db) ->
 
+    @output.enable_profiler true
     @load.library 'template', title:  'Search'
     @db = @load.database($db, true)
     @db.initialize =>

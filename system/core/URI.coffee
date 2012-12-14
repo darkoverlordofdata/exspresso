@@ -43,10 +43,10 @@
 #
 class global.CI_URI
 
-  keyval: {}
+  keyval: null
   _uri_string: ''
-  segments: []
-  rsegments: []
+  segments: null
+  rsegments: null
 
   #
   # Constructor
@@ -57,7 +57,11 @@ class global.CI_URI
   #
   # @access	public
   #
-  constructor : ($uri_string) ->
+  constructor : () ->
+
+    @keyval = {}
+    @segments = []
+    @rsegments = []
 
     log_message('debug', "URI Class Initialized")
     $SRV.uri @
@@ -448,6 +452,8 @@ class global.CI_URI
       #
       @uri_string =  ->
         return $uri_string
+
+      $next()
 
 
 

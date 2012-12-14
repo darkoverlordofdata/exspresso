@@ -364,10 +364,10 @@ describe 'lib', ->
     #! ---------------------------------------------------------------+
     it "should return a formated number", ->
 
-      #lib.format_number(1234.5678).should.equal '1,235'
-      lib.format_number(1234.5678, 2).should.equal '1,234.56'
-      lib.format_number(1234, 2).should.equal '1,234.00'
-      lib.format_number(1234.5, 2).should.equal '1,234.50'
+      #lib.number_format(1234.5678).should.equal '1,235'
+      lib.number_format(1234.5678, 2).should.equal '1,234.56'
+      lib.number_format(1234, 2).should.equal '1,234.00'
+      lib.number_format(1234.5, 2).should.equal '1,234.50'
 
 
   #? -----------------------------------------------------------------+

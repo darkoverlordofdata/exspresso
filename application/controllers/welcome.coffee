@@ -30,6 +30,7 @@ class Welcome extends MY_Controller
   #
   index: ->
 
+    @output.enable_profiler true
     @load.view 'welcome_message'
 
 
@@ -50,7 +51,6 @@ class Welcome extends MY_Controller
   #   @return	void
   #
   edit: ->
-
 
     @load.library 'template', title:  'Editor'
     @db = @load.database('mysql', true)
