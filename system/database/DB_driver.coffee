@@ -42,9 +42,9 @@ class CI_DB_driver
   query_count: 0
   bind_marker: '?'
   save_queries: true
-  queries: []
-  query_times: []
-  data_cache: {}
+  queries: null
+  query_times: null
+  data_cache: null
   trans_enabled: true
   trans_strict: true
   _trans_depth: 0
@@ -52,16 +52,16 @@ class CI_DB_driver
   cache_on: false
   cachedir: ''
   cache_autodel: false
-  CACHE: {}#  The cache class object
+  CACHE: null#  The cache class object
 
   #  Private variables
   _protect_identifiers_default: true
   _reserved_identifiers: ['*']#  Identifiers that should NOT be escaped
 
   #  These are use with Oracle
-  stmt_id: {}
-  curs_id: {}
-  limit_used: {}
+  stmt_id: null
+  curs_id: null
+  limit_used: null
 
 
 
@@ -72,6 +72,14 @@ class CI_DB_driver
   # @param array
   #
   constructor: ($params = {}) ->
+
+    @queries = []
+    @query_times = []
+    @data_cache = {}
+    @CACHE = {}
+    @stmt_id = {}
+    @curs_id = {}
+    @limit_used = {}
 
     for $key, $val of $params
       if @[$key]? then @[$key] = $val
@@ -218,7 +226,7 @@ class CI_DB_driver
       @queries.push $sql
 
     #  Start the Query Timer
-    $time_start = [$sm, $ss] = explode(' ', String(microtime()))
+    $time_start = microtime()
 
     if $callback?
       @_execute $sql, $binds, ($err, $results, $info) =>
@@ -267,11 +275,11 @@ class CI_DB_driver
         )
 
     #  Stop and aggregate the query time results
-    [$sm, $ss] = $time_start
-    @benchmark+=($em + $es) - ($sm + $ss)
+    $time_end = microtime()
+    @benchmark+= $time_end - $time_start
 
     if @save_queries is true
-      @query_times.push ($em + $es) - ($sm + $ss)
+      @query_times.push $time_end - $time_start
 
 
     #  Increment the query counter

@@ -69,6 +69,7 @@ body {
 }
 
 #codeigniter_profiler {
+    font-size: 90%;
     width: 80%;
     left: 10%;
     top: 40%;
@@ -106,3 +107,6 @@ body {
     margin: 10px 0;
 }
 
+legend {
+    font-size: 90%;
+}
