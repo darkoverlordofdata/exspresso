@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee v6.6.6
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 #
@@ -263,14 +263,7 @@ class global.CI_Loader
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
-
-      # Allows models to access CI's loaded classes using the same
-      # syntax as controllers:
-      $model = new $Model()
-      for $var, $value of @CI
-        if typeof @CI[$var] isnt 'function'
-          if not $model[$var]?
-            $model[$var] = $value
+      $model = new $Model(@CI)
 
       @CI[$name] = $model
       @_ci_models.push $name

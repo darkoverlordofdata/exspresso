@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee v6.6.6
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 #
@@ -40,7 +40,7 @@
 # @link		http://codeigniter.com/user_guide/libraries/config.html
 #
 
-module.exports = class global.CI_Model
+class global.CI_Model
 
   ## --------------------------------------------------------------------
 
@@ -52,18 +52,25 @@ module.exports = class global.CI_Model
   # @param	object	$CI Controller Instance mixin
   # @return	void
   #
-  constructor: () ->
-
-    # Allows models to access CI's loaded classes using the same
-    # syntax as controllers:
-    # for $key, $member of $CI
-    #   @[$key] = $member
+  constructor: ($CI) ->
 
     log_message 'debug', "Model Class Initialized"
+    #
+    # mixin CI objects to emulate php's magic __get
+    #
+    # this allows models to access CI's loaded classes
+    # using the same syntax as controllers:
+    #
+    for $name, $var of $CI
+      if typeof $var is 'object'
+        if typeof $var isnt 'function' and not Array.isArray($var)
+          @[$name] = $var
 
 
 
 # END CI_Model class
+
+module.exports = CI_Model
 
 # End of file Model.coffee
 # Location: ./system/core/Model.coffee

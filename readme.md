@@ -150,7 +150,7 @@ Unstable.
         * Calendar              ?
         * Cart                  ?
         * Driver                -
-        * Email                 -
+        * Email                 X
         * Encrypt               -
         * Form_validation       X
         * Ftp                   -
@@ -162,11 +162,11 @@ Unstable.
         * Parser                ?
         * Profiler              X
         * Session               X
-        * Sha1                  -
+        * Sha1                  Not required
         * Table                 -
         * Trackback             -
         * Typography            ?
-        * Unit_test             -
+        * Unit_test             ?
         * Upload                ?
         * User_agent            X
         * Xmlrpc                -

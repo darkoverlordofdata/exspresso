@@ -314,7 +314,7 @@ class CI_DB_driver
       #  result object, so we'll have to compile the data
       #  and save it)
       $CR = new CI_DB_result()
-      $CR.num_rows = $RES.num_rows()
+      $CR.num_rows = $RES.num_rows
       $CR.result_object = $RES.result_object()
       $CR.result_array = $RES.result_array()
 
@@ -413,18 +413,20 @@ class CI_DB_driver
   # @access	public
   # @return	void
   #
-  trans_start : ($test_mode = false) ->
-    if not @trans_enabled
-      return false
+  trans_start : ($test_mode = false, $callback) ->
+    if $callback is null
+      $callback = $test_mode
+      $test_mode = false
 
+    if not @trans_enabled
+      return $callback null, false
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
       @_trans_depth+=1
-      return
+      return $callback null
 
-
-    @trans_begin($test_mode)
+    @trans_begin($test_mode, $callback)
 
 
   #  --------------------------------------------------------------------
@@ -435,34 +437,30 @@ class CI_DB_driver
   # @access	public
   # @return	bool
   #
-  trans_complete: ->
+  trans_complete: ($callback) ->
     if not @trans_enabled
-      return false
-
+      return $callback null, false
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 1
       @_trans_depth-=1
-      return true
-
+      return $callback null, true
 
     #  The query() function will set this flag to FALSE in the event that a query failed
     if @_trans_status is false
-      @trans_rollback()
+      @trans_rollback ($err) =>
 
-      #  If we are NOT running in strict mode, we will reset
-      #  the _trans_status flag so that subsequent groups of transactions
-      #  will be permitted.
-      if @trans_strict is false
-        @_trans_status = true
+        if $err then return $callback $err
+        #  If we are NOT running in strict mode, we will reset
+        #  the _trans_status flag so that subsequent groups of transactions
+        #  will be permitted.
+        if @trans_strict is false
+          @_trans_status = true
 
+        log_message('debug', 'DB Transaction Failure')
+        return $callback null, false
 
-      log_message('debug', 'DB Transaction Failure')
-      return false
-
-
-    @trans_commit()
-    return true
+    @trans_commit($callback)
 
 
   #  --------------------------------------------------------------------

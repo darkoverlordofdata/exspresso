@@ -141,7 +141,6 @@ class Travel extends PublicController
   #
   search: ($db) ->
 
-    @output.enable_profiler true
     @load.library 'template', title:  'Search'
     @db = @load.database($db, true)
     @db.initialize =>

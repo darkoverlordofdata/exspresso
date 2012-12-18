@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee v6.6.6
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 
@@ -879,21 +879,24 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	string
   # @return	string
   #
-  count_all_results: ($table = '') ->
+  count_all_results: ($table = '', $callback) ->
     if $table isnt ''
       @_track_aliases($table)
       @from($table)
     
     $sql = @_compile_select(@_count_string + @_protect_identifiers('numrows'))
-    
-    $query = @query($sql)
     @_reset_select()
-    
-    if $query.num_rows() is 0
-      return 0
-    
-    $row = $query.row()
-    return $row.numrows
+
+    @query $sql, ($err, $query) =>
+
+      if $err then $callback $err
+      else
+
+        if $query.num_rows is 0
+          $callback null, 0
+        else
+          $row = $query.row()
+          $callback null, $row.numrows
     
   
   #  --------------------------------------------------------------------

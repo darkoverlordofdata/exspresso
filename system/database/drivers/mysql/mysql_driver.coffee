@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee v6.6.6
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 #
@@ -171,8 +171,8 @@ module.exports = (CI_DB) ->
       #  "DELETE FROM TABLE" returns 0 affected rows This hack modifies
       #  the query so that it returns the number of affected rows
       if @delete_hack is true
-        if preg_match('/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/i', $sql)
-          $sql = preg_replace("/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/", "DELETE FROM $1 WHERE 1=1", $sql)
+        if preg_match('/^\s*DELETE\s+FROM\s+(\S+)\s*$/i', $sql)
+          $sql = preg_replace("/^\s*DELETE\s+FROM\s+(\S+)\s*$/", "DELETE FROM $1 WHERE 1=1", $sql)
 
 
 
@@ -187,24 +187,26 @@ module.exports = (CI_DB) ->
     # @access	public
     # @return	bool
     #
-    trans_begin: ($test_mode = false) ->
-      if not @trans_enabled
-        return true
+    trans_begin: ($test_mode = false, $callback = null) ->
+      if $callback is null
+        $callback = $test_mode
+        $test_mode = false
 
+      if not @trans_enabled
+        return $callback null, true
 
       #  When transactions are nested we only begin/commit/rollback the outermost ones
       if @_trans_depth > 0
-        return true
-
+        return $callback null, true
 
       #  Reset the transaction failure flag.
       #  If the $test_mode flag is set to TRUE transactions will be rolled back
       #  even if the queries produce a successful result.
       @_trans_failure = if ($test_mode is true) then true else false
 
-      @simple_query 'SET AUTOCOMMIT=0', () =>
-        @simple_query 'START TRANSACTION', $callback #  can also be BEGIN or BEGIN WORK
-
+      @simple_query 'SET AUTOCOMMIT=0', =>
+        @simple_query 'START TRANSACTION', => #  can also be BEGIN or BEGIN WORK
+          $callback null, true
 
     #  --------------------------------------------------------------------
 
@@ -216,16 +218,15 @@ module.exports = (CI_DB) ->
     #
     trans_commit: ($callback) ->
       if not @trans_enabled
-        return true
-
+        return $callback null, true
 
       #  When transactions are nested we only begin/commit/rollback the outermost ones
       if @_trans_depth > 0
-        return true
+        return $callback null, true
 
-
-      @simple_query 'COMMIT', () =>
-        @simple_query 'SET AUTOCOMMIT=1', $callback
+      @simple_query 'COMMIT', =>
+        @simple_query 'SET AUTOCOMMIT=1', =>
+          $callback null, true
 
 
     #  --------------------------------------------------------------------
@@ -238,17 +239,15 @@ module.exports = (CI_DB) ->
     #
     trans_rollback: ($callback) ->
       if not @trans_enabled
-        return true
-
+        return $callback null, true
 
       #  When transactions are nested we only begin/commit/rollback the outermost ones
       if @_trans_depth > 0
-        return true
+        return $callback null, true
 
-
-      @simple_query 'ROLLBACK', () =>
-        @simple_query 'SET AUTOCOMMIT=1', $callback
-      return true
+      @simple_query 'ROLLBACK', =>
+        @simple_query 'SET AUTOCOMMIT=1', =>
+          $callback null, true
 
 
     #  --------------------------------------------------------------------

@@ -352,12 +352,14 @@ class global.MY_Profiler extends CI_Profiler
   #
   run: () ->
 
+    $elapsed = @CI.benchmark.elapsed_time('total_execution_time_start', 'total_execution_time_end')
     $output = """
       <footer id="footer">
         <div class="container">
           <div class="credit">
             <span class="pull-left muted">
-              <a data-toggle="modal" href="#codeigniter_profiler" class="btn btn-mini"><i class="icon-time"></i> Profiler</a>
+              <a data-toggle="modal" href="#codeigniter_profiler" class="btn btn-mini" title="Rendered in #{$elapsed} ms">
+                <i class="icon-time"></i> Profiler</a>
             </span>
             <span class="pull-right">powered by &nbsp;
               <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>

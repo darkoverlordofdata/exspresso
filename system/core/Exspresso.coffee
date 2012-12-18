@@ -151,6 +151,8 @@ Object.defineProperties global,
   $_COOKIE: get: -> $IN.cookie()
   $_SERVER: get: -> $IN.server()
 
+$OUT.enable_profiler true
+
 #
 # ------------------------------------------------------
 #  Start me up...

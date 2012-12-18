@@ -76,7 +76,7 @@ class global.Theme
   #   @param	array   extra theme elements
   #   @return	object
   #
-  init: ($template, $extra) ->
+  init: ($template, $extra = []) ->
 
     $template._metadata = []
     $template._script = []
@@ -95,8 +95,10 @@ class global.Theme
       $template.set_script @_script.default
 
     if not Array.isArray($extra) then $extra = [$extra]
+    if @CI.output._enable_profiler is true
+      if $extra.indexOf('prettify') is -1
+        $extra.push 'prettify'
 
-    log_message 'debug', '$extra = %j', $extra
     for $name in $extra
       if @_css[$name]?
         $template.set_css @_css[$name]

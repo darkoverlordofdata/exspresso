@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee v6.6.6
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 #  load the MX core module class

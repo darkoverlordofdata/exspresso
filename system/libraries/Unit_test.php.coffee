@@ -11,15 +11,9 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee v6.6.6
+# This file was ported from php to coffee-script using php2coffee
 #
 #
-
-
-{__construct, count, debug_backtrace, defined, function_exists, get_instance, gettype, in_array, is_array, is_bool, is_null, lang, language, line, load, preg_match, str_replace, strtolower}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -48,30 +42,41 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @link		http://codeigniter.com/user_guide/libraries/uri.html
 #
 class CI_Unit_test
-  
-  active: true
-  results: {}
-  strict: false
+
+  #
+  # Helper functions to test boolean true/false
+  #
+  #
+  # @access	private
+  # @return	bool
+  #
+  is_true = ($test) -> if (is_bool($test) and $test is true) then true else false
+
+  is_false = ($test) -> if (is_bool($test) and $test is false) then true else false
+
+  CI: null
+  _active: true
+  _results: null
+  _strict: false
   _template: null
   _template_rows: null
-  _test_items_visible: {}
+  _test_items_visible: null
   
-  __construct()
-  {
-  #  These are the default items visible when a test is run.
-  @_test_items_visible = [
-    'test_name', 
-    'test_datatype', 
-    'res_datatype', 
-    'result', 
-    'file', 
-    'line', 
-    'notes'
-    ]
-  
-  log_message('debug', "Unit Testing Class Initialized")
-  }
-  
+  constructor: ($config = {}, @CI) ->
+    #  These are the default items visible when a test is run.
+    @_test_items_visible = [
+      'test_name',
+      'test_datatype',
+      'res_datatype',
+      'result',
+      'file',
+      'line',
+      'notes'
+      ]
+    @_results = []
+
+    log_message('debug', "Unit Testing Class Initialized")
+
   #  --------------------------------------------------------------------
   
   #
@@ -103,7 +108,7 @@ class CI_Unit_test
   # @return	string
   #
   run : ($test, $expected = true, $test_name = 'undefined', $notes = '') ->
-    if @active is false
+    if @_active is false
       return false
       
     
@@ -113,10 +118,23 @@ class CI_Unit_test
       $extype = str_replace(['true', 'false'], 'bool', str_replace('is_', '', $expected))
       
     else 
-      if @strict is true then $result = if ($test is $expected) then true else falseelse $result = if ($test is $expected) then true else false$extype = gettype($expected)}$back = @_backtrace()$report.push 
-        'test_name':$test_name, 
-        'test_datatype':gettype($test, 'res_datatype':$extype, 'result':($result is true) then 'passed' else 'failed', 'file':$back['file'], 'line':$back['line'], 'notes':$notes)@results.push $report
-    return (@report(@result($report)))
+      if @_strict is true
+        $result = if ($test is $expected) then true else false
+      else
+        $result = if ($test is $expected) then true else false
+        $extype = gettype($expected)
+
+    $back = @_backtrace()
+    $report.push
+      test_name:      $test_name
+      test_datatype:  gettype($test)
+      res_datatype:   $extype
+      result:         if ($result is true) then 'passed' else 'failed'
+      file:           $back['file']
+      line:           $back['line']
+      notes:          $notes
+    @_results.push $report
+    return @report(@result($report))
     
   
   #  --------------------------------------------------------------------
@@ -133,9 +151,7 @@ class CI_Unit_test
     if count($result) is 0
       $result = @result()
       
-    
-    $CI = get_instance()
-    $CI.load.language('unit_test')
+    @CI.load.language('unit_test')
     
     @_parse_template()
     
@@ -144,24 +160,20 @@ class CI_Unit_test
       $table = ''
       
       for $key, $val of $res
-        if $key is $CI.lang.line('ut_result')
-          if $val is $CI.lang.line('ut_passed')
+        if $key is @CI.lang.line('ut_result')
+          if $val is @CI.lang.line('ut_passed')
             $val = '<span style="color: #0C0;">' + $val + '</span>'
             
-          else if $val is $CI.lang.line('ut_failed')
+          else if $val is @CI.lang.line('ut_failed')
             $val = '<span style="color: #C00;">' + $val + '</span>'
-            
-          
-        
+
         $temp = @_template_rows
         $temp = str_replace('{item}', $key, $temp)
         $temp = str_replace('{result}', $val, $temp)
         $table+=$temp
-        
-      
+
       $r+=str_replace('{rows}', $table, @_template)
       
-    
     return $r
     
   
@@ -177,7 +189,7 @@ class CI_Unit_test
   # @return	null
   #
   use_strict : ($state = true) ->
-    @strict = if ($state is false) then false else true
+    @_strict = if ($state is false) then false else true
     
   
   #  --------------------------------------------------------------------
@@ -192,7 +204,7 @@ class CI_Unit_test
   # @return	null
   #
   active : ($state = true) ->
-    @active = if ($state is false) then false else true
+    @_active = if ($state is false) then false else true
     
   
   #  --------------------------------------------------------------------
@@ -206,40 +218,34 @@ class CI_Unit_test
   # @return	array
   #
   result : ($results = {}) ->
-    $CI = get_instance()
-    $CI.load.language('unit_test')
+
+    @CI.load.language('unit_test')
     
     if count($results) is 0
-      $results = @results
-      
-    
-    $retval = {}
+      $results = @_results
+
+    $retval = []
     for $result in $results
       $temp = {}
       for $key, $val of $result
         if not in_array($key, @_test_items_visible)
           continue
-          
-        
+
         if is_array($val)
           for $k, $v of $val
-            if false isnt ($line = $CI.lang.line(strtolower('ut_' + $v)))
+            if false isnt ($line = @CI.lang.line(strtolower('ut_' + $v)))
               $v = $line
               
-            $temp[$CI.lang.line('ut_' + $k)] = $v
-            
-          
+            $temp[@CI.lang.line('ut_' + $k)] = $v
+
         else 
-          if false isnt ($line = $CI.lang.line(strtolower('ut_' + $val)))
+          if false isnt ($line = @CI.lang.line(strtolower('ut_' + $val)))
             $val = $line
             
-          $temp[$CI.lang.line('ut_' + $key)] = $val
-          
-        
-      
+          $temp[@CI.lang.line('ut_' + $key)] = $val
+
       $retval.push $temp
-      
-    
+
     return $retval
     
   
@@ -316,10 +322,11 @@ class CI_Unit_test
     
     if is_null(@_template)
       @_default_template()
-      return 
-      
-    
-    if not preg_match("/\{rows\}(.*?)\{\/rows\}/si", @_template, $match)
+      return
+
+
+    $match = preg_match("/\{rows\}([^]*?)\{\/rows\}/igm", @_template)
+    if not $match?
       @_default_template()
       return 
       
@@ -328,25 +335,9 @@ class CI_Unit_test
     @_template = str_replace($match['0'], '{rows}', @_template)
     
   
-  
-
-register_class 'CI_Unit_test', CI_Unit_test
 module.exports = CI_Unit_test
 #  END Unit_test Class
 
-#
-# Helper functions to test boolean true/false
-#
-#
-# @access	private
-# @return	bool
-#
-exports.is_true = is_true = ($test) ->
-  return if (is_bool($test) and $test is true) then true else false
-  
-exports.is_false = is_false = ($test) ->
-  return if (is_bool($test) and $test is false) then true else false
-  
 
 
 #  End of file Unit_test.php 

@@ -19,6 +19,7 @@ path            = require('path')                       # File path utilities
 querystring     = require('querystring')                # Utilities for dealing with query strings.
 url             = require('url')                        # Utilities for URL resolution and parsing.
 util            = require('util')                       # misc
+crypto          = require('crypto')
 
 
 exports.define = (name, value, scope = global) ->
@@ -140,7 +141,13 @@ exports.array_pad = ($input, $pad_size, $pad_value) ->
 
   $input
 
-## --------------------------------------------------------------------
+
+__push = [].push
+exports.array_push = ($array, $var...) ->
+
+  __push.apply $array, $var
+
+# ----------------------------------------------------------
 
 exports.array_shift = ($array) ->
 
@@ -202,6 +209,9 @@ exports.call_user_func_array = ($callback, $param_arr) ->
 ## --------------------------------------------------------------------
 
 exports.count = count = ($var) ->
+
+  if $var is null
+    return 0
 
   if typeof $var is 'string' or typeof $var is 'number' or typeof $var is 'boolean'
     return 1
@@ -405,9 +415,12 @@ exports.ltrim = ltrim = ($str, $chars) ->
 
 ## --------------------------------------------------------------------
 
-exports.microtime = () ->
+exports.microtime = ($get_as_float = false) ->
 
-  return new Date().getTime()
+  $now = new Date().getTime() / 1000
+  $sec = parseInt($now, 10)
+
+  ''+ if $get_as_float then $now else (Math.round(($now - $sec) * 1000) / 1000) + ' ' + $sec
 
 ## --------------------------------------------------------------------
 
@@ -415,6 +428,9 @@ exports.mt_rand = ($min = 0, $max = 2147483647) ->
 
   Math.floor(Math.random() * $max) - $min
 
+exports.rand = ($min = 0, $max = 2147483647) ->
+
+  Math.floor(Math.random() * $max) - $min
 
 ## --------------------------------------------------------------------
 
@@ -809,6 +825,54 @@ exports.print_r = ($expression, $return = false) ->
 exports.ucwords = ($str) ->
 
   ''+$str.replace /^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, ($1) -> $1.toUpperCase()
+
+
+exports.wordwrap = ($string, $width=75, $break="\n", $cut=false) ->
+
+  if $cut
+    # Match anything 1 to $width chars long followed by whitespace or EOS,
+    # otherwise match anything $width chars long
+    $search = '/(.{1,'+$width+'})(?:\s|$)|(.{'+$width+'})/uS'
+    $replace = '$1$2'+$break
+  else
+    # Anchor the beginning of the pattern with a lookahead
+    # to avoid crazy backtracking when words are longer than $width
+    $search = '/(?=\s)(.{1,'+$width+'})(?:\s|$)/uS'
+    $replace = '$1'+$break
+
+  preg_replace($search, $replace, $string)
+
+
+exports.md5 = ($str, $raw_output = false) ->
+  if $raw_output is true
+    crypto.createHash('md5').update($str).digest("binary")
+  else
+    crypto.createHash('md5').update($str).digest("hex")
+
+exports.sha1 = ($str, $raw_output = false) ->
+  if $raw_output is true
+    crypto.createHash('sha1').update($str).digest("binary")
+  else
+    crypto.createHash('sha1').update($str).digest("hex")
+
+
+exports.gettype = ($var) -> typeof $var
+
+
+exports.ip2long = ($ip_address) ->
+  $ip = array_pad(explode('.', $ip_address), 4, 0)
+  $l = 0
+  for $i in [0..3]
+    $l = ($l * 256) + $ip[$i]
+  $l
+
+exports.uniqid = ($prefix = '', $more_entropy = false) ->
+
+  $res = $prefix + (new Date().getTime()).toString(16)+(Math.floor(Math.random() * 256)).toString(16)
+  if $more_entropy is true
+    $res += (Math.random() * 10).toFixed(8).toString()
+  return $res
+
 
 #  ------------------------------------------------------------------------
 #
