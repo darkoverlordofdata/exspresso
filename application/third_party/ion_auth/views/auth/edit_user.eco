@@ -1,0 +1,42 @@
+<h1>Edit User</h1>
+<p>Please enter the users information below.</p>
+
+<div id="infoMessage"><%- @message %></div>
+
+<%- @form_open(current_url()) %>
+      <p>
+            First Name: <br />
+            <%- @form_input(@first_name) %>
+      </p>
+
+      <p>
+            Last Name: <br />
+            <%- @form_input(@last_name) %>
+      </p>
+
+      <p>
+            Company Name: <br />
+            <%- @form_input(@company) %>
+      </p>
+
+      <p>
+            Phone: <br />
+            <%- @form_input(@phone1) %>-<%- @form_input(@phone2) %>-<%- @form_input(@phone3) %>
+      </p>
+
+      <p>
+            Password: (if changing password)<br />
+            <%- @form_input(@password) %>
+      </p>
+
+      <p>
+            Confirm Password: (if changing password)<br />
+            <%- @form_input(@password_confirm) %>
+      </p>
+
+
+      <%- @form_hidden('id', @user.id) %>
+      <%- @form_hidden(@csrf) %>
+      <p><%- @form_submit('submit', 'Save User') %></p>
+
+<%- @form_close() %>

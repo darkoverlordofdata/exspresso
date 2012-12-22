@@ -1,0 +1,20 @@
+<h1>Create Group</h1>
+<p>Please enter the group information below.</p>
+
+<div id="infoMessage"><%- @message %></div>
+
+<%- @form_open("auth/create_group") %>
+
+      <p>
+            Group Name: <br />
+            <%- @form_input(@group_name) %>
+      </p>
+
+      <p>
+            Description: <br />
+            <%- @form_input(@description) %>
+      </p>
+
+      <p><%- @form_submit('submit', 'Create Group') %></p>
+
+<%- @form_close() %>
