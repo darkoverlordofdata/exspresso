@@ -19,16 +19,17 @@ class global.Migration_Create_users_table extends CI_Migration
 
   seq: '001'
   description: 'Create the users table'
+  table: 'user'
 
   up: ($callback) ->
 
     @dbforge.add_field @data
     @dbforge.add_key 'id', true
-    @dbforge.create_table 'user', true, $callback
+    @dbforge.create_table @table, true, $callback
 
   down: ($callback) ->
 
-    @dbforge.drop_table 'user', $callback
+    @dbforge.drop_table @table, $callback
 
 
   data:

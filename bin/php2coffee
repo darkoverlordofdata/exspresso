@@ -30,7 +30,8 @@ $man = <<<DOC
 Usage: php2coffee [OPTIONS] PATH [DESTINATION]
  
   -h, --help          display this help
-  -j. --javascript    compiles resulting .coffee file
+  -j, --javascript    compiles resulting .coffee file
+  -m, --markup        compiles into .eco markup template
   -r, --recursive     recurse source path
   -t, --trace         trace output
   -T, --tabs          use tab character in output (default is spaces)
@@ -45,6 +46,7 @@ include_once 'lib/file_helper.php';
 error_reporting(E_ALL);
 
 $javascript   = false;    // compiles resulting .coffee file
+$markup       = false;    // compile to .eco markup template
 $recursive    = false;    // recurse source path
 $trace        = false;    // trace output
 $tabs         = false;    // use tab char
@@ -68,7 +70,12 @@ foreach ($argv as $arg)   // decode the command line
       $javascript = true;  
       break;
     
-    case '-r':  
+    case '-m':
+    case '--markup':
+      $markup = true;
+      break;
+
+    case '-r':
     case '--recursive':  
       $recursive = true;  
       break;
@@ -92,13 +99,27 @@ foreach ($argv as $arg)   // decode the command line
       $paths[] = $arg;
   }
   
+// global flags
+define('DUMP',      $dump);
+define('TRACE',     $trace);
+define('HTML',      $markup);
+if ($tabs == true)
+  define('TABS',    '\t');
+else
+  define('TABS',    '  ');
+if ($markup == true)
+  define('EXT', '.eco');
+else
+  define('EXT', '.coffee');
+
 // unpack path args
 switch (count($paths)) {
   case 1:
-    $src = $dst = realpath($paths[0]);
+    $src = realpath($paths[0]);
     if ($src === FALSE) {
       die("Invalid path: ".$paths[0].PHP_EOL);
     }
+    $dst = $src.EXT;
     break;
   
   case 2:
@@ -118,20 +139,11 @@ switch (count($paths)) {
 
 
 }
-// global flags
-define('DUMP',      $dump);
-define('TRACE',     $trace);
-if ($tabs == true)
-  define('TABS',    '\t');
-else
-  define('TABS',    '  ');
-
-$externs = new Externs();
 
 // process each source file
 if (! is_dir($src)) {
 
-	$parser = new Parser($externs);
+	$parser = new Parser();
 	try {
 		write_file($dst, $parser->convert($src));
 		if ($javascript) {
@@ -148,12 +160,12 @@ else {
 	$dir = get_filenames($src, TRUE, $recursive);
 	foreach ($dir as $f) {
 		if (fnmatch('*.php', $f)) {
-			$f2 = copyto_filename($f, $src, $dst).'.coffee';
+			$f2 = copyto_filename($f, $src, $dst).EXT;
 			$d2 = dirname($f2);
 			if (!file_exists($d2)) mkdir($d2, 0777, true);
 			echo "$f -> ";
 
-			$parser = new Parser($externs);
+			$parser = new Parser();
 			try {
 				write_file($f2, $parser->convert($f));
 				if ($javascript) {
@@ -171,10 +183,6 @@ else {
 	echo "\n$i file$s converted.\n";
 
 }
-array_multisort(&$externs->table);
-foreach ($externs->table as $key => $item) {
-  echo "$key\n";
-}
 
 /**
  * copyto_filename
@@ -191,10 +199,5 @@ function copyto_filename($filename, $source, $destination) {
   return $destination.$n;
 }
 
-class Externs {
-
-  var $table = array();
-
-}
 /* End of file php2coffee.php */
 /* Location: ./tools/php2coffee.php */

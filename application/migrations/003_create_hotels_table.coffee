@@ -19,16 +19,17 @@ class Migration_Create_hotels_table extends CI_Migration
 
   seq:'003'
   description: 'Create the hotels table'
+  table: 'hotel'
 
   up: ($callback) ->
 
     @dbforge.add_field @data
     @dbforge.add_key 'id', true
-    @dbforge.create_table 'hotel', $callback
+    @dbforge.create_table @table, $callback
 
   down: ($callback) ->
 
-    @dbforge.drop_table 'hotel', $callback
+    @dbforge.drop_table @table, $callback
 
 
   data:

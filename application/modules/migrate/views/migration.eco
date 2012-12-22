@@ -9,6 +9,10 @@
                 <td><%= @path %></td>
             </tr>
             <tr>
+                <th>table</th>
+                <td><%= @migration.table %></td>
+            </tr>
+            <tr>
                 <th>desc</th>
                 <td><%= @migration.description %></td>
             </tr>

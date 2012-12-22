@@ -1,3 +1,20 @@
+#+--------------------------------------------------------------------+
+#| Migration.coffee
+#+--------------------------------------------------------------------+
+#| Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#|
+#| This file is a part of Expresso
+#|
+#| Exspresso is free software; you can copy, modify, and distribute
+#| it under the terms of the MIT License
+#|
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee
+#
+#
+#
 #
 # CodeIgniter
 #
@@ -44,7 +61,7 @@ class global.CI_Migration
     # Only run this constructor on main library load
     #if (get_parent_class(@) isnt false)
     #  return
-    if @constructor isnt CI_Migration
+    if not @constructor is CI_Migration
       return
 
     for $key, $val of $config
@@ -153,7 +170,7 @@ class global.CI_Migration
         $name = basename($f[0], '.coffee')
 
         # Filename validations
-        $match = preg_match('/^\\d{3}_(\\w+)$/', $name)
+        $match = preg_match('/^\d{3}_(\w+)$/', $name)
         if $match.length > 0
           $match[1] = strtolower($match[1])
 
@@ -283,7 +300,7 @@ class global.CI_Migration
 
       # Mark wrongly formatted files as false for later filtering
       $name = basename($files[$i], '.coffee')
-      if ( not preg_match('/^\\d{3}_(\\w+)$/', $name))
+      if ( not preg_match('/^\d{3}_(\w+)$/', $name))
         $files[$i] = false
 
     sort($files)

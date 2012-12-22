@@ -19,14 +19,15 @@ class Migration_Add_category_data extends CI_Migration
 
   seq: '010'
   description: 'Initialize the category data'
+  table: 'category'
 
   up: ($callback) ->
 
-    @db.insert_batch 'category', @data, $callback
+    @db.insert_batch @table, @data, $callback
 
   down: ($callback) ->
 
-    @db.delete 'category', {id: 1}, $callback
+    @db.delete @table, {id: 1}, $callback
 
 
   data:

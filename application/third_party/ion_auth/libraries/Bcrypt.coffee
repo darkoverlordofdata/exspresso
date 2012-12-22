@@ -13,6 +13,9 @@
 #
 # This file was ported from php to coffee-script using php2coffee
 #
+# modifed by bruce davidson 12/18/12 to use http://npmjs.org/package/bcrypt
+#
+#
 #
 
 bcrypt = require('bcrypt')

@@ -72,7 +72,7 @@ class global.CI_DB_utility extends CI_DB_forge
 
       if not $err
         $dbs = []
-        if $query.num_rows() > 0
+        if $query.num_rows > 0
           for $row in $query.result_array()
             $dbs.push current($row)
 

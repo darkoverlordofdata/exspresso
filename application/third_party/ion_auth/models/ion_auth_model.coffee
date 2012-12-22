@@ -13,6 +13,7 @@
 #
 # This file was ported from php to coffee-script using php2coffee
 #
+# modifed by bruce davidson 12/18/12 to use node async i/o
 #
 #
 # Name:  Ion Auth Model
@@ -30,7 +31,6 @@
 # Description:  Modified auth system based on redux_auth with extensive customization.  This is basically what Redux Auth 2 should be.
 # Original Author name has been kept but that does not mean that the method has not been modified.
 #
-# Requirements: PHP5 or above
 #
 #
 
@@ -159,12 +159,12 @@ class global.Ion_auth_model extends CI_Model
 
     super($CI)
 
-    @load.database()
-    @load.config('ion_auth', true)
-    @load.helper('cookie')
-    @load.helper('date')
-    @load.library('session')
-    @lang.load('ion_auth')
+    @CI.load.database()
+    @CI.load.config('ion_auth', true)
+    @CI.load.helper('cookie')
+    @CI.load.helper('date')
+    @CI.load.library('session')
+    @CI.lang.load('ion_auth')
 
     # initialize db tables data
     @tables = @config.item('tables', 'ion_auth')
@@ -216,7 +216,7 @@ class global.Ion_auth_model extends CI_Model
   # @return void
   # @author Mathew
   #
-  hash_password: ($password, $salt = false,$use_sha1_override = false) ->
+  hash_password: ($password, $salt = false, $use_sha1_override = false) ->
 
     if empty($password)
       return false
@@ -263,7 +263,7 @@ class global.Ion_auth_model extends CI_Model
 
       $hash_password_db = $query.row()
 
-      if $query.num_rows() isnt 1
+      if $query.num_rows isnt 1
         return $next null, false
 
       #  bcrypt
@@ -348,7 +348,7 @@ class global.Ion_auth_model extends CI_Model
 
         $result = $query.row()
 
-        if $query.num_rows() isnt 1
+        if $query.num_rows isnt 1
           @trigger_events(['post_activate', 'post_activate_unsuccessful'])
           @set_error('activate_unsuccessful')
           return $next null, false
@@ -490,7 +490,7 @@ class global.Ion_auth_model extends CI_Model
 
       if $err then return $next $err
 
-      if $query.num_rows() isnt 1
+      if $query.num_rows isnt 1
         @trigger_events(['post_change_password', 'post_change_password_unsuccessful'])
         @set_error('password_change_unsuccessful')
         return $next null, false
@@ -748,7 +748,7 @@ class global.Ion_auth_model extends CI_Model
 
       if $err then return $next $err
 
-      if $query.num_rows() is 1
+      if $query.num_rows is 1
         $user = $query.row()
 
         $password = @hash_password_db($user.id, $password)

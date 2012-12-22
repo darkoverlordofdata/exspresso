@@ -316,7 +316,7 @@ module.exports = (CI_DB) ->
 
       $query = @query(@_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false))
 
-      if $query.num_rows() is 0
+      if $query.num_rows is 0
         return 0
 
 

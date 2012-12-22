@@ -13,6 +13,9 @@
 #
 # This file was ported from php to coffee-script using php2coffee
 #
+# modifed by bruce davidson 12/18/12 to use node async i/o
+#
+#
 #
 #
 # Name:  Ion Auth
@@ -30,7 +33,6 @@
 # Description:  Modified auth system based on redux_auth with extensive customization.  This is basically what Redux Auth 2 should be.
 # Original Author name has been kept but that does not mean that the method has not been modified.
 #
-# Requirements: PHP5 or above
 #
 #
 
@@ -63,23 +65,25 @@ class global.Ion_auth
 
     @ion_auth_model.trigger_events('library_constructor')
 
-    #
-    # delegate to Model
-    #
-    @login = ($args...) =>
-      @ion_auth_model.login.apply(@ion_auth_model, $args...)
+  #
+  #
+  # We don't have php magic __call
+  # So, delegate these methods to ion_auth_model:
+  #
+  login: ($args...) ->
+    @ion_auth_model.login.apply(@ion_auth_model, $args...)
 
-    @clear_forgotten_password_code = ($args...) =>
-      @ion_auth_model.clear_forgotten_password_code.apply(@ion_auth_model, $args...)
+  clear_forgotten_password_code: ($args...) ->
+    @ion_auth_model.clear_forgotten_password_code.apply(@ion_auth_model, $args...)
 
-    @reset_password = ($args...) =>
-      @ion_auth_model.reset_password.apply(@ion_auth_model, $args...)
+  reset_password: ($args...) ->
+    @ion_auth_model.reset_password.apply(@ion_auth_model, $args...)
 
-    @activate = ($args...) =>
-      @ion_auth_model.activate.apply(@ion_auth_model, $args...)
+  activate: ($args...) ->
+    @ion_auth_model.activate.apply(@ion_auth_model, $args...)
 
-    @deactivate = ($args...) =>
-      @ion_auth_model.deactivate.apply(@ion_auth_model, $args...)
+  deactivate: ($args...) ->
+    @ion_auth_model.deactivate.apply(@ion_auth_model, $args...)
 
 
   #
@@ -103,8 +107,8 @@ class global.Ion_auth
           $user = $query.row()
           if $user
             $data =
-              'identity':                 $user[@config.item('identity', 'ion_auth')]
-              'forgotten_password_code':  $user.forgotten_password_code
+              identity:                 $user[@config.item('identity', 'ion_auth')]
+              forgotten_password_code:  $user.forgotten_password_code
 
             if not @config.item('use_ci_email', 'ion_auth')
               @set_message('forgot_password_successful')
@@ -280,10 +284,10 @@ class global.Ion_auth
 
           $users = $user.row()
           $data =
-            'identity':   $user[$identity]
-            'id':         $user.id,
-            'email':      $email,
-            'activation': $activation_code,
+            identity:   $user[$identity]
+            id:         $user.id,
+            email:      $email,
+            activation: $activation_code,
 
           if not @config.item('use_ci_email', 'ion_auth')
             @ion_auth_model.trigger_events(['post_account_creation', 'post_account_creation_successful', 'activation_email_successful'])

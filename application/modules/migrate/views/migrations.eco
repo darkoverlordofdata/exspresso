@@ -36,7 +36,7 @@
                     <tr>
                         <td><%= basename($file).substr(0,3) %></td>
                         <td><%= if $index >= @version then 'ready' else 'done' %></td>
-                        <td><%- @anchor("migrate/info/" + basename($file, EXT), basename($file, EXT).substr(4)) %></td>
+                        <td><%- @anchor("migrate/info/" +@module + basename($file, EXT), basename($file, EXT).substr(4)) %></td>
                         <td><%- @anchor("migrate/#{$action}/#{$seq}", $action, class: "btn #{$cls}") %></td>
                     </tr>
                 <% end %>

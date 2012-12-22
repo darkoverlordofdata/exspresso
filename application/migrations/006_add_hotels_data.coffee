@@ -19,14 +19,15 @@ class Migration_Add_hotels_data extends CI_Migration
 
   seq: '006'
   description: 'Initialize the hotels data'
+  table: 'hotel'
 
   up: ($callback) ->
 
-    @db.insert_batch 'hotel', @data, $callback
+    @db.insert_batch @table, @data, $callback
 
   down: ($callback) ->
 
-    @db.truncate 'hotel', $callback
+    @db.truncate @table, $callback
 
   data:
     [

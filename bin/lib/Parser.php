@@ -90,7 +90,7 @@ class Parser {
     'T_CLASS'                     => Parser::TT_KEYWORD,
     'T_CLASS_C'                   => Parser::TT_IGNORE,
     'T_CLONE'                     => Parser::TT_KEYWORD,
-    'T_CLOSE_TAG'                 => Parser::TT_IGNORE,
+    'T_CLOSE_TAG'                 => Parser::TT_MARKUP,
     'T_COMMENT'                   => Parser::TT_COMMENT,
     'T_CONCAT_EQUAL'              => Parser::TT_DELIMITER,
     'T_CONST'                     => Parser::TT_KEYWORD,
@@ -173,9 +173,9 @@ class Parser {
     'T_PAAMAYIM_NEKUDOTAYIM'      => Parser::TT_DELIMITER,
     'T_PLUS_EQUAL'                => Parser::TT_DELIMITER,
     'T_PRINT'                     => Parser::TT_KEYWORD,
-    'T_PRIVATE'                   => Parser::TT_KEYWORD,
-    'T_PUBLIC'                    => Parser::TT_KEYWORD,
-    'T_PROTECTED'                 => Parser::TT_KEYWORD,
+    'T_PRIVATE'                   => Parser::TT_IGNORE,
+    'T_PUBLIC'                    => Parser::TT_IGNORE,
+    'T_PROTECTED'                 => Parser::TT_IGNORE,
     'T_REQUIRE'                   => Parser::TT_KEYWORD,
     'T_REQUIRE_ONCE'              => Parser::TT_KEYWORD,
     'T_RETURN'                    => Parser::TT_KEYWORD,
@@ -245,49 +245,67 @@ class Parser {
    * @var int 
    */
 	private $scope = Parser::SCOPE_GLOBAL;
-	/**
-   * external symbols
-   *
-   * @var array
-   */
-  private $symbols = array();
 
   private $is_config = FALSE;
 
-  private $members = array();
+	/**
+	 * Convert
+	 *
+	 * @param string $path path to php source
+	 */
+  public function convert($path) {
 
-  private $ci_names = array();
+    try {
 
-  private $ignore = array(
-    'true'                            => 'true',
-    'false'                           => 'false',
-    'null'                            => 'null',
-    'delete'                          => 'delete',
-    'is_php'                          => 'is_php',
-    'is_really_writable'              => 'is_really_writable',
-    'set_status_header'               => 'set_status_header',
-    '_exception_handler'              => '_exception_handler',
-    'remove_invisible_characters'     => 'remove_invisible_characters',
-  );
+      $filename = basename($path, '.php');
 
-  private $common = array(
-    'load_class'                      => 'load_class',
-    'is_loaded'                       => 'is_loaded',
-    'get_config'                      => 'get_config',
-    'config_item'                     => 'config_item',
-    'show_error'                      => 'show_error',
-    'show_404'                        => 'show_404',
-    'log_message'                     => 'log_message',
-    'register_class'                  => 'register_class',
-  );
-
-  private $decl_common   = FALSE;
-
-  private $externs;
+$header = <<<DOC
+#+--------------------------------------------------------------------+
+#  {$filename}.coffee
+#+--------------------------------------------------------------------+
+#  Copyright DarkOverlordOfData (c) 2012
+#+--------------------------------------------------------------------+
+#
+#  This file is a part of Exspresso
+#
+#  Exspresso is free software you can copy, modify, and distribute
+#  it under the terms of the MIT License
+#
+#+--------------------------------------------------------------------+
+#
+# This file was ported from php to coffee-script using php2coffee
+#
+#
 
 
-  function __construct($externs) {
-    $this->externs = $externs;
+DOC;
+
+      if (strpos($path, '/config/') !== FALSE) {
+        $this->is_config = TRUE;
+      }
+      elseif (strpos($path, '/language/') !== FALSE) {
+        $this->is_config = TRUE;
+      }
+
+      $this->load($path);
+      if (DUMP) $this->dump($path, $this->tokens);
+      $cs = $this->parse(0, count($this->tokens));
+      $cs = str_replace('parent::__construct', 'super', $cs);
+
+      if (HTML) {
+        return $cs;
+      }
+      else {
+        return $header.$cs;
+      }
+    }
+    catch (Exception $e) {
+
+      echo $e->getMessage().' at '.$e->getLine().PHP_EOL;
+      echo $e->getTraceAsString();
+
+    }
+
   }
 
 	/**
@@ -304,12 +322,22 @@ class Parser {
      */
     $src = array();
     foreach (explode(PHP_EOL, file_get_contents($path)) as $line) {
-      $src[] = trim($line); 
+      if (HTML) {
+        $src[] = $line;
+      }
+      else {
+        $src[] = trim($line);
+      }
     }
     /*
      * Generate tokens using the built-in php lexer
      */
-		$tokens = token_get_all(implode(PHP_EOL, $src));
+    $txt = implode(PHP_EOL, $src);
+    $txt = str_replace('**/', '*/', $txt);
+    $txt = str_replace('<?php echo', '<?=', $txt);
+
+
+		$tokens = token_get_all($txt);
     /*
      * Normalize whitespace: one character per token
      * Normalize double-quoted strings: de-parse back into whole string.
@@ -394,90 +422,6 @@ class Parser {
   }
   
   
-	/**
-	 * Convert 
-	 *
-	 * @param string $path path to php source
-	 */
-  public function convert($path) {
-    
-    try {
-
-      $filename = basename($path, '.php');
-
-$header = <<<DOC
-#+--------------------------------------------------------------------+
-#  {$filename}.coffee
-#+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012
-#+--------------------------------------------------------------------+
-#
-#  This file is a part of Exspresso
-#
-#  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the MIT License
-#
-#+--------------------------------------------------------------------+
-#
-# This file was ported from php to coffee-script using php2coffee v6.6.6
-#
-#
-
-
-DOC;
-
-      if (strpos($path, '/config/') !== FALSE) {
-        $this->is_config = TRUE;
-      }
-      elseif (strpos($path, '/language/') !== FALSE) {
-        $this->is_config = TRUE;
-      }
-
-
-      $this->load($path);
-      if (DUMP) $this->dump($path, $this->tokens);
-      $cs = $this->parse(0, count($this->tokens));
-
-      $this->symbols = array_diff($this->symbols, $this->members, $this->ignore);
-      $this->externs->table = array_merge($this->externs->table, $this->symbols);
-      array_multisort(&$this->symbols);
-      array_multisort(&$this->ci_names);
-
-      $declare = "{APPPATH, BASEPATH, ENVIRONMENT, EXT, FCPATH, SYSDIR, WEBROOT} = require(process.cwd() + '/index')\n";
-      if (count($this->symbols) > 0) {
-        $declare .= '{';
-        foreach ($this->symbols as $key => $item) {
-          $declare .= "{$key}, ";
-        }
-        $declare = substr($declare, 0, strlen($declare)-2);
-        $declare .= "}".TABS."= require(FCPATH + 'pal')\n";
-      }
-      /**
-      if (count($this->ci_names) > 0) {
-        $declare .= '{';
-        foreach ($this->ci_names as $key => $item) {
-          $declare .= "{$key}, ";
-        }
-        $declare = substr($declare, 0, strlen($declare)-2);
-        $declare .= "}".TABS."= require(FCPATH + 'pal')._classes\n";
-      }
-      */
-      if ($this->decl_common) {
-        $declare .= "{config_item, get_class, get_config, is_loaded, load_class, load_new, load_object, log_message, register_class} = require(BASEPATH + 'core/Common')";
-      }
-      $declare .= "\n\n";
-
-      return $header.$declare.$cs;
-    }
-    catch (Exception $e) {
-      
-      echo $e->getMessage().' at '.$e->getLine().PHP_EOL;
-      echo $e->getTraceAsString();
-      
-    }
-    
-  }
-
 
   /**
 	 * parse - entry point into the
@@ -800,7 +744,7 @@ DOC;
       case 'T_SR_EQUAL':
         return '>>=';
       case 'T_START_HEREDOC':
-        return '<<<';
+        return '"""';
       case 'T_WHITESPACE':
         if ($value == PHP_EOL) {
           $value .= str_repeat(TABS, $this->brace);
@@ -849,21 +793,10 @@ DOC;
           $cs = $this->parse_until(')');
           return 'arguments['.$cs.']';
         }
-        if (strtoupper($value) != $value) {
-          if (! in_array($value, $this->ignore)) {
-            if (in_array($value, $this->common)) {
-              $this->decl_common = TRUE;
-            }
-            else {
-              if (substr($value,0,3) == 'CI_') {
-                $this->ci_names[$value] = $value;
-              }
-              else if (substr($value,0,1) !== '_') {
-                $this->symbols[$value] = $value;
-              }
-            }
-          }
+        elseif ($value == '__construct') {
+          return 'constructor';
         }
+
         return $value;
       case 'T_VARIABLE':
 				if ($value == '$this') {
@@ -875,7 +808,6 @@ DOC;
             //  get member name
             $tt = $this->get_next_token($token, $value);
             $this->put_back();
-            $this->ignore[$value] = $value;
           }
 					return '@';
 				}
@@ -895,7 +827,7 @@ DOC;
 	/**
 	 * parse_markup - 
    * 
-   * TODO: Map php view template to .ejs/.eco format
+   * TODO: Map php view template to .eco format
 	 *
 	 * @param string $value
 	 * @return string output
@@ -903,9 +835,15 @@ DOC;
   function parse_markup($token, $value) {
 
     if (TRACE) echo "--- parse_markup($token, $value)\n";
+
+    switch($token) {
+      case 'T_INLINE_HTML':         return $value;
+      case 'T_OPEN_TAG':            return '<% ';
+      case 'T_OPEN_TAG_WITH_ECHO':  return '<%- ';
+      case 'T_CLOSE_TAG':           return ' %>';
+    }
     return '';
-    
-  }  
+  }
 
 	/**
 	 * parse_number - 
@@ -995,17 +933,17 @@ DOC;
       case 'T_ENDDECLARE':
         return '';
       case 'T_ENDFOR':
-        return '';
+        return 'end';
       case 'T_ENDFOREACH':
-        return '';
+        return 'end';
       case 'T_ENDIF':
-        return '';
+        return 'end';
       case 'T_ENDSWITCH':
-        return '';
+        return 'end';
       case 'T_ENDWHILE':
         return '';
       case 'T_END_HEREDOC':
-        return '';
+        return '"""';
       case 'T_EVAL':
         return 'eval'.$this->parse_parens();
       case 'T_EXIT':
@@ -1108,7 +1046,13 @@ DOC;
    *    body;
    *    body;
    *  }
-   * 
+   *
+   *  keyword (...) : ?>
+   *  ...
+   *  <?php end<keyword> ?>
+   *
+   *
+   *
 	 * @return string output
 	 */
   function parse_block(& $comment, & $body) {
@@ -1122,6 +1066,12 @@ DOC;
     $tt = $this->get_next_token($token, $value);
     // find the next semicolon.
     while ($token != ';') {
+
+      // found alternative syntax - :
+      if ($token == ':') {
+        $body = ':';
+        return;
+      }
       
       // found brace first
       if ($token == '{') {
@@ -1136,7 +1086,7 @@ DOC;
         $end = $this->pos;
         $body = $this->parse($start+1, $end-1, 1);
         if (TRACE) echo "--- parse_blend()\n$body\n---";
-        return TRUE;
+        return;
       }
       if ($tt == 0) break;
       // extract comments
@@ -1148,7 +1098,7 @@ DOC;
       }
       $tt = $this->get_next_token($token, $value);
     }
-    return FALSE;
+    return;
   }
 
 	/**
@@ -1542,9 +1492,7 @@ DOC;
 		}
 		$end = $this->pos;
 		$cs .= $this->parse($start+1, $end-1, 1);
-		$cs .= "\n\nregister_class '{$this->class_name}', {$this->class_name}";
 		$cs .= "\nmodule.exports = {$this->class_name}";
-    $this->decl_common = TRUE;
     $this->class_name = '';
 		return $cs;
 
@@ -1616,7 +1564,6 @@ DOC;
 			$value = 'constructor';
 		}
 
-    $this->members[$value] = $value;
 		if ($this->class_name != '') {
       $cs = "$value : ";
       $arrow = '->';
@@ -1629,7 +1576,6 @@ DOC;
 		if ($this->func_name == '__construct') {
 			$this->func_name = 'constructor';
 		}
-		$this->ignore[$this->func_name] = $this->func_name;
     $args = $this->parse_arglist();
     $this->parse_block($comment, $body);
     return $cs.$args.$arrow.$comment.$body;
@@ -1899,7 +1845,6 @@ DOC;
 
     $tt = $this->get_next_token($token, $value);
     $value = substr($value,1);
-    $this->members[$value] = $value;
     if ($this->is_next_token(';')) {
       $this->put_back();
 			return $value.': {}';

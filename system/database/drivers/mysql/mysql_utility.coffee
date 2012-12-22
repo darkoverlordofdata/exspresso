@@ -142,7 +142,7 @@ class global.CI_DB_mysql_utility extends CI_DB_utility
           #  Grab all the data from the current table
           # "SELECT * FROM #{$table}"
 
-          if $query.num_rows() is 0
+          if $query.num_rows is 0
             continue
 
 

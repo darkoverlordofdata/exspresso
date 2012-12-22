@@ -19,14 +19,15 @@ class Migration_Add_customer_data extends CI_Migration
 
   seq: '007'
   description: 'Initialize the customer data'
+  table: 'customer'
 
   up: ($callback) ->
 
-    @db.insert_batch 'customer', @data, $callback
+    @db.insert_batch @table, @data, $callback
 
   down: ($callback) ->
 
-    @db.truncate 'customer', $callback
+    @db.truncate @table, $callback
 
 
 

@@ -19,14 +19,15 @@ class Migration_Add_users_data extends CI_Migration
 
   seq: '002'
   description: 'Initialize the users data'
+  table: 'user'
 
   up: ($callback) ->
 
-    @db.insert_batch 'user', @data, $callback
+    @db.insert_batch @table, @data, $callback
 
   down: ($callback) ->
 
-    @db.truncate 'user', $callback
+    @db.truncate @table, $callback
 
 
   data:

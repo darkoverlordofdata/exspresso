@@ -46,8 +46,9 @@ class Migrate extends MY_Controller
   #   @access	public
   #   @return	void
   #
-  index: ->
+  index: ($module) ->
 
+    @migration.set_module $module
     $path = @migration._migration_path + '*.coffee'
 
     @migration._get_version ($err, $version) =>
@@ -56,6 +57,7 @@ class Migrate extends MY_Controller
       else
 
         $data =
+          module:   (if $module then $module+'/' else '')
           path:     $path
           files:    glob($path)
           version:  $version
@@ -142,7 +144,12 @@ class Migrate extends MY_Controller
   #   @param string
   #   @return	void
   #
-  info: ($name) ->
+  info: ($module, $name = '') ->
+
+    if $name is ''
+      $name = $module
+      $module = ''
+    @migration.set_module $module
 
     $class = require(@migration._migration_path + $name + EXT)
     @template.view 'migration'

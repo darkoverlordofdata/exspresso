@@ -19,6 +19,7 @@ class Migration_Create_bookings_table extends CI_Migration
 
   seq: '005'
   description: 'Create the bookings table'
+  table: 'booking'
 
   up: ($callback) ->
 
@@ -26,11 +27,11 @@ class Migration_Create_bookings_table extends CI_Migration
 
     @dbforge.add_key 'id', true
 
-    @dbforge.create_table 'booking', $callback
+    @dbforge.create_table @table, $callback
 
   down: ($callback) ->
 
-    @dbforge.drop_table 'booking', $callback
+    @dbforge.drop_table @table, $callback
 
 
   data:

@@ -19,6 +19,7 @@ class Migration_Create_blog_table extends CI_Migration
 
   seq: '009'
   description: 'Create the blog table'
+  table: 'blog'
 
   up: ($callback) ->
 
@@ -26,11 +27,11 @@ class Migration_Create_blog_table extends CI_Migration
 
     @dbforge.add_key 'id', true
 
-    @dbforge.create_table 'blog', $callback
+    @dbforge.create_table @table, $callback
 
   down: ($callback) ->
 
-    @dbforge.drop_table 'blog', $callback
+    @dbforge.drop_table @table, $callback
 
 
   data:

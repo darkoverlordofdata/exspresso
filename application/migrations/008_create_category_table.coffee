@@ -19,6 +19,7 @@ class Migration_Create_category_table extends CI_Migration
 
   seq: '008'
   description: 'Create the category table'
+  table: 'category'
 
   up: ($callback) ->
 
@@ -26,11 +27,11 @@ class Migration_Create_category_table extends CI_Migration
 
     @dbforge.add_key 'id', true
 
-    @dbforge.create_table 'category', $callback
+    @dbforge.create_table @table, $callback
 
   down: ($callback) ->
 
-    @dbforge.drop_table 'category', $callback
+    @dbforge.drop_table @table, $callback
 
   data:
     id:

@@ -4,7 +4,7 @@
 
     Exspresso is opinionated -
 
-      * express.js core is exposed via CodeIgniter framework api
+      * express.js core is exposed via the CodeIgniter framework api
       * embedded coffee-script (ECO) for views.
       * twitter bootstrap css styles
       * HMVC architecture ported from Wiredesignz

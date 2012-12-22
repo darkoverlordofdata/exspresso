@@ -393,7 +393,7 @@ class CI_Table
     
     #  Next blast through the result array and build out the rows
     
-    if $query.num_rows() > 0
+    if $query.num_rows > 0
       for $row in $query.result_array()
         @rows.push @_prep_args($row)
         

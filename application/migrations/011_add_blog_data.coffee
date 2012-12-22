@@ -19,15 +19,15 @@ class Migration_Add_blog_data extends CI_Migration
 
   seq: '011'
   description: 'Initialize the blog data'
+  table: 'blog'
 
   up: ($callback) ->
 
-    @db.insert_batch 'blog', @data, $callback
+    @db.insert_batch @table, @data, $callback
 
   down: ($callback) ->
 
-    log_message 'debug', '011 - down'
-    @db.delete 'blog', {id: 1}, $callback
+    @db.delete @table, {id: 1}, $callback
 
 
   data:

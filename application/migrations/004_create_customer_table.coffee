@@ -19,6 +19,7 @@ class Migration_Create_customer_table extends CI_Migration
 
   seq: '004'
   description: 'Create the customer table'
+  table: 'customer'
 
   up: ($callback) ->
 
@@ -26,11 +27,11 @@ class Migration_Create_customer_table extends CI_Migration
 
     @dbforge.add_key 'id', true
 
-    @dbforge.create_table 'customer', $callback
+    @dbforge.create_table @table, $callback
 
   down: ($callback) ->
 
-    @dbforge.drop_table 'customer', $callback
+    @dbforge.drop_table @table, $callback
 
 
   data:
