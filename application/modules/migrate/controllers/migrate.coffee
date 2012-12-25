@@ -34,19 +34,21 @@ class Migrate extends MY_Controller
     @load.library 'template', title:  'Migrations'
     @load.library 'migration',
       migration_enabled:  true
-      migration_db:       'mysql'
+      migration_db:       'postgres'
 
   ## --------------------------------------------------------------------
 
   #
   # Index
   #
-  # Demo migrate page
+  # Migrations list
   #
   #   @access	public
+  #   @param  string
   #   @return	void
   #
   index: ($module) ->
+
 
     @migration.set_module $module
     $path = @migration._migration_path + '*.coffee'
@@ -155,7 +157,12 @@ class Migrate extends MY_Controller
     @template.view 'migration'
       inspect:    require('util').inspect
       path:       @migration._migration_path + $name + EXT
-      migration:  new $class
+      migration:  new $class(@migration)
+      fmtsql:     ($sql) ->
+        log_message 'debug', 'SQL = %s', $sql
+        $sql = $sql.replace("VALUEZ", "VALUEZ")
+        log_message 'debug', 'SQL = %s', $sql
+        return $sql
 
 #
 # Export the class:

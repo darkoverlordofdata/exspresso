@@ -50,7 +50,7 @@ if not function_exists('gravatar')
     $url = if ($_SERVER['HTTPS']? ) then 'https://secure.' else 'http://www.'
     $url+='gravatar.com/avatar/'
     $url+=md5(strtolower(trim($email)))
-    $url+="?s=$s&d=$d&r=$r"
+    $url+="?s=#{$s}&d=#{$d}&r=#{$r}"
     if $img
       $url = '<img src="' + $url + '"'
       for $key, $val of $atts
@@ -88,7 +88,7 @@ if not function_exists('gravatar_profile')
 if not function_exists('gravatar_qr')
   exports.gravatar_qr = gravatar_qr = ($email, $s = 80, $img = true, $atts = {}) ->
     $url = gravatar_profile($email)
-    $url+=".qr?s=$s"
+    $url+=".qr?s=#{$s}"
     if $img
       $url = '<img src="' + $url + '"'
       for $key, $val of $atts

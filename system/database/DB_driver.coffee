@@ -236,9 +236,8 @@ class CI_DB_driver
       @_execute $sql, ($err, $results, $info) =>
         @_query2 $err, $results, $info, $time_start, $sql, $binds
 
-    else
-      log_message 'error', 'DB_driver::query -->No callback in query'
-      throw "No callback in query"
+    return $sql
+
 
   _query2: ($err, $results, $info, $time_start, $sql, $callback) =>
 
@@ -976,8 +975,7 @@ class CI_DB_driver
 
 
     console.log $message
-    #echo $error.show_error($heading, $message, 'error_db')
-    #die()
+    #show_error $message
 
 
   #  --------------------------------------------------------------------

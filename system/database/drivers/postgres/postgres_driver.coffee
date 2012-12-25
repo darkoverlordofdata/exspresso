@@ -473,6 +473,22 @@ module.exports = (CI_DB) ->
     #  --------------------------------------------------------------------
 
     #
+    # Insert statement
+    #
+    # Generates a platform-specific insert string from the supplied data
+    #
+    # @access	public
+    # @param	string	the table name
+    # @param	array	the insert keys
+    # @param	array	the insert values
+    # @return	string
+    #
+    _insert_batch: ($table, $keys, $values) ->
+      return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
+
+    #  --------------------------------------------------------------------
+
+    #
     # Update statement
     #
     # Generates a platform-specific update string from the supplied data

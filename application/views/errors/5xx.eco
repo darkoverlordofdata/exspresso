@@ -5,7 +5,7 @@
 </center>
 <p><%= @message %>
   <% if @settings['verbose errors'] : %>
-    <pre><%= @error.stack%></pre>
+    <pre><%= @error.stack %></pre>
   <% end %>
 </p>
 

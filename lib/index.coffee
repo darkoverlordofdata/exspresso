@@ -347,13 +347,14 @@ exports.is_bool = ($var) ->
 
 ## --------------------------------------------------------------------
 
-exports.is_callable = ($class, $method) ->
+#exports.is_callable = ($class, $method) ->
+#
+#  $def = global[$class]
+#  if typeof $def is 'function'
+#    if typeof $def.__proto__[$method] is method
+#      true
+#  false
 
-  $def = global[$class]
-  if typeof $def is 'function'
-    if typeof $def.__proto__[$method] is method
-      true
-  false
 
 
 ## --------------------------------------------------------------------
@@ -500,6 +501,16 @@ exports.pathinfo = ($path, $options = PATHINFO_DIRNAME | PATHINFO_BASENAME | PAT
   return $result
 
 
+exports.PREG_SPLIT_NO_EMPTY = PREG_SPLIT_NO_EMPTY = 1
+exports.PREG_SPLIT_DELIM_CAPTURE = PREG_SPLIT_DELIM_CAPTURE = 2
+exports.PREG_SPLIT_OFFSET_CAPTURE = PREG_SPLIT_OFFSET_CAPTURE = 4
+
+exports.preg_split = ($pattern, $subject, $limit = -1, $flags = 0) ->
+
+  if $limit is -1 or $limit is 0 or $limit is null
+    $subject.split($pattern)
+  else
+    $subject.split($pattern, $limit)
 
 
 ## --------------------------------------------------------------------

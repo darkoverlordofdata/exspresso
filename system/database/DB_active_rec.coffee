@@ -32,36 +32,36 @@ array = ($field, $match) ->
 #
 class CI_DB_active_record extends CI_DB_driver
   
-  ar_select:          []
+  ar_select:          null
   ar_distinct:        false
-  ar_from:            []
-  ar_join:            []
-  ar_where:           []
-  ar_like:            []
-  ar_groupby:         []
-  ar_having:          []
-  ar_keys:            []
+  ar_from:            null
+  ar_join:            null
+  ar_where:           null
+  ar_like:            null
+  ar_groupby:         null
+  ar_having:          null
+  ar_keys:            null
   ar_limit:           false
   ar_offset:          false
   ar_order:           false
-  ar_orderby:         []
-  ar_set:             []
-  ar_wherein:         []
-  ar_aliased_tables:  []
-  ar_store_array:     []
+  ar_orderby:         null
+  ar_set:             null
+  ar_wherein:         null
+  ar_aliased_tables:  null
+  ar_store_array:     null
   
   #  Active Record Caching variables
   ar_caching:         false
-  ar_cache_exists:    []
-  ar_cache_select:    []
-  ar_cache_from:      []
-  ar_cache_join:      []
-  ar_cache_where:     []
-  ar_cache_like:      []
-  ar_cache_groupby:   []
-  ar_cache_having:    []
-  ar_cache_orderby:   []
-  ar_cache_set:       []
+  ar_cache_exists:    null
+  ar_cache_select:    null
+  ar_cache_from:      null
+  ar_cache_join:      null
+  ar_cache_where:     null
+  ar_cache_like:      null
+  ar_cache_groupby:   null
+  ar_cache_having:    null
+  ar_cache_orderby:   null
+  ar_cache_set:       null
 
   #  --------------------------------------------------------------------
 
@@ -73,7 +73,29 @@ class CI_DB_active_record extends CI_DB_driver
   #
   constructor: ($params = {}) ->
     super($params)
-    @_reset_select()  # always initialize arrays in the constructor!
+    @ar_select =          []
+    @ar_from =            []
+    @ar_join =            []
+    @ar_where =           []
+    @ar_like =            []
+    @ar_groupby =         []
+    @ar_having =          []
+    @ar_keys =            []
+    @ar_orderby =         []
+    @ar_set =             []
+    @ar_wherein =         []
+    @ar_aliased_tables =  []
+    @ar_store_array =     []
+    @ar_cache_exists =    []
+    @ar_cache_select =    []
+    @ar_cache_from =      []
+    @ar_cache_join =      []
+    @ar_cache_where =     []
+    @ar_cache_like =      []
+    @ar_cache_groupby =   []
+    @ar_cache_having =    []
+    @ar_cache_orderby =   []
+    @ar_cache_set =       []
 
   #  --------------------------------------------------------------------
   
@@ -940,9 +962,8 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	array	an associative array of insert values
   # @return	object
   #
-  insert_batch : ($table = '', $set = null, $callback = null) ->
-
-    if $callback is null
+  insert_batch : ($table = '', $set = null, $callback) ->
+    if typeof $set is 'function'
       $callback = $set
       $set = null
 
@@ -972,7 +993,10 @@ class CI_DB_active_record extends CI_DB_driver
       $sql.push @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, array_slice(@ar_set, $i, 100))
 
     @_reset_write()
-    @query_list $sql, $callback
+    if $callback?
+      @query_list $sql, $callback
+    else
+      $sql
 
 
   #  --------------------------------------------------------------------
@@ -1317,8 +1341,8 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	string	the table to truncate
   # @return	object
   #
-  truncate: ($table = '', $callback = null) ->
-    if $callback is null
+  truncate: ($table = '', $callback) ->
+    if typeof table is 'function'
       $callback = $table
       $table = ''
 
@@ -1357,20 +1381,16 @@ class CI_DB_active_record extends CI_DB_driver
   # @param	boolean
   # @return	object
   #
-  delete: ($table = '', $where = '', $limit = null, $reset_data = true, $callback = null) ->
+  delete: ($table = '', $where = '', $limit = null, $reset_data = true) ->
 
-    if $callback is null
-      if typeof $limit is 'function'
-        $callback = $limit
-        $limit = null
-        $reset_data = true
+    if typeof $limit is 'function'
+      $callback = $limit
+      $limit = null
+      $reset_data = true
 
-      else if typeof $reset_data is 'function'
-        $callback = $reset_data
-        $reset_data = true
-
-      else
-        return show_error 'No callback in active_rec::delete'
+    else if typeof $reset_data is 'function'
+      $callback = $reset_data
+      $reset_data = true
 
     #  Combine any cached components with the current statements
     @_merge_cache()

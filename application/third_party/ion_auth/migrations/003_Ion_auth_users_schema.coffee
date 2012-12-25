@@ -59,7 +59,7 @@ class global.Migration_Ion_auth_users_schema extends CI_Migration
 
   up: ($next) ->
 
-    @dbforge.add_field @schema
+    @dbforge.add_field @data
     @dbforge.add_key 'id', true
     @dbforge.create_table @table, true, $next
 

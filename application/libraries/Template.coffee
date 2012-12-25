@@ -233,8 +233,6 @@ class global.Template
   #
   view: ($view = '' , $data = {}, $callback) =>
 
-    $fn_err = $callback ? show_error
-
     $script = []
     for $str in @_script
       if $str.substr($str.length-3) is '.js'
@@ -291,14 +289,24 @@ class global.Template
     #
     get_partials ($err) =>
 
-      if $err then $fn_err $err
+      if $err # then $fn_err $err
+
+        log_message 'debug', 'ERROR1'
+        console.log $err
+        return show_error $err
+
       else
         #
         # load the body view & merge with partials
         #
         @CI.load.view $view, @_data, ($err, $content) =>
 
-          if $err then $fn_err $err
+          if $err # then $fn_err $err
+
+            log_message 'debug', 'ERROR2'
+            console.log $err
+            return show_error $err
+
           else
             #
             # merge the body into the theme layout
@@ -306,7 +314,12 @@ class global.Template
             @set '$content', $content
             @CI.render @_theme_path+@_layout, @_data, ($err, $page) =>
 
-              if $err then $fn_err $err
+              if $err # then $fn_err $err
+
+                log_message 'debug', 'ERROR3'
+                console.log $err
+                return show_error $err
+
               else
                 if $callback? then $callback null, $page
                 else

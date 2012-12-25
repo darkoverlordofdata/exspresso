@@ -69,7 +69,6 @@ class global.CI_DB_forge
   #
   create_database: ($db_name, $callback) ->
     $sql = @_create_database($db_name)
-    
     if is_bool($sql)
       $callback $sql
       
@@ -166,19 +165,20 @@ class global.CI_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  create_table: ($table = '', $if_not_exists = false, $callback = null) ->
-    if $callback is null
+  create_table: ($table = '', $if_not_exists = false, $callback) ->
+    log_message 'debug', '>DB_forge::create_database'
+    if typeof $if_not_exists is 'function'
       $callback = $if_not_exists
       $if_not_exists = false
 
     if $table is ''
-      $callback('A table name is required for that operation.')
+      show_error 'A table name is required for that operation.'
 
     if count(@fields) is 0
-      $callback('Field information is required.')
+      show_error 'Field information is required.'
 
     $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, $if_not_exists)
-
+    log_message 'debug', '>SQL: %s', $sql
     @_reset()
     @db.query $sql, $callback
 

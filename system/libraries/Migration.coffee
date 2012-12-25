@@ -58,16 +58,21 @@ class global.CI_Migration
 
   constructor: ($config = {}, @CI, @db, @dbforge) ->
 
+    if $config.constructor is CI_Migration or $config.constructor is MY_Migration
+      for $key, $val of $config
+        @[$key] = $val
+      return
+
     # Only run this constructor on main library load
     #if (get_parent_class(@) isnt false)
     #  return
-    if not @constructor is CI_Migration
+    log_message 'debug', 'Migration::constructor %s', @constructor.name
+    if not (@constructor is CI_Migration or @constructor is MY_Migration)
+      log_message 'debug', 'NOT CI_Migration!!!'
       return
 
     for $key, $val of $config
       @['_'+$key] = $val
-
-    log_message('debug', 'Migrations class initialized')
 
     # Are they trying to use migrations while it is disabled?
     if (@_migration_enabled isnt true)

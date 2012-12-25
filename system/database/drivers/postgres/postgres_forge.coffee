@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee
 #
 #
-
-
-{_escape_identifiers, _protect_identifiers, array_change_key_case, array_key_exists, count, db, defined, false, implode, in_array, is_array, is_numeric, str_replace, strpos, strtoupper, table_exists}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -43,7 +37,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_postgre_forge extends CI_DB_forge
+class global.CI_DB_postgres_forge extends CI_DB_forge
   
   #
   # Create database
@@ -83,11 +77,11 @@ class CI_DB_postgre_forge extends CI_DB_forge
   # @return	bool
   #
   _create_table : ($table, $fields, $primary_keys, $keys, $if_not_exists) ->
+    log_message 'debug', '>postgres_forge::_create_database'
     $sql = 'CREATE TABLE '
-    
+
     if $if_not_exists is true
-      if @db.table_exists($table)
-        return "SELECT * FROM $table"#  Needs to return innocous but valid SQL statement
+      $sql+='IF NOT EXISTS '
         
       
     
@@ -192,7 +186,7 @@ class CI_DB_postgre_forge extends CI_DB_forge
           $key = @db._protect_identifiers($key)
           
         else 
-          $key = [@db._protect_identifiers($key])
+          $key = [@db._protect_identifiers($key)]
           
         
         for $field in $key
@@ -279,12 +273,7 @@ class CI_DB_postgre_forge extends CI_DB_forge
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
     return $sql
     
-  
-  
-  
+module.exports = CI_DB_postgres_forge
 
-register_class 'CI_DB_postgre_forge', CI_DB_postgre_forge
-module.exports = CI_DB_postgre_forge
-
-#  End of file postgre_forge.php 
-#  Location: ./system/database/drivers/postgre/postgre_forge.php 
+#  End of file postgres_forge.php
+#  Location: ./system/database/drivers/postgres/postgres_forge.php

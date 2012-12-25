@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee
 #
 #
-
-
-{db, defined, display_error}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -43,7 +37,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/database/
 #
-class CI_DB_postgre_utility extends CI_DB_utility
+class global.CI_DB_postgres_utility extends CI_DB_utility
   
   #
   # List databases
@@ -98,11 +92,7 @@ class CI_DB_postgre_utility extends CI_DB_utility
     #  Currently unsupported
     return @db.display_error('db_unsuported_feature')
     
-  
+module.exports = CI_DB_postgres_utility
 
-register_class 'CI_DB_postgre_utility', CI_DB_postgre_utility
-module.exports = CI_DB_postgre_utility
-
-
-#  End of file postgre_utility.php 
-#  Location: ./system/database/drivers/postgre/postgre_utility.php 
+#  End of file postgres_utility.php
+#  Location: ./system/database/drivers/postgres/postgres_utility.php

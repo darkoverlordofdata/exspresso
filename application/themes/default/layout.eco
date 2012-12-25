@@ -21,6 +21,7 @@
                 </div>
             </hgroup>
         </header>
+
         <div class="clearfix"></div>
         <% err = @flashdata('error') %>
         <% if err isnt '' : %>
@@ -30,10 +31,11 @@
         <% end %>
         <% info = @flashdata('info') %>
         <% if info isnt '' : %>
-        <div class='alert alert-error'>
+        <div class='alert alert-info'>
             <p><b>Info:</b><%= info %></p>
         </div>
         <% end %>
+
         <%- @$content %>
     </div>
     <div id="push"></div>

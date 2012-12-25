@@ -33,6 +33,15 @@ exports.meta = [
   {name: 'viewport',      content: 'width=device-width, initial-scale=1.0'}
 ]
 
+exports.regions =
+  left:     'Left sidebar'
+  right:    'Right sidebar'
+  content:  'Content'
+  header:   'Header'
+  footer:   'Footer'
+
+  # theme_set_content 'left', $left_sidebar
+
 exports.script =
   ckeditor: 'ckeditor/ckeditor.js'
   prettify: [
