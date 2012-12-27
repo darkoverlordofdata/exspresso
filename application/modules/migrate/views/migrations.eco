@@ -1,6 +1,6 @@
 <div class="container">
     <p></p>
-    <div class="hero-unit">
+    <div>
         <h3>Migrations:</h3>
         <p></p>
         <table class="table table striped table-hover table-condensed">
@@ -13,7 +13,6 @@
                 <td><%= sprintf('%03d', @version ? 0) %></td>
             </tr>
         </table>
-        <p>Page rendered in {elapsed_time} ms</p>
     </div>
 
     <div class="row">
@@ -43,6 +42,8 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="row">
         <div class="span4">
             <p>
                 <%- @anchor("migrate/current", "current", class: "btn") %>

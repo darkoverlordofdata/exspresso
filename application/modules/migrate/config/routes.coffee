@@ -58,12 +58,13 @@
 # migrations
 exports['/migrate']                           = 'migrate/index'
 exports['/migrate/:module']                   = 'migrate/index'
+exports['/migrate/info/:module/:name']        = 'migrate/preview'
+exports['/migrate/info/:name']                = 'migrate/preview'
+
 exports['/migrate/current']                   = 'migrate/current'
 exports['/migrate/latest']                    = 'migrate/latest'
 exports['/migrate/up/:to']                    = 'migrate/up'
 exports['/migrate/down/:to']                  = 'migrate/down'
-exports['/migrate/info/:module/:name']        = 'migrate/info'
-exports['/migrate/info/:name']                = 'migrate/info'
 
 
 # End of file routes.coffee

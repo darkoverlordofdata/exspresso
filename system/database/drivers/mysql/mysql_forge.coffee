@@ -163,7 +163,7 @@ class global.CI_DB_mysql_forge extends CI_DB_forge
           $key_name = @db._protect_identifiers($key)
           $key = [$key_name]
 
-        $sql+=",\n\tKEY {$key_name} (" + implode(', ', $key) + ")"
+        $sql+=",\n\tKEY #{$key_name} (" + implode(', ', $key) + ")"
 
     $sql+="\n) DEFAULT CHARACTER SET #{@db.char_set} COLLATE #{@db.dbcollat};"
     log_message 'debug', '_create_table 2 $primary_keys %j', $primary_keys

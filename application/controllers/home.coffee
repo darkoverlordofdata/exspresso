@@ -40,6 +40,22 @@ class Home extends PublicController
       if $err then show_error
       else @template.view 'home_page', blog: $blog.row()
 
+  ## --------------------------------------------------------------------
+
+  #
+  # Not Found
+  #
+  # Custom 404 error page
+  #
+  #   @access	public
+  #   @return	void
+  #
+  not_found: ->
+
+    #@template.set_title config_item('site_name'), '404 Not Found'
+    @load.view 'errors/404',
+      url: 'invalid uri'
+
 #
 # Export the class:
 #

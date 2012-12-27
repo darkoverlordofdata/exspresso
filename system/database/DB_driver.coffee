@@ -99,8 +99,8 @@ class CI_DB_driver
     log_message 'debug', 'CI_DB_%s_driver initialize', @dbdriver
     if $callback?
       @db_connect $callback
-    else
-      @db_connect()
+    #else
+    #  @db_connect()
 
 
 
@@ -237,7 +237,6 @@ class CI_DB_driver
         @_query2 $err, $results, $info, $time_start, $sql, $binds
 
     return $sql
-
 
   _query2: ($err, $results, $info, $time_start, $sql, $callback) =>
 

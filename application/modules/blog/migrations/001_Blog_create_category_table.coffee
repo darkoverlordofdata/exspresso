@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 009_create_blog_table.coffee
+#| 001_Blog_create_category_table.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,15 +11,15 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	009_create_blog_table - Migration
+#	001_Blog_create_category_table - Migration
 #
 #
 #
-class Migration_Create_blog_table extends CI_Migration
+class Migration_Blog_create_category_table extends CI_Migration
 
-  seq: '009'
-  description: 'Create the blog table'
-  table: 'blog'
+  seq: '001'
+  description: 'Create the category table'
+  table: 'category'
 
   up: ($callback) ->
 
@@ -33,32 +33,17 @@ class Migration_Create_blog_table extends CI_Migration
 
     @dbforge.drop_table @table, $callback
 
-
   data:
     id:
       type: 'INT'
       constraint: 5
       unsigned: true
       auto_increment: true
-    author_id:
-      type: 'INT'
-    category_id:
-      type: 'INT'
-    status:
-      type: 'INT'
-    created_on:
-      type: 'DATETIME'
-    updated_on:
-      type: 'DATETIME'
-    title:
+    name:
       type: 'VARCHAR'
       constraint: 255
-    body:
-      type: 'TEXT'
 
+module.exports = Migration_Blog_create_category_table
 
-
-module.exports = Migration_Create_blog_table
-
-# End of file 009_create_blog_table.coffee
-# Location: ./application/migrations/009_create_blog_table.coffee
+# End of file 001_Blog_create_category_table.coffee
+# Location: .modules/blog/migrations/001_Blog_create_category_table.coffee

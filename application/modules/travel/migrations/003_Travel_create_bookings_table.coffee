@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 003_create_hotels_table.coffee
+#| 003_Travel_create_bookings_table.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,20 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	003_create_hotels_table - Migration
+#	003_Travel_create_bookings_table - Migration
 #
 #
 #
-class Migration_Create_hotels_table extends CI_Migration
+class Migration_Travel_create_bookings_table extends CI_Migration
 
-  seq:'003'
-  description: 'Create the hotels table'
-  table: 'hotel'
+  seq: '003'
+  description: 'Create the bookings table'
+  table: 'booking'
 
   up: ($callback) ->
 
     @dbforge.add_field @data
+
     @dbforge.add_key 'id', true
+
     @dbforge.create_table @table, $callback
 
   down: ($callback) ->
@@ -38,28 +40,42 @@ class Migration_Create_hotels_table extends CI_Migration
       constraint: 5
       unsigned: true
       auto_increment: true
-    price:
+    email:
+      type: 'VARCHAR'
+      constraint: 255
+    username:
+      type: 'VARCHAR'
+      constraint: 255
+    hotel:
       type: 'INT'
-    name:
+    checkinDate:
+      type: 'DATETIME'
+    checkoutDate:
+      type: 'DATETIME'
+    creditCard:
       type: 'VARCHAR'
       constraint: 255
-    address:
+    creditCardName:
       type: 'VARCHAR'
       constraint: 255
-    city:
+    creditCardExpiryMonth:
+      type: 'INT'
+    creditCardExpiryYear:
+      type: 'INT'
+    smoking:
+      type: 'VARCHAR'
+      constraint: 255
+    beds:
+      type: 'INT'
+    amenities:
       type: 'VARCHAR'
       constraint: 255
     state:
       type: 'VARCHAR'
       constraint: 255
-    zip:
-      type: 'VARCHAR'
-      constraint: 255
-    country:
-      type: 'VARCHAR'
-      constraint: 255
 
-module.exports = Migration_Create_hotels_table
 
-# End of file 003_create_hotels_table.coffee
-# Location: ./application/migrations/003_create_hotels_table.coffee
+module.exports = Migration_Travel_create_bookings_table
+
+# End of file 003_Travel_create_bookings_table.coffee
+# Location: .modules/travel/migrations/003_Travel_create_bookings_table.coffee

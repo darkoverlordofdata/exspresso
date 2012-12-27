@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 010_add_category_data.coffee
+#| 003_Blog_add_category_data.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,13 +11,13 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	010_add_category_data - Migration
+#	003_Blog_add_category_data - Migration
 #
 #
 #
-class Migration_Add_category_data extends CI_Migration
+class Migration_Blog_add_category_data extends CI_Migration
 
-  seq: '010'
+  seq: '003'
   description: 'Initialize the category data'
   table: 'category'
 
@@ -36,7 +36,7 @@ class Migration_Add_category_data extends CI_Migration
     ]
 
 
-module.exports = Migration_Add_category_data
+module.exports = Migration_Blog_add_category_data
 
-# End of file 010_add_category_data.coffee
-# Location: ./010_add_category_data.coffee
+# End of file 003_Blog_add_category_data.coffee
+# Location: .modules/blog/migrations/003_Blog_add_category_data.coffee

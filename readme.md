@@ -1,4 +1,4 @@
-# [Exspresso v0.7.9] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.7.11] (https://github.com/darkoverlordofdata/exspresso)
 
   A CMS framework built on a port of the [CodeIgniter] (<http://codeigniter.com/>) framework ported to coffee-script.
 
@@ -8,7 +8,12 @@
       * embedded coffee-script (ECO) for views.
       * twitter bootstrap css styles
       * HMVC architecture ported from Wiredesignz
-      * Mutiple configs per topic are merged
+      * DB Drivers for MySQL and PostgreSQL
+
+    New in Exspresso
+      * Configuration inheritance
+      * Themed templating engine
+      * Per module migrations
 
  [Live Demo!] (http://exspresso.herokuapp.com/)
 

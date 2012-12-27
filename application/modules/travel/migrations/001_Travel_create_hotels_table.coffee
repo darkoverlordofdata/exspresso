@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 008_create_category_table.coffee
+#| 001_Travel_create_hotels_table.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,27 +11,26 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	008_create_category_table - Migration
+#	001_Travel_create_hotels_table - Migration
 #
 #
 #
-class Migration_Create_category_table extends CI_Migration
+class Migration_Travel_create_hotels_table extends CI_Migration
 
-  seq: '008'
-  description: 'Create the category table'
-  table: 'category'
+  seq:'001'
+  description: 'Create the hotels table'
+  table: 'hotel'
 
   up: ($callback) ->
 
     @dbforge.add_field @data
-
     @dbforge.add_key 'id', true
-
     @dbforge.create_table @table, $callback
 
   down: ($callback) ->
 
     @dbforge.drop_table @table, $callback
+
 
   data:
     id:
@@ -39,11 +38,28 @@ class Migration_Create_category_table extends CI_Migration
       constraint: 5
       unsigned: true
       auto_increment: true
+    price:
+      type: 'INT'
     name:
       type: 'VARCHAR'
       constraint: 255
+    address:
+      type: 'VARCHAR'
+      constraint: 255
+    city:
+      type: 'VARCHAR'
+      constraint: 255
+    state:
+      type: 'VARCHAR'
+      constraint: 255
+    zip:
+      type: 'VARCHAR'
+      constraint: 255
+    country:
+      type: 'VARCHAR'
+      constraint: 255
 
-module.exports = Migration_Create_category_table
+module.exports = Migration_Travel_create_hotels_table
 
-# End of file 008_create_category_table.coffee
-# Location: ./application/migrations/008_create_category_table.coffee
+# End of file 001_Travel_create_hotels_table.coffee
+# Location: .modules/travel/migrations/001_Travel_create_hotels_table.coffee

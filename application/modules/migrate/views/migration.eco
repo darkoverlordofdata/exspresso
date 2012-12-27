@@ -1,6 +1,6 @@
 <div class="container">
     <p></p>
-    <div class="hero-unit">
+    <div>
         <h4>Migration: <%= @migration.seq %></h4>
         <p></p>
         <table class="table table striped table-hover table-condensed">
@@ -22,7 +22,7 @@
     <div class="row">
         <div class="span12">
             <h4>Up:</h4>
-            <pre class="prettyprint"><code class="lang-sql"><%= @migration.up() %></code></pre>
+            <pre class="prettyprint"><code class="lang-sql"><%= @fmtsql(@migration.up()) %></code></pre>
         </div>
     </div>
     <div class="row">

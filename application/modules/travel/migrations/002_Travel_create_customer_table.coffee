@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 001_create_users_table.coffee
+#| 002_Travel_create_customer_table.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,21 +11,23 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	001_create_users_table - Migration
+#	002_Travel_create_customer_table - Migration
 #
 #
 #
-class global.Migration_Create_users_table extends CI_Migration
+class Migration_Travel_create_customer_table extends CI_Migration
 
-  seq: '001'
-  description: 'Create the users table'
-  table: 'user'
+  seq: '002'
+  description: 'Create the customer table'
+  table: 'customer'
 
   up: ($callback) ->
 
     @dbforge.add_field @data
+
     @dbforge.add_key 'id', true
-    @dbforge.create_table @table, true, $callback
+
+    @dbforge.create_table @table, $callback
 
   down: ($callback) ->
 
@@ -38,38 +40,17 @@ class global.Migration_Create_users_table extends CI_Migration
       constraint: 5
       unsigned: true
       auto_increment: true
-    email:
+    username:
+      type: 'VARCHAR'
+      constraint: 255
+    password:
       type: 'VARCHAR'
       constraint: 255
     name:
       type: 'VARCHAR'
       constraint: 255
-    code:
-      type: 'VARCHAR'
-      constraint: 255
-    last_logon:
-      type: 'DATETIME'
-    created_on:
-      type: 'DATETIME'
-    created_by:
-      type: 'VARCHAR'
-      constraint: 255
-    active:
-      type: 'INT'
-    timezone:
-      type: 'VARCHAR'
-      constraint: 255
-    language:
-      type: 'VARCHAR'
-      constraint: 255
-    theme:
-      type: 'VARCHAR'
-      constraint: 255
-    path:
-      type: 'VARCHAR'
-      constraint: 255
 
-module.exports = Migration_Create_users_table
 
-# End of file 001_create_users_table.coffee
-# Location: ./application/migrations/001_create_users_table.coffee
+module.exports = Migration_Travel_create_customer_table
+# End of file 002_Travel_create_customer_table.coffee
+# Location: .modules/travel/migrations/002_Travel_create_customer_table.coffee

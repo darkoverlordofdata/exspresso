@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 004_create_customer_table.coffee
+#| 002_Blog_create_blog_table.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,15 +11,15 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	004_create_customer_table - Migration
+#	002_Blog_create_blog_table - Migration
 #
 #
 #
-class Migration_Create_customer_table extends CI_Migration
+class Migration_Blog_create_blog_table extends CI_Migration
 
-  seq: '004'
-  description: 'Create the customer table'
-  table: 'customer'
+  seq: '002'
+  description: 'Create the blog table'
+  table: 'blog'
 
   up: ($callback) ->
 
@@ -40,17 +40,25 @@ class Migration_Create_customer_table extends CI_Migration
       constraint: 5
       unsigned: true
       auto_increment: true
-    username:
+    author_id:
+      type: 'INT'
+    category_id:
+      type: 'INT'
+    status:
+      type: 'INT'
+    created_on:
+      type: 'DATETIME'
+    updated_on:
+      type: 'DATETIME'
+    title:
       type: 'VARCHAR'
       constraint: 255
-    password:
-      type: 'VARCHAR'
-      constraint: 255
-    name:
-      type: 'VARCHAR'
-      constraint: 255
+    body:
+      type: 'TEXT'
 
 
-module.exports = Migration_Create_customer_table
-# End of file 004_create_customer_table.coffee
-# Location: ./application/migrations/004_create_customer_table.coffee
+
+module.exports = Migration_Blog_create_blog_table
+
+# End of file 002_Blog_create_blog_table.coffee
+# Location: .modules/blog/migrations/002_Blog_create_blog_table.coffee

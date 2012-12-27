@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 006_add_hotels_data.coffee
+#| 004_Travel_add_hotels_data.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,13 +11,13 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	006_add_hotels_data - Migration
+#	004_Travel_add_hotels_data - Migration
 #
 #
 #
-class Migration_Add_hotels_data extends CI_Migration
+class Migration_Travel_add_hotels_data extends CI_Migration
 
-  seq: '006'
+  seq: '004'
   description: 'Initialize the hotels data'
   table: 'hotel'
 
@@ -56,7 +56,7 @@ class Migration_Add_hotels_data extends CI_Migration
       {id: 23, price: 210, name: "hotel Allegro", address: "171 West Randolph Street", city: "Chicago", state: "IL", zip: "60601", country: "USA"}
     ]
 
-module.exports = Migration_Add_hotels_data
+module.exports = Migration_Travel_add_hotels_data
 
-# End of file 006_add_hotels_data.coffee
-# Location: ./006_add_hotels_data.coffee
+# End of file 004_Travel_add_hotels_data.coffee
+# Location: .modules/travel/migrations/004_Travel_add_hotels_data.coffee

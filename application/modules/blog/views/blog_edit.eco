@@ -1,0 +1,12 @@
+<div class="container">
+    <p></p>
+    <div class="row">
+        <h3>Title: <%= @blog.title %></h3>
+    </div>
+    <div class="row">
+        <%- @form_open("ckeditor/save") %>
+        <%- @ckeditor("body", @blog.body) %>
+        <%- @form_close() %>
+    </div>
+    <p class="row"></p>
+</div>

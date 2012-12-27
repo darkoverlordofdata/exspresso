@@ -35,49 +35,6 @@ class Welcome extends MY_Controller
 
 
 
-  varz: ($name) ->
-
-    @load.library 'template', title:  'Server Variables'
-    @template.view 'server_vars', server_vars: $_SERVER
-
-  ## --------------------------------------------------------------------
-
-  #
-  # Edit
-  #
-  # ckedit demo
-  #
-  #   @access	public
-  #   @return	void
-  #
-  edit: ->
-
-    @load.library 'template', title:  'Editor'
-    @db = @load.database('mysql', true)
-    @db.initialize =>
-
-      @db.from 'blog'
-      @db.where 'id', '1'
-      @db.get ($err, $blog) =>
-
-        @template.view 'ckeditor', blog: $blog.row()
-
-
-
-  ## --------------------------------------------------------------------
-
-  #
-  # Not Found
-  #
-  # Custom 404 error page
-  #
-  #   @access	public
-  #   @return	void
-  #
-  not_found: ->
-
-    @load.view 'errors/404',
-      url: 'invalid uri'
 
 
 #

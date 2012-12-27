@@ -22,8 +22,8 @@ class global.Migration_Ion_auth_groups_data extends CI_Migration
   table: 'groups'
   data:
     [
-      {'id':null, 'name':'admin', 'description':'Administrator'}
-      {'id':null, 'name':'members', 'description':'General User'}
+      {'name':'admin', 'description':'Administrator'}
+      {'name':'members', 'description':'General User'}
     ]
 
   up: ($next) ->

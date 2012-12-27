@@ -30,6 +30,7 @@ module.exports = (CI_DB) ->
 
     dbdriver:   'postgres'
     port:       5432
+    connected:  false
 
     _escape_char: '"'
 
@@ -68,12 +69,15 @@ module.exports = (CI_DB) ->
     db_connect: ($callback) =>
 
       pg = require('pg')
+      @connected = true
       pg.connect @_connect_string(), ($err, $client) =>
 
         @client = $client
         if ($err)
-          console.log JSON.stringify($err)
-        $callback $err, $client
+          @connected = false
+          console.log $err
+        else
+          $callback $err, $client
 
     #  --------------------------------------------------------------------
 

@@ -1,0 +1,10 @@
+<div class="container">
+    <p></p>
+    <div class="row">
+        <h3>Error</h3>
+    </div>
+    <div class="row">
+        <%- @err %>
+    </div>
+    <p class="row"></p>
+</div>

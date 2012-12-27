@@ -15,28 +15,20 @@
 #
 # This is the default controller
 #
-class Migrate extends MY_Controller
+require APPPATH+'core/AdminController.coffee'
 
-  ## --------------------------------------------------------------------
+class Migrate extends AdminController
 
-  #
-  # Load the migration lib
-  #
-  # Set the migration database, enable migrations
-  #
-  #   @access	public
-  #   @return	void
-  #
   constructor: ($args...) ->
 
-    super($args...)
+    super $args...
 
-    @load.library 'template', title:  'Migrations'
     @load.library 'migration',
-      migration_enabled:  true
       migration_db:       'postgres'
+      migration_enabled:  true
 
-  ## --------------------------------------------------------------------
+
+## --------------------------------------------------------------------
 
   #
   # Index
@@ -49,6 +41,7 @@ class Migrate extends MY_Controller
   #
   index: ($module) ->
 
+    @template.set_title config_item('site_name'), 'Migrations', 'List'
 
     @migration.set_module $module
     $path = @migration._migration_path + '*.coffee'
@@ -138,15 +131,17 @@ class Migrate extends MY_Controller
   ## --------------------------------------------------------------------
 
   #
-  # Details
+  # Preview
   #
-  # Display a migration details
+  # Preview migration sql
   #
   #   @access	public
   #   @param string
   #   @return	void
   #
-  info: ($module, $name = '') ->
+  preview: ($module, $name = '') ->
+
+    @template.set_title config_item('site_name'), 'Migrations', 'Preview'
 
     if $name is ''
       $name = $module
@@ -159,9 +154,8 @@ class Migrate extends MY_Controller
       path:       @migration._migration_path + $name + EXT
       migration:  new $class(@migration)
       fmtsql:     ($sql) ->
-        log_message 'debug', 'SQL = %s', $sql
-        $sql = $sql.replace("VALUEZ", "VALUEZ")
-        log_message 'debug', 'SQL = %s', $sql
+        $sql = ''+$sql
+        $sql = $sql.replace("VALUES", "\nVALUES\n").replace(/\), \(/g, "),\n (")
         return $sql
 
 #

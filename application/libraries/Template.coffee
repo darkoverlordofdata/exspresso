@@ -118,7 +118,10 @@ class global.Template
   #   @return	object
   #
   set_title: ($title) ->
-    @_title = $title
+    if Array.isArray($title)
+      @title = $title.join(' | ')
+    else
+      @_title = $title
     @
 
   ## --------------------------------------------------------------------

@@ -54,10 +54,11 @@
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-exports['default_controller']                 = "welcome/index"
-exports['404_override']                       = 'home/not_found'
+# blog routeing
+exports['/blog']                                = 'blog/index'
+exports['/blog/show/:id']                       = 'blog/show'
+exports['/blog/edit/:id']                       = 'blog/edit'
+exports['/blog/new']                            = 'blog/new'
 
-exports['/home']                              = 'home/index'
-exports['/welcome']                           = 'welcome/index'
 # End of file routes.coffee
-# Location: ./application/config/routes.coffee
+# Location: .modules/blog/config/routes.coffee

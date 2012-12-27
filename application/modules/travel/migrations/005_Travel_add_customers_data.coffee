@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 007_add_customer_data.coffee
+#| 005_Travel_add_customer_data.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,13 +11,13 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	007_add_customer_data - Migration
+#	005_Travel_add_customer_data - Migration
 #
 #
 #
-class Migration_Add_customer_data extends CI_Migration
+class Migration_Travel_add_customer_data extends CI_Migration
 
-  seq: '007'
+  seq: '005'
   description: 'Initialize the customer data'
   table: 'customer'
 
@@ -39,7 +39,7 @@ class Migration_Add_customer_data extends CI_Migration
       {id: 4, username: "scott", password: "", name: "Scott"}
     ]
 
-module.exports = Migration_Add_customer_data
+module.exports = Migration_Travel_add_customer_data
 
-# End of file 007_add_customer_data.coffee
-# Location: ./007_add_customer_data.coffee
+# End of file 005_Travel_add_customer_data.coffee
+# Location: .modules/travel/migrations/005_Travel_add_customer_data.coffee

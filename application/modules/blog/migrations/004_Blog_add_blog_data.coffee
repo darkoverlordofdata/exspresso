@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| 011_add_blog_data.coffee
+#| 004_Blog_add_blog_data.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,13 +11,13 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	011_add_blog_data - Migration
+#	004_Blog_add_blog_data - Migration
 #
 #
 #
-class Migration_Add_blog_data extends CI_Migration
+class Migration_Blog_add_blog_data extends CI_Migration
 
-  seq: '011'
+  seq: '004'
   description: 'Initialize the blog data'
   table: 'blog'
 
@@ -44,7 +44,7 @@ class Migration_Add_blog_data extends CI_Migration
       }
     ]
 
-module.exports = Migration_Add_blog_data
+module.exports = Migration_Blog_add_blog_data
 
-# End of file 011_add_blog_data.coffee
-# Location: ./011_add_blog_data.coffee
+# End of file 004_Blog_add_blog_data.coffee
+# Location: .modules/blog/migrations/004_Blog_add_blog_data.coffee

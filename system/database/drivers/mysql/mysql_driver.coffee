@@ -75,10 +75,12 @@ module.exports = (CI_DB) ->
 
         @connected = true
 
-      @client.connect $callback, ($err) ->
+      @client.connect $callback, ($err) =>
         if ($err)
-          console.log JSON.stringify($err)
-        $callback $err, @client
+          @connected = false
+          console.log $err
+        else
+          $callback $err, @client
 
     #  --------------------------------------------------------------------
 
