@@ -17,6 +17,8 @@
 
  [Live Demo!] (http://exspresso.herokuapp.com/)
 
+ Exspresso is compatible with express 2.x and 3.x.
+
 ## PHP api (formerly not-php)
 
   lib/index.coffee, a php compatability layer used by the ported code,

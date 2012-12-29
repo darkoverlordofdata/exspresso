@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.7.11",
+  "version": "0.7.12",
   "description": "A coffee-script port of CodeIgniter",
   "keywords": ["framework", "web", "coffee-script"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",
@@ -21,7 +21,7 @@
     "dispatch": "*",
     "eco": "*",
     "emailjs": "*",
-    "express": "*",
+    "express": "2.5.9",
     "format-number": "*",
     "glob": "*",
     "marked": "*",

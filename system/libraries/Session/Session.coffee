@@ -209,8 +209,7 @@ class global.CI_Session
         return
 
       # --------------------------------------------------------------------
-
-      $res.locals.flashdata = @flashdata = ($item) ->
+      @flashdata = ($item) ->
 
         $data = $req.session.flashdata = $req.session.flashdata ? {}
 
@@ -220,6 +219,12 @@ class global.CI_Session
           delete $data[$item]
 
         return $value ? ''
+
+
+      if express.version[0] is '3'
+        $res.locals.flashdata = @flashdata
+      else
+        $res.local('flashdata', @flashdata)
 
       $next()
 

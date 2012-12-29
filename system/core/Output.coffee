@@ -281,7 +281,6 @@ module.exports = class global.CI_Output
         if $output is ''
           $output = @final_output
 
-
         #  --------------------------------------------------------------------
 
         #  Do we need to write a cache file?  Only if the controller does not have its

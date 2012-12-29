@@ -36,7 +36,6 @@ class Welcome extends MY_Controller
 
 
 
-
 #
 # Export the class:
 #

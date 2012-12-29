@@ -27,6 +27,8 @@ fs              = require('fs')
 eco             = require('eco')
 
 class global.CI_Server
+  
+  _port: 0
 
   #  --------------------------------------------------------------------
 
@@ -38,8 +40,9 @@ class global.CI_Server
   #
   constructor: ->
 
-    @CI = get_instance()        # the Expresso core instance
-    @app = express()            # inner express object
+    @CI = get_instance()              # the Expresso core instance
+
+    @app = if express.version[0] is '3' then express() else express.createServer()
 
   #  --------------------------------------------------------------------
 
@@ -60,28 +63,28 @@ class global.CI_Server
     @app.use dispatch($router.routes)
     @app.use @error_404()
 
-    if @app.get('env') is 'development'
+    if ENVIRONMENT is 'development'
       @app.use express.errorHandler
         dumpExceptions: true
         showStack: true
 
-    if @app.get('env') is 'production'
+    if ENVIRONMENT is 'production'
       @app.use express.errorHandler()
 
-    @app.listen @app.get('port'), =>
+    @app.listen @_port, =>
 
       console.log " "
       console.log " "
       console.log "Exspresso v"+CI_VERSION
       console.log "copyright 2012 Dark Overlord of Data"
       console.log " "
-      console.log "listening on port #{@app.get('port')}"
+      console.log "listening on port #{@_port}"
       console.log " "
 
-      if @app.get('env') is 'development'
-        console.log "View site at http://localhost:" + @app.get('port')
+      if ENVIRONMENT is 'development'
+        console.log "View site at http://localhost:" + @_port
 
-      log_message "debug", "listening on port #{@app.get('port')}"
+      log_message "debug", "listening on port #{@_port}"
       return
 
   #  --------------------------------------------------------------------
@@ -97,8 +100,9 @@ class global.CI_Server
   #
   config: ($config) ->
 
+    @_port = $config.config.port
     @app.set 'env', ENVIRONMENT
-    @app.set 'port', $config.config.port
+    @app.set 'port', @_port
     @app.set 'site_name', $config.config.site_name
     @app.set 'site_slogan', $config.config.site_slogan
     @app.use express.logger($config.config.logger)
@@ -131,19 +135,23 @@ class global.CI_Server
     # Embedded coffee-script rendering engine
     #
     @app.set 'view engine', $config.view_ext
-    @app.engine $config.view_ext, ($view, $data, $callback) ->
+    if express.version[0] is '3'
+      @app.engine $config.view_ext, ($view, $data, $callback) ->
 
-      fs.readFile $view, 'utf8', ($err, $str) ->
-        if $err then $callback($err)
-        else
-          try
-            $data.filename = $view
-            $callback null, eco.render($str, $data)
-          catch $err
-            $callback $err
+        fs.readFile $view, 'utf8', ($err, $str) ->
+          if $err then $callback($err)
+          else
+            try
+              $data.filename = $view
+              $callback null, eco.render($str, $data)
+            catch $err
+              $callback $err
 
-
-    #
+    else
+      @app.register $config.view_ext, eco
+      # Exspresso has it's own templating, so don't use express layouts
+      @app.set('view options', { layout: false });
+      #
     # Favorites icon
     #
     if $config.favicon?
@@ -235,11 +243,11 @@ class global.CI_Server
 
         show_error "Driver not found: Session_"+$sess_driver
 
-        @app.use express.session()
+        @app.use express.session(secret: $session.encryption_key)
 
     else
 
-      @app.use express.session()
+      @app.use express.session(secret: $session.encryption_key)
 
     return
 
