@@ -32,7 +32,7 @@ class Travel extends PublicController
 
     @load.library 'template', title:  'Login'
 
-    $url        = @input.get_post('url')
+    $url = @input.get_post('url')
 
     @db = @load.database($db, true)
     @db.initialize =>

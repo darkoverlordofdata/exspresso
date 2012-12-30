@@ -1,6 +1,6 @@
-# [Exspresso v0.7.11] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.7.13] (https://github.com/darkoverlordofdata/exspresso)
 
-  A CMS framework built on a port of the [CodeIgniter] (<http://codeigniter.com/>) framework ported to coffee-script.
+ A CMS framework built on a port of the [CodeIgniter] (<http://codeigniter.com/>) framework ported to coffee-script.
 
     Exspresso is opinionated -
 
@@ -15,11 +15,25 @@
       * Themed templating engine
       * Per module migrations
 
- [Live Demo!] (http://exspresso.herokuapp.com/)
+ [Live Demo!](http://exspresso.herokuapp.com/)
 
- Exspresso is compatible with express 2.x and 3.x.
+## Quick Start
 
-## PHP api (formerly not-php)
+### Install
+
+<code>$ npm install exspresso</code>
+
+### Run on localhost
+
+  <code>$ npm start</code><br />
+  then point your browser to http://localhost:5000
+
+  or preview in appjs (you need to have appjs installed)
+  <br /><code>$ node app.js --preview</code>
+
+
+
+## PHP api
 
   lib/index.coffee, a php compatability layer used by the ported code,
   is a group of helper functions that mimic the php api.
@@ -54,17 +68,20 @@ They are set once using 'define' and cannot be re-defined.
 
     singletons
 
+          $APP              CI_Application  (appjs adapter)
           $CFG              CI_Config
           $EXT              CI_Hooks
           $LANG             CI_Lang
           $IN               CI_Input
           $OUT              CI_Output
           $RTR              CI_Router
-          $SRV              CI_Server
+          $SRV              CI_Server       (expressjs adapter)
           $URI              CI_URI
 
     Classes
 
+          CI_Application      application/core/Application.coffee
+          CI_Server           application/core/Server.coffee
           CI_Benchmark        system/core/Benchmark.coffee
           CI_Config           system/core/Config.coffee
           CI_Controller       system/core/Controller.coffee

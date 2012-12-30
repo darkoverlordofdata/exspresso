@@ -13,18 +13,20 @@
 #
 #	Server Class
 #
-#   this class is an adapter to the inner express app
+#   An adapter to the expressjs server instance
 #   it exposes adapter registration points for each of these core classes:
 #
 #       * Config
 #       * Output
 #       * Input
 #       * Session
+#       * URI
 #
 dispatch        = require('dispatch')                   # URL dispatcher for Connect
 express         = require('express')                    # Web development framework 3.0
 fs              = require('fs')
 eco             = require('eco')
+
 
 class global.CI_Server
   
@@ -57,6 +59,10 @@ class global.CI_Server
     load = load_class('Loader', 'core')
     load.initialize @CI, true  # Autoload
     @app.use load_class('Exceptions',  'core').middleware()
+
+    if typeof @_port is 'undefined'
+      @_port = 3000
+
     @app.use @authenticate()
     @app.use @app.router
     @app.use @error_5xx()
@@ -70,6 +76,7 @@ class global.CI_Server
 
     if ENVIRONMENT is 'production'
       @app.use express.errorHandler()
+
 
     @app.listen @_port, =>
 
@@ -85,6 +92,18 @@ class global.CI_Server
         console.log "View site at http://localhost:" + @_port
 
       log_message "debug", "listening on port #{@_port}"
+
+      for $arg in process.argv
+        if $arg is '--preview'
+          #
+          # preview in appjs
+          #
+          {exec} = require('child_process')
+          exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
+            console.log $stderr if $stderr?
+            console.log $stdout if $stdout?
+            process.exit()
+
       return
 
   #  --------------------------------------------------------------------
@@ -134,7 +153,7 @@ class global.CI_Server
     #
     # Embedded coffee-script rendering engine
     #
-    @app.set 'view engine', $config.view_ext
+    @app.set 'view engine', ltrim($config.view_ext, '.')
     if express.version[0] is '3'
       @app.engine $config.view_ext, ($view, $data, $callback) ->
 
@@ -271,6 +290,7 @@ class global.CI_Server
     #
     ($err, $req, $res, $next) ->
 
+      console.log $err
       # error page
       $res.status($err.status or 500).render 'errors/5xx'
       return
@@ -322,4 +342,4 @@ class global.CI_Server
 module.exports = CI_Server
 
 # End of file Server.coffee
-# Location: ./system/core/Server.coffee
+# Location: ./application/core/Server.coffee
