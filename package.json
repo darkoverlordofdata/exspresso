@@ -28,6 +28,7 @@
     "marked": "*",
     "moment": "*",
     "mysql": "*",
+    "not-php": "*",
     "pg": "*",
     "redis": "*",
     "sprintf": "*"

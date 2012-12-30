@@ -15,7 +15,7 @@
 #
 #   Defines the global Exspresso environment
 #
-require './lib'
+require('not-php').export global
 
 
 #
