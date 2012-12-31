@@ -23,6 +23,7 @@
 #       * URI
 #
 #
+express         = require("express")                    # Web development framework
 appjs           = require("appjs")                      # Desktop development framework 0.0.20
 eco             = require('eco')
 utils           = require("util")
@@ -31,12 +32,12 @@ path            = require("path")
 
 class global.MY_Server extends CI_Server
 
-  assets:   ''
-  options:  null
-  window:   null
-  appjs:    null
-
-
+  assets:     ''
+  options:    null
+  window:     null
+  appjs:      null
+  upgraded:   false
+  handle:     null
 
   constructor: ->
 
@@ -45,6 +46,9 @@ class global.MY_Server extends CI_Server
     @CI = get_instance()              # the Exspresso core instance
 
     @app = require('appjs')
+    # Get a copy of the original handle function
+    @handle = appjs.router.handle
+    @app.router.use @upgrade()
 
   #  --------------------------------------------------------------------
 
@@ -58,41 +62,8 @@ class global.MY_Server extends CI_Server
 
     load = load_class('Loader', 'core')
     load.initialize @CI, $autoload
-    @app.use load_class('Exceptions',  'core').middleware()
 
-    $render = ($view, $data, $callback) ->
-
-      fs.readFile $view, 'utf8', ($err, $str) ->
-        if $err then $callback($err)
-        else
-          try
-            $data.filename = $view
-            $callback null, eco.render($str, $data)
-          catch $err
-            $callback $err
-
-    # Get a copy of the original handle function
-    $handle = appjs.router.handle
-
-    #
-    # override the appjs router
-    #
-    appjs.router.handle = ($req, $res) ->
-
-      # Check if this is a request for static content
-      $fullpath = path.join(@assets, $req.pathname)
-      if file_exists($fullpath) and is_file($fullpath)
-        #
-        # Serve static content: *.css, *.js, *.html, etc.
-        #
-        $handle.apply appjs.router, arguments
-      else
-        #
-        # Serve routed virtual content
-        #
-        $req.originalUrl = $req.url
-        $req.url = $req.pathname
-        #$server.handle.apply $server, arguments
+    @app.router.use load_class('Exceptions',  'core').middleware()
 
     #
     # create the application window
@@ -132,6 +103,7 @@ class global.MY_Server extends CI_Server
 
     @appjs = $config['appjs']
 
+
   #  --------------------------------------------------------------------
 
   #
@@ -148,7 +120,28 @@ class global.MY_Server extends CI_Server
     $theme ='default'
     @assets = APPPATH+"themes/"+$theme+"/assets/"
     @app.serveFilesFrom @assets
+    #
+    # override the appjs router
+    #
+    appjs.router.handle = ($req, $res) ->
 
+      # Check if this is a request for static content
+      $fullpath = path.join(@assets, $req.pathname)
+      if file_exists($fullpath) and is_file($fullpath)
+        #
+        # Serve static content: *.css, *.js, *.html, etc.
+        #
+        $handle.apply appjs.router, arguments
+      else
+        #
+        # Serve routed virtual content
+        #
+        $req.originalUrl = $req.url
+        $req.url = $req.pathname
+    #$server.handle.apply $server, arguments
+
+    @app.router.use $output.middleware()
+    return
 
 
   #  --------------------------------------------------------------------
@@ -163,6 +156,8 @@ class global.MY_Server extends CI_Server
   # @return	void
   #
   input: ($input) ->
+    @app.router.use express.methodOverride()
+    @app.router.use $input.middleware()
 
 
   #  --------------------------------------------------------------------
@@ -177,6 +172,8 @@ class global.MY_Server extends CI_Server
   # @return	void
   #
   uri: ($uri) ->
+    @app.router.use $uri.middleware()
+    return
 
   #  --------------------------------------------------------------------
 
@@ -190,6 +187,47 @@ class global.MY_Server extends CI_Server
   # @return	void
   #
   session: ($session) ->
+    @app.router.use $session.middleware()
+    return
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Upgrade -
+  #
+  #   appjs is similar to connect, so we'll upgrade it here
+  #   such that Exspresso will think it's talking to express.
+  #
+  # @access	public
+  # @return	void
+  #
+  upgrade: ($req, $res, $next) ->
+
+    return $next() if @upgraded # only run once
+    #
+    # Request properties
+    #
+    $req.session = $req.session ? {}
+
+
+    #
+    # Response properties
+    #
+    $res.render = ($view, $data, $callback) ->
+
+      fs.readFile $view, 'utf8', ($err, $str) ->
+        if $err then $callback($err)
+        else
+          try
+            $data.filename = $view
+            $callback null, eco.render($str, $data)
+          catch $err
+            $callback $err
+
+
+
+    @upgraded = true
+    $next()
 
 
 # End of file MY_Server.coffee
