@@ -1,21 +1,22 @@
-# [Exspresso v0.7.13] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.7.14] (https://github.com/darkoverlordofdata/exspresso)
 
- A CMS framework built on a port of the [CodeIgniter] (<http://codeigniter.com/>) framework ported to coffee-script.
+ A CMS framework written in coffeescript, built using a port of the [CodeIgniter] (<http://codeigniter.com/>) framework.
 
-    Exspresso is opinionated -
+    Exspresso features
 
-      * express.js core is exposed via the CodeIgniter framework api
-      * embedded coffee-script (ECO) for views.
-      * twitter bootstrap css styles
       * HMVC architecture ported from Wiredesignz
+      * embedded coffee-script (ECO) for views.
+      * bootstrap css styles
       * DB Drivers for MySQL and PostgreSQL
-
-    New in Exspresso
       * Configuration inheritance
       * Themed templating engine
       * Per module migrations
 
  [Live Demo!](http://exspresso.herokuapp.com/)
+
+  Exspresso uses [not-php] (http://github.com/darkoverlordofdata/not-php) v0.3.7 as a drop in
+  replacement for many of the php api calls that were in the ported code.
+
 
 ## Quick Start
 
@@ -29,32 +30,7 @@
   then point your browser to http://localhost:5000
 
   or preview in appjs (you need to have appjs installed)
-  <br /><code>$ node app.js --preview</code>
-
-
-
-## PHP api
-
-  lib/index.coffee, a php compatability layer used by the ported code,
-  is a group of helper functions that mimic the php api.
-  Use cake test to test.
-
-
-## PHP2Coffee
-
-  Use the Php2coffee command line port tool to kick start php ports.
-
-  Requires Zend compatible php runtime
-
-    Usage: bin/php2coffee [OPTIONS] PATH [DESTINATION]
-
-      -h, --help          display this help
-      -j. --javascript    compiles resulting .coffee file
-      -r, --recursive     recurse source path
-      -t, --trace         trace output
-      -T, --tabs          use tab character in output (default is spaces)
-      -d, --dump          dump of tokens
-
+  <br /><code>$ node app --preview</code>
 
 ### Globals
 
@@ -113,11 +89,7 @@ They are set once using 'define' and cannot be re-defined.
           Theme               application/libraries/Theme.coffee
 
 
-
-
-## Status
-
-Unstable.
+### Component Status
 
     - unfinished
     ? untested
@@ -195,9 +167,6 @@ Unstable.
         * User_agent            X
         * Xmlrpc                -
         * Zip                   -
-
-
-
 
 
 
