@@ -13,7 +13,7 @@
 #
 #	Server Class
 #
-#   An adapter to the expressjs server instance
+#   An adapter to the express.js server instance
 #   it exposes adapter registration points for each of these core classes:
 #
 #       * Config
@@ -42,6 +42,7 @@ class global.CI_Server
   #
   constructor: ->
 
+    log_message('debug', "Server Class Initialized")
     @CI = get_instance()              # the Expresso core instance
 
     @app = if express.version[0] is '3' then express() else express.createServer()
@@ -54,10 +55,10 @@ class global.CI_Server
   # @access	public
   # @return	void
   #
-  start: ($router) ->
+  start: ($router, $autoload = true) ->
 
     load = load_class('Loader', 'core')
-    load.initialize @CI, true  # Autoload
+    load.initialize @CI, $autoload
     @app.use load_class('Exceptions',  'core').middleware()
 
     if typeof @_port is 'undefined'
@@ -183,7 +184,7 @@ class global.CI_Server
 
     return
 
-        #  --------------------------------------------------------------------
+  #  --------------------------------------------------------------------
 
   #
   # Input registration
