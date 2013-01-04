@@ -25,27 +25,15 @@
 #
 appjs           = require("appjs")                      # Desktop development framework 0.0.20
 dispatch        = require('dispatch')                   # URL dispatcher for Connect
-express         = require("express")                    # Web development framework
+connect         = require("connect")                    # Web development framework
 eco             = require('eco')
 fs              = require("fs")
 path            = require("path")
 utils           = require("util")
 
-locals = ($this) ->
-
-  $this.viewCallbacks = $this.viewCallbacks || []
-
-  $locals = ($this) ->
-    for $key, $val in $this
-      $locals[$key] = $val
-    return $this
-
-  return $locals
-
 class global.MY_Server extends CI_Server
 
   assets            : ''
-  options           : null
   window            : null
   secure            : false
   protocol          : 'http'
@@ -60,11 +48,20 @@ class global.MY_Server extends CI_Server
 
     @CI = get_instance()              # the Exspresso core instance
 
-    @app = appjs.router
-    @app.locals = locals(@app)
-    $this = @app
+    locals = (obj) ->
+      locals = (obj) ->
+        for key of obj
+          locals[key] = obj[key]
+        obj
+        console.log obj
+      locals
 
-    @app.use ($req, $res, $next) ->
+
+    @app = appjs.router
+    $this = @app
+    @app.locals = locals(@CI)
+
+    @app.use ($req, $res, $next) =>
 
       #
       # set missing request properties
@@ -76,7 +73,7 @@ class global.MY_Server extends CI_Server
       $req.httpVersion  = $req.httpVersion ? @httpVersion
       $req.secure       = $req.secure ? @secure
       $req.ip           = $req.ip ? @ip
-      $res.locals       = $this.locals
+      $res.locals       = array_merge($this.locals, $res.locals)
       #
       # Response::render
       #
@@ -86,10 +83,7 @@ class global.MY_Server extends CI_Server
         #
         if typeof $data is 'function' then [$data, $callback] = [{}, $data]
 
-        #utils.merge($data, $this.locals)
-        for $key, $val in $this.locals
-          $data[$key] = $val
-
+        $data = array_merge($res.locals, $data)
         #
         # $callback argument is optional
         #
@@ -156,9 +150,7 @@ class global.MY_Server extends CI_Server
       @window.addEventListener 'keydown', (e) =>
         @window.frame.openDevTools()  if e.keyIdentifier is "F12"
 
-    @window.on 'close', =>
-      process.exit()
-    
+
 
   #  --------------------------------------------------------------------
 
@@ -173,12 +165,11 @@ class global.MY_Server extends CI_Server
   #
   config: ($config) ->
 
-    @app.use express.logger($config.config.logger)
+    @app.use connect.logger($config.config.logger)
     @app.locals
-      site_name:    $config.config.site_name
-      site_slogan:  $config.config.site_slogan
-
-    console.log @app.locals
+      settings:
+        site_name:    $config.config.site_name
+        site_slogan:  $config.config.site_slogan
 
 
   #  --------------------------------------------------------------------
@@ -214,10 +205,9 @@ class global.MY_Server extends CI_Server
   #
   input: ($input) ->
 
-    @app.use express.query()
-    @app.use express.methodOverride()
+    @app.use connect.query()
+    @app.use connect.methodOverride()
     @app.use $input.middleware()
-
 
 
 

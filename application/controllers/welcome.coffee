@@ -16,7 +16,7 @@
 # This is the default controller
 #
 
-class Welcome extends MY_Controller
+class Welcome extends CI_Controller
 
   ## --------------------------------------------------------------------
 
@@ -30,9 +30,25 @@ class Welcome extends MY_Controller
   #
   index: ->
 
-    @output.enable_profiler true
+    @output.enable_profiler false
     @load.view 'welcome_message'
 
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Not Found
+  #
+  # Custom 404 error page
+  #
+  #   @access	public
+  #   @return	void
+  #
+  not_found: ->
+
+    #@template.set_title config_item('site_name'), '404 Not Found'
+    @load.view 'errors/404',
+      url: 'invalid uri'
 
 
 

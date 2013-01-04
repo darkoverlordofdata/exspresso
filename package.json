@@ -14,8 +14,10 @@
     "php2coffee": "./bin/php2coffee"
   },
   "dependencies": {
+    "appjs": "*",
     "bcrypt": "*",
     "coffee-script": "*",
+    "connect": "*",
     "connect-cache": "*",
     "connect-redis": "*",
     "dispatch": "*",

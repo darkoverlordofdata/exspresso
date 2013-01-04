@@ -31,30 +31,24 @@ class Home extends PublicController
   #
   index: ->
 
+    console.log '----------------------'
+    console.log @res
+    console.log '----------------------'
+
+    @res.send "hello"
+
+  index1: ->
     @template.set_title config_item('site_name')
 
     @db.from 'blog'
     @db.where 'id', '1'
     @db.get ($err, $blog) =>
 
-      if $err then show_error
-      else @template.view 'home_page', blog: $blog.row()
+      if $err then return show_error
 
-  ## --------------------------------------------------------------------
+      $data = array_merge({blog: $blog.row()}, @load.helper('html'))
 
-  #
-  # Not Found
-  #
-  # Custom 404 error page
-  #
-  #   @access	public
-  #   @return	void
-  #
-  not_found: ->
-
-    #@template.set_title config_item('site_name'), '404 Not Found'
-    @load.view 'errors/404',
-      url: 'invalid uri'
+      @template.view 'home_page', $data
 
 #
 # Export the class:

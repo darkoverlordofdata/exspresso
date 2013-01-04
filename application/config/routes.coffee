@@ -55,7 +55,7 @@
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
 exports['default_controller']                 = "welcome/index"
-exports['404_override']                       = 'home/not_found'
+exports['404_override']                       = 'welcome/not_found'
 
 exports['/home']                              = 'home/index'
 exports['/welcome']                           = 'welcome/index'

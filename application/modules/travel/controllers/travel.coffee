@@ -15,6 +15,7 @@
 #
 moment          = require('moment')                     # Parse, manipulate, and display dates
 bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
+require APPPATH+'core/PublicController.coffee'
 
 
 class Travel extends PublicController

@@ -40,6 +40,7 @@
             <pre><code>application/controllers/welcome.coffee</code></pre>
             <p></p>
             <p>Page rendered in {elapsed_time} ms</p>
+            <a href="index.html">test</a>
         </div>
         <div class="row">
             <div class="span6">
