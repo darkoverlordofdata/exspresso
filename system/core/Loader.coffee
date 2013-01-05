@@ -464,11 +464,7 @@ class global.CI_Loader
       show_error 'Unable to load the requested file: helpers/'+$helper+EXT
 
     # expose the helpers to template engine
-    $SRV.app.locals @_ci_helpers[$helper]
-    #for $name, $value of @_ci_helpers[$helper]
-    #  $SRV.app.locals[$name] = $value
-
-    @_ci_helpers[$helper]
+    $SRV.set_helpers @_ci_helpers[$helper]
 
   ## --------------------------------------------------------------------
 

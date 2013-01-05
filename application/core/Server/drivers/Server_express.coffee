@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| Server.coffee
+#| Server_express.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -10,6 +10,11 @@
 #| it under the terms of the GNU General Public License Version 3
 #|
 #+--------------------------------------------------------------------+
+#
+#	Server_express - Server driver for expressjs
+#
+#
+#
 #
 #	Server Class
 #
@@ -28,8 +33,8 @@ fs              = require('fs')
 eco             = require('eco')
 
 
-class global.CI_Server
-  
+class global.CI_Server_express extends CI_Server
+
   _port: 0
 
   #  --------------------------------------------------------------------
@@ -46,6 +51,24 @@ class global.CI_Server
     @CI = get_instance()              # the Expresso core instance
 
     @app = if express.version[0] is '3' then express() else express.createServer()
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Add view helpers
+  #
+  # @access	public
+  # @return	void
+  #
+  set_helpers: ($helpers) ->
+
+    if express.version[0] is '3'
+      @app.locals $helpers
+    else
+      @app.helpers $helpers
+
+    $helpers
+
 
   #  --------------------------------------------------------------------
 
@@ -171,7 +194,7 @@ class global.CI_Server
       @app.register $config.view_ext, eco
       # Exspresso has it's own templating, so don't use express layouts
       @app.set('view options', { layout: false });
-      #
+    #
     # Favorites icon
     #
     if $config.favicon?
@@ -196,7 +219,7 @@ class global.CI_Server
   # @return	void
   #
   input: ($input) ->
-    
+
     @app.use express.bodyParser()
     @app.use express.methodOverride()
     @app.use $input.middleware()
@@ -340,7 +363,7 @@ class global.CI_Server
       $next()
 
 
-module.exports = CI_Server
+module.exports = CI_Server_express
 
-# End of file Server.coffee
-# Location: ./application/core/Server.coffee
+# End of file Server_express.coffee
+# Location: .application/core/Server/drivers/Server_express.coffee

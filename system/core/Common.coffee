@@ -137,6 +137,47 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
 
   return new (get_class($name))()
 
+
+#  ------------------------------------------------------------------------
+
+#
+# Driver registry
+#
+# Loads a driver subclass as a class singleton.
+#
+# @access	public
+# @param	string	the class name of the driver being requested
+# @param	string	the subclass name of the driver being requested
+# @param	string	the directory where the class should be found
+# @param	string	the class name prefix
+# @param	string	configuration
+# @return	object
+#
+exports.load_driver = load_driver = ($class, $subclass, $directory = 'libraries', $prefix = 'CI_', $config = {}) ->
+
+  $name = strtolower($class)
+  #  Is the config file in the environment folder?
+  if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/' + $name + EXT)
+    if not file_exists($file_path = APPPATH + 'config/' + $name + EXT)
+      show_error('The driver configuration file ' + $name + EXT + ' does not exist.')
+
+  $driver = require($file_path)[$name]
+
+  if not $driver?  or count($driver) is 0
+    show_error 'No driver settings were found in the ' + $name + ' config file.'
+
+  $subclass = require($file_path)['active_'+$driver] if $subclass is ''
+
+  if not $subclass? or not $driver[$subclass]?
+    show_error 'You have specified an invalid driver.'
+
+  $config = $driver[$subclass]
+
+  require APPPATH + $directory + '/' + $class + '/' + $class + EXT
+
+  load_class($class + '_' + $subclass, $directory + '/' + $class + '/drivers/', $prefix, $config)
+
+
 #  ------------------------------------------------------------------------
 
 #
@@ -152,7 +193,9 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
 # @param	string	the class name prefix
 # @return	object
 #
-exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = 'CI_') ->
+exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = 'CI_', $config = {}) ->
+
+  if typeof $prefix isnt 'string' then [$prefix, $config] = ['CI_', $prefix]
 
   #  Does the class exist?  If so, we're done...
   if _classes[$class]?
@@ -184,7 +227,7 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
   #  Keep track of what we just loaded
   is_loaded($class)
 
-  _classes[$class] = new (get_class($name))()
+  _classes[$class] = new (get_class($name))($config)
   return _classes[$class]
 
 

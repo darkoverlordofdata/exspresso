@@ -28,7 +28,7 @@ define 'CI_VERSION', require(FCPATH + 'package.json').version
 #  Load the global functions
 # ------------------------------------------------------
 #
-require BASEPATH + 'core/Common'
+require BASEPATH + 'core/Common.coffee'
 
 log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", CI_VERSION
 #
@@ -44,10 +44,10 @@ else
 
 #
 # ------------------------------------------------------
-#  Instantiate the core express app
+#  Instantiate the core server app
 # ------------------------------------------------------
 #
-define '$SRV', load_class('Server', 'core')
+define '$SRV', load_driver('Server', 'appjs', 'core')
 
 #
 #------------------------------------------------------

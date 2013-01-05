@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| MY_Server.coffee
+#| Server_appjs.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,7 +11,10 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	MY_Server Class
+#	Server_appjs - Server driver for appjs
+#
+#
+#	Server_appjs Class
 #
 #   An adapter to the appjs server instance
 #   it exposes adapter registration points for each of these core classes:
@@ -31,7 +34,7 @@ fs              = require("fs")
 path            = require("path")
 utils           = require("util")
 
-class global.MY_Server extends CI_Server
+class global.CI_Server_appjs extends CI_Server
 
   assets            : ''
   window            : null
@@ -44,7 +47,7 @@ class global.MY_Server extends CI_Server
 
   constructor: ->
 
-    log_message('debug', "MY_Server Class Initialized")
+    log_message('debug', "Server_appjs Class Initialized")
 
     @CI = get_instance()              # the Exspresso core instance
 
@@ -58,8 +61,8 @@ class global.MY_Server extends CI_Server
 
 
     @app = appjs.router
-    $this = @app
     @app.locals = locals(@CI)
+    $this = @app
 
     @app.use ($req, $res, $next) =>
 
@@ -105,6 +108,17 @@ class global.MY_Server extends CI_Server
 
       $next()
 
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Add view helpers
+  #
+  # @access	public
+  # @return	void
+  #
+  set_helpers: ($helpers) ->
+    @app.locals $helpers
 
   #  --------------------------------------------------------------------
 
@@ -209,7 +223,7 @@ class global.MY_Server extends CI_Server
     @app.use connect.methodOverride()
     @app.use $input.middleware()
 
+module.exports = CI_Server_appjs
 
-
-# End of file MY_Server.coffee
-# Location: .application/core/MY_Server.coffee
+# End of file Server_appjs.coffee
+# Location: .application/core/Server/drivers/Server_appjs.coffee
