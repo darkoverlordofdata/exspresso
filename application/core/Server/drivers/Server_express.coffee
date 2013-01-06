@@ -27,28 +27,27 @@
 #       * Session
 #       * URI
 #
-dispatch        = require('dispatch')                   # URL dispatcher for Connect
-express         = require('express')                    # Web development framework 3.0
-fs              = require('fs')
-eco             = require('eco')
+express         = require('express')    # Web development framework 3.0
+eco             = require('eco')        # Eco templating
+fs              = require("fs")         # File system
 
 
 class global.CI_Server_express extends CI_Server
 
-  _port: 0
+  _driver           : 'express'
 
   #  --------------------------------------------------------------------
 
   #
-  # get server instance
+  # Set the server instance
   #
   # @access	public
   # @return	void
   #
-  constructor: ->
+  constructor: ($config = {}) ->
 
-    log_message('debug', "Server Class Initialized")
-    @CI = get_instance()              # the Expresso core instance
+    super $config
+    log_message('debug', "Server_express driver Class Initialized")
 
     @app = if express.version[0] is '3' then express() else express.createServer()
 
@@ -62,11 +61,7 @@ class global.CI_Server_express extends CI_Server
   #
   set_helpers: ($helpers) ->
 
-    if express.version[0] is '3'
-      @app.locals $helpers
-    else
-      @app.helpers $helpers
-
+    @app.locals $helpers
     $helpers
 
 
@@ -80,9 +75,7 @@ class global.CI_Server_express extends CI_Server
   #
   start: ($router, $autoload = true) ->
 
-    load = load_class('Loader', 'core')
-    load.initialize @CI, $autoload
-    @app.use load_class('Exceptions',  'core').middleware()
+    super $router, $autoload
 
     if typeof @_port is 'undefined'
       @_port = 3000
@@ -90,7 +83,6 @@ class global.CI_Server_express extends CI_Server
     @app.use @authenticate()
     @app.use @app.router
     @app.use @error_5xx()
-    @app.use dispatch($router.routes)
     @app.use @error_404()
 
     if ENVIRONMENT is 'development'
@@ -129,6 +121,7 @@ class global.CI_Server_express extends CI_Server
             process.exit()
 
       return
+    return
 
   #  --------------------------------------------------------------------
 
@@ -142,6 +135,8 @@ class global.CI_Server_express extends CI_Server
   # @return	void
   #
   config: ($config) ->
+
+    super $config
 
     @_port = $config.config.port
     @app.set 'env', ENVIRONMENT
@@ -163,6 +158,8 @@ class global.CI_Server_express extends CI_Server
   # @return	void
   #
   output: ($output) ->
+
+    super $output
 
     $config = @CI.config.config
 
@@ -203,8 +200,6 @@ class global.CI_Server_express extends CI_Server
     else
       @app.use express.favicon()
 
-    @app.use $output.middleware()
-
     return
 
   #  --------------------------------------------------------------------
@@ -220,9 +215,10 @@ class global.CI_Server_express extends CI_Server
   #
   input: ($input) ->
 
+    super $input
+
     @app.use express.bodyParser()
     @app.use express.methodOverride()
-    @app.use $input.middleware()
     return
 
   #  --------------------------------------------------------------------
@@ -238,7 +234,7 @@ class global.CI_Server_express extends CI_Server
   #
   uri: ($uri) ->
 
-    @app.use $uri.middleware()
+    super $uri
     return
 
   #  --------------------------------------------------------------------
@@ -254,7 +250,8 @@ class global.CI_Server_express extends CI_Server
   #
   session: ($session) ->
 
-    @app.use $session.middleware()
+    super $session
+    #@app.use $session.middleware()
     @app.use express.cookieParser($session.encryption_key)
 
 
@@ -302,9 +299,9 @@ class global.CI_Server_express extends CI_Server
   #
   #   middleware error handler
   #
-  #   @param {Object} $req
-  #   @param {Object} $res
-  #   @param {Function} $next
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
   #
   error_5xx: ->
 
@@ -327,9 +324,9 @@ class global.CI_Server_express extends CI_Server
   #
   #   middleware page not found
   #
-  #   @param {Object} $req
-  #   @param {Object} $res
-  #   @param {Function} $next
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
   #
   error_404: ->
 
@@ -350,9 +347,9 @@ class global.CI_Server_express extends CI_Server
   #
   #   middleware hook for authentication
   #
-  #   @param {Object} $req
-  #   @param {Object} $res
-  #   @param {Function} $next
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
   #
 
   authenticate: ->

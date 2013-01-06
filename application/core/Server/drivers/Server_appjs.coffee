@@ -26,13 +26,10 @@
 #       * URI
 #
 #
-appjs           = require("appjs")                      # Desktop development framework 0.0.20
-dispatch        = require('dispatch')                   # URL dispatcher for Connect
-connect         = require("connect")                    # Web development framework
-eco             = require('eco')
-fs              = require("fs")
-path            = require("path")
-utils           = require("util")
+appjs           = require("appjs")      # Desktop development framework 0.0.20
+connect         = require("connect")    # Use connect middleware
+eco             = require('eco')        # Eco templating
+fs              = require("fs")         # File system
 
 
 class Variables
@@ -40,7 +37,7 @@ class Variables
   #  --------------------------------------------------------------------
 
   #
-  # Wrap the options passed to render
+  # Wrap the data array passed to render
   #
   # @access	public
   # @return	void
@@ -55,11 +52,8 @@ class Variables
 
 class global.CI_Server_appjs extends CI_Server
 
-  _utils            : connect # use connect middleware utils
-
-  _assets           : APPPATH+"themes/default/assets/"
   _driver           : 'appjs'
-
+  _assets           : APPPATH+"themes/default/assets/"
   _secure           : false
   _protocol         : ''
   _host             : ''
@@ -68,6 +62,14 @@ class global.CI_Server_appjs extends CI_Server
   _url              : ''
   _window           : null
 
+  #  --------------------------------------------------------------------
+
+  #
+  # Set the server instance
+  #
+  # @access	public
+  # @return	void
+  #
   constructor: ($config = {}) ->
 
     super $config
@@ -87,6 +89,7 @@ class global.CI_Server_appjs extends CI_Server
   set_helpers: ($helpers) ->
     for $key, $val of $helpers
       Variables::[$key] = $val
+    $helpers
 
   #  --------------------------------------------------------------------
 
@@ -100,30 +103,31 @@ class global.CI_Server_appjs extends CI_Server
 
     super $router, $autoload
 
-    @app.use dispatch($router.routes)
-
     #
     # create the application window
     #
-    @window = appjs.createWindow(@_url, @_window)
+    $window = appjs.createWindow(@_url, @_window)
 
     #
     # show the window after initialization
     #
-    @window.on 'create', =>
-      @window.frame.show()
-      @window.frame.center()
+    $window.on 'create', ->
+      $window.frame.show()
+      $window.frame.center()
+      return
 
     #
     # add require/process/module to the window global object for debugging from the DevTools
     #
-    @window.on 'ready', =>
-      @window.require = require
-      @window.process = process
-      @window.module = module
-      @window.addEventListener 'keydown', (event) =>
-        @window.frame.openDevTools()  if event.keyIdentifier is "F12"
-
+    $window.on 'ready', ->
+      $window.require = require
+      $window.process = process
+      $window.module = module
+      $window.addEventListener 'keydown', (event) ->
+        $window.frame.openDevTools() if event.keyIdentifier is "F12"
+        return
+      return
+    return
 
 
   #  --------------------------------------------------------------------
@@ -144,6 +148,7 @@ class global.CI_Server_appjs extends CI_Server
     Variables::['settings'] =
       site_name:    $config.config.site_name
       site_slogan:  $config.config.site_slogan
+    return
 
 
   #  --------------------------------------------------------------------
@@ -160,8 +165,6 @@ class global.CI_Server_appjs extends CI_Server
   output: ($output) ->
 
     super $output
-    $theme ='default'
-    @_assets = APPPATH+"themes/"+$theme+"/assets/"
     appjs.serveFilesFrom @_assets
     return
 
@@ -182,6 +185,7 @@ class global.CI_Server_appjs extends CI_Server
     super $input
     @app.use connect.query()
     @app.use connect.methodOverride()
+    return
 
   #  --------------------------------------------------------------------
 
@@ -197,6 +201,7 @@ class global.CI_Server_appjs extends CI_Server
   uri: ($uri) ->
 
     super $uri
+    return
 
   #  --------------------------------------------------------------------
 
@@ -214,6 +219,7 @@ class global.CI_Server_appjs extends CI_Server
     super $session
     @app.use connect.cookieParser($session.encryption_key)
     @app.use connect.session(secret: $session.encryption_key)
+    return
 
 
   # --------------------------------------------------------------------
@@ -274,7 +280,7 @@ class global.CI_Server_appjs extends CI_Server
         $callback = $callback ? ($err, $str) -> if $err then $next($err) else $res.send($str)
 
         #
-        # load the view and render it using eco
+        # load the view and render it with data+helpers
         #
         fs.readFile $view, 'utf8', ($err, $str) ->
           if $err then $callback($err)

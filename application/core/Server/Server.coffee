@@ -22,6 +22,8 @@
 #       * Session
 #       * URI
 #
+dispatch        = require('dispatch')   # URL dispatcher for Connect
+
 class global.CI_Server
 
   _port: 0
@@ -68,6 +70,7 @@ class global.CI_Server
     load = load_class('Loader', 'core')
     load.initialize @CI, $autoload
     @app.use load_class('Exceptions',  'core').middleware()
+    @app.use dispatch($router.routes)
 
 
   #  --------------------------------------------------------------------
