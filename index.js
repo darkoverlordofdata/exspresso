@@ -18,7 +18,7 @@
 
 
 require('coffee-script');
-require('./index');
+require('./index.coffee');
 
 /* End of file app.coffee */
 /* Location: ./app.coffee */

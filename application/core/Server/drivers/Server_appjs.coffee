@@ -34,20 +34,74 @@ fs              = require("fs")
 path            = require("path")
 utils           = require("util")
 
+
+class CI_Vars
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Wrap the options passed to render
+  #
+  # @access	public
+  # @return	void
+  #
+  constructor: ($args...) ->
+
+    for $data in $args
+      @[$key] = $val for $key, $val of $data
+
+#  --------------------------------------------------------------------
+
+#
+# Add helpers to the class prototype
+#
+# @access	public
+# @return	void
+#
+CI_Vars.add_helpers = ($properties) ->
+
+  CI_Vars::[$key] = $val for $key, $val of $properties
+
+
+
 class global.CI_Server_appjs extends CI_Server
 
-  assets            : ''
-  window            : null
-  secure            : false
-  protocol          : 'http'
-  host              : 'appjs'
-  httpVersion       : '1.1'
-  ip                : '127.0.0.1'
+  _assets           : APPPATH+"themes/default/assets/"
+  _driver           : 'appjs'
+  _secure           : false
+  _protocol         : 'http'
+  _host             : 'appjs'
+  _httpVersion      : '1.1'
+  _ip               : '127.0.0.1'
+  _url              : 'http://appjs/'
+  _window           :
+    width           : 1280
+    height          : 920
+    icons           : process.cwd() + "/bin/icons"
+    left            : -1 			# optional, -1 centers
+    top             : -1			# optional, -1 centers
+    autoResize      : false 	# resizes in response to html content
+    resizable       : true		# controls whether window is resizable by user
+    showChrome      : true		# show border and title bar
+    opacity         : 1 			# opacity from 0 to 1 (Linux)
+    alpha           : false 	# alpha composited background (Windows & Mac)
+    fullscreen      : false 	# covers whole screen and has no border
+    disableSecurity : true		# allow cross origin requests
 
 
-  constructor: ->
+  #  --------------------------------------------------------------------
+
+  #
+  # Patch the appjs server objects to render templates
+  #
+  # @access	public
+  # @return	void
+  #
+  constructor: ($config = {}) ->
 
     log_message('debug', "Server_appjs Class Initialized")
+
+    if not empty($config) then @['_'+$key] = $var for $key, $var of $config
 
     @CI = get_instance()              # the Exspresso core instance
 
@@ -71,11 +125,11 @@ class global.CI_Server_appjs extends CI_Server
       #
       $req.path         = $req.pathname
       $req.originalUrl  = $req.url
-      $req.host         = $req.host ? @host
-      $req.protocol     = $req.protocol ? @protocol
-      $req.httpVersion  = $req.httpVersion ? @httpVersion
-      $req.secure       = $req.secure ? @secure
-      $req.ip           = $req.ip ? @ip
+      $req.host         = $req.host ? @_host
+      $req.protocol     = $req.protocol ? @_protocol
+      $req.httpVersion  = $req.httpVersion ? @_httpVersion
+      $req.secure       = $req.secure ? @_secure
+      $req.ip           = $req.ip ? @_ip
       $res.locals       = array_merge($this.locals, $res.locals)
       #
       # Response::render
@@ -139,13 +193,7 @@ class global.CI_Server_appjs extends CI_Server
     #
     # create the application window
     #
-    #@window = appjs.createWindow(@config.url, @config.window)
-    $dim =
-      width           : 1280
-      height          : 920
-      icons						: process.cwd() + "/bin/icons"
-
-    @window = appjs.createWindow('http://appjs/', $dim)
+    @window = appjs.createWindow(@_url, @_window)
 
     #
     # show the window after initialization
@@ -200,8 +248,8 @@ class global.CI_Server_appjs extends CI_Server
   output: ($output) ->
 
     $theme ='default'
-    @assets = APPPATH+"themes/"+$theme+"/assets/"
-    appjs.serveFilesFrom @assets
+    @_assets = APPPATH+"themes/"+$theme+"/assets/"
+    appjs.serveFilesFrom @_assets
     @app.use $output.middleware()
     return
 

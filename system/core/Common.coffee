@@ -109,7 +109,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
 
   #  Does the class exist?  If so, we're done...
   if class_exists($class)
-    return new (get_class($class))()
+    return new (global[$class])()
 
   $name = false
 
@@ -135,7 +135,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
   if not class_exists($name)
     die 'Unable to locate the specified class: ' + $class + EXT
 
-  return new (get_class($name))()
+  return new (global[$name])()
 
 
 #  ------------------------------------------------------------------------
@@ -227,7 +227,7 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
   #  Keep track of what we just loaded
   is_loaded($class)
 
-  _classes[$class] = new (get_class($name))($config)
+  _classes[$class] = new (global[$name])($config)
   return _classes[$class]
 
 

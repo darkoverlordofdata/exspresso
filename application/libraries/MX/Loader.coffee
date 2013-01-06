@@ -265,7 +265,7 @@ class global.MX_Loader extends CI_Loader
       Modules.load_file($_library, $path)
 
       $library = ucfirst($_library)
-      @CI[$_alias] = new (get_class($library)($params))
+      @CI[$_alias] = new (global[$library]($params))
 
       @_ci_classes[$class] = $_alias
 

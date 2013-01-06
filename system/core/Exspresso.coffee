@@ -14,6 +14,13 @@
 #	the Exspresso framework :)
 #
 #
+#   node [--harmony] index <appjs|connect|express>
+#
+#     node --harmony index appjs
+#     node index connect
+#     node index express
+#
+#
 #
 #
 # Exspresso Version
@@ -22,7 +29,6 @@
 #
 #
 define 'CI_VERSION', require(FCPATH + 'package.json').version
-
 #
 # ------------------------------------------------------
 #  Load the global functions
@@ -47,7 +53,7 @@ else
 #  Instantiate the core server app
 # ------------------------------------------------------
 #
-define '$SRV', load_driver('Server', 'appjs', 'core')
+define '$SRV', load_driver('Server', $argv[2], 'core')
 
 #
 #------------------------------------------------------
@@ -143,13 +149,6 @@ for $path, $uri of $RTR._load_routes()
 
   $RTR.bind $path, $class, $method
 
-
-Object.defineProperties global,
-  $GLOBALS: get: -> global
-  $_POST:   get: -> $IN.post()
-  $_GET:    get: -> $IN.get()
-  $_COOKIE: get: -> $IN.cookie()
-  $_SERVER: get: -> $IN.server()
 
 #$OUT.enable_profiler true
 

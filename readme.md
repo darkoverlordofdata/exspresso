@@ -27,11 +27,17 @@
 ### Run on localhost
 
   <code>$ npm start</code><br />
-  then point your browser to http://localhost:5000
+  and point your browser to http://localhost:5000
 
-  or preview in appjs (you need to have appjs installed)
-  <br /><code>$ node app --preview</code>
+    usage:
 
+    node [--harmony] index <appjs|connect|express> [--preview]
+
+    examples:
+
+    node --harmony index appjs
+    node index connect [--preview]
+    node index express [--preview]
 
 
 ## License
