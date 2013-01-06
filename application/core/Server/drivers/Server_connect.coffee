@@ -94,11 +94,9 @@ class global.CI_Server_connect extends CI_Server
 
     super $router, $autoload
 
-    if typeof @_port is 'undefined'
-      @_port = 3000
+    @_port = @_port || 3000
 
     @app.use @authenticate()
-    #@app.use @app.router
     @app.use @error_5xx()
     @app.use @error_404()
 
@@ -176,16 +174,12 @@ class global.CI_Server_connect extends CI_Server
   output: ($output) ->
 
     super $output
-
     $config = @CI.config.config
 
     #
     # Expose asset folders
     #
     @app.use connect.static(APPPATH+"themes/default/assets/")
-    #
-    # Embedded coffee-script rendering engine
-    #
 
     #
     # Favorites icon

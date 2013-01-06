@@ -155,9 +155,9 @@ class global.CI_Server
   #
   #   middleware error handler
   #
-  #   @param {Object} $req
-  #   @param {Object} $res
-  #   @param {Function} $next
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
   #
   error_5xx: ->
 
@@ -167,9 +167,13 @@ class global.CI_Server
     #
     ($err, $req, $res, $next) ->
 
+      $res.statusCode = $err.status or 500
+
       console.log $err
+      $res.setHeader 'Content-Type', 'text/html; charset=utf-8'
+      $res.end JSON.stringify($err)
       # error page
-      $res.status($err.status or 500).render 'errors/5xx'
+      #$res.status($err.status or 500).render 'errors/5xx'
       return
 
 
@@ -180,9 +184,9 @@ class global.CI_Server
   #
   #   middleware page not found
   #
-  #   @param {Object} $req
-  #   @param {Object} $res
-  #   @param {Function} $next
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
   #
   error_404: ->
 
@@ -203,9 +207,9 @@ class global.CI_Server
   #
   #   middleware hook for authentication
   #
-  #   @param {Object} $req
-  #   @param {Object} $res
-  #   @param {Function} $next
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
   #
 
   authenticate: ->

@@ -39,7 +39,11 @@ class Variables
   #
   # Wrap the data array passed to render
   #
+  #   Add data local to this request in the constructor.
+  #   Helpers are added to the prototype as they are loaded.
+  #
   # @access	public
+  # @param array of arrays to merge together for rendering
   # @return	void
   #
   constructor: ($args...) ->
@@ -82,6 +86,9 @@ class global.CI_Server_appjs extends CI_Server
 
   #
   # Add view helpers
+  #
+  #   The helpers are added to the prototype of the variable wrapper class.
+  #   When the class is newed, all helpers are included via the prototype chain.
   #
   # @access	public
   # @return	void
