@@ -222,11 +222,13 @@ class global.CI_Session
 
         return $value ? ''
 
-
-      if express.version[0] is '3'
-        $res.locals.flashdata = @flashdata
+      if $res.locals?
+        if express.version[0] is '3'
+          $res.locals.flashdata = @flashdata
+        else
+          $res.local('flashdata', @flashdata)
       else
-        $res.local('flashdata', @flashdata)
+        $res.flashdata = @flashdata
 
       $next()
 

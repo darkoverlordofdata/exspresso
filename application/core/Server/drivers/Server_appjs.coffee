@@ -35,7 +35,7 @@ path            = require("path")
 utils           = require("util")
 
 
-class CI_Vars
+class Variables
 
   #  --------------------------------------------------------------------
 
@@ -48,120 +48,33 @@ class CI_Vars
   constructor: ($args...) ->
 
     for $data in $args
-      @[$key] = $val for $key, $val of $data
-
-#  --------------------------------------------------------------------
-
-#
-# Add helpers to the class prototype
-#
-# @access	public
-# @return	void
-#
-CI_Vars.add_helpers = ($properties) ->
-
-  CI_Vars::[$key] = $val for $key, $val of $properties
+      for $key, $val of $data
+        @[$key] = $val
 
 
 
 class global.CI_Server_appjs extends CI_Server
 
+  _utils            : connect # use connect middleware utils
+
   _assets           : APPPATH+"themes/default/assets/"
   _driver           : 'appjs'
+
   _secure           : false
-  _protocol         : 'http'
-  _host             : 'appjs'
-  _httpVersion      : '1.1'
-  _ip               : '127.0.0.1'
-  _url              : 'http://appjs/'
-  _window           :
-    width           : 1280
-    height          : 920
-    icons           : process.cwd() + "/bin/icons"
-    left            : -1 			# optional, -1 centers
-    top             : -1			# optional, -1 centers
-    autoResize      : false 	# resizes in response to html content
-    resizable       : true		# controls whether window is resizable by user
-    showChrome      : true		# show border and title bar
-    opacity         : 1 			# opacity from 0 to 1 (Linux)
-    alpha           : false 	# alpha composited background (Windows & Mac)
-    fullscreen      : false 	# covers whole screen and has no border
-    disableSecurity : true		# allow cross origin requests
+  _protocol         : ''
+  _host             : ''
+  _httpVersion      : ''
+  _ip               : ''
+  _url              : ''
+  _window           : null
 
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Patch the appjs server objects to render templates
-  #
-  # @access	public
-  # @return	void
-  #
   constructor: ($config = {}) ->
 
-    log_message('debug', "Server_appjs Class Initialized")
-
-    if not empty($config) then @['_'+$key] = $var for $key, $var of $config
-
-    @CI = get_instance()              # the Exspresso core instance
-
-    locals = (obj) ->
-      locals = (obj) ->
-        for key of obj
-          locals[key] = obj[key]
-        obj
-        console.log obj
-      locals
-
+    super $config
+    log_message('debug', "Server_appjs driver Class Initialized")
 
     @app = appjs.router
-    @app.locals = locals(@CI)
-    $this = @app
-
-    @app.use ($req, $res, $next) =>
-
-      #
-      # set missing request properties
-      #
-      $req.path         = $req.pathname
-      $req.originalUrl  = $req.url
-      $req.host         = $req.host ? @_host
-      $req.protocol     = $req.protocol ? @_protocol
-      $req.httpVersion  = $req.httpVersion ? @_httpVersion
-      $req.secure       = $req.secure ? @_secure
-      $req.ip           = $req.ip ? @_ip
-      $res.locals       = array_merge($this.locals, $res.locals)
-      #
-      # Response::render
-      #
-      $res.render = ($view, $data = {}, $callback) ->
-        #
-        # $data argument is optional
-        #
-        if typeof $data is 'function' then [$data, $callback] = [{}, $data]
-
-        $data = array_merge($res.locals, $data)
-        #
-        # $callback argument is optional
-        #
-        $callback = $callback ? ($err, $str) ->
-          if $err then $next($err) else $res.send($str)
-        #
-        # load the view and render it using eco
-        #
-
-        fs.readFile $view, 'utf8', ($err, $str) ->
-          if $err then $callback($err)
-          else
-            try
-              $data.filename = $view
-              $callback null, eco.render($str, $data)
-            catch $err
-              console.log $err
-              $next($err)
-
-      $next()
-
+    @app.use @middleware()
 
   #  --------------------------------------------------------------------
 
@@ -172,7 +85,8 @@ class global.CI_Server_appjs extends CI_Server
   # @return	void
   #
   set_helpers: ($helpers) ->
-    @app.locals $helpers
+    for $key, $val of $helpers
+      Variables::[$key] = $val
 
   #  --------------------------------------------------------------------
 
@@ -184,10 +98,8 @@ class global.CI_Server_appjs extends CI_Server
   #
   start: ($router, $autoload = true) ->
 
-    load = load_class('Loader', 'core')
-    load.initialize @CI, $autoload
+    super $router, $autoload
 
-    @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
 
     #
@@ -209,8 +121,8 @@ class global.CI_Server_appjs extends CI_Server
       @window.require = require
       @window.process = process
       @window.module = module
-      @window.addEventListener 'keydown', (e) =>
-        @window.frame.openDevTools()  if e.keyIdentifier is "F12"
+      @window.addEventListener 'keydown', (event) =>
+        @window.frame.openDevTools()  if event.keyIdentifier is "F12"
 
 
 
@@ -227,11 +139,11 @@ class global.CI_Server_appjs extends CI_Server
   #
   config: ($config) ->
 
+    super $config
     @app.use connect.logger($config.config.logger)
-    @app.locals
-      settings:
-        site_name:    $config.config.site_name
-        site_slogan:  $config.config.site_slogan
+    Variables::['settings'] =
+      site_name:    $config.config.site_name
+      site_slogan:  $config.config.site_slogan
 
 
   #  --------------------------------------------------------------------
@@ -247,10 +159,10 @@ class global.CI_Server_appjs extends CI_Server
   #
   output: ($output) ->
 
+    super $output
     $theme ='default'
     @_assets = APPPATH+"themes/"+$theme+"/assets/"
     appjs.serveFilesFrom @_assets
-    @app.use $output.middleware()
     return
 
 
@@ -267,9 +179,116 @@ class global.CI_Server_appjs extends CI_Server
   #
   input: ($input) ->
 
+    super $input
     @app.use connect.query()
     @app.use connect.methodOverride()
-    @app.use $input.middleware()
+
+  #  --------------------------------------------------------------------
+
+  #
+  # URI registration
+  #
+  #   called by the core/URI class constructor
+  #
+  # @access	public
+  # @param	object $IN
+  # @return	void
+  #
+  uri: ($uri) ->
+
+    super $uri
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Sessions registration
+  #
+  #   called by the libraries/Session/Session class constructor
+  #
+  # @access	public
+  # @param	object $IN
+  # @return	void
+  #
+  session: ($session) ->
+
+    super $session
+    @app.use connect.cookieParser($session.encryption_key)
+    @app.use connect.session(secret: $session.encryption_key)
+
+
+  # --------------------------------------------------------------------
+
+  #
+  # Server middleware
+  #
+  #   @returns function middlware callback
+  #
+  middleware: ->
+
+    log_message 'debug',"appjs middleware initialized"
+
+    #  --------------------------------------------------------------------
+
+    #
+    # Patch the appjs server objects to render templates
+    #
+    # @access	private
+    # @return	void
+    #
+    ($req, $res, $next) =>
+
+      #
+      # set missing request properties
+      #
+      $req.path         = $req.pathname
+      $req.originalUrl  = $req.url
+      $req.host         = $req.host ? @_host
+      $req.protocol     = $req.protocol ? @_protocol
+      $req.httpVersion  = $req.httpVersion ? @_httpVersion
+      $req.secure       = $req.secure ? @_secure
+      $req.ip           = $req.ip ? @_ip
+
+      #  --------------------------------------------------------------------
+
+      #
+      # Render
+      #
+      #   called by a controller to display the view
+      #
+      # @access	public
+      # @param	string    path to view
+      # @param	object    data to render in the view
+      # @param	function  callback
+      # @return	void
+      #
+      $res.render = ($view, $data = {}, $callback) ->
+
+        #
+        # $data argument is optional
+        #
+        if typeof $data is 'function' then [$data, $callback] = [{}, $data]
+
+        #
+        # $callback argument is optional
+        #
+        $callback = $callback ? ($err, $str) -> if $err then $next($err) else $res.send($str)
+
+        #
+        # load the view and render it using eco
+        #
+        fs.readFile $view, 'utf8', ($err, $str) ->
+          if $err then $callback($err)
+          else
+            try
+              $data.filename = $view
+              $callback null, eco.render($str, new Variables($data, flashdata: $res.flashdata))
+            catch $err
+              console.log $err
+              $next($err)
+
+      $next()
+
+
 
 module.exports = CI_Server_appjs
 
