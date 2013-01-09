@@ -26,7 +26,13 @@ dispatch        = require('dispatch')   # URL dispatcher for Connect
 
 class global.CI_Server
 
-  _port: 0
+  _cache        : false
+  _csrf         : false
+  _logger       : 'dev'
+  _port         : 3000
+  _preview      : false
+  _site_name    : 'My Site'
+  _site_slogan  : 'My Slogan'
 
   #  --------------------------------------------------------------------
 
@@ -39,11 +45,27 @@ class global.CI_Server
   constructor: ($config) ->
 
     log_message('debug', "Server Class Initialized")
+
+    #
+    # get the config values
+    #
     if not empty($config)
       for $key, $var of $config
         @['_'+$key] = $var
+    #
+    # get command line switches
+    #
+    for $arg in process.argv
+      switch $arg
+        when '--cache'    then @_cache = true
+        when '--csrf'     then @_csrf = true
+        when '--preview'  then @_preview = true
+    #
+    # the Expresso core instance
+    #
+    @CI = get_instance()
 
-    @CI = get_instance()              # the Expresso core instance
+
 
   #  --------------------------------------------------------------------
 
@@ -85,6 +107,13 @@ class global.CI_Server
   # @return	void
   #
   config: ($config) ->
+
+    @_cache       = false
+    @_csrf        = false
+    @_logger      = $config.config.logger
+    @_port        = $config.config.port
+    @_site_name   = $config.config.site_name
+    @_site_slogan = $config.config.site_slogan
 
 
   #  --------------------------------------------------------------------
@@ -165,16 +194,23 @@ class global.CI_Server
     #
     # Internal server error
     #
-    ($err, $req, $res, $next) ->
+    ($err, $req, $res, $next) =>
 
-      $res.statusCode = $err.status or 500
+      $err.status = $err.status || 500
+      $error =
+        code:     $err.status
+        desc:     set_status_header($err.status)
+        level:    if $err.status >= 500 then 'error' else 'info'
+        message:  ($err.stack || '').split('\n')[0]
+        stack:    ($err.stack || '').split('\n').slice(1).map((v) ->
+          return '<li>' + v + '</li>' ).join('')
 
-      console.log $err
-      $res.setHeader 'Content-Type', 'text/html; charset=utf-8'
-      $res.end JSON.stringify($err)
-      # error page
-      #$res.status($err.status or 500).render 'errors/5xx'
-      return
+      $res.render APPPATH+'views/errors/5xx.eco', err: $error, ($err, $content) =>
+        $res.render APPPATH+'views/errors/layout.eco',
+          title:      $error.code + ': ' + $error.desc
+          content:    $content
+          site_name:  @_site_name
+
 
 
   # --------------------------------------------------------------------
@@ -194,11 +230,13 @@ class global.CI_Server
     #
     # handle 404 not found error
     #
-    ($req, $res, $next) ->
+    ($req, $res, $next) =>
 
-      $res.status(404).render 'errors/404', url: $req.originalUrl
-      return
-
+      $res.render APPPATH+'views/errors/404.eco', originalUrl: $req.originalUrl, ($err, $content) =>
+        $res.render APPPATH+'views/errors/layout.eco',
+          title:      '404: Not Found'
+          content:    $content
+          site_name:  @_site_name
 
   # --------------------------------------------------------------------
 

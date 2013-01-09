@@ -187,8 +187,6 @@ module.exports = class global.CI_Input
 
     ($req, $res, $next) =>
 
-      $CFG.config.base_url = $req.protocol+'://'+$req.headers['host']
-
       $server_array =
         argv:                   $req.query
         argc:                   count($req.query)

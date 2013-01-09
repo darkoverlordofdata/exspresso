@@ -142,26 +142,23 @@ class Travel extends PublicController
   #
   search: ($db) ->
 
-    @load.library 'template', title:  'Search'
-    @db = @load.database($db, true)
-    @db.initialize =>
+    @template.set_title 'Search'
+    @db.select ['hotel.name', 'hotel.address', 'hotel.city', 'hotel.state', 'booking.checkinDate', 'booking.checkoutDate', 'booking.id']
+    @db.from 'booking'
+    @db.where 'booking.state', 'BOOKED'
+    @db.join 'hotel', 'hotel.id = booking.hotel','inner'
+    @db.get ($err, $bookings) =>
 
-      @db.select ['hotel.name', 'hotel.address', 'hotel.city', 'hotel.state', 'booking.checkinDate', 'booking.checkoutDate', 'booking.id']
-      @db.from 'booking'
-      @db.where 'booking.state', 'BOOKED'
-      @db.join 'hotel', 'hotel.id = booking.hotel','inner'
-      @db.get ($err, $bookings) =>
+      @template.view "travel/main",
 
-        @template.view "travel/main",
-
-          db:             $db
-          bookings:       $bookings.result()
-          searchString:   @input.get("searchString")
-          pageSize:       ''+parseInt(@input.get('pageSize'),10)
-          pageSizes:
-              '5':    5
-              '10':   10
-              '20':   20
+        db:             $db
+        bookings:       $bookings.result()
+        searchString:   @input.get("searchString")
+        pageSize:       ''+parseInt(@input.get('pageSize'),10)
+        pageSizes:
+            '5':    5
+            '10':   10
+            '20':   20
 
 
 
@@ -176,24 +173,27 @@ class Travel extends PublicController
   hotels: ($db) ->
 
 
-    @load.library 'template', title:  'Hotels'
-    @db = @load.database($db, true)
-    @db.initialize =>
+    @template.set_title 'Hotels'
 
-      $searchString = @input.post("searchString")
-      $pageSize = parseInt(@input.post('pageSize'),10)
+    $searchString = @input.post("searchString")
+    $pageSize = parseInt(@input.post('pageSize'),10)
 
-      @db.from 'hotel'
-      @db.like 'name', "%#{$searchString}%"
-      @db.limit $pageSize, 0
-      @db.get @db, ($err, $hotels) =>
+    console.log '$searchString = '+$searchString
+    console.log '$pageSize = '+$pageSize
 
-        @template.view "travel/hotels",
+    @db.from 'hotel'
+    @db.like 'name', "%#{$searchString}%"
+    @db.limit $pageSize, 0
+    @db.get ($err, $hotels) =>
 
-          db:           $db
-          hotels:       $hotels.result()
-          searchString: $searchString
-          pageSize:     $pageSize
+      console.log $err
+
+      @template.view "travel/hotels",
+
+        db:           $db
+        hotels:       $hotels.result()
+        searchString: $searchString
+        pageSize:     $pageSize
 
 
 
@@ -209,19 +209,17 @@ class Travel extends PublicController
   #
   hotel: ($db, $id) ->
 
-    @load.library 'template', title:  'Hotel'
-    @db = @load.database($db, true)
-    @db.initialize =>
+    @template.set_title 'Hotel'
 
-      @db.from 'hotel'
-      @db.where 'id', $id
-      @db.get ($err, $hotel) =>
+    @db.from 'hotel'
+    @db.where 'id', $id
+    @db.get ($err, $hotel) =>
 
-        @template.view "travel/detail",
+      @template.view "travel/detail",
 
-          db:       $db
-          id:       $id
-          hotel:    $hotel.row()
+        db:       $db
+        id:       $id
+        hotel:    $hotel.row()
 
 
   ## --------------------------------------------------------------------
@@ -234,46 +232,44 @@ class Travel extends PublicController
   #
   booking: ($db, $id) ->
 
-    @load.library 'template', title:  'Booking'
+    @template.set_title 'Booking'
+
     if @input.post('cancel')? then return @redirect "/travel/#{$db}"
 
     if not @session.userdata('customer')
       return @redirect "/travel/#{$db}/login?url=/travel/#{$db}/booking/#{$id}"
 
-    @db = @load.database($db, true)
-    @db.initialize =>
+    @db.from 'hotel'
+    @db.where 'id', $id
+    @db.get ($err, $hotel) =>
 
-      @db.from 'hotel'
-      @db.where 'id', $id
-      @db.get ($err, $hotel) =>
-
-        @template.view "travel/booking",
-          db:       $db
-          id:       $id
-          hotel:    $hotel.row()
-          beds:
-                    '1':    'One king-size bed'
-                    '2':    'Two double beds'
-                    '3':    'Three beds'
-          cardMonth:
-                    '1':    'Jan'
-                    '2':    'Feb'
-                    '3':    'Mar'
-                    '4':    'Apr'
-                    '5':    'May'
-                    '6':    'Jun'
-                    '7':    'Jul'
-                    '8':    'Aug'
-                    '9':    'Sep'
-                    '10':   'Oct'
-                    '11':   'Nov'
-                    '12':   'Dev'
-          cardYear:
-                    '1':    '2012'
-                    '2':    '2013'
-                    '3':    '2014'
-                    '4':    '2015'
-                    '5':    '2016'
+      @template.view "travel/booking",
+        db:       $db
+        id:       $id
+        hotel:    $hotel.row()
+        beds:
+                  '1':    'One king-size bed'
+                  '2':    'Two double beds'
+                  '3':    'Three beds'
+        cardMonth:
+                  '1':    'Jan'
+                  '2':    'Feb'
+                  '3':    'Mar'
+                  '4':    'Apr'
+                  '5':    'May'
+                  '6':    'Jun'
+                  '7':    'Jul'
+                  '8':    'Aug'
+                  '9':    'Sep'
+                  '10':   'Oct'
+                  '11':   'Nov'
+                  '12':   'Dev'
+        cardYear:
+                  '1':    '2012'
+                  '2':    '2013'
+                  '3':    '2014'
+                  '4':    '2015'
+                  '5':    '2016'
 
 
 
@@ -290,51 +286,48 @@ class Travel extends PublicController
   #
   confirm: ($db, $id) ->
 
-    @load.library 'template', title:  'Confirm'
+    @template.set_title 'Booking'
+
     if @input.get_post('cancel')? then return @redirect "/travel/#{$db}"
 
     if not @session.userdata('customer')
       return @redirect "/travel/#{$db}/login?url=/travel/#{$db}/confirm/#{$id}"
 
-    @db = @load.database($db, true)
-    @db.initialize =>
+    @db.from 'hotel'
+    @db.where 'id', $id
+    @db.get ($err, $hotel) =>
 
+      $hotel = $hotel.row()
+      $customer = @session.userdata('customer')
+      $booking =
+        username:       $customer.username
+        hotel:          $hotel.id
+        checkinDate:    moment(@input.post('checkinDate'), "MM-DD-YYYY")
+        checkoutDate:   moment(@input.post('checkoutDate'), "MM-DD-YYYY")
+        cardNumber:     @input.post('cardNumber')
+        cardName:       @input.post('cardName')
+        cardMonth:      parseInt(@input.post('cardMonth'))
+        cardYear:       parseInt(@input.post('cardYear'))
+        smoking:        @input.post('smoking')
+        beds:           1
+        amenities:      @input.post('amenities')
+        state:          "CREATED"
 
-      @db.from 'hotel'
-      @db.where 'id', $id
-      @db.get ($err, $hotel) =>
+      @db.insert 'booking', $booking, ($err) =>
 
-        $hotel = $hotel.row()
-        $customer = @session.userdata('customer')
-        $booking =
-          username:       $customer.username
-          hotel:          $hotel.id
-          checkinDate:    moment(@input.post('checkinDate'), "MM-DD-YYYY")
-          checkoutDate:   moment(@input.post('checkoutDate'), "MM-DD-YYYY")
-          cardNumber:     @input.post('cardNumber')
-          cardName:       @input.post('cardName')
-          cardMonth:      parseInt(@input.post('cardMonth'))
-          cardYear:       parseInt(@input.post('cardYear'))
-          smoking:        @input.post('smoking')
-          beds:           1
-          amenities:      @input.post('amenities')
-          state:          "CREATED"
+        if $err then throw new Error($err)
+        @db.insert_id ($err, $booking_id) =>
 
-        @db.insert 'booking', $booking, ($err) =>
+          if not $booking_id? then throw new Error('insert id not returned')
 
-          if $err then throw new Error($err)
-          @db.insert_id ($err, $booking_id) =>
+          $booking.id = $booking_id
+          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+          $booking.totalPayment = $booking.numberOfNights * $hotel.price
+          @template.view "travel/confirm",
 
-            if not $booking_id? then throw new Error('insert id not returned')
-
-            $booking.id = $booking_id
-            $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
-            $booking.totalPayment = $booking.numberOfNights * $hotel.price
-            @template.view "travel/confirm",
-
-              db:       $db
-              hotel:    $hotel
-              booking:  $booking
+            db:       $db
+            hotel:    $hotel
+            booking:  $booking
 
 
   ## --------------------------------------------------------------------
@@ -347,45 +340,42 @@ class Travel extends PublicController
   #
   book: ($db, $id) ->
 
-    @load.library 'template', title:  'Book'
+    @template.set_title 'Book'
+
     if not @session.userdata('customer')
       return @redirect "/travel/#{$db}/login?url=/travel/#{$db}/book/#{$id}"
 
-    @db = @load.database($db, true)
-    @db.initialize =>
+    @db.from 'booking'
+    @db.where 'id', $id
+    @db.get ($err, $booking) =>
 
+      $booking = $booking.row()
+      if @input.post('confirm')?
 
-      @db.from 'booking'
-      @db.where 'id', $id
-      @db.get ($err, $booking) =>
+        @db.where 'id', $id
+        @db.update 'booking', state: 'BOOKED', ($err) =>
 
-        $booking = $booking.row()
-        if @input.post('confirm')?
+          return @redirect "/travel/#{$db}"
 
-          @db.where 'id', $id
-          @db.update 'booking', state: 'BOOKED', ($err) =>
+      else if @input.post('cancel')?
 
-            return @redirect "/travel/#{$db}"
+        @db.where 'id', $id
+        @db.update 'booking', state: 'CANCELLED', ($err) =>
 
-        else if @input.post('cancel')?
+          return @redirect "/travel/#{$db}"
 
-          @db.where 'id', $id
-          @db.update 'booking', state: 'CANCELLED', ($err) =>
+      else if @input.post('revise')?
 
-            return @redirect "/travel/#{$db}"
+        @db.from 'hotel'
+        @db.where 'id', $booking.hotel
+        @db.get ($err, $hotel) =>
 
-        else if @input.post('revise')?
-
-          @db.from 'hotel'
-          @db.where 'id', $booking.hotel
-          @db.get ($err, $hotel) =>
-
-            $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
-            $booking.totalPayment = $booking.numberOfNights * $hotel.price
-            @template.view "travel/booking",
-              db:       $db
-              hotel:    $hotel.row()
-              booking:  $booking
+          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+          $booking.totalPayment = $booking.numberOfNights * $hotel.price
+          @template.view "travel/booking",
+            db:       $db
+            hotel:    $hotel.row()
+            booking:  $booking
 
 
 

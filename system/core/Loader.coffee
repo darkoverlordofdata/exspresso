@@ -1,4 +1,5 @@
 #+--------------------------------------------------------------------+
+#+--------------------------------------------------------------------+
 #  Loader.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
@@ -724,12 +725,9 @@ class global.CI_Loader
             if not @CI[$object_name]?
               return @_ci_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
-
-
           $is_duplicate = true
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
-
 
         require($baseclass)
         require($subclass)
@@ -757,12 +755,9 @@ class global.CI_Loader
             if not @CI[$object_name]?
               return @_ci_init_class($class, '', $params, $object_name)
 
-
-
           $is_duplicate = true
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
-
 
         require($filepath)
         @_ci_loaded_files.push $filepath

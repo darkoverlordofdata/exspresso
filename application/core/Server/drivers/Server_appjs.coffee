@@ -26,10 +26,10 @@
 #       * URI
 #
 #
-appjs           = require("appjs")      # Desktop development framework 0.0.20
-connect         = require("connect")    # Use connect middleware
-eco             = require('eco')        # Eco templating
-fs              = require("fs")         # File system
+appjs           = require("appjs")          # Desktop SDK
+connect         = require("connect")        # High performance middleware framework
+eco             = require('eco')            # Embedded CoffeeScript templates
+fs              = require("fs")             # File system
 
 
 class Variables
@@ -110,6 +110,8 @@ class global.CI_Server_appjs extends CI_Server
 
     super $router, $autoload
 
+    @app.use @error_404()
+
     #
     # create the application window
     #
@@ -151,10 +153,10 @@ class global.CI_Server_appjs extends CI_Server
   config: ($config) ->
 
     super $config
-    @app.use connect.logger($config.config.logger)
+    @app.use connect.logger(@_logger)
     Variables::['settings'] =
-      site_name:    $config.config.site_name
-      site_slogan:  $config.config.site_slogan
+      site_name:    @_site_name
+      site_slogan:  @_site_slogan
     return
 
 
@@ -250,16 +252,28 @@ class global.CI_Server_appjs extends CI_Server
     #
     ($req, $res, $next) =>
 
+      #  --------------------------------------------------------------------
+
       #
-      # set missing request properties
+      # Set expected request object properties
       #
-      $req.path         = $req.pathname
-      $req.originalUrl  = $req.url
-      $req.host         = $req.host ? @_host
-      $req.protocol     = $req.protocol ? @_protocol
-      $req.httpVersion  = $req.httpVersion ? @_httpVersion
-      $req.secure       = $req.secure ? @_secure
-      $req.ip           = $req.ip ? @_ip
+      Object.defineProperties $req,
+        secure:       get: -> if $req.protocol is 'https' then true else false
+        ip:           value: $req.ip ? @_ip
+        host:         value: $req.host ? @_host
+        protocol:     value: $req.protocol ? @_protocol
+        httpVersion:  value: $req.httpVersion ? @_httpVersion
+        originalUrl:  value: $req.url
+        path:         value: $req.pathname
+
+      $CFG.config.base_url = $req.protocol+'://'+ $req.host
+
+
+      $res.writeHead = ($status, $headers) ->
+        for $header in $headers
+          for $name, $val in $header
+            $res.setHeader $name, $val
+        $res.send $status
 
       #  --------------------------------------------------------------------
 
@@ -294,13 +308,13 @@ class global.CI_Server_appjs extends CI_Server
           else
             try
               $data.filename = $view
-              $callback null, eco.render($str, new Variables($data, flashdata: $res.flashdata))
+              $html = eco.render($str, new Variables($data, flashdata: $res.flashdata))
+              $callback null, $html
             catch $err
-              console.log $err
+              console.log $err.stack
               $next($err)
 
       $next()
-
 
 
 module.exports = CI_Server_appjs

@@ -66,6 +66,7 @@ class global.CI_Controller
 
       if $callback? then $callback $err, $html
       else
+        log_message 'debug','DID WE GET HERE?'
         if $err then show_error $err
         else
           @res.send $html

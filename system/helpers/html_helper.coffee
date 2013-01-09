@@ -293,8 +293,7 @@ if not function_exists('link_tag')
             
           else 
             $link+='href="' + $CI.config.slash_item('base_url') + $v + '" '
-            
-          
+
         else 
           $link+="$k=\"$v\" "
           
@@ -311,8 +310,7 @@ if not function_exists('link_tag')
         
       else 
         $link+='href="' + $CI.config.slash_item('base_url') + $href + '" '
-        
-      
+
       $link+='rel="' + $rel + '" type="' + $type + '" '
       
       if $media isnt ''

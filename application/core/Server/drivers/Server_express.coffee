@@ -27,9 +27,10 @@
 #       * Session
 #       * URI
 #
-express         = require('express')    # Web development framework 3.0
-eco             = require('eco')        # Eco templating
-fs              = require("fs")         # File system
+express         = require('express')        # Web development framework
+cache           = require("connect-cache")  # Caching system for Connect
+eco             = require('eco')            # Embedded CoffeeScript templates
+fs              = require("fs")             # File system
 
 
 class global.CI_Server_express extends CI_Server
@@ -85,15 +86,6 @@ class global.CI_Server_express extends CI_Server
     @app.use @error_5xx()
     @app.use @error_404()
 
-    if ENVIRONMENT is 'development'
-      @app.use express.errorHandler
-        dumpExceptions: true
-        showStack: true
-
-    if ENVIRONMENT is 'production'
-      @app.use express.errorHandler()
-
-
     @app.listen @_port, =>
 
       console.log " "
@@ -109,16 +101,15 @@ class global.CI_Server_express extends CI_Server
 
       log_message "debug", "listening on port #{@_port}"
 
-      for $arg in process.argv
-        if $arg is '--preview'
-          #
-          # preview in appjs
-          #
-          {exec} = require('child_process')
-          exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
-            console.log $stderr if $stderr?
-            console.log $stdout if $stdout?
-            process.exit()
+      if @_preview
+        #
+        # preview in appjs
+        #
+        {exec} = require('child_process')
+        exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
+          console.log $stderr if $stderr?
+          console.log $stdout if $stdout?
+          process.exit()
 
       return
     return
@@ -137,13 +128,13 @@ class global.CI_Server_express extends CI_Server
   config: ($config) ->
 
     super $config
+    @app.use express.logger(@_logger)
+    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if @_cache
 
-    @_port = $config.config.port
     @app.set 'env', ENVIRONMENT
     @app.set 'port', @_port
-    @app.set 'site_name', $config.config.site_name
-    @app.set 'site_slogan', $config.config.site_slogan
-    @app.use express.logger($config.config.logger)
+    @app.set 'site_name', @_site_name
+    @app.set 'site_slogan', @_site_slogan
     return
 
   #  --------------------------------------------------------------------
@@ -171,6 +162,7 @@ class global.CI_Server_express extends CI_Server
     @app.set 'views', APPPATH + $config.views
     @app.use express.static(APPPATH+"themes/all/assets/")
     @app.use express.static($webroot)
+    @app.use express.staticCache()
     #
     # Embedded coffee-script rendering engine
     #
@@ -251,7 +243,6 @@ class global.CI_Server_express extends CI_Server
   session: ($session) ->
 
     super $session
-    #@app.use $session.middleware()
     @app.use express.cookieParser($session.encryption_key)
 
 
@@ -289,73 +280,31 @@ class global.CI_Server_express extends CI_Server
 
       @app.use express.session(secret: $session.encryption_key)
 
+    @app.use express.csrf() if @_csrf
     return
 
-
   # --------------------------------------------------------------------
 
   #
-  # 5xx Error Display
+  # Server middleware
   #
-  #   middleware error handler
+  #   @returns function middlware callback
   #
-  #   @param object $req
-  #   @param object $res
-  #   @param function $next
-  #
-  error_5xx: ->
+  middleware: ->
 
-    log_message 'debug',"5xx middleware initialized"
+    log_message 'debug',"connect middleware initialized"
+
+    #  --------------------------------------------------------------------
+
     #
-    # Internal server error
+    # Patch the connect server objects to render templates
     #
-    ($err, $req, $res, $next) ->
-
-      console.log $err
-      # error page
-      $res.status($err.status or 500).render 'errors/5xx'
-      return
-
-
-  # --------------------------------------------------------------------
-
-  #
-  # 404 Display
-  #
-  #   middleware page not found
-  #
-  #   @param object $req
-  #   @param object $res
-  #   @param function $next
-  #
-  error_404: ->
-
-    log_message 'debug',"404 middleware initialized"
+    # @access	private
+    # @return	void
     #
-    # handle 404 not found error
-    #
-    ($req, $res, $next) ->
+    ($req, $res, $next) =>
 
-      $res.status(404).render 'errors/404', url: $req.originalUrl
-      return
-
-
-  # --------------------------------------------------------------------
-
-  #
-  # Authentication
-  #
-  #   middleware hook for authentication
-  #
-  #   @param object $req
-  #   @param object $res
-  #   @param function $next
-  #
-
-  authenticate: ->
-
-    log_message 'debug',"Authenticate middleware initialized"
-    ($req, $res, $next) ->
+      $CFG.config.base_url = $req.protocol+'://'+ $req.headers['host']
 
       $next()
 

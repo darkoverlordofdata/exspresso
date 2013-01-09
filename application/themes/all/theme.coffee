@@ -42,25 +42,5 @@ exports.regions =
 
   # theme_set_content 'left', $left_sidebar
 
-exports.script =
-  ckeditor: 'ckeditor/ckeditor.js'
-  prettify: [
-    'google-code-prettify/prettify.js'
-    """
-    $(function() {
-    prettyPrint();
-    });
-    """
-    ]
-
-
-exports.css =
-  prettify:  [
-    'google-code-prettify/prettify.css'
-    """
-    code {font-size: 100%};
-    """
-    ]
-
 # End of file theme.coffee
 # Location = .application/themes/default/theme.coffee

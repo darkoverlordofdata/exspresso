@@ -107,6 +107,7 @@ class global.Theme
         $template.set_script @_script[$name]
     @
 
+module.exports = Theme
 
 # End of file Theme.coffee
 # Location: .application/libraries/Theme.coffee

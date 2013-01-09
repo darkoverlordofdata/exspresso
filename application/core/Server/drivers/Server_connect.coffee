@@ -27,9 +27,12 @@
 #       * URI
 #
 #
-connect         = require("connect")    # Web development framework 2.x
-eco             = require('eco')        # Eco templating
-fs              = require("fs")         # File system
+connect         = require("connect")        # High performance middleware framework
+cache           = require("connect-cache")  # Caching system for Connect
+eco             = require('eco')            # Embedded CoffeeScript templates
+fs              = require("fs")             # File system
+
+parseUrl        = connect.utils.parseUrl
 
 
 class Variables
@@ -68,6 +71,7 @@ class global.CI_Server_connect extends CI_Server
     log_message('debug', "Server_connect driver Class Initialized")
 
     @app = connect()
+    @app.use @middleware()
 
   #  --------------------------------------------------------------------
 
@@ -96,18 +100,9 @@ class global.CI_Server_connect extends CI_Server
 
     @_port = @_port || 3000
 
-    @app.use @authenticate()
+    #@app.use @authenticate()
     @app.use @error_5xx()
     @app.use @error_404()
-
-    if ENVIRONMENT is 'development'
-      @app.use connect.errorHandler
-        dumpExceptions: true
-        showStack: true
-
-    if ENVIRONMENT is 'production'
-      @app.use connect.errorHandler()
-
 
     @app.listen @_port, =>
 
@@ -124,16 +119,15 @@ class global.CI_Server_connect extends CI_Server
 
       log_message "debug", "listening on port #{@_port}"
 
-      for $arg in process.argv
-        if $arg is '--preview'
-          #
-          # preview in appjs
-          #
-          {exec} = require('child_process')
-          exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
-            console.log $stderr if $stderr?
-            console.log $stdout if $stdout?
-            process.exit()
+      if @_preview
+        #
+        # preview in appjs
+        #
+        {exec} = require('child_process')
+        exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
+          console.log $stderr if $stderr?
+          console.log $stdout if $stdout?
+          process.exit()
 
       return
     return
@@ -153,10 +147,13 @@ class global.CI_Server_connect extends CI_Server
   config: ($config) ->
 
     super $config
-    @app.use connect.logger($config.config.logger)
+    @app.use connect.logger(@_logger)
+    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if @_cache
+
     Variables::['settings'] =
-      site_name:    $config.config.site_name
-      site_slogan:  $config.config.site_slogan
+      site_name:    @_site_name
+      site_slogan:  @_site_slogan
+
     return
 
 
@@ -180,6 +177,7 @@ class global.CI_Server_connect extends CI_Server
     # Expose asset folders
     #
     @app.use connect.static(APPPATH+"themes/default/assets/")
+    #@app.use connect.staticCache()
 
     #
     # Favorites icon
@@ -243,7 +241,8 @@ class global.CI_Server_connect extends CI_Server
 
     super $session
     @app.use connect.cookieParser($session.encryption_key)
-    @app.use connect.session(secret: $session.encryption_key)
+    @app.use connect.cookieSession(secret: $session.encryption_key)
+    @app.use connect.csrf() if @_csrf
     return
 
 
@@ -261,12 +260,43 @@ class global.CI_Server_connect extends CI_Server
     #  --------------------------------------------------------------------
 
     #
-    # Patch the appjs server objects to render templates
+    # Patch the connect server objects to render templates
     #
     # @access	private
     # @return	void
     #
     ($req, $res, $next) =>
+
+      #  --------------------------------------------------------------------
+
+      #
+      # Set expected request object properties
+      #
+      Object.defineProperties $req,
+        protocol:   get: -> if $req.connection.encrypted then 'https' else 'http'
+        secure:     get: -> if $req.protocol is 'https' then true else false
+        path:       value: parseUrl($req).pathname
+        host:       value: $req.headers.host
+        ip:         value: $req.connection.remoteAddress
+
+      $CFG.config.base_url = $req.protocol+'://'+ $req.headers.host
+
+      #  --------------------------------------------------------------------
+
+      #
+      # Send
+      #
+      #   send response string
+      #
+      # @access	public
+      # @param	string
+      # @return	void
+      #
+      $res.send = ($data) ->
+        $res.writeHead 200,
+          'Content-Length': $data.length
+          'Content-Type': 'text/html; charset=utf-8'
+        $res.end $data
 
       #  --------------------------------------------------------------------
 
@@ -307,7 +337,6 @@ class global.CI_Server_connect extends CI_Server
               $next($err)
 
       $next()
-
 
 
 module.exports = CI_Server_connect

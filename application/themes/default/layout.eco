@@ -16,13 +16,14 @@
             <%- @anchor("", @img("images/logo.png"), title: "Home", rel: "home", id: "logo" ) %>
             <hgroup id="name-and-slogan">
                 <div class="page-header">
-                    <h1 id="site-namez"><%= @site_name %><p><blockquote>
-                    <small id="site-sloganz"><%= @site_slogan %></small></blockquote></p></h1>
+                    <h1><%= @site_name %><p><blockquote>
+                    <small><%= @site_slogan %></small></blockquote></p></h1>
                 </div>
             </hgroup>
         </header>
 
         <div class="clearfix"></div>
+
         <% err = @flashdata('error') %>
         <% if err isnt '' : %>
         <div class='alert alert-error'>
@@ -36,11 +37,26 @@
         </div>
         <% end %>
 
+        <div class="clearfix"></div>
+
         <%- @$content %>
     </div>
     <div id="push"></div>
 </div>
 
 <%- @$script %>
+
+<footer id="footer">
+    <div class="container">
+        <div class="credit">
+            <span class="pull-left muted">
+            </span>
+            <span class="pull-right">powered by &nbsp;
+                <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
+            </span>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>

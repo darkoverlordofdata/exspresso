@@ -186,7 +186,6 @@ class global.CI_Config
     if not @config[$item]?
       return false
 
-
     return rtrim(@config[$item], '/') + '/'
 
 

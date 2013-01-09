@@ -1,11 +1,11 @@
-<center>
-    <h1>Zoiks!!!</h1>
-    <p></p>
-    <h1>Like, Scoob - we broke the internet!</h1>
-</center>
-<p><%= @message %>
-  <% if @settings['verbose errors'] : %>
-    <pre><%= @error.stack %></pre>
-  <% end %>
-</p>
-
+<div>
+    <h1><%= @err.code %>: <%= @err.desc %></h1>
+</div>
+<div class="row">
+    <div class="alert alert-block alert-<%= @err.level %>">
+        <h3><%= @err.message %></h3>
+        <ul id="stacktrace"><%- @err.stack %></ul>
+        <p></p>
+        <h2>Oh no! Scoob - we broke the internet!</h2>
+    </div>
+</div>

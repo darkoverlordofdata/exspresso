@@ -15,6 +15,7 @@
 #
 #
 #
+console.log 'Template.coffee'
 class global.Template
 
   CI: null
@@ -329,6 +330,7 @@ class global.Template
                   @CI.output.set_output $page
                   @CI.output._display()
 
+module.exports = Template
 
 # End of file Template.coffee
 # Location: .application/libraries/Template.coffee
