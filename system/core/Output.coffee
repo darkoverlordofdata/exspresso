@@ -347,18 +347,16 @@ module.exports = class global.CI_Output
           if not empty(@_profiler_sections)
             $res.CI.profiler.set_sections(@_profiler_sections)
 
-
           #  If the output data contains closing </body> and </html> tags
           #  we will remove them and add them back after we insert the profile data
-          $match = preg_match("|</body>[^]*?</html>|igm", $output)
+          $match = preg_match("|<footer[^]*?</html>|igm", $output)
           if $match?
-            $output = preg_replace("|</body>[^]*?</html>|igm", '', $output)
+            $output = preg_replace("|<footer[^]*?</html>|igm", '', $output)
             $output+=$res.CI.profiler.run()
             $output+='</body></html>'
 
           else
             $output+=$res.CI.profiler.run()
-
 
 
         #  --------------------------------------------------------------------

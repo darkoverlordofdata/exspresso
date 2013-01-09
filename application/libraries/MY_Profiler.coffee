@@ -348,6 +348,9 @@ class global.MY_Profiler extends CI_Profiler
   #
   # Run the Profiler
   #
+  #   Injects the results into the generated html stream
+  #
+  # @param string
   # @return	string
   #
   run: () ->
@@ -395,7 +398,6 @@ class global.MY_Profiler extends CI_Profiler
             </div>
         </div>
         </form>'''
-
 
     return $output
 

@@ -57,7 +57,6 @@ class Variables
 class global.CI_Server_appjs extends CI_Server
 
   _driver           : 'appjs'
-  _assets           : APPPATH+"themes/default/assets/"
   _secure           : false
   _protocol         : ''
   _host             : ''
@@ -174,7 +173,7 @@ class global.CI_Server_appjs extends CI_Server
   output: ($output) ->
 
     super $output
-    appjs.serveFilesFrom @_assets
+    appjs.serveFilesFrom APPPATH+"assets/"
     return
 
 

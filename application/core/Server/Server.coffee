@@ -205,8 +205,8 @@ class global.CI_Server
         stack:    ($err.stack || '').split('\n').slice(1).map((v) ->
           return '<li>' + v + '</li>' ).join('')
 
-      $res.render APPPATH+'views/errors/5xx.eco', err: $error, ($err, $content) =>
-        $res.render APPPATH+'views/errors/layout.eco',
+      $res.render APPPATH+'errors/5xx.eco', err: $error, ($err, $content) =>
+        $res.render APPPATH+'errors/layout.eco',
           title:      $error.code + ': ' + $error.desc
           content:    $content
           site_name:  @_site_name
@@ -232,8 +232,8 @@ class global.CI_Server
     #
     ($req, $res, $next) =>
 
-      $res.render APPPATH+'views/errors/404.eco', originalUrl: $req.originalUrl, ($err, $content) =>
-        $res.render APPPATH+'views/errors/layout.eco',
+      $res.render APPPATH+'errors/404.eco', originalUrl: $req.originalUrl, ($err, $content) =>
+        $res.render APPPATH+'errors/layout.eco',
           title:      '404: Not Found'
           content:    $content
           site_name:  @_site_name

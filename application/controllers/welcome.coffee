@@ -30,7 +30,7 @@ class Welcome extends CI_Controller
   #
   index: ->
 
-    #@output.enable_profiler true
+    @output.enable_profiler true
     @load.view 'welcome_message'
 
 

@@ -154,14 +154,11 @@ class global.CI_Server_express extends CI_Server
 
     $config = @CI.config.config
 
-    $theme ='default'
-    $webroot = APPPATH+"themes/"+$theme+"/assets/"
     #
     # Expose asset folders
     #
     @app.set 'views', APPPATH + $config.views
-    @app.use express.static(APPPATH+"themes/all/assets/")
-    @app.use express.static($webroot)
+    @app.use express.static(APPPATH+"assets/")
     @app.use express.staticCache()
     #
     # Embedded coffee-script rendering engine
@@ -187,7 +184,7 @@ class global.CI_Server_express extends CI_Server
     # Favorites icon
     #
     if $config.favicon?
-      @app.use express.favicon(APPPATH+"themes/all/assets/" + $config.favicon)
+      @app.use express.favicon(APPPATH+"assets/" + $config.favicon)
 
     else
       @app.use express.favicon()

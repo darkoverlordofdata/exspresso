@@ -1,1 +1,0 @@
-echo $headingecho $message

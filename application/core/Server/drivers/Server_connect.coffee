@@ -176,14 +176,14 @@ class global.CI_Server_connect extends CI_Server
     #
     # Expose asset folders
     #
-    @app.use connect.static(APPPATH+"themes/default/assets/")
+    @app.use connect.static(APPPATH+"assets/")
     #@app.use connect.staticCache()
 
     #
     # Favorites icon
     #
     if $config.favicon?
-      @app.use connect.favicon(APPPATH+"themes/all/assets/" + $config.favicon)
+      @app.use connect.favicon(APPPATH+"assets/" + $config.favicon)
 
     else
       @app.use connect.favicon()

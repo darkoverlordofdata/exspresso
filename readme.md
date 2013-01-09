@@ -1,4 +1,4 @@
-# [Exspresso v0.7.14] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.7.17] (https://github.com/darkoverlordofdata/exspresso)
 
  A CMS framework written in coffee-script, built using a port of the [CodeIgniter] (<http://codeigniter.com/>) framework.
 
@@ -14,7 +14,7 @@
 
  [Live Demo!](http://exspresso.herokuapp.com/)
 
-  Exspresso uses [not-php] (http://github.com/darkoverlordofdata/not-php) v0.3.7 as a drop in
+  Exspresso uses [not-php] (http://github.com/darkoverlordofdata/not-php) v0.3.9 as a drop in
   replacement for many of the php api calls that were in the ported code.
 
 
