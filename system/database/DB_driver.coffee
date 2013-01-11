@@ -226,7 +226,7 @@ class CI_DB_driver
     if @db_debug then log_message 'debug', 'SQL>\n%s', $sql
 
     #  Start the Query Timer
-    $time_start = microtime()
+    $time_start = (new Date()).getTime()
 
     if $callback?
       @_execute $sql, $binds, ($err, $results, $info) =>
@@ -240,7 +240,7 @@ class CI_DB_driver
 
   _query2: ($err, $results, $info, $time_start, $sql, $callback) =>
 
-    $time_end = [$em, $es] = explode(' ', String(microtime()))
+    $time_end = (new Date()).getTime()
 
     if $err
       return $callback($err)
@@ -273,7 +273,6 @@ class CI_DB_driver
         )
 
     #  Stop and aggregate the query time results
-    $time_end = microtime()
     @benchmark+= $time_end - $time_start
 
     if @save_queries is true

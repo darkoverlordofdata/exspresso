@@ -187,12 +187,14 @@ module.exports = class global.CI_Input
 
     ($req, $res, $next) =>
 
+      os = require('os')
+
       $server_array =
         argv:                   $req.query
         argc:                   count($req.query)
         SERVER_ADDR:            $req.ip
         SERVER_NAME:            $req.host
-        SERVER_SOFTWARE:        "express/3.0.0rc4 (" + require('os').type() + ") Node.js " + process.version
+        SERVER_SOFTWARE:        $SRV.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
         SERVER_PROTOCOL:        strtoupper($req.protocol)+"/"+$req.httpVersion
         REQUEST_METHOD:         $req.method
         REQUEST_TIME:           $req._startTime

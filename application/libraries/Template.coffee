@@ -26,6 +26,7 @@ class global.Template
   _layout:          'layout'
   _theme_name:      'default'
   _theme_locations: null
+  _menu:            null
   _data:            null
   _partials:        null
   _breadcrumbs:     null
@@ -48,6 +49,7 @@ class global.Template
 
     @["_#{$key}"] = $val for $key, $val of $config
     @_theme_locations = [APPPATH + 'themes/'] if @_theme_locations is null
+    @_menu = {}
     @_data = {}
     @_metadata = []
     @_partials = []
@@ -118,11 +120,8 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_title: ($title) ->
-    if Array.isArray($title)
-      @title = $title.join(' | ')
-    else
-      @_title = $title
+  set_title: ($title...) ->
+    @_title = $title.join(' | ')
     @
 
   ## --------------------------------------------------------------------
@@ -224,6 +223,28 @@ class global.Template
     @
 
 
+  set_menu: ($menu) ->
+    @_menu = $menu
+    @
+
+  html_menu: ($menu) ->
+
+    $active = @CI.uri.segment(1, '')
+    $active = if $active.length then '/'+$active else ''
+    $keys = Object.keys($menu)
+    $key0 = $keys[0]
+
+    url = @CI.load.helper('url')
+    $content = "<ul class=\"nav nav-#{$key0}\">\n"
+    for $name, $uri of $menu[$key0]
+      if $uri is $active
+        $content+="<li class=\"active\">"+url.anchor($uri, $name)+"</li>\n"
+      else
+        $content+="<li>"+url.anchor($uri, $name)+"</li>\n"
+
+    $content+"</ul>\n"
+
+
   ## --------------------------------------------------------------------
 
   #
@@ -256,6 +277,7 @@ class global.Template
     @set '$style', $css.join("\n")
     @set '$script', $script.join("\n")
     @set '$title', @_title
+    @set '$menu', @html_menu(@_menu, @CI.uri.segment(0,''))
     @set 'site_name', config_item('site_name')
     @set 'site_slogan', config_item('site_slogan')
     @set $data

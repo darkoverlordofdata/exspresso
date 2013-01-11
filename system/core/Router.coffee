@@ -250,7 +250,10 @@ class global.CI_Router
 
       $CI = new $class($res)
       @ctor_queue $CI._ctor, ->
-        call_user_func_array [$CI, $method], $args
+        try
+          call_user_func_array [$CI, $method], $args
+        catch $err
+          $next $err
 
   #
   # Process post-constructor initialization queue

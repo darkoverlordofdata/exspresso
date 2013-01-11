@@ -1,6 +1,7 @@
 <div class="container">
     <p></p>
-    <div class="hero-unit">
+    <div class="row">
         <%- @blog.body %>
     </div>
+    <p class="row"></p>
 </div>

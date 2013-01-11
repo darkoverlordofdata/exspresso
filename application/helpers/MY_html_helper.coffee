@@ -54,10 +54,12 @@ if not function_exists('javascript_tag')
 # @param	string
 # @return	string
 #
-if not function_exists('javascript_decl', $type = 'text/javascript')
-  exports.javascript_decl = javascript_decl = ($content = '') ->
+if not function_exists('javascript_decl')
+  exports.javascript_decl = javascript_decl = ($content = '', $type = 'text/javascript') ->
     "<script>\n#{$content}\n</script>"
 
 
-    # End of file MY_html_helper.coffee
+
+
+# End of file MY_html_helper.coffee
 # Location: ./MY_html_helper.coffee

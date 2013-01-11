@@ -1,7 +1,7 @@
 <%- @$doctype %>
 <html>
 <head>
-    <title><%= @$title %></title>
+    <title><%= @settings.site_name %></title>
 <%- @$meta %>
 <%- @$style %>
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -21,9 +21,9 @@
                 </div>
             </hgroup>
         </header>
-
         <div class="clearfix"></div>
-
+        <%- @$menu %>
+        <div class="clearfix"></div>
         <% err = @flashdata('error') %>
         <% if err isnt '' : %>
         <div class='alert alert-error'>
@@ -40,6 +40,7 @@
         <div class="clearfix"></div>
 
         <%- @$content %>
+
     </div>
     <div id="push"></div>
 </div>

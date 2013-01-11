@@ -31,14 +31,7 @@ class Home extends PublicController
   #
   index: ->
 
-    console.log '----------------------'
-    console.log @res
-    console.log '----------------------'
-
-    @res.send "hello"
-
-  index1: ->
-    @template.set_title config_item('site_name')
+    @template.set_title 'Blog'
 
     @db.from 'blog'
     @db.where 'id', '1'
@@ -46,9 +39,7 @@ class Home extends PublicController
 
       if $err then return show_error
 
-      $data = array_merge({blog: $blog.row()}, @load.helper('html'))
-
-      @template.view 'home_page', $data
+      @template.view 'home_page', {blog: $blog.row()}
 
 #
 # Export the class:

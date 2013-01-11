@@ -79,6 +79,10 @@ class global.CI_Server
 
 
 
+  get_version: () ->
+    @_driver + ' v' + require(process.cwd()+'/node_modules/'+@_driver+'/package.json').version
+
+
   #  --------------------------------------------------------------------
 
   #

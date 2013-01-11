@@ -30,8 +30,10 @@ class global.Theme
   _location: ''
   _favicon: ''
   _layout: null
+  _meta: null
   _script: null
   _css: null
+  _menu: null
 
   constructor: ($config = {}, @CI) ->
 
@@ -81,9 +83,13 @@ class global.Theme
     $template._metadata = []
     $template._script = []
     $template._css = []
+    $template._menu = {}
 
     if @_layout?
       $template.set_layout @_layout
+
+    if @_menu?
+      $template.set_menu @_menu
 
     if @_meta?
       $template.set_meta @_meta

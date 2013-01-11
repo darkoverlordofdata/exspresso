@@ -133,9 +133,9 @@ class Travel extends PublicController
   #
   search: () ->
 
-    @template.set_title 'Search'
-    $searchString = if @session.userdata("searchString") is false then  '' else @session.userdata("searchString")
-    $pageSize = if @session.userdata('pageSize') is false then '' else @session.userdata('pageSize')
+    @template.set_title 'Travel', 'Search'
+    $searchString = @session.userdata("searchString") ||  ''
+    $pageSize     = @session.userdata('pageSize') || ''
 
     @db.select ['hotel.name', 'hotel.address', 'hotel.city', 'hotel.state', 'booking.checkinDate', 'booking.checkoutDate', 'booking.id']
     @db.from 'booking'
@@ -165,21 +165,20 @@ class Travel extends PublicController
   #
   hotels: ($start = 0) ->
 
+    @template.set_title 'Travel', 'Hotels'
     base_url = @load.helper('url').base_url
-
-    @template.set_title 'Hotels'
 
     $start = parseInt($start)
     if @input.post("submit")?
       $searchString = @input.post("searchString")
-      $pageSize = parseInt(@input.post('pageSize'),10)
+      $pageSize     = parseInt(@input.post('pageSize'),10)
       @session.set_userdata
         searchString  : $searchString
         pageSize      : $pageSize
 
     else
       $searchString = @session.userdata("searchString")
-      $pageSize = parseInt(@session.userdata('pageSize'),10)
+      $pageSize     = parseInt(@session.userdata('pageSize'),10)
 
     @db.count_all 'hotel', ($err, $count) =>
 
@@ -188,7 +187,7 @@ class Travel extends PublicController
         uri_segment : 3
         total_rows  : parseInt($count, 10)
         per_page    : $pageSize
-        num_links   : 5
+        #num_links   : 5
 
       @db.from 'hotel'
       @db.like 'name', "%#{$searchString}%"
@@ -215,7 +214,7 @@ class Travel extends PublicController
   #
   hotel: ($id) ->
 
-    @template.set_title 'Hotel'
+    @template.set_title 'Travel', 'Hotel'
 
     @db.from 'hotel'
     @db.where 'id', $id
@@ -237,7 +236,7 @@ class Travel extends PublicController
   #
   booking: ($id) ->
 
-    @template.set_title 'Booking'
+    @template.set_title 'Travel', 'Booking'
 
     if @input.post('cancel')? then return @redirect "/travel"
 
@@ -290,7 +289,7 @@ class Travel extends PublicController
   #
   confirm: ($id) ->
 
-    @template.set_title 'Booking'
+    @template.set_title 'Travel', 'Booking'
 
     if @input.get_post('cancel')? then return @redirect "/travel"
 
@@ -343,7 +342,7 @@ class Travel extends PublicController
   #
   book: ($id) ->
 
-    @template.set_title 'Book'
+    @template.set_title 'Travel', 'Book'
 
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/book/#{$id}"

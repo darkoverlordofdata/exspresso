@@ -26,6 +26,16 @@ exports.location =      APPPATH+'themes/public'
 
 exports.layout = 'layout.eco'
 
+exports.menu =
+  tabs: # tabs | pills
+
+    # Text    Uri
+    Home    : ''
+    Blog    : '/blog'
+    Travel  : '/travel'
+    Migrate : '/migrate'
+
+
 exports.script =
   default: [
     'js/jquery-1.8.1.min.js'
