@@ -150,7 +150,7 @@ for $path, $uri of $RTR._load_routes()
   $RTR.bind $path, $class, $method
 
 
-$OUT.enable_profiler true if ENVIRONMENT is 'development'
+$OUT.enable_profiler true #if ENVIRONMENT is 'development'
 
 #
 # ------------------------------------------------------
