@@ -40,15 +40,18 @@
 # @link		http://codeigniter.com/user_guide/libraries/pagination.html
 #
 class global.CI_Pagination
-  
+
+  ceil = Math.ceil
+  floor = Math.floor
+
   base_url: ''#  The page we are linking to
   prefix: ''#  A custom prefix added to the path.
   suffix: ''#  A custom suffix added to the path.
   
   total_rows: ''#  Total number of items (database results)
-  per_page: 10#  Max number of items you want shown per page
-  num_links: 2#  Number of "digit" links to show before/after the currently viewed page
-  cur_page: 0#  The current page being viewed
+  per_page: 10 #  Max number of items you want shown per page
+  num_links: 2 #  Number of "digit" links to show before/after the currently viewed page
+  cur_page: 0 #  The current page being viewed
   first_link: '&lsaquo; First'
   next_link: '&gt;'
   prev_link: '&lt;'
@@ -101,8 +104,8 @@ class global.CI_Pagination
   initialize : ($params = {}) ->
     if count($params) > 0
       for $key, $val of $params
-        if @$key? 
-          @$key = $val
+        if @[$key]?
+          @[$key] = $val
 
   #  --------------------------------------------------------------------
   
@@ -124,27 +127,25 @@ class global.CI_Pagination
     #  Is there only one page? Hm... nothing more to do here then.
     if $num_pages is 1
       return ''
-      
-    
+
     #  Determine the current page number.
     if @CI.config.item('enable_query_strings') is true or @page_query_string is true
       if @CI.input.get(@query_string_segment) isnt 0
         @cur_page = @CI.input.get(@query_string_segment)
         
         #  Prep the current page - no funny business!
-        @cur_page = @cur_page
+        @cur_page = parseInt(@cur_page, 10)
         
       
-    else 
+    else
       if @CI.uri.segment(@uri_segment) isnt 0
         @cur_page = @CI.uri.segment(@uri_segment)
         
         #  Prep the current page - no funny business!
-        @cur_page = @cur_page
+        @cur_page = parseInt(@cur_page, 10)
         
       
-    
-    @num_links = @num_links
+    @num_links = parseInt(@num_links)
     
     if @num_links < 1
       show_error('Your number of links must be a positive number.')
@@ -162,7 +163,8 @@ class global.CI_Pagination
     
     $uri_page_number = @cur_page
     @cur_page = floor((@cur_page / @per_page) + 1)
-    
+    log_message 'debug', 'cur_page = %d', @cur_page
+
     #  Calculate the start and end numbers. These determine
     #  which number to start and end the digit links with
     $start = if ((@cur_page - @num_links) > 0) then @cur_page - (@num_links - 1) else 1

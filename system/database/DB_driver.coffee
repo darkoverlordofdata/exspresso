@@ -219,11 +219,11 @@ class CI_DB_driver
         if false isnt ($cache = @CACHE.read($sql))
           return $cache
 
-
-
     #  Save the  query for debugging
     if @save_queries is true
       @queries.push $sql
+
+    if @db_debug then log_message 'debug', 'SQL>\n%s', $sql
 
     #  Start the Query Timer
     $time_start = microtime()

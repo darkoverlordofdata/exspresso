@@ -241,7 +241,7 @@ class global.CI_Server_connect extends CI_Server
 
     super $session
     @app.use connect.cookieParser($session.encryption_key)
-    @app.use connect.cookieSession(secret: $session.encryption_key)
+    @app.use connect.session(secret: $session.encryption_key)
     @app.use connect.csrf() if @_csrf
     return
 
@@ -297,6 +297,23 @@ class global.CI_Server_connect extends CI_Server
           'Content-Length': $data.length
           'Content-Type': 'text/html; charset=utf-8'
         $res.end $data
+
+      #  --------------------------------------------------------------------
+
+      #
+      # Redirect
+      #
+      #   Redirect to url
+      #
+      # @access	public
+      # @param	string
+      # @return	void
+      #
+      $res.redirect = ($url) ->
+        $res.writeHead 302,
+          'Location': $url
+        $res.end null
+
 
       #  --------------------------------------------------------------------
 

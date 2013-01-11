@@ -1,10 +1,9 @@
-<div>
-    <h1><%= @err.code %>: <%= @err.desc %></h1>
-</div>
 <div class="row">
     <div class="alert alert-block alert-<%= @err.level %>">
         <h3><%= @err.message %></h3>
+        <div class="well">
         <ul id="stacktrace"><%- @err.stack %></ul>
+        </div>
         <p></p>
         <h2>Oh no! Scoob - we broke the internet!</h2>
     </div>

@@ -1,11 +1,10 @@
-<div>
-    <h1>404: Not Found</h1>
-</div>
 <div class="row">
     <div class="span1"></div>
     <div class="alert alert-block alert-info">
         <h3>Ruh roh</h3>
+        <div class="well">
         <p></p>
         Ran't rind : "<%= @originalUrl %>"
+        </div>
     </div>
 </div>

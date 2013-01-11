@@ -26,7 +26,7 @@
             <td><%= @hotel.price %></td>
         </tr>
     </table>
-    <%- @form_open("/travel/#{@db}/confirm/#{@id}", class:'form') %>
+    <%- @form_open("/travel/confirm/#{@id}", class:'form') %>
 
         <div classl="control-group">
             <%- @form_label('Check In:', 'checkinDate', class:'control-label') %>

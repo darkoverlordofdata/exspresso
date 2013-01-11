@@ -1,5 +1,4 @@
 <div class="hero-unit">
-    <span class="errors"></span>
     <h2>Hotel Results</h2>
     <div class="row">
         <table class="table table striped table-hover table-condensed">
@@ -19,12 +18,16 @@
                 <td><%= $hotel.address %></td>
                 <td><%= $hotel.city + ', ' + $hotel.state %></td>
                 <td><%= $hotel.zip %></td>
-                <td><%- @anchor("/travel/#{@db}/hotel/#{$hotel.id}", 'View', class:'btn') %></td>
+                <td><%- @anchor("/travel/hotel/#{$hotel.id}", 'View', class:'btn') %></td>
             </tr>
             <% end %>
             </tbody>
         </table>
     </div>
-    <%- @anchor("/travel/#{@db}?searchString=#{@searchString}&pageSize=#{@pageSize}", 'Change Search', class:'btn btn-primary') %>
-    <p></p>
+    <div class="row">
+        <div class="span4">
+            <%- @anchor("/travel", 'Change Search', class:'btn btn-primary') %>
+        </div>
+    </div>
 </div>
+<%- @pagination.create_links() %>

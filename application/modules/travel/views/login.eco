@@ -13,7 +13,7 @@
     </div>
 </div>
 <div class="hero-unit">
-    <%- @form_open("/travel/#{@db}/authenticate", '', url:@url) %>
+    <%- @form_open("/travel/authenticate", '', url:@url) %>
 
         <div class="control-group">
             <%- @form_label('User:', 'username', class:'control-label') %>

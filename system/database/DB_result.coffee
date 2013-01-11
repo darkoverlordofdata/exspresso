@@ -271,7 +271,7 @@ class CI_DB_result
   # operational due to the unavailability of the database resource IDs with
   # cached results.
 
-  num_rows :  -> return @num_rows
+  num_rows :  -> return 0
   num_fields :  -> return 0
   list_fields :  -> return []
   field_data :  -> return []

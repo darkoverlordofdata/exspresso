@@ -1,7 +1,7 @@
  <div class="hero-unit">
      <span class="errors"></span>
      <h2>Search Hotels</h2>
-     <%- @form_open("/travel/#{@db}/hotels", class:'form-search') %>
+     <%- @form_open("/travel/hotels", class:'form-search') %>
         <%- @form_input('searchString', @searchString, class:'input-medium search-query') %>
         <%- @form_submit('submit', 'Search', class:'btn btn-primary') %>
         <p></p>
@@ -32,7 +32,7 @@
                  <td><%= $booking.checkinDate %></td>
                  <td><%= $booking.checkoutDate %></td>
                  <td><%= $booking.id %></td>
-                 <td><%- @anchor("/travel/#{@db}/cancel/#{$booking.id}", 'Cancel', class:'btn') %></td>
+                 <td><%- @anchor("/travel/cancel/#{$booking.id}", 'Cancel', class:'btn') %></td>
              </tr>
              <% end %>
              </tbody>

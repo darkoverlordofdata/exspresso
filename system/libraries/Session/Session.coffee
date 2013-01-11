@@ -150,7 +150,7 @@ class global.CI_Session
 
     ($req, $res, $next) =>
 
-      $req.session = $req.session ? {}
+      #$req.session = $req.session ? {}
 
       # --------------------------------------------------------------------
       @user = () -> @req.session.user ? false

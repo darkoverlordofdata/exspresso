@@ -27,9 +27,38 @@
 #
 #
 appjs           = require("appjs")          # Desktop SDK
+#
+# Appjs has minimal server support functionality.
+# I'm using connect middleware and custom patching to fill the gap.
+#
+# appjs v0.0.20 known issues:
+#
+#   the dropdown widget (select/option tags) is only accessible via keyboard.
+#   connect sessions are not compatible - no fix yet
+#
+#   requires 2 modifications:
+#
+#   request.body not populated with form fields
+#
+#     appjs/lib/router/bodyParser.js;25:
+#
+#     //  var str = req.headers['Content-Type'] || '';
+#     var str = req.headers['content-type'] || '';
+#
+#   program does not exit consistently
+#
+#     appjs/lib/App.js;108:
+#
+#     //process.kill(process.pid);
+#     process.exit();
+#
+#
+#
 connect         = require("connect")        # High performance middleware framework
 eco             = require('eco')            # Embedded CoffeeScript templates
 fs              = require("fs")             # File system
+qs              = require("querystring")    # Query string utilities
+
 
 
 class Variables
@@ -251,6 +280,7 @@ class global.CI_Server_appjs extends CI_Server
     #
     ($req, $res, $next) =>
 
+      $req.session = $req.session ? {}
       #  --------------------------------------------------------------------
 
       #
@@ -264,6 +294,7 @@ class global.CI_Server_appjs extends CI_Server
         httpVersion:  value: $req.httpVersion ? @_httpVersion
         originalUrl:  value: $req.url
         path:         value: $req.pathname
+
 
       $CFG.config.base_url = $req.protocol+'://'+ $req.host
 

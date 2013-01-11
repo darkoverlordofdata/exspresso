@@ -44,18 +44,11 @@
         </div>
         <div class="row">
             <div class="span6">
-                <h3>PostgreSql ActiveRecord Demo</h3>
-                <p>Travel database application using CI_DB_active_rec & postgres_driver</p>
-                <p>The corresponding controller for this page is found at:</p>
-                <pre><code>application/modules/travel/controllers/travel.coffee</code></pre>
-                <a href="/travel/postgres" class="btn">Start Demo &raquo;</a>
-            </div>
-            <div class="span6">
                 <h3>MySql ActiveRecord Demo</h3>
                 <p>Travel database application using CI_DB_active_rec & mysql_driver</p>
                 <p>The corresponding view for this page is found at:</p>
                 <pre><code>application/modules/travel/views/main.coffee</code></pre>
-                <a href="/travel/mysql" class="btn">Start Demo &raquo;</a>
+                <a href="/travel" class="btn">Start Demo &raquo;</a>
             </div>
         </div>
         <p class="row"></p>

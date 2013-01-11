@@ -18,7 +18,7 @@
             <hgroup id="name-and-slogan">
                 <div class="page-header">
                     <h1><%= @site_name %><p><blockquote>
-                        <small>&quot;Something Happened&quot;</small></blockquote></p></h1>
+                        <small>&quot;<%= @title %>&quot;</small></blockquote></p></h1>
                 </div>
             </hgroup>
         </header>
@@ -35,6 +35,7 @@
     <div class="container">
         <div class="credit">
             <span class="pull-left muted">
+                &copy; Copyright 2012 by Dark Overlord of Data
             </span>
             <span class="pull-right">powered by &nbsp;
                 <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>

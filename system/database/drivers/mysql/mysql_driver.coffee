@@ -327,9 +327,10 @@ module.exports = (CI_DB) ->
       if $table is ''
         return 0
 
-      @query @_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false), ($results)->
+      @query @_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false), ($err, $query)->
 
-        $callback $results.length
+        if $err then $callback $err
+        else $callback null, $query.row().numrows
 
     #  --------------------------------------------------------------------
 

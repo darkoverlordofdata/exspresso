@@ -279,7 +279,7 @@ class global.CI_URI
       # @param	bool
       # @return	string
       #
-      @segment = ($n, $no_result = false) ->
+      @segment = ($n, $no_result = 0) ->
         return if not $segments[$n]? then $no_result else $segments[$n]
 
 
@@ -297,7 +297,7 @@ class global.CI_URI
       # @param	bool
       # @return	string
       #
-      @rsegment = ($n, $no_result = false) ->
+      @rsegment = ($n, $no_result = 0) ->
         return if not $rsegments[$n]? then $no_result else $rsegments[$n]
 
 

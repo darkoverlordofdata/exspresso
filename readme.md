@@ -1,4 +1,4 @@
-# [Exspresso v0.7.17] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.7.18] (https://github.com/darkoverlordofdata/exspresso)
 
  A CMS framework written in coffee-script, built using a port of the [CodeIgniter] (<http://codeigniter.com/>) framework.
 

@@ -119,7 +119,7 @@ Constants from CodeIgniter and PHP only have been replicated.
         * Javascript            -
         * Log                   X
         * Migration             X
-        * Pagination            ?
+        * Pagination            X
         * Parser                ?
         * Profiler              X
         * Session               X

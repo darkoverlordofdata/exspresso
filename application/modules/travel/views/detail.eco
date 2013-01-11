@@ -32,7 +32,7 @@
           <td><%= @hotel.price %></td>
       </tr>
     </table>
-    <%- @form_open("/travel/#{@db}/booking/#{@id}") %>
+    <%- @form_open("/travel/booking/#{@id}") %>
         <div class='control-group'>
             <%- @form_submit('submit', 'Book Hotel', class:'btn btn-primary') %>
             &nbsp;

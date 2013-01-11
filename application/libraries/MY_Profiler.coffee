@@ -356,13 +356,14 @@ class global.MY_Profiler extends CI_Profiler
   run: () ->
 
     $elapsed = @CI.benchmark.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
     $output = """
       <footer id="footer">
         <div class="container">
           <div class="credit">
             <span class="pull-left muted">
-              <a data-toggle="modal" href="#codeigniter_profiler" class="btn btn-mini" title="Rendered in #{$elapsed} ms">
-                <i class="icon-time"></i> Profiler</a>
+              <a data-toggle="modal" href="#codeigniter_profiler">
+                <i class="icon-time"></i> #{$elapsed} ms - #{$memory}</a>
             </span>
             <span class="pull-right">powered by &nbsp;
               <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
@@ -380,7 +381,7 @@ class global.MY_Profiler extends CI_Profiler
         <div id="codeigniter_profiler-body" class="modal-body">
           <div class="hero-unit">
             <div class="row">
-    """
+      """
 
     $fields_displayed = 0
 

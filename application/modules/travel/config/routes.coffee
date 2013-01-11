@@ -55,16 +55,17 @@
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
 # travel database application demo
-exports['/travel/:db']                        = 'travel/search'
-exports['/travel/:db/search']                 = 'travel/search'
-exports['/travel/:db/hotels']                 = 'travel/hotels'
-exports['/travel/:db/hotel/:id']              = 'travel/hotel'
-exports['/travel/:db/booking/:id']            = 'travel/booking'
-exports['/travel/:db/confirm/:id']            = 'travel/confirm'
-exports['/travel/:db/book/:id']               = 'travel/book'
-exports['/travel/:db/login']                  = 'travel/login'
-exports['/travel/:db/logout']                 = 'travel/logout'
-exports['/travel/:db/authenticate']           = 'travel/authenticate'
+exports['/travel']                        = 'travel/search'
+exports['/travel/search']                 = 'travel/search'
+exports['/travel/hotels']                 = 'travel/hotels'
+exports['/travel/hotels/:start']          = 'travel/hotels'
+exports['/travel/hotel/:id']              = 'travel/hotel'
+exports['/travel/booking/:id']            = 'travel/booking'
+exports['/travel/confirm/:id']            = 'travel/confirm'
+exports['/travel/book/:id']               = 'travel/book'
+exports['/travel/login']                  = 'travel/login'
+exports['/travel/logout']                 = 'travel/logout'
+exports['/travel/authenticate']           = 'travel/authenticate'
 
 # End of file routes.coffee
 # Location: ./application/modules/travel/config/routes.coffee

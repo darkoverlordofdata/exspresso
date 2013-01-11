@@ -39,7 +39,7 @@
             <td><%= @booking.creditCard %></td>
         </tr>
     </table>
-    <form class="form" name="confirm" action="/travel/<%= @db %>/book" method="post">
+    <form class="form" name="confirm" action="/travel/book" method="post">
       <input type="hidden" name="bookingId" value="<%= @booking.id %>" />
       <div class="control-group">
         <input class="btn btn-primary" name="confirm" type="submit" value="Confirm" />
