@@ -40,15 +40,12 @@
             <pre><code>application/controllers/welcome.coffee</code></pre>
             <p></p>
             <p>Page rendered in {elapsed_time} ms</p>
-            <a href="index.html">test</a>
         </div>
         <div class="row">
             <div class="span6">
-                <h3>MySql ActiveRecord Demo</h3>
-                <p>Travel database application using CI_DB_active_rec & mysql_driver</p>
-                <p>The corresponding view for this page is found at:</p>
-                <pre><code>application/modules/travel/views/main.coffee</code></pre>
-                <a href="/travel" class="btn">Start Demo &raquo;</a>
+                <h3>Site Demo</h3>
+                <p>Demo site using Expresso</p>
+                <%- @anchor("",'Start Demo &raquo', class:'btn') %>
             </div>
         </div>
         <p class="row"></p>
@@ -67,6 +64,7 @@
     <div class="container">
         <div class="credit">
             <span class="pull-left muted">
+                &copy; Copyright 2012 by Dark Overlord of Data
             </span>
             <span class="pull-right">powered by &nbsp;
                 <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>

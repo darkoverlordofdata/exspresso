@@ -34,6 +34,7 @@ exports.menu =
     Blog    : '/blog'
     Travel  : '/travel'
     Migrate : '/migrate'
+    Welcome : '/welcome'
 
 
 exports.script =

@@ -303,6 +303,10 @@ class global.CI_Server_express extends CI_Server
 
       $CFG.config.base_url = $req.protocol+'://'+ $req.headers['host']
 
+      $res._error_handler = ($err) ->
+        $next $err
+
+
       $next()
 
 

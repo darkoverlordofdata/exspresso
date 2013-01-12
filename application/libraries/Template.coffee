@@ -15,7 +15,19 @@
 #
 #
 #
-console.log 'Template.coffee'
+class global.CI_Error
+
+  constructor: ($err = {}, $status = 500) ->
+
+    $status   = $err.status || $status
+    @code     = $status
+    @desc     = set_status_header($status)
+    @level    = if $status >= 500 then 'error' else 'info'
+    @message  = ($err.stack || '').split('\n')[0]
+    @stack    = '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
+        '<li>' + v + '</li>' ).join('')+'</ul>'
+
+
 class global.Template
 
   CI: null
@@ -245,6 +257,12 @@ class global.Template
     $content+"</ul>\n"
 
 
+  error: ($err = {}, $status = 500) ->
+
+    x = new CI_Error($err, $status)
+    @view 'errors', err: x
+
+
   ## --------------------------------------------------------------------
 
   #
@@ -257,6 +275,11 @@ class global.Template
   #   @return	void
   #
   view: ($view = '' , $data = {}, $callback) =>
+
+    if $data.stack?
+      $view = 'errors'
+      $data = err: new CI_Error($data)
+
 
     $script = []
     for $str in @_script

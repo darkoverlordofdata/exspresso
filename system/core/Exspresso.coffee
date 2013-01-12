@@ -50,10 +50,10 @@ else
 
 #
 # ------------------------------------------------------
-#  Instantiate the core server app
+#  Instantiate the core server app (default to connectjs)
 # ------------------------------------------------------
 #
-define '$SRV', load_driver('Server', $argv[2], 'core')
+define '$SRV', load_driver('Server', 'core', $argv[2] ? 'connect')
 
 #
 #------------------------------------------------------
@@ -148,9 +148,6 @@ for $path, $uri of $RTR._load_routes()
   $class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
 
   $RTR.bind $path, $class, $method
-
-
-$OUT.enable_profiler true #if ENVIRONMENT is 'development'
 
 #
 # ------------------------------------------------------

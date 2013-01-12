@@ -305,6 +305,9 @@ class global.CI_Server_appjs extends CI_Server
             $res.setHeader $name, $val
         $res.send $status
 
+      $res._error_handler = ($err) ->
+        $next $err
+
       #  --------------------------------------------------------------------
 
       #

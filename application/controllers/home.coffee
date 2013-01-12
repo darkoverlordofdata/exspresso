@@ -37,9 +37,8 @@ class Home extends PublicController
     @db.where 'id', '1'
     @db.get ($err, $blog) =>
 
-      if $err then return show_error
-
-      @template.view 'home_page', {blog: $blog.row()}
+      if $err then @template.error $err
+      else @template.view 'home_page', {blog: $blog.row()}
 
 #
 # Export the class:

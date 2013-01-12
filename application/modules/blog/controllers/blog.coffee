@@ -34,10 +34,9 @@ class Blog extends AdminController
     @db.from 'blog'
     @db.get ($err, $blog) =>
 
-      if $err
-        @template.view 'blog_error', err: ''+$err
-      else
-        @template.view 'blog_list', entries: $blog.result()
+      #if $err then return @template.error $err
+
+      @template.view 'blog_list', $err || entries: $blog.result()
 
 
   ## --------------------------------------------------------------------
@@ -58,10 +57,9 @@ class Blog extends AdminController
     @db.where 'id', $id
     @db.get ($err, $blog) =>
 
-      if $err
-        @template.view 'blog_error', err: ''+$err
-      else
-        @template.view 'blog_show', blog: $blog.row()
+      if $err then return @template.error $err
+
+      @template.view 'blog_show', blog: $blog.row()
 
 
   ## --------------------------------------------------------------------
@@ -82,10 +80,9 @@ class Blog extends AdminController
     @db.where 'id', $id
     @db.get ($err, $blog) =>
 
-      if $err
-        @template.view 'blog_error', err: ''+$err
-      else
-        @template.view 'blog_edit', blog: $blog.row()
+      if $err then return @template.error $err
+
+      @template.view 'blog_edit', blog: $blog.row()
 
 
   ## --------------------------------------------------------------------

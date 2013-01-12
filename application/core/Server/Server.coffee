@@ -29,8 +29,10 @@ class global.CI_Server
   _cache        : false
   _csrf         : false
   _logger       : 'dev'
+  _db           : 'postgres'
   _port         : 3000
   _preview      : false
+  _profile      : false
   _site_name    : 'My Site'
   _site_slogan  : 'My Slogan'
 
@@ -53,13 +55,31 @@ class global.CI_Server
       for $key, $var of $config
         @['_'+$key] = $var
     #
-    # get command line switches
+    # decode the command line options
     #
+    @_profile = true if ENVIRONMENT is 'development'
+    $set_db = false
+
     for $arg in process.argv
+      if $set_db is true
+        @_db = $arg
+        $set_db = false
+
       switch $arg
-        when '--cache'    then @_cache = true
-        when '--csrf'     then @_csrf = true
-        when '--preview'  then @_preview = true
+        when '--cache'      then @_cache    = true
+        when '--csrf'       then @_csrf     = true
+        when '--preview'    then @_preview  = true
+        when '--profile'    then @_profile  = true
+        when '--db'         then $set_db    = true
+
+
+    for $arg in process.argv
+
+      switch $arg
+        when '--nocache'    then @_cache    = false
+        when '--nocsrf'     then @_csrf     = false
+        when '--noprofile'  then @_profile  = false
+
     #
     # the Expresso core instance
     #
@@ -133,6 +153,7 @@ class global.CI_Server
   #
   output: ($output) ->
 
+    $output.enable_profiler @_profile
     @app.use $output.middleware()
 
   #  --------------------------------------------------------------------
@@ -198,23 +219,7 @@ class global.CI_Server
     #
     # Internal server error
     #
-    ($err, $req, $res, $next) =>
-
-      $err.status = $err.status || 500
-      $error =
-        code:     $err.status
-        desc:     set_status_header($err.status)
-        level:    if $err.status >= 500 then 'error' else 'info'
-        message:  ($err.stack || '').split('\n')[0]
-        stack:    ($err.stack || '').split('\n').slice(1).map((v) ->
-          return '<li>' + v + '</li>' ).join('')
-
-      $res.render APPPATH+'errors/5xx.eco', err: $error, ($err, $content) =>
-        $res.render APPPATH+'errors/layout.eco',
-          title:      $error.code + ': ' + $error.desc
-          content:    $content
-          site_name:  @_site_name
-
+    ($err, $req, $res, $next) -> show_error $err
 
 
   # --------------------------------------------------------------------
@@ -234,13 +239,7 @@ class global.CI_Server
     #
     # handle 404 not found error
     #
-    ($req, $res, $next) =>
-
-      $res.render APPPATH+'errors/404.eco', originalUrl: $req.originalUrl, ($err, $content) =>
-        $res.render APPPATH+'errors/layout.eco',
-          title:      '404: Not Found'
-          content:    $content
-          site_name:  @_site_name
+    ($req, $res, $next) -> show_404 $req.originalUrl
 
   # --------------------------------------------------------------------
 

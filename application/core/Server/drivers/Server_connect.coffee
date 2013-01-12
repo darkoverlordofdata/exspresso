@@ -314,7 +314,8 @@ class global.CI_Server_connect extends CI_Server
           'Location': $url
         $res.end null
 
-
+      $res._error_handler = ($err) ->
+        $next $err
       #  --------------------------------------------------------------------
 
       #

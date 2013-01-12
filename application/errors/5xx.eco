@@ -2,9 +2,7 @@
     <div class="alert alert-block alert-<%= @err.level %>">
         <h3><%= @err.message %></h3>
         <div class="well">
-        <ul id="stacktrace"><%- @err.stack %></ul>
+            <%- @err.stack %>
         </div>
-        <p></p>
-        <h2>Oh no! Scoob - we broke the internet!</h2>
     </div>
 </div>

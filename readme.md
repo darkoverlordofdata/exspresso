@@ -31,7 +31,16 @@
 
     usage:
 
-    node [--harmony] index <appjs|connect|express> [--preview]
+    node [--harmony] index <appjs|connect|express> [--flag]
+
+      flags:
+            --cache
+            --csrf
+            --preview
+            --profile
+            --nocache
+            --nocsrf
+            --noprofile
 
     examples:
 

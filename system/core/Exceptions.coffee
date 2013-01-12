@@ -118,13 +118,48 @@ class CI_Exceptions
 
     ($req, $res, $next) =>
 
+
       #  --------------------------------------------------------------------
-      @show_error = ($message, $template = '5xx', $status_code = 500) ->
+      @show_404 = ($page = '', $log_error = true, $callback) =>
 
-        #set_status_header($status_code)
-        $res.render 'errors/' + $template,
-          message: $message
+        if typeof $log_error is 'function'
+          [$log_error, $callback] = [true, $log_error]
 
+        $err =
+          status:       404
+          stack:        [
+            "The page you requested was not found."
+            set_status_header(404)+': ' +$req.originalUrl
+            ].join("\n")
+
+        #  By default we log this, but allow a dev to skip it
+        if $log_error
+          log_message('error', '404 Page Not Found --> ' + $page)
+
+        @show_error $err, '404', 404, $callback
+
+      #  --------------------------------------------------------------------
+      @show_error = ($err, $template = '5xx', $status_code = 500, $callback) ->
+
+        if typeof $template is 'function'
+          [$$template, $status_code, $callback] = ['5xx', 500, $template]
+
+        $status_code = $err.status || $status_code
+        $error =
+          code:     $status_code
+          desc:     set_status_header($status_code)
+          level:    if $status_code >= 500 then 'error' else 'info'
+          message:  ($err.stack || '').split('\n')[0]
+          stack:    '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
+            '<li>' + v + '</li>' ).join('')+'</ul>'
+
+        $callback = $callback ? ($err, $content) ->
+          $res.render APPPATH+'errors/layout.eco',
+            title:      $error.code + ': ' + $error.desc
+            content:    $content
+            site_name:  config_item('site_name')
+
+        $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $callback
 
       #  --------------------------------------------------------------------
       @show_native_error = ($severity, $message, $filepath, $line) ->

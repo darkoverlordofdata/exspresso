@@ -147,13 +147,13 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
 #
 # @access	public
 # @param	string	the class name of the driver being requested
-# @param	string	the subclass name of the driver being requested
 # @param	string	the directory where the class should be found
+# @param	string	the subclass name of the driver being requested
 # @param	string	the class name prefix
 # @param	string	configuration
 # @return	object
 #
-exports.load_driver = load_driver = ($class, $subclass, $directory = 'libraries', $prefix = 'CI_', $config = {}) ->
+exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass, $prefix = 'CI_', $config = {}) ->
 
   $name = strtolower($class)
   #  Is the config file in the environment folder?
@@ -437,35 +437,6 @@ exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
 
   $text
 
-#  --------------------------------------------------------------------
-
-#
-# Exception Handler
-#
-# This is the custom exception handler that is declaired at the top
-# of Codeigniter.php.  The main reason we use this is to permit
-# PHP errors to be logged in our own log files since the user may
-# not have access to server logs. Since this function
-# effectively intercepts PHP errors, however, we also need
-# to display errors based on the current error_reporting level.
-# We do that with the use of a PHP error template.
-#
-# @access	private
-# @return	void
-#
-exports._exception_handler = _exception_handler = ($severity, $message, $filepath, $line) ->
-
-  $_error = load_class('Exceptions', 'core')
-
-  #$_error.show_php_error($severity, $message, $filepath, $line)
-
-
-  #  Should we log the error?  No?  We're done...
-  if config_item('log_threshold') is 0
-    return
-
-
-  $_error.log_exception($severity, $message, $filepath, $line)
 
 #  ------------------------------------------------------------------------
 #
