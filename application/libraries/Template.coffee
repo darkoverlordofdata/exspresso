@@ -257,7 +257,8 @@ class global.Template
   #
   error: ($err = {}, $status = 500) ->
 
-    @view 'errors', err: new CI_Error($err, $status)
+    @view 'errors',
+      err: new CI_Error($err, $status)
 
 
   ## --------------------------------------------------------------------
@@ -273,10 +274,16 @@ class global.Template
   #
   view: ($view = '' , $data = {}, $callback) =>
 
-    if $data.constructor is Error
+    #
+    # If the $data is an Error object, show the error as content
+    #
+    if $data instanceof Error
       $view = 'errors'
-      $data = err: new CI_Error($data)
+      $data = {err: new CI_Error($data)}
 
+    #
+    # Collect all of the template bits
+    #
     $script = []
     for $str in @_script
       if $str.substr($str.length-3) is '.js'
@@ -311,65 +318,49 @@ class global.Template
     #
     get_partials = ($callback) =>
 
-      if @_partials.length is 0 then $callback null
-      else
-        #
-        # process the partial at index
-        #
-        $partial = @_partials[$index]
-        @CI.load.view $partial.view, $partial.data, ($err, $html) =>
+      return $callback(null) if @_partials.length is 0
+      #
+      # process the partial at index
+      #
+      $partial = @_partials[$index]
+      @CI.load.view $partial.view, $partial.data, ($err, $html) =>
 
-          if $err then $callback $err
-          else
-            #
-            # save the result and do the next
-            #
-            @_data[$partial.name] = $html
-            $index += 1
-            if $index is $partials.length then $callback null
-            else get_partials $callback
+        return $callback($err) if $err
+        #
+        # save the result and do the next
+        #
+        @_data[$partial.name] = $html
+        $index += 1
+        if $index is $partials.length then $callback null
+        else get_partials $callback
 
     #
     # load all partials
     #
     get_partials ($err) =>
 
-      if $err # then $fn_err $err
+      return log_message('debug', 'ERROR1 %s', $err) if show_error($err)
 
-        log_message 'debug', 'ERROR1'
-        console.log $err
-        return show_error $err
+      #
+      # load the body view & merge with partials
+      #
+      @CI.load.view $view, @_data, ($err, $content) =>
 
-      else
+        return log_message('debug', 'ERROR2 %s', $err) if show_error($err)
+
         #
-        # load the body view & merge with partials
+        # merge the body into the theme layout
         #
-        @CI.load.view $view, @_data, ($err, $content) =>
+        @set '$content', $content
+        @CI.render @_theme_path+@_layout, @_data, ($err, $page) =>
 
-          if $err # then $fn_err $err
+          return log_message('debug', 'ERROR3 %s', $err) if show_error($err)
 
-            log_message 'debug', 'ERROR2'
-            console.log $err
-            return show_error $err
+          return $callback(null, $page) if $callback?
 
-          else
-            #
-            # merge the body into the theme layout
-            #
-            @set '$content', $content
-            @CI.render @_theme_path+@_layout, @_data, ($err, $page) =>
+          @CI.output.set_output $page
+          @CI.output._display()
 
-              if $err # then $fn_err $err
-
-                log_message 'debug', 'ERROR3'
-                console.log $err
-                return show_error $err
-
-              else
-                if $callback? then $callback null, $page
-                else
-                  @CI.output.set_output $page
-                  @CI.output._display()
 
 module.exports = Template
 

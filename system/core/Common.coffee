@@ -327,11 +327,14 @@ exports.config_item = config_item = ($item) ->
 # browser and exit.
 #
 # @access	public
-# @return	void
+# @return	true
 #
 exports.show_error = show_error = ($err, $status_code = 500) ->
+  if not $err? then return false
+
   _error = load_class('Exceptions', 'core')
   _error.show_error $err, '5xx', $status_code
+  true
 
 #  ------------------------------------------------------------------------
 
@@ -343,12 +346,12 @@ exports.show_error = show_error = ($err, $status_code = 500) ->
 # 404 errors.
 #
 # @access	public
-# @return	void
+# @return	true
 #
 exports.show_404 = show_404 = ($page = '', $log_error = true) ->
   _error = load_class('Exceptions', 'core')
   _error.show_404 $page, $log_error
-
+  true
 
 #  ------------------------------------------------------------------------
 
