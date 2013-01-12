@@ -15,18 +15,6 @@
 #
 #
 #
-class global.CI_Error
-
-  constructor: ($err = {}, $status = 500) ->
-
-    $status   = $err.status || $status
-    @code     = $status
-    @desc     = set_status_header($status)
-    @level    = if $status >= 500 then 'error' else 'info'
-    @message  = ($err.stack || '').split('\n')[0]
-    @stack    = '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
-        '<li>' + v + '</li>' ).join('')+'</ul>'
-
 
 class global.Template
 
@@ -257,10 +245,19 @@ class global.Template
     $content+"</ul>\n"
 
 
+  ## --------------------------------------------------------------------
+
+  #
+  # render an error in a template
+  #
+  #   @access	public
+  #   @param	array   data
+  #   @param	number  status
+  #   @return	void
+  #
   error: ($err = {}, $status = 500) ->
 
-    x = new CI_Error($err, $status)
-    @view 'errors', err: x
+    @view 'errors', err: new CI_Error($err, $status)
 
 
   ## --------------------------------------------------------------------
@@ -276,10 +273,9 @@ class global.Template
   #
   view: ($view = '' , $data = {}, $callback) =>
 
-    if $data.stack?
+    if $data.constructor is Error
       $view = 'errors'
       $data = err: new CI_Error($data)
-
 
     $script = []
     for $str in @_script

@@ -31,14 +31,13 @@ class Home extends PublicController
   #
   index: ->
 
-    @template.set_title 'Blog'
-
     @db.from 'blog'
     @db.where 'id', '1'
     @db.get ($err, $blog) =>
 
-      if $err then @template.error $err
-      else @template.view 'home_page', {blog: $blog.row()}
+      @template.view 'home_page', $err ||
+        blog: $blog.row()
+
 
 #
 # Export the class:

@@ -8,17 +8,15 @@
                 <th>Address</th>
                 <th>City, State</th>
                 <th>Zip</th>
-                <th>Action</th>
             </tr>
             </thead>
             <tbody>
             <% for $hotel in @hotels: %>
             <tr>
-                <td><%= $hotel.name %></td>
+                <td><%- @anchor("/travel/hotel/#{$hotel.id}", $hotel.name) %></td>
                 <td><%= $hotel.address %></td>
                 <td><%= $hotel.city + ', ' + $hotel.state %></td>
                 <td><%= $hotel.zip %></td>
-                <td><%- @anchor("/travel/hotel/#{$hotel.id}", 'View', class:'btn') %></td>
             </tr>
             <% end %>
             </tbody>

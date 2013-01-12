@@ -133,7 +133,6 @@ class Travel extends PublicController
   #
   search: () ->
 
-    @template.set_title 'Travel', 'Search'
     $searchString = @session.userdata("searchString") ||  ''
     $pageSize     = @session.userdata('pageSize') || ''
 
@@ -143,8 +142,7 @@ class Travel extends PublicController
     @db.join 'hotel', 'hotel.id = booking.hotel','inner'
     @db.get ($err, $bookings) =>
 
-      @template.view "travel/main",
-
+      @template.view "travel/main", $err || {
         bookings:       $bookings.result()
         searchString:   $searchString
         pageSize:       ''+parseInt($pageSize,10)
@@ -152,7 +150,7 @@ class Travel extends PublicController
             '5':    5
             '10':   10
             '20':   20
-
+      }
 
 
   ## --------------------------------------------------------------------
@@ -165,7 +163,6 @@ class Travel extends PublicController
   #
   hotels: ($start = 0) ->
 
-    @template.set_title 'Travel', 'Hotels'
     base_url = @load.helper('url').base_url
 
     $start = parseInt($start)
@@ -194,12 +191,12 @@ class Travel extends PublicController
       @db.limit $pageSize, $start
       @db.get ($err, $hotels) =>
 
-        @template.view "travel/hotels",
+        @template.view "travel/hotels", $err || {
           hotels:       $hotels.result()
           searchString: $searchString
           pageSize:     $pageSize
           pagination:   @pagination
-
+        }
 
 
 
@@ -220,10 +217,10 @@ class Travel extends PublicController
     @db.where 'id', $id
     @db.get ($err, $hotel) =>
 
-      @template.view "travel/detail",
-
+      @template.view "travel/detail", $err || {
         id:       $id
         hotel:    $hotel.row()
+      }
 
 
   ## --------------------------------------------------------------------
@@ -247,7 +244,7 @@ class Travel extends PublicController
     @db.where 'id', $id
     @db.get ($err, $hotel) =>
 
-      @template.view "travel/booking",
+      @template.view "travel/booking", $err || {
         id:       $id
         hotel:    $hotel.row()
         beds:
@@ -273,7 +270,7 @@ class Travel extends PublicController
                   '3':    '2014'
                   '4':    '2015'
                   '5':    '2016'
-
+      }
 
 
 

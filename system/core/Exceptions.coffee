@@ -17,9 +17,27 @@
 #  ------------------------------------------------------------------------
 
 #
+# Error Wrapper Class
+#
+class global.CI_Error extends Error
+
+  constructor: ($err = {}, $status = 500) ->
+
+    $status = $err.status || $status
+
+    Object.defineProperties @,
+      code:     value:  $status
+      desc:     value:  set_status_header($status)
+      type:     value:  ($err.stack || '').split(':')[0]
+      class:    value:  if $status >= 500 then 'error' else 'info'
+      message:  value:  if $status is 404 then "The page you requested was not found" else $err.message || 'Unknown error'
+      stack:    value:  '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
+        '<li>' + v + '</li>' ).join('')+'</ul>'
+
+#
 # Exceptions Class
 #
-class CI_Exceptions
+class global.CI_Exceptions
 
   constructor: ->
 
@@ -144,14 +162,7 @@ class CI_Exceptions
         if typeof $template is 'function'
           [$$template, $status_code, $callback] = ['5xx', 500, $template]
 
-        $status_code = $err.status || $status_code
-        $error =
-          code:     $status_code
-          desc:     set_status_header($status_code)
-          level:    if $status_code >= 500 then 'error' else 'info'
-          message:  ($err.stack || '').split('\n')[0]
-          stack:    '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
-            '<li>' + v + '</li>' ).join('')+'</ul>'
+        $error = new CI_Error($err)
 
         $callback = $callback ? ($err, $content) ->
           $res.render APPPATH+'errors/layout.eco',
@@ -180,10 +191,6 @@ class CI_Exceptions
 
       $next()
 
-
-
-
-register_class 'CI_Exceptions', CI_Exceptions
 module.exports = CI_Exceptions
 #  END Exceptions Class
 

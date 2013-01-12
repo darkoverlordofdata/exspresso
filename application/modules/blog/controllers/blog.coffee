@@ -29,14 +29,11 @@ class Blog extends AdminController
   #
   index: () ->
 
-    @template.set_title config_item('site_name'), 'Blog', 'List'
-
     @db.from 'blog'
     @db.get ($err, $blog) =>
 
-      #if $err then return @template.error $err
-
-      @template.view 'blog_list', $err || entries: $blog.result()
+      @template.view 'blog_list', $err ||
+        entries: $blog.result()
 
 
   ## --------------------------------------------------------------------
@@ -51,15 +48,12 @@ class Blog extends AdminController
   #
   show: ($id) ->
 
-    @template.set_title config_item('site_name'), 'Blog', 'Show'
-
     @db.from 'blog'
     @db.where 'id', $id
     @db.get ($err, $blog) =>
 
-      if $err then return @template.error $err
-
-      @template.view 'blog_show', blog: $blog.row()
+      @template.view 'blog_show', $err ||
+        blog: $blog.row()
 
 
   ## --------------------------------------------------------------------
@@ -74,15 +68,12 @@ class Blog extends AdminController
   #
   edit: ($id) ->
 
-    @template.set_title config_item('site_name'), 'Blog', 'Edit'
-
     @db.from 'blog'
     @db.where 'id', $id
     @db.get ($err, $blog) =>
 
-      if $err then return @template.error $err
-
-      @template.view 'blog_edit', blog: $blog.row()
+      @template.view 'blog_edit', $err ||
+        blog: $blog.row()
 
 
   ## --------------------------------------------------------------------
@@ -96,8 +87,6 @@ class Blog extends AdminController
   #   @return	void
   #
   new: () ->
-
-    @template.set_title config_item('site_name'), 'Blog', 'New'
 
     @template.view 'blog_new'
 
