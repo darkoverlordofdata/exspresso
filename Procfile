@@ -1,1 +1,1 @@
-web: node index.js express
+web: node index.js connect --profile
