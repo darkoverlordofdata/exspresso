@@ -43,10 +43,10 @@ class Migrate extends AdminController
       $name = $module
       $module = ''
 
-    $class = require(@migration._migration_path + $name + EXT)
 
     @migration.set_module $module
-    @template.view 'admin/migrate/preview'
+    $class = require(@migration._migration_path + $name + EXT)
+    @template.view 'admin/migrate/preview',
       nav       : @sidenav('Migrate')
       module    : if $module.length then $module else 'core'
       path      : @migration._migration_path + $name + EXT

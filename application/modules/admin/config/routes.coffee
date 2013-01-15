@@ -32,23 +32,6 @@
 #|
 #|	http://codeigniter.com/user_guide/general/routing.html
 #|
-#| -------------------------------------------------------------------------
-#| RESERVED ROUTES
-#| -------------------------------------------------------------------------
-#|
-#| There area two reserved routes:
-#|
-#|	exports['default_controller'] = 'welcome';
-#|
-#| This route indicates which controller class should be loaded if the
-#| URI contains no data. In the above example, the "welcome" class
-#| would be loaded.
-#|
-#|	exports['404_override'] = 'errors/page_missing';
-#|
-#| This route will tell the Router what URI segments to use if those provided
-#| in the URL cannot be matched to a valid route.
-#|
 #
 
 #----------------------------------------------------------------------

@@ -53,7 +53,7 @@ else
 #  Instantiate the core server app (default to expressjs)
 # ------------------------------------------------------
 #
-define '$SRV', load_driver('Server', 'core', $argv[2] ? 'express')
+define '$SRV', (exports.server = load_driver('Server', 'core', $argv[2] ? 'express'))
 
 #
 #------------------------------------------------------

@@ -29,7 +29,7 @@ class global.CI_Server
   _cache        : false
   _csrf         : false
   _logger       : 'dev'
-  _db           : 'postgres'
+  _db           : 'mysql'    # overrides config/database['active_group']
   _port         : 3000
   _preview      : false
   _profile      : false

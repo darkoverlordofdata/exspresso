@@ -1,1 +1,1 @@
-web: node index.js express --profile
+web: node index.js express --profile --db postgres
