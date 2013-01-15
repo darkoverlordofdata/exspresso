@@ -14,12 +14,6 @@
 # This file was ported from php to coffee-script using php2coffee
 #
 #
-
-
-{__construct, array_splice, call_user_func, count, defined, fmod, func_get_args, is_array, is_callable, is_null, is_object, list_fields, method_exists, num_rows, result_array, str_replace, temp}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # CodeIgniter
 #
@@ -47,10 +41,10 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # @author		ExpressionEngine Dev Team
 # @link		http://codeigniter.com/user_guide/libraries/uri.html
 #
-class CI_Table
+class global.CI_Table
   
-  rows: {}
-  heading: {}
+  rows: null
+  heading: null
   auto_heading: true
   caption: null
   template: null
@@ -58,10 +52,10 @@ class CI_Table
   empty_cells: ""
   function: false
   
-  __construct()
-  {
-  log_message('debug', "Table Class Initialized")
-  }
+  constructor: () ->
+    log_message('debug', "Table Class Initialized")
+    @rows = []
+    @heading = {}
   
   #  --------------------------------------------------------------------
   
@@ -122,16 +116,14 @@ class CI_Table
       return $array
       
     
-    $new = {}
+    $new = []
     while count($array) > 0
       $temp = array_splice($array, 0, $col_limit)
       
       if count($temp) < $col_limit
-        for ($i = count($temp)$i < $col_limit$i++)
-        {
-        $temp.push '&nbsp;'
-        }
-        
+        for $i in [count($temp)...$col_limit]
+          $temp.push '&nbsp;'
+
       
       $new.push $temp
       
@@ -194,18 +186,13 @@ class CI_Table
             
           else 
             $args[$key] = 'data':$val
-            
-          
-        
-      
-    else 
+
+    else
       for $key, $val of $args
+        continue if typeof $val is 'function' # strip functions left over from sql driver
         if not is_array($val)
           $args[$key] = 'data':$val
-          
-        
-      
-    
+
     return $args
     
   
@@ -254,7 +241,7 @@ class CI_Table
     
     #  set a custom cell manipulation function to a locally scoped variable so its callable
     $function = @function
-    
+
     #  Build the table!
     
     $out = @template['table_open']
@@ -284,7 +271,7 @@ class CI_Table
           
         
         $out+=$temp
-        $out+=$heading['data']?  then $heading['data'] else ''
+        $out+= if $heading['data']?  then $heading['data'] else ''
         $out+=@template['heading_cell_end']
         
       
@@ -303,32 +290,30 @@ class CI_Table
       for $row in @rows
         if not is_array($row)
           break
-          
-        
+
         #  We use modulus to alternate the row colors
-        $name = if (fmod($i++, 2)) then '' else 'alt_'
+        #$name = if (fmod($i++, 2)) then '' else 'alt_'
+        $name = if $i++ % 2 then '' else 'alt_'
         
         $out+=@template['row_' + $name + 'start']
         $out+=@newline
-        
-        for $cell in $row
+        for $k, $cell of $row
           $temp = @template['cell_' + $name + 'start']
           
           for $key, $val of $cell
             if $key isnt 'data'
-              $temp = str_replace('<td', "<td $key='$val'", $temp)
-              
-            
-          
+              $temp = str_replace('<td', "<td $key='#{$val}'", $temp)
+
           $cell = if $cell['data']?  then $cell['data'] else ''
           $out+=$temp
           
           if $cell is "" or $cell is null
             $out+=@empty_cells
             
-          else 
-            if $function isnt false and is_callable($function)
-              $out+=call_user_func($function, $cell)
+          else
+            if $function isnt false and typeof $function is 'function'
+              #$out+=call_user_func($function, $cell)
+              $out+=$function($cell)
               
             else 
               $out+=$cell
@@ -363,7 +348,7 @@ class CI_Table
   # @return	void
   #
   clear :  ->
-    @rows = {}
+    @rows = []
     @heading = {}
     @auto_heading = true
     
@@ -381,7 +366,6 @@ class CI_Table
     if not is_object($query)
       return false
       
-    
     #  First generate the headings from the table column names
     if count(@heading) is 0
       if not method_exists($query, 'list_fields')
@@ -392,14 +376,11 @@ class CI_Table
       
     
     #  Next blast through the result array and build out the rows
-    
+
     if $query.num_rows > 0
       for $row in $query.result_array()
         @rows.push @_prep_args($row)
-        
-      
-    
-  
+
   #  --------------------------------------------------------------------
   
   #
@@ -420,10 +401,9 @@ class CI_Table
       if $i is 0 and count($data) > 1 and count(@heading) is 0 and $set_heading is true
         @heading = @_prep_args($row)
         
-      else 
+      else
         @rows.push @_prep_args($row)
-        
-      
+
       $i++
       
     
@@ -459,38 +439,31 @@ class CI_Table
   # @return	void
   #
   _default_template :  ->
-    return 
-      'table_open':'<table border="0" cellpadding="4" cellspacing="0">', 
-      
-      'thead_open':'<thead>', 
-      'thead_close':'</thead>', 
-      
-      'heading_row_start':'<tr>', 
-      'heading_row_end':'</tr>', 
-      'heading_cell_start':'<th>', 
-      'heading_cell_end':'</th>', 
-      
-      'tbody_open':'<tbody>', 
-      'tbody_close':'</tbody>', 
-      
-      'row_start':'<tr>', 
-      'row_end':'</tr>', 
-      'cell_start':'<td>', 
-      'cell_end':'</td>', 
-      
-      'row_alt_start':'<tr>', 
-      'row_alt_end':'</tr>', 
-      'cell_alt_start':'<td>', 
-      'cell_alt_end':'</td>', 
-      
-      'table_close':'</table>'
-      
-    
-  
-  
-  
+    'table_open':'<table border="0" cellpadding="4" cellspacing="0">',
 
-register_class 'CI_Table', CI_Table
+    'thead_open':'<thead>',
+    'thead_close':'</thead>',
+
+    'heading_row_start':'<tr>',
+    'heading_row_end':'</tr>',
+    'heading_cell_start':'<th>',
+    'heading_cell_end':'</th>',
+
+    'tbody_open':'<tbody>',
+    'tbody_close':'</tbody>',
+
+    'row_start':'<tr>',
+    'row_end':'</tr>',
+    'cell_start':'<td>',
+    'cell_end':'</td>',
+
+    'row_alt_start':'<tr>',
+    'row_alt_end':'</tr>',
+    'cell_alt_start':'<td>',
+    'cell_alt_end':'</td>',
+
+    'table_close':'</table>'
+      
 module.exports = CI_Table
 
 

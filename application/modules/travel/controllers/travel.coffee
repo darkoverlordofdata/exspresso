@@ -31,8 +31,6 @@ class Travel extends PublicController
   #
   login: () ->
 
-    @load.library 'template', title:  'Login'
-
     $url = @input.get_post('url')
 
     if @input.cookie('username') is ''
@@ -91,8 +89,8 @@ class Travel extends PublicController
       if $password is $customer.password
 
         if $remember
-          @input.set_cookie 'username', $customer.username, 900000
-          @input.set_cookie 'usercode', $customer.password, 900000
+          @input.set_cookie 'username', $customer.username, new Date(Date.now()+900000)
+          @input.set_cookie 'usercode', $customer.password, new Date(Date.now()+900000)
 
         delete $customer.password
         @session.set_userdata 'customer', $customer
@@ -179,12 +177,13 @@ class Travel extends PublicController
 
     @db.count_all 'hotel', ($err, $count) =>
 
+      return @template.view($err) if $err
+
       @load.library 'pagination',
         base_url    : base_url()+'travel/hotels/'
         uri_segment : 3
         total_rows  : parseInt($count, 10)
         per_page    : $pageSize
-        #num_links   : 5
 
       @db.from 'hotel'
       @db.like 'name', "%#{$searchString}%"
@@ -211,8 +210,6 @@ class Travel extends PublicController
   #
   hotel: ($id) ->
 
-    @template.set_title 'Travel', 'Hotel'
-
     @db.from 'hotel'
     @db.where 'id', $id
     @db.get ($err, $hotel) =>
@@ -232,8 +229,6 @@ class Travel extends PublicController
   #   @return	void
   #
   booking: ($id) ->
-
-    @template.set_title 'Travel', 'Booking'
 
     if @input.post('cancel')? then return @redirect "/travel"
 
@@ -286,8 +281,6 @@ class Travel extends PublicController
   #
   confirm: ($id) ->
 
-    @template.set_title 'Travel', 'Booking'
-
     if @input.get_post('cancel')? then return @redirect "/travel"
 
     if not @session.userdata('customer')
@@ -296,6 +289,8 @@ class Travel extends PublicController
     @db.from 'hotel'
     @db.where 'id', $id
     @db.get ($err, $hotel) =>
+
+      return @template.view($err) if $err
 
       $hotel = $hotel.row()
       $customer = @session.userdata('customer')
@@ -318,6 +313,7 @@ class Travel extends PublicController
         if $err then throw new Error($err)
         @db.insert_id ($err, $booking_id) =>
 
+          return @template.view($err) if $err
           if not $booking_id? then throw new Error('insert id not returned')
 
           $booking.id = $booking_id
@@ -339,8 +335,6 @@ class Travel extends PublicController
   #
   book: ($id) ->
 
-    @template.set_title 'Travel', 'Book'
-
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/book/#{$id}"
 
@@ -348,7 +342,9 @@ class Travel extends PublicController
     @db.where 'id', $id
     @db.get ($err, $booking) =>
 
+      return @template.view($err) if $err
       $booking = $booking.row()
+
       if @input.post('confirm')?
 
         @db.where 'id', $id
@@ -368,6 +364,8 @@ class Travel extends PublicController
         @db.from 'hotel'
         @db.where 'id', $booking.hotel
         @db.get ($err, $hotel) =>
+
+          return @template.view($err) if $err
 
           $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
           $booking.totalPayment = $booking.numberOfNights * $hotel.price

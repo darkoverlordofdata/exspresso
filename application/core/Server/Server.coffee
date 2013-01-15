@@ -35,6 +35,7 @@ class global.CI_Server
   _profile      : false
   _site_name    : 'My Site'
   _site_slogan  : 'My Slogan'
+  _config       : null
 
   #  --------------------------------------------------------------------
 
@@ -132,6 +133,7 @@ class global.CI_Server
   #
   config: ($config) ->
 
+    @_config      = $config
     @_cache       = false
     @_csrf        = false
     @_logger      = $config.config.logger
@@ -154,7 +156,7 @@ class global.CI_Server
   output: ($output) ->
 
     $output.enable_profiler @_profile
-    @app.use $output.middleware()
+    @app.use $output.middleware(@_config)
 
   #  --------------------------------------------------------------------
 
@@ -169,7 +171,7 @@ class global.CI_Server
   #
   input: ($input) ->
     
-    @app.use $input.middleware()
+    @app.use $input.middleware(@_config)
 
   #  --------------------------------------------------------------------
 
@@ -184,7 +186,7 @@ class global.CI_Server
   #
   uri: ($uri) ->
 
-    @app.use $uri.middleware()
+    @app.use $uri.middleware(@_config)
 
   #  --------------------------------------------------------------------
 
@@ -199,7 +201,7 @@ class global.CI_Server
   #
   session: ($session) ->
 
-    @app.use $session.middleware()
+    @app.use $session.middleware(@_config)
 
 
   # --------------------------------------------------------------------

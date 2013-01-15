@@ -23,8 +23,56 @@ class global.AdminController extends MY_Controller
     super($args...)
 
     @load.library 'template'
-    @template.set_theme 'default', 'prettify'
-    @load.database 'mysql'
+    @template.set_theme 'default', 'signin', 'sidenav'
+    @load.database()
+    @url_helper = @load.helper('url')
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Sidenav
+  #
+  # Administrator side-bar navigation menu
+  #
+  #   @access	public
+  #   @param string
+  #   @return	void
+  #
+  sidenav: ($active) ->
+
+    $admin_menu = 
+      Dashboard    : '/admin/index'
+      Config       : '/admin/config'
+      Routes       : '/admin/routes'
+      Users        : '/admin/users'
+      Database     : '/admin/database'
+      Migrate      : '/admin/migrate'
+      Blog         : '/admin/blog'
+      Demo         : '/admin/demo'
+    
+    @template.html_sidenav($admin_menu, $active)
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Submenu
+  #
+  # Administrator sub menu
+  #
+  #   @access	public
+  #   @param string
+  #   @return	void
+  #
+  submenu: ($active) ->
+
+    $modules = 
+      Core   : '/admin/migrate/list'
+      Blog   : '/admin/migrate/list/blog'
+      Travel : '/admin/migrate/list/travel'
+      User   : '/admin/migrate/list/user'
+    
+    @template.html_submenu($modules, $active)
+
 
 module.exports = AdminController
 # End of file AdminController.coffee

@@ -5,6 +5,9 @@
         <tr>
             <th>Name:</th>
             <td><%= @hotel.name %></td>
+            <td>
+                <%- @anchor('/travel/logout', "Logout", class: 'btn') %>
+            </td>
         </tr>
         <tr>
             <th>Address:</th>

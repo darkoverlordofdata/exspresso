@@ -124,7 +124,7 @@ Constants from CodeIgniter and PHP only have been replicated.
         * Profiler              X
         * Session               X
         * Sha1                  Not required
-        * Table                 -
+        * Table                 X
         * Trackback             -
         * Typography            ?
         * Unit_test             ?

@@ -25,14 +25,13 @@ class global.CI_Error extends Error
 
     $status = $err.status || $status
 
-    Object.defineProperties @,
-      code:     value:  $status
-      desc:     value:  set_status_header($status)
-      type:     value:  ($err.stack || '').split(':')[0]
-      class:    value:  if $status >= 500 then 'error' else 'info'
-      message:  value:  if $status is 404 then "The page you requested was not found" else $err.message || 'Unknown error'
-      stack:    value:  '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
-        '<li>' + v + '</li>' ).join('')+'</ul>'
+    @code     = $status
+    @desc     = set_status_header($status)
+    @name     = $err.name || 'Error'
+    @class    = if $status >= 500 then 'error' else 'info'
+    @message  = if $status is 404 then "The page you requested was not found" else $err.message || 'Unknown error'
+    @stack    = '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
+      '<li>' + v + '</li>' ).join('')+'</ul>'
 
 #
 # Exceptions Class

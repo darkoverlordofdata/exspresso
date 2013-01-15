@@ -50,10 +50,10 @@ else
 
 #
 # ------------------------------------------------------
-#  Instantiate the core server app (default to connectjs)
+#  Instantiate the core server app (default to expressjs)
 # ------------------------------------------------------
 #
-define '$SRV', load_driver('Server', 'core', $argv[2] ? 'connect')
+define '$SRV', load_driver('Server', 'core', $argv[2] ? 'express')
 
 #
 #------------------------------------------------------

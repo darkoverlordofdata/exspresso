@@ -47,7 +47,7 @@
 #|  $autoload['packages'] = [APPPATH+'third_party', '/usr/local/shared']
 #|
 #
-exports['packages'] = [APPPATH+'third_party/ckeditor/']
+exports['packages'] = [APPPATH+'third_party/ckeditor/', APPPATH+'third_party/ion_auth/']
 
 #
 #| -------------------------------------------------------------------

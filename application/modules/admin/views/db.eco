@@ -1,0 +1,54 @@
+<div class="row">
+    <div class="span3">
+        <ul class="nav nav-list sidenav">
+            <li><a href="/admin/index"><i class="icon-chevron-right"></i> Dashboard</a></li>
+            <li><a href="/admin/config"><i class="icon-chevron-right"></i> Config</a></li>
+            <li><a href="/admin/routes"><i class="icon-chevron-right"></i> Routes</a></li>
+            <li><a href="/admin/users"><i class="icon-chevron-right"></i> Users</a></li>
+            <li class="active"><a href="/admin/db"><i class="icon-chevron-right"></i> Database</a></li>
+            <li><a href="/admin/migrate"><i class="icon-chevron-right"></i> Migrations</a></li>
+            <li><a href="/admin/blog"><i class="icon-chevron-right"></i> Blog</a></li>
+            <li><a href="/admin/demo"><i class="icon-chevron-right"></i> Demo</a></li>
+        </ul>
+    </div>
+    <div class="span9">
+        <h3>Configuration</h3>
+        <table class="table table-striped">
+            <tr>
+                <th>driver</th>
+                <td><%= @info.dbdriver %></td>
+            </tr>
+            <tr>
+                <th>url</th>
+                <td><%= @info.url %></td>
+            </tr>
+            <tr>
+                <th>host name</th>
+                <td><%= @info.hostname %></td>
+            </tr>
+            <tr>
+                <th>user name</th>
+                <td><%= @info.username %></td>
+            </tr>
+            <tr>
+                <th>database</th>
+                <td><%= @info.database %></td>
+            </tr>
+            <tr>
+                <th>prefix</th>
+                <td><%= @info.dbprefix %></td>
+            </tr>
+        </table>
+        <!--
+        <h3>Tables</h3>
+        <table class="table table-striped">
+            <% for $name in @tables: %>
+                <tr>
+                    <td><%= $name %></td>
+                </tr>
+            <% end %>
+        </table>
+        -->
+    </div>
+</div>
+

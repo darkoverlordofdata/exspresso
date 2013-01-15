@@ -16,7 +16,7 @@
 # This is the default controller
 #
 
-class Welcome extends CI_Controller
+class Welcome extends PublicController
 
   ## --------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ class Welcome extends CI_Controller
   #
   index: ->
 
-    @load.view 'welcome_message'
+    @template.view 'welcome_message'
 
 
   ## --------------------------------------------------------------------

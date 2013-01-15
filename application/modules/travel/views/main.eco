@@ -2,7 +2,7 @@
      <span class="errors"></span>
      <h2>Search Hotels</h2>
      <%- @form_open("/travel/hotels", class:'form-search') %>
-        <%- @form_input('searchString', @searchString, class:'input-medium search-query') %>
+        <%- @form_input('searchString', @searchString, placeholder: 'search for...', class:'input-medium search-query') %>
         <%- @form_submit('submit', 'Search', class:'btn btn-primary') %>
         <p></p>
         <%- @form_label('Maximum results:', 'pageSize') %>

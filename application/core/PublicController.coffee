@@ -24,7 +24,7 @@ class global.PublicController extends MY_Controller
 
     @load.library 'template'
     @template.set_theme 'default', 'prettify'
-    @load.database 'mysql'
+    @load.database()
 
 module.exports = PublicController
 # End of file PublicController.coffee

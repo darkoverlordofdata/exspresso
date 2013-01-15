@@ -30,11 +30,10 @@ exports.menu =
   tabs: # tabs | pills
 
     # Text    Uri
-    Home    : ''
-    Blog    : '/blog'
-    Travel  : '/travel'
-    Migrate : '/migrate'
-    Welcome : '/welcome'
+    Welcome : ['/welcome', "About Exspresso"]
+    Home    : ['/', 'Blog']
+    Travel  : ['/travel', 'DB Demo']
+    Admin   : ['/admin', 'Login']
 
 
 exports.script =
@@ -65,6 +64,12 @@ exports.css =
     """
     code {font-size: 100%};
     """
+  ]
+  signin: [
+    'css/signin.css'
+  ]
+  sidenav: [
+    'css/sidenav.css'
   ]
 
 # End of file theme.coffee

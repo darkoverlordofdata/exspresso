@@ -28,12 +28,18 @@
 #
 #
 connect         = require("connect")        # High performance middleware framework
+#
+# known issues:
+#   1. Cookies not working
+#
+#
 cache           = require("connect-cache")  # Caching system for Connect
 eco             = require('eco')            # Embedded CoffeeScript templates
 fs              = require("fs")             # File system
 
 parseUrl        = connect.utils.parseUrl
-
+cookie          = require('cookie')
+sign            = require('cookie-signature')
 
 class Variables
 
@@ -99,6 +105,8 @@ class global.CI_Server_connect extends CI_Server
     super $router, $autoload
 
     @_port = @_port || 3000
+
+    #@app.use connect.directory(APPPATH+'modules/blog', icons: true)
 
     #@app.use @authenticate()
     @app.use @error_5xx()
@@ -280,6 +288,27 @@ class global.CI_Server_connect extends CI_Server
         ip:         value: $req.connection.remoteAddress
 
       $CFG.config.base_url = $req.protocol+'://'+ $req.headers.host
+
+      #  --------------------------------------------------------------------
+
+      $res.cookie = ($name, $val, $options) ->
+
+        $options = array_merge({}, $options)
+        if $options.signed and not $req.secret then throw new Error('signed cookies require encryption key')
+        if typeof $val is 'object' then $val = 'j:'+JSON.stringify($val)
+        if $options.signed then $val = 's:'+sign($val, $req.secret)
+        if $options.maxAge?
+          $options.expires = new Date(Date.now() + $options.maxAge)
+          $options.maxAge /= 1000
+        if not $options.path? then $options.path = '/'
+        log_message 'debug', 'cookie name = %s', $name
+        log_message 'debug', 'cookie val = %s', $val
+        log_message 'debug', 'cookie options = %j', $options
+        try
+          $res.setHeader  'Set-Cookie': ''+cookie.serialize($name, ''+$val, $options)
+        catch $err
+          $next($err)
+
 
       #  --------------------------------------------------------------------
 

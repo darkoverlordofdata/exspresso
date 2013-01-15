@@ -18,6 +18,8 @@
 
 class global.Template
 
+  __keys = Object.keys
+
   CI: null
   html: null
 
@@ -87,7 +89,7 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_theme: ($theme_name = 'default', $extra) ->
+  set_theme: ($theme_name = 'default', $extra...) ->
     @_theme_name = $theme_name
     for $location in @_theme_locations
       if file_exists($location + @_theme_name)
@@ -227,39 +229,6 @@ class global.Template
     @_menu = $menu
     @
 
-  html_menu: ($menu) ->
-
-    $active = @CI.uri.segment(1, '')
-    $active = if $active.length then '/'+$active else ''
-    $keys = Object.keys($menu)
-    $key0 = $keys[0]
-
-    url = @CI.load.helper('url')
-    $content = "<ul class=\"nav nav-#{$key0}\">\n"
-    for $name, $uri of $menu[$key0]
-      if $uri is $active
-        $content+="<li class=\"active\">"+url.anchor($uri, $name)+"</li>\n"
-      else
-        $content+="<li>"+url.anchor($uri, $name)+"</li>\n"
-
-    $content+"</ul>\n"
-
-
-  ## --------------------------------------------------------------------
-
-  #
-  # render an error in a template
-  #
-  #   @access	public
-  #   @param	array   data
-  #   @param	number  status
-  #   @return	void
-  #
-  error: ($err = {}, $status = 500) ->
-
-    @view 'errors',
-      err: new CI_Error($err, $status)
-
 
   ## --------------------------------------------------------------------
 
@@ -275,11 +244,18 @@ class global.Template
   view: ($view = '' , $data = {}, $callback) =>
 
     #
+    # If the $view is an Error object, show the error as content
+    #
+    if $view instanceof Error
+      $data = {err: new CI_Error($view)}
+      $view = 'errors'
+
+    #
     # If the $data is an Error object, show the error as content
     #
     if $data instanceof Error
-      $view = 'errors'
       $data = {err: new CI_Error($data)}
+      $view = 'errors'
 
     #
     # Collect all of the template bits
@@ -298,13 +274,13 @@ class global.Template
       else
         $css.push @html.stylesheet($str)
 
-    @set '$doctype', @html.doctype(@_doctype)
-    @set '$meta', @html.meta(@_metadata)
-    @set '$style', $css.join("\n")
-    @set '$script', $script.join("\n")
-    @set '$title', @_title
-    @set '$menu', @html_menu(@_menu, @CI.uri.segment(0,''))
-    @set 'site_name', config_item('site_name')
+    @set '$doctype',    @html.doctype(@_doctype)
+    @set '$meta',       @html.meta(@_metadata)
+    @set '$style',      $css.join("\n")
+    @set '$script',     $script.join("\n")
+    @set '$title',      @_title
+    @set '$menu',       @html_menu(@_menu, @CI.uri.segment(1, ''))
+    @set 'site_name',   config_item('site_name')
     @set 'site_slogan', config_item('site_slogan')
     @set $data
     $index = 0
@@ -360,6 +336,84 @@ class global.Template
 
           @CI.output.set_output $page
           @CI.output._display()
+
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Menu
+  #
+  # Main menu
+  #
+  #   @access	public
+  #   @param string
+  #   @return	void
+  #
+  html_menu: ($items, $active) ->
+
+    $k = __keys($items)[0]
+    $active = if $active.length then '/'+$active else ''
+
+    $menu = "<ul class=\"nav nav-#{$k}\">\n"
+    for $name, $val of $items[$k]
+      [$uri, $tip] = $val
+      if $uri is $active
+        $menu+="<li class=\"active\"><a href=\"#{$uri}\">#{$name}</a></li>\n"
+      else
+        $menu+="<li><a href=\"#{$uri}\" title=\"#{$tip}\">#{$name}</a></li>\n"
+
+    $menu+"</ul>\n"
+
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Sidenav
+  #
+  # side-bar navigation menu
+  #
+  #   @access	public
+  #   @param string
+  #   @return	void
+  #
+  html_sidenav: ($items, $active) ->
+
+    $menu = "<ul class=\"nav nav-list sidenav\">\n"
+
+
+    for $k, $u of $items
+      if $k is $active
+        $menu += "<li class=\"active\">"
+      else
+        $menu += "<li>"
+      $menu += "<a href=\"#{$u}\"><i class=\"icon-chevron-right\"></i> #{$k}</a></li>\n"
+    $menu += "</ul>\n"
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Submenu
+  #
+  # sub menu
+  #
+  #   @access	public
+  #   @param string
+  #   @return	void
+  #
+  html_submenu: ($modules, $module) ->
+
+    $active = ucfirst($module)
+
+    $menu = "<ul class=\"nav nav-tabs\">\n"
+    for $k, $u of $modules
+      if $k is $active
+        $menu += "<li class=\"active\">\n"
+      else
+        $menu += "<li>\n"
+      $menu += "<a href=\"#{$u}\" title=\"#{$k}\">#{$k}</a>\n</li>\n"
+    $menu += "</ul>\n"
+
+
 
 
 module.exports = Template

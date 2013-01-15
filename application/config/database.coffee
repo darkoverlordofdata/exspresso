@@ -50,7 +50,7 @@
 #| the active record class
 #
 
-exports['active_group'] = 'postgres'
+exports['active_group'] = 'mysql'
 exports['active_record'] = true
 exports['db'] =
 

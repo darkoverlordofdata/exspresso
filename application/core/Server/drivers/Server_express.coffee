@@ -159,7 +159,6 @@ class global.CI_Server_express extends CI_Server
     #
     @app.set 'views', APPPATH + $config.views
     @app.use express.static(APPPATH+"assets/")
-    @app.use express.staticCache()
     #
     # Embedded coffee-script rendering engine
     #

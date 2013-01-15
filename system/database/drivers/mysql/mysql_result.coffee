@@ -29,6 +29,7 @@ module.exports = (CI_DB_result) ->
 
 
     constructor: ($results, $info) ->
+
       @_result_array = @_result_object = $results
       @_metadata = $info
       @_num_rows = @num_rows()
@@ -66,8 +67,8 @@ module.exports = (CI_DB_result) ->
     #
     list_fields :  ->
       $field_names = []
-      for $name, $info of @_metadata
-        $field_names.push $name
+      for $field in @_metadata
+        $field_names.push $field.name
       return $field_names
 
 

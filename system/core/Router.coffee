@@ -335,7 +335,7 @@ class global.CI_Router
     if @_method is @fetch_class()
       return 'index'
 
-    return @_method
+    return @_method || 'index'
 
   # --------------------------------------------------------------------
 

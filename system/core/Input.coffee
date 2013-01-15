@@ -181,7 +181,7 @@ module.exports = class global.CI_Input
   #
   #   @returns function middlware callback
   #
-  middleware: ()->
+  middleware: ($config = {})->
 
     log_message 'debug',"Input middleware initialized"
 
@@ -259,11 +259,19 @@ module.exports = class global.CI_Input
 
       # --------------------------------------------------------------------
       @set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
-        $res.cookie $name, $value,
-          expire: $expire
+
+        if $prefix is '' and config_item('cookie_prefix') isnt ''
+          $prefix = config_item('cookie_prefix')
+        if $domain is '' and config_item('cookie_domain') isnt ''
+          $domain = config_item('cookie_domain')
+        if $path is '/' and config_item('cookie_path') isnt '/'
+          $path = config_item('cookie_path')
+
+
+        $res.cookie $prefix+$name, $value,
+          expires: $expire
           domain: $domain
           path:   $path
-          prefix: $prefix
           secure: $secure
 
       # --------------------------------------------------------------------

@@ -4,6 +4,9 @@
         <tr>
             <th>Name:</th>
             <td><%= @hotel.name %></td>
+            <td>
+                <%- @anchor('/travel/logout', "Logout", class: 'btn') %>
+            </td>
         </tr>
         <tr>
             <th>Address:</th>
@@ -28,7 +31,7 @@
     </table>
     <%- @form_open("/travel/confirm/#{@id}", class:'form') %>
 
-        <div classl="control-group">
+        <div class="control-group">
             <%- @form_label('Check In:', 'checkinDate', class:'control-label') %>
             <%- @form_input('checkinDate', '', class:'datepicker') %>
         </div>

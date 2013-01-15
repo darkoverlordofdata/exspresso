@@ -20,6 +20,8 @@
     "connect": "*",
     "connect-cache": "*",
     "connect-redis": "*",
+    "cookie": "*",
+    "cookie-signature": "*",
     "dispatch": "*",
     "eco": "*",
     "emailjs": "*",
