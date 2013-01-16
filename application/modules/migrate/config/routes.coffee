@@ -32,40 +32,22 @@
 #|
 #|	http://codeigniter.com/user_guide/general/routing.html
 #|
-#| -------------------------------------------------------------------------
-#| RESERVED ROUTES
-#| -------------------------------------------------------------------------
-#|
-#| There area two reserved routes:
-#|
-#|	exports['default_controller'] = 'welcome';
-#|
-#| This route indicates which controller class should be loaded if the
-#| URI contains no data. In the above example, the "welcome" class
-#| would be loaded.
-#|
-#|	exports['404_override'] = 'errors/page_missing';
-#|
-#| This route will tell the Router what URI segments to use if those provided
-#| in the URL cannot be matched to a valid route.
-#|
 #
 
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-
-# migrations
-exports['/migrate']                           = 'migrate/index'
-exports['/migrate/:module']                   = 'migrate/index'
-exports['/migrate/info/:module/:name']        = 'migrate/preview'
-exports['/migrate/info/:name']                = 'migrate/preview'
-
-exports['/migrate/current']                   = 'migrate/current'
-exports['/migrate/latest']                    = 'migrate/latest'
-exports['/migrate/up/:to']                    = 'migrate/up'
-exports['/migrate/down/:to']                  = 'migrate/down'
-
+# blog routeing
+exports['/admin/config']                        = 'config/admin'
+exports['/admin/routes']                        = 'routes/admin'
+exports['/admin/users']                         = 'user/admin'
+exports['/admin/db']                            = 'db/admin'
+exports['/admin/migrate']                       = 'migrate/admin'
+exports['/admin/migrate/list']                  = 'migrate/admin'
+exports['/admin/migrate/list/:module']          = 'migrate/admin'
+exports['/admin/migrate/preview/:module/:name'] = 'migrate/preview'
+exports['/admin/blog']                          = 'blog/admin'
+exports['/admin/travel']                        = 'travel/admin'
 
 # End of file routes.coffee
-# Location: ./application/modules/migrate/config/routes.coffee
+# Location: .modules/blog/config/routes.coffee

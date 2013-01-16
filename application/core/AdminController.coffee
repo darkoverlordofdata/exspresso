@@ -41,14 +41,14 @@ class global.AdminController extends MY_Controller
   sidenav: ($active) ->
 
     $admin_menu = 
-      Dashboard    : '/admin/index'
+      Dashboard    : '/admin'
       Config       : '/admin/config'
       Routes       : '/admin/routes'
       Users        : '/admin/users'
-      Database     : '/admin/database'
+      Database     : '/admin/db'
       Migrate      : '/admin/migrate'
       Blog         : '/admin/blog'
-      Demo         : '/admin/demo'
+      Demo         : '/admin/travel'
     
     @template.html_sidenav($admin_menu, $active)
 

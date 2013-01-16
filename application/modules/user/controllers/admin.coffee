@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| users.coffee
+#| admin.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,11 +11,11 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Users
+#	Admin
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Users extends AdminController
+class Admin extends AdminController
 
 ## --------------------------------------------------------------------
 
@@ -23,13 +23,13 @@ class Users extends AdminController
 
 
   index: ->
-    @template.view 'admin/users'
+    @template.view 'admin'
 
 
 #
 # Export the class:
 #
-module.exports = Users
+module.exports = Admin
 
-# End of file Users.coffee
-# Location: .modules/admin/controllers/Users.coffee
+# End of file Admin.coffee
+# Location: .modules/admin/controllers/Admin.coffee

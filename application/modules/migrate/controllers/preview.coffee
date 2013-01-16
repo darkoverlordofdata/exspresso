@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| migrate.coffee
+#| Preview.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,11 +11,11 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Migrate
+#	Migration Preview
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Migrate extends AdminController
+class Preview extends AdminController
 
   constructor: ($args...) ->
 
@@ -25,34 +25,40 @@ class Migrate extends AdminController
       migration_db      : 'mysql'
       migration_enabled :  true
 
-
   ## --------------------------------------------------------------------
 
   #
-  # List migrations
+  # Preview
+  #
+  # Preview migration sql
   #
   #   @access	public
   #   @param string
   #   @return	void
   #
-  index: ($module = '') ->
+  index: ($module = '', $name = '') ->
+
+
+    if $name is ''
+      $name = $module
+      $module = ''
+
 
     @migration.set_module $module
-    @migration._get_version ($err, $version) =>
+    $class = require(@migration._migration_path + $name + EXT)
+    @template.view 'preview',
+      nav       : @sidenav('Migrate')
+      module    : if $module.length then $module else 'core'
+      path      : @migration._migration_path + $name + EXT
+      migration : new $class(@migration)
+      fmtsql    : ($sql) ->
+        (''+$sql).replace("VALUES", "\nVALUES\n").replace(/\), \(/g, "),\n (")
 
-      @template.view 'admin/migrate/index', $err || {
-        nav       : @sidenav('Migrate')
-        menu      : @submenu($module || 'Core')
-        module    : if $module then $module+'/' else ''
-        path      : @migration._migration_path
-        files     : glob(@migration._migration_path+'*'+EXT)
-        version   : $version
-      }
 
 #
 # Export the class:
 #
-module.exports = Migrate
+module.exports = Preview
 
-# End of file Migrate.coffee
-# Location: .modules/admin/controllers/Migrate.coffee
+# End of file Preview.coffee
+# Location: .modules/admin/controllers/Preview.coffee

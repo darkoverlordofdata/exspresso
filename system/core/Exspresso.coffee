@@ -14,8 +14,19 @@
 #	the Exspresso framework :)
 #
 #
-#   node [--harmony] index <appjs|connect|express>
+#   node [--harmony] index <appjs|connect|express> [--flag]
 #
+#     options:
+#     --cache
+#     --csrf
+#     --preview
+#     --profile
+#     --nocache
+#     --nocsrf
+#     --noprofile
+#     --db <mysql|postgres>
+#
+#   examples:
 #     node --harmony index appjs
 #     node index connect
 #     node index express

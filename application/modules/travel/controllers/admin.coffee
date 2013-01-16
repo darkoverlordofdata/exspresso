@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| blog.coffee
+#| admin.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,11 +11,11 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Blog
+#	Travel Admin
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Blog extends AdminController
+class Admin extends AdminController
 
 ## --------------------------------------------------------------------
 
@@ -23,13 +23,13 @@ class Blog extends AdminController
 
 
   index: ->
-    @template.view 'admin/blog'
+    @template.view 'admin'
 
 
 #
 # Export the class:
 #
-module.exports = Blog
+module.exports = Admin
 
-# End of file Blog.coffee
-# Location: .modules/admin/controllers/Blog.coffee
+# End of file Admin.coffee
+# Location: .modules/admin/controllers/Admin.coffee

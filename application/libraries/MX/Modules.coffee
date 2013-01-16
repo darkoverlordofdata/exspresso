@@ -56,6 +56,13 @@ exports.views = {}
 ## --------------------------------------------------------------------
 
 #
+# Returns a list of modules
+#
+exports.list = list = ->
+
+## --------------------------------------------------------------------
+
+#
 # Run a module controller method
 # Output from module is buffered and returned.
 #

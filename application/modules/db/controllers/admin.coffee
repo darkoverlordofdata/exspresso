@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| routes.coffee
+#| admin.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,25 +11,29 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Routes
+#	Database Admin
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Routes extends AdminController
+class Admin extends AdminController
 
-## --------------------------------------------------------------------
-
-
-
-
+  ## --------------------------------------------------------------------
   index: ->
-    @template.view 'admin/routes'
+
+    $db = require(APPPATH+'config/database.coffee')
+
+    @db.list_tables ($err, $tables) =>
+
+      @template.view 'admin', $err || {
+        info:   $db.db[$db.active_group]
+        tables: $tables
+      }
 
 
 #
 # Export the class:
 #
-module.exports = Routes
+module.exports = Admin
 
-# End of file Routes.coffee
-# Location: .modules/admin/controllers/Routes.coffee
+# End of file Admin.coffee
+# Location: .modules/admin/controllers/Admin.coffee

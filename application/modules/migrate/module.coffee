@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| Module.coffee
+#| module.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,22 +11,19 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Module - Main application
+#	Admin module
 #
 #
 #
-class global.Module
+exports['active'] = true
+exports['name'] = 'Migrate'
+exports['desc'] = 'Database migrations'
+exports['version'] = '1.0'
+exports['base'] = APPPATH+'modules/migrate/'
 
-  info: ->
-    active: true
-    name: 'Example'
-    description: 'Example Module'
-    version: 0.0
-
-  install: ->
-
-  uninstall: ->
+exports['menu'] =
+  Dashboard    : '/migrate/index'
 
 
-# End of file Module.coffee
-# Location: ./Module.coffee
+# End of file module.coffee
+# Location: .application/modules/admin/module.coffee

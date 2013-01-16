@@ -111,7 +111,7 @@ class Admin extends AdminController
 
 
   index: ->
-    @template.view 'admin/dashboard'
+    @template.view 'admin'
 #
 # Export the class:
 #

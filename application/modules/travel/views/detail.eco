@@ -1,8 +1,8 @@
-<div class='hero-unit'>
+<div class='heroz-unit'>
 
     <h2>View Hotel</h2>
 
-    <table class='table'>
+    <table class='table table-striped'>
       <tr>
           <th>Name:</th>
           <td><%= @hotel.name %></td>

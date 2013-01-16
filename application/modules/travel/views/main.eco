@@ -1,5 +1,4 @@
- <div class="hero-unit">
-     <span class="errors"></span>
+ <div>
      <h2>Search Hotels</h2>
      <%- @form_open("/travel/hotels", class:'form-search') %>
         <%- @form_input('searchString', @searchString, placeholder: 'search for...', class:'input-medium search-query') %>

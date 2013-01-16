@@ -59,5 +59,19 @@ exports['404_override']                       = 'welcome/not_found'
 
 exports['/home']                              = 'home/index'
 exports['/welcome']                           = 'welcome/index'
+
+exports['/admin']                             = 'admin/index'
+exports['/admin/login']                       = 'admin/login'
+exports['/admin/logout']                      = 'admin/logout'
+exports['/admin/authenticate']                = 'admin/authenticate'
+
+exports['/admin/blog']                        = 'blog/admin'
+exports['/admin/config']                      = 'config/admin'
+exports['/admin/db']                          = 'db/admin'
+exports['/admin/migrate']                     = 'migrate/admin'
+exports['/admin/routes']                      = 'routes/admin'
+exports['/admin/travel']                      = 'travel/admin'
+exports['/admin/users']                       = 'user/admin'
+
 # End of file routes.coffee
 # Location: ./application/config/routes.coffee

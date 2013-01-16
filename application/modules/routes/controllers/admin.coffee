@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| config.coffee
+#| admin.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,11 +11,11 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Config
+#	Admin
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Config extends AdminController
+class Admin extends AdminController
 
 ## --------------------------------------------------------------------
 
@@ -23,13 +23,13 @@ class Config extends AdminController
 
 
   index: ->
-    @template.view 'admin/config'
+    @template.view 'admin'
 
 
 #
 # Export the class:
 #
-module.exports = Config
+module.exports = Admin
 
-# End of file Config.coffee
-# Location: .modules/admin/controllers/Config.coffee
+# End of file Admin.coffee
+# Location: .modules/admin/controllers/Admin.coffee
