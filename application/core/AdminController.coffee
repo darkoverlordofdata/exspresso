@@ -25,6 +25,7 @@ class global.AdminController extends MY_Controller
     @load.library 'template'
     @template.set_theme 'default', 'signin', 'sidenav'
     @load.database()
+    #@load.library 'user/auth'
     @url_helper = @load.helper('url')
 
   ## --------------------------------------------------------------------
@@ -46,7 +47,7 @@ class global.AdminController extends MY_Controller
       Routes       : '/admin/routes'
       Users        : '/admin/users'
       Database     : '/admin/db'
-      Migrate      : '/admin/migrate'
+      Migrations   : '/admin/migrate'
       Blog         : '/admin/blog'
       Demo         : '/admin/travel'
     
