@@ -352,7 +352,7 @@ class global.Template
   html_menu: ($items, $active) ->
 
     $k = __keys($items)[0]
-    $active = if $active.length then '/'+$active else ''
+    $active = '/'+$active
 
     $menu = "<ul class=\"nav nav-#{$k}\">\n"
     for $name, $val of $items[$k]

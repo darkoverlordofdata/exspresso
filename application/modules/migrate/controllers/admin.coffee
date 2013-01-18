@@ -41,7 +41,7 @@ class Admin extends AdminController
     @migration._get_version ($err, $version) =>
 
       @template.view 'index', $err || {
-        nav       : @sidenav('Admin')
+        nav       : @sidenav('Migrations')
         menu      : @submenu($module || 'Core')
         module    : if $module then $module+'/' else ''
         path      : @migration._migration_path
@@ -55,4 +55,4 @@ class Admin extends AdminController
 module.exports = Admin
 
 # End of file Admin.coffee
-# Location: .modules/admin/controllers/Admin.coffee
+# Location: .modules/migrare/controllers/Admin.coffee
