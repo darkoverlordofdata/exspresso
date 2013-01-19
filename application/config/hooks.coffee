@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
@@ -21,7 +21,7 @@
 #| This file lets you define "hooks" to extend CI without hacking the core
 #| files.  Please see the user guide for info:
 #|
-#|	http://codeigniter.com/user_guide/general/hooks.html
+#|	http://darkoverlordofdata.com/user_guide/general/hooks.html
 #|
 #
 

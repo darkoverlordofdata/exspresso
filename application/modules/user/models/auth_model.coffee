@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -15,7 +15,7 @@
 #
 #
 #
-class global.Auth_model extends CI_Model
+class global.Auth_model extends Exspresso_Model
 
   _db_exists    : false # do the auth tables exist?
   _use_data     : false # use migration data?

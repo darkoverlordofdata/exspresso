@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #  ------------------------------------------------------------------------
@@ -24,9 +24,9 @@
 # class is being used or not.
 #
 #
-module.exports = (CI_DB) ->
+module.exports = (Exspresso_DB) ->
 
-  class CI_DB_postgre_driver extends CI_DB
+  class Exspresso_DB_postgre_driver extends Exspresso_DB
 
     dbdriver:   'postgres'
     port:       5432
@@ -604,7 +604,7 @@ module.exports = (CI_DB) ->
       $callback()
 
 
-# End Class CI_DB_sqlite_driver
+# End Class Exspresso_DB_sqlite_driver
 
 #  End of file postgre_driver.php 
 #  Location: ./system/database/drivers/postgre/postgre_driver.php 

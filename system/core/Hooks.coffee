@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -31,17 +31,17 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Hooks Class
+# Exspresso Hooks Class
 #
 # Provides a mechanism to extend the base system without hacking.
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/encryption.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/encryption.html
 #
-module.exports = class global.CI_Hooks
+module.exports = class global.Exspresso_Hooks
 	
 	enabled: false
 	hooks: {}
@@ -216,7 +216,7 @@ module.exports = class global.CI_Hooks
 		return true
 		
 
-#  END CI_Hooks class
+#  END Exspresso_Hooks class
 
 #  End of file Hooks.php 
 #  Location: ./system/core/Hooks.php 

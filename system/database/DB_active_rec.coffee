@@ -11,11 +11,11 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
-CI_DB_driver   = require(BASEPATH + 'database/DB_driver') # Exspresso DB driver Base Class
+Exspresso_DB_driver   = require(BASEPATH + 'database/DB_driver') # Exspresso DB driver Base Class
 
 array = ($field, $match) ->
   $array = {}
@@ -30,7 +30,7 @@ array = ($field, $match) ->
 # This is the platform-independent base Active Record implementation class.
 #
 #
-class CI_DB_active_record extends CI_DB_driver
+class Exspresso_DB_active_record extends Exspresso_DB_driver
   
   ar_select:          null
   ar_distinct:        false
@@ -1809,7 +1809,7 @@ class CI_DB_active_record extends CI_DB_driver
     
     @_reset_run($ar_reset_items)
     
-module.exports = CI_DB_active_record
+module.exports = Exspresso_DB_active_record
 
 #  End of file DB_active_rec.php 
 #  Location: ./system/database/DB_active_rec.php 

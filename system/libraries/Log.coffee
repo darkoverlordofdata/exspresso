@@ -23,7 +23,7 @@
 fs              = require('fs')                         # Standard POSIX file i/o
 util            = require('util')
 
-class global.CI_Log
+class global.Exspresso_Log
 
   _log_path:    ''
   _threshold:   1
@@ -77,7 +77,7 @@ class global.CI_Log
 
 
 # END Log Class
-module.exports = CI_Log
+module.exports = Exspresso_Log
 
 # End of file Log.coffee
 # Location: ./system/libraries/Log.coffee

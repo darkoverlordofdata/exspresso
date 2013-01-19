@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -19,7 +19,7 @@
 # Redis Session store driver
 #
 #
-class CI_Session_redis extends require('connect-redis')(require('express'))
+class Exspresso_Session_redis extends require('connect-redis')(require('express'))
 
   ## --------------------------------------------------------------------
 
@@ -41,6 +41,6 @@ class CI_Session_redis extends require('connect-redis')(require('express'))
       pass: $dns.password
 
 
-module.exports = CI_Session_redis
+module.exports = Exspresso_Session_redis
 # End of file postgres.coffee
 # Location: ./system/libraries/Session/postgres.coffee

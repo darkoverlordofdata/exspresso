@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -31,7 +31,7 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Profiler Class
+# Exspresso Profiler Class
 #
 # This class enables you to display benchmark, query, and other data
 # in order to help with debugging and optimization.
@@ -39,13 +39,13 @@
 # Note: At some point it would be good to move all the HTML in this class
 # into a set of template files in order to allow customization.
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/general/profiling.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/general/profiling.html
 #
-class global.CI_Profiler
+class global.Exspresso_Profiler
   
   CI: null
   
@@ -150,10 +150,10 @@ class global.CI_Profiler
     $dbs = []
 
     #  Let's determine which databases are currently connected to
-    for $name, $CI_object of get_object_vars(@CI)
-      #if is_object($CI_object) # and $CI_object instanceof CI_DB is true
-      if $CI_object['dbdriver']?
-        $dbs.push $CI_object
+    for $name, $Exspresso_object of get_object_vars(@CI)
+      #if is_object($Exspresso_object) # and $Exspresso_object instanceof Exspresso_DB is true
+      if $Exspresso_object['dbdriver']?
+        $dbs.push $Exspresso_object
 
     if count($dbs) is 0
       $output = "\n\n"
@@ -434,9 +434,9 @@ class global.CI_Profiler
 
     return $output
 
-module.exports = CI_Profiler
+module.exports = Exspresso_Profiler
 
-#  END CI_Profiler class
+#  END Exspresso_Profiler class
 
 #  End of file Profiler.php 
 #  Location: ./system/libraries/Profiler.php 

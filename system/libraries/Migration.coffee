@@ -11,20 +11,20 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package    CodeIgniter
+# @package    Exspresso
 # @author    EllisLab Dev Team
 # @copyright  Copyright (c) 2006 - 2012, EllisLab, Inc.
-# @license    http://codeigniter.com/user_guide/license.html
-# @link    http://codeigniter.com
+# @license    MIT License
+# @link    http://darkoverlordofdata.com
 # @since    Version 1.0
 # @filesource
 #
@@ -37,13 +37,13 @@
 # All migrations should implement this, forces up() and down() and gives
 # access to the CI super-global.
 #
-# @package    CodeIgniter
+# @package    Exspresso
 # @subpackage  Libraries
 # @category  Libraries
 # @author    Reactor Engineers
 # @link
 #
-class global.CI_Migration
+class global.Exspresso_Migration
 
   _migration_enabled: false
   _migration_path: ''
@@ -58,7 +58,7 @@ class global.CI_Migration
 
   constructor: ($config = {}, @CI, @db, @dbforge) ->
 
-    if $config.constructor is CI_Migration or $config.constructor is MY_Migration
+    if $config.constructor is Exspresso_Migration or $config.constructor is MY_Migration
       for $key, $val of $config
         @[$key] = $val
       return
@@ -67,8 +67,8 @@ class global.CI_Migration
     #if (get_parent_class(@) isnt false)
     #  return
     log_message 'debug', 'Migration::constructor %s', @constructor.name
-    if not (@constructor is CI_Migration or @constructor is MY_Migration)
-      log_message 'debug', 'NOT CI_Migration!!!'
+    if not (@constructor is Exspresso_Migration or @constructor is MY_Migration)
+      log_message 'debug', 'NOT Exspresso_Migration!!!'
       return
 
     for $key, $val of $config
@@ -341,7 +341,7 @@ class global.CI_Migration
     @db.update 'migrations'
       'version': $migrations, $callback
 
-module.exports = CI_Migration
+module.exports = Exspresso_Migration
 
 # End of file Migration.coffee
 # Location: ./system/libraries/Migration.coffee

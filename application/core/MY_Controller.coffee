@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -16,7 +16,7 @@
 #
 #
 
-class global.MY_Controller extends CI_Controller
+class global.MY_Controller extends Exspresso_Controller
 
   _module: ''
 

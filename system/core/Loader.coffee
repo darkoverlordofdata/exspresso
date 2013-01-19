@@ -12,19 +12,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -36,13 +36,13 @@
 #
 # Loads views and files
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
-# @author		ExpressionEngine Dev Team
+# @author		darkoverlordofdata
 # @category	Loader
-# @link		http://codeigniter.com/user_guide/libraries/loader.html
+# @link		http://darkoverlordofdata.com/user_guide/libraries/loader.html
 #
-class global.CI_Loader
+class global.Exspresso_Loader
 
   path = require('path')
 
@@ -256,11 +256,11 @@ class global.CI_Loader
       if not file_exists($mod_path+'models/'+$path+$model+EXT)
         continue
 
-      if $db_conn isnt false and not class_exists('CI_DB')
+      if $db_conn isnt false and not class_exists('Exspresso_DB')
         if $db_conn is true then $db_conn = ''
         @CI.load.database $db_conn, false, true
 
-      if not class_exists('CI_Model')
+      if not class_exists('Exspresso_Model')
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
@@ -296,7 +296,7 @@ class global.CI_Loader
           @CI.db = $CI.db
           return false
 
-    if class_exists('CI_DB') and $return is false and $active_record is null and @CI['db']?
+    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI['db']?
       return false
 
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
@@ -323,7 +323,7 @@ class global.CI_Loader
   dbutil: ($params = '', $return = false) ->
 
     if $params is ''
-      if not class_exists('CI_DB')
+      if not class_exists('Exspresso_DB')
         @database()
       $db = @db
     else
@@ -332,7 +332,7 @@ class global.CI_Loader
     require(BASEPATH + 'database/DB_forge' + EXT)
     require BASEPATH + 'database/DB_utility'+ EXT
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_utility' + EXT)
-    # ex: CI_DB_sqlite_utility
+    # ex: Exspresso_DB_sqlite_utility
 
     if $return is true then return new $class(@CI, $db)
     @CI.dbutil = new $class(@CI, $db)
@@ -348,7 +348,7 @@ class global.CI_Loader
   dbforge: ($params = '', $return = false) ->
 
     if $params is ''
-      if not class_exists('CI_DB')
+      if not class_exists('Exspresso_DB')
         @database()
       $db = @db
     else
@@ -380,7 +380,7 @@ class global.CI_Loader
   # @return	void
   #
   view: ($view, $vars = {}, $callback = null) ->
-    log_message 'debug', 'CI_Loader::view'
+    log_message 'debug', 'Exspresso_Loader::view'
     @_ci_load('', $view, $vars, $callback)
 
   #  --------------------------------------------------------------------
@@ -515,7 +515,7 @@ class global.CI_Loader
 
   driver: ($library = '', $params = NULL, $object_name = NULL) ->
 
-    if not class_exists('CI_Driver_Library')
+    if not class_exists('Exspresso_Driver_Library')
       # we aren't instantiating an object here, that'll be done by the Library itself
       require BASEPATH+'libraries/Driver'+EXT
 
@@ -822,8 +822,8 @@ class global.CI_Loader
           break
 
     if $prefix is ''
-      if class_exists('CI_' + $class)
-        $name = 'CI_' + $class
+      if class_exists('Exspresso_' + $class)
+        $name = 'Exspresso_' + $class
 
       else if class_exists(config_item('subclass_prefix') + $class)
         $name = config_item('subclass_prefix') + $class
@@ -970,7 +970,7 @@ class global.CI_Loader
 
       return $filename
 
-# END CI_Load class
-module.exports = CI_Loader
+# END Exspresso_Load class
+module.exports = Exspresso_Loader
 # End of file Loader.coffee
 # Location: ./system/core/Loader.coffee

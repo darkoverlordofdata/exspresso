@@ -24,7 +24,7 @@
 #
 #
 
-class global.MY_Profiler extends CI_Profiler
+class global.MY_Profiler extends Exspresso_Profiler
 
 #  --------------------------------------------------------------------
 
@@ -83,10 +83,10 @@ class global.MY_Profiler extends CI_Profiler
     $dbs = []
 
     #  Let's determine which databases are currently connected to
-    for $name, $CI_object of get_object_vars(@CI)
-      #if is_object($CI_object) # and $CI_object instanceof CI_DB is true
-      if $CI_object['dbdriver']?
-        $dbs.push $CI_object
+    for $name, $Exspresso_object of get_object_vars(@CI)
+      #if is_object($Exspresso_object) # and $Exspresso_object instanceof Exspresso_DB is true
+      if $Exspresso_object['dbdriver']?
+        $dbs.push $Exspresso_object
 
     if count($dbs) is 0
       $output = "\n\n"

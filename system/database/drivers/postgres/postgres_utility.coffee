@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -34,10 +34,10 @@
 # Postgre Utility Class
 #
 # @category	Database
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/database/
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/database/
 #
-class global.CI_DB_postgres_utility extends CI_DB_utility
+class global.Exspresso_DB_postgres_utility extends Exspresso_DB_utility
   
   #
   # List databases
@@ -92,7 +92,7 @@ class global.CI_DB_postgres_utility extends CI_DB_utility
     #  Currently unsupported
     return @db.display_error('db_unsuported_feature')
     
-module.exports = CI_DB_postgres_utility
+module.exports = Exspresso_DB_postgres_utility
 
 #  End of file postgres_utility.php
 #  Location: ./system/database/drivers/postgres/postgres_utility.php

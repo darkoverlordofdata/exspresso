@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -31,16 +31,16 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Model Class
+# Exspresso Model Class
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/config.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/config.html
 #
 
-class global.CI_Model
+class global.Exspresso_Model
 
   ## --------------------------------------------------------------------
 
@@ -68,9 +68,9 @@ class global.CI_Model
 
 
 
-# END CI_Model class
+# END Exspresso_Model class
 
-module.exports = CI_Model
+module.exports = Exspresso_Model
 
 # End of file Model.coffee
 # Location: ./system/core/Model.coffee

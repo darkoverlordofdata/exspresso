@@ -11,17 +11,17 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
 # Modular Extensions - HMVC
 #
-# Adapted from the CodeIgniter Core Classes
-# @link	http://codeigniter.com
+# Adapted from the Exspresso Core Classes
+# @link	http://darkoverlordofdata.com
 #
 # Description:
-# This library extends the CodeIgniter CI_Loader class
+# This library extends the Exspresso Exspresso_Loader class
 # and adds features allowing use of modules and the HMVC design pattern.
 #
 # Install this file as application/third_party/MX/Loader.php
@@ -51,7 +51,7 @@
 
 require(dirname(__filename)+'/Modules.coffee')
 
-class global.MX_Loader extends CI_Loader
+class global.MX_Loader extends Exspresso_Loader
 
   #
   # Module state
@@ -141,7 +141,7 @@ class global.MX_Loader extends CI_Loader
   database: ($params = '',$return = false, $active_record = null) ->
 
 
-    if class_exists('CI_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
+    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
       return
 
     $params = $params || Exspresso.server._db
@@ -319,9 +319,9 @@ class global.MX_Loader extends CI_Loader
 
     else
 
-      class_exists('CI_Model') or load_class('Model', 'core')
+      class_exists('Exspresso_Model') or load_class('Model', 'core')
 
-      if $connect isnt false and not class_exists('CI_DB')
+      if $connect isnt false and not class_exists('Exspresso_DB')
         if $connect is true then $connect = ''
         @database($connect, false, true)
 

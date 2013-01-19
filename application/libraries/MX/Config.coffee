@@ -11,17 +11,17 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
 # Modular Extensions - HMVC
 #
-# Adapted from the CodeIgniter Core Classes
-# @link	http://codeigniter.com
+# Adapted from the Exspresso Core Classes
+# @link	http://darkoverlordofdata.com
 #
 # Description:
-# This library extends the CodeIgniter CI_Config class
+# This library extends the Exspresso Exspresso_Config class
 # and adds features allowing use of modules and the HMVC design pattern.
 #
 # Install this file as application/third_party/MX/Config.php
@@ -50,7 +50,7 @@
 
 require(dirname(__filename)+'/Modules.coffee')
 
-class global.MX_Config extends CI_Config
+class global.MX_Config extends Exspresso_Config
 
   #  --------------------------------------------------------------------
 

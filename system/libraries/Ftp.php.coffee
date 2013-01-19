@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -39,13 +39,13 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # FTP Class
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/ftp.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/ftp.html
 #
-class CI_FTP
+class Exspresso_FTP
   
   hostname: ''
   username: ''
@@ -567,5 +567,5 @@ class CI_FTP
     # @return	bool
     ##  END FTP Class#  End of file Ftp.php #  Location: ./system/libraries/Ftp.php 
 
-register_class 'CI_FTP', CI_FTP
-module.exports = CI_FTP
+register_class 'Exspresso_FTP', Exspresso_FTP
+module.exports = Exspresso_FTP

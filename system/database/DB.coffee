@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package    CodeIgniter
-# @author    ExpressionEngine Dev Team
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    http://codeigniter.com/user_guide/license.html
-# @link    http://codeigniter.com
+# @package    Exspresso
+# @author    darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link    http://darkoverlordofdata.com
 # @since    Version 1.0
 # @filesource
 #
@@ -34,8 +34,8 @@
 # Initialize the database
 #
 # @category  Database
-# @author    ExpressionEngine Dev Team
-# @link    http://codeigniter.com/user_guide/database/
+# @author    darkoverlordofdata
+# @link    http://darkoverlordofdata.com/user_guide/database/
 #
 module.exports = ($params = '', active_record_override = null) ->
   #  Load the DB config file if a DSN string wasn't passed
@@ -116,27 +116,27 @@ module.exports = ($params = '', active_record_override = null) ->
     active_record = active_record_override
 
 
-  CI_DB_driver = require(BASEPATH + 'database/DB_driver' + EXT)
+  Exspresso_DB_driver = require(BASEPATH + 'database/DB_driver' + EXT)
 
 
   if not active_record?  or active_record is true
-    CI_DB_active_record = require(BASEPATH + 'database/DB_active_rec' + EXT)
+    Exspresso_DB_active_record = require(BASEPATH + 'database/DB_active_rec' + EXT)
 
-    if not class_exists('CI_DB')
-      class CI_DB extends CI_DB_active_record
+    if not class_exists('Exspresso_DB')
+      class Exspresso_DB extends Exspresso_DB_active_record
 
 
-  else if not class_exists('CI_DB')
-    class CI_DB extends CI_DB_driver
+  else if not class_exists('Exspresso_DB')
+    class Exspresso_DB extends Exspresso_DB_driver
 
 
   if not file_exists(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)
     throw new Error("Unsuported DB driver: " + $params['dbdriver'])
 
-  $driver = require(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)(CI_DB)
+  $driver = require(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)(Exspresso_DB)
 
   #  Instantiate the DB adapter
-  # $driver = 'CI_DB_' + $params['dbdriver'] + '_driver'
+  # $driver = 'Exspresso_DB_' + $params['dbdriver'] + '_driver'
 
   $DB = new $driver($params)
 

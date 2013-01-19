@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package    CodeIgniter
-# @author    ExpressionEngine Dev Team
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    http://codeigniter.com/user_guide/license.html
-# @link    http://codeigniter.com
+# @package    Exspresso
+# @author    darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link    http://darkoverlordofdata.com
 # @since    Version 1.0
 # @filesource
 #
@@ -31,18 +31,18 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Benchmark Class
+# Exspresso Benchmark Class
 #
 # This class enables you to mark points and calculate the time difference
 # between them.  Memory consumption can also be displayed.
 #
-# @package    CodeIgniter
+# @package    Exspresso
 # @subpackage  Libraries
 # @category  Libraries
-# @author    ExpressionEngine Dev Team
-# @link    http://codeigniter.com/user_guide/libraries/benchmark.html
+# @author    darkoverlordofdata
+# @link    http://darkoverlordofdata.com/user_guide/libraries/benchmark.html
 #
-class global.CI_Benchmark
+class global.Exspresso_Benchmark
   
   marker: {}
 
@@ -117,7 +117,7 @@ class global.CI_Benchmark
     return '{memory_usage}'
     
   
-#  END CI_Benchmark class
-module.exports = CI_Benchmark
+#  END Exspresso_Benchmark class
+module.exports = Exspresso_Benchmark
 #  End of file Benchmark.php 
 #  Location: ./system/core/Benchmark.php 

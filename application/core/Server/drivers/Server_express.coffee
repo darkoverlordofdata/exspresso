@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -33,7 +33,7 @@ eco             = require('eco')            # Embedded CoffeeScript templates
 fs              = require("fs")             # File system
 
 
-class global.CI_Server_express extends CI_Server
+class global.Exspresso_Server_express extends Exspresso_Server
 
   _driver           : 'express'
 
@@ -91,7 +91,7 @@ class global.CI_Server_express extends CI_Server
 
       console.log " "
       console.log " "
-      console.log "Exspresso v"+CI_VERSION
+      console.log "Exspresso v"+Exspresso_VERSION
       console.log "copyright 2012 Dark Overlord of Data"
       console.log " "
       console.log "listening on port #{@_port}"
@@ -310,7 +310,7 @@ class global.CI_Server_express extends CI_Server
       $next()
 
 
-module.exports = CI_Server_express
+module.exports = Exspresso_Server_express
 
 # End of file Server_express.coffee
 # Location: .application/core/Server/drivers/Server_express.coffee

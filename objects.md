@@ -8,20 +8,9 @@ Constants from CodeIgniter and PHP only have been replicated.
     Common Methods      system/core/Common.coffee
     stdio               application/config/constants.coffee
 
-    singletons
-
-          $CFG              CI_Config
-          $EXT              CI_Hooks
-          $LANG             CI_Lang
-          $IN               CI_Input
-          $OUT              CI_Output
-          $RTR              CI_Router
-          $SRV              CI_Server
-          $URI              CI_URI
-
     Classes
 
-          CI_Server           application/core/Server.coffee
+          CI_Server           application/core/Server/Server.coffee
           CI_Benchmark        system/core/Benchmark.coffee
           CI_Config           system/core/Config.coffee
           CI_Controller       system/core/Controller.coffee
@@ -39,16 +28,16 @@ Constants from CodeIgniter and PHP only have been replicated.
           CI_Parse            system/libraries/Parser.coffee
           CI_Profiler         system/libraries/Profiler.coffee
           CI_Session          system/libraries/Sesion/Session.coffee
-          CI                  application/libraries/MX/Ci.coffee
           MX_Config           application/Libraries/MX/Config.coffee
           MX_Lang             application/Libraries/MX/Lang.coffee
           MX_Loader           application/Libraries/MX/Loader.coffee
           MX_Modules          application/Libraries/MX/Modules.coffee
           MX_Router           application/Libraries/MX/Router.coffee
-          MY_Controller       application/core/Controller.coffee
-          MY_Loader           application/core/Loader.coffee
-          MY_Router           application/core/Router.coffee
-          MY_Server           application/core/AppServer.coffee
+          MY_Config           application/core/MY_Config.coffee
+          MY_Lang             application/core/MY_Lang.coffee
+          MY_Controller       application/core/MY_Controller.coffee
+          MY_Loader           application/core/MY_Loader.coffee
+          MY_Router           application/core/MY_Router.coffee
           MY_Profiler         application/libraries/MY_Profiler.coffee
           Template            application/libraries/Template.coffee
           Theme               application/libraries/Theme.coffee

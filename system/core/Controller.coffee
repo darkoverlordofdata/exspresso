@@ -22,7 +22,7 @@
 #  Instantiate the loader class and initialize
 # ------------------------------------------------------
 #
-class global.CI_Controller
+class global.Exspresso_Controller
 
   res: null
 
@@ -83,7 +83,7 @@ class global.CI_Controller
     @res.redirect $url
 
 
-# END CI_Controller class
-module.exports = CI_Controller
+# END Exspresso_Controller class
+module.exports = Exspresso_Controller
 # End of file Controller.coffee
 # Location: ./system/core/Controller.coffee

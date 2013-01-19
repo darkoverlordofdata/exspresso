@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -27,9 +27,9 @@
 # class is being used or not.
 #
 #
-module.exports = (CI_DB) ->
+module.exports = (Exspresso_DB) ->
 
-  class CI_DB_sqlite_driver extends CI_DB
+  class Exspresso_DB_sqlite_driver extends Exspresso_DB
 
     dbdriver: 'sqlite'
 
@@ -590,7 +590,7 @@ module.exports = (CI_DB) ->
     _close : ($conn_id) ->
       sqlite_close($conn_id)
 
-# End Class CI_DB_sqlite_driver
+# End Class Exspresso_DB_sqlite_driver
 
 #  End of file sqlite_driver.php 
 #  Location: ./system/database/drivers/sqlite/sqlite_driver.php 

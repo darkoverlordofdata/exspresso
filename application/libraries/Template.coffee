@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -247,14 +247,14 @@ class global.Template
     # If the $view is an Error object, show the error as content
     #
     if $view instanceof Error
-      $data = {err: new CI_Error($view)}
+      $data = {err: new Exspresso_Error($view)}
       $view = 'errors'
 
     #
     # If the $data is an Error object, show the error as content
     #
     if $data instanceof Error
-      $data = {err: new CI_Error($data)}
+      $data = {err: new Exspresso_Error($data)}
       $view = 'errors'
 
     #

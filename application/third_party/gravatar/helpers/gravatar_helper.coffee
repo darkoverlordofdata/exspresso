@@ -11,11 +11,11 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# Sekati CodeIgniter Gravatar Helper
+# Sekati Exspresso Gravatar Helper
 #
 # @package		Sekati
 # @author		Jason M Horwitz

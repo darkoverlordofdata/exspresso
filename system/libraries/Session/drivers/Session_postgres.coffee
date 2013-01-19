@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -19,7 +19,7 @@
 # PostgreSql Session store driver
 #
 #
-class CI_Session_postgres extends require('express').session.Store
+class Exspresso_Session_postgres extends require('express').session.Store
 
   postgres: null
   table: ''
@@ -113,6 +113,6 @@ class CI_Session_postgres extends require('express').session.Store
 
       $callback $err
 
-module.exports = CI_Session_postgres
+module.exports = Exspresso_Session_postgres
 # End of file postgres.coffee
 # Location: ./system/libraries/Session/postgres.coffee

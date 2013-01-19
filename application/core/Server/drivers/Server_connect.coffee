@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -59,7 +59,7 @@ class Variables
 
 
 
-class global.CI_Server_connect extends CI_Server
+class global.Exspresso_Server_connect extends Exspresso_Server
 
   _driver           : 'connect'
 
@@ -115,7 +115,7 @@ class global.CI_Server_connect extends CI_Server
 
       console.log " "
       console.log " "
-      console.log "Exspresso v"+CI_VERSION
+      console.log "Exspresso v"+Exspresso_VERSION
       console.log "copyright 2012 Dark Overlord of Data"
       console.log " "
       console.log "listening on port #{@_port}"
@@ -385,7 +385,7 @@ class global.CI_Server_connect extends CI_Server
       $next()
 
 
-module.exports = CI_Server_connect
+module.exports = Exspresso_Server_connect
 
 # End of file Server_connect.coffee
 # Location: .application/core/Server/drivers/Server_connect.coffee

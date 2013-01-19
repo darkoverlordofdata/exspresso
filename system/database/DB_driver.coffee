@@ -7,7 +7,7 @@
 #| This file is a part of Expresso
 #|
 #| Darklite is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -19,7 +19,7 @@
 #
 #
 
-class CI_DB_driver
+class Exspresso_DB_driver
 
   url: ''
   client: null
@@ -96,7 +96,7 @@ class CI_DB_driver
   #
   initialize: ($callback) =>
 
-    log_message 'debug', 'CI_DB_%s_driver initialize', @dbdriver
+    log_message 'debug', 'Exspresso_DB_%s_driver initialize', @dbdriver
     if $callback?
       @db_connect $callback
     #else
@@ -310,7 +310,7 @@ class CI_DB_driver
       #  resource ID won't be any good once we've cached the
       #  result object, so we'll have to compile the data
       #  and save it)
-      $CR = new CI_DB_result()
+      $CR = new Exspresso_DB_result()
       $CR.num_rows = $RES.num_rows
       $CR.result_object = $RES.result_object()
       $CR.result_array = $RES.result_array()
@@ -332,11 +332,11 @@ class CI_DB_driver
   # @return	string	the name of the result class
   #
   load_rdriver :  ->
-    $driver = 'CI_DB_' + @dbdriver + '_result'
+    $driver = 'Exspresso_DB_' + @dbdriver + '_result'
 
     if not class_exists($driver)
-      CI_DB_result = require(BASEPATH + 'database/DB_result' + EXT)
-      $driver = require(BASEPATH + 'database/drivers/' + @dbdriver + '/' + @dbdriver + '_result' + EXT)(CI_DB_result)
+      Exspresso_DB_result = require(BASEPATH + 'database/DB_result' + EXT)
+      $driver = require(BASEPATH + 'database/drivers/' + @dbdriver + '/' + @dbdriver + '_result' + EXT)(Exspresso_DB_result)
     else
       $driver = global[$driver]
 
@@ -931,17 +931,17 @@ class CI_DB_driver
   # @return	void
   #
   _cache_init: ->
-    if is_object(@CACHE) and class_exists('CI_DB_Cache')
+    if is_object(@CACHE) and class_exists('Exspresso_DB_Cache')
       return true
 
 
-    if not class_exists('CI_DB_Cache')
+    if not class_exists('Exspresso_DB_Cache')
       if not require(BASEPATH + 'database/DB_cache' + EXT)
         return @cache_off()
 
 
 
-    @CACHE = new CI_DB_Cache(@)#  pass db object to support multiple db connections and returned db objects
+    @CACHE = new Exspresso_DB_Cache(@)#  pass db object to support multiple db connections and returned db objects
     return true
 
 
@@ -1142,7 +1142,7 @@ class CI_DB_driver
 
     return $item + $alias
 
-module.exports = CI_DB_driver
+module.exports = Exspresso_DB_driver
 
 # End of file DB_driver.coffee
 # Location: ./database/DB_driver.coffee

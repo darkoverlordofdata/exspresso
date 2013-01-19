@@ -15,7 +15,7 @@
 #
 #   Allow per module migrations
 #
-class global.MY_Migration extends CI_Migration
+class global.MY_Migration extends Exspresso_Migration
 
   _migration_module: ''
 

@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -35,11 +35,11 @@
 #
 # Loads the base classes and executes the request.
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	codeigniter
 # @category	Common Functions
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/
 #
 
 
@@ -68,13 +68,13 @@ _classes      = {}
 #
 _is_loaded    = {}
 #
-# CI_Log instance
+# Exspresso_Log instance
 #
 # @var object
 #
 _log          = null
 #
-# CI_Exception instance
+# Exspresso_Exception instance
 #
 # @var object
 #
@@ -83,7 +83,7 @@ _error        = null
 #  ------------------------------------------------------------------------
 
 #
-# CI_<Object> factory
+# Exspresso_<Object> factory
 #
 # Load the class if not already in cache.
 # Returns a new instance of the class.
@@ -94,7 +94,7 @@ _error        = null
 # @param	string	the class name prefix
 # @return	object
 #
-exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_') ->
+exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_') ->
 
   #  Does the class exist?  If so, we're done...
   if class_exists($class)
@@ -142,7 +142,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'CI_'
 # @param	string	configuration
 # @return	object
 #
-exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass, $prefix = 'CI_', $config = {}) ->
+exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass, $prefix = 'Exspresso_', $config = {}) ->
 
   $name = strtolower($class)
   #  Is the config file in the environment folder?
@@ -182,9 +182,9 @@ exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass
 # @param	string	the class name prefix
 # @return	object
 #
-exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = 'CI_', $config = {}) ->
+exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $config = {}) ->
 
-  if typeof $prefix isnt 'string' then [$prefix, $config] = ['CI_', $prefix]
+  if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso_', $prefix]
 
   #  Does the class exist?  If so, we're done...
   if _classes[$class]?

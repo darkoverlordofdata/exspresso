@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
+# @package		Exspresso
+# @author		darkoverlordofdata
 # @copyright	Copyright (c) 2006 - 2011 EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 2.0
 # @filesource
 #
@@ -37,16 +37,16 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter APC Caching Class
+# Exspresso APC Caching Class
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Core
-# @author		ExpressionEngine Dev Team
+# @author		darkoverlordofdata
 # @link
 #
 
-class CI_Cache_apc extends CI_Driver
+class Exspresso_Cache_apc extends Exspresso_Driver
   
   #
   # Get
@@ -165,8 +165,8 @@ class CI_Cache_apc extends CI_Driver
   
   
 
-register_class 'CI_Cache_apc', CI_Cache_apc
-module.exports = CI_Cache_apc
+register_class 'Exspresso_Cache_apc', Exspresso_Cache_apc
+module.exports = Exspresso_Cache_apc
 #  End Class
 
 #  End of file Cache_apc.php 

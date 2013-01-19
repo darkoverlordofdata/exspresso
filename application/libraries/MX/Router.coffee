@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #  load the MX core module class
@@ -21,11 +21,11 @@ fs = require('fs')
 #
 # Modular Extensions - HMVC
 #
-# Adapted from the CodeIgniter Core Classes
-# @link	http://codeigniter.com
+# Adapted from the Exspresso Core Classes
+# @link	http://darkoverlordofdata.com
 #
 # Description:
-# This library extends the CodeIgniter router class.
+# This library extends the Exspresso router class.
 #
 # Install this file as application/third_party/MX/Router.php
 #
@@ -51,7 +51,7 @@ fs = require('fs')
 # THE SOFTWARE.
 #
 
-class global.MX_Router extends CI_Router
+class global.MX_Router extends Exspresso_Router
 
   _module: ''
 

@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -24,7 +24,7 @@
 #
 dispatch        = require('dispatch')   # URL dispatcher for Connect
 
-class global.CI_Server
+class global.Exspresso_Server
 
   _cache        : false
   _csrf         : false
@@ -263,7 +263,7 @@ class global.CI_Server
       $next()
 
 
-module.exports = CI_Server
+module.exports = Exspresso_Server
 
 # End of file Server.coffee
 # Location: ./application/core/Server.coffee

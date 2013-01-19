@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -39,13 +39,13 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Javascript Class
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Javascript
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/javascript.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/javascript.html
 #
-class CI_Javascript
+class Exspresso_Javascript
   
   _javascript_location: 'js'
   
@@ -822,8 +822,8 @@ class CI_Javascript
   #  --------------------------------------------------------------------
   
 
-register_class 'CI_Javascript', CI_Javascript
-module.exports = CI_Javascript
+register_class 'Exspresso_Javascript', Exspresso_Javascript
+module.exports = Exspresso_Javascript
 #  END Javascript Class
 
 #  End of file Javascript.php 

@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -31,19 +31,19 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Email Class
+# Exspresso Email Class
 #
 # Permits email to be sent using Mail, Sendmail, or SMTP.
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/email.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/email.html
 #
-class global.CI_Email
+class global.Exspresso_Email
   
-  useragent: "CodeIgniter"
+  useragent: "Exspresso"
   mailpath: "/usr/sbin/sendmail"#  Sendmail path
   protocol: "mail"#  mail/sendmail/smtp
   smtp_host: ""#  SMTP Server.  Example: mail.earthlink.net
@@ -737,9 +737,9 @@ class global.CI_Email
 
 
 
-#  END CI_Email class
+#  END Exspresso_Email class
 
-module.exports = CI_Email
+module.exports = Exspresso_Email
 
 #  End of file Email.coffee
 #  Location: ./system/libraries/Email.coffee

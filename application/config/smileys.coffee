@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
@@ -23,7 +23,7 @@
 #| :-) and :) use the same image replacement.
 #|
 #| Please see user guide for more info:
-#| http://codeigniter.com/user_guide/helpers/smiley_helper.html
+#| http://darkoverlordofdata.com/user_guide/helpers/smiley_helper.html
 #|
 #
 

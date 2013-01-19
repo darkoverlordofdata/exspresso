@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -26,7 +26,7 @@ array = ($field, $match) ->
 #
 # Session Class
 #
-class global.CI_Session
+class global.Exspresso_Session
   
   sess_encrypt_cookie: false
   sess_use_database: false
@@ -236,6 +236,6 @@ class global.CI_Session
 
 
 #  END Session Class
-module.exports = CI_Session
+module.exports = Exspresso_Session
 #  End of file Session.php 
 #  Location: ./system/libraries/Session.php 

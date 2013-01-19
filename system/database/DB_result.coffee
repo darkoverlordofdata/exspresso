@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@
 # This class will not be called directly. Rather, the adapter
 # class for the specific database will extend and instantiate it.
 #
-class CI_DB_result
+class Exspresso_DB_result
   
   conn_id: null
   result_id: null
@@ -281,7 +281,7 @@ class CI_DB_result
   _fetch_object :  -> return []
 
   ##  END DB_result class
-register_class 'CI_DB_result', CI_DB_result
-module.exports = CI_DB_result
+register_class 'Exspresso_DB_result', Exspresso_DB_result
+module.exports = Exspresso_DB_result
 #  End of file DB_result.php
 #  Location: ./system/database/DB_result.php

@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.7.19",
+  "version": "0.7.20",
   "description": "A coffee-script port of CodeIgniter",
   "keywords": ["framework", "web", "coffee-script"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",

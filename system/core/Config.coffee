@@ -11,20 +11,20 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -32,19 +32,19 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Config Class
+# Exspresso Config Class
 #
 # This class contains functions that enable config files to be managed
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/config.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/config.html
 #
 
 
-class global.CI_Config
+class global.Exspresso_Config
 
 
   config:         {}
@@ -262,7 +262,7 @@ class global.CI_Config
   #
   # Assign to Config
   #
-  # This function is called by the front controller (CodeIgniter.php)
+  # This function is called by the front controller (Exspresso.php)
   # after the Config class is instantiated.  It permits config items
   # to be assigned or overriden by variables contained in the index.php file
   #
@@ -275,8 +275,8 @@ class global.CI_Config
       @set_item($key, $val)
 
 
-# END CI_Config class
-module.exports = CI_Config
+# END Exspresso_Config class
+module.exports = Exspresso_Config
 
 # End of file Config.coffee
 # Location: ./system/core/Config.coffee

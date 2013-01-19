@@ -17,12 +17,12 @@
 #| Base Site URL
 #|--------------------------------------------------------------------------
 #|
-#| URL to your CodeIgniter root. Typically this will be your base URL,
+#| URL to your Exspresso root. Typically this will be your base URL,
 #| WITH a trailing slash:
 #|
 #|	http://example.com/
 #|
-#| If this is not set then CodeIgniter will guess the protocol, domain and
+#| If this is not set then Exspresso will guess the protocol, domain and
 #| path to your installation.
 #|
 #

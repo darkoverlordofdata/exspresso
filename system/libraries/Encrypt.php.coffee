@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -37,17 +37,17 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Encryption Class
+# Exspresso Encryption Class
 #
 # Provides two-way keyed encoding using XOR Hashing and Mcrypt
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/encryption.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/encryption.html
 #
-class CI_Encrypt
+class Exspresso_Encrypt
   
   CI: {}
   encryption_key: ''
@@ -185,7 +185,7 @@ class CI_Encrypt
   # This allows for backwards compatibility and a method to transition to the
   # new encryption algorithms.
   #
-  # For more details, see http://codeigniter.com/user_guide/installation/upgrade_200.html#encryption
+  # For more details, see http://darkoverlordofdata.com/user_guide/installation/upgrade_200.html#encryption
   #
   # @access	public
   # @param	string
@@ -506,7 +506,7 @@ class CI_Encrypt
     if not function_exists('sha1')
       if not function_exists('mhash')
         require(BASEPATH + 'libraries/Sha1' + EXT)
-        $SH = new CI_SHA
+        $SH = new Exspresso_SHA
         return $SH.generate($str)
         
       else 
@@ -520,10 +520,10 @@ class CI_Encrypt
   
   
 
-register_class 'CI_Encrypt', CI_Encrypt
-module.exports = CI_Encrypt
+register_class 'Exspresso_Encrypt', Exspresso_Encrypt
+module.exports = Exspresso_Encrypt
 
-#  END CI_Encrypt class
+#  END Exspresso_Encrypt class
 
 #  End of file Encrypt.php 
 #  Location: ./system/libraries/Encrypt.php 

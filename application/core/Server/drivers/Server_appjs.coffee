@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -83,7 +83,7 @@ class Variables
 
 
 
-class global.CI_Server_appjs extends CI_Server
+class global.Exspresso_Server_appjs extends Exspresso_Server
 
   _driver           : 'appjs'
   _secure           : false
@@ -349,7 +349,7 @@ class global.CI_Server_appjs extends CI_Server
       $next()
 
 
-module.exports = CI_Server_appjs
+module.exports = Exspresso_Server_appjs
 
 # End of file Server_appjs.coffee
 # Location: .application/core/Server/drivers/Server_appjs.coffee

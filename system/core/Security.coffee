@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -22,7 +22,7 @@ express         = require('express')                    # Express 3.0 Framework
 #
 # Exspresso Security Class
 #
-module.exports = class global.CI_Security
+module.exports = class global.Exspresso_Security
 
   constructor: ->
 
@@ -44,7 +44,7 @@ module.exports = class global.CI_Security
 
     return
 
-# END CI_Security class
+# END Exspresso_Security class
 
 # End of file Security.coffee
 # Location: ./system/core/Security.coffee

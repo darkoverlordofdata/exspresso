@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -19,7 +19,7 @@
 # Mysql Session store driver
 #
 #
-class CI_Session_mysql extends require('express').session.Store
+class Exspresso_Session_mysql extends require('express').session.Store
 
   mysql: null
   table: ''
@@ -107,6 +107,6 @@ class CI_Session_mysql extends require('express').session.Store
     @mysql.query 'DELETE FROM `' + @table + '` WHERE `sid` = ?', [$sid], ($err) ->
       $callback $err
 
-module.exports = CI_Session_mysql
+module.exports = Exspresso_Session_mysql
 # End of file postgres.coffee
 # Location: ./system/libraries/Session/postgres.coffee

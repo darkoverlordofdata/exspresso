@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -38,7 +38,7 @@ if not function_exists('xml_parser_create')
   show_error('Your PHP installation does not support XML')
   
 
-if not class_exists('CI_Xmlrpc')
+if not class_exists('Exspresso_Xmlrpc')
   show_error('You must load the Xmlrpc class before loading the Xmlrpcs class in order to create a server.')
   
 
@@ -47,13 +47,13 @@ if not class_exists('CI_Xmlrpc')
 #
 # XML-RPC server class
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	XML-RPC
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/xmlrpc.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/xmlrpc.html
 #
-class CI_Xmlrpcs extends CI_Xmlrpc
+class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
 
   methods: {}# array of methods mapped to function names and signatures
   debug_msg: ''#  Debug Message
@@ -536,8 +536,8 @@ class CI_Xmlrpcs extends CI_Xmlrpc
   
   
 
-register_class 'CI_Xmlrpcs', CI_Xmlrpcs
-module.exports = CI_Xmlrpcs
+register_class 'Exspresso_Xmlrpcs', Exspresso_Xmlrpcs
+module.exports = Exspresso_Xmlrpcs
 #  END XML_RPC_Server class
 
 

@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @author		EllisLab Dev Team
 # @copyright	Copyright (c) 2006 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -31,18 +31,18 @@
 #  ------------------------------------------------------------------------
 
 #
-# CodeIgniter Driver Library Class
+# Exspresso Driver Library Class
 #
 # This class enables you to create "Driver" libraries that add runtime ability
 # to extend the capabilities of a class via additional driver objects
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
 # @author		EllisLab Dev Team
 # @link
 #
-class global.CI_Driver_Library
+class global.Exspresso_Driver_Library
 
   valid_drivers: null
   _adapter: ''
@@ -60,9 +60,9 @@ class global.CI_Driver_Library
     #  The class will be prefixed with the parent lib
     $child_class = @lib_name + '_' + $child
     
-    #  Remove the CI_ prefix and lowercase
-    $lib_name = strtolower(preg_replace('/^CI_/', '', @lib_name))
-    $driver_name = strtolower(preg_replace('/^CI_/', '', $child_class))
+    #  Remove the Exspresso_ prefix and lowercase
+    $lib_name = strtolower(preg_replace('/^Exspresso_/', '', @lib_name))
+    $driver_name = strtolower(preg_replace('/^Exspresso_/', '', $child_class))
 
     #if in_array($driver_name, array_map('strtolower', @valid_drivers))
     if in_array($driver_name, @valid_drivers)
@@ -100,23 +100,23 @@ class global.CI_Driver_Library
   #  --------------------------------------------------------------------
   
   
-module.exports = CI_Driver_Library
-#  END CI_Driver_Library CLASS
+module.exports = Exspresso_Driver_Library
+#  END Exspresso_Driver_Library CLASS
 
 
 #
-# CodeIgniter Driver Class
+# Exspresso Driver Class
 #
 # This class enables you to create drivers for a Library based on the Driver Library.
 # It handles the drivers' access to the parent library
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Libraries
 # @author		EllisLab Dev Team
 # @link
 #
-class global.CI_Driver
+class global.Exspresso_Driver
 
   parent: null
   
@@ -220,8 +220,8 @@ class global.CI_Driver
   #  --------------------------------------------------------------------
   
   
-module.exports = CI_Driver
-#  END CI_Driver CLASS
+module.exports = Exspresso_Driver
+#  END Exspresso_Driver CLASS
 
 #  End of file Driver.php 
 #  Location: ./system/libraries/Driver.php 

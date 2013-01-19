@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -41,13 +41,13 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Trackback Sending/Receiving Class
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Trackbacks
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/trackback.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/trackback.html
 #
-class CI_Trackback
+class Exspresso_Trackback
   
   time_format: 'local'
   charset: 'UTF-8'
@@ -507,8 +507,8 @@ class CI_Trackback
   
   
 
-register_class 'CI_Trackback', CI_Trackback
-module.exports = CI_Trackback
+register_class 'Exspresso_Trackback', Exspresso_Trackback
+module.exports = Exspresso_Trackback
 #  END Trackback Class
 
 #  End of file Trackback.php 

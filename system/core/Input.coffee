@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -21,7 +21,7 @@
 #
 # Exspresso Input Class
 #
-module.exports = class global.CI_Input
+module.exports = class global.Exspresso_Input
 
   constructor: ->
 
@@ -293,7 +293,7 @@ module.exports = class global.CI_Input
 
       $next()
 
-# END CI_Input class
+# END Exspresso_Input class
 
 # End of file Input.coffee
 # Location: ./system/core/Input.coffee

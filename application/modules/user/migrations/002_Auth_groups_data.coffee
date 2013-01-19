@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -15,7 +15,7 @@
 #
 #
 #
-class global.Migration_Auth_groups_data extends CI_Migration
+class global.Migration_Auth_groups_data extends Exspresso_Migration
 
   seq: '002'
   description: 'Initial Auth groups data'

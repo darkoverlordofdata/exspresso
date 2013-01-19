@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
@@ -23,9 +23,9 @@
 #
 
 
-module.exports = (CI_DB) ->
+module.exports = (Exspresso_DB) ->
 
-  class CI_DB_mysql_driver extends CI_DB
+  class Exspresso_DB_mysql_driver extends Exspresso_DB
 
     # by default, expect mysql to listen on port 3306
     dbdriver:   'mysql'
@@ -684,7 +684,7 @@ module.exports = (CI_DB) ->
     _close: ($callback) ->
       @client.end $callback
 
-# End Class CI_DB_mysql_driver
+# End Class Exspresso_DB_mysql_driver
 
 #  End of file @client.driver.php
 #  Location: ./system/database/drivers/mysql/mysql_driver.php

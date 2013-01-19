@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -21,7 +21,7 @@
 #
 # Exspresso Output Class
 #
-module.exports = class global.CI_Output
+module.exports = class global.Exspresso_Output
 
   final_output: ''
   cache_expiration: 0
@@ -271,7 +271,7 @@ module.exports = class global.CI_Output
         #  which happens before the CI super object is available.
 
         #  Grab the super object if we can.
-        if class_exists('CI_Controller')
+        if class_exists('Exspresso_Controller')
           $CI = Exspresso
 
         #  --------------------------------------------------------------------
@@ -470,7 +470,7 @@ module.exports = class global.CI_Output
       $next()
 
 
-# END CI_Output class
+# END Exspresso_Output class
 
 # End of file Output.coffee
 # Location: ./system/core/Output.coffee

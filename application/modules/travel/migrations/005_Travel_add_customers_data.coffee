@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -15,7 +15,7 @@
 #
 #
 #
-class Migration_Travel_add_customer_data extends CI_Migration
+class Migration_Travel_add_customer_data extends Exspresso_Migration
 
   seq: '005'
   description: 'Initialize the customer data'

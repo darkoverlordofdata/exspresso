@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #  ------------------------------------------------------------------------
@@ -19,7 +19,7 @@
 #
 # Error Wrapper Class
 #
-class global.CI_Error extends Error
+class global.Exspresso_Error extends Error
 
   constructor: ($err = {}, $status = 500) ->
 
@@ -36,7 +36,7 @@ class global.CI_Error extends Error
 #
 # Exceptions Class
 #
-class global.CI_Exceptions
+class global.Exspresso_Exceptions
 
   constructor: ->
 
@@ -161,7 +161,7 @@ class global.CI_Exceptions
         if typeof $template is 'function'
           [$$template, $status_code, $callback] = ['5xx', 500, $template]
 
-        $error = new CI_Error($err)
+        $error = new Exspresso_Error($err)
 
         $callback = $callback ? ($err, $content) ->
           $res.render APPPATH+'errors/layout.eco',
@@ -190,7 +190,7 @@ class global.CI_Exceptions
 
       $next()
 
-module.exports = CI_Exceptions
+module.exports = Exspresso_Exceptions
 #  END Exceptions Class
 
 #  End of file Exceptions.php 

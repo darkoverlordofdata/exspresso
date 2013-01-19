@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -39,13 +39,13 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # SQLite Result Class
 #
-# This class extends the parent result class: CI_DB_result
+# This class extends the parent result class: Exspresso_DB_result
 #
 # @category	Database
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/database/
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/database/
 #
-class CI_DB_sqlite_result extends CI_DB_result
+class Exspresso_DB_sqlite_result extends Exspresso_DB_result
   
   #
   # Number of rows in the result set
@@ -184,8 +184,8 @@ class CI_DB_sqlite_result extends CI_DB_result
   
   
 
-register_class 'CI_DB_sqlite_result', CI_DB_sqlite_result
-module.exports = CI_DB_sqlite_result
+register_class 'Exspresso_DB_sqlite_result', Exspresso_DB_sqlite_result
+module.exports = Exspresso_DB_sqlite_result
 
 
 #  End of file sqlite_result.php 

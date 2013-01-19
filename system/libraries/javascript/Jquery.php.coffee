@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -22,13 +22,13 @@
 if not defined('BASEPATH') then die 'No direct script access allowed'
 
 #
-# CodeIgniter
+# Exspresso
 #
 # An open source application development framework for PHP 4.3.2 or newer
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
 # @license		http://www.codeigniter.com/user_guide/license.html
 # @link		http://www.codeigniter.com
 # @since		Version 1.0
@@ -38,14 +38,14 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Jquery Class
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
-# @author		ExpressionEngine Dev Team
+# @author		darkoverlordofdata
 # @category	Loader
 # @link		http://www.codeigniter.com/user_guide/libraries/javascript.html
 #
 
-class CI_Jquery extends CI_Javascript
+class Exspresso_Jquery extends Exspresso_Javascript
   
   _javascript_folder: 'js'
   jquery_code_for_load: {}
@@ -1012,8 +1012,8 @@ class CI_Jquery extends CI_Javascript
   
   
 
-register_class 'CI_Jquery', CI_Jquery
-module.exports = CI_Jquery
+register_class 'Exspresso_Jquery', Exspresso_Jquery
+module.exports = Exspresso_Jquery
 
 #  End of file Jquery.php 
 #  Location: ./system/libraries/Jquery.php 

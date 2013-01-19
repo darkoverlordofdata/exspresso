@@ -7,7 +7,7 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the GNU General Public License Version 3
+#| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
 #
@@ -22,7 +22,7 @@ cache           = require('connect-cache')              # Caching system for Con
 #
 # Exspresso Cache Class
 #
-module.exports = class global.CI_Cache
+module.exports = class global.Exspresso_Cache
 
   constructor: ->
 
@@ -84,7 +84,7 @@ module.exports = class global.CI_Cache
 
 
 
-# END CI_Cache class
+# END Exspresso_Cache class
 
 # End of file Cache.coffee
 # Location: ./system/core/Cache.coffee

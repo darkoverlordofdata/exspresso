@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 
@@ -21,15 +21,15 @@
 
 if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -45,13 +45,13 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 # The original library is a little rough around the edges so I
 # refactored it and added several additional methods -- Rick Ellis
 #
-# @package		CodeIgniter
+# @package		Exspresso
 # @subpackage	Libraries
 # @category	Encryption
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/libraries/zip.html
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/libraries/zip.html
 #
-class CI_Zip
+class Exspresso_Zip
   
   zipdata: ''
   directory: ''
@@ -378,5 +378,5 @@ class CI_Zip
     # @return	void
     ##  End of file Zip.php #  Location: ./system/libraries/Zip.php 
 
-register_class 'CI_Zip', CI_Zip
-module.exports = CI_Zip
+register_class 'Exspresso_Zip', Exspresso_Zip
+module.exports = Exspresso_Zip

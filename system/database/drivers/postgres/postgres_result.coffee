@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #  ------------------------------------------------------------------------
@@ -19,11 +19,11 @@
 #
 # Postgres Result Class
 #
-# This class extends the parent result class: CI_DB_result
+# This class extends the parent result class: Exspresso_DB_result
 #
-module.exports = (CI_DB_result) ->
+module.exports = (Exspresso_DB_result) ->
 
-  class CI_DB_postgres_result extends CI_DB_result
+  class Exspresso_DB_postgres_result extends Exspresso_DB_result
 
     constructor: ($results) ->
       @_result_array = @_result_object = $results.rows

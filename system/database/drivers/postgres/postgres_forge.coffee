@@ -11,19 +11,19 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #
-# CodeIgniter
+# Exspresso
 #
-# An open source application development framework for PHP 5.1.6 or newer
+# An open source application development framework for coffee-script
 #
-# @package		CodeIgniter
-# @author		ExpressionEngine Dev Team
-# @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @package		Exspresso
+# @author		darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @license		MIT License
+# @link		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -34,10 +34,10 @@
 # Postgre Forge Class
 #
 # @category	Database
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/database/
+# @author		darkoverlordofdata
+# @link		http://darkoverlordofdata.com/user_guide/database/
 #
-class global.CI_DB_postgres_forge extends CI_DB_forge
+class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
   
   #
   # Create database
@@ -273,7 +273,7 @@ class global.CI_DB_postgres_forge extends CI_DB_forge
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
     return $sql
     
-module.exports = CI_DB_postgres_forge
+module.exports = Exspresso_DB_postgres_forge
 
 #  End of file postgres_forge.php
 #  Location: ./system/database/drivers/postgres/postgres_forge.php

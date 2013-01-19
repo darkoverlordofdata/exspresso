@@ -42,7 +42,7 @@ define 'Exspresso', module.exports
 # @var string
 #
 #
-define 'CI_VERSION', require(FCPATH + 'package.json').version
+define 'Exspresso_VERSION', require(FCPATH + 'package.json').version
 #
 # ------------------------------------------------------
 #  Load the global functions
@@ -50,7 +50,7 @@ define 'CI_VERSION', require(FCPATH + 'package.json').version
 #
 require BASEPATH + 'core/Common.coffee'
 
-log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", CI_VERSION
+log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", Exspresso_VERSION
 #
 # ------------------------------------------------------
 #  Load the framework constants
@@ -149,7 +149,7 @@ for $path, $uri of Exspresso.router._load_routes()
   $class  = Exspresso.router.fetch_class()
   $method = Exspresso.router.fetch_method()
 
-  if $method[0] is '_' or CI_Controller::[$method]?
+  if $method[0] is '_' or Exspresso_Controller::[$method]?
 
     log_message "debug", "Controller not found: #{$class}/#{$method}"
     continue

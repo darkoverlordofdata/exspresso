@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from php to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
 #  ------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 # Language Class
 #
 #
-class global.CI_Lang
+class global.Exspresso_Lang
   
   language: {}
   is_loaded: []
@@ -110,6 +110,6 @@ class global.CI_Lang
     return $line
     
 #  END Language Class
-module.exports = CI_Lang
+module.exports = Exspresso_Lang
 #  End of file Lang.php 
 #  Location: ./system/core/Lang.php 
