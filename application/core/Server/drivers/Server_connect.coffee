@@ -73,10 +73,9 @@ class global.CI_Server_connect extends CI_Server
   #
   constructor: ($config = {}) ->
 
-    super $config
     log_message('debug', "Server_connect driver Class Initialized")
 
-    @app = connect()
+    super connect(), $config
     @app.use @middleware()
 
   #  --------------------------------------------------------------------

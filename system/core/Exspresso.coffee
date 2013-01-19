@@ -59,19 +59,20 @@ else
   require APPPATH+'config/constants.coffee'
 
 
-#
-# ------------------------------------------------------
-#  Instantiate the core server app (default to expressjs)
-# ------------------------------------------------------
-#
-define '$SRV', (exports.server = load_driver('Server', 'core', $argv[2] ? 'express'))
-#
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------
 #
 define '$CFG', (exports.config = load_class('Config', 'core'))
 
+#
+# ------------------------------------------------------
+#  Instantiate the core server app (default to expressjs)
+# ------------------------------------------------------
+#
+define '$SRV', (exports.server = load_driver('Server', 'core', $argv[2] ? 'express'))
+
+#
 #
 # ------------------------------------------------------
 #  Instantiate the URI class

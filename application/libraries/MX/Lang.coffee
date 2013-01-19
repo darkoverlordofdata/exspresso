@@ -63,8 +63,6 @@ class global.MX_Lang extends CI_Lang
   #
   load: ($langfile, $lang = '',$return = false, $add_suffix = true, $alt_path = '') ->
 
-    log_message 'debug', 'MX_Lang::load'
-
     if is_array($langfile)
       for $_lang in $langfile
         @load($_lang)

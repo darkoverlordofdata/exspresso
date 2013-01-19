@@ -104,10 +104,9 @@ class global.CI_Server_appjs extends CI_Server
   #
   constructor: ($config = {}) ->
 
-    super $config
     log_message('debug', "Server_appjs driver Class Initialized")
 
-    @app = appjs.router
+    super appjs.router, $config
     @app.use @middleware()
 
   #  --------------------------------------------------------------------

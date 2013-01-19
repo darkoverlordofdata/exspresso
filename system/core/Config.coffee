@@ -67,7 +67,6 @@ class global.CI_Config
 
     #  Set the base_url automatically if none was provided
 
-    $SRV.config @
     log_message('debug', "Config Class Initialized")
 
 

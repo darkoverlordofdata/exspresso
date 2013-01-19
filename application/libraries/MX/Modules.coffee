@@ -46,12 +46,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-class Modules
+class global.Modules
 
-  Object.defineProperties @,
-    locations:    get: -> $CFG.item('modules_locations') or array(APPPATH+'modules/', '../modules/')
-
-
+  @locations = config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
   @routes = routes = {}
   @registry = registry = {}
   @views = {}
@@ -181,7 +178,7 @@ class Modules
 
     return [false, $file]
 
-define 'Modules', Modules
+module.exports = Modules
 
 # End of file Modules.coffee
 # Location: ./application/libraries/MX/Modules.coffee

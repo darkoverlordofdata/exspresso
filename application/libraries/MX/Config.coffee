@@ -46,7 +46,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#*/
+#
 
 require(dirname(__filename)+'/Modules.coffee')
 
@@ -65,8 +65,6 @@ class global.MX_Config extends CI_Config
   #
   load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
 
-    log_message 'debug', 'MX_Config::load'
-  
     if in_array($file, @is_loaded, true) then return @item($file)
     $_module = get_instance().router.fetch_module()
     [$path, $file] = Modules.find($file, $_module, 'config/')

@@ -45,7 +45,7 @@ class global.CI_Server
   # @access	public
   # @return	void
   #
-  constructor: ($config) ->
+  constructor: (@app, $config) ->
 
     log_message('debug', "Server Class Initialized")
 
@@ -85,7 +85,7 @@ class global.CI_Server
     # the Expresso core instance
     #
     @CI = get_instance()
-
+    @config $CFG
 
 
   #  --------------------------------------------------------------------

@@ -47,10 +47,11 @@ class global.CI_Server_express extends CI_Server
   #
   constructor: ($config = {}) ->
 
-    super $config
     log_message('debug', "Server_express driver Class Initialized")
 
-    @app = if express.version[0] is '3' then express() else express.createServer()
+    $app = if express.version[0] is '3' then express() else express.createServer()
+    super $app, $config
+    @app.use @middleware()
 
   #  --------------------------------------------------------------------
 
@@ -293,7 +294,7 @@ class global.CI_Server_express extends CI_Server
     #  --------------------------------------------------------------------
 
     #
-    # Patch the connect server objects to render templates
+    # Patch the express server objects
     #
     # @access	private
     # @return	void
