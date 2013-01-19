@@ -60,7 +60,7 @@
 if not function_exists('set_cookie')
   exports.set_cookie = set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
     #  Set the config file options
-    $CI = get_instance()
+    $CI = Exspresso
     $CI.input.set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure)
     
   
@@ -77,7 +77,7 @@ if not function_exists('set_cookie')
 #
 if not function_exists('get_cookie')
   exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
-    $CI = get_instance()
+    $CI = Exspresso
     
     $prefix = ''
     

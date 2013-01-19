@@ -57,7 +57,7 @@ class CI_Jquery extends CI_Javascript
   
   __construct($params)
   {
-  @CI = get_instance()
+  @CI = Exspresso
   extract($params)
   
   if $autoload is true

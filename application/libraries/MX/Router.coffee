@@ -131,10 +131,6 @@ class global.MX_Router extends CI_Router
         if file_exists($path+'routes.coffee')
           $routes = array_merge($routes, Modules.load_file('routes', $path, 'route'))
 
-          # set module view location:
-          if is_dir($loc = $location + $module + '/views')
-            Modules.views[$module] = $loc
-
     return $routes
 
   # --------------------------------------------------------------------

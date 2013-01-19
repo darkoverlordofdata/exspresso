@@ -26,7 +26,7 @@ module.exports = class global.CI_Input
   constructor: ->
 
     log_message('debug', "Input Class Initialized")
-    $SRV.input @
+    Exspresso.server.input @
 
 
   #  --------------------------------------------------------------------
@@ -194,7 +194,7 @@ module.exports = class global.CI_Input
         argc:                   count($req.query)
         SERVER_ADDR:            $req.ip
         SERVER_NAME:            $req.host
-        SERVER_SOFTWARE:        $SRV.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
+        SERVER_SOFTWARE:        Exspresso.server.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
         SERVER_PROTOCOL:        strtoupper($req.protocol)+"/"+$req.httpVersion
         REQUEST_METHOD:         $req.method
         REQUEST_TIME:           $req._startTime

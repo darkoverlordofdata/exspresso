@@ -51,7 +51,7 @@
 #
 if not function_exists('byte_format')
   exports.byte_format = byte_format = ($num, $precision = 1) ->
-    $CI = get_instance()
+    $CI = Exspresso
     $CI.lang.load('number')
     
     if $num>=1000000000000

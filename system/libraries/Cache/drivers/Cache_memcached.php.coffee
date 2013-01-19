@@ -159,7 +159,7 @@ class CI_Cache_memcached extends CI_Driver
   _setup_memcached()
   {
   #  Try to load memcached server info from the config file.
-  $CI = get_instance()
+  $CI = Exspresso
   if $CI.config.load('memcached', true, true)
     if is_array($CI.config.config['memcached'])
       @_memcache_conf = null

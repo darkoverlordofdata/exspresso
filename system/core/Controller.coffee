@@ -33,12 +33,12 @@ class global.CI_Controller
 
     # Assign all the class objects that were instantiated by the
     # bootstrap file (Exspresso.coffee) to local class variables
-    # so that CI can run as one big super object.
+    # so that the Exspresso app can run as one big super object.
 
     for $var, $class of is_loaded()
       @[$var] = load_class($class)
 
-    @session = get_instance().session
+    @session = Exspresso.session
 
     # from this point on, each controller has it's own loader
     # so that callbacks will run in the controller context
@@ -66,7 +66,6 @@ class global.CI_Controller
 
       if $callback? then $callback $err, $html
       else
-        log_message 'debug','DID WE GET HERE?'
         if $err then show_error $err
         else
           @res.send $html
@@ -82,8 +81,6 @@ class global.CI_Controller
   #
   redirect: ($url) =>
     @res.redirect $url
-
-CI_Controller.get_instance = () -> require(BASEPATH + 'core/Exspresso')
 
 
 # END CI_Controller class

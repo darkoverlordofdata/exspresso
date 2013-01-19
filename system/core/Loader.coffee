@@ -287,7 +287,7 @@ class global.CI_Loader
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Grab the super object
-    $CI = get_instance()
+    $CI = Exspresso
 
     # Do we even need to load the database class?
     if $CI.db?
@@ -465,7 +465,7 @@ class global.CI_Loader
       show_error 'Unable to load the requested file: helpers/'+$helper+EXT
 
     # expose the helpers to template engine
-    $SRV.set_helpers @_ci_helpers[$helper]
+    Exspresso.server.set_helpers @_ci_helpers[$helper]
 
   ## --------------------------------------------------------------------
 
@@ -642,7 +642,7 @@ class global.CI_Loader
     #  This allows anything loaded using $this->load (views, files, etc.)
     #  to become accessible from within the Controller and Model functions.
 
-    #$_ci_CI = get_instance()
+    #$_ci_CI = Exspresso
     #for $_ci_key, $_ci_var of @CI
     #  if typeof @CI[$_ci_key] isnt 'function'
     #    if not @[$_ci_key]?

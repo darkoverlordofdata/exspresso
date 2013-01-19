@@ -54,7 +54,7 @@
 #
 if not function_exists('lang')
   exports.lang = lang = ($line, $id = '') ->
-    $CI = get_instance()
+    $CI = Exspresso
     $line = $CI.lang.line($line)
     
     if $id isnt ''

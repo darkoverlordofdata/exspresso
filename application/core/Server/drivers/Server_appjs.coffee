@@ -174,7 +174,7 @@ class global.CI_Server_appjs extends CI_Server
   #   called by the core/Config class constructor
   #
   # @access	public
-  # @param	object $CFG
+  # @param	object Exspresso.config
   # @return	void
   #
   config: ($config) ->
@@ -195,7 +195,7 @@ class global.CI_Server_appjs extends CI_Server
   #   called by the core/Output class constructor
   #
   # @access	public
-  # @param	object $OUT
+  # @param	object Exspresso.output
   # @return	void
   #
   output: ($output) ->
@@ -213,7 +213,7 @@ class global.CI_Server_appjs extends CI_Server
   #   called by the core/Input class constructor
   #
   # @access	public
-  # @param	object $IN
+  # @param	object Exspresso.input
   # @return	void
   #
   input: ($input) ->
@@ -231,7 +231,7 @@ class global.CI_Server_appjs extends CI_Server
   #   called by the core/URI class constructor
   #
   # @access	public
-  # @param	object $IN
+  # @param	object Exspresso.input
   # @return	void
   #
   uri: ($uri) ->
@@ -247,7 +247,7 @@ class global.CI_Server_appjs extends CI_Server
   #   called by the libraries/Session/Session class constructor
   #
   # @access	public
-  # @param	object $IN
+  # @param	object Exspresso.input
   # @return	void
   #
   session: ($session) ->
@@ -295,7 +295,7 @@ class global.CI_Server_appjs extends CI_Server
         path:         value: $req.pathname
 
 
-      $CFG.config.base_url = $req.protocol+'://'+ $req.host
+      Exspresso.config.config.base_url = $req.protocol+'://'+ $req.host
 
 
       $res.writeHead = ($status, $headers) ->

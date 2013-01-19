@@ -37,7 +37,7 @@ class CI_Session_mysql extends require('express').session.Store
 
     @table = $config.sess_table_name
 
-    $CI = get_instance()
+    $CI = Exspresso
     @mysql = $CI.db.client
 
     @mysql.query 'CREATE TABLE IF NOT EXISTS `' + @table + '` (`sid` VARCHAR(255) NOT NULL, `session` TEXT NOT NULL, `expires` INT, PRIMARY KEY (`sid`) )', ($err) =>

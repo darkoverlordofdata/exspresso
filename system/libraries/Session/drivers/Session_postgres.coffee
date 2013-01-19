@@ -37,7 +37,7 @@ class CI_Session_postgres extends require('express').session.Store
 
     @table = $config.sess_table_name
 
-    $CI = get_instance()
+    $CI = Exspresso
     $CI.db.db_connect ($err, $client) =>
 
       if $err then throw $err

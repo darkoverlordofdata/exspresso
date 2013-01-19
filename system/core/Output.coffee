@@ -50,7 +50,7 @@ module.exports = class global.CI_Output
       $mimes = require(APPPATH + 'config/mimes' + EXT)
 
     @mime_types = $mimes
-    $SRV.output @
+    Exspresso.server.output @
     load_class('Cache', 'core')
 
   # --------------------------------------------------------------------
@@ -240,7 +240,6 @@ module.exports = class global.CI_Output
 
     ($req, $res, $next) =>
 
-      #$CI = $res.CI
       $BM = load_new('Benchmark', 'core')
       $BM.mark 'total_execution_time_start'
 
@@ -267,13 +266,13 @@ module.exports = class global.CI_Output
       # @return	mixed
       #
       @_display = ($output = '') ->
-        #  Note:  We use globals because we can't use $CI =& get_instance()
+        #  Note:  We use globals because we can't use $CI =& Exspresso
         #  since this function is sometimes called by the caching mechanism,
         #  which happens before the CI super object is available.
 
         #  Grab the super object if we can.
         if class_exists('CI_Controller')
-          $CI = get_instance()
+          $CI = Exspresso
 
         #  --------------------------------------------------------------------
 
@@ -308,7 +307,7 @@ module.exports = class global.CI_Output
         #  --------------------------------------------------------------------
 
         #  Is compression requested?
-        if $CFG.item('compress_output') is true and @_zlib_oc is false
+        if Exspresso.config.item('compress_output') is true and @_zlib_oc is false
           if extension_loaded('zlib')
             if $_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
               ob_start('ob_gzhandler')
@@ -383,7 +382,7 @@ module.exports = class global.CI_Output
       # @return	void
       #
       @_write_cache = ($output) ->
-        #$CI = get_instance()
+        #$CI = Exspresso
         $path = $CI.config.item('cache_path')
 
         $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
@@ -425,11 +424,11 @@ module.exports = class global.CI_Output
       # @access	public
       # @return	void
       #
-      @_display_cache = ($CFG, $URI) ->
-        $cache_path = if ($CFG.item('cache_path') is '') then APPPATH + 'cache/' else $CFG.item('cache_path')
+      @_display_cache = () ->
+        $cache_path = if (Exspresso.config.item('cache_path') is '') then APPPATH + 'cache/' else Exspresso.config.item('cache_path')
 
         #  Build the file path.  The file name is an MD5 hash of the full URI
-        $uri = $CFG.item('base_url') + $CFG.item('index_page') + $URI.uri_string
+        $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string
 
         $filepath = $cache_path + md5($uri)
 

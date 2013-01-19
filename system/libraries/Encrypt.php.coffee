@@ -64,7 +64,7 @@ class CI_Encrypt
   #
   __construct()
   {
-  @CI = get_instance()
+  @CI = Exspresso
   @_mcrypt_exists = if ( not function_exists('mcrypt_encrypt')) then false else true
   log_message('debug', "Encrypt Class Initialized")
   }
@@ -87,7 +87,7 @@ class CI_Encrypt
         return @encryption_key
         
       
-      $CI = get_instance()
+      $CI = Exspresso
       $key = $CI.config.item('encryption_key')
       
       if $key is false

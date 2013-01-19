@@ -49,74 +49,18 @@
 class global.Modules
 
   @locations = config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
-  @routes = routes = {}
-  @registry = registry = {}
-  @views = {}
 
   ## --------------------------------------------------------------------
 
   #
   # Returns a list of modules
   #
-  @list = list = ->
+  @list = ->
 
-  ## --------------------------------------------------------------------
-
-  #
-  # Run a module controller method
-  # Output from module is buffered and returned.
-  #
-  @run = ($module, $args...) ->
-
-    $method = 'index'
-
-    if ($pos = strrpos($module, '/')) isnt false
-      $method = substr($module, $pos + 1)
-      $module = substr($module, 0, $pos)
-
-
-    if $class = load($module)
-
-      if method_exists($class, $method)
-
-        $class[$method].apply($class, $args)
-
-  ## --------------------------------------------------------------------
-
-  #
-  # Load a module controller
-  #
-  @load = ($module) ->
-
-    if is_array($module) then [$module, $params] = each($module) else $params = null
-
-    # get the requested controller class name
-    $alias = strtolower(end(explode('/', $module)))
-
-    # return an existing controller from the registry
-    if (isset($registry[$alias])) then return $registry[$alias]
-
-    # get the module path
-    $segments = explode('/', $module)
-
-    # find the controller
-    [$class] = get_instance().router.locate($segments)
-
-    # controller cannot be located
-    if not $class? then return
-
-    # set the module directory
-    $path = APPPATH+'controllers/'+get_instance().router.fetch_directory()
-
-    # load the controller class
-    $class = $class+get_instance().config.item('controller_suffix')
-    load_file($class, $path)
-
-    # create and register the new controller
-    $controller = ucfirst($class)
-    $registry[$alias] = new $controller($params)
-    return $registry[$alias]
-
+    $modules = []
+    for $location, $offset of Modules.locations
+      $modules.concat(readdirSync($location))
+    $modules
 
   ## --------------------------------------------------------------------
 

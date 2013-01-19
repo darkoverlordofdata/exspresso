@@ -66,7 +66,7 @@ class global.CI_Session
     if @encryption_key is ''
       show_error('In order to use the Session class you are required to set an encryption key in your config file.')
 
-    $SRV.session @
+    Exspresso.server.session @
 
   # --------------------------------------------------------------------
   # Method Stubs

@@ -55,7 +55,7 @@ class CI_Cache_file extends CI_Driver
   #
   __construct()
   {
-  $CI = get_instance()
+  $CI = Exspresso
   $CI.load.helper('file')
   
   $path = $CI.config.item('cache_path')

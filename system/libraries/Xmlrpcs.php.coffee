@@ -346,7 +346,7 @@ class CI_Xmlrpcs extends CI_Xmlrpc
         
       else 
         if @object is false
-          $CI = get_instance()
+          $CI = Exspresso
           return $CI[$method_parts]['1']($m)
           
         else 

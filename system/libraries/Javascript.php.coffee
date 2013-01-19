@@ -61,7 +61,7 @@ class CI_Javascript
   
   extract($defaults)
   
-  @CI = get_instance()
+  @CI = Exspresso
   
   #  load the requested js library
   @CI.load.library('javascript/' + $js_library_driver, 'autoload':$autoload)

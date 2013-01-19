@@ -16,10 +16,10 @@
 #   Defines the global Exspresso environment
 #
 require('not-php').export global,
-  $_POST:   get: -> $IN.post()
-  $_GET:    get: -> $IN.get()
-  $_COOKIE: get: -> $IN.cookie()
-  $_SERVER: get: -> $IN.server()
+  $_POST:   get: -> Exspresso.input.post()
+  $_GET:    get: -> Exspresso.input.get()
+  $_COOKIE: get: -> Exspresso.input.cookie()
+  $_SERVER: get: -> Exspresso.input.server()
 
 
 

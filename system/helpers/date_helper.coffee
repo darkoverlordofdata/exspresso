@@ -52,7 +52,7 @@
 #
 if not function_exists('now')
   exports.now = now =  ->
-    $CI = get_instance()
+    $CI = Exspresso
     
     if strtolower($CI.config.item('time_reference')) is 'gmt'
       $now = time()
@@ -140,7 +140,7 @@ if not function_exists('standard_date')
 #
 if not function_exists('timespan')
   exports.timespan = timespan = ($seconds = 1, $time = '') ->
-    $CI = get_instance()
+    $CI = Exspresso
     $CI.lang.load('date')
 
     if not is_numeric($seconds)
@@ -408,7 +408,7 @@ if not function_exists('human_to_unix')
 #
 if not function_exists('timezone_menu')
   exports.timezone_menu = timezone_menu = ($default = 'UTC', $class = "", $name = 'timezones') ->
-    $CI = get_instance()
+    $CI = Exspresso
     $CI.lang.load('date')
 
     if $default is 'GMT' then $default = 'UTC'

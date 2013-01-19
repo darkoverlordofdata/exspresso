@@ -64,7 +64,7 @@ class CI_Cart
   __construct($params = {})
   {
   #  Set the super object to a local variable for use later
-  @CI = get_instance()
+  @CI = Exspresso
   
   #  Are any config settings being passed manually?  If so, set them
   $config = {}

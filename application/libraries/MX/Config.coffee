@@ -66,7 +66,7 @@ class global.MX_Config extends CI_Config
   load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
 
     if in_array($file, @is_loaded, true) then return @item($file)
-    $_module = get_instance().router.fetch_module()
+    $_module = Exspresso.router.fetch_module()
     [$path, $file] = Modules.find($file, $_module, 'config/')
     if $path is false
       super($file, $use_sections, $fail_gracefully)

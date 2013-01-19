@@ -825,7 +825,7 @@ class CI_Upload
     return false
     
   
-  $CI = get_instance()
+  $CI = Exspresso
   return $CI.security.xss_clean($data, true)
   }
   
@@ -839,7 +839,7 @@ class CI_Upload
   #
   set_error($msg)
   {
-  $CI = get_instance()
+  $CI = Exspresso
   $CI.lang.load('upload')
   
   if is_array($msg)

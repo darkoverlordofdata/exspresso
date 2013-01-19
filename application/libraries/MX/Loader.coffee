@@ -144,7 +144,7 @@ class global.MX_Loader extends CI_Loader
     if class_exists('CI_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
       return
 
-    $params = $params || get_instance().server._db
+    $params = $params || Exspresso.server._db
 
     DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
 
@@ -179,7 +179,7 @@ class global.MX_Loader extends CI_Loader
 
     # expose the helpers to template engine
     # for $name, $value of @_ci_helpers[$helper]
-    #   $SRV.app.locals[$name] = $value
+    #   Exspresso.server.app.locals[$name] = $value
 
     @_ci_helpers[$helper]
 

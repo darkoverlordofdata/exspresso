@@ -207,7 +207,7 @@ if not function_exists('img')
     for $k, $v of $src
       
       if $k is 'src' and strpos($v, '://') is false
-        $CI = get_instance()
+        $CI = Exspresso
         
         if $index_page is true
           $img+=' src="' + $CI.config.site_url($v) + '"'
@@ -281,7 +281,7 @@ if not function_exists('doctype')
 #
 if not function_exists('link_tag')
   exports.link_tag = link_tag = ($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = false) ->
-    $CI = get_instance()
+    $CI = Exspresso
     
     $link = '<link '
     

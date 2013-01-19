@@ -68,14 +68,13 @@ class global.MX_Lang extends CI_Lang
         @load($_lang)
       return @language
 
-    $CI = get_instance()
-    $deft_lang = $CI.config.item('language')
+    $deft_lang = Exspresso.config.item('language')
     $idiom = if ($lang is '') then $deft_lang else $lang
 
     if in_array($langfile + '_lang' + EXT, @is_loaded, true)
       return @language
 
-    $_module = $CI.router.fetch_module()
+    $_module = Exspresso.router.fetch_module()
     [$path, $_langfile] = Modules.find($langfile + '_lang', $_module, 'language/' + $idiom + '/')
     if $path is false
       if $lang = super($langfile, $lang, $return, $add_suffix, $alt_path)

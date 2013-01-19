@@ -32,6 +32,9 @@
 #     node index express
 #
 #
+# top level object
+#
+define 'Exspresso', module.exports
 #
 #
 # Exspresso Version
@@ -63,14 +66,14 @@ else
 # Instantiate the config class
 #------------------------------------------------------
 #
-define '$CFG', (exports.config = load_class('Config', 'core'))
+exports.config = load_class('Config', 'core')
 
 #
 # ------------------------------------------------------
 #  Instantiate the core server app (default to expressjs)
 # ------------------------------------------------------
 #
-define '$SRV', (exports.server = load_driver('Server', 'core', $argv[2] ? 'express'))
+exports.server = load_driver('Server', 'core', $argv[2] ? 'express')
 
 #
 #
@@ -78,35 +81,35 @@ define '$SRV', (exports.server = load_driver('Server', 'core', $argv[2] ? 'expre
 #  Instantiate the URI class
 # ------------------------------------------------------
 #
-define '$URI', (exports.uri = load_class('URI', 'core'))
+exports.uri = load_class('URI', 'core')
 
 #
 # ------------------------------------------------------
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-define '$RTR', (exports.router = load_class('Router', 'core'))
+exports.router = load_class('Router', 'core')
 
 #
 # ------------------------------------------------------
 #  Instantiate the output class
 # ------------------------------------------------------
 #
-define '$OUT', (exports.output = load_class('Output', 'core'))
+exports.output = load_class('Output', 'core')
 
 #
 # ------------------------------------------------------
 #  Load the Input class
 # ------------------------------------------------------
 #
-define '$IN', (exports.input = load_class('Input', 'core'))
+exports.input = load_class('Input', 'core')
 
 #
 # ------------------------------------------------------
 #  Load the Language class
 # ------------------------------------------------------
 #
-define '$LANG', (exports.lang = load_class('Lang', 'core'))
+exports.lang = load_class('Lang', 'core')
 
 #
 # ------------------------------------------------------
@@ -117,21 +120,21 @@ define '$LANG', (exports.lang = load_class('Lang', 'core'))
 # Load the base controller class
 require BASEPATH+'core/Controller.coffee'
 
-if file_exists(APPPATH+'core/'+$CFG.config['subclass_prefix']+'Controller.coffee')
+if file_exists(APPPATH+'core/'+Exspresso.config.config['subclass_prefix']+'Controller.coffee')
 
-  require APPPATH+'core/'+$CFG.config['subclass_prefix']+'Controller.coffee'
+  require APPPATH+'core/'+Exspresso.config.config['subclass_prefix']+'Controller.coffee'
 
-for $path, $uri of $RTR._load_routes()
+for $path, $uri of Exspresso.router._load_routes()
 
-  $RTR._set_routing($uri)
+  Exspresso.router._set_routing($uri)
 
   # Load the local application controller
   # Note: The Router class automatically validates the controller path using the router->_validate_request().
   # If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
-  if not file_exists(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
+  if not file_exists(APPPATH+'controllers/'+Exspresso.router.fetch_directory()+Exspresso.router.fetch_class()+EXT)
 
-    console.log 'Unable to load controller for ' + $uri
-    console.log 'Please make sure the controller specified in your Routes.coffee   file is valid.'
+    log_message "debug", 'Unable to load controller for ' + $uri
+    log_message "debug", 'Please make sure the controller specified in your Routes.coffee   file is valid.'
     continue
 
   #
@@ -143,12 +146,12 @@ for $path, $uri of $RTR._load_routes()
   #  loader class can be called via the URI, nor can
   #  controller functions that begin with an underscore
   #
-  $class  = $RTR.fetch_class()
-  $method = $RTR.fetch_method()
+  $class  = Exspresso.router.fetch_class()
+  $method = Exspresso.router.fetch_method()
 
   if $method[0] is '_' or CI_Controller::[$method]?
 
-    console.log "Controller not found: #{$class}/#{$method}"
+    log_message "debug", "Controller not found: #{$class}/#{$method}"
     continue
 
   #
@@ -156,16 +159,16 @@ for $path, $uri of $RTR._load_routes()
   #  Instantiate the requested controller
   # ------------------------------------------------------
   #
-  $class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
+  $class = require(APPPATH+'controllers/'+Exspresso.router.fetch_directory()+Exspresso.router.fetch_class()+EXT)
 
-  $RTR.bind $path, $class, $method
+  Exspresso.router.bind $path, $class, $method
 
 #
 # ------------------------------------------------------
 #  Start me up...
 # ------------------------------------------------------
 #
-$SRV.start $RTR
+Exspresso.server.start Exspresso.router
 
 # End of file Exspresso.coffee
 # Location: ./system/core/Exspresso.coffee

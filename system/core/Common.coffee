@@ -79,17 +79,6 @@ _log          = null
 # @var object
 #
 _error        = null
-#  ------------------------------------------------------------------------
-
-#
-# get_instance
-#
-# Returns the super object
-#
-# @access public
-# @return	object
-#
-exports.get_instance = get_instance = () -> require(BASEPATH + 'core/Exspresso')
 
 #  ------------------------------------------------------------------------
 

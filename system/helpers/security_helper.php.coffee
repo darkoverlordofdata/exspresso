@@ -58,7 +58,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 if not function_exists('xss_clean')
   exports.xss_clean = xss_clean = ($str, $is_image = false) ->
-    $CI = get_instance()
+    $CI = Exspresso
     return $CI.security.xss_clean($str, $is_image)
     
   
@@ -74,7 +74,7 @@ if not function_exists('xss_clean')
 #
 if not function_exists('sanitize_filename')
   exports.sanitize_filename = sanitize_filename = ($filename) ->
-    $CI = get_instance()
+    $CI = Exspresso
     return $CI.security.sanitize_filename($filename)
     
   

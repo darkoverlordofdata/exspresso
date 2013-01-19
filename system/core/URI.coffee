@@ -51,7 +51,7 @@ class global.CI_URI
   #
   # Constructor
   #
-  # Simply globalizes the $RTR object.  The front
+  # Simply globalizes the Exspresso.router object.  The front
   # loads the Router class early on so it's not available
   # normally as other classes are.
   #
@@ -64,7 +64,7 @@ class global.CI_URI
     @rsegments = []
 
     log_message('debug', "URI Class Initialized")
-    $SRV.uri @
+    Exspresso.server.uri @
 
   #  --------------------------------------------------------------------
 

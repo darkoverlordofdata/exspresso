@@ -84,8 +84,8 @@ class global.CI_Server
     #
     # the Expresso core instance
     #
-    @CI = get_instance()
-    @config $CFG
+    @CI = Exspresso
+    @config Exspresso.config
 
 
   #  --------------------------------------------------------------------
@@ -128,7 +128,7 @@ class global.CI_Server
   #   called by the core/Config class constructor
   #
   # @access	public
-  # @param	object $CFG
+  # @param	object Exspresso.config
   # @return	void
   #
   config: ($config) ->
@@ -150,7 +150,7 @@ class global.CI_Server
   #   called by the core/Output class constructor
   #
   # @access	public
-  # @param	object $OUT
+  # @param	object Exspresso.output
   # @return	void
   #
   output: ($output) ->
@@ -166,7 +166,7 @@ class global.CI_Server
   #   called by the core/Input class constructor
   #
   # @access	public
-  # @param	object $IN
+  # @param	object Exspresso.input
   # @return	void
   #
   input: ($input) ->
@@ -181,7 +181,7 @@ class global.CI_Server
   #   called by the core/URI class constructor
   #
   # @access	public
-  # @param	object $URI
+  # @param	object Exspresso.uri
   # @return	void
   #
   uri: ($uri) ->

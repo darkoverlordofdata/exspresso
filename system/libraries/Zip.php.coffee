@@ -334,7 +334,7 @@ class CI_Zip
         $filename+='.zip'
         
       
-      $CI = get_instance()
+      $CI = Exspresso
       $CI.load.helper('download')
       
       $get_zip = @get_zip()

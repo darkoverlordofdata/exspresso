@@ -65,12 +65,12 @@ module.exports = class global.CI_Hooks
 	# @return	void
 	#
 	_initialize :  ->
-		$CFG = load_class('Config', 'core')
+		Exspresso.config = load_class('Config', 'core')
 		
 		#  If hooks are not enabled in the config file
 		#  there is nothing else to do
 		
-		if $CFG.item('enable_hooks') is false
+		if Exspresso.config.item('enable_hooks') is false
 			return 
 			
 		

@@ -223,7 +223,7 @@ class CI_DB_driver
     if @save_queries is true
       @queries.push $sql
 
-    if @db_debug then log_message 'debug', 'SQL>\n%s', $sql
+    #if @db_debug then log_message 'debug', 'SQL>\n%s', $sql
 
     #  Start the Query Timer
     $time_start = (new Date()).getTime()
@@ -959,17 +959,17 @@ class CI_DB_driver
   #
   display_error : ($error = '', $swap = '', $native = false) ->
 
-    $LANG = load_class('Lang', 'core')
-    #$LANG._CI = @_CI
-    $LANG.load('db')
+    Exspresso.lang = load_class('Lang', 'core')
+    #Exspresso.lang._CI = @_CI
+    Exspresso.lang.load('db')
 
-    $heading = $LANG.line('db_error_heading')
+    $heading = Exspresso.lang.line('db_error_heading')
 
     if $native is true
       $message = $error
 
     else
-      $message = if ( not is_array($error)) then [str_replace('%s', $swap, $LANG.line($error))] else $error
+      $message = if ( not is_array($error)) then [str_replace('%s', $swap, Exspresso.lang.line($error))] else $error
 
 
     console.log $message
