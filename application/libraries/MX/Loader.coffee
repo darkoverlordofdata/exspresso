@@ -48,8 +48,8 @@
 # THE SOFTWARE.
 #
 
-Modules = require(dirname(__filename)+'/Modules.coffee')
 
+require(dirname(__filename)+'/Modules.coffee')
 
 class global.MX_Loader extends CI_Loader
 
@@ -144,7 +144,7 @@ class global.MX_Loader extends CI_Loader
     if class_exists('CI_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
       return
 
-    $params = $params || CI.$APP.server._db
+    $params = $params || get_instance().server._db
 
     DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
 
@@ -267,7 +267,7 @@ class global.MX_Loader extends CI_Loader
       Modules.load_file($_library, $path)
 
       $library = ucfirst($_library)
-      @CI[$_alias] = new (global[$library]($params))
+      @CI[$_alias] = new (global[$library]($params, @CI))
 
       @_ci_classes[$class] = $_alias
 
@@ -513,5 +513,3 @@ class global.MX_Loader extends CI_Loader
 
 module.exports = MX_Loader
 
-# load the CI class for Modular Separation
-(class_exists('CI')) or require dirname(__filename)+'/Ci.coffee'

@@ -48,10 +48,7 @@
 # THE SOFTWARE.
 #*/
 
-CI = require(dirname(__filename)+'/Ci.coffee')
-Modules = require(dirname(__filename)+'/Modules.coffee')
-require BASEPATH+'core/Config.coffee'
-
+require(dirname(__filename)+'/Modules.coffee')
 
 class global.MX_Config extends CI_Config
 
@@ -71,7 +68,7 @@ class global.MX_Config extends CI_Config
     log_message 'debug', 'MX_Config::load'
   
     if in_array($file, @is_loaded, true) then return @item($file)
-    $_module = CI.$APP.router.fetch_module()
+    $_module = get_instance().router.fetch_module()
     [$path, $file] = Modules.find($file, $_module, 'config/')
     if $path is false
       super($file, $use_sections, $fail_gracefully)

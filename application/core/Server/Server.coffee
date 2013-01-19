@@ -114,8 +114,8 @@ class global.CI_Server
   #
   start: ($router, $autoload = true) ->
 
-    load = load_class('Loader', 'core')
-    load.initialize @CI, $autoload
+    @CI.load = load_class('Loader', 'core')
+    @CI.load.initialize @CI, $autoload
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
 

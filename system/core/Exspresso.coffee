@@ -65,7 +65,6 @@ else
 # ------------------------------------------------------
 #
 define '$SRV', (exports.server = load_driver('Server', 'core', $argv[2] ? 'express'))
-
 #
 #------------------------------------------------------
 # Instantiate the config class

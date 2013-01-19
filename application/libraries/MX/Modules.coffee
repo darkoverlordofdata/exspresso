@@ -46,143 +46,147 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
+class Modules
+
+  Object.defineProperties @,
+    locations:    get: -> $CFG.item('modules_locations') or array(APPPATH+'modules/', '../modules/')
 
 
-exports.locations = locations = $CFG.item('modules_locations') or array(APPPATH+'modules/', '../modules/')
-exports.routes = routes = {}
-exports.registry = registry = {}
-exports.views = {}
+  @routes = routes = {}
+  @registry = registry = {}
+  @views = {}
 
-## --------------------------------------------------------------------
+  ## --------------------------------------------------------------------
 
-#
-# Returns a list of modules
-#
-exports.list = list = ->
+  #
+  # Returns a list of modules
+  #
+  @list = list = ->
 
-## --------------------------------------------------------------------
+  ## --------------------------------------------------------------------
 
-#
-# Run a module controller method
-# Output from module is buffered and returned.
-#
-exports.run = run = ($module, $args...) ->
-  
-  $method = 'index'
+  #
+  # Run a module controller method
+  # Output from module is buffered and returned.
+  #
+  @run = ($module, $args...) ->
 
-  if ($pos = strrpos($module, '/')) isnt false
-    $method = substr($module, $pos + 1)
-    $module = substr($module, 0, $pos)
+    $method = 'index'
 
-    
-  if $class = load($module)
-
-    if method_exists($class, $method)
-
-      $class[$method].apply($class, $args)
-
-## --------------------------------------------------------------------
-
-#
-# Load a module controller
-#
-exports.load = load = ($module) ->
-
-  if is_array($module) then [$module, $params] = each($module) else $params = null
-
-  # get the requested controller class name
-  $alias = strtolower(end(explode('/', $module)))
-
-  # return an existing controller from the registry
-  if (isset($registry[$alias])) then return $registry[$alias]
-
-  # get the module path
-  $segments = explode('/', $module)
-
-  # find the controller
-  [$class] = CI.$APP.router.locate($segments)
-  
-  # controller cannot be located
-  if not $class? then return
-
-  # set the module directory
-  $path = APPPATH+'controllers/'+CI.$APP.router.fetch_directory()
-
-  # load the controller class
-  $class = $class+CI.$APP.config.item('controller_suffix')
-  load_file($class, $path)
-
-  # create and register the new controller
-  $controller = ucfirst($class)
-  $registry[$alias] = new $controller($params)
-  return $registry[$alias]
+    if ($pos = strrpos($module, '/')) isnt false
+      $method = substr($module, $pos + 1)
+      $module = substr($module, 0, $pos)
 
 
-## --------------------------------------------------------------------
+    if $class = load($module)
 
-#
-# Load a module file
-#
-exports.load_file = load_file = ($file, $path, $type = 'other', $result = true) ->
+      if method_exists($class, $method)
 
-  $file = str_replace(EXT, '', $file)
-  $location = $path+$file+EXT
+        $class[$method].apply($class, $args)
 
-  if $type is 'other'
-    if class_exists($file)
-      log_message 'debug', "File already loaded: #{$location}"
-      return $result
-    
-  $result = require($location)
-  log_message 'debug', "File loaded: #{$location}"
-  return $result
+  ## --------------------------------------------------------------------
 
-## --------------------------------------------------------------------
+  #
+  # Load a module controller
+  #
+  @load = ($module) ->
 
-#
-# Find a file
-# Scans for files located within modules directories.
-# Also scans application directories for models, plugins and views.
-# Generates fatal error if file not found.
-#
-exports.find = find = ($file, $module, $base) ->
+    if is_array($module) then [$module, $params] = each($module) else $params = null
 
-  $modules = {}
+    # get the requested controller class name
+    $alias = strtolower(end(explode('/', $module)))
 
-  $segments = explode('/', $file)
+    # return an existing controller from the registry
+    if (isset($registry[$alias])) then return $registry[$alias]
 
-  $file = $segments.pop()
+    # get the module path
+    $segments = explode('/', $module)
 
-  if $base is 'views/'
-    $file_ext = if strpos($file, '.') then $file else $file+config_item('view_ext')
-  else
-    $file_ext = if strpos($file, '.') then $file else $file+EXT
+    # find the controller
+    [$class] = get_instance().router.locate($segments)
 
-  $path = ltrim(implode('/', $segments)+'/', '/')
-  if $module then $modules[$module] = $path else $modules = {}
+    # controller cannot be located
+    if not $class? then return
 
-  if $segments?
-    $modules[array_shift($segments)] = ltrim(implode('/', $segments)+'/','/')
+    # set the module directory
+    $path = APPPATH+'controllers/'+get_instance().router.fetch_directory()
+
+    # load the controller class
+    $class = $class+get_instance().config.item('controller_suffix')
+    load_file($class, $path)
+
+    # create and register the new controller
+    $controller = ucfirst($class)
+    $registry[$alias] = new $controller($params)
+    return $registry[$alias]
 
 
-  for $location, $offset of exports.locations
+  ## --------------------------------------------------------------------
 
-    for $module, $subpath of $modules
+  #
+  # Load a module file
+  #
+  @load_file = ($file, $path, $type = 'other', $result = true) ->
 
-      $fullpath = $location+$module+'/'+$base+$subpath
+    $file = str_replace(EXT, '', $file)
+    $location = $path+$file+EXT
 
-      if is_file($fullpath+$file_ext) then return [$fullpath, $file]
+    if $type is 'other'
+      if class_exists($file)
+        log_message 'debug', "File already loaded: #{$location}"
+        return $result
 
-      if $base is 'libraries/' and is_file($fullpath+ucfirst($file_ext))
-        return [$fullpath, ucfirst($file)]
+    $result = require($location)
+    log_message 'debug', "File loaded: #{$location}"
+    return $result
 
-  # is the file in an application directory?
-  if $base is 'views/' or $base is 'plugins/'
-    if is_file(APPPATH+$base+$path+$file_ext) then return [APPPATH+$base+$path, $file]
-    show_error "Unable to locate the file: #{$path}#{$file_ext}"
+  ## --------------------------------------------------------------------
 
-  return [false, $file]
+  #
+  # Find a file
+  # Scans for files located within modules directories.
+  # Also scans application directories for models, plugins and views.
+  # Generates fatal error if file not found.
+  #
+  @find = ($file, $module, $base) ->
 
+    $modules = {}
+
+    $segments = explode('/', $file)
+
+    $file = $segments.pop()
+
+    if $base is 'views/'
+      $file_ext = if strpos($file, '.') then $file else $file+config_item('view_ext')
+    else
+      $file_ext = if strpos($file, '.') then $file else $file+EXT
+
+    $path = ltrim(implode('/', $segments)+'/', '/')
+    if $module then $modules[$module] = $path else $modules = {}
+
+    if $segments?
+      $modules[array_shift($segments)] = ltrim(implode('/', $segments)+'/','/')
+
+
+    for $location, $offset of @locations
+
+      for $module, $subpath of $modules
+
+        $fullpath = $location+$module+'/'+$base+$subpath
+
+        if is_file($fullpath+$file_ext) then return [$fullpath, $file]
+
+        if $base is 'libraries/' and is_file($fullpath+ucfirst($file_ext))
+          return [$fullpath, ucfirst($file)]
+
+    # is the file in an application directory?
+    if $base is 'views/' or $base is 'plugins/'
+      if is_file(APPPATH+$base+$path+$file_ext) then return [APPPATH+$base+$path, $file]
+      show_error "Unable to locate the file: #{$path}#{$file_ext}"
+
+    return [false, $file]
+
+define 'Modules', Modules
 
 # End of file Modules.coffee
 # Location: ./application/libraries/MX/Modules.coffee

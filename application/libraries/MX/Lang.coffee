@@ -47,10 +47,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-
-CI = require(dirname(__filename)+'/Ci.coffee')
-Modules = require(dirname(__filename)+'/Modules.coffee')
-require BASEPATH+'core/Lang.coffee'
+require(dirname(__filename)+'/Modules.coffee')
 
 class global.MX_Lang extends CI_Lang
 
@@ -65,19 +62,22 @@ class global.MX_Lang extends CI_Lang
   # @return	mixed
   #
   load: ($langfile, $lang = '',$return = false, $add_suffix = true, $alt_path = '') ->
-  
+
+    log_message 'debug', 'MX_Lang::load'
+
     if is_array($langfile)
       for $_lang in $langfile
         @load($_lang)
       return @language
 
-    $deft_lang = CI.$APP.config.item('language')
+    $CI = get_instance()
+    $deft_lang = $CI.config.item('language')
     $idiom = if ($lang is '') then $deft_lang else $lang
 
     if in_array($langfile + '_lang' + EXT, @is_loaded, true)
       return @language
 
-    $_module = CI.$APP.router.fetch_module()
+    $_module = $CI.router.fetch_module()
     [$path, $_langfile] = Modules.find($langfile + '_lang', $_module, 'language/' + $idiom + '/')
     if $path is false
       if $lang = super($langfile, $lang, $return, $add_suffix, $alt_path)

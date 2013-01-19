@@ -15,7 +15,7 @@
 #
 #
 #  load the MX core module class
-Modules = require(dirname(__filename)+'/Modules.coffee')
+require(dirname(__filename)+'/Modules.coffee')
 fs = require('fs')
 
 #
