@@ -131,11 +131,6 @@ class Modules
     $file = str_replace(EXT, '', $file)
     $location = $path+$file+EXT
 
-    if $type is 'other'
-      if class_exists($file)
-        log_message 'debug', "File already loaded: #{$location}"
-        return $result
-
     $result = require($location)
     log_message 'debug', "File loaded: #{$location}"
     return $result

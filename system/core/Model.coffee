@@ -52,7 +52,7 @@ class global.CI_Model
   # @param	object	$CI Controller Instance mixin
   # @return	void
   #
-  constructor: ($CI) ->
+  constructor: (@CI) ->
 
     log_message 'debug', "Model Class Initialized"
     #
@@ -61,10 +61,10 @@ class global.CI_Model
     # this allows models to access CI's loaded classes
     # using the same syntax as controllers:
     #
-    for $name, $var of $CI
-      if typeof $var is 'object'
-        if typeof $var isnt 'function' and not Array.isArray($var)
-          @[$name] = $var
+    #for $name, $var of $CI
+    #  if typeof $var is 'object'
+    #    if typeof $var isnt 'function' and not Array.isArray($var)
+    #      @[$name] = $var
 
 
 

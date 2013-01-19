@@ -19,7 +19,7 @@ class global.Auth
 
   constructor: ($config = {}, @CI) ->
 
-    @auth_model = @CI.load.model('auth_model')
+    @auth_model = @CI.load.model('user/auth_model')
     #@CI.load.config('user/auth', true)
     @auth_model.initialize $config
     @CI._ctor.push ($next) => @auth_model.check_db $next

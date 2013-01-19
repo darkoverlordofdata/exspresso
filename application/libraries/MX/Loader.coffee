@@ -264,10 +264,9 @@ class global.MX_Loader extends CI_Loader
 
     else
 
-      Modules.load_file($_library, $path)
+      $library = Modules.load_file($_library, $path)
 
-      $library = ucfirst($_library)
-      @CI[$_alias] = new (global[$library]($params, @CI))
+      @CI[$_alias] = new $library($params, @CI)
 
       @_ci_classes[$class] = $_alias
 
@@ -327,10 +326,9 @@ class global.MX_Loader extends CI_Loader
         @database($connect, false, true)
 
 
-      Modules.load_file($_model, $path)
+      $model = Modules.load_file($_model, $path)
 
-      $model = ucfirst($_model)
-      @CI[$_alias] = new $model()
+      @CI[$_alias] = new $model(@CI)
 
       @_ci_models.push $_alias
 
