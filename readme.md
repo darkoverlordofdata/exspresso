@@ -1,4 +1,4 @@
-# [Exspresso v0.8.0] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.8.1] (https://github.com/darkoverlordofdata/exspresso)
 
  A framework for coffee-script, based on the [CodeIgniter] (<http://codeigniter.com/>) framework.
 
@@ -31,22 +31,23 @@
 
     usage:
 
-    node [--harmony] index <appjs|connect|express> [--flag]
+    node [--harmony] index <appjs|connect|express> <mvc|hmvc> [--option]
 
-      flags:
-            --cache
-            --csrf
-            --preview
-            --profile
-            --nocache
-            --nocsrf
-            --noprofile
+     options:
+     --cache
+     --csrf
+     --preview
+     --profile
+     --nocache
+     --nocsrf
+     --noprofile
+     --db <mysql|postgres>
 
     examples:
+     node --harmony index appjs
+     node index connect
+     node index express
 
-    node --harmony index appjs
-    node index connect [--preview]
-    node index express [--preview]
 
 
 ## License

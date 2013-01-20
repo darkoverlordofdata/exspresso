@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A framework for coffee-script, based on CodeIgniter",
   "keywords": ["framework", "web", "coffee-script"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",

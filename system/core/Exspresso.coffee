@@ -11,17 +11,11 @@
 # 
 #+--------------------------------------------------------------------+
 #
-#	the Exspresso framework :)
+#	the top level Exspresso controller
 #
 #
 #
-define 'Exspresso', module.exports      # main controller
-
-#------------------------------------------------------
-# Expresso bootstrap
-#------------------------------------------------------
-#
-exports.is_running = -> if Exspresso.server? then Exspresso.server._running else false
+define 'Exspresso', module.exports
 
 #
 #
@@ -31,6 +25,7 @@ exports.is_running = -> if Exspresso.server? then Exspresso.server._running else
 #
 #
 define 'Exspresso_VERSION', require(FCPATH + 'package.json').version
+
 #
 # ------------------------------------------------------
 #  Load the global functions
@@ -39,6 +34,7 @@ define 'Exspresso_VERSION', require(FCPATH + 'package.json').version
 require BASEPATH + 'core/Common.coffee'
 
 log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", Exspresso_VERSION
+
 #
 # ------------------------------------------------------
 #  Load the framework constants
@@ -48,6 +44,13 @@ if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/consta
   require APPPATH+'config/'+ENVIRONMENT+'/constants.coffee'
 else
   require APPPATH+'config/constants.coffee'
+
+#
+#------------------------------------------------------
+# Expresso status
+#------------------------------------------------------
+#
+exports.is_running = -> if Exspresso.server? then Exspresso.server._running else false
 
 #------------------------------------------------------
 # Instantiate the config class
@@ -62,7 +65,6 @@ exports.config = load_driver('Config', 'core', Exspresso__MVC)
 #
 exports.server = load_driver('Server', 'core', Exspresso__SERVER)
 
-#
 #
 # ------------------------------------------------------
 #  Instantiate the URI class

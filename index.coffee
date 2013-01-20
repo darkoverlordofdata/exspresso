@@ -13,7 +13,7 @@
 #
 #	Exspresso
 #
-#   node [--harmony] index <appjs|connect|express> [--flag]
+#   node [--harmony] index <appjs|connect|express> <mvc|hmvc> [--option]
 #
 #     options:
 #     --cache
@@ -54,8 +54,6 @@ require('not-php').export global,
 #     development
 #     test
 #     production
-#
-# NOTE: If you change these, also change the error_reporting() code below
 #
 #
 define 'ENVIRONMENT', process.env.ENVIRONMENT ? 'development'

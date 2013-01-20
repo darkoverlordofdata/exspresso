@@ -12,5 +12,5 @@
   * 0.7.19 refactor site
   * 0.8.0  Rebranding
   * 0.8.0  Refactor MX/Modules into core as drivers
-  * 0.8.0  show_error sprintf style args
-  * 0.8.0  decode command line in frontend index.coffee
+  * 0.8.1  show_error sprintf style args
+  * 0.8.1  decode command line in frontend index.coffee

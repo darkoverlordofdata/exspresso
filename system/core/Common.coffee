@@ -83,7 +83,7 @@ _error        = null
 #  ------------------------------------------------------------------------
 
 #
-# Exspresso_<Object> factory
+# Exspresso Object Creation
 #
 # Load the class if not already in cache.
 # Returns a new instance of the class.
@@ -130,7 +130,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
 #  ------------------------------------------------------------------------
 
 #
-# Driver registry
+# Exspresso Driver registry
 #
 # Loads a driver subclass as a class singleton.
 #
@@ -180,7 +180,7 @@ exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass
 #  ------------------------------------------------------------------------
 
 #
-# Class registry
+# Exspresso Class registry
 #
 # This function acts as a singleton.  If the requested class does not
 # exist it is instantiated and set to a static variable.  If it has
