@@ -305,6 +305,8 @@ class global.Exspresso_Loader
     if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI['db']?
       return false
 
+    $params = $params || Exspresso__DB
+
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
 
     @CI._ctor.push ($callback) -> DB.initialize $callback

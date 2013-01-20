@@ -145,7 +145,7 @@ class global.Exspresso_Loader_hmvc extends Exspresso_Loader
     if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
       return
 
-    $params = $params || Exspresso.server._db
+    $params = $params || Exspresso__DB
 
     DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
 

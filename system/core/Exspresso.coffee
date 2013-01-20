@@ -14,27 +14,15 @@
 #	the Exspresso framework :)
 #
 #
-#   node [--harmony] index <appjs|connect|express> [--flag]
 #
-#     options:
-#     --cache
-#     --csrf
-#     --preview
-#     --profile
-#     --nocache
-#     --nocsrf
-#     --noprofile
-#     --db <mysql|postgres>
+define 'Exspresso', module.exports      # main controller
+
+#------------------------------------------------------
+# Expresso bootstrap
+#------------------------------------------------------
 #
-#   examples:
-#     node --harmony index appjs
-#     node index connect
-#     node index express
-#
-#
-# top level object
-#
-define 'Exspresso', module.exports
+exports.is_running = -> if Exspresso.server? then Exspresso.server._running else false
+
 #
 #
 # Exspresso Version
@@ -61,21 +49,18 @@ if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/consta
 else
   require APPPATH+'config/constants.coffee'
 
-exports.is_running = ->
-  if Exspresso.server? then Exspresso.server._running else false
-
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------
 #
-exports.config = load_driver('Config', 'core', 'hmvc')
+exports.config = load_driver('Config', 'core', Exspresso__MVC)
 
 #
 # ------------------------------------------------------
 #  Instantiate the core server app (default to expressjs)
 # ------------------------------------------------------
 #
-exports.server = load_driver('Server', 'core', $argv[2] ? 'express')
+exports.server = load_driver('Server', 'core', Exspresso__SERVER)
 
 #
 #
@@ -90,7 +75,7 @@ exports.uri = load_class('URI', 'core')
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-exports.router = load_driver('Router', 'core', 'hmvc')
+exports.router = load_driver('Router', 'core', Exspresso__MVC)
 
 #
 # ------------------------------------------------------
@@ -111,7 +96,7 @@ exports.input = load_class('Input', 'core')
 #  Load the Language class
 # ------------------------------------------------------
 #
-exports.lang = load_driver('Lang', 'core', 'hmvc')
+exports.lang = load_driver('Lang', 'core', Exspresso__MVC)
 
 #
 # ------------------------------------------------------

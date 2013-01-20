@@ -27,13 +27,8 @@ dispatch        = require('dispatch')   # URL dispatcher for Connect
 class global.Exspresso_Server
 
   _running      : false
-  _cache        : false
-  _csrf         : false
-  _logger       : 'dev'
-  _db           : 'mysql'    # overrides config/database['active_group']
   _port         : 3000
-  _preview      : false
-  _profile      : false
+  _logger       : 'dev'
   _site_name    : 'My Site'
   _site_slogan  : 'My Slogan'
   _config       : null
@@ -56,32 +51,6 @@ class global.Exspresso_Server
     if not empty($config)
       for $key, $var of $config
         @['_'+$key] = $var
-    #
-    # decode the command line options
-    #
-    @_profile = true if ENVIRONMENT is 'development'
-    $set_db = false
-
-    for $arg in process.argv
-      if $set_db is true
-        @_db = $arg
-        $set_db = false
-
-      switch $arg
-        when '--cache'      then @_cache    = true
-        when '--csrf'       then @_csrf     = true
-        when '--preview'    then @_preview  = true
-        when '--profile'    then @_profile  = true
-        when '--db'         then $set_db    = true
-
-
-    for $arg in process.argv
-
-      switch $arg
-        when '--nocache'    then @_cache    = false
-        when '--nocsrf'     then @_csrf     = false
-        when '--noprofile'  then @_profile  = false
-
     #
     # the Expresso core instance
     #
@@ -115,7 +84,7 @@ class global.Exspresso_Server
   #
   start: ($router, $autoload = true) ->
 
-    @CI.load = load_driver('Loader', 'core', 'hmvc')
+    @CI.load = load_driver('Loader', 'core', Exspresso__MVC)
     @CI.load.initialize @CI, $autoload
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
@@ -137,8 +106,6 @@ class global.Exspresso_Server
   config: ($config) ->
 
     @_config      = $config
-    @_cache       = false
-    @_csrf        = false
     @_logger      = $config.config.logger
     @_port        = $config.config.port
     @_site_name   = $config.config.site_name
@@ -158,7 +125,7 @@ class global.Exspresso_Server
   #
   output: ($output) ->
 
-    $output.enable_profiler @_profile
+    $output.enable_profiler Exspresso__PROFILE
     @app.use $output.middleware(@_config)
 
   #  --------------------------------------------------------------------

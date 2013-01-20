@@ -196,9 +196,11 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
 
   if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso_', $prefix]
 
+  $core = $class.split('_')[0] # strip subclass suffix from driver name
+
   #  Does the class exist?  If so, we're done...
-  if _classes[$class]?
-    return _classes[$class]
+  if _classes[$core]?
+    return _classes[$core]
 
   $name = false
 
@@ -224,10 +226,10 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
     die 'Unable to locate the specified class: ' + $class + EXT
 
   #  Keep track of what we just loaded
-  is_loaded($class)
+  is_loaded($core)
 
-  _classes[$class] = new (global[$name])($config)
-  return _classes[$class]
+  _classes[$core] = new (global[$name])($config)
+  return _classes[$core]
 
 
 #  --------------------------------------------------------------------

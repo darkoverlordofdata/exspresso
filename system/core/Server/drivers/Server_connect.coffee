@@ -126,7 +126,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
       log_message "debug", "listening on port #{@_port}"
 
-      if @_preview
+      if Exspresso__PREVIEW
         #
         # preview in appjs
         #
@@ -155,7 +155,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
     super $config
     @app.use connect.logger(@_logger)
-    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if @_cache
+    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if Exspresso__CACHE
 
     Variables::['settings'] =
       site_name:    @_site_name
@@ -249,7 +249,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
     super $session
     @app.use connect.cookieParser($session.encryption_key)
     @app.use connect.session(secret: $session.encryption_key)
-    @app.use connect.csrf() if @_csrf
+    @app.use connect.csrf() if Exspresso__CSRF
     return
 
 

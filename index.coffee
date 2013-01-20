@@ -13,14 +13,31 @@
 #
 #	Exspresso
 #
-#   Defines the global Exspresso environment
+#   node [--harmony] index <appjs|connect|express> [--flag]
+#
+#     options:
+#     --cache
+#     --csrf
+#     --preview
+#     --profile
+#     --nocache
+#     --nocsrf
+#     --noprofile
+#     --db <mysql|postgres>
+#
+#   examples:
+#     node --harmony index appjs
+#     node index connect
+#     node index express
+#
+#
+#   Define the global Exspresso environment to mimic php
 #
 require('not-php').export global,
   $_POST:   get: -> Exspresso.input.post()
   $_GET:    get: -> Exspresso.input.get()
   $_COOKIE: get: -> Exspresso.input.cookie()
   $_SERVER: get: -> Exspresso.input.server()
-
 
 
 #
@@ -42,6 +59,47 @@ require('not-php').export global,
 #
 #
 define 'ENVIRONMENT', process.env.ENVIRONMENT ? 'development'
+do ->
+  #
+  # Decode options
+  #
+  $server   = 'express'
+  $mvc      = 'hmvc'
+  $db       = 'mysql'
+  $set_db   = false
+  $cache    = false
+  $csrf     = false
+  $preview  = false
+  $profile  = if ENVIRONMENT is 'development' then true else false
+
+  for $arg in $argv
+    if $set_db is true
+      $db = $arg
+      $set_db = false
+
+    switch $arg
+      when 'appjs'        then $server    = $arg
+      when 'connect'      then $server    = $arg
+      when 'express'      then $server    = $arg
+      when 'mvc'          then $mvc       = $arg
+      when 'hmvc'         then $mvc       = $arg
+      when '--db'         then $set_db    = true
+      when '--cache'      then $cache     = true
+      when '--csrf'       then $csrf      = true
+      when '--preview'    then $preview   = true
+      when '--profile'    then $profile   = true
+      when '--nocache'    then $cache     = false
+      when '--nocsrf'     then $csrf      = false
+      when '--noprofile'  then $profile   = false
+
+  define 'Exspresso__CACHE', $cache
+  define 'Exspresso__CSRF', $csrf
+  define 'Exspresso__DB', $db
+  define 'Exspresso__MVC', $mvc
+  define 'Exspresso__SERVER', $server
+  define 'Exspresso__PREVIEW', $preview
+  define 'Exspresso__PROFILE', $profile
+
 
 #
 #
@@ -72,6 +130,11 @@ $system_folder = 'system'
 #
 $application_folder = 'application'
 
+
+# --------------------------------------------------------------------
+# END OF USER CONFIGURABLE SETTINGS.  DO NOT EDIT BELOW THIS LINE
+# --------------------------------------------------------------------
+
 #
 # ---------------------------------------------------------------
 #  Resolve the path's for increased reliability
@@ -79,14 +142,13 @@ $application_folder = 'application'
 #
 
 $system_path = realpath($system_folder) + '/'
+
 # ensure there's a trailing slash
 $system_path = rtrim($system_path, '/') + '/';
 
+# Is the system path correct?
 if not is_dir($system_path)
-  console.log "Your system folder path is not set correctly:"
-  console.log "Please open the following file and correct this: "
-  console.log "\t#{__filename}"
-  process.exit 1
+  exit "Your system folder path is not set correctly. Please open the following file and correct this: "+__filename
 
 #
 # -------------------------------------------------------------------
@@ -95,35 +157,25 @@ if not is_dir($system_path)
 #
 
 #  The coffee-script file extension
-
 define 'EXT', '.coffee'
 
 #  Path to the system folder
 define 'BASEPATH', $system_path
 
 #  Path to the front controller (this file)
-$fc_path = rtrim(__dirname + '/', '/') + '/';
-#$fc_path = rtrim($fc_path, '/') + '/';
-define 'FCPATH', $fc_path
+define 'FCPATH', rtrim(__dirname + '/', '/') + '/';
 
 # Name of the "system folder"
 define 'SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/')
 
 #  The path to the "application" folder
-$application_path = realpath($application_folder) + '/';
-$application_path = rtrim($application_path, '/') + '/';
+if is_dir($application_folder)
+  define 'APPPATH', realpath($application_folder) + '/';
+else
+  if not is_dir(BASEPATH+$application_folder+'/')
+    exit "Your application folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
 
-if not is_dir($application_path)
-  $application_path = realpath(BASEPATH + $application_folder) + '/';
-  $application_path = rtrim($application_path, '/') + '/';
-  if not is_dir($application_path)
-    console.log "Your application folder path is not set correctly."
-    console.log "Please open the following file and correct this: "
-    console.log "\t#{__filename}"
-    process.exit 1
-
-
-define 'APPPATH', $application_path
+  define 'APPPATH', BASEPATH+$application_folder+'/'
 
 # --------------------------------------------------------------------
 # LOAD THE BOOTSTRAP FILE

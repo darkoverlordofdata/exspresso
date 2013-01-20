@@ -102,7 +102,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
       log_message "debug", "listening on port #{@_port}"
 
-      if @_preview
+      if Exspresso__PREVIEW
         #
         # preview in appjs
         #
@@ -130,7 +130,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     super $config
     @app.use express.logger(@_logger)
-    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if @_cache
+    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if Exspresso__CACHE
 
     @app.set 'env', ENVIRONMENT
     @app.set 'port', @_port
@@ -277,7 +277,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
       @app.use express.session(secret: $session.encryption_key)
 
-    @app.use express.csrf() if @_csrf
+    @app.use express.csrf() if Exspresso__CSRF
     return
 
   # --------------------------------------------------------------------
