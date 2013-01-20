@@ -269,7 +269,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
       if not $found
 
-        show_error "Driver not found: Session_"+$sess_driver
+        show_error "Driver not found: Session_%s", $sess_driver
 
         @app.use express.session(secret: $session.encryption_key)
 

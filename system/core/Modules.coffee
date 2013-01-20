@@ -119,7 +119,7 @@ class global.Modules
     # is the file in an application directory?
     if $base is 'views/' or $base is 'plugins/'
       if is_file(APPPATH+$base+$path+$file_ext) then return [APPPATH+$base+$path, $file]
-      show_error "Unable to locate the file: #{$path}#{$file_ext}"
+      show_error "Unable to locate the file: %s", $path+$file_ext
 
     return [false, $file]
 

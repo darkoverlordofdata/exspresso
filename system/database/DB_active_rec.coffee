@@ -220,7 +220,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     $type = strtoupper($type)
     
     if not in_array($type, ['MAX', 'MIN', 'AVG', 'SUM'])
-      show_error('Invalid function type: ' + $type)
+      show_error('Invalid function type: %s', $type)
       
     
     if $alias is ''

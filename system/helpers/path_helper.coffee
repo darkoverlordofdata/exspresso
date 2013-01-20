@@ -68,7 +68,7 @@ if not function_exists('set_realpath')
     #  Make sure the path exists
     if $check_existance is true
       if not is_dir($path)
-        show_error('Not a valid path: ' + $path)
+        show_error('Not a valid path: %s', $path)
         
       
     

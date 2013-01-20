@@ -86,7 +86,7 @@ class global.Exspresso_Lang
     @is_loaded.push $langfile
     @language = array_merge(@language, $lang)
 
-    log_message('debug', 'Language file loaded: language/' + $idiom + '/' + $langfile)
+    log_message('debug', 'Language file loaded: language/%s/%s', $idiom, $langfile)
     return true
     
   

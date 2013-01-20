@@ -255,7 +255,7 @@ class global.Exspresso_Loader
       return
 
     if @CI[$name]?
-      show_error 'The model name you are loading is the name of a resource that is already being used: '+$name
+      show_error 'The model name you are loading is the name of a resource that is already being used: %s', $name
 
 
     for $mod_path in @_ci_model_paths
@@ -277,7 +277,7 @@ class global.Exspresso_Loader
       return
 
     # couldn't find the model
-    show_error 'Unable to locate the model you have specified: '+$model
+    show_error 'Unable to locate the model you have specified: %s', $model
 
   ## --------------------------------------------------------------------
 
@@ -453,7 +453,7 @@ class global.Exspresso_Loader
 
         $base_helper = BASEPATH+'helpers/'+$helper+EXT
         if not file_exists($base_helper)
-          show_error 'Unable to load the requested file: helpers/'+$helper+EXT
+          show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
         @_ci_helpers[$helper] = array_merge(require($base_helper), require($ext_helper))
         log_message 'debug', 'Helper loaded: '+$helper
@@ -468,7 +468,7 @@ class global.Exspresso_Loader
 
     # unable to load the helper
     if not @_ci_helpers[$helper]
-      show_error 'Unable to load the requested file: helpers/'+$helper+EXT
+      show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
     # expose the helpers to template engine
     Exspresso.server.set_helpers @_ci_helpers[$helper]
@@ -643,7 +643,7 @@ class global.Exspresso_Loader
 
 
     if not file_exists($_ci_path)
-      show_error('Unable to load the requested file: ' + $_ci_file)
+      show_error('Unable to load the requested file: %s', $_ci_file)
 
     #  This allows anything loaded using $this->load (views, files, etc.)
     #  to become accessible from within the Controller and Model functions.
@@ -718,8 +718,8 @@ class global.Exspresso_Loader
         $baseclass = BASEPATH + 'libraries/' + ucfirst($class) + EXT
 
         if not file_exists($baseclass)
-          log_message('error', "Unable to load the requested class: " + $class)
-          show_error("Unable to load the requested class: " + $class)
+          log_message('error', "Unable to load the requested class: %s", $class)
+          show_error("Unable to load the requested class: %s", $class)
 
 
         #  Safety:  Was the class already loaded by a previous call?
@@ -781,8 +781,8 @@ class global.Exspresso_Loader
       #  If we got this far we were unable to find the requested class.
       #  We do not issue errors if the load call failed due to a duplicate request
       if $is_duplicate is false
-        log_message('error', "Unable to load the requested class: " + $class)
-        show_error("Unable to load the requested class: " + $class)
+        log_message('error', "Unable to load the requested class: %s", $class)
+        show_error("Unable to load the requested class: %s", $class)
 
 
 
@@ -842,7 +842,7 @@ class global.Exspresso_Loader
 
     #  Is the class name valid?
     if not class_exists($name)
-      show_error("Non-existent class: " + $class)
+      show_error("Non-existent class: %s", $class)
 
 
     #  Set the variable name we will assign the class to

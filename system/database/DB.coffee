@@ -43,7 +43,7 @@ module.exports = ($params = '', active_record_override = null) ->
     #  Is the config file in the environment folder?
     if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
       if not file_exists($file_path = APPPATH + 'config/database' + EXT)
-        show_error('The configuration file database' + EXT + ' does not exist.')
+        show_error('The configuration file database%s does not exist.', EXT)
 
     {db, active_group, active_record} = require($file_path)
 

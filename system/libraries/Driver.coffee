@@ -80,8 +80,8 @@ class global.Exspresso_Driver_Library
 
         #  it's a valid driver, but the file simply can't be found
         if not class_exists($child_class)
-          log_message('error', "Unable to load the requested driver: " + $child_class)
-          show_error("Unable to load the requested driver: " + $child_class)
+          log_message('error', "Unable to load the requested driver: %s", $child_class)
+          show_error("Unable to load the requested driver: %s", $child_class)
 
       log_message 'debug', '$child_class = %s', $child_class
       $obj = new $klass()
@@ -93,8 +93,8 @@ class global.Exspresso_Driver_Library
       
     
     #  The requested driver isn't valid!
-    log_message('error', "Invalid driver requested: " + $child_class)
-    show_error("Invalid driver requested: " + $child_class)
+    log_message('error', "Invalid driver requested: %s", $child_class)
+    show_error("Invalid driver requested: %s", $child_class)
     
   
   #  --------------------------------------------------------------------

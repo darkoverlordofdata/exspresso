@@ -42,7 +42,7 @@
 # @link		http://darkoverlordofdata.com/user_guide/
 #
 
-
+{format} = require('util')
 #
 # core/config cache
 #
@@ -98,7 +98,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
 
   #  Does the class exist?  If so, we're done...
   if class_exists($class)
-    return new (global[$class])()
+    return new (global[$class])($config)
 
   $name = false
 
@@ -151,18 +151,18 @@ exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass
     return _classes[$class]
 
   $name = strtolower($class)
-  if not file_exists($file_path = APPPATH + 'config/drivers/' + $name + EXT)
-    show_error('The driver configuration file ' + $name + EXT + ' does not exist.')
+  if not file_exists($file_path = APPPATH + 'config/drivers/' + $name+EXT)
+    show_error('The driver configuration file %s does not exist.', $name+EXT)
 
   $driver = require($file_path)[$name]
 
   if not $driver?  or count($driver) is 0
-    show_error 'No driver settings were found in the ' + $name + ' config file.'
+    show_error 'No driver settings were found in the %s config file.', $name
 
   $subclass = require($file_path)['active_'+$driver] if $subclass is ''
 
   if not $subclass? or not $driver[$subclass]?
-    show_error 'You have specified an invalid driver for '+$name+' ['+$subclass+']'
+    show_error 'You have specified an invalid driver for %s [%s]', $name, $subclass
 
   $config = $driver[$subclass]
 
@@ -328,11 +328,11 @@ exports.config_item = config_item = ($item) ->
 # @access	public
 # @return	true
 #
-exports.show_error = show_error = ($err, $status_code = 500) ->
+exports.show_error = show_error = ($args...) ->
   if not $err? then return false
 
   _error = load_class('Exceptions', 'core')
-  _error.show_error $err, '5xx', $status_code
+  _error.show_error format.apply(undefined, $args), '5xx', 500
   true
 
 #  ------------------------------------------------------------------------
@@ -365,7 +365,6 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
 #
 exports.log_message = log_message = ($level = 'error', $args...) ->
 
-  {format} = require('util')
   if config_item('log_threshold') is 0
     return
 
@@ -427,7 +426,7 @@ exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
 
 
   if $code is '' or  not is_numeric($code)
-    show_error('Status codes must be numeric', 500)
+    show_error('Status codes must be numeric')
 
 
   if $stati[$code]?  and $text is ''
@@ -435,7 +434,7 @@ exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
 
 
   if $text is ''
-    show_error('No status text available.  Please check your status code number or supply your own message text.', 500)
+    show_error('No status text available.  Please check your status code number or supply your own message text.')
 
   $text
 

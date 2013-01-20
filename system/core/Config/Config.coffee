@@ -103,7 +103,7 @@ class global.Exspresso_Config
         if $fail_gracefully is true
           return false
 
-        show_error('Your ' + $file_path + ' file does not appear to contain a valid configuration array.')
+        show_error('Your %s file does not appear to contain a valid configuration array.', $file_path)
 
 
       if $use_sections is true
@@ -127,7 +127,7 @@ class global.Exspresso_Config
       if $fail_gracefully is true
         return false
 
-      show_error('The configuration file ' + $file + EXT + ' does not exist.')
+      show_error('The configuration file %s does not exist.', $file+EXT)
 
 
     return true
