@@ -34,7 +34,8 @@ class global.Exspresso_Router
 
   constructor: ->
 
-    @config = load_class('Config', 'core')
+    #@config = load_class('Config', 'core')
+    @config = Exspresso.config
     log_message('debug', "Router Class Initialized")
 
 

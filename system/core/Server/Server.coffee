@@ -26,6 +26,7 @@ dispatch        = require('dispatch')   # URL dispatcher for Connect
 
 class global.Exspresso_Server
 
+  _running      : false
   _cache        : false
   _csrf         : false
   _logger       : 'dev'
@@ -45,7 +46,7 @@ class global.Exspresso_Server
   # @access	public
   # @return	void
   #
-  constructor: (@app, $config) ->
+  constructor: ($config, @app) ->
 
     log_message('debug', "Server Class Initialized")
 
@@ -114,10 +115,12 @@ class global.Exspresso_Server
   #
   start: ($router, $autoload = true) ->
 
-    @CI.load = load_class('Loader', 'core')
+    @CI.load = load_driver('Loader', 'core', 'hmvc')
     @CI.load.initialize @CI, $autoload
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
+    @_running = true
+    log_message 'debug', 'Exspresso boot sequence complete'
 
 
   #  --------------------------------------------------------------------

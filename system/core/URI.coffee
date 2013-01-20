@@ -259,7 +259,7 @@ class global.Exspresso_URI
   #
   middleware: ()->
 
-    log_message 'debug',"Input middleware initialized"
+    log_message 'debug',"URI middleware initialized"
 
     ($req, $res, $next) =>
 

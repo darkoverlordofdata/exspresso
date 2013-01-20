@@ -61,12 +61,14 @@ if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/consta
 else
   require APPPATH+'config/constants.coffee'
 
+exports.is_running = ->
+  if Exspresso.server? then Exspresso.server._running else false
 
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------
 #
-exports.config = load_class('Config', 'core')
+exports.config = load_driver('Config', 'core', 'hmvc')
 
 #
 # ------------------------------------------------------
@@ -88,7 +90,7 @@ exports.uri = load_class('URI', 'core')
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-exports.router = load_class('Router', 'core')
+exports.router = load_driver('Router', 'core', 'hmvc')
 
 #
 # ------------------------------------------------------
@@ -109,7 +111,7 @@ exports.input = load_class('Input', 'core')
 #  Load the Language class
 # ------------------------------------------------------
 #
-exports.lang = load_class('Lang', 'core')
+exports.lang = load_driver('Lang', 'core', 'hmvc')
 
 #
 # ------------------------------------------------------

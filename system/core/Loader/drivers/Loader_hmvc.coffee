@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
+# This file was ported from Wiredesignz to coffee-script using php2coffee
 #
 #
 #
@@ -21,7 +21,7 @@
 # @link	http://darkoverlordofdata.com
 #
 # Description:
-# This library extends the Exspresso Exspresso_Loader class
+# This library extends the Exspresso_Loader class
 # and adds features allowing use of modules and the HMVC design pattern.
 #
 # Install this file as application/third_party/MX/Loader.php
@@ -48,10 +48,9 @@
 # THE SOFTWARE.
 #
 
+require BASEPATH+'core/Modules.coffee'
 
-require(dirname(__filename)+'/Modules.coffee')
-
-class global.MX_Loader extends Exspresso_Loader
+class global.Exspresso_Loader_hmvc extends Exspresso_Loader
 
   #
   # Module state
@@ -88,9 +87,11 @@ class global.MX_Loader extends Exspresso_Loader
 
     #  set the module name
     @_module = $CI.router.fetch_module()
+    #@_module = $CI._module
 
     #  add this module path to the loader variables
     @_add_module_paths(@_module)
+
 
   ## --------------------------------------------------------------------
 
@@ -509,5 +510,5 @@ class global.MX_Loader extends Exspresso_Loader
       for $controller in $autoload['modules']
         ($controller isnt @_module) and @module($controller)
 
-module.exports = MX_Loader
+module.exports = Exspresso_Loader_hmvc
 

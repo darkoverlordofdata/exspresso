@@ -130,7 +130,13 @@ class global.Exspresso_Loader
   #
   # @return 	nothing
   #
-  constructor: ->
+  constructor: ($config)->
+    #
+    # get the config values
+    #
+    if not empty($config)
+      for $key, $var of $config
+        @['_'+$key] = $var
 
     config = get_config()
     @_ci_view_path          = APPPATH + config.views

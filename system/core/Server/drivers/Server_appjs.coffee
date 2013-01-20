@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| Server_connect.coffee
+#| Server_appjs.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,13 +11,12 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Server_connect - Server driver for connectjs
+#	Server_appjs - Server driver for appjs
 #
 #
+#	Server_appjs Class
 #
-#	Server_connect Class
-#
-#   An adapter to the connect server instance
+#   An adapter to the appjs server instance
 #   it exposes adapter registration points for each of these core classes:
 #
 #       * Config
@@ -27,30 +26,55 @@
 #       * URI
 #
 #
+appjs           = require("appjs")          # Desktop SDK
+#
+# Appjs has minimal server support functionality.
+# I'm using connect middleware and custom patching to fill the gap.
+#
+# appjs v0.0.20 known issues:
+#
+#   the dropdown widget (select/option tags) is only accessible via keyboard.
+#   connect sessions are not compatible - no fix yet
+#
+#   requires 2 modifications:
+#
+#   request.body not populated with form fields
+#
+#     appjs/lib/router/bodyParser.js;25:
+#
+#     //  var str = req.headers['Content-Type'] || '';
+#     var str = req.headers['content-type'] || '';
+#
+#   program does not exit consistently
+#
+#     appjs/lib/App.js;108:
+#
+#     //process.kill(process.pid);
+#     process.exit();
+#
+#
+#
 connect         = require("connect")        # High performance middleware framework
-#
-# known issues:
-#   1. Cookies not working
-#
-#
-cache           = require("connect-cache")  # Caching system for Connect
 eco             = require('eco')            # Embedded CoffeeScript templates
 fs              = require("fs")             # File system
+qs              = require("querystring")    # Query string utilities
 
-parseUrl        = connect.utils.parseUrl
-cookie          = require('cookie')
-sign            = require('cookie-signature')
+
 
 class Variables
 
-#  --------------------------------------------------------------------
+  #  --------------------------------------------------------------------
 
-#
-# Wrap the data array passed to render
-#
-# @access	public
-# @return	void
-#
+  #
+  # Wrap the data array passed to render
+  #
+  #   Add data local to this request in the constructor.
+  #   Helpers are added to the prototype as they are loaded.
+  #
+  # @access	public
+  # @param array of arrays to merge together for rendering
+  # @return	void
+  #
   constructor: ($args...) ->
 
     for $data in $args
@@ -59,9 +83,16 @@ class Variables
 
 
 
-class global.Exspresso_Server_connect extends Exspresso_Server
+class global.Exspresso_Server_appjs extends Exspresso_Server
 
-  _driver           : 'connect'
+  _driver           : 'appjs'
+  _secure           : false
+  _protocol         : ''
+  _host             : ''
+  _httpVersion      : ''
+  _ip               : ''
+  _url              : ''
+  _window           : null
 
   #  --------------------------------------------------------------------
 
@@ -73,15 +104,18 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   #
   constructor: ($config = {}) ->
 
-    log_message('debug', "Server_connect driver Class Initialized")
+    log_message('debug', "Server_appjs driver Class Initialized")
 
-    super connect(), $config
+    super $config, appjs.router
     @app.use @middleware()
 
   #  --------------------------------------------------------------------
 
   #
   # Add view helpers
+  #
+  #   The helpers are added to the prototype of the variable wrapper class.
+  #   When the class is newed, all helpers are included via the prototype chain.
   #
   # @access	public
   # @return	void
@@ -103,39 +137,31 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
     super $router, $autoload
 
-    @_port = @_port || 3000
-
-    #@app.use connect.directory(APPPATH+'modules/blog', icons: true)
-
-    #@app.use @authenticate()
-    @app.use @error_5xx()
     @app.use @error_404()
 
-    @app.listen @_port, =>
+    #
+    # create the application window
+    #
+    $window = appjs.createWindow(@_url, @_window)
 
-      console.log " "
-      console.log " "
-      console.log "Exspresso v"+Exspresso_VERSION
-      console.log "copyright 2012 Dark Overlord of Data"
-      console.log " "
-      console.log "listening on port #{@_port}"
-      console.log " "
+    #
+    # show the window after initialization
+    #
+    $window.on 'create', ->
+      $window.frame.show()
+      $window.frame.center()
+      return
 
-      if ENVIRONMENT is 'development'
-        console.log "View site at http://localhost:" + @_port
-
-      log_message "debug", "listening on port #{@_port}"
-
-      if @_preview
-        #
-        # preview in appjs
-        #
-        {exec} = require('child_process')
-        exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
-          console.log $stderr if $stderr?
-          console.log $stdout if $stdout?
-          process.exit()
-
+    #
+    # add require/process/module to the window global object for debugging from the DevTools
+    #
+    $window.on 'ready', ->
+      $window.require = require
+      $window.process = process
+      $window.module = module
+      $window.addEventListener 'keydown', (event) ->
+        $window.frame.openDevTools() if event.keyIdentifier is "F12"
+        return
       return
     return
 
@@ -155,12 +181,9 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
     super $config
     @app.use connect.logger(@_logger)
-    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if @_cache
-
     Variables::['settings'] =
       site_name:    @_site_name
       site_slogan:  @_site_slogan
-
     return
 
 
@@ -178,23 +201,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   output: ($output) ->
 
     super $output
-    $config = @CI.config.config
-
-    #
-    # Expose asset folders
-    #
-    @app.use connect.static(APPPATH+"assets/")
-    #@app.use connect.staticCache()
-
-    #
-    # Favorites icon
-    #
-    if $config.favicon?
-      @app.use connect.favicon(APPPATH+"assets/" + $config.favicon)
-
-    else
-      @app.use connect.favicon()
-
+    appjs.serveFilesFrom APPPATH+"assets/"
     return
 
 
@@ -213,7 +220,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
     super $input
     @app.use connect.query()
-    @app.use connect.bodyParser()
     @app.use connect.methodOverride()
     return
 
@@ -249,7 +255,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
     super $session
     @app.use connect.cookieParser($session.encryption_key)
     @app.use connect.session(secret: $session.encryption_key)
-    @app.use connect.csrf() if @_csrf
     return
 
 
@@ -262,88 +267,46 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   #
   middleware: ->
 
-    log_message 'debug',"connect middleware initialized"
+    log_message 'debug',"appjs middleware initialized"
 
     #  --------------------------------------------------------------------
 
     #
-    # Patch the connect server objects to render templates
+    # Patch the appjs server objects to render templates
     #
     # @access	private
     # @return	void
     #
     ($req, $res, $next) =>
 
+      $req.session = $req.session ? {}
       #  --------------------------------------------------------------------
 
       #
       # Set expected request object properties
       #
       Object.defineProperties $req,
-        protocol:   get: -> if $req.connection.encrypted then 'https' else 'http'
-        secure:     get: -> if $req.protocol is 'https' then true else false
-        path:       value: parseUrl($req).pathname
-        host:       value: $req.headers.host
-        ip:         value: $req.connection.remoteAddress
-
-      Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers.host
-
-      #  --------------------------------------------------------------------
-
-      $res.cookie = ($name, $val, $options) ->
-
-        $options = array_merge({}, $options)
-        if $options.signed and not $req.secret then throw new Error('signed cookies require encryption key')
-        if typeof $val is 'object' then $val = 'j:'+JSON.stringify($val)
-        if $options.signed then $val = 's:'+sign($val, $req.secret)
-        if $options.maxAge?
-          $options.expires = new Date(Date.now() + $options.maxAge)
-          $options.maxAge /= 1000
-        if not $options.path? then $options.path = '/'
-        log_message 'debug', 'cookie name = %s', $name
-        log_message 'debug', 'cookie val = %s', $val
-        log_message 'debug', 'cookie options = %j', $options
-        try
-          $res.setHeader  'Set-Cookie': ''+cookie.serialize($name, ''+$val, $options)
-        catch $err
-          $next($err)
+        secure:       get: -> if $req.protocol is 'https' then true else false
+        ip:           value: $req.ip ? @_ip
+        host:         value: $req.host ? @_host
+        protocol:     value: $req.protocol ? @_protocol
+        httpVersion:  value: $req.httpVersion ? @_httpVersion
+        originalUrl:  value: $req.url
+        path:         value: $req.pathname
 
 
-      #  --------------------------------------------------------------------
+      Exspresso.config.config.base_url = $req.protocol+'://'+ $req.host
 
-      #
-      # Send
-      #
-      #   send response string
-      #
-      # @access	public
-      # @param	string
-      # @return	void
-      #
-      $res.send = ($data) ->
-        $res.writeHead 200,
-          'Content-Length': $data.length
-          'Content-Type': 'text/html; charset=utf-8'
-        $res.end $data
 
-      #  --------------------------------------------------------------------
-
-      #
-      # Redirect
-      #
-      #   Redirect to url
-      #
-      # @access	public
-      # @param	string
-      # @return	void
-      #
-      $res.redirect = ($url) ->
-        $res.writeHead 302,
-          'Location': $url
-        $res.end null
+      $res.writeHead = ($status, $headers) ->
+        for $header in $headers
+          for $name, $val in $header
+            $res.setHeader $name, $val
+        $res.send $status
 
       $res._error_handler = ($err) ->
         $next $err
+
       #  --------------------------------------------------------------------
 
       #
@@ -377,15 +340,16 @@ class global.Exspresso_Server_connect extends Exspresso_Server
           else
             try
               $data.filename = $view
-              $callback null, eco.render($str, new Variables($data, flashdata: $res.flashdata))
+              $html = eco.render($str, new Variables($data, flashdata: $res.flashdata))
+              $callback null, $html
             catch $err
-              console.log $err
+              console.log $err.stack
               $next($err)
 
       $next()
 
 
-module.exports = Exspresso_Server_connect
+module.exports = Exspresso_Server_appjs
 
-# End of file Server_connect.coffee
-# Location: .application/core/Server/drivers/Server_connect.coffee
+# End of file Server_appjs.coffee
+# Location: .application/core/Server/drivers/Server_appjs.coffee

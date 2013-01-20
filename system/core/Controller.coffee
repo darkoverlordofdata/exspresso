@@ -25,8 +25,9 @@
 class global.Exspresso_Controller
 
   res: null
+  _module: ''
 
-  constructor: ($res) ->
+  constructor: ($res, @_module) ->
 
     $res.CI = @
     @res = $res
@@ -36,13 +37,14 @@ class global.Exspresso_Controller
     # so that the Exspresso app can run as one big super object.
 
     for $var, $class of is_loaded()
-      @[$var] = load_class($class)
+      $name = $var.split('_')[0]  # strip off driver subclass name
+      @[$name] = load_class($class)
 
     @session = Exspresso.session
 
     # from this point on, each controller has it's own loader
     # so that callbacks will run in the controller context
-    @load = load_new('Loader', 'core')
+    @load = load_driver('Loader', 'core', Exspresso.load._driver)
     @load.initialize(@) # NO AUTOLOAD!!!
     @_ctor = []
 

@@ -11,13 +11,10 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
+# This file was ported from Wiredesignz to coffee-script using php2coffee
 #
 #
 #  load the MX core module class
-require(dirname(__filename)+'/Modules.coffee')
-fs = require('fs')
-
 #
 # Modular Extensions - HMVC
 #
@@ -51,7 +48,10 @@ fs = require('fs')
 # THE SOFTWARE.
 #
 
-class global.MX_Router extends Exspresso_Router
+require BASEPATH+'core/Modules.coffee'
+fs = require('fs')
+
+class global.Exspresso_Router_hmvc extends Exspresso_Router
 
   _module: ''
 
@@ -249,4 +249,4 @@ class global.MX_Router extends Exspresso_Router
     @_module
 
 
-module.exports = MX_Router
+module.exports = Exspresso_Router_hmvc

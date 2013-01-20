@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  Lang.coffee
+#  Config.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,7 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
+# This file was ported from Wiredesignz to coffee-script using php2coffee
 #
 #
 #
@@ -21,10 +21,10 @@
 # @link	http://darkoverlordofdata.com
 #
 # Description:
-# This library extends the Exspresso Exspresso_Language class
+# This library extends the Exspresso_Config class
 # and adds features allowing use of modules and the HMVC design pattern.
 #
-# Install this file as application/third_party/MX/Lang.php
+# Install this file as application/third_party/MX/Config.php
 #
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @version 	5.4
@@ -47,47 +47,46 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-require(dirname(__filename)+'/Modules.coffee')
 
-class global.MX_Lang extends Exspresso_Lang
+require BASEPATH+'core/Modules.coffee'
+
+class global.Exspresso_Config_hmvc extends Exspresso_Config
 
   #  --------------------------------------------------------------------
 
   #
-  # Load a module language file
+  # Load Module Config File
   #
   # @access	public
-  # @param	mixed	the name of the language file to be loaded. Can be an array
-  # @param	string	the language (english, etc.)
-  # @return	mixed
+  # @param	string	the config file name
+  # @param   boolean  if configuration values should be loaded into their own section
+  # @param   boolean  true if errors should just return false, false if an error message should be displayed
+  # @return	boolean	if the file was loaded correctly
   #
-  load: ($langfile, $lang = '',$return = false, $add_suffix = true, $alt_path = '') ->
+  load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
 
-    if is_array($langfile)
-      for $_lang in $langfile
-        @load($_lang)
-      return @language
-
-    $deft_lang = Exspresso.config.item('language')
-    $idiom = if ($lang is '') then $deft_lang else $lang
-
-    if in_array($langfile + '_lang' + EXT, @is_loaded, true)
-      return @language
-
+    if in_array($file, @is_loaded, true) then return @item($file)
     $_module = Exspresso.router.fetch_module()
-    [$path, $_langfile] = Modules.find($langfile + '_lang', $_module, 'language/' + $idiom + '/')
+    [$path, $file] = Modules.find($file, $_module, 'config/')
     if $path is false
-      if $lang = super($langfile, $lang, $return, $add_suffix, $alt_path)
-        return $lang
+      super($file, $use_sections, $fail_gracefully)
+      return @item($file)
+    if $config = Modules.load_file($file, $path, 'config')
+      #  reference to the config array
+      $current_config = @config
+      if $use_sections is true
+        if $current_config[$file]?
+          log_message 'debug', 'CONFIG 1'
+          $current_config[$file] = array_merge($current_config[$file], $config)
+        else
+          log_message 'debug', 'CONFIG 2'
+          $current_config[$file] = $config
+
       else
-        if $lang = Modules.load_file($_langfile, $path, 'lang')
-          if $return then return $lang
-        @language = array_merge(@language, $lang)
-        @is_loaded.push $langfile + '_lang' + EXT
+        log_message 'debug', 'CONFIG 3'
+        $current_config = array_merge($current_config, $config)
+        @is_loaded.push $file
+        return @item($file)
 
-      return @language
 
-module.exports = MX_Lang
-
-# End of file Lang.coffee
-# Location: ./application/libraries/MX/Lang.coffee
+module.exports = Exspresso_Config_hmvc

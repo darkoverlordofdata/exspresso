@@ -50,7 +50,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
     log_message('debug', "Server_express driver Class Initialized")
 
     $app = if express.version[0] is '3' then express() else express.createServer()
-    super $app, $config
+    super $config, $app
     @app.use @middleware()
 
   #  --------------------------------------------------------------------

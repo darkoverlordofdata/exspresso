@@ -13,6 +13,7 @@
 #
 # Modules
 #
+# This file was ported from Wiredesignz to coffee-script using php2coffee
 #
 # Modular Extensions - HMVC
 #
@@ -125,4 +126,4 @@ class global.Modules
 module.exports = Modules
 
 # End of file Modules.coffee
-# Location: ./application/libraries/MX/Modules.coffee
+# Location: ./core/Modules.coffee

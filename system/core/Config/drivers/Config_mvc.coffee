@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| MY_Lang.coffee
+#| Config_mvc.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -7,25 +7,17 @@
 #| This file is a part of Exspresso
 #|
 #| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the MIT License
+#| it under the terms of the GNU General Public License Version 3
 #|
 #+--------------------------------------------------------------------+
 #
-#	MY_Lang - Main application
+#	Config_mvc - Main application
 #
 #
 #
-require APPPATH + 'libraries/MX/Lang.coffee'
+class global.Exspresso_Config_mvc extends Exspresso_Config
 
-class global.MY_Lang extends MX_Lang
+module.exports = Exspresso_Config_mvc
 
-  constructor: ->
-
-    log_message 'debug', 'MY_Lang initialized'
-    super()
-
-
-module.exports = MY_Lang
-
-# End of file MY_Lang.coffee
-# Location: ./MY_Lang.coffee
+# End of file Config_mvc.coffee
+# Location: ./Config_mvc.coffee

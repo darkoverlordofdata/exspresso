@@ -16,7 +16,7 @@
 #   Base class for all publicly viewable pages
 #
 
-class global.PublicController extends MY_Controller
+class global.PublicController extends Exspresso_Controller
 
   constructor: ($args...) ->
 

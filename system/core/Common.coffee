@@ -94,7 +94,7 @@ _error        = null
 # @param	string	the class name prefix
 # @return	object
 #
-exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_') ->
+exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $config = {}) ->
 
   #  Does the class exist?  If so, we're done...
   if class_exists($class)
@@ -124,7 +124,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
   if not class_exists($name)
     die 'Unable to locate the specified class: ' + $class + EXT
 
-  return new (global[$name])()
+  return new (global[$name])($config)
 
 
 #  ------------------------------------------------------------------------
@@ -144,11 +144,15 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
 #
 exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass, $prefix = 'Exspresso_', $config = {}) ->
 
+  if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso_', $prefix]
+
+  #  Does the class exist?  If so, we're done...
+  if _classes[$class]?
+    return _classes[$class]
+
   $name = strtolower($class)
-  #  Is the config file in the environment folder?
-  if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/' + $name + EXT)
-    if not file_exists($file_path = APPPATH + 'config/' + $name + EXT)
-      show_error('The driver configuration file ' + $name + EXT + ' does not exist.')
+  if not file_exists($file_path = APPPATH + 'config/drivers/' + $name + EXT)
+    show_error('The driver configuration file ' + $name + EXT + ' does not exist.')
 
   $driver = require($file_path)[$name]
 
@@ -158,13 +162,19 @@ exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass
   $subclass = require($file_path)['active_'+$driver] if $subclass is ''
 
   if not $subclass? or not $driver[$subclass]?
-    show_error 'You have specified an invalid driver.'
+    show_error 'You have specified an invalid driver for '+$name+' ['+$subclass+']'
 
   $config = $driver[$subclass]
 
-  require APPPATH + $directory + '/' + $class + '/' + $class + EXT
+  require BASEPATH + $directory + '/' + $class + '/' + $class + EXT
 
-  load_class($class + '_' + $subclass, $directory + '/' + $class + '/drivers/', $prefix, $config)
+  #
+  # if server is booting, return a singletons, else new objects
+  #
+  if Exspresso.is_running()
+    load_new($class + '_' + $subclass, $directory + '/' + $class + '/drivers/', $prefix, $config)
+  else
+    load_class($class + '_' + $subclass, $directory + '/' + $class + '/drivers/', $prefix, $config)
 
 
 #  ------------------------------------------------------------------------
