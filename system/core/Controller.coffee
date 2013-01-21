@@ -43,7 +43,7 @@ class global.Exspresso_Controller
 
     # from this point on, each controller has it's own loader
     # so that callbacks will run in the controller context
-    @load = load_driver('Loader', 'core', Exspresso__MVC)
+    @load = load_new('Loader', 'core')
     @load.initialize(@) # NO AUTOLOAD!!!
     @_ctor = []
 

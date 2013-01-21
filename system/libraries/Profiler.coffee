@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  Profiler.coffee
+#  Exspresso_Profiler.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -10,101 +10,34 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
-# @since		Version 1.0
-# @filesource
-#
 
 #  ------------------------------------------------------------------------
 
+#   Exspresso Profiler Class
 #
-# Exspresso Profiler Class
+#     UI updates:
 #
-# This class enables you to display benchmark, query, and other data
-# in order to help with debugging and optimization.
+#       Use definition list <DL> semantics
+#       Twitter Bootstrap css
+#       google-code-prettify for SQL highliting
+#       display modaly from a bottom toolbar
 #
-# Note: At some point it would be good to move all the HTML in this class
-# into a set of template files in order to allow customization.
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Libraries
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/general/profiling.html
+require BASEPATH+'libraries/Base/Profiler.coffee'
+class global.Exspresso_Profiler extends Base_Profiler
+
+#  --------------------------------------------------------------------
+
 #
-class global.Exspresso_Profiler
-  
-  CI: null
-  
-  _available_sections: [
-    'benchmarks', 
-    'get', 
-    'memory_usage', 
-    'post', 
-    'uri_string', 
-    'controller_info', 
-    'queries', 
-    'http_headers', 
-    'config'
-    ]
-
-  _enabled_sections: null
-
-  constructor: ($config = {}, @CI) ->
-
-    @_enabled_sections = {}
-    @CI.load.language('profiler')
-
-    #  default all sections to display
-    for $section in @_available_sections
-      if not $config[$section]?
-        @_enabled_sections[$section] = true
-
-    @set_sections($config)
-
-  #  --------------------------------------------------------------------
-  
-  #
-  # Set Sections
-  #
-  # Sets the private _compile_* properties to enable/disable Profiler sections
-  #
-  # @param	mixed
-  # @return	void
-  #
-  set_sections: ($config) ->
-
-    for $method, $enable of $config
-      if in_array($method, @_available_sections)
-        @_enabled_sections[$method] = if ($enable isnt false) then true else false
-
-    
-
-  #  --------------------------------------------------------------------
-  
-  #
-  # Auto Profiler
-  #
-  # This function cycles through the entire array of mark points and
-  # matches any two points that are named identically (ending in "_start"
-  # and "_end" respectively).  It then compiles the execution times for
-  # all points and returns it as an array
-  #
-  # @return	array
-  #
+# Auto Profiler
+#
+# This function cycles through the entire array of mark points and
+# matches any two points that are named identically (ending in "_start"
+# and "_end" respectively).  It then compiles the execution times for
+# all points and returns it as an array
+#
+# @return	array
+#
   _compile_benchmarks: () ->
     $profile = {}
     for $key, $val of @CI.benchmark.marker
@@ -114,33 +47,33 @@ class global.Exspresso_Profiler
       if $match?
         if @CI.benchmark.marker[$match[1] + '_end']?  and @CI.benchmark.marker[$match[1] + '_start']?
           $profile[$match[1]] = @CI.benchmark.elapsed_time($match[1] + '_start', $key)
-        
-      
-    
-  
+
+
+
+
     #  Build a table containing the profile data.
     #  Note: At some point we should turn this into a template that can
     #  be modified.  We also might want to make this data available to be logged
 
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_benchmarks" style="border:1px solid #900;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_benchmarks">'
     $output+="\n"
-    $output+='<legend style="color:#900;">&nbsp;&nbsp;' + @CI.lang.line('profiler_benchmarks') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_benchmarks') + '</dt>'
     $output+="\n"
-    $output+="\n\n<table style='width:100%'>\n"
+    $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $key, $val of $profile
       $key = ucwords(str_replace(['_', '-'], ' ', $key))
-      $output+="<tr><td style='padding:5px;width:50%;color:#000;font-weight:bold;background-color:#ddd;'>" + $key + "&nbsp;&nbsp;</td><td style='padding:5px;width:50%;color:#900;font-weight:normal;background-color:#ddd;'>" + $val + "</td></tr>\n"
+      $output+="<tr><td>" + $key + "</td><td>" + $val + "&nbsp;ms</td></tr>\n"
 
 
-    $output+="</table>\n"
-    $output+="</fieldset>"
+    $output+="</table></dd>\n"
+    $output+="</dl>"
 
     return $output
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Compile Queries
   #
@@ -157,14 +90,14 @@ class global.Exspresso_Profiler
 
     if count($dbs) is 0
       $output = "\n\n"
-      $output+='<fieldset id="ci_profiler_queries" style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+      $output+='<dl id="ci_profiler_queries">'
       $output+="\n"
-      $output+='<legend style="color:#0000FF;">&nbsp;&nbsp;' + @CI.lang.line('profiler_queries') + '&nbsp;&nbsp;</legend>'
+      $output+='<dt>' + @CI.lang.line('profiler_queries') + '</dt>'
       $output+="\n"
-      $output+="\n\n<table style='border:none; width:100%'>\n"
-      $output+="<tr><td style='width:100%;color:#0000FF;font-weight:normal;background-color:#eee;padding:5px'>" + @CI.lang.line('profiler_no_db') + "</td></tr>\n"
-      $output+="</table>\n"
-      $output+="</fieldset>"
+      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+      $output+="<tr><td><em>" + @CI.lang.line('profiler_no_db') + "</em></td></tr>\n"
+      $output+="</table></dd>\n"
+      $output+="</dl>"
       return $output
 
 
@@ -172,39 +105,39 @@ class global.Exspresso_Profiler
     @CI.load.helper('text')
 
     #  Key words we want bolded
-    $highlight = ['SELECT', 'DISTINCT', 'FROM', 'WHERE', 'AND', 'LEFT&nbsp;JOIN', 'ORDER&nbsp;BY', 'GROUP&nbsp;BY', 'LIMIT', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'OR&nbsp;', 'HAVING', 'OFFSET', 'NOT&nbsp;IN', 'IN', 'LIKE', 'NOT&nbsp;LIKE', 'COUNT', 'MAX', 'MIN', 'ON', 'AS', 'AVG', 'SUM', '(', ')']
+    $highlight = ['SELECT', 'DISTINCT', 'FROM', 'WHERE', 'AND', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'GROUP BY', 'LIMIT', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'OR ', 'HAVING', 'OFFSET', 'NOT IN', 'IN', 'LIKE', 'NOT LIKE', 'COUNT', 'MAX', 'MIN', 'ON', 'AS', 'AVG', 'SUM', '(', ')']
 
     $output = "\n\n"
 
     for $db in $dbs
-      $output+='<fieldset style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+      $output+='<dl>'
       $output+="\n"
-      $output+='<legend style="color:#0000FF;">&nbsp;&nbsp;' + @CI.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;&nbsp;&nbsp;' + @CI.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;&nbsp;&nbsp;</legend>'
+      $output+='<dt>' + @CI.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @CI.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;</dt>'
       $output+="\n"
-      $output+="\n\n<table style='width:100%;'>\n"
+      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       if count($db.queries) is 0
-        $output+="<tr><td style='width:100%;color:#0000FF;font-weight:normal;background-color:#eee;padding:5px;'>" + @CI.lang.line('profiler_no_queries') + "</td></tr>\n"
+        $output+="<tr><td><em>" + @CI.lang.line('profiler_no_queries') + "</em></td></tr>\n"
 
       else
         for $key, $val of $db.queries
-          $time = number_format($db.query_times[$key], 4)
+          $time = $db.query_times[$key]+'&nbsp;ms'
 
           #$val = highlight_code($val, ENT_QUOTES)
 
           for $bold in $highlight
             $val = str_replace($bold, '<strong>' + $bold + '</strong>', $val)
 
-          $output+="<tr><td style='padding:5px; vertical-align: top;width:1%;color:#900;font-weight:normal;background-color:#ddd;'>" + $time + "&nbsp;&nbsp;</td><td style='padding:5px; color:#000;font-weight:normal;background-color:#ddd;'>" + $val + "</td></tr>\n"
+          $output+="<tr><td>" + $time + "</td><td><pre class='prettyprint'><code class='lang-sql'>" + $val + "</code></pre></td></tr>\n"
 
-      $output+="</table>\n"
-      $output+="</fieldset>"
+      $output+="</table></dd>\n"
+      $output+="</dl>"
 
     return $output
 
-  
+
   #  --------------------------------------------------------------------
-  
+
   #
   # Compile $_GET Data
   #
@@ -212,22 +145,22 @@ class global.Exspresso_Profiler
   #
   _compile_get: () ->
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_get" style="border:1px solid #cd6e00;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_get">'
     $output+="\n"
-    $output+='<legend style="color:#cd6e00;">&nbsp;&nbsp;' + @CI.lang.line('profiler_get_data') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_get_data') + '</dt>'
     $output+="\n"
 
     if count($_GET) is 0
-      $output+="<div style='color:#cd6e00;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_get') + "</div>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_get') + "</em></dd>"
 
     else
-      $output+="\n\n<table style='width:100%; border:none'>\n"
+      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       for $key, $val of $_GET
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
-        $output+="<tr><td style='width:50%;color:#000;background-color:#ddd;padding:5px'>&#36;_GET[" + $key + "]&nbsp;&nbsp; </td><td style='width:50%;padding:5px;color:#cd6e00;font-weight:normal;background-color:#ddd;'>"
+        $output+="<tr><td>&#36;_GET[" + $key + "] </td><td>"
         if is_array($val)
           $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
@@ -237,14 +170,14 @@ class global.Exspresso_Profiler
         $output+="</td></tr>\n"
 
 
-      $output+="</table>\n"
+      $output+="</table></dd>\n"
 
-    $output+="</fieldset>"
+    $output+="</dl>"
 
     return $output
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Compile $_POST Data
   #
@@ -252,23 +185,23 @@ class global.Exspresso_Profiler
   #
   _compile_post: () ->
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_post" style="border:1px solid #009900;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_post">'
     $output+="\n"
-    $output+='<legend style="color:#009900;">&nbsp;&nbsp;' + @CI.lang.line('profiler_post_data') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_post_data') + '</dt>'
     $output+="\n"
 
     if count($_POST) is 0
-      $output+="<div style='color:#009900;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_post') + "</div>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_post') + "</em></dd>"
 
     else
-      $output+="\n\n<table style='width:100%'>\n"
+      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       for $key, $val of $_POST
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
 
-        $output+="<tr><td style='width:50%;padding:5px;color:#000;background-color:#ddd;'>&#36;_POST[" + $key + "]&nbsp;&nbsp; </td><td style='width:50%;padding:5px;color:#009900;font-weight:normal;background-color:#ddd;'>"
+        $output+="<tr><td>&#36;_POST[" + $key + "] </td><td>"
         if is_array($val)
           $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
@@ -278,14 +211,14 @@ class global.Exspresso_Profiler
         $output+="</td></tr>\n"
 
 
-      $output+="</table>\n"
+      $output+="</table></dd>\n"
 
-    $output+="</fieldset>"
+    $output+="</dl>"
 
     return $output
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Show query string
   #
@@ -293,23 +226,23 @@ class global.Exspresso_Profiler
   #
   _compile_uri_string: () ->
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_uri_string" style="border:1px solid #000;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_uri_string">'
     $output+="\n"
-    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @CI.lang.line('profiler_uri_string') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_uri_string') + '</dt>'
     $output+="\n"
 
     if @CI.uri.uri_string() is ''
-      $output+="<div style='color:#000;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_uri') + "</div>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_uri') + "</em></dd>"
 
     else
-      $output+="<div style='color:#000;font-weight:normal;padding:4px 0 4px 0'>" + @CI.uri.uri_string() + "</div>"
+      $output+="<dd>" + @CI.uri.uri_string() + "</dd>"
 
-    $output+="</fieldset>"
+    $output+="</dl>"
 
     return $output
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Show the controller and function that were called
   #
@@ -317,19 +250,19 @@ class global.Exspresso_Profiler
   #
   _compile_controller_info: () ->
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_controller_info" style="border:1px solid #995300;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_controller_info">'
     $output+="\n"
-    $output+='<legend style="color:#995300;">&nbsp;&nbsp;' + @CI.lang.line('profiler_controller_info') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_controller_info') + '</dt>'
     $output+="\n"
 
-    $output+="<div style='color:#995300;font-weight:normal;padding:4px 0 4px 0'>" + @CI.router.fetch_class() + "/" + @CI.router.fetch_method() + "</div>"
+    $output+="<dd>" + @CI.router.fetch_class() + "/" + @CI.router.fetch_method() + "</dd>"
 
-    $output+="</fieldset>"
+    $output+="</dl>"
 
     return $output
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Compile memory usage
   #
@@ -339,23 +272,23 @@ class global.Exspresso_Profiler
   #
   _compile_memory_usage: () ->
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_memory_usage" style="border:1px solid #5a0099;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_memory_usage">'
     $output+="\n"
-    $output+='<legend style="color:#5a0099;">&nbsp;&nbsp;' + @CI.lang.line('profiler_memory_usage') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_memory_usage') + '</dt>'
     $output+="\n"
 
     if function_exists('memory_get_usage') and ($usage = memory_get_usage()) isnt ''
-      $output+="<div style='color:#5a0099;font-weight:normal;padding:4px 0 4px 0'>" + number_format($usage) + ' bytes</div>'
+      $output+="<dd>" + number_format($usage) + ' bytes</dd>'
 
     else
-      $output+="<div style='color:#5a0099;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_memory_usage') + "</div>"
+      $output+="<dd><em>" + @CI.lang.line('profiler_no_memory_usage') + "</em></dd>"
 
-    $output+="</fieldset>"
+    $output+="</dl>"
 
     return $output
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Compile header information
   #
@@ -365,24 +298,24 @@ class global.Exspresso_Profiler
   #
   _compile_http_headers: () ->
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_http_headers" style="border:1px solid #000;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_http_headers">'
     $output+="\n"
-    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @CI.lang.line('profiler_headers') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_headers') + '</dt>'
     $output+="\n"
 
-    $output+="\n\n<table style='width:100%'>\n"
+    $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $header in ['HTTP_ACCEPT', 'HTTP_USER_AGENT', 'HTTP_CONNECTION', 'SERVER_PORT', 'SERVER_NAME', 'REMOTE_ADDR', 'SERVER_SOFTWARE', 'HTTP_ACCEPT_LANGUAGE', 'SCRIPT_NAME', 'REQUEST_METHOD', ' HTTP_HOST', 'REMOTE_HOST', 'CONTENT_TYPE', 'SERVER_PROTOCOL', 'QUERY_STRING', 'HTTP_ACCEPT_ENCODING', 'HTTP_X_FORWARDED_FOR']
       $val = if ($_SERVER[$header]? ) then $_SERVER[$header] else ''
-      $output+="<tr><td style='vertical-align: top;width:50%;padding:5px;color:#900;background-color:#ddd;'>" + $header + "&nbsp;&nbsp;</td><td style='width:50%;padding:5px;color:#000;background-color:#ddd;'>" + $val + "</td></tr>\n"
+      $output+="<tr><td>" + $header + "</td><td>" + $val + "</td></tr>\n"
 
-    $output+="</table>\n"
-    $output+="</fieldset>"
+    $output+="</table></dd>\n"
+    $output+="</dl>"
 
     return $output
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Compile config information
   #
@@ -392,21 +325,21 @@ class global.Exspresso_Profiler
   #
   _compile_config: () ->
     $output = "\n\n"
-    $output+='<fieldset id="ci_profiler_config" style="border:1px solid #000;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
+    $output+='<dl id="ci_profiler_config">'
     $output+="\n"
-    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @CI.lang.line('profiler_config') + '&nbsp;&nbsp;</legend>'
+    $output+='<dt>' + @CI.lang.line('profiler_config') + '</dt>'
     $output+="\n"
 
-    $output+="\n\n<table style='width:100%'>\n"
+    $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $config, $val of @CI.config.config
       if is_array($val)
         $val = print_r($val, true)
 
-      $output+="<tr><td style='padding:5px; vertical-align: top;color:#900;background-color:#ddd;'>" + $config + "&nbsp;&nbsp;</td><td style='padding:5px; color:#000;background-color:#ddd;'>" + htmlspecialchars($val) + "</td></tr>\n"
+      $output+="<tr><td>" + $config + "</td><td>" + htmlspecialchars($val) + "</td></tr>\n"
 
-    $output+="</table>\n"
-    $output+="</fieldset>"
+    $output+="</table></dd>\n"
+    $output+="</dl>"
 
     return $output
 
@@ -415,10 +348,41 @@ class global.Exspresso_Profiler
   #
   # Run the Profiler
   #
+  #   Injects the results into the generated html stream
+  #
+  # @param string
   # @return	string
   #
   run: () ->
-    $output = "<div id='codeigniter_profiler' style='clear:both;background-color:#fff;padding:10px;'>"
+
+    $elapsed = @CI.benchmark.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
+    $output = """
+      <footer id="footer">
+        <div class="container">
+          <div class="credit">
+            <span class="pull-left muted">
+              <a data-toggle="modal" href="#codeigniter_profiler">
+                <i class="icon-time"></i> #{$elapsed} ms - #{$memory}</a>
+            </span>
+            <span class="pull-right">powered by &nbsp;
+              <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
+            </span>
+          </div>
+        </div>
+      </footer>
+
+      <form>
+      <div id="codeigniter_profiler" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="codeigniter_profilerLabel" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h3 id="codeigniter_profilerLabel">#{ucfirst(ENVIRONMENT)} Profile</h3>
+        </div>
+        <div id="codeigniter_profiler-body" class="modal-body">
+          <div class="hero-unit">
+            <div class="row">
+      """
+
     $fields_displayed = 0
 
     for $section, $enabled of @_enabled_sections
@@ -428,9 +392,13 @@ class global.Exspresso_Profiler
         $fields_displayed++
 
     if $fields_displayed is 0
-      $output+='<p style="border:1px solid #5a0099;padding:10px;margin:20px 0;background-color:#eee">' + @CI.lang.line('profiler_no_profiles') + '</p>'
+      $output+='<p>' + @CI.lang.line('profiler_no_profiles') + '</p>'
 
-    $output+='</div>'
+    $output+='''            </div>
+                </div>
+            </div>
+        </div>
+        </form>'''
 
     return $output
 
@@ -439,4 +407,4 @@ module.exports = Exspresso_Profiler
 #  END Exspresso_Profiler class
 
 #  End of file Profiler.php 
-#  Location: ./system/libraries/Profiler.php 
+#  Location: ./application/libraries/Exspresso_Profiler.php

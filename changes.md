@@ -13,4 +13,6 @@
   * 0.8.0  Rebranding
   * 0.8.0  Refactor MX/Modules into core as drivers
   * 0.8.1  show_error sprintf style args
-  * 0.8.1  decode command line in frontend index.coffee
+  * 0.8.2  drop sqlite support
+  * 0.8.2  Refactor MX/Modules into core as baseclasee/subclass
+  * 0.8.2  Move modules/ path to root

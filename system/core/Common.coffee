@@ -97,8 +97,8 @@ _error        = null
 exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $config = {}) ->
 
   #  Does the class exist?  If so, we're done...
-  if class_exists($class)
-    return new (global[$class])($config)
+  if class_exists($prefix+$class)
+    return new (global[$prefix+$class])($config)
 
   $name = false
 
@@ -142,39 +142,30 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
 # @param	string	configuration
 # @return	object
 #
-exports.load_driver = load_driver = ($class, $directory = 'libraries', $subclass, $prefix = 'Exspresso_', $config = {}) ->
+exports.load_driver = load_driver = ($class, $directory = 'libraries', $driver, $prefix = 'Exspresso_', $config = {}) ->
 
   if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso_', $prefix]
 
   #  Does the class exist?  If so, we're done...
-  if _classes[$class]?
-    return _classes[$class]
+  if _classes[$prefix+$class+'_'+$driver]?
+    return _classes[$prefix+$class+'_'+$driver]
 
   $name = strtolower($class)
   if not file_exists($file_path = APPPATH + 'config/drivers/' + $name+EXT)
     show_error('The driver configuration file %s does not exist.', $name+EXT)
 
-  $driver = require($file_path)[$name]
+  $config = require($file_path)
+  if $driver is '' then $driver = $config['active_'+$name]
+  $config = $config[$name]
 
-  if not $driver?  or count($driver) is 0
+  if not $config? or count($config) is 0
     show_error 'No driver settings were found in the %s config file.', $name
 
-  $subclass = require($file_path)['active_'+$driver] if $subclass is ''
-
-  if not $subclass? or not $driver[$subclass]?
+  if not $driver? or not $config[$driver]?
     show_error 'You have specified an invalid driver for %s [%s]', $name, $subclass
 
-  $config = $driver[$subclass]
-
-  require BASEPATH + $directory + '/' + $class + '/' + $class + EXT
-
-  #
-  # if server is booting, return a singletons, else new objects
-  #
-  if Exspresso.is_running()
-    load_new($class + '_' + $subclass, $directory + '/' + $class + '/drivers/', $prefix, $config)
-  else
-    load_class($class + '_' + $subclass, $directory + '/' + $class + '/drivers/', $prefix, $config)
+  $klass = require(BASEPATH + $directory + '/' + $class + '/' + $class + EXT)
+  $klass.load($driver, $config[$driver])
 
 
 #  ------------------------------------------------------------------------

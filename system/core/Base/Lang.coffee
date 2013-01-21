@@ -20,7 +20,7 @@
 # Language Class
 #
 #
-class global.Exspresso_Lang
+class global.Base_Lang
   
   language: {}
   is_loaded: []
@@ -110,6 +110,6 @@ class global.Exspresso_Lang
     return $line
     
 #  END Language Class
-module.exports = Exspresso_Lang
+module.exports = Base_Lang
 #  End of file Lang.php 
 #  Location: ./system/core/Lang.php 

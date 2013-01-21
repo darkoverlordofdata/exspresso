@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| MY_html_helper.coffee
+#| Custom_html_helper.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
@@ -11,7 +11,7 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	MY_html_helper
+#	Custom_html_helper
 #
 #
 #
@@ -61,5 +61,5 @@ if not function_exists('javascript_decl')
 
 
 
-# End of file MY_html_helper.coffee
-# Location: ./MY_html_helper.coffee
+# End of file Custom_html_helper.coffee
+# Location: ./Custom_html_helper.coffee

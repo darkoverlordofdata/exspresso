@@ -129,7 +129,7 @@ exports['enable_hooks'] = false
 # http://darkoverlordofdata.com/user_guide/general/creating_libraries.html
 #
 #
-exports['subclass_prefix'] = 'MY_'
+exports['subclass_prefix'] = 'Custom_'
 
 #
 #|--------------------------------------------------------------------------
@@ -369,11 +369,7 @@ exports['proxy_ips'] = ''
 #
 #
 exports['modules_locations'] =
-  array(APPPATH+'modules/',                 '../modules/')
-###
-  ADDON_FOLDER+'default/modules/':    '../../../addons/default/modules/'
-  SHARED_ADDONPATH+'modules/':        '../../../addons/shared_addons/modules/'
-###
+  array(realpath('modules/') + '/',  '../../modules/')
 
 #
 

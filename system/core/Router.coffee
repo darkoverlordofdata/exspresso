@@ -49,9 +49,10 @@
 #
 
 require BASEPATH+'core/Modules.coffee'
+require BASEPATH+'core/Base/Router.coffee'
 fs = require('fs')
 
-class global.Exspresso_Router_hmvc extends Exspresso_Router
+class global.Exspresso_Router extends Base_Router
 
   _module: ''
 
@@ -249,4 +250,4 @@ class global.Exspresso_Router_hmvc extends Exspresso_Router
     @_module
 
 
-module.exports = Exspresso_Router_hmvc
+module.exports = Exspresso_Router

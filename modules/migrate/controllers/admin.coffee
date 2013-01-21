@@ -25,7 +25,6 @@ class Admin extends AdminController
       migration_db      : 'mysql'
       migration_enabled :  true
 
-
   ## --------------------------------------------------------------------
 
   #

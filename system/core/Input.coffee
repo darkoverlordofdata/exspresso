@@ -181,7 +181,7 @@ module.exports = class global.Exspresso_Input
   #
   #   @returns function middlware callback
   #
-  middleware: ($config = {})->
+  middleware: ()->
 
     log_message 'debug',"Input middleware initialized"
 

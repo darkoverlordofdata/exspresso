@@ -45,25 +45,20 @@ if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/consta
 else
   require APPPATH+'config/constants.coffee'
 
-#
-#------------------------------------------------------
-# Expresso status
-#------------------------------------------------------
-#
-exports.is_running = -> if Exspresso.server? then Exspresso.server._running else false
-
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------
 #
-exports.config = load_driver('Config', 'core', Exspresso__MVC)
+exports.config = load_class('Config', 'core')
 
 #
 # ------------------------------------------------------
 #  Instantiate the core server app (default to expressjs)
 # ------------------------------------------------------
 #
-exports.server = load_driver('Server', 'core', Exspresso__SERVER)
+$driver = if ~($argv[2] ? '').indexOf('-') then '' else $argv[2] ? ''
+
+exports.server = load_driver('Server', 'core', $driver)
 
 #
 # ------------------------------------------------------
@@ -77,7 +72,7 @@ exports.uri = load_class('URI', 'core')
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-exports.router = load_driver('Router', 'core', Exspresso__MVC)
+exports.router = load_class('Router', 'core')
 
 #
 # ------------------------------------------------------
@@ -98,7 +93,7 @@ exports.input = load_class('Input', 'core')
 #  Load the Language class
 # ------------------------------------------------------
 #
-exports.lang = load_driver('Lang', 'core', Exspresso__MVC)
+exports.lang = load_class('Lang', 'core')
 
 #
 # ------------------------------------------------------
@@ -122,8 +117,8 @@ for $path, $uri of Exspresso.router._load_routes()
   # If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
   if not file_exists(APPPATH+'controllers/'+Exspresso.router.fetch_directory()+Exspresso.router.fetch_class()+EXT)
 
-    log_message "debug", 'Unable to load controller for ' + $uri
-    log_message "debug", 'Please make sure the controller specified in your Routes.coffee   file is valid.'
+    log_message "debug", 'Unable to load controller for %s', $uri
+    log_message "debug", 'Please make sure the controller specified in your Routes.coffee file is valid.'
     continue
 
   #
@@ -140,7 +135,7 @@ for $path, $uri of Exspresso.router._load_routes()
 
   if $method[0] is '_' or Exspresso_Controller::[$method]?
 
-    log_message "debug", "Controller not found: #{$class}/#{$method}"
+    log_message "debug", "Controller not found: %s/%s", $class, $method
     continue
 
   #

@@ -123,21 +123,18 @@ module.exports = ($params = '', active_record_override = null) ->
     Exspresso_DB_active_record = require(BASEPATH + 'database/DB_active_rec' + EXT)
 
     if not class_exists('Exspresso_DB')
-      class Exspresso_DB extends Exspresso_DB_active_record
-
+      class global.Exspresso_DB extends Exspresso_DB_active_record
 
   else if not class_exists('Exspresso_DB')
-    class Exspresso_DB extends Exspresso_DB_driver
+    class global.Exspresso_DB extends Exspresso_DB_driver
 
 
   if not file_exists(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)
     throw new Error("Unsuported DB driver: " + $params['dbdriver'])
 
-  $driver = require(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)(Exspresso_DB)
+  $driver = require(BASEPATH + 'database/drivers/' + $params['dbdriver'] + '/' + $params['dbdriver'] + '_driver' + EXT)
 
   #  Instantiate the DB adapter
-  # $driver = 'Exspresso_DB_' + $params['dbdriver'] + '_driver'
-
   $DB = new $driver($params)
 
   if $DB.autoinit is true

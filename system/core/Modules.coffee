@@ -74,7 +74,7 @@ class global.Modules
     $location = $path+$file+EXT
 
     $result = require($location)
-    log_message 'debug', "File loaded: #{$location}"
+    log_message 'debug', "File loaded: %s", $location
     return $result
 
   ## --------------------------------------------------------------------

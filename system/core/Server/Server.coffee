@@ -26,12 +26,31 @@ dispatch        = require('dispatch')   # URL dispatcher for Connect
 
 class global.Exspresso_Server
 
-  _running      : false
+
+  _driver       : 'express'
+  _db           : 'mysql'
+  _cache        : false
+  _csrf         : false
+  _preview      : false
+  _profile      : false
   _port         : 3000
   _logger       : 'dev'
   _site_name    : 'My Site'
   _site_slogan  : 'My Slogan'
-  _config       : null
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Load the driver subclass
+  #
+  # @access	public
+  # @param string   Driver name <express|connect|appjs>
+  # @param object   config array
+  # @return	object
+  #
+  @load = ($driver, $config) ->
+    $class = require(BASEPATH+'core/Server/drivers/Server_'+$driver)
+    new $class($config)
 
   #  --------------------------------------------------------------------
 
@@ -51,11 +70,31 @@ class global.Exspresso_Server
     if not empty($config)
       for $key, $var of $config
         @['_'+$key] = $var
+
+    #
+    # get the command line options
+    #
+    @_profile = if ENVIRONMENT is 'development' then true else false
+    $set_db = false
+    for $arg in $argv
+      if $set_db is true
+        $db = $arg
+        $set_db = false
+
+      switch $arg
+        when '--db'         then $set_db    = true
+        when '--cache'      then @_cache    = true
+        when '--csrf'       then @_csrf     = true
+        when '--preview'    then @_preview  = true
+        when '--profile'    then @_profile  = true
+        when '--nocache'    then @_cache    = false
+        when '--nocsrf'     then @_csrf     = false
+        when '--noprofile'  then @_profile  = false
     #
     # the Expresso core instance
     #
     @CI = Exspresso
-    @config Exspresso.config
+    @config get_config()
 
 
   #  --------------------------------------------------------------------
@@ -84,11 +123,10 @@ class global.Exspresso_Server
   #
   start: ($router, $autoload = true) ->
 
-    @CI.load = load_driver('Loader', 'core', Exspresso__MVC)
+    @CI.load = load_class('Loader', 'core')
     @CI.load.initialize @CI, $autoload
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
-    @_running = true
     log_message 'debug', 'Exspresso boot sequence complete'
 
 
@@ -105,11 +143,10 @@ class global.Exspresso_Server
   #
   config: ($config) ->
 
-    @_config      = $config
-    @_logger      = $config.config.logger
-    @_port        = $config.config.port
-    @_site_name   = $config.config.site_name
-    @_site_slogan = $config.config.site_slogan
+    @_logger      = $config.logger
+    @_port        = $config.port
+    @_site_name   = $config.site_name
+    @_site_slogan = $config.site_slogan
 
 
   #  --------------------------------------------------------------------
@@ -125,8 +162,8 @@ class global.Exspresso_Server
   #
   output: ($output) ->
 
-    $output.enable_profiler Exspresso__PROFILE
-    @app.use $output.middleware(@_config)
+    $output.enable_profiler Exspresso.server._profile
+    @app.use $output.middleware()
 
   #  --------------------------------------------------------------------
 
@@ -141,7 +178,7 @@ class global.Exspresso_Server
   #
   input: ($input) ->
     
-    @app.use $input.middleware(@_config)
+    @app.use $input.middleware()
 
   #  --------------------------------------------------------------------
 
@@ -156,7 +193,7 @@ class global.Exspresso_Server
   #
   uri: ($uri) ->
 
-    @app.use $uri.middleware(@_config)
+    @app.use $uri.middleware()
 
   #  --------------------------------------------------------------------
 
@@ -171,7 +208,7 @@ class global.Exspresso_Server
   #
   session: ($session) ->
 
-    @app.use $session.middleware(@_config)
+    @app.use $session.middleware()
 
 
   # --------------------------------------------------------------------
@@ -231,7 +268,6 @@ class global.Exspresso_Server
     ($req, $res, $next) ->
 
       $next()
-
 
 module.exports = Exspresso_Server
 

@@ -42,7 +42,7 @@
 # @category	Loader
 # @link		http://darkoverlordofdata.com/user_guide/libraries/loader.html
 #
-class global.Exspresso_Loader
+class global.Base_Loader
 
   path = require('path')
 
@@ -143,7 +143,7 @@ class global.Exspresso_Loader
     @_ci_library_paths      = [APPPATH, BASEPATH]
     @_ci_helper_paths       = [APPPATH, BASEPATH]
     @_ci_model_paths        = [APPPATH]
-  
+
     log_message 'debug', "Loader Class Initialized"
 
   ## --------------------------------------------------------------------
@@ -305,7 +305,7 @@ class global.Exspresso_Loader
     if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI['db']?
       return false
 
-    $params = $params || Exspresso__DB
+    $params = $params || Exspresso.server._db
 
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
 
@@ -321,7 +321,7 @@ class global.Exspresso_Loader
     @CI.db = DB #($params, $active_record)
 
   ## --------------------------------------------------------------------
-  
+
   #
   # Load the Utilities Class
   #
@@ -576,7 +576,7 @@ class global.Exspresso_Loader
 
 
   #  --------------------------------------------------------------------
-  
+
   #
   # Remove Package Path
   #
@@ -978,7 +978,7 @@ class global.Exspresso_Loader
 
       return $filename
 
-# END Exspresso_Load class
-module.exports = Exspresso_Loader
+# END Base_Load class
+module.exports = Base_Loader
 # End of file Loader.coffee
-# Location: ./system/core/Loader.coffee
+# Location: ./system/core/Base/Loader.coffee

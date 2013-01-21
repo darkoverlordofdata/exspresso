@@ -49,8 +49,9 @@
 #
 
 require BASEPATH+'core/Modules.coffee'
+require BASEPATH+'core/Base/Loader.coffee'
 
-class global.Exspresso_Loader_hmvc extends Exspresso_Loader
+class global.Exspresso_Loader extends Base_Loader
 
   #
   # Module state
@@ -145,7 +146,7 @@ class global.Exspresso_Loader_hmvc extends Exspresso_Loader
     if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
       return
 
-    $params = $params || Exspresso__DB
+    $params = $params || Exspresso.server._db
 
     DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
 
@@ -510,5 +511,5 @@ class global.Exspresso_Loader_hmvc extends Exspresso_Loader
       for $controller in $autoload['modules']
         ($controller isnt @_module) and @module($controller)
 
-module.exports = Exspresso_Loader_hmvc
+module.exports = Exspresso_Loader
 

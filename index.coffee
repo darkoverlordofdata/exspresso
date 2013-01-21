@@ -57,47 +57,6 @@ require('not-php').export global,
 #
 #
 define 'ENVIRONMENT', process.env.ENVIRONMENT ? 'development'
-do ->
-  #
-  # Decode options
-  #
-  $server   = 'express'
-  $mvc      = 'hmvc'
-  $db       = 'mysql'
-  $set_db   = false
-  $cache    = false
-  $csrf     = false
-  $preview  = false
-  $profile  = if ENVIRONMENT is 'development' then true else false
-
-  for $arg in $argv
-    if $set_db is true
-      $db = $arg
-      $set_db = false
-
-    switch $arg
-      when 'appjs'        then $server    = $arg
-      when 'connect'      then $server    = $arg
-      when 'express'      then $server    = $arg
-      when 'mvc'          then $mvc       = $arg
-      when 'hmvc'         then $mvc       = $arg
-      when '--db'         then $set_db    = true
-      when '--cache'      then $cache     = true
-      when '--csrf'       then $csrf      = true
-      when '--preview'    then $preview   = true
-      when '--profile'    then $profile   = true
-      when '--nocache'    then $cache     = false
-      when '--nocsrf'     then $csrf      = false
-      when '--noprofile'  then $profile   = false
-
-  define 'Exspresso__CACHE', $cache
-  define 'Exspresso__CSRF', $csrf
-  define 'Exspresso__DB', $db
-  define 'Exspresso__MVC', $mvc
-  define 'Exspresso__SERVER', $server
-  define 'Exspresso__PREVIEW', $preview
-  define 'Exspresso__PROFILE', $profile
-
 
 #
 #
@@ -127,7 +86,6 @@ $system_folder = 'system'
 #
 #
 $application_folder = 'application'
-
 
 # --------------------------------------------------------------------
 # END OF USER CONFIGURABLE SETTINGS.  DO NOT EDIT BELOW THIS LINE

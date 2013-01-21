@@ -38,16 +38,10 @@
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
 # blog routeing
-exports['/admin/config']                        = 'config/admin'
-exports['/admin/routes']                        = 'routes/admin'
-exports['/admin/users']                         = 'user/admin'
-exports['/admin/db']                            = 'db/admin'
 exports['/admin/migrate']                       = 'migrate/admin'
 exports['/admin/migrate/list']                  = 'migrate/admin'
 exports['/admin/migrate/list/:module']          = 'migrate/admin'
 exports['/admin/migrate/preview/:module/:name'] = 'migrate/preview'
-exports['/admin/blog']                          = 'blog/admin'
-exports['/admin/travel']                        = 'travel/admin'
 
 # End of file routes.coffee
 # Location: .modules/blog/config/routes.coffee

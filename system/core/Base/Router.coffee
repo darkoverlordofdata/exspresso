@@ -22,7 +22,7 @@
 #
 require BASEPATH+'core/URI.coffee'
 
-class global.Exspresso_Router
+class global.Base_Router
 
   routes:                 {}          # route dispatch bindings
 
@@ -387,9 +387,9 @@ class global.Exspresso_Router
       $routing['function'] = if ($routing['function'] is '') then 'index' else $routing['function']
       @set_method($routing['function'])
 
-# END Exspresso_Router class
+# END Base_Router class
 
-module.exports = Exspresso_Router
+module.exports = Base_Router
 
 # End of file Router.coffee
-# Location: ./system/core/Router.coffee
+# Location: ./system/core/Base/Router.coffee

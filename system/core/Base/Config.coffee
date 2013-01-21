@@ -44,7 +44,7 @@
 #
 
 
-class global.Exspresso_Config
+class global.Base_Config
 
 
   config:         {}
@@ -275,8 +275,8 @@ class global.Exspresso_Config
       @set_item($key, $val)
 
 
-# END Exspresso_Config class
-module.exports = Exspresso_Config
+# END Base_Config class
+module.exports = Base_Config
 
 # End of file Config.coffee
-# Location: ./system/core/Config.coffee
+# Location: ./system/core/Base/Config.coffee
