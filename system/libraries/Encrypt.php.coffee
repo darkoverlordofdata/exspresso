@@ -14,24 +14,18 @@
 # This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
-
-
-{__construct, base64_decode, base64_encode, bin2hex, chr, config, defined, function_exists, generate, get_instance, item, mcrypt_create_iv, mcrypt_decrypt, mcrypt_encrypt, mcrypt_get_iv_size, md5, mhash, mt_getrandmax, mt_rand, ord, preg_match, rtrim, strlen, substr}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
-# @since		Version 1.0
-# @filesource
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 
 #  ------------------------------------------------------------------------

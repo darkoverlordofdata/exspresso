@@ -14,24 +14,18 @@
 # This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
-
-
-{closedir, defined, function_exists, is_dir, opendir, readdir, rtrim, trim}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
-# @since		Version 1.0
-# @filesource
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 
 #  ------------------------------------------------------------------------

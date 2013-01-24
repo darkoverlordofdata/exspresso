@@ -14,24 +14,18 @@
 # This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
-
-
-{__add_event, __construct, __hover, _addClass, _animate, _blur, _change, _clear_compile, _click, _compile, _dblclick, _document_ready, _error, _fadeIn, _fadeOut, _hide, _keydown, _keyup, _load, _mousedown, _mouseout, _mouseover, _mouseup, _output, _removeClass, _resize, _scroll, _show, _slideDown, _slideToggle, _slideUp, _toggle, _toggleClass, _unload, _updater, array_keys, config, defined, extract, get_instance, implode, is_array, is_bool, is_null, is_object, is_scalar, is_string, item, js, library, result_array, slash_item, str_replace, strncmp, strpos, strtolower}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
-# @since		Version 1.0
-# @filesource
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 
 #  ------------------------------------------------------------------------

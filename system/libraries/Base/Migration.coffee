@@ -15,18 +15,17 @@
 #
 #
 #
-#
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
 # @package    Exspresso
-# @author    EllisLab Dev Team
-# @copyright  Copyright (c) 2006 - 2012, EllisLab, Inc.
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
-# @link    http://darkoverlordofdata.com
-# @since    Version 1.0
-# @filesource
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 
 #-----------------------------------------------------------------------

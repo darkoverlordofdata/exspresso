@@ -14,12 +14,19 @@
 # This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
-
-
-{XML_RPC_Message, XML_RPC_Response, XML_RPC_Values, __construct, addArray, addParam, array_merge, call_user_func, class_exists, count, debug, defined, each, explode, faultCode, faultString, function_exists, get_instance, get_object_vars, header, is_array, is_callable, is_object, is_string, kindOf, me, method_name, output_parameters, params, parent, prepare_response, print_r, scalarval, sprintf, strlen, strncmp, true, value, xh, xml_error_string, xml_get_current_line_number, xml_get_error_code, xml_parse, xml_parser_create, xml_parser_free, xml_parser_set_option, xml_set_character_data_handler, xml_set_element_handler, xml_set_object, xmlrpcArray, xmlrpcI4, xmlrpcInt, xmlrpcString, xmlrpc_defencoding, xmlrpcerr, xmlrpcerrxml, xmlrpcstr, xss_clean}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
+#
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
 #
 # Exspresso
 #

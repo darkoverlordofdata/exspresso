@@ -14,24 +14,18 @@
 # This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
-
-
-{__construct, count, defined, get_instance, implode, is_array, is_numeric, library, load, md5, number_format, preg_match, preg_replace, session, set_userdata, trim, unset_userdata, userdata}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2006 - 2011, EllisLab, Inc.
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
-# @since		Version 1.0
-# @filesource
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 
 #  ------------------------------------------------------------------------

@@ -21,9 +21,7 @@
 #
 class Exspresso_Session_mysql extends require('express').session.Store
 
-  mysql: null
   _table: ''
-  _create_sql = ''
 
 
   ## --------------------------------------------------------------------
@@ -38,11 +36,6 @@ class Exspresso_Session_mysql extends require('express').session.Store
   constructor: ($config) ->
 
     @_table = $config.sess_table_name
-
-    @_sql_create = 'CREATE TABLE IF NOT EXISTS `' + @_table + '` (`sid` VARCHAR(255) NOT NULL, `session` TEXT NOT NULL, `expires` INT, PRIMARY KEY (`sid`) )'
-    @_sql_get = 'SELECT `session` FROM `' + @_table + '` WHERE `sid` = ?'
-    @_sql_set = 'INSERT INTO `' + @_table + '` (`sid`, `session`, `expires`) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE `session` = ?, `expires` = ?'
-    @_sql_del = 'DELETE FROM `' + @_table + '` WHERE `sid` = ?'
     return
 
 
@@ -61,18 +54,15 @@ class Exspresso_Session_mysql extends require('express').session.Store
   get: ($sid, $callback) ->
 
     log_message 'debug', 'Session::get: %s', $sid
+    Exspresso.db.query 'SELECT `session` FROM `' + @_table + '` WHERE `session_id` = ?', [$sid], ($err, $result) ->
 
 
-    return $callback(null)
-    @mysql.query 'SELECT `session` FROM `' + @table + '` WHERE `sid` = ?', [$sid], ($err, $result) =>
+      log_message 'debug', 'Session::get result'
+      console.log $err
+      console.log $result
 
-      if $err
-        $callback $err
-      else
-        if $result? and $result[0]? and $result[0].session?
-          $callback null, JSON.parse($result[0].session)
-        else
-          $callback()
+      if $err then return $callback $err
+      $callback null, JSON.parse($result.row().session)
 
 
   ## --------------------------------------------------------------------
@@ -89,15 +79,10 @@ class Exspresso_Session_mysql extends require('express').session.Store
   #
   set: ($sid, $session, $callback) ->
 
-    log_message 'debug', 'Session::set: %s', $sid
-
-    $CI = $session.get_instance()
-    console.log $session
-
-    return $callback(null)
+    log_message 'debug', 'Session::get: %s [%s]', $sid, $session
     $expires = new Date($session.cookie.expires).getTime() / 1000
     $session = JSON.stringify($session)
-    @mysql.query 'INSERT INTO `' + @table + '` (`sid`, `session`, `expires`) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE `session` = ?, `expires` = ?', [$sid, $session, $expires, $session, $expires], ($err) ->
+    Exspresso.db.query 'INSERT INTO `' + @_table + '` (`session_id`, `session`, `expires`) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE `session` = ?, `expires` = ?', [$sid, $session, $expires, $session, $expires], ($err) ->
       $callback $err
 
 
@@ -116,8 +101,7 @@ class Exspresso_Session_mysql extends require('express').session.Store
 
     log_message 'debug', 'Session::destroy: %s', $sid
 
-    return $callback(null)
-    @mysql.query 'DELETE FROM `' + @table + '` WHERE `sid` = ?', [$sid], ($err) ->
+    Exspresso.db.query 'DELETE FROM `' + @_table + '` WHERE `session_id` = ?', [$sid], ($err) ->
       $callback $err
 
 module.exports = Exspresso_Session_mysql

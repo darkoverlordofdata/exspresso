@@ -3,19 +3,30 @@
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
-# 
-#  This file is a part of Expresso
-# 
+#
+#  This file is a part of Exspresso
+#
 #  Exspresso is free software you can copy, modify, and distribute
 #  it under the terms of the MIT License
-# 
+#
 #+--------------------------------------------------------------------+
 #
-# Router Component
+# This file was ported from CodeIgniter to coffee-script using php2coffee
 #
-# Parses URIs and determines routing
 #
-
+#
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package		Exspresso
+# @author		  darkoverlordofdata
+# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		MIT License
+# @link		    http://darkoverlordofdata.com
+# @since		  Version 1.0
+#
 #  ------------------------------------------------------------------------
 #
 # Exspresso Router Class

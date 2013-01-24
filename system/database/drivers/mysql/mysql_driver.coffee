@@ -15,6 +15,20 @@
 #
 #
 #
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+#
 # MySQL Database Adapter Class
 #
 # Note: _DB is an extender class that the app controller

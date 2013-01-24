@@ -230,40 +230,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
   #  --------------------------------------------------------------------
 
   #
-  # Session Database setup
-  #
-  #   create session table
-  #
-  # @access	public
-  # @return	void
-  #
-  session_db: ->
-
-    @queue ($next) ->
-      Exspresso.db.table_exists 'ex_session', ($err, $table_exists) ->
-
-        if $err then return $next $err
-        if $table_exists then return $next null
-
-        Exspresso.load.dbforge()
-        Exspresso.dbforge.add_field
-          session_id:
-            type: 'VARCHAR'
-            constraint: 255
-          session:
-            type: 'TEXT'
-          expires:
-            type: 'INT'
-
-        Exspresso.dbforge.add_key 'session_id', true
-        Exspresso.dbforge.create_table 'ex_session', $next
-
-    @queue ($next) ->
-      Exspresso.db.close $next
-
-  #  --------------------------------------------------------------------
-
-  #
   # Sessions registration
   #
   #   called by the libraries/Session/Session class constructor

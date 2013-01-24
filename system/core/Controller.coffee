@@ -11,6 +11,18 @@
 #|
 #+--------------------------------------------------------------------+
 #
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
 #
 # Exspresso Application Controller Class
 #
