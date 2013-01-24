@@ -178,7 +178,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   output: ($output) ->
 
     super $output
-    $config = @CI.config.config
+    $config = @Exspresso.config.config
 
     #
     # Expose asset folders
@@ -246,10 +246,10 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   #
   session: ($session) ->
 
-    super $session
     @app.use connect.cookieParser($session.encryption_key)
     @app.use connect.session(secret: $session.encryption_key)
     @app.use connect.csrf() if @_csrf
+    super $session
     return
 
 

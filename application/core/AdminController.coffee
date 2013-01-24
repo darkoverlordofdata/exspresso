@@ -15,18 +15,16 @@
 #
 #   Base class for all publicly viewable pages
 #
+require APPPATH+'core/PublicController.coffee'
 
-class global.AdminController extends Exspresso_Controller
+class global.AdminController extends PublicController
 
   constructor: ($args...) ->
 
-    super($args...)
+    super $args...
 
-    @load.library 'template'
-    @template.set_theme 'default', 'signin', 'sidenav'
-    @load.database()
-    @load.library 'user/auth'
-    @url_helper = @load.helper('url')
+    @theme.more 'signin', 'sidenav'
+    #@load.library 'user/auth'
 
   ## --------------------------------------------------------------------
 

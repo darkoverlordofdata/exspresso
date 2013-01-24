@@ -37,7 +37,7 @@ class Admin extends AdminController
   index: ($module = '') ->
 
     @migration.set_module $module
-    @migration._get_version ($err, $version) =>
+    @migration.get_version ($err, $version) =>
 
       @template.view 'index', $err || {
         nav       : @sidenav('Migrations')

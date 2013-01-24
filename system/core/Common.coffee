@@ -164,8 +164,8 @@ exports.load_driver = load_driver = ($class, $directory = 'libraries', $driver, 
   if not $driver? or not $config[$driver]?
     show_error 'You have specified an invalid driver for %s [%s]', $name, $subclass
 
-  $klass = require(BASEPATH + $directory + '/' + $class + '/' + $class + EXT)
-  $klass.load($driver, $config[$driver])
+  $parent = require(BASEPATH + $directory + '/' + $class + '/' + $class + EXT)
+  $parent.load($driver, $config[$driver])
 
 
 #  ------------------------------------------------------------------------

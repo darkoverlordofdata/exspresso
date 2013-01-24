@@ -70,6 +70,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
         user: @username
         password: @password
         database: @database
+        debug: false # @db_debug
 
       @connected = true
 
@@ -680,7 +681,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @return	void
   #
   _close: ($callback) ->
-    @client.end $callback
+    @client.end($callback)
 
 # End Class Exspresso_DB_mysql_driver
 module.exports = Exspresso_DB_mysql_driver

@@ -57,12 +57,12 @@ class global.Base_Migration
   #
   #
   #
-  CI: null
+  Exspresso: null
   db: null
   dbforge: null
   connected: false
 
-  constructor: ($config = {}, @CI, @db, @dbforge) ->
+  constructor: ($config = {}, @Exspresso, @db, @dbforge) ->
 
     if in_array($config.constructor, [Exspresso_Migration, Base_Migration])
       for $key, $val of $config
@@ -91,14 +91,14 @@ class global.Base_Migration
     @_migration_path = rtrim(@_migration_path, '/')+'/'
 
     # Load migration language
-    @CI.lang.load('migration')
+    @Exspresso.lang.load('migration')
 
     # They'll probably be using dbforge
-    @CI.load.dbforge(@_migration_db)
-    @db = @CI.dbforge.db
-    @dbforge = @CI.dbforge
+    @Exspresso.load.dbforge(@_migration_db)
+    @db = @Exspresso.dbforge.db
+    @dbforge = @Exspresso.dbforge
 
-    @CI._ctor.push ($callback) => @initialize $callback
+    @Exspresso.queue ($callback) => @initialize $callback
 
 
   initialize: ($callback) ->
@@ -135,7 +135,7 @@ class global.Base_Migration
   #
   version: ($target_version, $callback) ->
 
-    @_get_version ($err, $current_version) =>
+    @get_version ($err, $current_version) =>
       if $err then return $callback $err
 
       $start = $current_version
@@ -162,7 +162,7 @@ class global.Base_Migration
 
         # Only one migration per step is permitted
         if (count($f) > 1)
-          @_error_string = sprintf(@CI.lang.line('migration_multiple_version'), $i)
+          @_error_string = sprintf(@Exspresso.lang.line('migration_multiple_version'), $i)
           return $callback @_error_string
 
         # Migration step not found
@@ -174,7 +174,7 @@ class global.Base_Migration
 
           # If trying to migrate down but we're missing a step,
           # something must definitely be wrong.
-          @_error_string = sprintf(@CI.lang.line('migration_not_found'), $i)
+          @_error_string = sprintf(@Exspresso.lang.line('migration_not_found'), $i)
           return $callback @_error_string
 
         $file = basename($f[0])
@@ -187,24 +187,24 @@ class global.Base_Migration
 
           # Cannot repeat a migration at different steps
           if (in_array($match[1], $migrations))
-            @_error_string = sprintf(@CI.lang.line('migration_multiple_version'), $match[1])
+            @_error_string = sprintf(@Exspresso.lang.line('migration_multiple_version'), $match[1])
             return $callback @_error_string
 
           $class = require($f[0])
 
           if not $class::[$method]?
-            @_error_string = sprintf(@CI.lang.line('migration_missing_'+$method+'_method'), $class)
+            @_error_string = sprintf(@Exspresso.lang.line('migration_missing_'+$method+'_method'), $class)
             return $callback @_error_string
 
           if typeof $class::[$method] isnt 'function'
-            @_error_string = sprintf(@CI.lang.line('migration_missing_'+$method+'_method'), $class)
+            @_error_string = sprintf(@Exspresso.lang.line('migration_missing_'+$method+'_method'), $class)
             return $callback @_error_string
 
           $migrations.push $class
 
         else
 
-          @_error_string = sprintf(@CI.lang.line('migration_invalid_filename'), $file)
+          @_error_string = sprintf(@Exspresso.lang.line('migration_invalid_filename'), $file)
           return $callback @_error_string
 
       log_message('debug', 'Current migration: ' + $current_version)
@@ -229,7 +229,7 @@ class global.Base_Migration
           # run the migration at index
           #
           $class = $migrations[$index]
-          $migration = new $class({}, @CI, @db, @dbforge)
+          $migration = new $class({}, @Exspresso, @db, @dbforge)
           call_user_func [$migration, $method], ($err) =>
             if $err then $callback $err
             else
@@ -263,7 +263,7 @@ class global.Base_Migration
   #
   latest: ($callback) ->
     if not ($migrations = @find_migrations())
-      @_error_string = @CI.lang.line('migration_none_found')
+      @_error_string = @Exspresso.lang.line('migration_none_found')
       return $callback @_error_string
 
     $last_migration = basename(end($migrations))
@@ -325,7 +325,7 @@ class global.Base_Migration
   #
   # @return  int  Current Migration
   #
-  _get_version: ($callback) ->
+  get_version: ($callback) ->
 
     $row = @db.get 'migrations', ($err, $result) ->
 

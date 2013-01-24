@@ -39,7 +39,7 @@
 #
 class global.Exspresso_DB_forge
 
-  CI: null
+  Exspresso: null
   db: null
   fields: []
   keys: []
@@ -52,7 +52,7 @@ class global.Exspresso_DB_forge
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: (@CI, @db) ->
+  constructor: (@Exspresso, @db) ->
 
     @_reset() # always initialize arrays in the constructor!
     log_message('debug', "Database Forge Class Initialized")

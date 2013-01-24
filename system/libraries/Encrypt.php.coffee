@@ -49,7 +49,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 class Exspresso_Encrypt
   
-  CI: {}
+  Exspresso: {}
   encryption_key: ''
   _hash_type: 'sha1'
   _mcrypt_exists: false
@@ -64,7 +64,7 @@ class Exspresso_Encrypt
   #
   __construct()
   {
-  @CI = Exspresso
+  @Exspresso = Exspresso
   @_mcrypt_exists = if ( not function_exists('mcrypt_encrypt')) then false else true
   log_message('debug', "Encrypt Class Initialized")
   }

@@ -54,7 +54,7 @@ class Exspresso_Unit_test
 
   is_false = ($test) -> if (is_bool($test) and $test is false) then true else false
 
-  CI: null
+  Exspresso: null
   _active: true
   _results: null
   _strict: false
@@ -62,7 +62,7 @@ class Exspresso_Unit_test
   _template_rows: null
   _test_items_visible: null
   
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
     #  These are the default items visible when a test is run.
     @_test_items_visible = [
       'test_name',
@@ -151,7 +151,7 @@ class Exspresso_Unit_test
     if count($result) is 0
       $result = @result()
       
-    @CI.load.language('unit_test')
+    @Exspresso.load.language('unit_test')
     
     @_parse_template()
     
@@ -160,11 +160,11 @@ class Exspresso_Unit_test
       $table = ''
       
       for $key, $val of $res
-        if $key is @CI.lang.line('ut_result')
-          if $val is @CI.lang.line('ut_passed')
+        if $key is @Exspresso.lang.line('ut_result')
+          if $val is @Exspresso.lang.line('ut_passed')
             $val = '<span style="color: #0C0;">' + $val + '</span>'
             
-          else if $val is @CI.lang.line('ut_failed')
+          else if $val is @Exspresso.lang.line('ut_failed')
             $val = '<span style="color: #C00;">' + $val + '</span>'
 
         $temp = @_template_rows
@@ -219,7 +219,7 @@ class Exspresso_Unit_test
   #
   result : ($results = {}) ->
 
-    @CI.load.language('unit_test')
+    @Exspresso.load.language('unit_test')
     
     if count($results) is 0
       $results = @_results
@@ -233,16 +233,16 @@ class Exspresso_Unit_test
 
         if is_array($val)
           for $k, $v of $val
-            if false isnt ($line = @CI.lang.line(strtolower('ut_' + $v)))
+            if false isnt ($line = @Exspresso.lang.line(strtolower('ut_' + $v)))
               $v = $line
               
-            $temp[@CI.lang.line('ut_' + $k)] = $v
+            $temp[@Exspresso.lang.line('ut_' + $k)] = $v
 
         else 
-          if false isnt ($line = @CI.lang.line(strtolower('ut_' + $val)))
+          if false isnt ($line = @Exspresso.lang.line(strtolower('ut_' + $val)))
             $val = $line
             
-          $temp[@CI.lang.line('ut_' + $key)] = $val
+          $temp[@Exspresso.lang.line('ut_' + $key)] = $val
 
       $retval.push $temp
 

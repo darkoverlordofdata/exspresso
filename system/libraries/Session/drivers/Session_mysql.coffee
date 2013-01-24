@@ -22,7 +22,9 @@
 class Exspresso_Session_mysql extends require('express').session.Store
 
   mysql: null
-  table: ''
+  _table: ''
+  _create_sql = ''
+
 
   ## --------------------------------------------------------------------
 
@@ -35,16 +37,14 @@ class Exspresso_Session_mysql extends require('express').session.Store
   #
   constructor: ($config) ->
 
-    @table = $config.sess_table_name
+    @_table = $config.sess_table_name
 
-    $CI = Exspresso
-    @mysql = $CI.db.client
+    @_sql_create = 'CREATE TABLE IF NOT EXISTS `' + @_table + '` (`sid` VARCHAR(255) NOT NULL, `session` TEXT NOT NULL, `expires` INT, PRIMARY KEY (`sid`) )'
+    @_sql_get = 'SELECT `session` FROM `' + @_table + '` WHERE `sid` = ?'
+    @_sql_set = 'INSERT INTO `' + @_table + '` (`sid`, `session`, `expires`) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE `session` = ?, `expires` = ?'
+    @_sql_del = 'DELETE FROM `' + @_table + '` WHERE `sid` = ?'
+    return
 
-    @mysql.query 'CREATE TABLE IF NOT EXISTS `' + @table + '` (`sid` VARCHAR(255) NOT NULL, `session` TEXT NOT NULL, `expires` INT, PRIMARY KEY (`sid`) )', ($err) =>
-
-      if $err then throw $err
-
-      @mysql.query 'CREATE EVENT IF NOT EXISTS `sess_cleanup` ON SCHEDULE EVERY 15 MINUTE DO DELETE FROM `' + @table + '` WHERE `expires` < UNIX_TIMESTAMP()'
 
 
   ## --------------------------------------------------------------------
@@ -60,6 +60,10 @@ class Exspresso_Session_mysql extends require('express').session.Store
   #
   get: ($sid, $callback) ->
 
+    log_message 'debug', 'Session::get: %s', $sid
+
+
+    return $callback(null)
     @mysql.query 'SELECT `session` FROM `' + @table + '` WHERE `sid` = ?', [$sid], ($err, $result) =>
 
       if $err
@@ -85,6 +89,12 @@ class Exspresso_Session_mysql extends require('express').session.Store
   #
   set: ($sid, $session, $callback) ->
 
+    log_message 'debug', 'Session::set: %s', $sid
+
+    $CI = $session.get_instance()
+    console.log $session
+
+    return $callback(null)
     $expires = new Date($session.cookie.expires).getTime() / 1000
     $session = JSON.stringify($session)
     @mysql.query 'INSERT INTO `' + @table + '` (`sid`, `session`, `expires`) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE `session` = ?, `expires` = ?', [$sid, $session, $expires, $session, $expires], ($err) ->
@@ -104,6 +114,9 @@ class Exspresso_Session_mysql extends require('express').session.Store
   #
   destroy: ($sid, $callback) ->
 
+    log_message 'debug', 'Session::destroy: %s', $sid
+
+    return $callback(null)
     @mysql.query 'DELETE FROM `' + @table + '` WHERE `sid` = ?', [$sid], ($err) ->
       $callback $err
 

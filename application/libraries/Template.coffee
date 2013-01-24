@@ -20,7 +20,7 @@ class global.Template
 
   __keys = Object.keys
 
-  CI: null
+  Exspresso: null
   html: null
 
   _title:           ''
@@ -45,7 +45,7 @@ class global.Template
   #   @access	public
   #   @return	void
   #
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
 
     log_message('debug', "Template Class Initialized")
 
@@ -58,7 +58,7 @@ class global.Template
     @_breadcrumbs = []
     @_script = []
     @_css = []
-    @html = @CI.load.helper('html')
+    @html = @Exspresso.load.helper('html')
     @set_theme @_theme_name
 
 
@@ -94,8 +94,8 @@ class global.Template
     for $location in @_theme_locations
       if file_exists($location + @_theme_name)
         @_theme_path = rtrim($location + @_theme_name + '/')
-        @CI.load.library 'theme', location: $location, name: $theme_name
-        @CI.theme.init @, $extra
+        @Exspresso.load.library 'theme', location: $location, name: $theme_name
+        @Exspresso.theme.init @, $extra
         break
     @
 
@@ -279,7 +279,7 @@ class global.Template
     @set '$style',      $css.join("\n")
     @set '$script',     $script.join("\n")
     @set '$title',      @_title
-    @set '$menu',       @html_menu(@_menu, @CI.uri.segment(1, ''))
+    @set '$menu',       @html_menu(@_menu, @Exspresso.uri.segment(1, ''))
     @set 'site_name',   config_item('site_name')
     @set 'site_slogan', config_item('site_slogan')
     @set $data
@@ -299,7 +299,7 @@ class global.Template
       # process the partial at index
       #
       $partial = @_partials[$index]
-      @CI.load.view $partial.view, $partial.data, ($err, $html) =>
+      @Exspresso.load.view $partial.view, $partial.data, ($err, $html) =>
 
         return $callback($err) if $err
         #
@@ -320,7 +320,7 @@ class global.Template
       #
       # load the body view & merge with partials
       #
-      @CI.load.view $view, @_data, ($err, $content) =>
+      @Exspresso.load.view $view, @_data, ($err, $content) =>
 
         return log_message('debug', 'ERROR2 %s', $err) if show_error($err)
 
@@ -328,14 +328,14 @@ class global.Template
         # merge the body into the theme layout
         #
         @set '$content', $content
-        @CI.render @_theme_path+@_layout, @_data, ($err, $page) =>
+        @Exspresso.render @_theme_path+@_layout, @_data, ($err, $page) =>
 
           return log_message('debug', 'ERROR3 %s', $err) if show_error($err)
 
           return $callback(null, $page) if $callback?
 
-          @CI.output.set_output $page
-          @CI.output._display()
+          @Exspresso.output.set_output $page
+          @Exspresso.output._display()
 
 
   ## --------------------------------------------------------------------

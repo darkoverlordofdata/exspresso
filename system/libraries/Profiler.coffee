@@ -40,13 +40,13 @@ class global.Exspresso_Profiler extends Base_Profiler
 #
   _compile_benchmarks: () ->
     $profile = {}
-    for $key, $val of @CI.benchmark.marker
+    for $key, $val of @Exspresso.benchmark.marker
       #  We match the "end" marker so that the list ends
       #  up in the order that it was defined
       $match = preg_match("/(.+?)_end/i", $key)
       if $match?
-        if @CI.benchmark.marker[$match[1] + '_end']?  and @CI.benchmark.marker[$match[1] + '_start']?
-          $profile[$match[1]] = @CI.benchmark.elapsed_time($match[1] + '_start', $key)
+        if @Exspresso.benchmark.marker[$match[1] + '_end']?  and @Exspresso.benchmark.marker[$match[1] + '_start']?
+          $profile[$match[1]] = @Exspresso.benchmark.elapsed_time($match[1] + '_start', $key)
 
 
 
@@ -58,7 +58,7 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_benchmarks">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_benchmarks') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_benchmarks') + '</dt>'
     $output+="\n"
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
@@ -83,7 +83,7 @@ class global.Exspresso_Profiler extends Base_Profiler
     $dbs = []
 
     #  Let's determine which databases are currently connected to
-    for $name, $Exspresso_object of get_object_vars(@CI)
+    for $name, $Exspresso_object of get_object_vars(@Exspresso)
       #if is_object($Exspresso_object) # and $Exspresso_object instanceof Exspresso_DB is true
       if $Exspresso_object['dbdriver']?
         $dbs.push $Exspresso_object
@@ -92,17 +92,17 @@ class global.Exspresso_Profiler extends Base_Profiler
       $output = "\n\n"
       $output+='<dl id="ci_profiler_queries">'
       $output+="\n"
-      $output+='<dt>' + @CI.lang.line('profiler_queries') + '</dt>'
+      $output+='<dt>' + @Exspresso.lang.line('profiler_queries') + '</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
-      $output+="<tr><td><em>" + @CI.lang.line('profiler_no_db') + "</em></td></tr>\n"
+      $output+="<tr><td><em>" + @Exspresso.lang.line('profiler_no_db') + "</em></td></tr>\n"
       $output+="</table></dd>\n"
       $output+="</dl>"
       return $output
 
 
     #  Load the text helper so we can highlight the SQL
-    @CI.load.helper('text')
+    @Exspresso.load.helper('text')
 
     #  Key words we want bolded
     $highlight = ['SELECT', 'DISTINCT', 'FROM', 'WHERE', 'AND', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'GROUP BY', 'LIMIT', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'OR ', 'HAVING', 'OFFSET', 'NOT IN', 'IN', 'LIKE', 'NOT LIKE', 'COUNT', 'MAX', 'MIN', 'ON', 'AS', 'AVG', 'SUM', '(', ')']
@@ -112,12 +112,12 @@ class global.Exspresso_Profiler extends Base_Profiler
     for $db in $dbs
       $output+='<dl>'
       $output+="\n"
-      $output+='<dt>' + @CI.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @CI.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;</dt>'
+      $output+='<dt>' + @Exspresso.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @Exspresso.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       if count($db.queries) is 0
-        $output+="<tr><td><em>" + @CI.lang.line('profiler_no_queries') + "</em></td></tr>\n"
+        $output+="<tr><td><em>" + @Exspresso.lang.line('profiler_no_queries') + "</em></td></tr>\n"
 
       else
         for $key, $val of $db.queries
@@ -147,11 +147,11 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_get">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_get_data') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_get_data') + '</dt>'
     $output+="\n"
 
     if count($_GET) is 0
-      $output+="<dd><em>" + @CI.lang.line('profiler_no_get') + "</em></dd>"
+      $output+="<dd><em>" + @Exspresso.lang.line('profiler_no_get') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -187,11 +187,11 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_post">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_post_data') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_post_data') + '</dt>'
     $output+="\n"
 
     if count($_POST) is 0
-      $output+="<dd><em>" + @CI.lang.line('profiler_no_post') + "</em></dd>"
+      $output+="<dd><em>" + @Exspresso.lang.line('profiler_no_post') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -228,14 +228,14 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_uri_string">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_uri_string') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_uri_string') + '</dt>'
     $output+="\n"
 
-    if @CI.uri.uri_string() is ''
-      $output+="<dd><em>" + @CI.lang.line('profiler_no_uri') + "</em></dd>"
+    if @Exspresso.uri.uri_string() is ''
+      $output+="<dd><em>" + @Exspresso.lang.line('profiler_no_uri') + "</em></dd>"
 
     else
-      $output+="<dd>" + @CI.uri.uri_string() + "</dd>"
+      $output+="<dd>" + @Exspresso.uri.uri_string() + "</dd>"
 
     $output+="</dl>"
 
@@ -252,10 +252,10 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_controller_info">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_controller_info') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_controller_info') + '</dt>'
     $output+="\n"
 
-    $output+="<dd>" + @CI.router.fetch_class() + "/" + @CI.router.fetch_method() + "</dd>"
+    $output+="<dd>" + @Exspresso.router.fetch_class() + "/" + @Exspresso.router.fetch_method() + "</dd>"
 
     $output+="</dl>"
 
@@ -274,14 +274,14 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_memory_usage">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_memory_usage') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_memory_usage') + '</dt>'
     $output+="\n"
 
     if function_exists('memory_get_usage') and ($usage = memory_get_usage()) isnt ''
       $output+="<dd>" + number_format($usage) + ' bytes</dd>'
 
     else
-      $output+="<dd><em>" + @CI.lang.line('profiler_no_memory_usage') + "</em></dd>"
+      $output+="<dd><em>" + @Exspresso.lang.line('profiler_no_memory_usage') + "</em></dd>"
 
     $output+="</dl>"
 
@@ -300,7 +300,7 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_http_headers">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_headers') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_headers') + '</dt>'
     $output+="\n"
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -327,12 +327,12 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output = "\n\n"
     $output+='<dl id="ci_profiler_config">'
     $output+="\n"
-    $output+='<dt>' + @CI.lang.line('profiler_config') + '</dt>'
+    $output+='<dt>' + @Exspresso.lang.line('profiler_config') + '</dt>'
     $output+="\n"
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-    for $config, $val of @CI.config.config
+    for $config, $val of @Exspresso.config.config
       if is_array($val)
         $val = print_r($val, true)
 
@@ -355,7 +355,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   run: () ->
 
-    $elapsed = @CI.benchmark.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    $elapsed = @Exspresso.benchmark.elapsed_time('total_execution_time_start', 'total_execution_time_end')
     $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
     $output = """
       <footer id="footer">
@@ -392,7 +392,7 @@ class global.Exspresso_Profiler extends Base_Profiler
         $fields_displayed++
 
     if $fields_displayed is 0
-      $output+='<p>' + @CI.lang.line('profiler_no_profiles') + '</p>'
+      $output+='<p>' + @Exspresso.lang.line('profiler_no_profiles') + '</p>'
 
     $output+='''            </div>
                 </div>

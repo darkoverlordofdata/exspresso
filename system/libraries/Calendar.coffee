@@ -43,7 +43,7 @@
 #
 class Exspresso_Calendar
   
-  CI: null
+  Exspresso: null
   lang: {}
   local_time: {}
   template: ''
@@ -58,10 +58,10 @@ class Exspresso_Calendar
   #
   # Loads the calendar language file and sets the default time reference
   #
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
 
-    if not in_array('calendar_lang' + EXT, @CI.lang.is_loaded, true)
-      @CI.lang.load('calendar')
+    if not in_array('calendar_lang' + EXT, @Exspresso.lang.is_loaded, true)
+      @Exspresso.lang.load('calendar')
 
     @local_time = time()
 
@@ -266,10 +266,10 @@ class Exspresso_Calendar
       
     $month = $month_names[$month]
     
-    if @CI.lang.line($month) is false
+    if @Exspresso.lang.line($month) is false
       return ucfirst(str_replace('cal_', '', $month))
 
-    return @CI.lang.line($month)
+    return @Exspresso.lang.line($month)
     
   
   #  --------------------------------------------------------------------
@@ -298,7 +298,7 @@ class Exspresso_Calendar
 
     $days = {}
     for $val in $day_names
-      $days.push if (@CI.lang.line('cal_' + $val) is false) then ucfirst($val) else @CI.lang.line('cal_' + $val)
+      $days.push if (@Exspresso.lang.line('cal_' + $val) is false) then ucfirst($val) else @Exspresso.lang.line('cal_' + $val)
     return $days
 
   # --------------------------------------------------------------------

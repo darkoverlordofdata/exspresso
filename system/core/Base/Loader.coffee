@@ -58,61 +58,61 @@ class global.Base_Loader
   #
   # @var string
   #
-  _ci_view_path:        ''
+  _ex_view_path:        ''
   #
   # List of paths to load libraries from
   #
   # @var array
   #
-  _ci_library_paths:    []
+  _ex_library_paths:    []
   #
   # List of paths to load models from
   #
   # @var array
   #
-  _ci_model_paths:      []
+  _ex_model_paths:      []
   #
   # List of paths to load helpers from
   #
   # @var array
   #
-  _ci_helper_paths:     []
+  _ex_helper_paths:     []
   #
   # Cached variables
   #
   # @var object
   #
-  _ci_cached_vars:      {}
+  _ex_cached_vars:      {}
   #
   # Cached classes
   #
   # @var array
   #
-  _ci_classes:          {}
+  _ex_classes:          {}
   #
   # List of loaded files
   #
   # @var array
   #
-  _ci_loaded_files:     []
+  _ex_loaded_files:     []
   #
   # List of loaded models
   #
   # @var array
   #
-  _ci_models:           []
+  _ex_models:           []
   #
   # List of loaded helpers
   #
   # @var array
   #
-  _ci_helpers:          {}
+  _ex_helpers:          {}
   #
   # List of class name mappings
   #
   # @var array
   #
-  _ci_varmap:
+  _ex_varmap:
     unit_test: 'unit'
     user_agent: 'agent'
   #
@@ -120,7 +120,7 @@ class global.Base_Loader
   #
   # @var object
   #
-  CI:                     null
+  Exspresso:                     null
   ## --------------------------------------------------------------------
 
   #
@@ -139,10 +139,10 @@ class global.Base_Loader
         @['_'+$key] = $var
 
     config = get_config()
-    @_ci_view_path          = APPPATH + config.views
-    @_ci_library_paths      = [APPPATH, BASEPATH]
-    @_ci_helper_paths       = [APPPATH, BASEPATH]
-    @_ci_model_paths        = [APPPATH]
+    @_ex_view_path          = APPPATH + config.views
+    @_ex_library_paths      = [APPPATH, BASEPATH]
+    @_ex_helper_paths       = [APPPATH, BASEPATH]
+    @_ex_model_paths        = [APPPATH]
 
     log_message 'debug', "Loader Class Initialized"
 
@@ -152,19 +152,19 @@ class global.Base_Loader
   # Initialize the Loader
   #
   #
-  # @param 	object  controller instance
-  # @param  boolean call autoload
+  # @param 	object  Exspresso controller instance
+  # @param  boolean call autoload?
   # @return object
   #
-  initialize: (@CI, $autoload = false) ->
+  initialize: (@Exspresso, $autoload = false) ->
 
 
-    @_ci_classes        = {}
-    @_ci_loaded_files   = []
-    @_ci_models         = []
+    @_ex_classes        = {}
+    @_ex_loaded_files   = []
+    @_ex_models         = []
     @_base_classes      = is_loaded()
 
-    @_ci_autoloader() if $autoload # should only be called during bootstrap
+    @_ex_autoloader() if $autoload # should only be called during bootstrap
     return @
 
   ## --------------------------------------------------------------------
@@ -172,7 +172,7 @@ class global.Base_Loader
   #
   # Is Loaded
   #
-  # A utility function to test if a class is in the self::$_ci_classes array.
+  # A utility function to test if a class is in the self::$_ex_classes array.
   # This function returns the object name if the class tested for is loaded,
   # and returns FALSE if it isn't.
   #
@@ -182,8 +182,8 @@ class global.Base_Loader
   # @return 	mixed	class object name on the CI SuperObject or FALSE
   #
   is_loaded: ($class) ->
-    if @_ci_classes[$class]?
-      return @_ci_classes[$class]
+    if @_ex_classes[$class]?
+      return @_ex_classes[$class]
 
     return false
 
@@ -214,7 +214,7 @@ class global.Base_Loader
     if $params isnt null and not is_array($params)
       $params = null
 
-    @_ci_load_class $library, $params, $object_name
+    @_ex_load_class $library, $params, $object_name
 
   ## --------------------------------------------------------------------
 
@@ -251,29 +251,29 @@ class global.Base_Loader
 
     if $name is '' then $name = $model
 
-    if in_array($name, @_ci_models, true)
+    if in_array($name, @_ex_models, true)
       return
 
-    if @CI[$name]?
+    if @Exspresso[$name]?
       show_error 'The model name you are loading is the name of a resource that is already being used: %s', $name
 
 
-    for $mod_path in @_ci_model_paths
+    for $mod_path in @_ex_model_paths
       if not file_exists($mod_path+'models/'+$path+$model+EXT)
         continue
 
       if $db_conn isnt false and not class_exists('Exspresso_DB')
         if $db_conn is true then $db_conn = ''
-        @CI.load.database $db_conn, false, true
+        @Exspresso.load.database $db_conn, false, true
 
       if not class_exists('Exspresso_Model')
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
-      $model = new $Model(@CI)
+      $model = new $Model(@Exspresso)
 
-      @CI[$name] = $model
-      @_ci_models.push $name
+      @Exspresso[$name] = $model
+      @_ex_models.push $name
       return
 
     # couldn't find the model
@@ -297,28 +297,28 @@ class global.Base_Loader
 
     # Do we even need to load the database class?
     if $CI.db?
-      if not @CI.db?
+      if not @Exspresso.db?
         if $return is false
-          @CI.db = $CI.db
+          @Exspresso.db = $CI.db
           return false
 
-    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI['db']?
+    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @Exspresso['db']?
       return false
 
     $params = $params || Exspresso.server._db
 
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
 
-    @CI._ctor.push ($callback) -> DB.initialize $callback
+    @Exspresso.queue ($callback) -> DB.initialize $callback
 
     if $return is true then return DB #($params, $active_record)
 
     # Initialize the db variable.  Needed to prevent
     # reference errors with some configurations
-    @CI.db = ''
+    @Exspresso.db = ''
 
     # Load the DB class
-    @CI.db = DB #($params, $active_record)
+    @Exspresso.db = DB #($params, $active_record)
 
   ## --------------------------------------------------------------------
 
@@ -333,7 +333,7 @@ class global.Base_Loader
     if $params is ''
       if not class_exists('Exspresso_DB')
         @database()
-      $db = @db
+      $db = @Exspresso.db
     else
       $db = @database($params, true)
 
@@ -342,8 +342,8 @@ class global.Base_Loader
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_utility' + EXT)
     # ex: Exspresso_DB_sqlite_utility
 
-    if $return is true then return new $class(@CI, $db)
-    @CI.dbutil = new $class(@CI, $db)
+    if $return is true then return new $class(@Exspresso, $db)
+    @Exspresso.dbutil = new $class(@Exspresso, $db)
 
   #  --------------------------------------------------------------------
 
@@ -358,15 +358,15 @@ class global.Base_Loader
     if $params is ''
       if not class_exists('Exspresso_DB')
         @database()
-      $db = @db
+      $db = @Exspresso.db
     else
       $db = @database($params, true)
 
     require(BASEPATH + 'database/DB_forge' + EXT)
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_forge' + EXT)
 
-    if $return is true then return new $class(@CI, $db)
-    @CI.dbforge = new $class(@CI, $db)
+    if $return is true then return new $class(@Exspresso, $db)
+    @Exspresso.dbforge = new $class(@Exspresso, $db)
 
   #  --------------------------------------------------------------------
 
@@ -389,7 +389,7 @@ class global.Base_Loader
   #
   view: ($view, $vars = {}, $callback = null) ->
     log_message 'debug', 'Exspresso_Loader::view'
-    @_ci_load('', $view, $vars, $callback)
+    @_ex_load('', $view, $vars, $callback)
 
   #  --------------------------------------------------------------------
 
@@ -410,7 +410,7 @@ class global.Base_Loader
 
     if is_array($vars) and count($vars) > 0
       for $key, $val of $vars
-        @_ci_cached_vars[$key] = $val
+        @_ex_cached_vars[$key] = $val
 
 
   ## --------------------------------------------------------------------
@@ -426,7 +426,7 @@ class global.Base_Loader
   # @return	string
   #
   file: ($path, $callback) ->
-    @_ci_load($path, '', {}, $callback)
+    @_ex_load($path, '', {}, $callback)
 
   ## --------------------------------------------------------------------
 
@@ -444,8 +444,8 @@ class global.Base_Loader
 
   helper: ($helpers = []) ->
 
-    for $helper in @_ci_prep_filename($helpers, '_helper')
-      if @_ci_helpers[$helper]?
+    for $helper in @_ex_prep_filename($helpers, '_helper')
+      if @_ex_helpers[$helper]?
         continue
 
       $ext_helper = APPPATH+'helpers/'+config_item('subclass_prefix')+$helper+EXT
@@ -457,23 +457,23 @@ class global.Base_Loader
         if not file_exists($base_helper)
           show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
-        @_ci_helpers[$helper] = array_merge(require($base_helper), require($ext_helper))
+        @_ex_helpers[$helper] = array_merge(require($base_helper), require($ext_helper))
         log_message 'debug', 'Helper loaded: '+$helper
         continue
 
       # Try to load the helper
-      for $path in @_ci_helper_paths
+      for $path in @_ex_helper_paths
         if file_exists($path+'helpers/'+$helper+EXT)
-          @_ci_helpers[$helper] = require($path+'helpers/'+$helper+EXT)
+          @_ex_helpers[$helper] = require($path+'helpers/'+$helper+EXT)
           log_message 'debug', 'Helper loaded: '+$helper
           break
 
     # unable to load the helper
-    if not @_ci_helpers[$helper]
+    if not @_ex_helpers[$helper]
       show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
     # expose the helpers to template engine
-    Exspresso.server.set_helpers @_ci_helpers[$helper]
+    Exspresso.server.set_helpers @_ex_helpers[$helper]
 
   ## --------------------------------------------------------------------
 
@@ -491,7 +491,7 @@ class global.Base_Loader
       $file = [$file]
 
     for $langfile in $file
-      @CI.lang.load $langfile, $lang
+      @Exspresso.lang.load $langfile, $lang
 
 
   ## --------------------------------------------------------------------
@@ -505,7 +505,7 @@ class global.Base_Loader
   #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
 
-    @CI.config.load $file, $use_sections, $fail_gracefully
+    @Exspresso.config.load $file, $use_sections, $fail_gracefully
 
 
   ## --------------------------------------------------------------------
@@ -550,12 +550,12 @@ class global.Base_Loader
 
     $path = rtrim($path, '/')+'/'
 
-    array_unshift(@_ci_library_paths, $path)
-    array_unshift(@_ci_model_paths, $path)
-    array_unshift(@_ci_helper_paths, $path)
+    array_unshift(@_ex_library_paths, $path)
+    array_unshift(@_ex_model_paths, $path)
+    array_unshift(@_ex_helper_paths, $path)
 
     #  Add config file path
-    $config = @_ci_get_component('config')
+    $config = @_ex_get_component('config')
     array_unshift($config._config_paths, $path)
 
 
@@ -572,7 +572,7 @@ class global.Base_Loader
   # @return	void
   #
   get_package_paths : ($include_base = false) ->
-    return if $include_base is true then @_ci_library_paths else @_ci_model_paths
+    return if $include_base is true then @_ex_library_paths else @_ex_model_paths
 
 
   #  --------------------------------------------------------------------
@@ -588,18 +588,18 @@ class global.Base_Loader
   # @return	type
   #
   remove_package_path : ($path = '', $remove_config_path = true) ->
-    $config = @_ci_get_component('config')
+    $config = @_ex_get_component('config')
 
     if $path is ''
-      $void = array_shift(@_ci_library_paths)
-      $void = array_shift(@_ci_model_paths)
-      $void = array_shift(@_ci_helper_paths)
+      $void = array_shift(@_ex_library_paths)
+      $void = array_shift(@_ex_model_paths)
+      $void = array_shift(@_ex_helper_paths)
       $void = array_shift($config._config_paths)
 
     else
       $path = rtrim($path, '/') + '/'
 
-      for $var in ['_ci_library_paths', '_ci_model_paths', '_ci_helper_paths']
+      for $var in ['_ex_library_paths', '_ex_model_paths', '_ex_helper_paths']
         if ($key = array_search($path, @[$var])) isnt false
           delete @[$var][$key]
 
@@ -611,9 +611,9 @@ class global.Base_Loader
 
 
     #  make sure the application default paths are still in the array
-    @_ci_library_paths = array_unique(array_merge(@_ci_library_paths, [APPPATH, BASEPATH]))
-    @_ci_helper_paths = array_unique(array_merge(@_ci_helper_paths, [APPPATH, BASEPATH]))
-    @_ci_model_paths = array_unique(array_merge(@_ci_model_paths, [APPPATH]))
+    @_ex_library_paths = array_unique(array_merge(@_ex_library_paths, [APPPATH, BASEPATH]))
+    @_ex_helper_paths = array_unique(array_merge(@_ex_helper_paths, [APPPATH, BASEPATH]))
+    @_ex_model_paths = array_unique(array_merge(@_ex_model_paths, [APPPATH]))
     $config._config_paths = array_unique(array_merge($config._config_paths, [APPPATH]))
 
 
@@ -624,37 +624,37 @@ class global.Base_Loader
   # Loader
   #
   # This function is used to load views and files.
-  # Variables are prefixed with _ci_ to avoid symbol collision with
+  # Variables are prefixed with _ex_ to avoid symbol collision with
   # variables made available to view files
   #
   # @access	private
   # @param	array
   # @return	void
   #
-  _ci_load : ($_ci_path = '', $_ci_view = '', $_ci_vars = {}, $_ci_return = null) ->
+  _ex_load : ($_ex_path = '', $_ex_view = '', $_ex_vars = {}, $_ex_return = null) ->
 
     #  Set the path to the requested file
-    if $_ci_path is ''
-      $_ci_ext = path.extname($_ci_view)
-      $_ci_file = if ($_ci_ext is '') then $_ci_view + config_item('view_ext') else $_ci_view
-      $_ci_path = rtrim(@_ci_view_path, '/') + '/' + $_ci_file
+    if $_ex_path is ''
+      $_ex_ext = path.extname($_ex_view)
+      $_ex_file = if ($_ex_ext is '') then $_ex_view + config_item('view_ext') else $_ex_view
+      $_ex_path = rtrim(@_ex_view_path, '/') + '/' + $_ex_file
 
     else
-      $_ci_x = explode('/', $_ci_path)
-      $_ci_file = end($_ci_x)
+      $_ex_x = explode('/', $_ex_path)
+      $_ex_file = end($_ex_x)
 
 
-    if not file_exists($_ci_path)
-      show_error('Unable to load the requested file: %s', $_ci_file)
+    if not file_exists($_ex_path)
+      show_error('Unable to load the requested file: %s', $_ex_file)
 
     #  This allows anything loaded using $this->load (views, files, etc.)
     #  to become accessible from within the Controller and Model functions.
 
-    #$_ci_CI = Exspresso
-    #for $_ci_key, $_ci_var of @CI
-    #  if typeof @CI[$_ci_key] isnt 'function'
-    #    if not @[$_ci_key]?
-    #      @[$_ci_key] = @CI[$_ci_key]
+    #$_ex_CI = Exspresso
+    #for $_ex_key, $_ex_var of @Exspresso
+    #  if typeof @Exspresso[$_ex_key] isnt 'function'
+    #    if not @[$_ex_key]?
+    #      @[$_ex_key] = @Exspresso[$_ex_key]
 
     #
     # Extract and cache variables
@@ -664,18 +664,18 @@ class global.Base_Loader
     # the two types and cache them so that views that are embedded within
     # other views can have access to these variables.
     #
-    if is_array($_ci_vars)
-      @_ci_cached_vars = array_merge(@_ci_cached_vars, $_ci_vars)
+    if is_array($_ex_vars)
+      @_ex_cached_vars = array_merge(@_ex_cached_vars, $_ex_vars)
 
 
-    @CI.render $_ci_path, @_ci_cached_vars, ($err, $html) =>
+    @Exspresso.render $_ex_path, @_ex_cached_vars, ($err, $html) =>
 
-      log_message('debug', 'File loaded: ' + $_ci_path)
-      if $_ci_return isnt null
-        $_ci_return $err, $html
+      log_message('debug', 'File loaded: ' + $_ex_path)
+      if $_ex_return isnt null
+        $_ex_return $err, $html
       else
-        @CI.output.append_output $html
-        @CI.output._display()
+        @Exspresso.output.append_output $html
+        @Exspresso.output._display()
 
 
 
@@ -694,7 +694,7 @@ class global.Base_Loader
   # @param	string	an optional object name
   # @return	void
   #
-  _ci_load_class : ($class, $params = null, $object_name = null) ->
+  _ex_load_class : ($class, $params = null, $object_name = null) ->
     #  Get the class name, and while we're at it trim any slashes.
     #  The directory path can be included as part of the class name,
     #  but we don't want a leading slash
@@ -725,13 +725,13 @@ class global.Base_Loader
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if in_array($subclass, @_ci_loaded_files)
+        if in_array($subclass, @_ex_loaded_files)
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
-            if not @CI[$object_name]?
-              return @_ci_init_class($class, config_item('subclass_prefix'), $params, $object_name)
+            if not @Exspresso[$object_name]?
+              return @_ex_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
           $is_duplicate = true
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
@@ -739,14 +739,14 @@ class global.Base_Loader
 
         require($baseclass)
         require($subclass)
-        @_ci_loaded_files.push $subclass
+        @_ex_loaded_files.push $subclass
 
-        return @_ci_init_class($class, config_item('subclass_prefix'), $params, $object_name)
+        return @_ex_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
 
       #  Lets search for the requested library file and load it.
       $is_duplicate = false
-      for $path in @_ci_library_paths
+      for $path in @_ex_library_paths
         $filepath = $path + 'libraries/' + $subdir + $class + EXT
 
         #  Does the file exist?  No?  Bummer...
@@ -755,21 +755,21 @@ class global.Base_Loader
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if in_array($filepath, @_ci_loaded_files)
+        if in_array($filepath, @_ex_loaded_files)
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
-            if not @CI[$object_name]?
-              return @_ci_init_class($class, '', $params, $object_name)
+            if not @Exspresso[$object_name]?
+              return @_ex_init_class($class, '', $params, $object_name)
 
           $is_duplicate = true
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
 
         require($filepath)
-        @_ci_loaded_files.push $filepath
-        return @_ci_init_class($class, '', $params, $object_name)
+        @_ex_loaded_files.push $filepath
+        return @_ex_init_class($class, '', $params, $object_name)
 
 
       #  END FOREACH
@@ -777,7 +777,7 @@ class global.Base_Loader
       #  One last attempt.  Maybe the library is in a subdirectory, but it wasn't specified?
       if $subdir is ''
         $path = strtolower($class) + '/' + $class
-        return @_ci_load_class($path, $params)
+        return @_ex_load_class($path, $params)
 
 
       #  If we got this far we were unable to find the requested class.
@@ -800,13 +800,13 @@ class global.Base_Loader
   # @param	string	an optional object name
   # @return	null
   #
-  _ci_init_class : ($class, $prefix = '', $config = false, $object_name = null) ->
+  _ex_init_class : ($class, $prefix = '', $config = false, $object_name = null) ->
 
     #  Is there an associated config file for this class?  Note: these should always be lowercase
     if $config is false
       $config = {}
     #  Fetch the config paths containing any package paths
-    $config_component = @_ci_get_component('config')
+    $config_component = @_ex_get_component('config')
     if Array.isArray($config_component._config_paths)
       #  Break on the first found file, thus package files
       #  are not overridden by default paths
@@ -852,18 +852,18 @@ class global.Base_Loader
     $class = $class.toLowerCase()
 
     if $object_name is null
-      $classvar = if ( not @_ci_varmap[$class]? ) then $class else @_ci_varmap[$class]
+      $classvar = if ( not @_ex_varmap[$class]? ) then $class else @_ex_varmap[$class]
 
     else
       $classvar = $object_name
 
 
     #  Save the class name and object name
-    @_ci_classes[$class] = $classvar
+    @_ex_classes[$class] = $classvar
 
     #  Instantiate the class
-    @CI[$classvar] = new global[$name]($config, @CI)
-    return @CI[$classvar]
+    @Exspresso[$classvar] = new global[$name]($config, @Exspresso)
+    return @Exspresso[$classvar]
 
 
   #  --------------------------------------------------------------------
@@ -878,7 +878,7 @@ class global.Base_Loader
   # @param	array
   # @return	void
   #
-  _ci_autoloader :  ->
+  _ex_autoloader :  ->
 
     $autoload = {}
     $found = false
@@ -899,7 +899,7 @@ class global.Base_Loader
     #  Load any custom config file
     if $autoload['config'].length > 0
       for $val, $key in as
-        @CI.config.load $val
+        @Exspresso.config.load $val
 
     #  Autoload helpers and languages
     for $type in ['helper', 'language']
@@ -937,7 +937,7 @@ class global.Base_Loader
   # @param	object
   # @return	array
   #
-  _ci_object_to_array : ($object) ->
+  _ex_object_to_array : ($object) ->
     return $object
   #return if (is_object($object)) then get_object_vars($object) else $object
 
@@ -950,8 +950,8 @@ class global.Base_Loader
   # @access	private
   # @return	bool
   #
-  _ci_get_component : ($component) ->
-    return @CI[$component]
+  _ex_get_component : ($component) ->
+    return @Exspresso[$component]
 
 
   #  --------------------------------------------------------------------
@@ -967,7 +967,7 @@ class global.Base_Loader
   # @param	mixed
   # @return	array
   #
-  _ci_prep_filename : ($filename, $extension) ->
+  _ex_prep_filename : ($filename, $extension) ->
 
     if not is_array($filename)
       return [($filename.replace($extension, '').replace(EXT, '') + $extension).toLowerCase()]

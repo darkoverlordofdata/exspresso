@@ -61,12 +61,12 @@ class Exspresso_Javascript
   
   extract($defaults)
   
-  @CI = Exspresso
+  @Exspresso = Exspresso
   
   #  load the requested js library
-  @CI.load.library('javascript/' + $js_library_driver, 'autoload':$autoload)
+  @Exspresso.load.library('javascript/' + $js_library_driver, 'autoload':$autoload)
   #  make js to refer to current library
-  @js = @CI[$js_library_driver]
+  @js = @Exspresso[$js_library_driver]
   
   log_message('debug', "Javascript Class Initialized and loaded.  Driver used: $js_library_driver")
   }
@@ -625,8 +625,8 @@ class Exspresso_Javascript
       @_javascript_location = $external_file
       
     else 
-      if @CI.config.item('javascript_location') isnt ''
-        @_javascript_location = @CI.config.item('javascript_location')
+      if @Exspresso.config.item('javascript_location') isnt ''
+        @_javascript_location = @Exspresso.config.item('javascript_location')
         
       
     
@@ -637,7 +637,7 @@ class Exspresso_Javascript
       $str = @_open_script(@_javascript_location + $external_file)
       
     else 
-      $str = @_open_script(@CI.config.slash_item('base_url') + @_javascript_location + $external_file)
+      $str = @_open_script(@Exspresso.config.slash_item('base_url') + @_javascript_location + $external_file)
       
     
     $str+=@_close_script()
@@ -676,7 +676,7 @@ class Exspresso_Javascript
   # @return	string
   #
   _open_script : ($src = '') ->
-    $str = '<script type="text/javascript" charset="' + strtolower(@CI.config.item('charset')) + '"'
+    $str = '<script type="text/javascript" charset="' + strtolower(@Exspresso.config.item('charset')) + '"'
     $str+=($src is '') then '>' else ' src="' + $src + '">'
     return $str
     

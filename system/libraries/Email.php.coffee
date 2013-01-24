@@ -97,7 +97,7 @@ class global.Exspresso_Email
   #
   # The constructor can be passed an array of config values
   #
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
 
 
     @_debug_msg = {}
@@ -1623,9 +1623,9 @@ class global.Exspresso_Email
   #
   _set_error_message: ($msg, $val = '') ->
 
-    @CI.lang.load('email')
+    @Exspresso.lang.load('email')
 
-    if false is ($line = @CI.lang.line($msg))
+    if false is ($line = @Exspresso.lang.line($msg))
       @_debug_msg.push str_replace('%s', $val, $msg) + "<br />"
 
     else

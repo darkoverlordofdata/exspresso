@@ -31,14 +31,14 @@ class global.Breadcrumb
   #
   # Constructor
   #
-  constructor: ($config, @CI) ->
+  constructor: ($config, @Exspresso) ->
 
     log_message('debug', "Breadcrumb Class Initialized")
 
     @["_#{$key}"] = $val for $key, $val of $config
 
-    if @CI.session.userdata('breadcrumb') isnt null 
-      @_crumbs = @CI.session.userdata('breadcrumb')
+    if @Exspresso.session.userdata('breadcrumb') isnt null
+      @_crumbs = @Exspresso.session.userdata('breadcrumb')
     else
       @_crumbs = []
 
@@ -69,7 +69,7 @@ class global.Breadcrumb
 
       @_crumbs[$level] = $crumb
 
-    @CI.session.set_userdata('breadcrumb', @_crumbs) # Persist the data
+    @Exspresso.session.set_userdata('breadcrumb', @_crumbs) # Persist the data
     @_crumbs[$level]['url'] = null # Ditch the underlying url for the current page.
 
    #

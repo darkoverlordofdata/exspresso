@@ -20,6 +20,7 @@
     "connect": "*",
     "connect-cache": "*",
     "connect-redis": "*",
+    "connect-useragent": "*",
     "cookie": "*",
     "cookie-signature": "*",
     "dispatch": "*",

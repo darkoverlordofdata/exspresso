@@ -62,11 +62,11 @@ if not function_exists('form_open')
 
     #  If an action is not a full URL then turn it into one
     #if $action and strpos($action, '://') is false
-    #  $action = @CI.config.site_url($action)
+    #  $action = @Exspresso.config.site_url($action)
 
 
     #  If no action is provided then set to the current url
-    $action or ($action = @CI.config.site_url(@CI.uri.uri_string()))
+    $action or ($action = @Exspresso.config.site_url(@Exspresso.uri.uri_string()))
 
     $form = '<form action="' + $action + '"'
 
@@ -75,8 +75,8 @@ if not function_exists('form_open')
     $form+='>'
 
     #  CSRF
-    if @CI.config.item('csrf_protection') is true
-      $hidden[@CI.security.get_csrf_token_name()] = @CI.security.get_csrf_hash()
+    if @Exspresso.config.item('csrf_protection') is true
+      $hidden[@Exspresso.security.get_csrf_token_name()] = @Exspresso.security.get_csrf_hash()
 
     if is_array($hidden) and count($hidden) > 0
       {format} = require('util')
@@ -871,15 +871,15 @@ if not function_exists('_get_validation_object')
     #  We set this as a variable since we're returning by reference
     $return = false
 
-    if not @CI.load._ci_classes?  or  not @CI.load._ci_classes['form_validation']?
+    if not @Exspresso.load._ex_classes?  or  not @Exspresso.load._ex_classes['form_validation']?
       return $return
 
-    $object = @CI.load._ci_classes['form_validation']
+    $object = @Exspresso.load._ex_classes['form_validation']
     
-    if not @CI[$object]?  or  not is_object(@CI[$object])
+    if not @Exspresso[$object]?  or  not is_object(@Exspresso[$object])
       return $return
 
-    return @CI[$object]
+    return @Exspresso[$object]
 
 
 #  ------------------------------------------------------------------------

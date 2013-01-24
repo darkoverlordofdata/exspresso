@@ -35,7 +35,7 @@ class global.Exspresso_Session
   sess_expire_on_close: false
   sess_match_ip: false
   sess_match_useragent: true
-  sess_cookie_name: 'ci_session'
+  sess_cookie_name: 'ex_session'
   cookie_prefix: ''
   cookie_path: ''
   cookie_domain: ''
@@ -46,7 +46,7 @@ class global.Exspresso_Session
   time_reference: 'time'
   gc_probability: 5
   userdata: {}
-  CI: {}
+  Exspresso: {}
   now: {}
 
   #
@@ -150,10 +150,14 @@ class global.Exspresso_Session
 
     ($req, $res, $next) =>
 
-      #$req.session = $req.session ? {}
+      $req.session.session_id     = $req.session.session_id || $req.sessionID
+      $req.session.ip_address     = $req.session.ip_address || $req.ip
+      $req.session.user_agent     = $req.session.user_agent || $req.agent
+      $req.session.last_activity  = $req.session.last_activity || (new Date()).getTime()
+      $req.session.get_instance   = -> return $req.CI
 
       # --------------------------------------------------------------------
-      @user = () -> @req.session.user ? false
+      @user = () -> $req.session.user ? false
 
       # --------------------------------------------------------------------
       @set_userdata = ($newdata = {}, $newval = '') ->

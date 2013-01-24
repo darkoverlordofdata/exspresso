@@ -39,7 +39,7 @@
 #
 class global.Exspresso_DB_Cache
   
-  CI: {}
+  Exspresso: {}
   db: {}#  allows passing of db object so that multiple database connections and returned db objects can be supported
   
   #
@@ -48,10 +48,10 @@ class global.Exspresso_DB_Cache
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: (@db, @CI) ->
+  constructor: (@db, @Exspresso) ->
     #  Assign the main CI object to $this->CI
     #  and load the file helper since we use it a lot
-    @CI.load.helper('file')
+    @Exspresso.load.helper('file')
     
   
   #  --------------------------------------------------------------------
@@ -101,9 +101,9 @@ class global.Exspresso_DB_Cache
       return @db.cache_off()
       
     
-    $segment_one = if (@CI.uri.segment(1) is false) then 'default' else @CI.uri.segment(1)
+    $segment_one = if (@Exspresso.uri.segment(1) is false) then 'default' else @Exspresso.uri.segment(1)
     
-    $segment_two = if (@CI.uri.segment(2) is false) then 'index' else @CI.uri.segment(2)
+    $segment_two = if (@Exspresso.uri.segment(2) is false) then 'index' else @Exspresso.uri.segment(2)
     
     $filepath = @db.cachedir + $segment_one + '+' + $segment_two + '/' + md5($sql)
     
@@ -127,9 +127,9 @@ class global.Exspresso_DB_Cache
       return @db.cache_off()
       
     
-    $segment_one = if (@CI.uri.segment(1) is false) then 'default' else @CI.uri.segment(1)
+    $segment_one = if (@Exspresso.uri.segment(1) is false) then 'default' else @Exspresso.uri.segment(1)
     
-    $segment_two = if (@CI.uri.segment(2) is false) then 'index' else @CI.uri.segment(2)
+    $segment_two = if (@Exspresso.uri.segment(2) is false) then 'index' else @Exspresso.uri.segment(2)
     
     $dir_path = @db.cachedir + $segment_one + '+' + $segment_two + '/'
     
@@ -161,11 +161,11 @@ class global.Exspresso_DB_Cache
   #
   delete: ($segment_one = '', $segment_two = '') ->
     if $segment_one is ''
-      $segment_one = if (@CI.uri.segment(1) is false) then 'default' else @CI.uri.segment(1)
+      $segment_one = if (@Exspresso.uri.segment(1) is false) then 'default' else @Exspresso.uri.segment(1)
       
     
     if $segment_two is ''
-      $segment_two = if (@CI.uri.segment(2) is false) then 'index' else @CI.uri.segment(2)
+      $segment_two = if (@Exspresso.uri.segment(2) is false) then 'index' else @Exspresso.uri.segment(2)
       
     
     $dir_path = @db.cachedir + $segment_one + '+' + $segment_two + '/'

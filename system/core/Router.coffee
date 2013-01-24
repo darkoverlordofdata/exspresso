@@ -86,8 +86,8 @@ class global.Exspresso_Router extends Base_Router
     #
     @routes[$route] = ($req, $res, $next, $args...) =>
 
-      $CI = new $class($res, $module)
-      @ctor_queue $CI._ctor, ->
+      $CI = new $class($req, $module)
+      @_run $CI.queue(), ->
         try
           call_user_func_array [$CI, $method], $args
         catch $err
@@ -105,7 +105,7 @@ class global.Exspresso_Router extends Base_Router
   # @access	private
   # @return	void
   #
-  _set_routing: ($uri) ->
+  set_routing: ($uri) ->
     @_module = ''
     super $uri
 
@@ -120,7 +120,7 @@ class global.Exspresso_Router extends Base_Router
   # @access	private
   # @return	object routes
   #
-  _load_routes: ->
+  load_routes: ->
 
     $routes = super()
 

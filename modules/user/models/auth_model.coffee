@@ -32,10 +32,10 @@ class global.Auth_model extends Exspresso_Model
   #
   check_db: ($next) =>
 
-    if not @CI.db? then return $next Error('Auth_model: Db not loaded')
-    if @CI.db is null then return $next Error('Auth_model: Db object is null')
+    if not @Exspresso.db? then return $next Error('Auth_model: Db not loaded')
+    if @Exspresso.db is null then return $next Error('Auth_model: Db object is null')
 
-    @CI.db.table_exists 'users', ($err, $exists) =>
+    @Exspresso.db.table_exists 'users', ($err, $exists) =>
 
       if $err then return $next $err
       @_db_exists = $exists

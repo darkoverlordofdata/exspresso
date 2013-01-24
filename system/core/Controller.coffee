@@ -24,13 +24,16 @@
 #
 class global.Exspresso_Controller
 
-  res: null
-  _module: ''
+  _req        : null      # http Request object
+  _res        : null      # http Response object
+  _module     : ''        # module
+  _queue      : null      # async queue
 
-  constructor: ($res, @_module) ->
+  constructor: ($req, @_module) ->
 
-    $res.CI = @
-    @res = $res
+    $req.res.CI = $req.CI = @
+    @_req = $req
+    @_res = $req.res
 
     # Assign all the class objects that were instantiated by the
     # bootstrap file (Exspresso.coffee) to local class variables
@@ -45,10 +48,12 @@ class global.Exspresso_Controller
     # so that callbacks will run in the controller context
     @load = load_new('Loader', 'core')
     @load.initialize(@) # NO AUTOLOAD!!!
-    @_ctor = []
+    @_queue = []
 
     log_message 'debug', "Controller Class Initialized"
 
+  queue: ($fn) ->
+    if $fn then @_queue.push($fn) else @_queue
 
   # --------------------------------------------------------------------
 
@@ -63,13 +68,13 @@ class global.Exspresso_Controller
   #
   render: ($view, $data = {}, $callback) =>
     $data.CI = @
-    @res.render $view, $data, ($err, $html) =>
+    @_res.render $view, $data, ($err, $html) =>
 
       if $callback? then $callback $err, $html
       else
         if $err then show_error $err
         else
-          @res.send $html
+          @_res.send $html
 
   # --------------------------------------------------------------------
 
@@ -81,7 +86,7 @@ class global.Exspresso_Controller
   # @return	void
   #
   redirect: ($url) =>
-    @res.redirect $url
+    @_res.redirect $url
 
 
 # END Exspresso_Controller class

@@ -100,7 +100,7 @@ class global.Exspresso_Email
   #
   # The constructor can be passed an array of config values
   #
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
 
 
     @_debug_msg = {}

@@ -52,9 +52,9 @@
 if not function_exists('nl2br_except_pre')
   exports.nl2br_except_pre = nl2br_except_pre = ($str) ->
 
-    @CI.load.library('typography')
+    @Exspresso.load.library('typography')
     
-    return @CI.typography.nl2br_except_pre($str)
+    return @Exspresso.typography.nl2br_except_pre($str)
     
   
 
@@ -73,8 +73,8 @@ if not function_exists('nl2br_except_pre')
 if not function_exists('auto_typography')
   exports.auto_typography = auto_typography = ($str, $strip_js_event_handlers = true, $reduce_linebreaks = false) ->
 
-    @CI.load.library('typography')
-    return @CI.typography.auto_typography($str, $strip_js_event_handlers, $reduce_linebreaks)
+    @Exspresso.load.library('typography')
+    return @Exspresso.typography.auto_typography($str, $strip_js_event_handlers, $reduce_linebreaks)
     
   
 

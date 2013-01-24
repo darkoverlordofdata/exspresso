@@ -35,7 +35,7 @@ class global.Theme
   _css: null
   _menu: null
 
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
 
     log_message('debug', "Theme Class Initialized")
 
@@ -62,8 +62,8 @@ class global.Theme
     @['_'+$key] = $val for $key, $val of $config
     @_path = @_location + $theme + '/theme' + EXT
     
-    if not @CI.template?
-      @template = @CI.load.library 'template'
+    if not @Exspresso.template?
+      @template = @Exspresso.load.library 'template'
 
     @
 
@@ -101,7 +101,7 @@ class global.Theme
       $template.set_script @_script.default
 
     if not Array.isArray($extra) then $extra = [$extra]
-    if @CI.output._enable_profiler is true
+    if @Exspresso.output._enable_profiler is true
       if $extra.indexOf('prettify') is -1
         $extra.push 'prettify'
 
@@ -111,6 +111,20 @@ class global.Theme
 
       if @_script[$name]?
         $template.set_script @_script[$name]
+    @
+
+  more: ($extra...) ->
+
+    if @Exspresso.output._enable_profiler is true
+      if $extra.indexOf('prettify') is -1
+        $extra.push 'prettify'
+
+    for $name in $extra
+      if @_css[$name]?
+        @Exspresso.template.set_css @_css[$name]
+
+      if @_script[$name]?
+        @Exspresso.template.set_script @_script[$name]
     @
 
 module.exports = Theme

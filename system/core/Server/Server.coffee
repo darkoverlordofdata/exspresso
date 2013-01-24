@@ -26,7 +26,9 @@ dispatch        = require('dispatch')   # URL dispatcher for Connect
 
 class global.Exspresso_Server
 
-
+  #
+  # config settings
+  #
   _driver       : 'express'
   _db           : 'mysql'
   _cache        : false
@@ -37,6 +39,7 @@ class global.Exspresso_Server
   _logger       : 'dev'
   _site_name    : 'My Site'
   _site_slogan  : 'My Slogan'
+  _queue        : null
 
   #  --------------------------------------------------------------------
 
@@ -48,9 +51,9 @@ class global.Exspresso_Server
   # @param object   config array
   # @return	object
   #
-  @load = ($driver, $config) ->
+  @load = ($driver, $args...) ->
     $class = require(BASEPATH+'core/Server/drivers/Server_'+$driver)
-    new $class($config)
+    new $class($args...)
 
   #  --------------------------------------------------------------------
 
@@ -64,6 +67,7 @@ class global.Exspresso_Server
 
     log_message('debug', "Server Class Initialized")
 
+    @_queue = []
     #
     # get the config values
     #
@@ -93,7 +97,6 @@ class global.Exspresso_Server
     #
     # the Expresso core instance
     #
-    @CI = Exspresso
     @config get_config()
 
 
@@ -107,11 +110,59 @@ class global.Exspresso_Server
   #
   set_helpers: ($helpers) -> # abstract method
 
+  #  --------------------------------------------------------------------
 
-
+  #
+  # Get the driver version
+  #
+  # @access	public
+  # @return	void
+  #
   get_version: () ->
     @_driver + ' v' + require(process.cwd()+'/node_modules/'+@_driver+'/package.json').version
 
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Add a function to the async queue
+  #
+  # @access	public
+  # @return	void
+  #
+  queue: ($fn) ->
+    if $fn then @_queue.push($fn) else @_queue
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Run the async queue
+  #
+  # @access	public
+  # @return	void
+  #
+  _run: ($queue, $next) ->
+
+    $index = 0
+    $iterate = ->
+
+      if $queue.length is 0 then $next null
+      else
+        #
+        # call the function at index
+        #
+        $fn = $queue[$index]
+        $fn ($err)->
+          if $err
+            log_message 'debug', 'Server::run'
+            console.log $err
+            return $next $err
+
+          $index += 1
+          if $index is $queue.length then $next null
+          else $iterate()
+
+    $iterate()
 
   #  --------------------------------------------------------------------
 
@@ -121,13 +172,14 @@ class global.Exspresso_Server
   # @access	public
   # @return	void
   #
-  start: ($router, $autoload = true) ->
+  start: ($router, $autoload = true, $next) ->
 
-    @CI.load = load_class('Loader', 'core')
-    @CI.load.initialize @CI, $autoload
+    Exspresso.load = load_class('Loader', 'core')
+    Exspresso.load.initialize Exspresso, $autoload
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
-    log_message 'debug', 'Exspresso boot sequence complete'
+    @_run Exspresso.queue().concat(@queue()), ($err) ->
+      if not $err then $next()
 
 
   #  --------------------------------------------------------------------
@@ -162,7 +214,7 @@ class global.Exspresso_Server
   #
   output: ($output) ->
 
-    $output.enable_profiler Exspresso.server._profile
+    $output.enable_profiler @_profile
     @app.use $output.middleware()
 
   #  --------------------------------------------------------------------

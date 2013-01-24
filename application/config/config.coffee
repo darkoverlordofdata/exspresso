@@ -246,12 +246,12 @@ exports['encryption_key'] = process.env.CLIENT_SECRET ? 'ZAHvYIu8u1iRS6Hox7jADpn
 # 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 #
 
-exports['sess_cookie_name']		= 'ci_session'
+exports['sess_cookie_name']		= 'ex_session'
 exports['sess_expiration']		= 7200
 exports['sess_expire_on_close']	= false
 exports['sess_encrypt_cookie']	= false
-exports['sess_use_database']	= false # process.env.REDISTOGO_URL ? 'redis://localhost:6379'
-exports['sess_table_name']		= 'ci_sessions'
+exports['sess_use_database']	= true # process.env.REDISTOGO_URL ? 'redis://localhost:6379'
+exports['sess_table_name']		= 'ex_sessions'
 exports['sess_match_ip']		= false
 exports['sess_match_useragent']	= true
 exports['sess_time_to_update']	= 300

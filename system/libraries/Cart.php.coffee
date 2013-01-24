@@ -52,7 +52,7 @@ class Exspresso_Cart
   product_name_rules: '\.\:\-_ a-z0-9'#  alpha-numeric, dashes, underscores, colons or periods
   
   #  Private variables.  Do not change!
-  CI: {}
+  Exspresso: {}
   _cart_contents: {}
   
   
@@ -64,7 +64,7 @@ class Exspresso_Cart
   __construct($params = {})
   {
   #  Set the super object to a local variable for use later
-  @CI = Exspresso
+  @Exspresso = Exspresso
   
   #  Are any config settings being passed manually?  If so, set them
   $config = {}
@@ -75,11 +75,11 @@ class Exspresso_Cart
     
   
   #  Load the Sessions class
-  @CI.load.library('session', $config)
+  @Exspresso.load.library('session', $config)
   
   #  Grab the shopping cart array from the session table, if it exists
-  if @CI.session.userdata('cart_contents') isnt false
-    @_cart_contents = @CI.session.userdata('cart_contents')
+  if @Exspresso.session.userdata('cart_contents') isnt false
+    @_cart_contents = @Exspresso.session.userdata('cart_contents')
     
   else 
     #  No cart exists so we'll set some base values
@@ -374,7 +374,7 @@ class Exspresso_Cart
     
     #  Is our cart empty?  If so we delete it from the session
     if count(@_cart_contents)<=2
-      @CI.session.unset_userdata('cart_contents')
+      @Exspresso.session.unset_userdata('cart_contents')
       
       #  Nothing more to do... coffee time!
       return false
@@ -382,7 +382,7 @@ class Exspresso_Cart
     
     #  If we made it this far it means that our cart has data.
     #  Let's pass it to the Session class so it can be stored
-    @CI.session.set_userdata('cart_contents':@_cart_contents)
+    @Exspresso.session.set_userdata('cart_contents':@_cart_contents)
     
     #  Woot!
     return true
@@ -508,7 +508,7 @@ class Exspresso_Cart
     @_cart_contents['cart_total'] = 0
     @_cart_contents['total_items'] = 0
     
-    @CI.session.unset_userdata('cart_contents')
+    @Exspresso.session.unset_userdata('cart_contents')
     
   
   

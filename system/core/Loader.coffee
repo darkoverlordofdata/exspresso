@@ -64,13 +64,13 @@ class global.Exspresso_Loader extends Base_Loader
   #
   # @var array
   #
-  _ci_plugins: {}
+  _ex_plugins: {}
   #
   # List of variables for rendering templates
   #
   # @var array
   #
-  _ci_cached_vars: {}
+  _ex_cached_vars: {}
 
   ## --------------------------------------------------------------------
 
@@ -78,17 +78,16 @@ class global.Exspresso_Loader extends Base_Loader
   # Initialize the Loader
   #
   #
-  # @param 	object  controller instance
+  # @param 	object  Exspresso controller instance
   # @param  boolean call autoload
   # @return object
   #
-  initialize: ($CI, $autoload = false) ->
+  initialize: ($Exspresso, $autoload = false) ->
 
-    super($CI, $autoload)
+    super $Exspresso, $autoload
 
     #  set the module name
-    @_module = $CI.router.fetch_module()
-    #@_module = $CI._module
+    @_module = $Exspresso.router.fetch_module()
 
     #  add this module path to the loader variables
     @_add_module_paths(@_module)
@@ -111,7 +110,7 @@ class global.Exspresso_Loader extends Base_Loader
     for  $location, $offset of Modules.locations
       # only add a module path if it exists
       if is_dir($module_path = $location+$module+'/')
-        array_unshift(@_ci_model_paths, $module_path)
+        array_unshift(@_ex_model_paths, $module_path)
 
   ## --------------------------------------------------------------------
 
@@ -126,7 +125,7 @@ class global.Exspresso_Loader extends Base_Loader
   #
   config: ($file = 'config', $use_sections = false, $fail_gracefully = false) ->
 
-    @CI.config.load($file, $use_sections, $fail_gracefully, @_module)
+    @Exspresso.config.load($file, $use_sections, $fail_gracefully, @_module)
 
 
   ## --------------------------------------------------------------------
@@ -143,18 +142,18 @@ class global.Exspresso_Loader extends Base_Loader
   database: ($params = '',$return = false, $active_record = null) ->
 
 
-    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @CI.db?  and is_object(@CI.db)
+    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @Exspresso.db?  and is_object(@Exspresso.db)
       return
 
     $params = $params || Exspresso.server._db
 
-    DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
+    $DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
 
-    @CI._ctor.push ($callback) -> DB.initialize $callback
+    @Exspresso.queue ($next) -> $DB.initialize $next
 
-    if $return is true then return DB #($params, $active_record)
+    if $return is true then return $DB #($params, $active_record)
 
-    @CI.db = DB #($params, $active_record)
+    @Exspresso.db = $DB #($params, $active_record)
 
   ## --------------------------------------------------------------------
 
@@ -171,19 +170,19 @@ class global.Exspresso_Loader extends Base_Loader
 
     if is_array($helper) then return @helpers($helper)
 
-    if @_ci_helpers[$helper]? then return
+    if @_ex_helpers[$helper]? then return
 
     [$path, $_helper] = Modules.find($helper+'_helper', @_module, 'helpers/')
 
     if $path is false then return super($helper)
 
-    @_ci_helpers[$_helper] = Modules.load_file($_helper, $path)
+    @_ex_helpers[$_helper] = Modules.load_file($_helper, $path)
 
     # expose the helpers to template engine
-    # for $name, $value of @_ci_helpers[$helper]
+    # for $name, $value of @_ex_helpers[$helper]
     #   Exspresso.server.app.locals[$name] = $value
 
-    @_ci_helpers[$helper]
+    @_ex_helpers[$helper]
 
   ## --------------------------------------------------------------------
 
@@ -209,7 +208,7 @@ class global.Exspresso_Loader extends Base_Loader
   # @return	void
   #
   language: ($langfile, $idiom = '', $return = false, $add_suffix = true, $alt_path = '') ->
-    return @CI.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
+    return @Exspresso.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
 
 
   ## --------------------------------------------------------------------
@@ -245,34 +244,34 @@ class global.Exspresso_Loader extends Base_Loader
 
     $class = strtolower(end(explode('/', $library)))
 
-    if @_ci_classes[$class]? and ($_alias = @_ci_classes[$class])
-      return @CI[$_alias]
+    if @_ex_classes[$class]? and ($_alias = @_ex_classes[$class])
+      return @Exspresso[$_alias]
 
     ($_alias = strtolower($object_name)) or ($_alias = $class)
 
-    [$path, $_library] = Modules.find($library, @CI._module, 'libraries/')
+    [$path, $_library] = Modules.find($library, @Exspresso._module, 'libraries/')
 
     # load library config file as params *
     if $params is null
       $params = {}
 
-    [$path2, $file] = Modules.find($_alias, @CI._module, 'config/')
+    [$path2, $file] = Modules.find($_alias, @Exspresso._module, 'config/')
     ($path2) and ($params = array_merge(Modules.load_file($file, $path2, 'config'), $params))
 
     if $path is false
 
-      @_ci_load_class($library, $params, $object_name)
-      $_alias = @_ci_classes[$class]
+      @_ex_load_class($library, $params, $object_name)
+      $_alias = @_ex_classes[$class]
 
     else
 
       $library = Modules.load_file($_library, $path)
 
-      @CI[$_alias] = new $library($params, @CI)
+      @Exspresso[$_alias] = new $library($params, @Exspresso)
 
-      @_ci_classes[$class] = $_alias
+      @_ex_classes[$class] = $_alias
 
-    return @CI[$_alias]
+    return @Exspresso[$_alias]
 
 
   ## --------------------------------------------------------------------
@@ -308,8 +307,8 @@ class global.Exspresso_Loader extends Base_Loader
 
     ($_alias = $object_name) or ($_alias = end(explode('/', $model)))
 
-    if in_array($_alias, @_ci_models, true)
-      return @CI[$_alias]
+    if in_array($_alias, @_ex_models, true)
+      return @Exspresso[$_alias]
 
     # check module *
     [$path, $_model] = Modules.find(strtolower($model), @_module, 'models/')
@@ -330,11 +329,11 @@ class global.Exspresso_Loader extends Base_Loader
 
       $model = Modules.load_file($_model, $path)
 
-      @CI[$_alias] = new $model(@CI)
+      @Exspresso[$_alias] = new $model(@Exspresso)
 
-      @_ci_models.push $_alias
+      @_ex_models.push $_alias
 
-    return @CI[$_alias]
+    return @Exspresso[$_alias]
 
   ## --------------------------------------------------------------------
 
@@ -365,8 +364,8 @@ class global.Exspresso_Loader extends Base_Loader
     if is_array($module) then return @modules($module)
 
     $_alias = strtolower(end(explode('/', $module)))
-    @CI[$_alias] = Modules.load(array($module , $params))
-    return @CI[$_alias]
+    @Exspresso[$_alias] = Modules.load(array($module , $params))
+    return @Exspresso[$_alias]
 
 
   ## --------------------------------------------------------------------
@@ -397,7 +396,7 @@ class global.Exspresso_Loader extends Base_Loader
 
     if (is_array($plugin)) then return @plugins($plugin)
 
-    if @_ci_plugins[$plugin]?
+    if @_ex_plugins[$plugin]?
       return
 
     [$path, $_plugin] = Modules.find($plugin+'_pi', @_module, 'plugins/')
@@ -405,7 +404,7 @@ class global.Exspresso_Loader extends Base_Loader
     if ($path is false) then return
 
     Modules.load_file($_plugin, $path)
-    @_ci_plugins[$plugin] = true
+    @_ex_plugins[$plugin] = true
 
   ## --------------------------------------------------------------------
 
@@ -440,9 +439,9 @@ class global.Exspresso_Loader extends Base_Loader
   # @return	void
   #
   view: ($view, $vars = {}, $callback) ->
-    [$path, $view] = Modules.find($view, @CI._module, 'views/')
-    @_ci_view_path = if $path then $path else APPPATH + config_item('views')
-    @_ci_load('', $view, $vars, $callback)
+    [$path, $view] = Modules.find($view, @Exspresso._module, 'views/')
+    @_ex_view_path = if $path then $path else APPPATH + config_item('views')
+    @_ex_load('', $view, $vars, $callback)
 
   #  --------------------------------------------------------------------
 
@@ -490,7 +489,7 @@ class global.Exspresso_Loader extends Base_Loader
     if $autoload['libraries']?
       if in_array('database', $autoload['libraries'])
         #  autoload database
-        if not ($db = @CI.config.item('database'))
+        if not ($db = @Exspresso.config.item('database'))
           $db['params'] = 'default'
           $db['active_record'] = true
 

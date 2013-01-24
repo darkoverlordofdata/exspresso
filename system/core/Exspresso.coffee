@@ -36,6 +36,17 @@ require BASEPATH + 'core/Common.coffee'
 log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", Exspresso_VERSION
 
 #
+#
+# Async job queue
+#
+# @var array
+#
+#
+_queue = []
+exports.queue = ($fn) ->
+  if $fn then _queue.push($fn) else _queue
+
+#
 # ------------------------------------------------------
 #  Load the framework constants
 # ------------------------------------------------------
@@ -53,8 +64,11 @@ exports.config = load_class('Config', 'core')
 
 #
 # ------------------------------------------------------
-#  Instantiate the core server app (default to expressjs)
+#  Instantiate the core server app
 # ------------------------------------------------------
+#
+#   Get the 1st command line arg
+#     if it's not an option, then it's the driver name
 #
 $driver = if ~($argv[2] ? '').indexOf('-') then '' else $argv[2] ? ''
 
@@ -104,13 +118,13 @@ exports.lang = load_class('Lang', 'core')
 # Load the base controller class
 require BASEPATH+'core/Controller.coffee'
 
-if file_exists(APPPATH+'core/'+Exspresso.config.config['subclass_prefix']+'Controller.coffee')
+if file_exists(APPPATH+'core/'+config_item('subclass_prefix')+'Controller.coffee')
 
-  require APPPATH+'core/'+Exspresso.config.config['subclass_prefix']+'Controller.coffee'
+  require APPPATH+'core/'+config_item('subclass_prefix')+'Controller.coffee'
 
-for $path, $uri of Exspresso.router._load_routes()
+for $path, $uri of Exspresso.router.load_routes()
 
-  Exspresso.router._set_routing($uri)
+  Exspresso.router.set_routing($uri)
 
   # Load the local application controller
   # Note: The Router class automatically validates the controller path using the router->_validate_request().

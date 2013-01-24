@@ -31,7 +31,7 @@ express         = require('express')        # Web development framework
 cache           = require("connect-cache")  # Caching system for Connect
 eco             = require('eco')            # Embedded CoffeeScript templates
 fs              = require("fs")             # File system
-
+useragent       = require('connect-useragent')
 
 class global.Exspresso_Server_express extends Exspresso_Server
 
@@ -76,42 +76,42 @@ class global.Exspresso_Server_express extends Exspresso_Server
   # @return	void
   #
   start: ($router, $autoload = true) ->
+    super $router, $autoload, =>
 
-    super $router, $autoload
+      if typeof @_port is 'undefined'
+        @_port = 3000
 
-    if typeof @_port is 'undefined'
-      @_port = 3000
+      @app.use @authenticate()
+      @app.use @app.router
+      @app.use @error_5xx()
+      @app.use @error_404()
 
-    @app.use @authenticate()
-    @app.use @app.router
-    @app.use @error_5xx()
-    @app.use @error_404()
+      @app.listen @_port, =>
 
-    @app.listen @_port, =>
+        console.log " "
+        console.log " "
+        console.log "Exspresso v"+Exspresso_VERSION
+        console.log "copyright 2012 Dark Overlord of Data"
+        console.log " "
+        console.log "listening on port #{@_port}"
+        console.log " "
 
-      console.log " "
-      console.log " "
-      console.log "Exspresso v"+Exspresso_VERSION
-      console.log "copyright 2012 Dark Overlord of Data"
-      console.log " "
-      console.log "listening on port #{@_port}"
-      console.log " "
+        if ENVIRONMENT is 'development'
+          console.log "View site at http://localhost:" + @_port
 
-      if ENVIRONMENT is 'development'
-        console.log "View site at http://localhost:" + @_port
+        log_message "debug", "listening on port #{@_port}"
 
-      log_message "debug", "listening on port #{@_port}"
+        if @_preview
+          #
+          # preview in appjs
+          #
+          {exec} = require('child_process')
+          exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
+            console.log $stderr if $stderr?
+            console.log $stdout if $stdout?
+            process.exit()
 
-      if @_preview
-        #
-        # preview in appjs
-        #
-        {exec} = require('child_process')
-        exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
-          console.log $stderr if $stderr?
-          console.log $stdout if $stdout?
-          process.exit()
-
+        return
       return
     return
 
@@ -153,7 +153,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     super $output
 
-    $config = @CI.config.config
+    $config = Exspresso.config.config
 
     #
     # Expose asset folders
@@ -208,6 +208,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     @app.use express.bodyParser()
     @app.use express.methodOverride()
+    @app.use useragent()
     return
 
   #  --------------------------------------------------------------------
@@ -229,6 +230,40 @@ class global.Exspresso_Server_express extends Exspresso_Server
   #  --------------------------------------------------------------------
 
   #
+  # Session Database setup
+  #
+  #   create session table
+  #
+  # @access	public
+  # @return	void
+  #
+  session_db: ->
+
+    @queue ($next) ->
+      Exspresso.db.table_exists 'ex_session', ($err, $table_exists) ->
+
+        if $err then return $next $err
+        if $table_exists then return $next null
+
+        Exspresso.load.dbforge()
+        Exspresso.dbforge.add_field
+          session_id:
+            type: 'VARCHAR'
+            constraint: 255
+          session:
+            type: 'TEXT'
+          expires:
+            type: 'INT'
+
+        Exspresso.dbforge.add_key 'session_id', true
+        Exspresso.dbforge.create_table 'ex_session', $next
+
+    @queue ($next) ->
+      Exspresso.db.close $next
+
+  #  --------------------------------------------------------------------
+
+  #
   # Sessions registration
   #
   #   called by the libraries/Session/Session class constructor
@@ -239,16 +274,13 @@ class global.Exspresso_Server_express extends Exspresso_Server
   #
   session: ($session) ->
 
-    super $session
     @app.use express.cookieParser($session.encryption_key)
-
-
     #  Are we using a database?  If so, load it
     if $session.sess_use_database isnt false and $session.sess_table_name isnt ''
 
       if $session.sess_use_database is true
-        @CI.load.database()
-        $sess_driver = @CI.db.dbdriver
+        $sess_driver = Exspresso.db.dbdriver
+        @session_db()
       else
         $sess_driver = parse_url($session.sess_use_database).scheme
 
@@ -263,21 +295,33 @@ class global.Exspresso_Server_express extends Exspresso_Server
           $store = new $driver($session)
 
           @app.use express.session
+            key:      'session_id'
             secret:   $session.encryption_key
-            maxAge:   Date.now() + ($session.sess_expiration * 1000)
             store:    $store
+            cookie:
+              domain:   $session.cookie_domain
+              path:     $session.cookie_path
+              secure:   $session.cookie_secure
+              maxAge:   $session.sess_expiration * 1000
 
       if not $found
 
         show_error "Driver not found: Session_%s", $sess_driver
 
-        @app.use express.session(secret: $session.encryption_key)
-
     else
 
-      @app.use express.session(secret: $session.encryption_key)
+      @app.use express.session
+        key:      'session_id'
+        secret:   $session.encryption_key
+        cookie:
+          domain:   $session.cookie_domain
+          path:     $session.cookie_path
+          secure:   $session.cookie_secure
+          maxAge:   $session.sess_expiration * 1000
 
     @app.use express.csrf() if @_csrf
+    super $session
+
     return
 
   # --------------------------------------------------------------------

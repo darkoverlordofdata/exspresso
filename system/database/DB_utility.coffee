@@ -239,7 +239,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     $tab      = $params.tab ? "\t"
 
     #  Load the xml helper
-    @CI.load.helper('xml')
+    @Exspresso.load.helper('xml')
     
     #  Generate the result
     $xml = "<#{$root}>" + $newline
@@ -355,9 +355,9 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
       
       #  Load the Zip class and output it
       
-      @CI.load.library('zip')
-      @CI.zip.add_data($prefs['filename'], @_backup($prefs))
-      return @CI.zip.get_zip()
+      @Exspresso.load.library('zip')
+      @Exspresso.zip.add_data($prefs['filename'], @_backup($prefs))
+      return @Exspresso.zip.get_zip()
       
 module.exports = Exspresso_DB_utility
 

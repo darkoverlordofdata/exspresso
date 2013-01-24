@@ -944,6 +944,18 @@ class Exspresso_DB_driver
     @CACHE = new Exspresso_DB_Cache(@)#  pass db object to support multiple db connections and returned db objects
     return true
 
+  # --------------------------------------------------------------------
+
+  #
+  # Close DB Connection
+  #
+  # @access	public
+  # @return	void
+  #
+  close: ($callback)->
+
+    @conn_id = false
+    @_close($callback)
 
 
   #  --------------------------------------------------------------------

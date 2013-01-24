@@ -44,7 +44,7 @@ class global.Exspresso_Form_validation
   sprintf = require('util').format
 
 
-  CI: null
+  Exspresso: null
   _field_data: {}
   _config_rules: {}
   _error_array: {}
@@ -57,17 +57,17 @@ class global.Exspresso_Form_validation
   #
   # Constructor
   #
-  constructor: ($rules = {}, @CI) ->
+  constructor: ($rules = {}, @Exspresso) ->
 
     #  Validation rules can be stored in a config file.
     @_config_rules = $rules
 
     #  Automatically load the form helper
-    @CI.load.helper('form')
+    @Exspresso.load.helper('form')
 
     #  Set the character encoding in MB.
     if function_exists('mb_internal_encoding')
-      mb_internal_encoding(@CI.config.item('charset'))
+      mb_internal_encoding(@Exspresso.config.item('charset'))
 
 
     log_message('debug', "Form Validation Class Initialized")
@@ -276,7 +276,7 @@ class global.Exspresso_Form_validation
         
       
       #  Is there a validation rule for the particular URI being accessed?
-      # $uri = if ($group is '') then trim(@CI.uri.ruri_string(), '/') else $group
+      # $uri = if ($group is '') then trim(@Exspresso.uri.ruri_string(), '/') else $group
       $uri = $group
       if $uri isnt '' and @_config_rules[$uri]? 
         @set_rules(@_config_rules[$uri])
@@ -293,7 +293,7 @@ class global.Exspresso_Form_validation
       
     
     #  Load the language file containing error messages
-    @CI.lang.load('form_validation')
+    @Exspresso.lang.load('form_validation')
     
     #  Cycle through the rules for each field, match the
     #  corresponding $_POST item and test for errors
@@ -445,7 +445,7 @@ class global.Exspresso_Form_validation
         $type = if (in_array('required', $rules)) then 'required' else 'isset'
 
         if not @_error_messages[$type]?
-          if false is ($line = @CI.lang.line($type))
+          if false is ($line = @Exspresso.lang.line($type))
             $line = 'The field was not set'
             
           
@@ -504,11 +504,11 @@ class global.Exspresso_Form_validation
 
       #  Call the function that corresponds to the rule
       if $callback is true
-        if not method_exists(@CI, $rule)
+        if not method_exists(@Exspresso, $rule)
           continue
 
         #  Run the function and grab the result
-        $result = @CI[$rule]($postdata, $param)
+        $result = @Exspresso[$rule]($postdata, $param)
         
         #  Re-assign the result to the master data array
         if $_in_array is true
@@ -547,7 +547,7 @@ class global.Exspresso_Form_validation
       #  Did the rule test negatively?  If so, grab the error.
       if $result is false
         if not @_error_messages[$rule]?
-          if false is ($line = @CI.lang.line($rule))
+          if false is ($line = @Exspresso.lang.line($rule))
             $line = 'Unable to access an error message corresponding to your field name.'
 
         else
@@ -589,7 +589,7 @@ class global.Exspresso_Form_validation
       $line = substr($fieldname, 5)
       
       #  Were we able to translate the field name?  If not we use $line
-      if false is ($fieldname = @CI.lang.line($line))
+      if false is ($fieldname = @Exspresso.lang.line($line))
         return $line
         
       
@@ -891,7 +891,7 @@ class global.Exspresso_Form_validation
   # @return	string
   #
   valid_ip: ($ip) ->
-    return @CI.input.valid_ip($ip)
+    return @Exspresso.input.valid_ip($ip)
     
   
   #  --------------------------------------------------------------------
@@ -1121,7 +1121,7 @@ class global.Exspresso_Form_validation
   # @return	string
   #
   strip_image_tags: ($str) ->
-    return @CI.input.strip_image_tags($str)
+    return @Exspresso.input.strip_image_tags($str)
     
   
   #  --------------------------------------------------------------------
@@ -1134,7 +1134,7 @@ class global.Exspresso_Form_validation
   # @return	string
   #
   xss_clean: ($str) ->
-    return @CI.security.xss_clean($str)
+    return @Exspresso.security.xss_clean($str)
     
   
   #  --------------------------------------------------------------------

@@ -44,7 +44,7 @@ class global.Exspresso_Parser
   l_delim: '{'
   r_delim: '}'
 
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
 
     @[$key] = $val for $key, $val of $config
 
@@ -64,7 +64,7 @@ class global.Exspresso_Parser
 
     $fn_err = $callback ? show_error
 
-    @CI.load.view $template, $data, ($err, $template) =>
+    @Exspresso.load.view $template, $data, ($err, $template) =>
 
       if $err then $fn_err $err
       else
@@ -118,8 +118,8 @@ class global.Exspresso_Parser
         $template = @_parse_single($key, ''+$val, $template)
 
     if $return is false
-      @CI.output.append_output($template)
-      @CI.output._display()
+      @Exspresso.output.append_output($template)
+      @Exspresso.output._display()
 
     return $template
     

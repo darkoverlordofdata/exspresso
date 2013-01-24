@@ -83,7 +83,7 @@ class global.Exspresso_Pagination
   # @access	public
   # @param	array	initialization parameters
   #
-  constructor: ($params = {}, @CI) ->
+  constructor: ($params = {}, @Exspresso) ->
     if count($params) > 0
       @initialize($params)
 
@@ -129,17 +129,17 @@ class global.Exspresso_Pagination
       return ''
 
     #  Determine the current page number.
-    if @CI.config.item('enable_query_strings') is true or @page_query_string is true
-      if @CI.input.get(@query_string_segment) isnt 0
-        @cur_page = @CI.input.get(@query_string_segment)
+    if @Exspresso.config.item('enable_query_strings') is true or @page_query_string is true
+      if @Exspresso.input.get(@query_string_segment) isnt 0
+        @cur_page = @Exspresso.input.get(@query_string_segment)
         
         #  Prep the current page - no funny business!
         @cur_page = parseInt(@cur_page, 10)
         
       
     else
-      if @CI.uri.segment(@uri_segment) isnt 0
-        @cur_page = @CI.uri.segment(@uri_segment)
+      if @Exspresso.uri.segment(@uri_segment) isnt 0
+        @cur_page = @Exspresso.uri.segment(@uri_segment)
         
         #  Prep the current page - no funny business!
         @cur_page = parseInt(@cur_page, 10)
@@ -172,7 +172,7 @@ class global.Exspresso_Pagination
     
     #  Is pagination being used over GET or POST?  If get, add a per_page query
     #  string. If post, add a trailing slash to the base URL if needed
-    if @CI.config.item('enable_query_strings') is true or @page_query_string is true
+    if @Exspresso.config.item('enable_query_strings') is true or @page_query_string is true
       @base_url = rtrim(@base_url) + '&amp;' + @query_string_segment + '='
       
     else 

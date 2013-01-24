@@ -47,7 +47,7 @@
 #
 class global.Base_Profiler
   
-  CI: null
+  Exspresso: null
   
   _available_sections: [
     'benchmarks', 
@@ -63,10 +63,10 @@ class global.Base_Profiler
 
   _enabled_sections: null
 
-  constructor: ($config = {}, @CI) ->
+  constructor: ($config = {}, @Exspresso) ->
 
     @_enabled_sections = {}
-    @CI.load.language('profiler')
+    @Exspresso.load.language('profiler')
 
     #  default all sections to display
     for $section in @_available_sections
@@ -107,13 +107,13 @@ class global.Base_Profiler
   #
   _compile_benchmarks: () ->
     $profile = {}
-    for $key, $val of @CI.benchmark.marker
+    for $key, $val of @Exspresso.benchmark.marker
       #  We match the "end" marker so that the list ends
       #  up in the order that it was defined
       $match = preg_match("/(.+?)_end/i", $key)
       if $match?
-        if @CI.benchmark.marker[$match[1] + '_end']?  and @CI.benchmark.marker[$match[1] + '_start']?
-          $profile[$match[1]] = @CI.benchmark.elapsed_time($match[1] + '_start', $key)
+        if @Exspresso.benchmark.marker[$match[1] + '_end']?  and @Exspresso.benchmark.marker[$match[1] + '_start']?
+          $profile[$match[1]] = @Exspresso.benchmark.elapsed_time($match[1] + '_start', $key)
         
       
     
@@ -125,7 +125,7 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_benchmarks" style="border:1px solid #900;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#900;">&nbsp;&nbsp;' + @CI.lang.line('profiler_benchmarks') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#900;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_benchmarks') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
     $output+="\n\n<table style='width:100%'>\n"
 
@@ -150,7 +150,7 @@ class global.Base_Profiler
     $dbs = []
 
     #  Let's determine which databases are currently connected to
-    for $name, $Exspresso_object of get_object_vars(@CI)
+    for $name, $Exspresso_object of get_object_vars(@Exspresso)
       #if is_object($Exspresso_object) # and $Exspresso_object instanceof Exspresso_DB is true
       if $Exspresso_object['dbdriver']?
         $dbs.push $Exspresso_object
@@ -159,17 +159,17 @@ class global.Base_Profiler
       $output = "\n\n"
       $output+='<fieldset id="ci_profiler_queries" style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
       $output+="\n"
-      $output+='<legend style="color:#0000FF;">&nbsp;&nbsp;' + @CI.lang.line('profiler_queries') + '&nbsp;&nbsp;</legend>'
+      $output+='<legend style="color:#0000FF;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_queries') + '&nbsp;&nbsp;</legend>'
       $output+="\n"
       $output+="\n\n<table style='border:none; width:100%'>\n"
-      $output+="<tr><td style='width:100%;color:#0000FF;font-weight:normal;background-color:#eee;padding:5px'>" + @CI.lang.line('profiler_no_db') + "</td></tr>\n"
+      $output+="<tr><td style='width:100%;color:#0000FF;font-weight:normal;background-color:#eee;padding:5px'>" + @Exspresso.lang.line('profiler_no_db') + "</td></tr>\n"
       $output+="</table>\n"
       $output+="</fieldset>"
       return $output
 
 
     #  Load the text helper so we can highlight the SQL
-    @CI.load.helper('text')
+    @Exspresso.load.helper('text')
 
     #  Key words we want bolded
     $highlight = ['SELECT', 'DISTINCT', 'FROM', 'WHERE', 'AND', 'LEFT&nbsp;JOIN', 'ORDER&nbsp;BY', 'GROUP&nbsp;BY', 'LIMIT', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'OR&nbsp;', 'HAVING', 'OFFSET', 'NOT&nbsp;IN', 'IN', 'LIKE', 'NOT&nbsp;LIKE', 'COUNT', 'MAX', 'MIN', 'ON', 'AS', 'AVG', 'SUM', '(', ')']
@@ -179,12 +179,12 @@ class global.Base_Profiler
     for $db in $dbs
       $output+='<fieldset style="border:1px solid #0000FF;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
       $output+="\n"
-      $output+='<legend style="color:#0000FF;">&nbsp;&nbsp;' + @CI.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;&nbsp;&nbsp;' + @CI.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;&nbsp;&nbsp;</legend>'
+      $output+='<legend style="color:#0000FF;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;&nbsp;&nbsp;</legend>'
       $output+="\n"
       $output+="\n\n<table style='width:100%;'>\n"
 
       if count($db.queries) is 0
-        $output+="<tr><td style='width:100%;color:#0000FF;font-weight:normal;background-color:#eee;padding:5px;'>" + @CI.lang.line('profiler_no_queries') + "</td></tr>\n"
+        $output+="<tr><td style='width:100%;color:#0000FF;font-weight:normal;background-color:#eee;padding:5px;'>" + @Exspresso.lang.line('profiler_no_queries') + "</td></tr>\n"
 
       else
         for $key, $val of $db.queries
@@ -214,11 +214,11 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_get" style="border:1px solid #cd6e00;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#cd6e00;">&nbsp;&nbsp;' + @CI.lang.line('profiler_get_data') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#cd6e00;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_get_data') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
     if count($_GET) is 0
-      $output+="<div style='color:#cd6e00;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_get') + "</div>"
+      $output+="<div style='color:#cd6e00;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.lang.line('profiler_no_get') + "</div>"
 
     else
       $output+="\n\n<table style='width:100%; border:none'>\n"
@@ -254,11 +254,11 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_post" style="border:1px solid #009900;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#009900;">&nbsp;&nbsp;' + @CI.lang.line('profiler_post_data') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#009900;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_post_data') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
     if count($_POST) is 0
-      $output+="<div style='color:#009900;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_post') + "</div>"
+      $output+="<div style='color:#009900;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.lang.line('profiler_no_post') + "</div>"
 
     else
       $output+="\n\n<table style='width:100%'>\n"
@@ -295,14 +295,14 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_uri_string" style="border:1px solid #000;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @CI.lang.line('profiler_uri_string') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_uri_string') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
-    if @CI.uri.uri_string() is ''
-      $output+="<div style='color:#000;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_uri') + "</div>"
+    if @Exspresso.uri.uri_string() is ''
+      $output+="<div style='color:#000;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.lang.line('profiler_no_uri') + "</div>"
 
     else
-      $output+="<div style='color:#000;font-weight:normal;padding:4px 0 4px 0'>" + @CI.uri.uri_string() + "</div>"
+      $output+="<div style='color:#000;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.uri.uri_string() + "</div>"
 
     $output+="</fieldset>"
 
@@ -319,10 +319,10 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_controller_info" style="border:1px solid #995300;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#995300;">&nbsp;&nbsp;' + @CI.lang.line('profiler_controller_info') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#995300;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_controller_info') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
-    $output+="<div style='color:#995300;font-weight:normal;padding:4px 0 4px 0'>" + @CI.router.fetch_class() + "/" + @CI.router.fetch_method() + "</div>"
+    $output+="<div style='color:#995300;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.router.fetch_class() + "/" + @Exspresso.router.fetch_method() + "</div>"
 
     $output+="</fieldset>"
 
@@ -341,14 +341,14 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_memory_usage" style="border:1px solid #5a0099;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#5a0099;">&nbsp;&nbsp;' + @CI.lang.line('profiler_memory_usage') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#5a0099;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_memory_usage') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
     if function_exists('memory_get_usage') and ($usage = memory_get_usage()) isnt ''
       $output+="<div style='color:#5a0099;font-weight:normal;padding:4px 0 4px 0'>" + number_format($usage) + ' bytes</div>'
 
     else
-      $output+="<div style='color:#5a0099;font-weight:normal;padding:4px 0 4px 0'>" + @CI.lang.line('profiler_no_memory_usage') + "</div>"
+      $output+="<div style='color:#5a0099;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.lang.line('profiler_no_memory_usage') + "</div>"
 
     $output+="</fieldset>"
 
@@ -367,7 +367,7 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_http_headers" style="border:1px solid #000;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @CI.lang.line('profiler_headers') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_headers') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
     $output+="\n\n<table style='width:100%'>\n"
@@ -394,12 +394,12 @@ class global.Base_Profiler
     $output = "\n\n"
     $output+='<fieldset id="ci_profiler_config" style="border:1px solid #000;padding:6px 10px 10px 10px;margin:20px 0 20px 0;background-color:#eee">'
     $output+="\n"
-    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @CI.lang.line('profiler_config') + '&nbsp;&nbsp;</legend>'
+    $output+='<legend style="color:#000;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_config') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
     $output+="\n\n<table style='width:100%'>\n"
 
-    for $config, $val of @CI.config.config
+    for $config, $val of @Exspresso.config.config
       if is_array($val)
         $val = print_r($val, true)
 
@@ -428,7 +428,7 @@ class global.Base_Profiler
         $fields_displayed++
 
     if $fields_displayed is 0
-      $output+='<p style="border:1px solid #5a0099;padding:10px;margin:20px 0;background-color:#eee">' + @CI.lang.line('profiler_no_profiles') + '</p>'
+      $output+='<p style="border:1px solid #5a0099;padding:10px;margin:20px 0;background-color:#eee">' + @Exspresso.lang.line('profiler_no_profiles') + '</p>'
 
     $output+='</div>'
 

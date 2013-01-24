@@ -52,7 +52,7 @@ class global.Exspresso_Model
   # @param	object	$CI Controller Instance mixin
   # @return	void
   #
-  constructor: (@CI) ->
+  constructor: (@Exspresso) ->
 
     log_message 'debug', "Model Class Initialized"
     #

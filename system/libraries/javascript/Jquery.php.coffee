@@ -57,7 +57,7 @@ class Exspresso_Jquery extends Exspresso_Javascript
   
   __construct($params)
   {
-  @CI = Exspresso
+  @Exspresso = Exspresso
   extract($params)
   
   if $autoload is true
@@ -685,14 +685,14 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _updater : ($container = 'this', $controller, $options = '') ->
     $container = @_prep_element($container)
     
-    $controller = if (strpos('://', $controller) is false) then $controller else @CI.config.site_url($controller)
+    $controller = if (strpos('://', $controller) is false) then $controller else @Exspresso.config.site_url($controller)
     
     #  ajaxStart and ajaxStop are better choices here... but this is a stop gap
-    if @CI.config.item('javascript_ajax_img') is ''
+    if @Exspresso.config.item('javascript_ajax_img') is ''
       $loading_notifier = "Loading..."
       
     else 
-      $loading_notifier = '<img src=\'' + @CI.config.slash_item('base_url') + @CI.config.item('javascript_ajax_img') + '\' alt=\'Loading\' />'
+      $loading_notifier = '<img src=\'' + @Exspresso.config.slash_item('base_url') + @Exspresso.config.item('javascript_ajax_img') + '\' alt=\'Loading\' />'
       
     
     $updater = "$($container).empty();\n"#  anything that was in... get it out
@@ -897,7 +897,7 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _compile : ($view_var = 'script_foot', $script_tags = true) ->
     #  External references
     $external_scripts = implode('', @jquery_code_for_load)
-    @CI.load.vars('library_src':$external_scripts)
+    @Exspresso.load.vars('library_src':$external_scripts)
     
     if count(@jquery_code_for_compile) is 0
       #  no inline references, let's just return
@@ -911,7 +911,7 @@ class Exspresso_Jquery extends Exspresso_Javascript
     
     $output = if ($script_tags is false) then $script else @inline($script)
     
-    @CI.load.vars($view_var:$output)
+    @Exspresso.load.vars($view_var:$output)
     
     
   

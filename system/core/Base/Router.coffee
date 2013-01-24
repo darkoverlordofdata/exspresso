@@ -50,7 +50,7 @@ class global.Base_Router
   # @access	private
   # @return	void
   #
-  _set_routing: ($uri) ->
+  set_routing: ($uri) ->
 
     @_directory = ''
     @_class = ''
@@ -202,7 +202,7 @@ class global.Base_Router
   # @access	private
   # @return	object routes
   #
-  _load_routes: ->
+  load_routes: ->
 
     if not @config.load('routes', true, true)
       show_error 'The config/routes file does not exist.'
@@ -249,8 +249,8 @@ class global.Base_Router
     #
     @routes[$route] = ($req, $res, $next, $args...) =>
 
-      $CI = new $class($res)
-      @ctor_queue $CI._ctor, ->
+      $CI = new $class($req)
+      @_run $CI.queue(), ->
         try
           call_user_func_array [$CI, $method], $args
         catch $err
@@ -263,7 +263,7 @@ class global.Base_Router
   #   @param	function
   #   @return	void
   #
-  ctor_queue: ($queue, $next) ->
+  _run: ($queue, $next) ->
 
     $index = 0
     $iterate = ->

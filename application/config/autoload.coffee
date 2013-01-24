@@ -47,7 +47,7 @@
 #|  $autoload['packages'] = [APPPATH+'third_party', '/usr/local/shared']
 #|
 #
-exports['packages'] = [APPPATH+'third_party/ckeditor/', APPPATH+'third_party/ion_auth/']
+exports['packages'] = [APPPATH+'third_party/ckeditor/', APPPATH+'third_party/gravatar/']
 
 #
 #| -------------------------------------------------------------------
@@ -60,7 +60,7 @@ exports['packages'] = [APPPATH+'third_party/ckeditor/', APPPATH+'third_party/ion
 #|
 #|	$autoload['libraries'] = ['database', 'session']
 #
-exports['libraries'] = ['Session/session']
+exports['libraries'] = ['database', 'Session/session']
 
 #
 #|--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ exports['libraries'] = ['Session/session']
 #|
 #|	exports['helper'] = ['url', 'file']
 #
-exports['helper'] = ['form', 'url', 'ckeditor']
+exports['helper'] = ['form', 'url', 'html', 'ckeditor']
 
 #
 #| -------------------------------------------------------------------

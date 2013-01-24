@@ -97,7 +97,7 @@ class global.Exspresso_Migration extends Base_Migration
   #
   # @return  int  Current Migration
   #
-  _get_version: ($callback) ->
+  get_version: ($callback) ->
 
     #@db.where 'module', @_migration_module
     @db.get 'migrations', ($err, $result) ->

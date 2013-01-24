@@ -17,6 +17,23 @@ require APPPATH+'core/AdminController.coffee'
 
 class Admin extends AdminController
 
+
+  ## --------------------------------------------------------------------
+
+  #
+  # Admin overview
+  #
+  #   @access	public
+  #   @return	void
+  #
+  #
+  index: ->
+
+    if not @session.user()
+      return @redirect "/admin/login"
+
+    @template.view 'admin'
+
   ## --------------------------------------------------------------------
 
   #
@@ -28,7 +45,7 @@ class Admin extends AdminController
   #
   login: ->
 
-    if @input.cookie('username') is ''
+    if not @session.user()
       @template.view 'admin/signin'
     else
       @db.from 'customer'
@@ -110,8 +127,6 @@ class Admin extends AdminController
 
 
 
-  index: ->
-    @template.view 'admin'
 #
 # Export the class:
 #
