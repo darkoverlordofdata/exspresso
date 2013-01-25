@@ -40,6 +40,19 @@ class Exspresso_Session_redis extends require('connect-redis')(require('express'
       port: $dns.port
       pass: $dns.password
 
+  #  --------------------------------------------------------------------
+
+  #
+  # Session Database setup
+  #
+  #   create session table
+  #
+  # @access	public
+  # @return	void
+  #
+  create: () ->
+    return
+
 
 module.exports = Exspresso_Session_redis
 # End of file postgres.coffee

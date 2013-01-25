@@ -82,7 +82,7 @@ class global.Exspresso_Server
     $set_db = false
     for $arg in $argv
       if $set_db is true
-        $db = $arg
+        @_db = $arg
         $set_db = false
 
       switch $arg
@@ -181,54 +181,6 @@ class global.Exspresso_Server
     @_run Exspresso.queue().concat(@queue()), ($err) ->
       if not $err then $next()
 
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Session Database setup
-  #
-  #   create session table
-  #
-  # @access	public
-  # @return	void
-  #
-  session_db: ->
-
-    @queue ($next) ->
-      Exspresso.db.table_exists 'ex_sessions', ($err, $table_exists) ->
-
-        if $err then return $next $err
-        if $table_exists then return $next null
-
-        Exspresso.load.dbforge()
-        Exspresso.dbforge.add_field
-          session_id:
-            type: 'VARCHAR'
-            constraint: 40
-            default: '0'
-            null: false
-          ip_address:
-            type: 'VARCHAR'
-            constraint: 45
-            default: '0'
-            null: false
-          user_agent:
-            type: 'VARCHAR'
-            constraint: 255
-            null: false
-          last_activity:
-            type: 'INT'
-            constraint: 10
-            unsigned: true
-            default: 0
-            null: false
-          user_data:
-            type: ' TEXT'
-            null: false
-
-        Exspresso.dbforge.add_key 'last_activity'
-        Exspresso.dbforge.add_key 'session_id', true
-        Exspresso.dbforge.create_table 'ex_sessions', $next
 
 
   #  --------------------------------------------------------------------

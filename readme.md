@@ -1,6 +1,6 @@
 # [Exspresso v0.8.1] (https://github.com/darkoverlordofdata/exspresso)
 
- A framework for coffee-script, based on the [CodeIgniter] (<http://codeigniter.com/>) framework.
+ A framework for coffee-script, based on the [CodeIgniter] (<http://codeigniter.com/>) framework, v2.1.
 
     Exspresso features
 

@@ -45,10 +45,10 @@ class global.Exspresso_Form_validation
 
 
   Exspresso: null
-  _field_data: {}
-  _config_rules: {}
-  _error_array: {}
-  _error_messages: {}
+  _field_data: null
+  _config_rules: null
+  _error_array: null
+  _error_messages: null
   _error_prefix: '<p>'
   _error_suffix: '</p>'
   _safe_form_data: false
@@ -61,6 +61,9 @@ class global.Exspresso_Form_validation
 
     #  Validation rules can be stored in a config file.
     @_config_rules = $rules
+    @_field_datam = {}
+    @_error_array = {}
+    @_error_messages = {}
 
     #  Automatically load the form helper
     @Exspresso.load.helper('form')

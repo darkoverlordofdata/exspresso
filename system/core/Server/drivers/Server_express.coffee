@@ -245,8 +245,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
     if $session.sess_use_database isnt false and $session.sess_table_name isnt ''
 
       if $session.sess_use_database is true
-        $sess_driver = Exspresso.db.dbdriver
-        @session_db()
+        $sess_driver = 'sql'
       else
         $sess_driver = parse_url($session.sess_use_database).scheme
 
@@ -259,9 +258,9 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
           $driver = require($path+'libraries/Session/drivers/Session_'+$sess_driver+EXT)
           $store = new $driver($session)
+          $store.create()
 
           @app.use express.session
-            key:      'session_id'
             secret:   $session.encryption_key
             store:    $store
             cookie:
@@ -277,7 +276,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
     else
 
       @app.use express.session
-        key:      'session_id'
         secret:   $session.encryption_key
         cookie:
           domain:   $session.cookie_domain
