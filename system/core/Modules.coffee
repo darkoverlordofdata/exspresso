@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #| Modules.coffee
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012
+#| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
 #|
 #| This file is a part of Exspresso
@@ -10,6 +10,21 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
+#
+# This file was ported from Modular Extensions - HMVC to coffee-script using php2coffee
+#
+#
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
+# @copyright	Copyright (c) 2011 Wiredesignz
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 # Modules
 #
@@ -47,6 +62,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
+
 class global.Modules
 
   @locations = config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
