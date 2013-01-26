@@ -612,7 +612,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @return	void
   #
   _close: ($callback) ->
-    @client.end
+    @client.end()
     $callback()
 
 

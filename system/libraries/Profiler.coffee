@@ -382,7 +382,6 @@ class global.Exspresso_Profiler extends Base_Profiler
           <div class="hero-unit">
             <div class="row">
       """
-
     $fields_displayed = 0
 
     for $section, $enabled of @_enabled_sections

@@ -60,7 +60,7 @@ exports['packages'] = [APPPATH+'third_party/ckeditor/', APPPATH+'third_party/gra
 #|
 #|	$autoload['libraries'] = ['database', 'session']
 #
-exports['libraries'] = ['database', 'Session/session']
+exports['libraries'] = ['Session/session']
 
 #
 #|--------------------------------------------------------------------------

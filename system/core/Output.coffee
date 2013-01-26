@@ -296,7 +296,6 @@ module.exports = class global.Exspresso_Output
         if @cache_expiration > 0 and $res.Exspresso?  and  not method_exists($res.Exspresso, '_output')
           @_write_cache($output)
 
-
         #  --------------------------------------------------------------------
 
         #  Parse out the elapsed time and memory usage,
@@ -311,7 +310,6 @@ module.exports = class global.Exspresso_Output
           $output = str_replace('{memory_usage}', $memory, $output)
           $output = str_replace('{memory_usage}', $memory, $output)
 
-
         #  --------------------------------------------------------------------
 
         #  Is compression requested?
@@ -320,17 +318,12 @@ module.exports = class global.Exspresso_Output
             if $_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
               ob_start('ob_gzhandler')
 
-
-
-
         #  --------------------------------------------------------------------
 
         #  Are there any server headers to send?
         if count(@headers) > 0
           for $header in @headers
             $res.header($header[0], $header[1])
-
-
 
         #  --------------------------------------------------------------------
 

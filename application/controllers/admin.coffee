@@ -29,10 +29,7 @@ class Admin extends AdminController
   #
   index: ->
 
-    #if not @session.user()
-    #  return @redirect "/admin/login"
-
-    @template.view 'admin'
+    @template.view 'signin'
 
   ## --------------------------------------------------------------------
 
