@@ -35,6 +35,8 @@
 #
 module.exports = class global.Exspresso_Output
 
+  Exspresso: null
+  res: null
   final_output: ''
   cache_expiration: 0
   headers: {}
@@ -45,9 +47,12 @@ module.exports = class global.Exspresso_Output
 
   parse_exec_vars: true #  whether or not to parse variables like {elapsed_time} and {memory_usage}
 
-  constructor: ->
+  constructor: (@Exspresso) ->
+
 
     log_message('debug', "Output Class Initialized")
+
+    @res = @Exspresso.res
     @final_output = ''
     @cache_expiration = 0
     @headers = {}
@@ -62,14 +67,7 @@ module.exports = class global.Exspresso_Output
       $mimes = require(APPPATH + 'config/mimes' + EXT)
 
     @mime_types = $mimes
-    Exspresso.server.output @
     load_class('Cache', 'core')
-
-  # --------------------------------------------------------------------
-  # Method Stubs
-  #
-  #   These methods will be overriden by the middleware
-  # --------------------------------------------------------------------
 
   #  --------------------------------------------------------------------
 
@@ -191,6 +189,7 @@ module.exports = class global.Exspresso_Output
   # @return	void
   #
   set_status_header : ($code = 200, $text = '') ->
+    @res.status($code)
     @
 
   #  --------------------------------------------------------------------
@@ -239,236 +238,210 @@ module.exports = class global.Exspresso_Output
 
 
 
-  # --------------------------------------------------------------------
+  #  --------------------------------------------------------------------
 
   #
-  # Override output instance methods
+  # Display Output
   #
-  #   @returns function middlware callback
+  # All "view" data is automatically put into this variable by the controller class:
   #
-  middleware: ()->
-
-    log_message 'debug',"Output middleware initialized"
-
-    ($req, $res, $next) =>
-
-      $BM = load_new('Benchmark', 'core')
-      $BM.mark 'total_execution_time_start'
-
-      # --------------------------------------------------------------------
-      @set_status_header = ($code = 200, $text = '') ->
-        $res.status($code)
-        @
-
-
-      #  --------------------------------------------------------------------
+  # $this->final_output
+  #
+  # This function sends the finalized output data to the browser along
+  # with any server headers and profile data.  It also stops the
+  # benchmark timer so the page rendering speed and memory usage can be shown.
+  #
+  # @access	public
+  # @return	mixed
+  #
+  _display: ($output = '') ->
+    #  Note:  We use globals because we can't use $Exspresso =& Exspresso
+    #  since this function is sometimes called by the caching mechanism,
+    #  which happens before the CI super object is available.
+
+    #  --------------------------------------------------------------------
+
+    #  Set the output data
+    if $output is ''
+      $output = @final_output
 
-      #
-      # Display Output
-      #
-      # All "view" data is automatically put into this variable by the controller class:
-      #
-      # $this->final_output
-      #
-      # This function sends the finalized output data to the browser along
-      # with any server headers and profile data.  It also stops the
-      # benchmark timer so the page rendering speed and memory usage can be shown.
-      #
-      # @access	public
-      # @return	mixed
-      #
-      @_display = ($output = '') ->
-        #  Note:  We use globals because we can't use $Exspresso =& Exspresso
-        #  since this function is sometimes called by the caching mechanism,
-        #  which happens before the CI super object is available.
+    #  --------------------------------------------------------------------
+
+    #  Do we need to write a cache file?  Only if the controller does not have its
+    #  own _output() method and we are not dealing with a cache file, which we
+    #  can determine by the existence of the $Exspresso object above
+    if @cache_expiration > 0 and @Exspresso?  and  not method_exists(@Exspresso, '_output')
+      @_write_cache($output)
 
-        #  --------------------------------------------------------------------
-
-        #  Set the output data
-        if $output is ''
-          $output = @final_output
-
-        #  --------------------------------------------------------------------
+    #  --------------------------------------------------------------------
 
-        #  Do we need to write a cache file?  Only if the controller does not have its
-        #  own _output() method and we are not dealing with a cache file, which we
-        #  can determine by the existence of the $Exspresso object above
-        if @cache_expiration > 0 and $res.Exspresso?  and  not method_exists($res.Exspresso, '_output')
-          @_write_cache($output)
+    #  Parse out the elapsed time and memory usage,
+    #  then swap the pseudo-variables with the data
 
-        #  --------------------------------------------------------------------
+    $elapsed = @Exspresso.BM.elapsed_time('total_execution_time_start', 'total_execution_time_end')
 
-        #  Parse out the elapsed time and memory usage,
-        #  then swap the pseudo-variables with the data
+    if @parse_exec_vars is true
+      $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
+      $output = str_replace('{elapsed_time}', $elapsed, $output)
+      $output = str_replace('{elapsed_time}', $elapsed, $output)
+      $output = str_replace('{memory_usage}', $memory, $output)
+      $output = str_replace('{memory_usage}', $memory, $output)
 
-        $elapsed = $BM.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    #  --------------------------------------------------------------------
 
-        if @parse_exec_vars is true
-          $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
-          $output = str_replace('{elapsed_time}', $elapsed, $output)
-          $output = str_replace('{elapsed_time}', $elapsed, $output)
-          $output = str_replace('{memory_usage}', $memory, $output)
-          $output = str_replace('{memory_usage}', $memory, $output)
+    #  Is compression requested?
+    if Exspresso.config.item('compress_output') is true and @_zlib_oc is false
+      if extension_loaded('zlib')
+        if @Exspresso.$_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos(@Exspresso.$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
+          ob_start('ob_gzhandler')
 
-        #  --------------------------------------------------------------------
+    #  --------------------------------------------------------------------
 
-        #  Is compression requested?
-        if Exspresso.config.item('compress_output') is true and @_zlib_oc is false
-          if extension_loaded('zlib')
-            if $_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
-              ob_start('ob_gzhandler')
+    #  Are there any server headers to send?
+    if count(@headers) > 0
+      for $header in @headers
+        @res.header($header[0], $header[1])
 
-        #  --------------------------------------------------------------------
+    #  --------------------------------------------------------------------
 
-        #  Are there any server headers to send?
-        if count(@headers) > 0
-          for $header in @headers
-            $res.header($header[0], $header[1])
+    #  Does the $Exspresso object exist?
+    #  If not we know we are dealing with a cache file so we'll
+    #  simply echo out the data and exit.
+    if not @Exspresso?
+      @res.send $output
+      log_message('debug', "Final output sent to browser")
+      log_message('debug', "Total execution time: " + $elapsed)
+      return true
 
-        #  --------------------------------------------------------------------
+    #  --------------------------------------------------------------------
 
-        #  Does the $Exspresso object exist?
-        #  If not we know we are dealing with a cache file so we'll
-        #  simply echo out the data and exit.
-        if not $res.Exspresso?
-          $res.send $output
-          log_message('debug', "Final output sent to browser")
-          log_message('debug', "Total execution time: " + $elapsed)
-          return true
+    #  Do we need to generate profile data?
+    #  If so, load the Profile class and run it.
+    if @_enable_profiler is true
+      @Exspresso.load.library('profiler')
 
-        #  --------------------------------------------------------------------
+      if not empty(@_profiler_sections)
+        @Exspresso.profiler.set_sections(@_profiler_sections)
 
-        #  Do we need to generate profile data?
-        #  If so, load the Profile class and run it.
-        if @_enable_profiler is true
-          $res.Exspresso.benchmark = $BM
-          $res.Exspresso.load.library('profiler')
+      #  If the output data contains closing </body> and </html> tags
+      #  we will remove them and add them back after we insert the profile data
+      $match = preg_match("|<footer[^]*?</html>|igm", $output)
+      if $match?
+        $output = preg_replace("|<footer[^]*?</html>|igm", '', $output)
+        $output+=@Exspresso.profiler.run()
+        $output+='</body></html>'
 
-          if not empty(@_profiler_sections)
-            $res.Exspresso.profiler.set_sections(@_profiler_sections)
+      else
+        $output+=@Exspresso.profiler.run()
 
-          #  If the output data contains closing </body> and </html> tags
-          #  we will remove them and add them back after we insert the profile data
-          $match = preg_match("|<footer[^]*?</html>|igm", $output)
-          if $match?
-            $output = preg_replace("|<footer[^]*?</html>|igm", '', $output)
-            $output+=$res.Exspresso.profiler.run()
-            $output+='</body></html>'
 
-          else
-            $output+=$res.Exspresso.profiler.run()
+    #  --------------------------------------------------------------------
 
+    #  Does the controller contain a function named _output()?
+    #  If so send the output there.  Otherwise, echo it.
+    if method_exists(@Exspresso, '_output')
+      @Exspresso._output($output)
 
-        #  --------------------------------------------------------------------
+    else
+      @res.send $output #  Send it to the browser!
 
-        #  Does the controller contain a function named _output()?
-        #  If so send the output there.  Otherwise, echo it.
-        if method_exists($res.Exspresso, '_output')
-          $res.Exspresso._output($output)
+    @final_output = ''
+    log_message('debug', "Final output sent to browser")
+    log_message('debug', "Total execution time: " + $elapsed)
 
-        else
-          $res.send $output #  Send it to the browser!
 
-        @final_output = ''
-        log_message('debug', "Final output sent to browser")
-        log_message('debug', "Total execution time: " + $elapsed)
+  #  --------------------------------------------------------------------
 
+  #
+  # Write a Cache File
+  #
+  # @access	public
+  # @return	void
+  #
+  _write_cache: ($output) ->
 
-      #  --------------------------------------------------------------------
+    $path = Exspresso.config.item('cache_path')
 
-      #
-      # Write a Cache File
-      #
-      # @access	public
-      # @return	void
-      #
-      @_write_cache = ($output) ->
-        #$Exspresso = Exspresso
-        $path = Exspresso.config.item('cache_path')
+    $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 
-        $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
+    if not is_dir($cache_path) or  not is_really_writable($cache_path)
+      log_message('error', "Unable to write cache file: " + $cache_path)
+      return
 
-        if not is_dir($cache_path) or  not is_really_writable($cache_path)
-          log_message('error', "Unable to write cache file: " + $cache_path)
-          return
 
+    $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string()
 
-        $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string()
+    $cache_path+=md5($uri)
 
-        $cache_path+=md5($uri)
+    if not ($fp = fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+      log_message('error', "Unable to write cache file: " + $cache_path)
+      return
 
-        if not ($fp = fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-          log_message('error', "Unable to write cache file: " + $cache_path)
-          return
+    $expire = time() + (@cache_expiration * 60)
 
-        $expire = time() + (@cache_expiration * 60)
+    if flock($fp, LOCK_EX)
+      fwrite($fp, $expire + 'TS--->' + $output)
+      flock($fp, LOCK_UN)
 
-        if flock($fp, LOCK_EX)
-          fwrite($fp, $expire + 'TS--->' + $output)
-          flock($fp, LOCK_UN)
+    else
+      log_message('error', "Unable to secure a file lock for file at: " + $cache_path)
+      return
 
-        else
-          log_message('error', "Unable to secure a file lock for file at: " + $cache_path)
-          return
+    fclose($fp)
+    chmod($cache_path, FILE_WRITE_MODE)
 
-        fclose($fp)
-        chmod($cache_path, FILE_WRITE_MODE)
+    log_message('debug', "Cache file written: " + $cache_path)
 
-        log_message('debug', "Cache file written: " + $cache_path)
 
+  #  --------------------------------------------------------------------
 
-      #  --------------------------------------------------------------------
+  #
+  # Update/serve a cached file
+  #
+  # @access	public
+  # @return	void
+  #
+  _display_cache: () ->
+    $cache_path = if (Exspresso.config.item('cache_path') is '') then APPPATH + 'cache/' else Exspresso.config.item('cache_path')
 
-      #
-      # Update/serve a cached file
-      #
-      # @access	public
-      # @return	void
-      #
-      @_display_cache = () ->
-        $cache_path = if (Exspresso.config.item('cache_path') is '') then APPPATH + 'cache/' else Exspresso.config.item('cache_path')
+    #  Build the file path.  The file name is an MD5 hash of the full URI
+    $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string
 
-        #  Build the file path.  The file name is an MD5 hash of the full URI
-        $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string
+    $filepath = $cache_path + md5($uri)
 
-        $filepath = $cache_path + md5($uri)
+    if not file_exists($filepath)
+      return false
 
-        if not file_exists($filepath)
-          return false
 
+    if not ($fp = fopen($filepath, FOPEN_READ)) then return false
+    flock($fp, LOCK_SH)
 
-        if not ($fp = fopen($filepath, FOPEN_READ)) then return false
-        flock($fp, LOCK_SH)
+    $cache = ''
+    if filesize($filepath) > 0
+      $cache = fread($fp, filesize($filepath))
 
-        $cache = ''
-        if filesize($filepath) > 0
-          $cache = fread($fp, filesize($filepath))
 
+    flock($fp, LOCK_UN)
+    fclose($fp)
 
-        flock($fp, LOCK_UN)
-        fclose($fp)
+    #  Strip out the embedded timestamp
+    if not preg_match("/(\d+TS--->)/", $cache, $match)
+      return false
 
-        #  Strip out the embedded timestamp
-        if not preg_match("/(\d+TS--->)/", $cache, $match)
-          return false
 
+    #  Has the file expired? If so we'll delete it.
+    if time()>=trim(str_replace('TS--->', '', $match['1']))
+      if is_really_writable($cache_path)
+        unlink($filepath)
+        log_message('debug', "Cache file has expired. File deleted")
+        return false
 
-        #  Has the file expired? If so we'll delete it.
-        if time()>=trim(str_replace('TS--->', '', $match['1']))
-          if is_really_writable($cache_path)
-            unlink($filepath)
-            log_message('debug', "Cache file has expired. File deleted")
-            return false
 
 
-
-        #  Display the cache
-        @_display(str_replace($match['0'], '', $cache))
-        log_message('debug', "Cache file is current. Sending it to browser.")
-        return true
-
-
-      $next()
+    #  Display the cache
+    @_display(str_replace($match['0'], '', $cache))
+    log_message('debug', "Cache file is current. Sending it to browser.")
+    return true
 
 
 # END Exspresso_Output class

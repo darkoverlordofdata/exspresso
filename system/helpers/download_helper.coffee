@@ -85,7 +85,7 @@ if not function_exists('force_download')
       
     
     #  Generate the server headers
-    if strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") isnt false
+    if strpos(@Exspresso.$_SERVER['HTTP_USER_AGENT'], "MSIE") isnt false
       header('Content-Type: "' + $mime + '"')
       header('Content-Disposition: attachment; filename="' + $filename + '"')
       header('Expires: 0')

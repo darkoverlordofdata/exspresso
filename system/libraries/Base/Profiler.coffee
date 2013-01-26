@@ -206,7 +206,7 @@ class global.Base_Profiler
   #  --------------------------------------------------------------------
   
   #
-  # Compile $_GET Data
+  # Compile @Exspresso.$_GET Data
   #
   # @return	string
   #
@@ -217,13 +217,13 @@ class global.Base_Profiler
     $output+='<legend style="color:#cd6e00;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_get_data') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
-    if count($_GET) is 0
+    if count(@Exspresso.$_GET) is 0
       $output+="<div style='color:#cd6e00;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.lang.line('profiler_no_get') + "</div>"
 
     else
       $output+="\n\n<table style='width:100%; border:none'>\n"
 
-      for $key, $val of $_GET
+      for $key, $val of @Exspresso.$_GET
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
@@ -246,7 +246,7 @@ class global.Base_Profiler
   #  --------------------------------------------------------------------
   
   #
-  # Compile $_POST Data
+  # Compile @Exspresso.$_POST Data
   #
   # @return	string
   #
@@ -257,13 +257,13 @@ class global.Base_Profiler
     $output+='<legend style="color:#009900;">&nbsp;&nbsp;' + @Exspresso.lang.line('profiler_post_data') + '&nbsp;&nbsp;</legend>'
     $output+="\n"
 
-    if count($_POST) is 0
+    if count(@Exspresso.$_POST) is 0
       $output+="<div style='color:#009900;font-weight:normal;padding:4px 0 4px 0'>" + @Exspresso.lang.line('profiler_no_post') + "</div>"
 
     else
       $output+="\n\n<table style='width:100%'>\n"
 
-      for $key, $val of $_POST
+      for $key, $val of @Exspresso.$_POST
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
@@ -373,7 +373,7 @@ class global.Base_Profiler
     $output+="\n\n<table style='width:100%'>\n"
 
     for $header in ['HTTP_ACCEPT', 'HTTP_USER_AGENT', 'HTTP_CONNECTION', 'SERVER_PORT', 'SERVER_NAME', 'REMOTE_ADDR', 'SERVER_SOFTWARE', 'HTTP_ACCEPT_LANGUAGE', 'SCRIPT_NAME', 'REQUEST_METHOD', ' HTTP_HOST', 'REMOTE_HOST', 'CONTENT_TYPE', 'SERVER_PROTOCOL', 'QUERY_STRING', 'HTTP_ACCEPT_ENCODING', 'HTTP_X_FORWARDED_FOR']
-      $val = if ($_SERVER[$header]? ) then $_SERVER[$header] else ''
+      $val = if (@Exspresso.$_SERVER[$header]? ) then @Exspresso.$_SERVER[$header] else ''
       $output+="<tr><td style='vertical-align: top;width:50%;padding:5px;color:#900;background-color:#ddd;'>" + $header + "&nbsp;&nbsp;</td><td style='width:50%;padding:5px;color:#000;background-color:#ddd;'>" + $val + "</td></tr>\n"
 
     $output+="</table>\n"

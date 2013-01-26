@@ -260,7 +260,7 @@ class global.Base_Router
     #
     @routes[$route] = ($req, $res, $next, $args...) =>
 
-      $Exspresso = new $class($req)
+      $Exspresso = new $class($req, $res, $next)
       @_run $Exspresso.queue(), ->
         try
           call_user_func_array [$Exspresso, $method], $args

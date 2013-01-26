@@ -35,10 +35,42 @@
 #
 module.exports = class global.Exspresso_Input
 
-  constructor: ->
+  Exspresso: null
+  req: null
+  server_array: null
+
+  constructor: ($Exspresso) ->
 
     log_message('debug', "Input Class Initialized")
-    Exspresso.server.input @
+
+    $req = @req = $Exspresso.req
+    os = require('os')
+
+    @server_array =
+      argv:                   $req.query
+      argc:                   count($req.query)
+      SERVER_ADDR:            $req.ip
+      SERVER_NAME:            $req.host
+      SERVER_SOFTWARE:        Exspresso.server.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
+      SERVER_PROTOCOL:        strtoupper($req.protocol)+"/"+$req.httpVersion
+      REQUEST_METHOD:         $req.method
+      REQUEST_TIME:           $req._startTime
+      QUERY_STRING:           if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
+      DOCUMENT_ROOT:          process.cwd()
+      HTTP_ACCEPT:            $req.headers['accept']
+      HTTP_ACCEPT_CHARSET:    $req.headers['accept-charset']
+      HTTP_ACCEPT_ENCODING:   $req.headers['accept-encoding']
+      HTTP_ACCEPT_LANGUAGE:   $req.headers['accept-language']
+      HTTP_CONNECTION:        $req.headers['connection']
+      HTTP_HOST:              $req.headers['host']
+      HTTP_REFERER:           $req.headers['referer']
+      HTTP_USER_AGENT:        $req.headers['user-agent']
+      HTTPS:                  $req.secure
+      REQUEST_URI:            $req.url
+      PATH_INFO:              $req.path
+      ORIG_PATH_INFO:         $req.path
+
+
 
 
   #  --------------------------------------------------------------------
@@ -75,12 +107,6 @@ module.exports = class global.Exspresso_Input
     return true
 
 
-  # --------------------------------------------------------------------
-  # Method Stubs
-  #
-  #   These methods will be overriden by the middleware
-  # --------------------------------------------------------------------
-
   #  --------------------------------------------------------------------
 
   #
@@ -91,7 +117,15 @@ module.exports = class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  get : ($index = null, $xss_clean = false) -> false
+  get : ($index = null, $xss_clean = false) ->
+
+    if $index is null
+      @req.query
+    else
+      if @req.query[$index]?
+        @req.query[$index]
+      else
+        null
 
   #  --------------------------------------------------------------------
 
@@ -103,7 +137,15 @@ module.exports = class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  post : ($index = null, $xss_clean = false) -> false
+  post : ($index = null, $xss_clean = false) ->
+
+    if $index is null
+      @req.body
+    else
+      if @req.body[$index]?
+        @req.body[$index]
+      else
+        null
 
   #  --------------------------------------------------------------------
 
@@ -115,7 +157,15 @@ module.exports = class global.Exspresso_Input
   # @param	bool	XSS cleaning
   # @return	string
   #
-  get_post : ($index = '', $xss_clean = false) -> false
+  get_post : ($index = '', $xss_clean = false) ->
+
+    if not @req.body[$index]?
+      if @req.query[$index]?
+        @req.query[$index]
+      else
+        null
+    else
+      @req.body[$index]
 
   #  --------------------------------------------------------------------
 
@@ -127,7 +177,14 @@ module.exports = class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  cookie : ($index = '', $xss_clean = false) -> false
+  cookie : ($index = '', $xss_clean = false) ->
+    if $index is null
+      @req.cookies
+    else
+      if @req.cookies[$index]?
+        @req.cookies[$index]
+      else
+        ''
 
   #  ------------------------------------------------------------------------
 
@@ -149,6 +206,21 @@ module.exports = class global.Exspresso_Input
   #
   set_cookie : ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
 
+    if $prefix is '' and config_item('cookie_prefix') isnt ''
+      $prefix = config_item('cookie_prefix')
+    if $domain is '' and config_item('cookie_domain') isnt ''
+      $domain = config_item('cookie_domain')
+    if $path is '/' and config_item('cookie_path') isnt '/'
+      $path = config_item('cookie_path')
+
+
+    $res.cookie $prefix+$name, $value,
+      expires: $expire
+      domain: $domain
+      path:   $path
+      secure: $secure
+
+
 
   #  --------------------------------------------------------------------
 
@@ -160,7 +232,14 @@ module.exports = class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  server : ($index = '', $xss_clean = false) -> false
+  server : ($index = '', $xss_clean = false) ->
+    if $index is ''
+      @server_array
+    else
+      if @server_array[$index]?
+        @server_array[$index]
+      else
+        ''
 
 
   #  --------------------------------------------------------------------
@@ -171,7 +250,7 @@ module.exports = class global.Exspresso_Input
   # @access	public
   # @return	string
   #
-  ip_address :  -> false
+  ip_address :  -> @req.ip
 
 
   #  --------------------------------------------------------------------
@@ -182,128 +261,7 @@ module.exports = class global.Exspresso_Input
   # @access	public
   # @return	string
   #
-  user_agent :  -> false
-
-
-
-  # --------------------------------------------------------------------
-
-  #
-  # Override input instance methods
-  #
-  #   @returns function middlware callback
-  #
-  middleware: ()->
-
-    log_message 'debug',"Input middleware initialized"
-
-    ($req, $res, $next) =>
-
-      os = require('os')
-
-      $server_array =
-        argv:                   $req.query
-        argc:                   count($req.query)
-        SERVER_ADDR:            $req.ip
-        SERVER_NAME:            $req.host
-        SERVER_SOFTWARE:        Exspresso.server.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
-        SERVER_PROTOCOL:        strtoupper($req.protocol)+"/"+$req.httpVersion
-        REQUEST_METHOD:         $req.method
-        REQUEST_TIME:           $req._startTime
-        QUERY_STRING:           if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
-        DOCUMENT_ROOT:          process.cwd()
-        HTTP_ACCEPT:            $req.headers['accept']
-        HTTP_ACCEPT_CHARSET:    $req.headers['accept-charset']
-        HTTP_ACCEPT_ENCODING:   $req.headers['accept-encoding']
-        HTTP_ACCEPT_LANGUAGE:   $req.headers['accept-language']
-        HTTP_CONNECTION:        $req.headers['connection']
-        HTTP_HOST:              $req.headers['host']
-        HTTP_REFERER:           $req.headers['referer']
-        HTTP_USER_AGENT:        $req.headers['user-agent']
-        HTTPS:                  $req.secure
-        REQUEST_URI:            $req.url
-        PATH_INFO:              $req.path
-        ORIG_PATH_INFO:         $req.path
-
-      # --------------------------------------------------------------------
-      @get = ($index = null, $xss_clean = false) ->
-
-        if $index is null
-          $req.query
-        else
-          if $req.query[$index]?
-            $req.query[$index]
-          else
-            null
-
-      # --------------------------------------------------------------------
-      @post = ($index = null, $xss_clean = false) ->
-
-        if $index is null
-          $req.body
-        else
-          if $req.body[$index]?
-            $req.body[$index]
-          else
-            null
-
-      # --------------------------------------------------------------------
-      @get_post = ($index, $xss_clean = false) ->
-
-        if not $req.body[$index]?
-          if $req.query[$index]?
-            $req.query[$index]
-          else
-            null
-        else
-          $req.body[$index]
-
-      # --------------------------------------------------------------------
-      @cookie = ($index = null, $xss_clean = false) ->
-
-        if $index is null
-          $req.cookies
-        else
-          if $req.cookies[$index]?
-            $req.cookies[$index]
-          else
-            ''
-
-      # --------------------------------------------------------------------
-      @set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
-
-        if $prefix is '' and config_item('cookie_prefix') isnt ''
-          $prefix = config_item('cookie_prefix')
-        if $domain is '' and config_item('cookie_domain') isnt ''
-          $domain = config_item('cookie_domain')
-        if $path is '/' and config_item('cookie_path') isnt '/'
-          $path = config_item('cookie_path')
-
-
-        $res.cookie $prefix+$name, $value,
-          expires: $expire
-          domain: $domain
-          path:   $path
-          secure: $secure
-
-      # --------------------------------------------------------------------
-      @server = ($index = '', $xss_clean = false) ->
-
-        if $index is ''
-          $server_array
-        else
-          if $server_array[$index]?
-            $server_array[$index]
-          else
-            ''
-
-      # --------------------------------------------------------------------
-      @ip_address = () -> $req.ip
-
-      # --------------------------------------------------------------------
-      @user_agent =  -> $req.useragent["Browser"]
-
-      $next()
+  user_agent :  -> @req.useragent["Browser"]
 
 # END Exspresso_Input class
 

@@ -28,41 +28,60 @@
 #
 # This class object is the super class for all controllers
 #
-#
-#
-# ------------------------------------------------------
-#  Instantiate the loader class and initialize
-# ------------------------------------------------------
-#
+
 class global.Exspresso_Controller
 
-  _req        : null      # http Request object
-  _res        : null      # http Response object
   _module     : ''        # module
   _queue      : null      # async queue
+  BM          : null      # Benchmark object
+  req         : null      # http Request object
+  res         : null      # http Response object
+  next        : null      # http next function
 
-  constructor: ($req, @_module) ->
+  constructor: ($req, $res, $next, $module) ->
 
-    $req.res.Exspresso = $req.Exspresso = @
-    @_req = $req
-    @_res = $req.res
+    @_module = $module
+    @_queue = []
+    log_message 'debug', "Controller Class Initialized"
+
+    #
+    # ------------------------------------------------------
+    #  Start the timer... tick tock tick tock...
+    # ------------------------------------------------------
+    #
+    @BM = load_new('Benchmark', 'core', @)
+    @BM.mark 'total_execution_time_start'
+
+    @req = $req
+    @res = $res
+    @next = $next
+    $res.Exspresso = $req.Exspresso = @
 
     # Assign all the class objects that were instantiated by the
     # bootstrap file (Exspresso.coffee) to local class variables
     # so that the Exspresso app can run as one big super object.
 
-    for $var, $class of is_loaded()
-      @[$var] = load_class($class)
+    @config = Exspresso.config
+    @server = Exspresso.server
+    @router = Exspresso.router
+    @lang   = Exspresso.lang
 
-    @session = Exspresso.session
+    # the remaining class objects are unique for each Expresso
+    # application controller
 
-    # from this point on, each controller has it's own loader
-    # so that callbacks will run in the controller context
-    @load = load_new('Loader', 'core')
-    @load.initialize(@) # NO AUTOLOAD!!!
-    @_queue = []
+    @uri    = load_new('URI', 'core', @)
+    @output = load_new('Output', 'core', @)
+    @input  = load_new('Input', 'core', @)
+    Object.defineProperties @,
+      $_GET     : get: -> return @input.get()
+      $_POST    : get: -> return @input.post()
+      $_SERVER  : get: -> return @input.server()
+      $_COOKIE  : get: -> return @input.cookie()
 
-    log_message 'debug', "Controller Class Initialized"
+    @load   = load_new('Loader', 'core', @)
+    @load.initialize()
+
+
 
   queue: ($fn) ->
     if $fn then @_queue.push($fn) else @_queue
@@ -80,13 +99,13 @@ class global.Exspresso_Controller
   #
   render: ($view, $data = {}, $callback) =>
     $data.Exspresso = @
-    @_res.render $view, $data, ($err, $html) =>
+    @res.render $view, $data, ($err, $html) =>
 
       if $callback? then $callback $err, $html
       else
         if $err then show_error $err
         else
-          @_res.send $html
+          @res.send $html
 
   # --------------------------------------------------------------------
 
@@ -98,7 +117,7 @@ class global.Exspresso_Controller
   # @return	void
   #
   redirect: ($url) =>
-    @_res.redirect $url
+    @res.redirect $url
 
 
 # END Exspresso_Controller class

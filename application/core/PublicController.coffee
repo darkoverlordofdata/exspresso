@@ -25,6 +25,7 @@ class global.PublicController extends Exspresso_Controller
     @load.library 'template'
     @template.set_theme 'default', 'prettify'
     @load.database()
+    @output.enable_profiler Exspresso.server._profile
 
 module.exports = PublicController
 # End of file PublicController.coffee

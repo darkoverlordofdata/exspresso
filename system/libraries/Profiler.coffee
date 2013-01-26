@@ -40,13 +40,13 @@ class global.Exspresso_Profiler extends Base_Profiler
 #
   _compile_benchmarks: () ->
     $profile = {}
-    for $key, $val of @Exspresso.benchmark.marker
+    for $key, $val of @Exspresso.BM.marker
       #  We match the "end" marker so that the list ends
       #  up in the order that it was defined
       $match = preg_match("/(.+?)_end/i", $key)
       if $match?
-        if @Exspresso.benchmark.marker[$match[1] + '_end']?  and @Exspresso.benchmark.marker[$match[1] + '_start']?
-          $profile[$match[1]] = @Exspresso.benchmark.elapsed_time($match[1] + '_start', $key)
+        if @Exspresso.BM.marker[$match[1] + '_end']?  and @Exspresso.BM.marker[$match[1] + '_start']?
+          $profile[$match[1]] = @Exspresso.BM.elapsed_time($match[1] + '_start', $key)
 
 
 
@@ -139,7 +139,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #  --------------------------------------------------------------------
 
   #
-  # Compile $_GET Data
+  # Compile @Exspresso.$_GET Data
   #
   # @return	string
   #
@@ -150,13 +150,13 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output+='<dt>' + @Exspresso.lang.line('profiler_get_data') + '</dt>'
     $output+="\n"
 
-    if count($_GET) is 0
+    if count(@Exspresso.$_GET) is 0
       $output+="<dd><em>" + @Exspresso.lang.line('profiler_no_get') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-      for $key, $val of $_GET
+      for $key, $val of @Exspresso.$_GET
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
@@ -179,7 +179,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #  --------------------------------------------------------------------
 
   #
-  # Compile $_POST Data
+  # Compile @Exspresso.$_POST Data
   #
   # @return	string
   #
@@ -190,13 +190,13 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output+='<dt>' + @Exspresso.lang.line('profiler_post_data') + '</dt>'
     $output+="\n"
 
-    if count($_POST) is 0
+    if count(@Exspresso.$_POST) is 0
       $output+="<dd><em>" + @Exspresso.lang.line('profiler_no_post') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-      for $key, $val of $_POST
+      for $key, $val of @Exspresso.$_POST
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
@@ -306,7 +306,7 @@ class global.Exspresso_Profiler extends Base_Profiler
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $header in ['HTTP_ACCEPT', 'HTTP_USER_AGENT', 'HTTP_CONNECTION', 'SERVER_PORT', 'SERVER_NAME', 'REMOTE_ADDR', 'SERVER_SOFTWARE', 'HTTP_ACCEPT_LANGUAGE', 'SCRIPT_NAME', 'REQUEST_METHOD', ' HTTP_HOST', 'REMOTE_HOST', 'CONTENT_TYPE', 'SERVER_PROTOCOL', 'QUERY_STRING', 'HTTP_ACCEPT_ENCODING', 'HTTP_X_FORWARDED_FOR']
-      $val = if ($_SERVER[$header]? ) then $_SERVER[$header] else ''
+      $val = if (@Exspresso.$_SERVER[$header]? ) then @Exspresso.$_SERVER[$header] else ''
       $output+="<tr><td>" + $header + "</td><td>" + $val + "</td></tr>\n"
 
     $output+="</table></dd>\n"
@@ -355,7 +355,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   run: () ->
 
-    $elapsed = @Exspresso.benchmark.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    $elapsed = @Exspresso.BM.elapsed_time('total_execution_time_start', 'total_execution_time_end')
     $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
     $output = """
       <footer id="footer">

@@ -30,11 +30,6 @@
 
 express         = require('express')                    # Express 3.0 Framework
 
-array = ($field, $match) ->
-  $array = {}
-  $array[$field] = $match
-  return $array
-
 #  ------------------------------------------------------------------------
 #
 # Session Class
@@ -58,9 +53,11 @@ class global.Exspresso_Session
   flashdata_key: 'flash'
   time_reference: 'time'
   gc_probability: 5
-  userdata: {}
-  Exspresso: {}
-  now: {}
+  #userdata: null
+  Exspresso: null
+  req: null
+  res: null
+  now: 0
 
   #
   # Session Constructor
@@ -68,7 +65,9 @@ class global.Exspresso_Session
   # The constructor runs the session routines automatically
   # whenever the class is instantiated.
   #
-  constructor: ($params = {}) ->
+  constructor: ($params = {}, $Exspresso) ->
+    #@userdata = {}
+
     log_message 'debug', "Session Class Initialized"
 
     #  Set all the session preferences, which can either be set
@@ -79,18 +78,38 @@ class global.Exspresso_Session
     if @encryption_key is ''
       show_error('In order to use the Session class you are required to set an encryption key in your config file.')
 
-    Exspresso.server.session @
+    if $Exspresso.req?
 
-  # --------------------------------------------------------------------
-  # Method Stubs
-  #
-  #   These methods will be overriden by the middleware
+      $req = @req = $Exspresso.req
+      $res = @res = $Exspresso.res
+
+      $req.session.session_id     = $req.session.session_id || $req.sessionID
+      $req.session.ip_address     = $req.session.ip_address || $req.ip
+      $req.session.user_agent     = $req.session.user_agent || $req.agent
+      $req.session.last_activity  = $req.session.last_activity || (new Date()).getTime()
+      $req.session.userdata       = $req.session.userdata || {}
+
+      if $res.locals?
+        if express.version[0] is '3'
+          $res.locals.flashdata = @flashdata
+        else
+          $res.local('flashdata', @flashdata)
+      else
+        $res.flashdata = @flashdata
+
+    else
+
+      # then we're booting.
+      # Initialize the server:
+      Exspresso.server.session @
+
   # --------------------------------------------------------------------
 
   #
   # Get logged in user
   #
-  user: () -> false;
+  user: () ->
+    @req.session.user ? false
   # --------------------------------------------------------------------
 
   #
@@ -102,6 +121,17 @@ class global.Exspresso_Session
   # @return void
   #
   set_userdata: ($newdata = {}, $newval = '') ->
+
+    $data = @req.session.userdata = @req.session.userdata ? {}
+
+    if typeof $newdata is 'string'
+      $newdata = array($newdata, $newval)
+
+    if count($newdata) > 0
+      for $key, $val of $newdata
+        $data[$key] = $val
+
+    return
   # --------------------------------------------------------------------
 
   #
@@ -112,6 +142,17 @@ class global.Exspresso_Session
   # @return void
   #
   unset_userdata: ($newdata = {}) ->
+
+    $data = @req.session.userdata = @req.session.userdata ? {}
+
+    if typeof $newdata is 'string'
+      $newdata = array($newdata, '')
+
+    if count($newdata) > 0
+      for $key, $val of $newdata
+        delete $data[$key]
+
+    return
   # --------------------------------------------------------------------
 
   #
@@ -121,7 +162,12 @@ class global.Exspresso_Session
   # @param string
   # @return string
   #
-  userdata: ($item) -> false
+  userdata: ($item) ->
+
+    $data = @req.session.userdata = @req.session.userdata ? {}
+
+    if not $data[$item]? then false else $data[$item]
+
   # --------------------------------------------------------------------
 
   #
@@ -130,7 +176,10 @@ class global.Exspresso_Session
   # @access public
   # @return mixed
   #
-  all_userdata: () -> false
+  all_userdata: () ->
+
+    if not @req.session.userdata? then false else @req.session.userdata
+
   # --------------------------------------------------------------------
 
   #
@@ -141,6 +190,18 @@ class global.Exspresso_Session
   #   @return void
   #
   set_flashdata: ($item, $value) ->
+
+    if not $req.session?
+      throw Error('set_flashdata() requires sessions')
+
+    $data = @req.session.flashdata = @req.session.flashdata ? {}
+
+    if arguments.length > 2
+      $args = Array::slice.call(arguments, 1)
+      $value = format.apply(undefined, $args)
+
+    $data[$item] = $value
+    return
   # --------------------------------------------------------------------
 
   #
@@ -149,105 +210,18 @@ class global.Exspresso_Session
   #   @param string item name
   #   @return string item value
   #
-  flashdata: ($item) -> ''
-  # --------------------------------------------------------------------
+  flashdata: ($item) =>
 
-  #
-  # Override session instance methods
-  #
-  #   @returns function middlware callback
-  #
-  middleware: ()->
+    $data = @req.session.flashdata = @req.session.flashdata ? {}
 
-    log_message 'debug',"Session middleware initialized"
+    $value = ''
+    if $data[$item]?
+      $value = $data[$item]
+      delete $data[$item]
 
-    ($req, $res, $next) =>
+    return $value ? ''
 
-      $req.session.session_id     = $req.session.session_id || $req.sessionID
-      $req.session.ip_address     = $req.session.ip_address || $req.ip
-      $req.session.user_agent     = $req.session.user_agent || $req.agent
-      $req.session.last_activity  = $req.session.last_activity || (new Date()).getTime()
-      $req.session.userdata       = $req.session.userdata || {}
 
-      # --------------------------------------------------------------------
-      @user = () -> $req.session.user ? false
-
-      # --------------------------------------------------------------------
-      @set_userdata = ($newdata = {}, $newval = '') ->
-
-        $data = $req.session.userdata = $req.session.userdata ? {}
-
-        if typeof $newdata is 'string'
-          $newdata = array($newdata, $newval)
-
-        if count($newdata) > 0
-          for $key, $val of $newdata
-            $data[$key] = $val
-
-        return
-
-      # --------------------------------------------------------------------
-      @unset_userdata = ($newdata = {}) ->
-
-        $data = $req.session.userdata = $req.session.userdata ? {}
-
-        if typeof $newdata is 'string'
-          $newdata = array($newdata, '')
-
-        if count($newdata) > 0
-          for $key, $val of $newdata
-            delete $data[$key]
-
-        return
-
-      # --------------------------------------------------------------------
-      @userdata = ($item) ->
-
-        $data = $req.session.userdata = $req.session.userdata ? {}
-
-        if not $data[$item]? then false else $data[$item]
-
-      # --------------------------------------------------------------------
-      @all_userdata = () ->
-
-        if not $req.session.userdata? then false else $req.session.userdata
-
-      # --------------------------------------------------------------------
-      @set_flashdata = ($item, $value) ->
-
-        if not $req.session?
-          throw Error('set_flashdata() requires sessions')
-
-        $data = $req.session.flashdata = $req.session.flashdata ? {}
-
-        if arguments.length > 2
-          $args = Array::slice.call(arguments, 1)
-          $value = format.apply(undefined, $args)
-
-        $data[$item] = $value
-        return
-
-      # --------------------------------------------------------------------
-      @flashdata = ($item) ->
-
-        $data = $req.session.flashdata = $req.session.flashdata ? {}
-
-        $value = ''
-        if $data[$item]?
-          $value = $data[$item]
-          delete $data[$item]
-
-        return $value ? ''
-
-      if $res.locals?
-        if express.version[0] is '3'
-          $res.locals.flashdata = @flashdata
-        else
-          $res.local('flashdata', @flashdata)
-      else
-        $res.flashdata = @flashdata
-
-      $next()
 
 
 

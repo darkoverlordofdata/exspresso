@@ -96,6 +96,8 @@ _error        = null
 #
 exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $config = {}) ->
 
+  if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso_', $prefix]
+
   #  Does the class exist?  If so, we're done...
   if class_exists($prefix+$class)
     return new (global[$prefix+$class])($config)

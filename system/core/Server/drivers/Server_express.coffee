@@ -49,8 +49,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     log_message('debug', "Server_express driver Class Initialized")
 
-    $app = if express.version[0] is '3' then express() else express.createServer()
-    super $config, $app
+    super $config, if express.version[0] is '3' then express() else express.createServer()
     @app.use @middleware()
 
   #  --------------------------------------------------------------------
@@ -75,8 +74,8 @@ class global.Exspresso_Server_express extends Exspresso_Server
   # @access	public
   # @return	void
   #
-  start: ($router, $autoload = true) ->
-    super $router, $autoload, =>
+  start: ($router) ->
+    super $router, =>
 
       if typeof @_port is 'undefined'
         @_port = 3000
@@ -136,25 +135,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
     @app.set 'port', @_port
     @app.set 'site_name', @_site_name
     @app.set 'site_slogan', @_site_slogan
-    return
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Output registration
-  #
-  #   called by the core/Output class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.output
-  # @return	void
-  #
-  output: ($output) ->
-
-    super $output
-
-    $config = Exspresso.config.config
-
     #
     # Expose asset folders
     #
@@ -189,42 +169,9 @@ class global.Exspresso_Server_express extends Exspresso_Server
     else
       @app.use express.favicon()
 
-    return
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Input registration
-  #
-  #   called by the core/Input class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.input
-  # @return	void
-  #
-  input: ($input) ->
-
-    super $input
-
     @app.use express.bodyParser()
     @app.use express.methodOverride()
     @app.use useragent()
-    return
-
-  #  --------------------------------------------------------------------
-
-  #
-  # URI registration
-  #
-  #   called by the core/URI class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.input
-  # @return	void
-  #
-  uri: ($uri) ->
-
-    super $uri
     return
 
   #  --------------------------------------------------------------------
@@ -235,7 +182,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
   #   called by the libraries/Session/Session class constructor
   #
   # @access	public
-  # @param	object Exspresso.input
+  # @param	object Exspresso_Session
   # @return	void
   #
   session: ($session) ->
@@ -284,7 +231,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
           maxAge:   $session.sess_expiration * 1000
 
     @app.use express.csrf() if @_csrf
-    super $session
 
     return
 
@@ -297,7 +243,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
   #
   middleware: ->
 
-    log_message 'debug',"connect middleware initialized"
+    log_message 'debug',"express middleware initialized"
 
     #  --------------------------------------------------------------------
 

@@ -89,13 +89,6 @@ exports.server = load_driver('Server', 'core', $driver)
 
 #
 # ------------------------------------------------------
-#  Instantiate the URI class
-# ------------------------------------------------------
-#
-exports.uri = load_class('URI', 'core')
-
-#
-# ------------------------------------------------------
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
@@ -103,24 +96,17 @@ exports.router = load_class('Router', 'core')
 
 #
 # ------------------------------------------------------
-#  Instantiate the output class
-# ------------------------------------------------------
-#
-exports.output = load_class('Output', 'core')
-
-#
-# ------------------------------------------------------
-#  Load the Input class
-# ------------------------------------------------------
-#
-exports.input = load_class('Input', 'core')
-
-#
-# ------------------------------------------------------
 #  Load the Language class
 # ------------------------------------------------------
 #
 exports.lang = load_class('Lang', 'core')
+
+#
+# ------------------------------------------------------
+#  Instantiate the loader class
+# ------------------------------------------------------
+#
+exports.load = load_class('Loader', 'core', Exspresso)
 
 #
 # ------------------------------------------------------

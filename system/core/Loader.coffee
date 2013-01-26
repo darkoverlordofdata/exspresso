@@ -77,25 +77,6 @@ class global.Exspresso_Loader extends Base_Loader
   #
   _ex_cached_vars: {}
 
-  ## --------------------------------------------------------------------
-
-  #
-  # Initialize the Loader
-  #
-  #
-  # @param 	object  Exspresso controller instance
-  # @param  boolean call autoload
-  # @return object
-  #
-  initialize: ($Exspresso, $autoload = false) ->
-
-    super $Exspresso, $autoload
-
-    #  set the module name
-    @_module = $Exspresso.router.fetch_module()
-
-    #  add this module path to the loader variables
-    @_add_module_paths(@_module)
 
 
   ## --------------------------------------------------------------------

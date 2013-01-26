@@ -172,10 +172,9 @@ class global.Exspresso_Server
   # @access	public
   # @return	void
   #
-  start: ($router, $autoload = true, $next) ->
+  start: ($router, $next) ->
 
-    Exspresso.load = load_class('Loader', 'core')
-    Exspresso.load.initialize Exspresso, $autoload
+    Exspresso.load.initialize()
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
     @_run Exspresso.queue().concat(@queue()), ($err) ->
@@ -204,68 +203,6 @@ class global.Exspresso_Server
     @_port        = $config.port
     @_site_name   = $config.site_name
     @_site_slogan = $config.site_slogan
-
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Output registration
-  #
-  #   called by the core/Output class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.output
-  # @return	void
-  #
-  output: ($output) ->
-
-    $output.enable_profiler @_profile
-    @app.use $output.middleware()
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Input registration
-  #
-  #   called by the core/Input class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.input
-  # @return	void
-  #
-  input: ($input) ->
-    
-    @app.use $input.middleware()
-
-  #  --------------------------------------------------------------------
-
-  #
-  # URI registration
-  #
-  #   called by the core/URI class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.uri
-  # @return	void
-  #
-  uri: ($uri) ->
-
-    @app.use $uri.middleware()
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Sessions registration
-  #
-  #   called by the libraries/Session/Session class constructor
-  #
-  # @access	public
-  # @param	object $SESSION
-  # @return	void
-  #
-  session: ($session) ->
-
-    @app.use $session.middleware()
 
 
   # --------------------------------------------------------------------
@@ -321,7 +258,7 @@ class global.Exspresso_Server
 
   authenticate: ->
 
-    log_message 'debug',"Authenticate middleware initialized"
+    log_message 'debug',"Authentication middleware initialized"
     ($req, $res, $next) ->
 
       $next()

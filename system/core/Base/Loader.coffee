@@ -52,7 +52,7 @@ class global.Base_Loader
   #
   # @var array
   #
-  _base_classes:        {} # Set by the controller class
+  _base_classes:        null # Set by the controller class
   #
   # path to load views from
   #
@@ -64,49 +64,49 @@ class global.Base_Loader
   #
   # @var array
   #
-  _ex_library_paths:    []
+  _ex_library_paths:    null
   #
   # List of paths to load models from
   #
   # @var array
   #
-  _ex_model_paths:      []
+  _ex_model_paths:      null
   #
   # List of paths to load helpers from
   #
   # @var array
   #
-  _ex_helper_paths:     []
+  _ex_helper_paths:     null
   #
   # Cached variables
   #
   # @var object
   #
-  _ex_cached_vars:      {}
+  _ex_cached_vars:      null
   #
   # Cached classes
   #
   # @var array
   #
-  _ex_classes:          {}
+  _ex_classes:          null
   #
   # List of loaded files
   #
   # @var array
   #
-  _ex_loaded_files:     []
+  _ex_loaded_files:     null
   #
   # List of loaded models
   #
   # @var array
   #
-  _ex_models:           []
+  _ex_models:           null
   #
   # List of loaded helpers
   #
   # @var array
   #
-  _ex_helpers:          {}
+  _ex_helpers:          null
   #
   # List of class name mappings
   #
@@ -130,16 +130,9 @@ class global.Base_Loader
   #
   # @return 	nothing
   #
-  constructor: ($config)->
-    #
-    # get the config values
-    #
-    if not empty($config)
-      for $key, $var of $config
-        @['_'+$key] = $var
+  constructor: (@Exspresso)->
 
-    config = get_config()
-    @_ex_view_path          = APPPATH + config.views
+    @_ex_view_path          = APPPATH + config_item('views')
     @_ex_library_paths      = [APPPATH, BASEPATH]
     @_ex_helper_paths       = [APPPATH, BASEPATH]
     @_ex_model_paths        = [APPPATH]
@@ -156,15 +149,16 @@ class global.Base_Loader
   # @param  boolean call autoload?
   # @return object
   #
-  initialize: (@Exspresso, $autoload = false) ->
-
+  initialize: () ->
 
     @_ex_classes        = {}
     @_ex_loaded_files   = []
     @_ex_models         = []
+    @_ex_cached_vars    = {}
+    @_ex_helpers        = {}
     @_base_classes      = is_loaded()
 
-    @_ex_autoloader() if $autoload # should only be called during bootstrap
+    @_ex_autoloader()
     return @
 
   ## --------------------------------------------------------------------

@@ -47,9 +47,9 @@
 class global.Base_Config
 
 
-  config:         {}
-  is_loaded:      []
-  _config_paths:  [APPPATH]
+  config:         null
+  is_loaded:      null
+  _config_paths:  null
 
   #
   # Constructor
@@ -63,6 +63,8 @@ class global.Base_Config
   # @return  boolean  if the file was successfully loaded or not
   #
   constructor :  ->
+    @_config_paths = [APPPATH]
+    @is_loaded = []
     @config = get_config()
 
     #  Set the base_url automatically if none was provided

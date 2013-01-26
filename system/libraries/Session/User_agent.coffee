@@ -72,8 +72,8 @@ class Exspresso_User_agent
   # @return	void
   #
   constructor: () ->
-    if $_SERVER['HTTP_USER_AGENT']?
-      @agent = trim($_SERVER['HTTP_USER_AGENT'])
+    if @Exspresso.$_SERVER['HTTP_USER_AGENT']?
+      @agent = trim(@Exspresso.$_SERVER['HTTP_USER_AGENT'])
 
     if not is_null(@agent)
       if @_load_agent_file()
@@ -228,8 +228,8 @@ class Exspresso_User_agent
   _set_languages: () ->
 
     # req.acceptedLanguages
-    if (count(@languages) is 0) and $_SERVER['HTTP_ACCEPT_LANGUAGE']?  and $_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
-      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])))
+    if (count(@languages) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
+      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim(@Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE'])))
 
       @languages = explode(',', $languages)
 
@@ -249,8 +249,8 @@ class Exspresso_User_agent
   _set_charsets: () ->
 
     # req.acceptedCharsets
-    if (count(@charsets) is 0) and $_SERVER['HTTP_ACCEPT_CHARSET']?  and $_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
-      $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])))
+    if (count(@charsets) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
+      $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim(@Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET'])))
 
       @charsets = explode(',', $charsets)
 
@@ -330,7 +330,7 @@ class Exspresso_User_agent
   #
   is_referral: () ->
 
-    if not $_SERVER['HTTP_REFERER']?  or $_SERVER['HTTP_REFERER'] is ''
+    if not @Exspresso.$_SERVER['HTTP_REFERER']?  or @Exspresso.$_SERVER['HTTP_REFERER'] is ''
       return false
 
     return true
@@ -413,7 +413,7 @@ class Exspresso_User_agent
   #
   #req.headers['referer']
   referrer: () ->
-    return if ( not $_SERVER['HTTP_REFERER']?  or $_SERVER['HTTP_REFERER'] is '') then '' else trim($_SERVER['HTTP_REFERER'])
+    return if ( not @Exspresso.$_SERVER['HTTP_REFERER']?  or @Exspresso.$_SERVER['HTTP_REFERER'] is '') then '' else trim(@Exspresso.$_SERVER['HTTP_REFERER'])
 
   
   #  --------------------------------------------------------------------

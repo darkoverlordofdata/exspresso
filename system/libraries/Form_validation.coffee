@@ -90,7 +90,7 @@ class global.Exspresso_Form_validation
   #
   set_rules: ($field, $label = '', $rules = '') ->
     #  No reason to set rules if we have no POST data
-    if count($_POST) is 0
+    if count(@Exspresso.$_POST) is 0
       return @
 
     $indexes = []
@@ -266,7 +266,7 @@ class global.Exspresso_Form_validation
   #
   run: ($group = '') ->
     #  Do we even have any data to process?  Mm?
-    if count($_POST) is 0
+    if count(@Exspresso.$_POST) is 0
       return false
       
     
@@ -299,17 +299,17 @@ class global.Exspresso_Form_validation
     @Exspresso.lang.load('form_validation')
     
     #  Cycle through the rules for each field, match the
-    #  corresponding $_POST item and test for errors
+    #  corresponding @Exspresso.$_POST item and test for errors
     for $field, $row of @_field_data
-      #  Fetch the data from the corresponding $_POST array and cache it in the _field_data array.
+      #  Fetch the data from the corresponding @Exspresso.$_POST array and cache it in the _field_data array.
       #  Depending on whether the field name is an array or a string will determine where we get it from.
       
       if $row['is_array'] is true
-        @_field_data[$field]['postdata'] = @_reduce_array($_POST, $row['keys'])
+        @_field_data[$field]['postdata'] = @_reduce_array(@Exspresso.$_POST, $row['keys'])
         
       else 
-        if $_POST[$field]?  and $_POST[$field] isnt ""
-          @_field_data[$field]['postdata'] = $_POST[$field]
+        if @Exspresso.$_POST[$field]?  and @Exspresso.$_POST[$field] isnt ""
+          @_field_data[$field]['postdata'] = @Exspresso.$_POST[$field]
 
       @_execute($row, explode('|', $row['rules']), @_field_data[$field]['postdata'])
 
@@ -333,7 +333,7 @@ class global.Exspresso_Form_validation
   #  --------------------------------------------------------------------
   
   #
-  # Traverse a multidimensional $_POST array index until the data is found
+  # Traverse a multidimensional @Exspresso.$_POST array index until the data is found
   #
   # @access	private
   # @param	array
@@ -366,13 +366,13 @@ class global.Exspresso_Form_validation
     for $field, $row of @_field_data
       if not is_null($row['postdata'])
         if $row['is_array'] is false
-          if $_POST[$row['field']]? 
-            $_POST[$row['field']] = @prep_for_form($row['postdata'])
+          if @Exspresso.$_POST[$row['field']]?
+            @Exspresso.$_POST[$row['field']] = @prep_for_form($row['postdata'])
             
           
         else 
           #  start with a reference
-          $post_ref = $_POST
+          $post_ref = @Exspresso.$_POST
           
           #  before we assign values, make a reference to the right POST key
           if count($row['keys']) is 1
@@ -413,7 +413,7 @@ class global.Exspresso_Form_validation
   # @return	mixed
   #
   _execute: ($row, $rules, $postdata = null, $cycles = 0) ->
-    #  If the $_POST data is an array we will run a recursive call
+    #  If the @Exspresso.$_POST data is an array we will run a recursive call
     if is_array($postdata)
       for $key, $val of $postdata
         @_execute($row, $rules, $val, $cycles)
@@ -776,10 +776,10 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   matches: ($str, $field) ->
-    if not $_POST[$field]? 
+    if not @Exspresso.$_POST[$field]?
       return false
 
-    $field = $_POST[$field]
+    $field = @Exspresso.$_POST[$field]
     
     return if ($str isnt $field) then false else true
     

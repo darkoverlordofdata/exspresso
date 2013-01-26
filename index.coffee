@@ -33,11 +33,7 @@
 #
 #   Define the global Exspresso environment to mimic php
 #
-require('not-php').export global,
-  $_POST:   get: -> Exspresso.input.post()
-  $_GET:    get: -> Exspresso.input.get()
-  $_COOKIE: get: -> Exspresso.input.cookie()
-  $_SERVER: get: -> Exspresso.input.server()
+require('not-php').export global
 
 
 #

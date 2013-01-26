@@ -43,6 +43,8 @@
 #
 class global.Exspresso_URI
 
+  req: null
+  res: null
   keyval: null
   _uri_string: ''
   segments: null
@@ -51,20 +53,17 @@ class global.Exspresso_URI
   #
   # Constructor
   #
-  # Simply globalizes the Exspresso.router object.  The front
-  # loads the Router class early on so it's not available
-  # normally as other classes are.
-  #
   # @access	public
   #
-  constructor : () ->
+  constructor : ($Exspresso) ->
+
+    log_message('debug', "URI Class Initialized")
 
     @keyval = {}
     @segments = []
     @rsegments = []
-
-    log_message('debug', "URI Class Initialized")
-    Exspresso.server.uri @
+    $uri_string = $Exspresso.req.path
+    @rsegments = @segments = $uri_string.split('/')
 
   #  --------------------------------------------------------------------
 
@@ -79,7 +78,7 @@ class global.Exspresso_URI
   # @return	string
   #
   segment : ($n, $no_result = false) ->
-    $no_result
+    return if not @segments[$n]? then $no_result else @segments[$n]
 
 
   #  --------------------------------------------------------------------
@@ -97,7 +96,7 @@ class global.Exspresso_URI
   # @return	string
   #
   rsegment : ($n, $no_result = false) ->
-    $no_result
+    return if not @rsegments[$n]? then $no_result else @rsegments[$n]
 
   #  --------------------------------------------------------------------
 
@@ -135,6 +134,74 @@ class global.Exspresso_URI
   #  --------------------------------------------------------------------
 
   #
+  # Generate a key value pair from the URI string or Re-routed URI string
+  #
+  # @access	private
+  # @param	integer	the starting segment number
+  # @param	array	an array of default values
+  # @param	string	which array we should use
+  # @return	array
+  #
+  @_uri_to_assoc = ($n = 3, $default = {}, $which = 'segment') ->
+    if $which is 'segment'
+      $total_segments = 'total_segments'
+      $segment_array = 'segment_array'
+
+    else
+      $total_segments = 'total_rsegments'
+      $segment_array = 'rsegment_array'
+
+
+    if not is_numeric($n)
+      return $default
+
+
+    if $keyval[$n]?
+      return $keyval[$n]
+
+
+    if @[$total_segments]() < $n
+      if count($default) is 0
+        return {}
+
+
+      $retval = {}
+      for $val in $default
+        $retval[$val] = false
+
+      return $retval
+
+
+    $i = 0
+    $lastval = ''
+    $retval = {}
+    for $seg in array_slice(@[$segment_array](), ($n - 1))
+      if $i2
+        $retval[$lastval] = $seg
+
+      else
+        $retval[$seg] = false
+        $lastval = $seg
+
+
+      $i++
+
+
+    if count($default) > 0
+      for $val in $default
+        if not array_key_exists($val, $retval)
+          $retval[$val] = false
+
+
+
+
+    #  Cache the array for reuse
+    $keyval[$n] = $retval
+    return $retval
+
+  #  --------------------------------------------------------------------
+
+  #
   # Generate a URI string from an associative array
   #
   #
@@ -163,7 +230,7 @@ class global.Exspresso_URI
   # @return	string
   #
   slash_segment : ($n, $where = 'trailing') ->
-    return @_slash_segment($n, $where, 'segment')
+    @_slash_segment($n, $where, 'segment')
 
 
   #  --------------------------------------------------------------------
@@ -177,7 +244,32 @@ class global.Exspresso_URI
   # @return	string
   #
   slash_rsegment : ($n, $where = 'trailing') ->
-    return @_slash_segment($n, $where, 'rsegment')
+    @_slash_segment($n, $where, 'rsegment')
+
+  #  --------------------------------------------------------------------
+
+  #
+  # Fetch a URI Segment and add a trailing slash - helper function
+  #
+  # @access	private
+  # @param	integer
+  # @param	string
+  # @param	string
+  # @return	string
+  #
+  @_slash_segment = ($n, $where = 'trailing', $which = 'segment') ->
+    $leading = '/'
+    $trailing = '/'
+
+    if $where is 'trailing'
+      $leading = ''
+
+    else if $where is 'leading'
+      $trailing = ''
+
+
+    return $leading + @[$which]($n) + $trailing
+
 
   #  --------------------------------------------------------------------
 
@@ -188,7 +280,7 @@ class global.Exspresso_URI
   # @return	array
   #
   segment_array :  ->
-    []
+    @segments
 
 
   #  --------------------------------------------------------------------
@@ -200,7 +292,7 @@ class global.Exspresso_URI
   # @return	array
   #
   rsegment_array :  ->
-    []
+    @rsegments
 
 
   #  --------------------------------------------------------------------
@@ -212,7 +304,7 @@ class global.Exspresso_URI
   # @return	integer
   #
   total_segments :  ->
-    0
+    count(@segments)
 
 
   #  --------------------------------------------------------------------
@@ -224,7 +316,7 @@ class global.Exspresso_URI
   # @return	integer
   #
   total_rsegments :  ->
-    0
+    count(@rsegments)
 
 
   #  --------------------------------------------------------------------
@@ -236,7 +328,7 @@ class global.Exspresso_URI
   # @return	string
   #
   uri_string :  ->
-    return ''
+    return @uri_string
 
 
   #  --------------------------------------------------------------------
@@ -249,212 +341,6 @@ class global.Exspresso_URI
   #
   ruri_string :  ->
     return '/' + implode('/', @rsegment_array())
-
-  # --------------------------------------------------------------------
-
-  #
-  # Override output instance methods
-  #
-  #   @returns function middlware callback
-  #
-  middleware: ()->
-
-    log_message 'debug',"URI middleware initialized"
-
-    ($req, $res, $next) =>
-
-      $keyval = {}
-      $uri_string = $req.path
-      $rsegments = $segments = $uri_string.split('/')
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Fetch a URI Segment
-      #
-      # This function returns the URI segment based on the number provided.
-      #
-      # @access	public
-      # @param	integer
-      # @param	bool
-      # @return	string
-      #
-      @segment = ($n, $no_result = 0) ->
-        return if not $segments[$n]? then $no_result else $segments[$n]
-
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Fetch a URI "routed" Segment
-      #
-      # This function returns the re-routed URI segment (assuming routing rules are used)
-      # based on the number provided.  If there is no routing this function returns the
-      # same result as $this->segment()
-      #
-      # @access	public
-      # @param	integer
-      # @param	bool
-      # @return	string
-      #
-      @rsegment = ($n, $no_result = 0) ->
-        return if not $rsegments[$n]? then $no_result else $rsegments[$n]
-
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Generate a key value pair from the URI string or Re-routed URI string
-      #
-      # @access	private
-      # @param	integer	the starting segment number
-      # @param	array	an array of default values
-      # @param	string	which array we should use
-      # @return	array
-      #
-      @_uri_to_assoc = ($n = 3, $default = {}, $which = 'segment') ->
-        if $which is 'segment'
-          $total_segments = 'total_segments'
-          $segment_array = 'segment_array'
-
-        else
-          $total_segments = 'total_rsegments'
-          $segment_array = 'rsegment_array'
-
-
-        if not is_numeric($n)
-          return $default
-
-
-        if $keyval[$n]?
-          return $keyval[$n]
-
-
-        if @[$total_segments]() < $n
-          if count($default) is 0
-            return {}
-
-
-          $retval = {}
-          for $val in $default
-            $retval[$val] = false
-
-          return $retval
-
-
-        $i = 0
-        $lastval = ''
-        $retval = {}
-        for $seg in array_slice(@[$segment_array](), ($n - 1))
-          if $i2
-            $retval[$lastval] = $seg
-
-          else
-            $retval[$seg] = false
-            $lastval = $seg
-
-
-          $i++
-
-
-        if count($default) > 0
-          for $val in $default
-            if not array_key_exists($val, $retval)
-              $retval[$val] = false
-
-
-
-
-        #  Cache the array for reuse
-        $keyval[$n] = $retval
-        return $retval
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Fetch a URI Segment and add a trailing slash - helper function
-      #
-      # @access	private
-      # @param	integer
-      # @param	string
-      # @param	string
-      # @return	string
-      #
-      @_slash_segment = ($n, $where = 'trailing', $which = 'segment') ->
-        $leading = '/'
-        $trailing = '/'
-
-        if $where is 'trailing'
-          $leading = ''
-
-        else if $where is 'leading'
-          $trailing = ''
-
-
-        return $leading + @[$which]($n) + $trailing
-
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Segment Array
-      #
-      # @access	public
-      # @return	array
-      #
-      @segment_array =  ->
-        return $segments
-
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Routed Segment Array
-      #
-      # @access	public
-      # @return	array
-      #
-      @rsegment_array =  ->
-        return $rsegments
-
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Total number of segments
-      #
-      # @access	public
-      # @return	integer
-      #
-      @total_segments =  ->
-        return count($segments)
-
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Total number of routed segments
-      #
-      # @access	public
-      # @return	integer
-      #
-      @total_rsegments =  ->
-        return count($rsegments)
-
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Fetch the entire URI string
-      #
-      # @access	public
-      # @return	string
-      #
-      @uri_string =  ->
-        return $uri_string
-
-      $next()
-
 
 
 
