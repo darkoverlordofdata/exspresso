@@ -52,8 +52,7 @@
 #
 if not function_exists('xss_clean')
   exports.xss_clean = xss_clean = ($str, $is_image = false) ->
-    $CI = Exspresso
-    return $CI.security.xss_clean($str, $is_image)
+    return Exspresso.security.xss_clean($str, $is_image)
     
   
 
@@ -68,8 +67,7 @@ if not function_exists('xss_clean')
 #
 if not function_exists('sanitize_filename')
   exports.sanitize_filename = sanitize_filename = ($filename) ->
-    $CI = Exspresso
-    return $CI.security.sanitize_filename($filename)
+    return Exspresso.security.sanitize_filename($filename)
     
   
 

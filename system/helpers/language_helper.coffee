@@ -54,8 +54,8 @@
 #
 if not function_exists('lang')
   exports.lang = lang = ($line, $id = '') ->
-    $CI = Exspresso
-    $line = $CI.lang.line($line)
+
+    $line = Exspresso.lang.line($line)
     
     if $id isnt ''
       $line = '<label for="' + $id + '">' + $line + "</label>"

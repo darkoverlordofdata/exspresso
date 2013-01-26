@@ -221,8 +221,7 @@ if not function_exists('random_string')
         
       when 'encrypt','sha1'
         
-        $CI = Exspresso
-        $CI.load.helper('security')
+        Exspresso.load.helper('security')
         
         return do_hash(uniqid(mt_rand(), true), 'sha1')
         

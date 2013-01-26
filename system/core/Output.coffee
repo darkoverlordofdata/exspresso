@@ -278,13 +278,9 @@ module.exports = class global.Exspresso_Output
       # @return	mixed
       #
       @_display = ($output = '') ->
-        #  Note:  We use globals because we can't use $CI =& Exspresso
+        #  Note:  We use globals because we can't use $Exspresso =& Exspresso
         #  since this function is sometimes called by the caching mechanism,
         #  which happens before the CI super object is available.
-
-        #  Grab the super object if we can.
-        if class_exists('Exspresso_Controller')
-          $CI = Exspresso
 
         #  --------------------------------------------------------------------
 
@@ -296,8 +292,8 @@ module.exports = class global.Exspresso_Output
 
         #  Do we need to write a cache file?  Only if the controller does not have its
         #  own _output() method and we are not dealing with a cache file, which we
-        #  can determine by the existence of the $CI object above
-        if @cache_expiration > 0 and $CI?  and  not method_exists($CI, '_output')
+        #  can determine by the existence of the $Exspresso object above
+        if @cache_expiration > 0 and $res.Exspresso?  and  not method_exists($res.Exspresso, '_output')
           @_write_cache($output)
 
 
@@ -338,10 +334,10 @@ module.exports = class global.Exspresso_Output
 
         #  --------------------------------------------------------------------
 
-        #  Does the $CI object exist?
+        #  Does the $Exspresso object exist?
         #  If not we know we are dealing with a cache file so we'll
         #  simply echo out the data and exit.
-        if not $CI?
+        if not $res.Exspresso?
           $res.send $output
           log_message('debug', "Final output sent to browser")
           log_message('debug', "Total execution time: " + $elapsed)
@@ -352,30 +348,30 @@ module.exports = class global.Exspresso_Output
         #  Do we need to generate profile data?
         #  If so, load the Profile class and run it.
         if @_enable_profiler is true
-          $res.CI.benchmark = $BM
-          $res.CI.load.library('profiler')
+          $res.Exspresso.benchmark = $BM
+          $res.Exspresso.load.library('profiler')
 
           if not empty(@_profiler_sections)
-            $res.CI.profiler.set_sections(@_profiler_sections)
+            $res.Exspresso.profiler.set_sections(@_profiler_sections)
 
           #  If the output data contains closing </body> and </html> tags
           #  we will remove them and add them back after we insert the profile data
           $match = preg_match("|<footer[^]*?</html>|igm", $output)
           if $match?
             $output = preg_replace("|<footer[^]*?</html>|igm", '', $output)
-            $output+=$res.CI.profiler.run()
+            $output+=$res.Exspresso.profiler.run()
             $output+='</body></html>'
 
           else
-            $output+=$res.CI.profiler.run()
+            $output+=$res.Exspresso.profiler.run()
 
 
         #  --------------------------------------------------------------------
 
         #  Does the controller contain a function named _output()?
         #  If so send the output there.  Otherwise, echo it.
-        if method_exists($res.CI, '_output')
-          $res.CI._output($output)
+        if method_exists($res.Exspresso, '_output')
+          $res.Exspresso._output($output)
 
         else
           $res.send $output #  Send it to the browser!
@@ -394,8 +390,8 @@ module.exports = class global.Exspresso_Output
       # @return	void
       #
       @_write_cache = ($output) ->
-        #$CI = Exspresso
-        $path = $CI.config.item('cache_path')
+        #$Exspresso = Exspresso
+        $path = Exspresso.config.item('cache_path')
 
         $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 
@@ -404,7 +400,7 @@ module.exports = class global.Exspresso_Output
           return
 
 
-        $uri = $CI.config.item('base_url') + $CI.config.item('index_page') + $CI.uri.uri_string()
+        $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string()
 
         $cache_path+=md5($uri)
 

@@ -353,8 +353,8 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
         
       else 
         if @object is false
-          $CI = Exspresso
-          return $CI[$method_parts]['1']($m)
+          $Exspresso = Exspresso
+          return $Exspresso[$method_parts]['1']($m)
           
         else 
           return @object[$method_parts]['1']($m)

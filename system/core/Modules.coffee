@@ -32,14 +32,9 @@
 #
 # Modular Extensions - HMVC
 #
-# Adapted from the Exspresso Core Classes
-# @link	http://darkoverlordofdata.com
-#
 # Description:
 # This library provides functions to load and instantiate controllers
 # and module controllers allowing use of modules and the HMVC design pattern.
-#
-# Install this file as application/third_party/MX/Modules.php
 #
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @version 	5.4

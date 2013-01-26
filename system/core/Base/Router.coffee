@@ -260,10 +260,10 @@ class global.Base_Router
     #
     @routes[$route] = ($req, $res, $next, $args...) =>
 
-      $CI = new $class($req)
-      @_run $CI.queue(), ->
+      $Exspresso = new $class($req)
+      @_run $Exspresso.queue(), ->
         try
-          call_user_func_array [$CI, $method], $args
+          call_user_func_array [$Exspresso, $method], $args
         catch $err
           $next $err
 

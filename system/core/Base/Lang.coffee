@@ -80,8 +80,7 @@ class global.Base_Lang
       $lang = require($alt_path + 'language/' + $idiom + '/' + $langfile)
     else 
       $found = false
-      $CI = Exspresso
-      for $package_path in $CI.load.get_package_paths(true)
+      for $package_path in Exspresso.load.get_package_paths(true)
         if file_exists($package_path + 'language/' + $idiom + '/' + $langfile)
           $lang = require($package_path + 'language/' + $idiom + '/' + $langfile)
           $found = true

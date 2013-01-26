@@ -51,27 +51,26 @@
 #
 if not function_exists('byte_format')
   exports.byte_format = byte_format = ($num, $precision = 1) ->
-    $CI = Exspresso
-    $CI.lang.load('number')
+    Exspresso.lang.load('number')
     
     if $num>=1000000000000
       $num = round($num / 1099511627776, $precision)
-      $unit = $CI.lang.line('terabyte_abbr')
+      $unit = Exspresso.lang.line('terabyte_abbr')
       
     else if $num>=1000000000
       $num = round($num / 1073741824, $precision)
-      $unit = $CI.lang.line('gigabyte_abbr')
+      $unit = Exspresso.lang.line('gigabyte_abbr')
       
     else if $num>=1000000
       $num = round($num / 1048576, $precision)
-      $unit = $CI.lang.line('megabyte_abbr')
+      $unit = Exspresso.lang.line('megabyte_abbr')
       
     else if $num>=1000
       $num = round($num / 1024, $precision)
-      $unit = $CI.lang.line('kilobyte_abbr')
+      $unit = Exspresso.lang.line('kilobyte_abbr')
       
     else 
-      $unit = $CI.lang.line('bytes')
+      $unit = Exspresso.lang.line('bytes')
       return number_format($num) + ' ' + $unit
       
     

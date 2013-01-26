@@ -55,10 +55,10 @@ class Exspresso_Cache_file extends Exspresso_Driver
   #
   __construct()
   {
-  $CI = Exspresso
-  $CI.load.helper('file')
+  $Exspresso = Exspresso
+  $Exspresso.load.helper('file')
   
-  $path = $CI.config.item('cache_path')
+  $path = $Exspresso.config.item('cache_path')
   
   @_cache_path = if ($path is '') then APPPATH + 'cache/' else $path
   }

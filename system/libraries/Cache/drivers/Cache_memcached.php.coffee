@@ -159,12 +159,12 @@ class Exspresso_Cache_memcached extends Exspresso_Driver
   _setup_memcached()
   {
   #  Try to load memcached server info from the config file.
-  $CI = Exspresso
-  if $CI.config.load('memcached', true, true)
-    if is_array($CI.config.config['memcached'])
+  $Exspresso = Exspresso
+  if $Exspresso.config.load('memcached', true, true)
+    if is_array($Exspresso.config.config['memcached'])
       @_memcache_conf = null
       
-      for $name, $conf of $CI.config.config['memcached']
+      for $name, $conf of $Exspresso.config.config['memcached']
         @_memcache_conf[$name] = $conf
         
       

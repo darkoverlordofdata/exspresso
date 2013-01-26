@@ -43,7 +43,7 @@ class global.Exspresso_Controller
 
   constructor: ($req, @_module) ->
 
-    $req.res.CI = $req.CI = @
+    $req.res.Exspresso = $req.Exspresso = @
     @_req = $req
     @_res = $req.res
 
@@ -79,7 +79,7 @@ class global.Exspresso_Controller
   # @return	void
   #
   render: ($view, $data = {}, $callback) =>
-    $data.CI = @
+    $data.Exspresso = @
     @_res.render $view, $data, ($err, $html) =>
 
       if $callback? then $callback $err, $html

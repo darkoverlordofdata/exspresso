@@ -52,9 +52,8 @@
 #
 if not function_exists('now')
   exports.now = now =  ->
-    $CI = Exspresso
-    
-    if strtolower($CI.config.item('time_reference')) is 'gmt'
+
+    if strtolower(Exspresso.config.item('time_reference')) is 'gmt'
       $now = time()
       $system_time = mktime(gmdate("H", $now), gmdate("i", $now), gmdate("s", $now), gmdate("m", $now), gmdate("d", $now), gmdate("Y", $now))
       
@@ -140,8 +139,7 @@ if not function_exists('standard_date')
 #
 if not function_exists('timespan')
   exports.timespan = timespan = ($seconds = 1, $time = '') ->
-    $CI = Exspresso
-    $CI.lang.load('date')
+    Exspresso.lang.load('date')
 
     if not is_numeric($seconds)
       $seconds = 1
@@ -162,7 +160,7 @@ if not function_exists('timespan')
     $years = floor($seconds / 31536000)
 
     if $years > 0
-      $str+=$years + ' ' + $CI.lang.line((if ($years > 1) then 'date_years' else 'date_year')) + ', '
+      $str+=$years + ' ' + Exspresso.lang.line((if ($years > 1) then 'date_years' else 'date_year')) + ', '
 
 
     $seconds-=$years * 31536000
@@ -170,7 +168,7 @@ if not function_exists('timespan')
 
     if $years > 0 or $months > 0
       if $months > 0
-        $str+=$months + ' ' + $CI.lang.line((if ($months > 1) then 'date_months' else 'date_month')) + ', '
+        $str+=$months + ' ' + Exspresso.lang.line((if ($months > 1) then 'date_months' else 'date_month')) + ', '
 
 
       $seconds-=$months * 2628000
@@ -180,7 +178,7 @@ if not function_exists('timespan')
 
     if $years > 0 or $months > 0 or $weeks > 0
       if $weeks > 0
-        $str+=$weeks + ' ' + $CI.lang.line((if ($weeks > 1) then 'date_weeks' else 'date_week')) + ', '
+        $str+=$weeks + ' ' + Exspresso.lang.line((if ($weeks > 1) then 'date_weeks' else 'date_week')) + ', '
 
 
       $seconds-=$weeks * 604800
@@ -190,7 +188,7 @@ if not function_exists('timespan')
 
     if $months > 0 or $weeks > 0 or $days > 0
       if $days > 0
-        $str+=$days + ' ' + $CI.lang.line((if ($days > 1) then 'date_days' else 'date_day')) + ', '
+        $str+=$days + ' ' + Exspresso.lang.line((if ($days > 1) then 'date_days' else 'date_day')) + ', '
 
 
       $seconds-=$days * 86400
@@ -200,7 +198,7 @@ if not function_exists('timespan')
 
     if $days > 0 or $hours > 0
       if $hours > 0
-        $str+=$hours + ' ' + $CI.lang.line((if ($hours > 1) then 'date_hours' else 'date_hour')) + ', '
+        $str+=$hours + ' ' + Exspresso.lang.line((if ($hours > 1) then 'date_hours' else 'date_hour')) + ', '
 
 
       $seconds-=$hours * 3600
@@ -210,14 +208,14 @@ if not function_exists('timespan')
 
     if $days > 0 or $hours > 0 or $minutes > 0
       if $minutes > 0
-        $str+=$minutes + ' ' + $CI.lang.line((if ($minutes > 1) then 'date_minutes' else 'date_minute')) + ', '
+        $str+=$minutes + ' ' + Exspresso.lang.line((if ($minutes > 1) then 'date_minutes' else 'date_minute')) + ', '
 
 
       $seconds-=$minutes * 60
 
 
     if $str is ''
-      $str+=$seconds + ' ' + $CI.lang.line((if ($seconds > 1) then 'date_seconds' else 'date_second')) + ', '
+      $str+=$seconds + ' ' + Exspresso.lang.line((if ($seconds > 1) then 'date_seconds' else 'date_second')) + ', '
 
 
     return substr(trim($str), 0,  - 1)
@@ -408,8 +406,7 @@ if not function_exists('human_to_unix')
 #
 if not function_exists('timezone_menu')
   exports.timezone_menu = timezone_menu = ($default = 'UTC', $class = "", $name = 'timezones') ->
-    $CI = Exspresso
-    $CI.lang.load('date')
+    Exspresso.lang.load('date')
 
     if $default is 'GMT' then $default = 'UTC'
     $menu = '<select name="' + $name + '"'
@@ -419,7 +416,7 @@ if not function_exists('timezone_menu')
 
     for $key, $val of timezones()
       $selected = if ($default is $key) then " selected='selected'" else ''
-      $menu+="<option value='{$key}'{$selected}>" + $CI.lang.line($key) + "</option>\n"
+      $menu+="<option value='{$key}'{$selected}>" + Exspresso.lang.line($key) + "</option>\n"
 
 
     $menu+="</select>"

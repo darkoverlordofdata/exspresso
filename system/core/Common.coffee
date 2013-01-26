@@ -322,10 +322,13 @@ exports.config_item = config_item = ($item) ->
 # @return	true
 #
 exports.show_error = show_error = ($args...) ->
-  if not $err? then return false
+  if not $args[0]? then return false
 
   _error = load_class('Exceptions', 'core')
-  _error.show_error format.apply(undefined, $args), '5xx', 500
+  if typeof $args[0] is 'string'
+    _error.show_error format.apply(undefined, $args), '5xx', 500
+  else
+    _error.show_error $args[0], '5xx', 500
   true
 
 #  ------------------------------------------------------------------------

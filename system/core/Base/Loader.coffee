@@ -292,14 +292,11 @@ class global.Base_Loader
   #
   database: ($params = '', $return = false, $active_record = null) ->
 
-    # Grab the super object
-    $CI = Exspresso
-
     # Do we even need to load the database class?
-    if $CI.db?
+    if Exspresso.db?
       if not @Exspresso.db?
         if $return is false
-          @Exspresso.db = $CI.db
+          @Exspresso.db = Exspresso.db
           return false
 
     if class_exists('Exspresso_DB') and $return is false and $active_record is null and @Exspresso['db']?

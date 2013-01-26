@@ -48,9 +48,9 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: ($CI) ->
+  constructor: ($Exspresso) ->
     #  Assign the main database object to $this->db
-    super($CI)
+    super($Exspresso)
     
     log_message('debug', "Database Utility Class Initialized")
     

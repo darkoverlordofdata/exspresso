@@ -531,9 +531,9 @@ class Exspresso_FTP
       
       ftp_close(@conn_id)
       _error : ($line) ->
-      $CI = Exspresso
-      $CI.lang.load('ftp')
-      show_error($CI.lang.line($line))
+      $Exspresso = Exspresso
+      $Exspresso.lang.load('ftp')
+      show_error($Exspresso.lang.line($line))
       }#  Attempt to open the remote file path.#  Recursively read the local directory#  --------------------------------------------------------------------#
     # Extract the file extension
     #

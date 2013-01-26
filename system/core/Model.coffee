@@ -49,7 +49,7 @@ class global.Exspresso_Model
   #
   #
   # @access	public
-  # @param	object	$CI Controller Instance mixin
+  # @param	object	$Exspresso Controller Instance mixin
   # @return	void
   #
   constructor: (@Exspresso) ->
@@ -61,7 +61,7 @@ class global.Exspresso_Model
     # this allows models to access CI's loaded classes
     # using the same syntax as controllers:
     #
-    #for $name, $var of $CI
+    #for $name, $var of $Exspresso
     #  if typeof $var is 'object'
     #    if typeof $var isnt 'function' and not Array.isArray($var)
     #      @[$name] = $var

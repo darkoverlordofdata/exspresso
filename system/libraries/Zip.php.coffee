@@ -328,8 +328,8 @@ class Exspresso_Zip
         $filename+='.zip'
         
       
-      $CI = Exspresso
-      $CI.load.helper('download')
+      $Exspresso = Exspresso
+      $Exspresso.load.helper('download')
       
       $get_zip = @get_zip()
       
