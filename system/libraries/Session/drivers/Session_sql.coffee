@@ -50,6 +50,10 @@ class Exspresso_Session_sql extends require('express').session.Store
 
     Exspresso.db.db_connect ($err) =>
 
+      console.log 'get sid'+$sid
+      console.log '----------------------------------'
+      console.log $err
+      console.log '----------------------------------'
       return $callback($err) if log_message('debug', 'Session::get connect %s', $err) if $err
 
       Exspresso.db.where 'sid', $sid
@@ -58,6 +62,8 @@ class Exspresso_Session_sql extends require('express').session.Store
         return $callback($err) if log_message('debug', 'Session::get %s %s', $sid, $err) if $err
         #return $callback($err) if show_error($err)
         if $result.num_rows isnt 0
+          console.log '----------------------------------'
+          console.log $err
           console.log '----------------------------------'
           console.log $result.row().session
           console.log '----------------------------------'
