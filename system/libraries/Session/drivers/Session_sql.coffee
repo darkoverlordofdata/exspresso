@@ -57,6 +57,10 @@ class Exspresso_Session_sql extends require('express').session.Store
 
         return $callback($err) if log_message('debug', 'Session::get %s %s', $sid, $err) if $err
         #return $callback($err) if show_error($err)
+        if $result.num_rows isnt 0
+          console.log '----------------------------------'
+          console.log $result.row().session
+          console.log '----------------------------------'
         $callback null, if $result.num_rows is 0 then null else JSON.parse($result.row().session)
 
 
