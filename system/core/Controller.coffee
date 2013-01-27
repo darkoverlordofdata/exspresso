@@ -66,7 +66,7 @@ class global.Exspresso_Controller
     @router = Exspresso.router
     @lang   = Exspresso.lang
 
-    # the remaining class objects are unique for each Expresso
+    # The remaining class objects are unique for each Expresso
     # application controller
 
     @uri    = load_new('URI', 'core', @)
@@ -78,13 +78,59 @@ class global.Exspresso_Controller
       $_SERVER  : get: -> return @input.server()
       $_COOKIE  : get: -> return @input.cookie()
 
-    @load   = load_new('Loader', 'core', @)
+    # From here forward, custom controllers will use an
+    # @load.method to load classes:
+
+    @load = load_new('Loader', 'core', @)
     @load.initialize()
 
 
+  # --------------------------------------------------------------------
 
+  #
+  # Async job queue for the controller
+  #
+  # @access	public
+  # @param	function
+  # @return	array
+  #
   queue: ($fn) ->
     if $fn then @_queue.push($fn) else @_queue
+
+  # --------------------------------------------------------------------
+
+  #
+  # Run the functions in the queue
+  #
+  #   @access	public
+  #   @param  array
+  #   @param	function
+  #   @return	void
+  #
+  run: ($queue, $next) ->
+
+    if typeof $next isnt 'function'
+      [$queue, $next] = [@_queue, $queue]
+
+    $index = 0
+    $iterate = ->
+
+      if $queue.length is 0 then $next null
+      else
+        #
+        # call the function at index
+        #
+        $ctor = $queue[$index]
+        $ctor ($err) ->
+          if $err
+            log_message 'debug', 'Controller::run'
+            console.log $err
+
+          $index += 1
+          if $index is $queue.length then $next null
+          else $iterate()
+
+    $iterate()
 
   # --------------------------------------------------------------------
 

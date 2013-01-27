@@ -1,4 +1,4 @@
-# [Exspresso v0.8.1] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.8.3] (https://github.com/darkoverlordofdata/exspresso)
 
  A framework for coffee-script, based on the [CodeIgniter] (<http://codeigniter.com/>) framework, v2.1.
 
@@ -54,7 +54,7 @@
 
 (The MIT License)
 
-Copyright (c) 2012 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
+Copyright (c) 2012 - 2013 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

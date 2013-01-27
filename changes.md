@@ -16,3 +16,6 @@
   * 0.8.2  drop sqlite support
   * 0.8.2  Refactor MX/Modules into core as baseclasee/subclass
   * 0.8.2  Move modules/ path to root
+  * 0.8.3  Rename all CI to Exspresso
+  * 0.8.3  Ensure licensing is compliant and up to date
+  * 0.8.3  Refactor the dependency injection of http request & response to one point

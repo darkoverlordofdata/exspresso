@@ -260,42 +260,17 @@ class global.Base_Router
     #
     @routes[$route] = ($req, $res, $next, $args...) =>
 
-      $Exspresso = new $class($req, $res, $next)
-      @_run $Exspresso.queue(), ->
+      try
+        $Exspresso = new $class($req, $res, $next)
+      catch $err
+        return $next($err)
+
+      $Exspresso.run ($err) ->
+        return $next($err) if $err
         try
-          call_user_func_array [$Exspresso, $method], $args
+          $Exspresso[$method].apply($Exspresso, $args)
         catch $err
           $next $err
-
-  #
-  # Process post-constructor initialization queue
-  #
-  #   @access	private
-  #   @param	function
-  #   @return	void
-  #
-  _run: ($queue, $next) ->
-
-    $index = 0
-    $iterate = ->
-
-      if $queue.length is 0 then $next null
-      else
-        #
-        # call the function at index
-        #
-        $ctor = $queue[$index]
-        $ctor ($err) ->
-          if $err
-            log_message 'debug', 'Router::ctor_queue'
-            console.log $err
-
-          $index += 1
-          if $index is $queue.length then $next null
-          else $iterate()
-
-    $iterate()
-
 
   # --------------------------------------------------------------------
 

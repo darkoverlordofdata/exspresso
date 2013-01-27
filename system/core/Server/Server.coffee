@@ -141,7 +141,10 @@ class global.Exspresso_Server
   # @access	public
   # @return	void
   #
-  _run: ($queue, $next) ->
+  run: ($queue, $next) ->
+
+    if typeof $next isnt 'function'
+      [$queue, $next] = [@_queue, $queue]
 
     $index = 0
     $iterate = ->
@@ -177,7 +180,7 @@ class global.Exspresso_Server
     Exspresso.load.initialize()
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
-    @_run Exspresso.queue().concat(@queue()), ($err) ->
+    @run Exspresso.queue().concat(@queue()), ($err) ->
       if not $err
         if Exspresso.db?
           Exspresso.db.close($next)
