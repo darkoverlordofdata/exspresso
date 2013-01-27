@@ -66,6 +66,7 @@ module.exports = class global.Exspresso_Input
       HTTP_REFERER:           $req.headers['referer']
       HTTP_USER_AGENT:        $req.headers['user-agent']
       HTTPS:                  $req.secure
+      REMOTE_ADDR:            ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
       REQUEST_URI:            $req.url
       PATH_INFO:              $req.path
       ORIG_PATH_INFO:         $req.path
