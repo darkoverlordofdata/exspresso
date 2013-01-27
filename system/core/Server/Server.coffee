@@ -181,11 +181,8 @@ class global.Exspresso_Server
     @app.use load_class('Exceptions',  'core').middleware()
     @app.use dispatch($router.routes)
     @run Exspresso.queue().concat(@queue()), ($err) ->
-      if not $err
-        if Exspresso.db?
-          Exspresso.db.close($next)
-        else
-          $next()
+      $next($err)
+
 
 
 

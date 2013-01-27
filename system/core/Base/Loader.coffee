@@ -290,8 +290,7 @@ class global.Base_Loader
     if Exspresso.db?
       if not @Exspresso.db?
         if $return is false
-          @Exspresso.db = Exspresso.db
-          return false
+          return @Exspresso.db = Exspresso.db
 
     if class_exists('Exspresso_DB') and $return is false and $active_record is null and @Exspresso['db']?
       return false
@@ -300,7 +299,7 @@ class global.Base_Loader
 
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
 
-    @Exspresso.queue ($callback) -> DB.initialize $callback
+    @Exspresso.queue ($next) -> DB.initialize $next
 
     if $return is true then return DB #($params, $active_record)
 

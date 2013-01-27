@@ -89,6 +89,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
         @connected = false
         console.log $err
       else
+        $client.pauseDrain()
         $callback $err, $client
 
   #  --------------------------------------------------------------------

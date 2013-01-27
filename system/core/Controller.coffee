@@ -44,6 +44,7 @@ class global.Exspresso_Controller
     @_queue = []
     log_message 'debug', "Controller Class Initialized"
 
+    console.log $req.session
     #
     # ------------------------------------------------------
     #  Start the timer... tick tock tick tock...

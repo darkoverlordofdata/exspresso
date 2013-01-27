@@ -117,33 +117,6 @@ class global.Exspresso_Loader extends Base_Loader
   ## --------------------------------------------------------------------
 
   #
-  # Load a module database
-  #
-  # @access	public
-  # @param	string	the DB credentials
-  # @param	bool	whether to return the DB object
-  # @param	bool	whether to enable active record (this allows us to override the config setting)
-  # @return	object
-  #
-  database: ($params = '',$return = false, $active_record = null) ->
-
-
-    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @Exspresso.db?  and is_object(@Exspresso.db)
-      return
-
-    $params = $params || Exspresso.server._db
-
-    $DB = require(BASEPATH + 'database/DB' + EXT)($params, $active_record)
-
-    @Exspresso.queue ($next) -> $DB.initialize $next
-
-    if $return is true then return $DB #($params, $active_record)
-
-    @Exspresso.db = $DB #($params, $active_record)
-
-  ## --------------------------------------------------------------------
-
-  #
   # Load a module helper
   #
   # This function loads the specified helper file.

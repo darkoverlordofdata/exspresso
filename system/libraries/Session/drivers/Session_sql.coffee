@@ -51,7 +51,7 @@ class Exspresso_Session_sql extends require('express').session.Store
     Exspresso.db.where 'sid', $sid
     Exspresso.db.get @_table, ($err, $result) ->
 
-      if $err then return $callback $err
+      return $callback($err) if show_error($err)
       $callback null, if $result.num_rows is 0 then null else JSON.parse($result.row().session)
 
 
@@ -74,7 +74,7 @@ class Exspresso_Session_sql extends require('express').session.Store
     Exspresso.db.where 'sid', $sid
     Exspresso.db.get @_table, ($err, $result) =>
 
-      return $callback $err if $err
+      return $callback($err) if show_error($err)
 
       if $result.num_rows is 0
         $data =
