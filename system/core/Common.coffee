@@ -364,11 +364,11 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
 exports.log_message = log_message = ($level = 'error', $args...) ->
 
   if config_item('log_threshold') is 0
-    return
+    return true
 
   _log = load_class('Log')
   _log.write_log $level, format.apply(undefined, $args)
-
+  true
 
 #  ------------------------------------------------------------------------
 

@@ -48,11 +48,16 @@ class Exspresso_Session_sql extends require('express').session.Store
   #
   get: ($sid, $callback) ->
 
-    Exspresso.db.where 'sid', $sid
-    Exspresso.db.get @_table, ($err, $result) ->
+    Exspresso.db.db_connect ($err) =>
 
-      return $callback($err) if show_error($err)
-      $callback null, if $result.num_rows is 0 then null else JSON.parse($result.row().session)
+      return $callback($err) if log_message('debug', 'Session::get connect %s', $err) if $err
+
+      Exspresso.db.where 'sid', $sid
+      Exspresso.db.get @_table, ($err, $result) ->
+
+        return $callback($err) if log_message('debug', 'Session::get %s %s', $sid, $err) if $err
+        #return $callback($err) if show_error($err)
+        $callback null, if $result.num_rows is 0 then null else JSON.parse($result.row().session)
 
 
   ## --------------------------------------------------------------------
@@ -69,26 +74,31 @@ class Exspresso_Session_sql extends require('express').session.Store
   #
   set: ($sid, $session, $callback) ->
 
-    $expires = new Date($session.cookie.expires).getTime() / 1000
-    $session = JSON.stringify($session)
-    Exspresso.db.where 'sid', $sid
-    Exspresso.db.get @_table, ($err, $result) =>
+    Exspresso.db.db_connect ($err) =>
 
-      return $callback($err) if show_error($err)
+      return $callback($err) if log_message('debug', 'Session::set connect %s', $err) if $err
 
-      if $result.num_rows is 0
-        $data =
-          sid     : $sid
-          session : $session
-          expires : $expires
-        Exspresso.db.insert @_table, $data, $callback
+      $expires = new Date($session.cookie.expires).getTime() / 1000
+      $session = JSON.stringify($session)
+      Exspresso.db.where 'sid', $sid
+      Exspresso.db.get @_table, ($err, $result) =>
 
-      else
-        $data =
-          session : $session
-          expires : $expires
+        return $callback($err) if log_message('debug', 'Session::set %s %s', $sid, $err) if $err
+        #return $callback($err) if show_error($err)
 
-        Exspresso.db.update @_table, $data, $callback
+        if $result.num_rows is 0
+          $data =
+            sid     : $sid
+            session : $session
+            expires : $expires
+          Exspresso.db.insert @_table, $data, $callback
+
+        else
+          $data =
+            session : $session
+            expires : $expires
+
+          Exspresso.db.update @_table, $data, $callback
 
 
   ## --------------------------------------------------------------------
@@ -104,8 +114,12 @@ class Exspresso_Session_sql extends require('express').session.Store
   #
   destroy: ($sid, $callback) ->
 
-    Exspresso.db.where 'sid', $sid
-    Exspresso.db.delete @_table, $callback
+    Exspresso.db.db_connect ($err) =>
+
+      return $callback($err) if log_message('debug', 'Session::set connect %s', $err) if $err
+
+      Exspresso.db.where 'sid', $sid
+      Exspresso.db.delete @_table, $callback
 
   #  --------------------------------------------------------------------
 
