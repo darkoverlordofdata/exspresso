@@ -50,10 +50,6 @@ class Exspresso_Session_sql extends require('express').session.Store
 
     Exspresso.db.db_connect ($err) =>
 
-      console.log 'get sid'+$sid
-      console.log '----------------------------------'
-      console.log $err
-      console.log '----------------------------------'
       return $callback($err) if log_message('debug', 'Session::get connect %s', $err) if $err
 
       Exspresso.db.where 'sid', $sid
@@ -61,12 +57,6 @@ class Exspresso_Session_sql extends require('express').session.Store
 
         return $callback($err) if log_message('debug', 'Session::get %s %s', $sid, $err) if $err
         #return $callback($err) if show_error($err)
-        if $result.num_rows isnt 0
-          console.log '----------------------------------'
-          console.log $err
-          console.log '----------------------------------'
-          console.log $result.row().session
-          console.log '----------------------------------'
         $callback null, if $result.num_rows is 0 then null else JSON.parse($result.row().session)
 
 
@@ -89,6 +79,11 @@ class Exspresso_Session_sql extends require('express').session.Store
       return $callback($err) if log_message('debug', 'Session::set connect %s', $err) if $err
 
       $expires = new Date($session.cookie.expires).getTime() / 1000
+      console.log '------------'
+      console.log $session
+      console.log '------------'
+      console.log JSON.stringify($session)
+      console.log '------------'
       $session = JSON.stringify($session)
       Exspresso.db.where 'sid', $sid
       Exspresso.db.get @_table, ($err, $result) =>

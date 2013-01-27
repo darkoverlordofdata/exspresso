@@ -83,9 +83,13 @@ class global.Exspresso_Session
       $req = @req = $Exspresso.req
       $res = @res = $Exspresso.res
 
+      console.log '==========='
+      console.log $req.agent
+      console.log '==========='
+
       $req.session.session_id     = $req.session.session_id || $req.sessionID
       $req.session.ip_address     = $req.session.ip_address || $req.ip
-      $req.session.user_agent     = $req.session.user_agent || $req.agent
+      $req.session.user_agent     = $req.agent
       $req.session.last_activity  = $req.session.last_activity || (new Date()).getTime()
       $req.session.userdata       = $req.session.userdata || {}
 
