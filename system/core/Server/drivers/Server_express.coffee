@@ -31,7 +31,6 @@ express         = require('express')        # Web development framework
 cache           = require("connect-cache")  # Caching system for Connect
 eco             = require('eco')            # Embedded CoffeeScript templates
 fs              = require("fs")             # File system
-useragent       = require('connect-useragent')
 
 class global.Exspresso_Server_express extends Exspresso_Server
 
@@ -171,7 +170,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     @app.use express.bodyParser()
     @app.use express.methodOverride()
-    @app.use useragent()
     return
 
   #  --------------------------------------------------------------------
