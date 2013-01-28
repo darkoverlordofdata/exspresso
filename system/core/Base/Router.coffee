@@ -261,7 +261,7 @@ class global.Base_Router
     @routes[$route] = ($req, $res, $next, $args...) =>
 
       try
-        $Exspresso = new $class($req, $res, $next)
+        $Exspresso = new $class($req, $res, $next, $class.name, $method)
       catch $err
         return $next($err)
 

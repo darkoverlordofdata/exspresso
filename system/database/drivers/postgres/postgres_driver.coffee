@@ -78,7 +78,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	private called by the base class
   # @return	resource
   #
-  db_connect: ($callback) =>
+  db_connect: ($next) =>
 
     pg = require('pg')
     @connected = true
@@ -89,7 +89,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
         @connected = false
         console.log $err
       else
-        $callback $err, $client
+        $next $err, $client
 
   #  --------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	void
   #
-  reconnect:  ->
+  reconnect: ($next) -> @db_connect $next
 
 
 
@@ -140,9 +140,9 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @param	string
   # @return	resource
   #
-  db_set_charset: ($charset, $collation, $callback) ->
+  db_set_charset: ($charset, $collation, $next) ->
     #  @todo - add support if needed
-    if $callback? then $callback()
+    if $next? then $next()
     return true
 
 
@@ -167,9 +167,9 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @param	string	an SQL query
   # @return	resource
   #
-  _execute: ($sql, $params, $callback) ->
+  _execute: ($sql, $params, $next) ->
     $sql = @_prep_query($sql)
-    @client.query $sql, $params, $callback
+    @client.query $sql, $params, $next
 
 
   #  --------------------------------------------------------------------
@@ -210,7 +210,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
     #  even if the queries produce a successful result.
     @_trans_failure = if ($test_mode is true) then true else false
 
-    @simple_query 'BEGIN', $callback #
+    @simple_query 'BEGIN', $next #
 
 
   #  --------------------------------------------------------------------
@@ -230,7 +230,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
     if @_trans_depth > 0
       return true
 
-    @simple_query 'COMMIT', $callback
+    @simple_query 'COMMIT', $next
 
 
   #  --------------------------------------------------------------------
@@ -251,7 +251,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
       return true
 
 
-    @simple_query 'ROLLBACK', $callback
+    @simple_query 'ROLLBACK', $next
 
 
   #  --------------------------------------------------------------------
@@ -304,14 +304,14 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	integer
   #
-  insert_id: ($callback) ->
+  insert_id: ($next) ->
 
     @query "SELECT LASTVAL() AS id", ($err, $insert) =>
 
       if $err
-        $callback $err
+        $next $err
       else
-        $callback null, $insert.row().id
+        $next null, $insert.row().id
 
   #  --------------------------------------------------------------------
 
@@ -325,15 +325,15 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @param	string
   # @return	string
   #
-  count_all: ($table = '', $callback) ->
+  count_all: ($table = '', $next) ->
     if $table is ''
       return 0
 
 
     @query @_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false), ($err, $query)->
 
-      if $err then $callback $err
-      else $callback null, $query.row().numrows
+      if $err then $next $err
+      else $next null, $query.row().numrows
 
 
   #  --------------------------------------------------------------------
@@ -611,9 +611,9 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @param	resource
   # @return	void
   #
-  _close: ($callback) ->
+  _close: ($next) ->
     @client.end()
-    $callback()
+    $next()
 
 
 # End Class Exspresso_DB_sqlite_driver

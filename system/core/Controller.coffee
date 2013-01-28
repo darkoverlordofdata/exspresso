@@ -40,14 +40,28 @@ class global.Exspresso_Controller
   res         : null      # http Response object
   next        : null      # http next function
 
-  fetch_module: -> return @_module
-  fetch_class : -> return @_class
-  fetch_method: -> return @_method
+  fetch_module: -> @_module
+  fetch_class : -> @_class
+  fetch_method: -> @_method
 
+  # --------------------------------------------------------------------
+
+  #
+  # Initialize Controller objects
+  #
+  # @access	public
+  # @param	object    Request object
+  # @param	object    Response object
+  # @param	function  Next middleware in stack
+  # @param	string    module name
+  # @param	string    class name
+  # @param	string    method name
+  # @return	void
+  #
   constructor: ($req, $res, $next, $module, $class, $method) ->
 
     @_module = $module
-    @_class = $class.name
+    @_class = $class
     @_method = $method
     @_queue = []
     log_message 'debug', "Controller Class Initialized"
@@ -96,6 +110,39 @@ class global.Exspresso_Controller
   # --------------------------------------------------------------------
 
   #
+  # Render a view
+  #
+  # @access	public
+  # @param	string
+  # @param	object
+  # @param	function
+  # @return	void
+  #
+  render: ($view, $data = {}, $callback) =>
+    $data.Exspresso = @
+    @res.render $view, $data, ($err, $html) =>
+
+      if $callback? then $callback $err, $html
+      else
+        if $err then show_error $err
+        else
+          @res.send $html
+
+  # --------------------------------------------------------------------
+
+  #
+  # Redirect to another url
+  #
+  # @access	public
+  # @param	string
+  # @return	void
+  #
+  redirect: ($url) =>
+    @res.redirect $url
+
+  # --------------------------------------------------------------------
+
+  #
   # Async job queue for the controller
   #
   # @access	public
@@ -139,39 +186,6 @@ class global.Exspresso_Controller
           else $iterate()
 
     $iterate()
-
-  # --------------------------------------------------------------------
-
-  #
-  # Render a view
-  #
-  # @access	public
-  # @param	string
-  # @param	object
-  # @param	function
-  # @return	void
-  #
-  render: ($view, $data = {}, $callback) =>
-    $data.Exspresso = @
-    @res.render $view, $data, ($err, $html) =>
-
-      if $callback? then $callback $err, $html
-      else
-        if $err then show_error $err
-        else
-          @res.send $html
-
-  # --------------------------------------------------------------------
-
-  #
-  # Redirect to another url
-  #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
-  redirect: ($url) =>
-    @res.redirect $url
 
 
 
