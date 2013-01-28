@@ -287,11 +287,6 @@ class global.Base_Loader
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Do we even need to load the database class?
-    #if Exspresso.db?
-    #  if not @Exspresso.db?
-    #    if $return is false
-    #      return @Exspresso.db = Exspresso.db
-
     if class_exists('Exspresso_DB') and $return is false and $active_record is null and @Exspresso['db']?
       return false
 

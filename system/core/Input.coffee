@@ -47,29 +47,29 @@ module.exports = class global.Exspresso_Input
     os = require('os')
 
     @server_array =
-      argv:                   $req.query
-      argc:                   count($req.query)
-      SERVER_ADDR:            $req.ip
-      SERVER_NAME:            $req.host
-      SERVER_SOFTWARE:        Exspresso.server.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
-      SERVER_PROTOCOL:        strtoupper($req.protocol)+"/"+$req.httpVersion
-      REQUEST_METHOD:         $req.method
-      REQUEST_TIME:           $req._startTime
-      QUERY_STRING:           if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
-      DOCUMENT_ROOT:          process.cwd()
-      HTTP_ACCEPT:            $req.headers['accept']
-      HTTP_ACCEPT_CHARSET:    $req.headers['accept-charset']
-      HTTP_ACCEPT_ENCODING:   $req.headers['accept-encoding']
-      HTTP_ACCEPT_LANGUAGE:   $req.headers['accept-language']
-      HTTP_CONNECTION:        $req.headers['connection']
-      HTTP_HOST:              $req.headers['host']
-      HTTP_REFERER:           $req.headers['referer']
-      HTTP_USER_AGENT:        $req.headers['user-agent']
-      HTTPS:                  $req.secure
-      REMOTE_ADDR:            ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
-      REQUEST_URI:            $req.url
-      PATH_INFO:              $req.path
-      ORIG_PATH_INFO:         $req.path
+      argv                  : $req.query
+      argc                  : count($req.query)
+      SERVER_ADDR           : $req.ip
+      SERVER_NAME           : $req.host
+      SERVER_SOFTWARE       : Exspresso.server.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
+      SERVER_PROTOCOL       : strtoupper($req.protocol)+"/"+$req.httpVersion
+      REQUEST_METHOD        : $req.method
+      REQUEST_TIME          : $req._startTime
+      QUERY_STRING          : if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
+      DOCUMENT_ROOT         : process.cwd()
+      HTTP_ACCEPT           : $req.headers['accept']
+      HTTP_ACCEPT_CHARSET   : $req.headers['accept-charset']
+      HTTP_ACCEPT_ENCODING  : $req.headers['accept-encoding']
+      HTTP_ACCEPT_LANGUAGE  : $req.headers['accept-language']
+      HTTP_CONNECTION       : $req.headers['connection']
+      HTTP_HOST             : $req.headers['host']
+      HTTP_REFERER          : $req.headers['referer']
+      HTTP_USER_AGENT       : $req.headers['user-agent']
+      HTTPS                 : $req.secure
+      REMOTE_ADDR           : ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
+      REQUEST_URI           : $req.url
+      PATH_INFO             : $req.path
+      ORIG_PATH_INFO        : $req.path
 
 
 

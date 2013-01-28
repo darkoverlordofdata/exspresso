@@ -56,7 +56,7 @@ class global.Exspresso_Profiler extends Base_Profiler
     #  be modified.  We also might want to make this data available to be logged
 
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_benchmarks">'
+    $output+='<dl id="ex_profiler_benchmarks">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_benchmarks') + '</dt>'
     $output+="\n"
@@ -90,7 +90,7 @@ class global.Exspresso_Profiler extends Base_Profiler
 
     if count($dbs) is 0
       $output = "\n\n"
-      $output+='<dl id="ci_profiler_queries">'
+      $output+='<dl id="ex_profiler_queries">'
       $output+="\n"
       $output+='<dt>' + @Exspresso.lang.line('profiler_queries') + '</dt>'
       $output+="\n"
@@ -145,7 +145,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   _compile_get: () ->
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_get">'
+    $output+='<dl id="ex_profiler_get">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_get_data') + '</dt>'
     $output+="\n"
@@ -185,7 +185,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   _compile_post: () ->
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_post">'
+    $output+='<dl id="ex_profiler_post">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_post_data') + '</dt>'
     $output+="\n"
@@ -226,7 +226,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   _compile_uri_string: () ->
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_uri_string">'
+    $output+='<dl id="ex_profiler_uri_string">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_uri_string') + '</dt>'
     $output+="\n"
@@ -250,12 +250,20 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   _compile_controller_info: () ->
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_controller_info">'
+    $output+='<dl id="ex_profiler_controller_module">'
+    $output+="\n"
+    $output+='<dt>' + 'MODULE' + '</dt>'
+    $output+="\n"
+
+    $output+="<dd>" + @Exspresso.fetch_module() + "</dd>"
+
+    $output+="</dl>"
+    $output+='<dl id="ex_profiler_controller_info">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_controller_info') + '</dt>'
     $output+="\n"
 
-    $output+="<dd>" + @Exspresso.router.fetch_class() + "/" + @Exspresso.router.fetch_method() + "</dd>"
+    $output+="<dd>" + @Exspresso.fetch_class() + "/" + @Exspresso.fetch_method() + "</dd>"
 
     $output+="</dl>"
 
@@ -272,7 +280,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   _compile_memory_usage: () ->
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_memory_usage">'
+    $output+='<dl id="ex_profiler_memory_usage">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_memory_usage') + '</dt>'
     $output+="\n"
@@ -298,7 +306,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   _compile_http_headers: () ->
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_http_headers">'
+    $output+='<dl id="ex_profiler_http_headers">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_headers') + '</dt>'
     $output+="\n"
@@ -325,7 +333,7 @@ class global.Exspresso_Profiler extends Base_Profiler
   #
   _compile_config: () ->
     $output = "\n\n"
-    $output+='<dl id="ci_profiler_config">'
+    $output+='<dl id="ex_profiler_config">'
     $output+="\n"
     $output+='<dt>' + @Exspresso.lang.line('profiler_config') + '</dt>'
     $output+="\n"
@@ -362,7 +370,7 @@ class global.Exspresso_Profiler extends Base_Profiler
         <div class="container">
           <div class="credit">
             <span class="pull-left muted">
-              <a data-toggle="modal" href="#codeigniter_profiler">
+              <a data-toggle="modal" href="#exspresso_profiler">
                 <i class="icon-time"></i> #{$elapsed} ms - #{$memory}</a>
             </span>
             <span class="pull-right">powered by &nbsp;
@@ -373,12 +381,12 @@ class global.Exspresso_Profiler extends Base_Profiler
       </footer>
 
       <form>
-      <div id="codeigniter_profiler" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="codeigniter_profilerLabel" aria-hidden="true">
+      <div id="exspresso_profiler" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="exspresso_profilerLabel" aria-hidden="true">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h3 id="codeigniter_profilerLabel">#{ucfirst(ENVIRONMENT)} Profile</h3>
+          <h3 id="exspresso_profilerLabel">#{ucfirst(ENVIRONMENT)} Profile</h3>
         </div>
-        <div id="codeigniter_profiler-body" class="modal-body">
+        <div id="exspresso_profiler-body" class="modal-body">
           <div class="hero-unit">
             <div class="row">
       """
@@ -386,8 +394,7 @@ class global.Exspresso_Profiler extends Base_Profiler
 
     for $section, $enabled of @_enabled_sections
       if $enabled isnt false
-        $func = "_compile_#{$section}"
-        $output+=@[$func]()
+        $output+=@["_compile_#{$section}"]()
         $fields_displayed++
 
     if $fields_displayed is 0

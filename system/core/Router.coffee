@@ -90,7 +90,7 @@ class global.Exspresso_Router extends Base_Router
     @routes[$route] = ($req, $res, $next, $args...) =>
 
       try
-        $Exspresso = new $class($req, $res, $next, $module)
+        $Exspresso = new $class($req, $res, $next, $module, $class, $method)
       catch $err
         return $next($err)
 

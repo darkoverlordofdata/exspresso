@@ -68,7 +68,7 @@ body {
     font-size: 18px;
 }
 
-#codeigniter_profiler {
+#exspresso_profiler {
     font-size: 90%;
     width: 80%;
     left: 10%;
@@ -77,7 +77,7 @@ body {
     margin-left: 0px;
 
 }
-#codeigniter_profiler-body {
+#exspresso_profiler-body {
     max-height: 600px;
 }
 

@@ -79,11 +79,6 @@ class Exspresso_Session_sql extends require('express').session.Store
       return $callback($err) if log_message('debug', 'Session::set connect %s', $err) if $err
 
       $expires = new Date($session.cookie.expires).getTime() / 1000
-      console.log '------------'
-      console.log $session
-      console.log '------------'
-      console.log JSON.stringify($session)
-      console.log '------------'
       $session = JSON.stringify($session)
       Exspresso.db.where 'sid', $sid
       Exspresso.db.get @_table, ($err, $result) =>

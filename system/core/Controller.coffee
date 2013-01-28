@@ -31,16 +31,24 @@
 
 class global.Exspresso_Controller
 
-  _module     : ''        # module
+  _module     : ''        # module name
+  _class      : ''        # class name
+  _method     : ''        # method name
   _queue      : null      # async queue
   BM          : null      # Benchmark object
   req         : null      # http Request object
   res         : null      # http Response object
   next        : null      # http next function
 
-  constructor: ($req, $res, $next, $module) ->
+  fetch_module: -> return @_module
+  fetch_class : -> return @_class
+  fetch_method: -> return @_method
+
+  constructor: ($req, $res, $next, $module, $class, $method) ->
 
     @_module = $module
+    @_class = $class.name
+    @_method = $method
     @_queue = []
     log_message 'debug', "Controller Class Initialized"
 
@@ -164,6 +172,7 @@ class global.Exspresso_Controller
   #
   redirect: ($url) =>
     @res.redirect $url
+
 
 
 # END Exspresso_Controller class

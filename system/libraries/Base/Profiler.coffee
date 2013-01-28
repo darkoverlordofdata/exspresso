@@ -418,7 +418,7 @@ class global.Base_Profiler
   # @return	string
   #
   run: () ->
-    $output = "<div id='codeigniter_profiler' style='clear:both;background-color:#fff;padding:10px;'>"
+    $output = "<div id='exspresso_profiler' style='clear:both;background-color:#fff;padding:10px;'>"
     $fields_displayed = 0
 
     for $section, $enabled of @_enabled_sections

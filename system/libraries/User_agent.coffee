@@ -41,21 +41,22 @@
 # @author		darkoverlordofdata
 # @link		http://darkoverlordofdata.com/user_guide/libraries/user_agent.html
 #
-class Exspresso_User_agent
-  
+class global.Exspresso_User_agent
+
+  Exspresso: null
   agent: null
   
   is_browser: false
   is_robot: false
   is_mobile: false
   
-  languages: {}
-  charsets: {}
+  languages: null
+  charsets: null
   
-  platforms: {}
-  browsers: {}
-  mobiles: {}
-  robots: {}
+  platforms: null
+  browsers: null
+  mobiles: null
+  robots: null
   
   platform: ''
   browser: ''
@@ -71,7 +72,16 @@ class Exspresso_User_agent
   # @access	public
   # @return	void
   #
-  constructor: () ->
+  constructor: ($config = {}, @Exspresso) ->
+
+    @languages = {}
+    @charsets = {}
+
+    @platforms = {}
+    @browsers = {}
+    @mobiles = {}
+    @robots = {}
+
     if @Exspresso.$_SERVER['HTTP_USER_AGENT']?
       @agent = trim(@Exspresso.$_SERVER['HTTP_USER_AGENT'])
 

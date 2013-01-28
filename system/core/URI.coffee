@@ -62,8 +62,8 @@ class global.Exspresso_URI
     @keyval = {}
     @segments = []
     @rsegments = []
-    $uri_string = $Exspresso.req.path
-    @rsegments = @segments = $uri_string.split('/')
+    @_uri_string = $Exspresso.req.path
+    @rsegments = @segments = @_uri_string.split('/')
 
   #  --------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ class global.Exspresso_URI
   # @return	string
   #
   segment : ($n, $no_result = false) ->
-    return if not @segments[$n]? then $no_result else @segments[$n]
+    if not @segments[$n]? then $no_result else @segments[$n]
 
 
   #  --------------------------------------------------------------------
@@ -96,7 +96,7 @@ class global.Exspresso_URI
   # @return	string
   #
   rsegment : ($n, $no_result = false) ->
-    return if not @rsegments[$n]? then $no_result else @rsegments[$n]
+    if not @rsegments[$n]? then $no_result else @rsegments[$n]
 
   #  --------------------------------------------------------------------
 
@@ -122,14 +122,14 @@ class global.Exspresso_URI
   # @return	array
   #
   uri_to_assoc: ($n = 3, $default = {}) ->
-    return @_uri_to_assoc($n, $default, 'segment')
+    @_uri_to_assoc($n, $default, 'segment')
 
   #
   # Identical to above only it uses the re-routed segment array
   #
   #
   ruri_to_assoc: ($n = 3, $default = {}) ->
-    return @_uri_to_assoc($n, $default, 'rsegment')
+    @_uri_to_assoc($n, $default, 'rsegment')
 
   #  --------------------------------------------------------------------
 
@@ -151,26 +151,21 @@ class global.Exspresso_URI
       $total_segments = 'total_rsegments'
       $segment_array = 'rsegment_array'
 
-
     if not is_numeric($n)
       return $default
-
 
     if $keyval[$n]?
       return $keyval[$n]
 
-
     if @[$total_segments]() < $n
       if count($default) is 0
         return {}
-
 
       $retval = {}
       for $val in $default
         $retval[$val] = false
 
       return $retval
-
 
     $i = 0
     $lastval = ''
@@ -183,17 +178,12 @@ class global.Exspresso_URI
         $retval[$seg] = false
         $lastval = $seg
 
-
       $i++
-
 
     if count($default) > 0
       for $val in $default
         if not array_key_exists($val, $retval)
           $retval[$val] = false
-
-
-
 
     #  Cache the array for reuse
     $keyval[$n] = $retval
@@ -214,7 +204,6 @@ class global.Exspresso_URI
     for $key, $val of $array
       $temp.push $key
       $temp.push $val
-
 
     return implode('/', $temp)
 
@@ -266,7 +255,6 @@ class global.Exspresso_URI
 
     else if $where is 'leading'
       $trailing = ''
-
 
     return $leading + @[$which]($n) + $trailing
 
@@ -328,7 +316,7 @@ class global.Exspresso_URI
   # @return	string
   #
   uri_string :  ->
-    return @uri_string
+    @_uri_string
 
 
   #  --------------------------------------------------------------------
@@ -340,7 +328,7 @@ class global.Exspresso_URI
   # @return	string
   #
   ruri_string :  ->
-    return '/' + implode('/', @rsegment_array())
+    '/' + implode('/', @rsegment_array())
 
 
 

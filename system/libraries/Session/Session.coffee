@@ -85,13 +85,10 @@ class global.Exspresso_Session
 
 
       $req.session.session_id     = $req.session.session_id || $req.sessionID
-      $req.session.ip_address     = $req.session.ip_address || $req.ip
+      $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
       $req.session.user_agent     = $req.headers['user-agent']
       $req.session.last_activity  = $req.session.last_activity || (new Date()).getTime()
       $req.session.userdata       = $req.session.userdata || {}
-      console.log '==========='
-      console.log $req.user_agent
-      console.log '==========='
 
       if $res.locals?
         if express.version[0] is '3'
