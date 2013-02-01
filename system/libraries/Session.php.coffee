@@ -34,7 +34,7 @@
 # Session Class
 #
 #
-class CI_Session
+class Exspresso_Session
   
   sess_encrypt_cookie: false
   sess_use_database: false
@@ -50,12 +50,14 @@ class CI_Session
   cookie_secure: false
   sess_time_to_update: 300
   encryption_key: ''
-  flashdata_key: 'flash'
   time_reference: 'time'
-  gc_probability: 5
-  userdata: null
+  
+  _flashdata_key: 'flash'
+  _gc_probability: 5
+  _userdata: null
+  _now: null
+  
   Exspresso: null
-  now: null
   
   #
   # Session Constructor
@@ -66,8 +68,8 @@ class CI_Session
   constructor : ($params = {}, @Exspresso) ->
     log_message('debug', "Session Class Initialized")
     
-    @userdata = {}
-    @now = 0
+    @_userdata = {}
+    @_now = 0
     
     #  Set all the session preferences, which can either be set
     #  manually via the $params array above or via the config file
@@ -94,7 +96,7 @@ class CI_Session
     
     #  Set the "now" time.  Can either be GMT or server time, based on the
     #  config prefs.  We use this to set the "last activity" time
-    @now = @_get_time()
+    @_now = @_get_time()
     
     #  Set the session length. If the session expiration is
     #  set to zero we'll set the expiration two years from now.
@@ -167,7 +169,7 @@ class CI_Session
       return false
 
     #  Is the session current?
-    if ($session['last_activity'] + @sess_expiration) < @now
+    if ($session['last_activity'] + @sess_expiration) < @_now
       @sess_destroy()
       return false
 
@@ -208,7 +210,7 @@ class CI_Session
             $session[$key] = $val
 
     #  Session is valid!
-    @userdata = $session
+    @_userdata = $session
     $session = null
     
     return true
@@ -230,7 +232,7 @@ class CI_Session
       
     
     #  set the custom userdata, the session data we will set in a second
-    $custom_userdata = @userdata
+    $custom_userdata = @_userdata
     $cookie_userdata = {}
     
     #  Before continuing, we need to determine if there is any custom data to deal with.
@@ -238,7 +240,7 @@ class CI_Session
     #  and set the session data while we're at it
     for $val in ['session_id', 'ip_address', 'user_agent', 'last_activity']
       delete $custom_userdata[$val]
-      $cookie_userdata[$val] = @userdata[$val]
+      $cookie_userdata[$val] = @_userdata[$val]
       
     
     #  Did we find any custom data?  If not, we turn the empty array into a string
@@ -252,8 +254,8 @@ class CI_Session
       
     
     #  Run the update query
-    @Exspresso.db.where('session_id', @userdata['session_id'])
-    @Exspresso.db.update(@sess_table_name, 'last_activity':@userdata['last_activity'], 'user_data':$custom_userdata)
+    @Exspresso.db.where('session_id', @_userdata['session_id'])
+    @Exspresso.db.update(@sess_table_name, 'last_activity':@_userdata['last_activity'], 'user_data':$custom_userdata)
     
     #  Write the cookie.  Notice that we manually pass the cookie data array to the
     #  _set_cookie() function. Normally that function will store $this->userdata, but
@@ -278,17 +280,17 @@ class CI_Session
     #  To make the session ID even more secure we'll combine it with the user's IP
     $sessid+=@Exspresso.input.ip_address()
     
-    @userdata = 
+    @_userdata = 
       'session_id':md5(uniqid($sessid, true)),
       'ip_address':@Exspresso.input.ip_address(),
       'user_agent':substr(@Exspresso.input.user_agent(), 0, 120),
-      'last_activity':@now,
+      'last_activity':@_now,
       'user_data':''
 
     
     #  Save the data to the DB if needed
     if @sess_use_database is true
-      @Exspresso.db.query(@Exspresso.db.insert_string(@sess_table_name, @userdata))
+      @Exspresso.db.query(@Exspresso.db.insert_string(@sess_table_name, @_userdata))
       
     
     #  Write the cookie
@@ -305,13 +307,13 @@ class CI_Session
   #
   sess_update :  ->
     #  We only update the session every five minutes by default
-    if (@userdata['last_activity'] + @sess_time_to_update)>=@now
+    if (@_userdata['last_activity'] + @sess_time_to_update)>=@_now
       return 
       
     
     #  Save the old session id so we know which record to
     #  update in the database if we need it
-    $old_sessid = @userdata['session_id']
+    $old_sessid = @_userdata['session_id']
     $new_sessid = ''
     while strlen($new_sessid) < 32
       $new_sessid+=mt_rand(0, mt_getrandmax())
@@ -324,8 +326,8 @@ class CI_Session
     $new_sessid = md5(uniqid($new_sessid, true))
     
     #  Update the session data in the session data array
-    @userdata['session_id'] = $new_sessid
-    @userdata['last_activity'] = @now
+    @_userdata['session_id'] = $new_sessid
+    @_userdata['last_activity'] = @_now
     
     #  _set_cookie() will handle this for us if we aren't using database sessions
     #  by pushing all userdata to the cookie.
@@ -336,10 +338,10 @@ class CI_Session
       #  set cookie explicitly to only have our session data
       $cookie_data = {}
       for $val in ['session_id', 'ip_address', 'user_agent', 'last_activity']
-        $cookie_data[$val] = @userdata[$val]
+        $cookie_data[$val] = @_userdata[$val]
         
       
-      @Exspresso.db.query(@Exspresso.db.update_string(@sess_table_name, 'last_activity':@now, 'session_id':$new_sessid, 'session_id':$old_sessid))
+      @Exspresso.db.query(@Exspresso.db.update_string(@sess_table_name, 'last_activity':@_now, 'session_id':$new_sessid, 'session_id':$old_sessid))
       
     
     #  Write the cookie
@@ -356,8 +358,8 @@ class CI_Session
   #
   sess_destroy :  ->
     #  Kill the session DB row
-    if @sess_use_database is true and @userdata['session_id']? 
-      @Exspresso.db.where('session_id', @userdata['session_id'])
+    if @sess_use_database is true and @_userdata['session_id']? 
+      @Exspresso.db.where('session_id', @_userdata['session_id'])
       @Exspresso.db.delete(@sess_table_name)
       
     
@@ -365,13 +367,13 @@ class CI_Session
     setcookie(
       @sess_cookie_name,
       addslashes(serialize({})),
-      (@now - 31500000),
+      (@_now - 31500000),
       @cookie_path,
       @cookie_domain,
       0)
 
     #  Kill session data
-    @userdata = {}
+    @_userdata = {}
     
   
   #  --------------------------------------------------------------------
@@ -384,7 +386,7 @@ class CI_Session
   # @return	string
   #
   userdata : ($item) ->
-    return if ( not @userdata[$item]? ) then false else @userdata[$item]
+    return if ( not @_userdata[$item]? ) then false else @_userdata[$item]
     
   
   #  --------------------------------------------------------------------
@@ -396,7 +398,7 @@ class CI_Session
   # @return	array
   #
   all_userdata :  ->
-    return @userdata
+    return @_userdata
     
   
   #  --------------------------------------------------------------------
@@ -416,7 +418,7 @@ class CI_Session
     
     if count($newdata) > 0
       for $key, $val of $newdata
-        @userdata[$key] = $val
+        @_userdata[$key] = $val
         
       
     
@@ -438,7 +440,7 @@ class CI_Session
     
     if count($newdata) > 0
       for $key, $val of $newdata
-        delete @userdata[$key]
+        delete @_userdata[$key]
         
       
     
@@ -463,7 +465,7 @@ class CI_Session
     
     if count($newdata) > 0
       for $key, $val of $newdata
-        $flashdata_key = @flashdata_key + ':new:' + $key
+        $flashdata_key = @_flashdata_key + ':new:' + $key
         @set_userdata($flashdata_key, $val)
         
       
@@ -483,10 +485,10 @@ class CI_Session
     #  flashdata as 'new' to preserve it from _flashdata_sweep()
     #  Note the function will return FALSE if the $key
     #  provided cannot be found
-    $old_flashdata_key = @flashdata_key + ':old:' + $key
-    $value = @userdata($old_flashdata_key)
+    $old_flashdata_key = @_flashdata_key + ':old:' + $key
+    $value = @_userdata($old_flashdata_key)
     
-    $new_flashdata_key = @flashdata_key + ':new:' + $key
+    $new_flashdata_key = @_flashdata_key + ':new:' + $key
     @set_userdata($new_flashdata_key, $value)
     
   
@@ -500,8 +502,8 @@ class CI_Session
   # @return	string
   #
   flashdata : ($key) ->
-    $flashdata_key = @flashdata_key + ':old:' + $key
-    return @userdata($flashdata_key)
+    $flashdata_key = @_flashdata_key + ':old:' + $key
+    return @_userdata($flashdata_key)
     
   
   #  ------------------------------------------------------------------------
@@ -518,7 +520,7 @@ class CI_Session
     for $name, $value of $userdata
       $parts = explode(':new:', $name)
       if is_array($parts) and count($parts) is 2
-        $new_name = @flashdata_key + ':old:' + $parts[1]
+        $new_name = @_flashdata_key + ':old:' + $parts[1]
         @set_userdata($new_name, $value)
         @unset_userdata($name)
         
@@ -574,7 +576,7 @@ class CI_Session
   #
   _set_cookie : ($cookie_data = null) ->
     if is_null($cookie_data)
-      $cookie_data = @userdata
+      $cookie_data = @_userdata
       
     
     #  Serialize the userdata for the cookie
@@ -675,8 +677,8 @@ class CI_Session
       
     
     srand(time())
-    if (rand() % 100) < @gc_probability
-      $expire = @now - @sess_expiration
+    if (rand() % 100) < @_gc_probability
+      $expire = @_now - @sess_expiration
       
       @Exspresso.db.where("last_activity < #{$expire}")
       @Exspresso.db.delete @sess_table_name, ($err) ->

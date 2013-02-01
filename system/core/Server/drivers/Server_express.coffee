@@ -144,20 +144,21 @@ class global.Exspresso_Server_express extends Exspresso_Server
     #
     @app.set 'view engine', ltrim($config.view_ext, '.')
     if express.version[0] is '3'
-      @app.engine $config.view_ext, ($view, $data, $callback) ->
+      @app.engine $config.view_ext, ($view, $data, $next) ->
 
         fs.readFile $view, 'utf8', ($err, $str) ->
-          if $err then $callback($err)
+          if $err then $next($err)
           else
             try
               $data.filename = $view
-              $callback null, eco.render($str, $data)
+              $next null, eco.render($str, $data)
             catch $err
-              $callback $err
+              $next $err
 
     else
       @app.register $config.view_ext, eco
-      # Exspresso has it's own templating, so don't use express layouts
+      # don't use express layouts,
+      # Exspresso has it's own templating
       @app.set('view options', { layout: false });
     #
     # Favorites icon
@@ -203,30 +204,28 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
           $driver = require($path+'libraries/Session/drivers/Session_'+$sess_driver+EXT)
           $store = new $driver($session)
-          $store.create()
+          $store.setup()
 
           @app.use express.session
-            secret:   $session.encryption_key
-            store:    $store
+            secret    : $session.encryption_key
+            store     : $store
             cookie:
-              domain:   $session.cookie_domain
-              path:     $session.cookie_path
-              secure:   $session.cookie_secure
-              maxAge:   $session.sess_expiration * 1000
+              domain    : $session.cookie_domain
+              path      : $session.cookie_path
+              secure    : $session.cookie_secure
+              maxAge    : $session.sess_expiration
 
-      if not $found
-
-        show_error "Driver not found: Session_%s", $sess_driver
+      log_message('error', "Driver not found: Session_%s", $sess_driver) if not $found
 
     else
 
       @app.use express.session
-        secret:   $session.encryption_key
+        secret    : $session.encryption_key
         cookie:
-          domain:   $session.cookie_domain
-          path:     $session.cookie_path
-          secure:   $session.cookie_secure
-          maxAge:   $session.sess_expiration * 1000
+          domain    : $session.cookie_domain
+          path      : $session.cookie_path
+          secure    : $session.cookie_secure
+          maxAge    : $session.sess_expiration
 
     @app.use express.csrf() if @_csrf
 

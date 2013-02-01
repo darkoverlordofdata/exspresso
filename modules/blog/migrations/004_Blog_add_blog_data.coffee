@@ -21,13 +21,13 @@ class Migration_Blog_add_blog_data extends Exspresso_Migration
   description: 'Initialize the blog data'
   table: 'blog'
 
-  up: ($callback) ->
+  up: ($next) ->
 
-    @db.insert_batch @table, @data, $callback
+    @db.insert_batch @table, @data, $next
 
-  down: ($callback) ->
+  down: ($next) ->
 
-    @db.delete @table, {id: 1}, $callback
+    @db.delete @table, {id: 1}, $next
 
 
   data:

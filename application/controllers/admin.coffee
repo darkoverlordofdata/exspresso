@@ -81,12 +81,11 @@ class Admin extends AdminController
     @db.where 'username', $username
     @db.get ($err, $customer) =>
 
-      if $err then return @template.view $err
+      return @template.view $err if $err
 
       if $customer.num_rows is 0
         @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-        return @redirect "/admin/login"
-        return
+        return @redirect "/admin"
 
       $customer = $customer.row()
       if $password is $customer.password
@@ -98,11 +97,11 @@ class Admin extends AdminController
         delete $customer.password
         @session.set_userdata 'customer', $customer
 
-        @session.set_flashdata  'info', 'Hello '+$customer.name
+        @session.set_flashdata  'info', 'Hello %s', $customer.name
         return @redirect '/admin'
       else
         @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-        return @redirect "/admin/login"
+        return @redirect "/admin"
 
 
   ## --------------------------------------------------------------------

@@ -320,28 +320,28 @@ class global.Exspresso_Server_appjs extends Exspresso_Server
       # @param	function  callback
       # @return	void
       #
-      $res.render = ($view, $data = {}, $callback) ->
+      $res.render = ($view, $data = {}, $next) ->
 
         #
         # $data argument is optional
         #
-        if typeof $data is 'function' then [$data, $callback] = [{}, $data]
+        if typeof $data is 'function' then [$data, $next] = [{}, $data]
 
         #
-        # $callback argument is optional
+        # $next argument is optional
         #
-        $callback = $callback ? ($err, $str) -> if $err then $next($err) else $res.send($str)
+        $next = $next ? ($err, $str) -> if $err then $next($err) else $res.send($str)
 
         #
         # load the view and render it with data+helpers
         #
         fs.readFile $view, 'utf8', ($err, $str) ->
-          if $err then $callback($err)
+          if $err then $next($err)
           else
             try
               $data.filename = $view
               $html = eco.render($str, new Variables($data, flashdata: $res.flashdata))
-              $callback null, $html
+              $next null, $html
             catch $err
               console.log $err.stack
               $next($err)

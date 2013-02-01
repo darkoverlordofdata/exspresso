@@ -241,7 +241,7 @@ class global.Template
   #   @param	function callback
   #   @return	void
   #
-  view: ($view = '' , $data = {}, $callback) =>
+  view: ($view = '' , $data = {}, $next) =>
 
     #
     # If the $view is an Error object, show the error as content
@@ -292,37 +292,37 @@ class global.Template
     #   @param	function callback
     #   @return	void
     #
-    get_partials = ($callback) =>
+    get_partials = ($next) =>
 
-      return $callback(null) if @_partials.length is 0
+      return $next(null) if @_partials.length is 0
       #
       # process the partial at index
       #
       $partial = @_partials[$index]
       @Exspresso.load.view $partial.view, $partial.data, ($err, $html) =>
 
-        return $callback($err) if $err
+        return $next($err) if $err
         #
         # save the result and do the next
         #
         @_data[$partial.name] = $html
         $index += 1
-        if $index is $partials.length then $callback null
-        else get_partials $callback
+        if $index is $partials.length then $next null
+        else get_partials $next
 
     #
     # load all partials
     #
     get_partials ($err) =>
 
-      return log_message('debug', 'ERROR1 %s', $err) if show_error($err)
+      return log_message('error', 'Template::view get_partials %s', $err) if show_error($err)
 
       #
       # load the body view & merge with partials
       #
       @Exspresso.load.view $view, @_data, ($err, $content) =>
 
-        return log_message('debug', 'ERROR2 %s', $err) if show_error($err)
+        return log_message('error', 'Template::view load.view %s', $err) if show_error($err)
 
         #
         # merge the body into the theme layout
@@ -330,9 +330,9 @@ class global.Template
         @set '$content', $content
         @Exspresso.render @_theme_path+@_layout, @_data, ($err, $page) =>
 
-          return log_message('debug', 'ERROR3 %s', $err) if show_error($err)
+          return log_message('error', 'Template::view render %s', $err) if show_error($err)
 
-          return $callback(null, $page) if $callback?
+          return $next(null, $page) if $next?
 
           @Exspresso.output.set_output $page
           @Exspresso.output._display()

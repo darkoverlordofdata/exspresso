@@ -35,17 +35,17 @@
 #
 module.exports = class global.Exspresso_Output
 
-  Exspresso: null
-  res: null
-  final_output: ''
-  cache_expiration: 0
-  headers: {}
-  mime_types: {}
-  _enable_profiler: false
-  _zlib_oc: false
-  _profiler_sections: {}
+  _parse_exec_vars    : true  # parse profiler vars {elapsed_time} and {memory_usage}
+  _enable_profiler    : false # create profiler outout?
+  _zlib_oc            : false # output compression?
+  _final_output       : ''    # resultant html output
+  _cache_expiration   : 0     # cache flag
+  _headers            : null  # array of http headers
+  _mime_types         : null  # array of valid mime types
+  _profiler_sections  : null  # array of profiler sections to process
 
-  parse_exec_vars: true #  whether or not to parse variables like {elapsed_time} and {memory_usage}
+  Exspresso           : null  # Exspresso controller object
+  res                 : null  # http Response object
 
   constructor: (@Exspresso) ->
 
@@ -53,10 +53,10 @@ module.exports = class global.Exspresso_Output
     log_message('debug', "Output Class Initialized")
 
     @res = @Exspresso.res
-    @final_output = ''
-    @cache_expiration = 0
-    @headers = {}
-    @mime_types = {}
+    @_final_output = ''
+    @_cache_expiration = 0
+    @_headers = {}
+    @_mime_types = {}
     @_profiler_sections = {}
 
     #  Get mime types for later
@@ -66,7 +66,7 @@ module.exports = class global.Exspresso_Output
     else
       $mimes = require(APPPATH + 'config/mimes' + EXT)
 
-    @mime_types = $mimes
+    @_mime_types = $mimes
     load_class('Cache', 'core')
 
   #  --------------------------------------------------------------------
@@ -80,7 +80,7 @@ module.exports = class global.Exspresso_Output
   # @return	string
   #
   get_output :  ->
-    @final_output
+    @_final_output
 
 
   #  --------------------------------------------------------------------
@@ -95,7 +95,7 @@ module.exports = class global.Exspresso_Output
   # @return	void
   #
   set_output : ($output) ->
-    @final_output = $output
+    @_final_output = $output
 
     @
 
@@ -112,11 +112,11 @@ module.exports = class global.Exspresso_Output
   # @return	void
   #
   append_output : ($output) ->
-    if @final_output is ''
-      @final_output = $output
+    if @_final_output is ''
+      @_final_output = $output
 
     else
-      @final_output+=$output
+      @_final_output+=$output
 
 
     @
@@ -145,7 +145,7 @@ module.exports = class global.Exspresso_Output
     if @_zlib_oc and strncasecmp($header, 'content-length', 14) is 0
       return
 
-    @headers.push [$header, $replace]
+    @_headers.push [$header, $replace]
 
     @
 
@@ -164,15 +164,15 @@ module.exports = class global.Exspresso_Output
       $extension = ltrim($mime_type, '.')
 
       #  Is this extension supported?
-      if @mime_types[$extension]?
-        $mime_type = @mime_types[$extension]
+      if @_mime_types[$extension]?
+        $mime_type = @_mime_types[$extension]
 
         if is_array($mime_type)
           $mime_type = current($mime_type)
 
     $header = 'Content-Type: ' + $mime_type
 
-    @headers.push [$header, true]
+    @_headers.push [$header, true]
 
     @
 
@@ -233,7 +233,7 @@ module.exports = class global.Exspresso_Output
   # @return	void
   #
   cache : ($time) ->
-    @cache_expiration = if ( not is_numeric($time)) then 0 else $time
+    @_cache_expiration = if ( not is_numeric($time)) then 0 else $time
     @
 
 
@@ -263,14 +263,14 @@ module.exports = class global.Exspresso_Output
 
     #  Set the output data
     if $output is ''
-      $output = @final_output
+      $output = @_final_output
 
     #  --------------------------------------------------------------------
 
     #  Do we need to write a cache file?  Only if the controller does not have its
     #  own _output() method and we are not dealing with a cache file, which we
     #  can determine by the existence of the $Exspresso object above
-    if @cache_expiration > 0 and @Exspresso?  and  not method_exists(@Exspresso, '_output')
+    if @_cache_expiration > 0 and @Exspresso?  and  not method_exists(@Exspresso, '_output')
       @_write_cache($output)
 
     #  --------------------------------------------------------------------
@@ -280,7 +280,7 @@ module.exports = class global.Exspresso_Output
 
     $elapsed = @Exspresso.BM.elapsed_time('total_execution_time_start', 'total_execution_time_end')
 
-    if @parse_exec_vars is true
+    if @_parse_exec_vars is true
       $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
       $output = str_replace('{elapsed_time}', $elapsed, $output)
       $output = str_replace('{elapsed_time}', $elapsed, $output)
@@ -298,8 +298,8 @@ module.exports = class global.Exspresso_Output
     #  --------------------------------------------------------------------
 
     #  Are there any server headers to send?
-    if count(@headers) > 0
-      for $header in @headers
+    if count(@_headers) > 0
+      for $header in @_headers
         @res.header($header[0], $header[1])
 
     #  --------------------------------------------------------------------
@@ -345,7 +345,7 @@ module.exports = class global.Exspresso_Output
     else
       @res.send $output #  Send it to the browser!
 
-    @final_output = ''
+    @_final_output = ''
     log_message('debug', "Final output sent to browser")
     log_message('debug', "Total execution time: " + $elapsed)
 
@@ -377,7 +377,7 @@ module.exports = class global.Exspresso_Output
       log_message('error', "Unable to write cache file: " + $cache_path)
       return
 
-    $expire = time() + (@cache_expiration * 60)
+    $expire = time() + (@_cache_expiration * 60)
 
     if flock($fp, LOCK_EX)
       fwrite($fp, $expire + 'TS--->' + $output)

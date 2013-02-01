@@ -21,13 +21,13 @@ class Migration_Travel_add_customer_data extends Exspresso_Migration
   description: 'Initialize the customer data'
   table: 'customer'
 
-  up: ($callback) ->
+  up: ($next) ->
 
-    @db.insert_batch @table, @data, $callback
+    @db.insert_batch @table, @data, $next
 
-  down: ($callback) ->
+  down: ($next) ->
 
-    @db.truncate @table, $callback
+    @db.truncate @table, $next
 
 
 

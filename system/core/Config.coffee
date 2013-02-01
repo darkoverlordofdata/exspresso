@@ -71,7 +71,7 @@ class global.Exspresso_Config extends Base_Config
   #
   load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
 
-    if in_array($file, @is_loaded, true) then return @item($file)
+    if in_array($file, @_is_loaded, true) then return @item($file)
     $_module = Exspresso.router.fetch_module()
     [$path, $file] = Modules.find($file, $_module, 'config/')
     if $path is false
@@ -91,7 +91,7 @@ class global.Exspresso_Config extends Base_Config
       else
         log_message 'debug', 'CONFIG 3'
         $current_config = array_merge($current_config, $config)
-        @is_loaded.push $file
+        @_is_loaded.push $file
         return @item($file)
 
 

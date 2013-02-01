@@ -43,26 +43,26 @@
 #
 class global.Exspresso_User_agent
 
-  Exspresso: null
-  agent: null
+  Exspresso       : null
+  _agent          : null
   
-  is_browser: false
-  is_robot: false
-  is_mobile: false
+  _is_browser     : false
+  _is_robot       : false
+  _is_mobile      : false
   
-  languages: null
-  charsets: null
-  
-  platforms: null
-  browsers: null
-  mobiles: null
-  robots: null
-  
-  platform: ''
-  browser: ''
-  version: ''
-  mobile: ''
-  robot: ''
+  _languages      : null
+  _charsets       : null
+
+  _platforms      : null
+  _browsers       : null
+  _mobiles        : null
+  _robots         : null
+
+  _platform       : ''
+  _browser        : ''
+  _version        : ''
+  _mobile         : ''
+  _robot          : ''
   
   #
   # Constructor
@@ -74,18 +74,18 @@ class global.Exspresso_User_agent
   #
   constructor: ($config = {}, @Exspresso) ->
 
-    @languages = {}
-    @charsets = {}
+    @_languages = {}
+    @_charsets = {}
 
-    @platforms = {}
-    @browsers = {}
-    @mobiles = {}
-    @robots = {}
+    @_platforms = {}
+    @_browsers = {}
+    @_mobiles = {}
+    @_robots = {}
 
     if @Exspresso.$_SERVER['HTTP_USER_AGENT']?
-      @agent = trim(@Exspresso.$_SERVER['HTTP_USER_AGENT'])
+      @_agent = trim(@Exspresso.$_SERVER['HTTP_USER_AGENT'])
 
-    if not is_null(@agent)
+    if not is_null(@_agent)
       if @_load_agent_file()
         @_compile_data()
 
@@ -112,22 +112,22 @@ class global.Exspresso_User_agent
     $return = false
 
     if $config.platforms?
-      @platforms = $config.platforms
+      @_platforms = $config.platforms
       $return = true
 
 
     if $config.browsers?
-      @browsers = $config.browsers
+      @_browsers = $config.browsers
       $return = true
 
 
     if $config.mobiles?
-      @mobiles = $config.mobiles
+      @_mobiles = $config.mobiles
       $return = true
 
 
     if $config.robots?
-      @robots = $config.robots
+      @_robots = $config.robots
       $return = true
 
     return $return
@@ -157,13 +157,13 @@ class global.Exspresso_User_agent
   #
   _set_platform: () ->
 
-    if is_array(@platforms) and count(@platforms) > 0
-      for $key, $val of @platforms
-        if preg_match("|" + preg_quote($key) + "|i", @agent)
-          @platform = $val
+    if is_array(@_platforms) and count(@_platforms) > 0
+      for $key, $val of @_platforms
+        if preg_match("|" + preg_quote($key) + "|i", @_agent)
+          @_platform = $val
           return true
 
-    @platform = 'Unknown Platform'
+    @_platform = 'Unknown Platform'
 
 
   #  --------------------------------------------------------------------
@@ -176,13 +176,13 @@ class global.Exspresso_User_agent
   #
   _set_browser: () ->
 
-    if is_array(@browsers) and count(@browsers) > 0
-      for $key, $val of @browsers
-        $match = preg_match("|" + preg_quote($key) + ".*?([0-9\\.]+)|i", @agent)
+    if is_array(@_browsers) and count(@_browsers) > 0
+      for $key, $val of @_browsers
+        $match = preg_match("|" + preg_quote($key) + ".*?([0-9\\.]+)|i", @_agent)
         if $match.length
-          @is_browser = true
-          @version = $match[1]
-          @browser = $val
+          @_is_browser = true
+          @_version = $match[1]
+          @_browser = $val
           @_set_mobile()
           return true
 
@@ -198,11 +198,11 @@ class global.Exspresso_User_agent
   #
   _set_robot: () ->
 
-    if is_array(@robots) and count(@robots) > 0
-      for $key, $val of @robots
-        if preg_match("|" + preg_quote($key) + "|i", @agent).length
-          @is_robot = true
-          @robot = $val
+    if is_array(@_robots) and count(@_robots) > 0
+      for $key, $val of @_robots
+        if preg_match("|" + preg_quote($key) + "|i", @_agent).length
+          @_is_robot = true
+          @_robot = $val
           return true
 
     return false
@@ -217,11 +217,11 @@ class global.Exspresso_User_agent
   #
   _set_mobile: () ->
 
-    if is_array(@mobiles) and count(@mobiles) > 0
-      for $key, $val of @mobiles
-        if false isnt (strpos(strtolower(@agent), $key))
-          @is_mobile = true
-          @mobile = $val
+    if is_array(@_mobiles) and count(@_mobiles) > 0
+      for $key, $val of @_mobiles
+        if false isnt (strpos(strtolower(@_agent), $key))
+          @_is_mobile = true
+          @_mobile = $val
           return true
 
     return false
@@ -238,14 +238,14 @@ class global.Exspresso_User_agent
   _set_languages: () ->
 
     # req.acceptedLanguages
-    if (count(@languages) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
+    if (count(@_languages) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
       $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim(@Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE'])))
 
-      @languages = explode(',', $languages)
+      @_languages = explode(',', $languages)
 
 
-    if count(@languages) is 0
-      @languages = ['Undefined']
+    if count(@_languages) is 0
+      @_languages = ['Undefined']
 
 
   #  --------------------------------------------------------------------
@@ -259,14 +259,14 @@ class global.Exspresso_User_agent
   _set_charsets: () ->
 
     # req.acceptedCharsets
-    if (count(@charsets) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
+    if (count(@_charsets) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
       $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim(@Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET'])))
 
-      @charsets = explode(',', $charsets)
+      @_charsets = explode(',', $charsets)
 
 
-    if count(@charsets) is 0
-      @charsets = ['Undefined']
+    if count(@_charsets) is 0
+      @_charsets = ['Undefined']
 
 
   #  --------------------------------------------------------------------
@@ -279,7 +279,7 @@ class global.Exspresso_User_agent
   #
   is_browser: ($key = null) ->
 
-    if not @is_browser
+    if not @_is_browser
       return false
 
     #  No need to be specific, it's a browser
@@ -287,7 +287,7 @@ class global.Exspresso_User_agent
       return true
 
     #  Check for a specific browser
-    return array_key_exists($key, @browsers) and @browser is @browsers[$key]
+    return array_key_exists($key, @_browsers) and @_browser is @_browsers[$key]
 
   #  --------------------------------------------------------------------
   
@@ -299,7 +299,7 @@ class global.Exspresso_User_agent
   #
   is_robot: ($key = null) ->
 
-    if not @is_robot
+    if not @_is_robot
       return false
 
     #  No need to be specific, it's a robot
@@ -307,7 +307,7 @@ class global.Exspresso_User_agent
       return true
 
     #  Check for a specific robot
-    return array_key_exists($key, @robots) and @robot is @robots[$key]
+    return array_key_exists($key, @_robots) and @_robot is @_robots[$key]
 
   #  --------------------------------------------------------------------
   
@@ -319,7 +319,7 @@ class global.Exspresso_User_agent
   #
   is_mobile: ($key = null) ->
 
-    if not @is_mobile
+    if not @_is_mobile
       return false
 
     #  No need to be specific, it's a mobile
@@ -327,7 +327,7 @@ class global.Exspresso_User_agent
       return true
 
     #  Check for a specific robot
-    return array_key_exists($key, @mobiles) and @mobile is @mobiles[$key]
+    return array_key_exists($key, @_mobiles) and @_mobile is @_mobiles[$key]
 
 
   #  --------------------------------------------------------------------
@@ -355,7 +355,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   agent_string: () ->
-    return @agent
+    return @_agent
 
   #  --------------------------------------------------------------------
   
@@ -366,7 +366,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   platform: () ->
-    return @platform
+    return @_platform
 
   #  --------------------------------------------------------------------
   
@@ -377,7 +377,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   browser: () ->
-    return @browser
+    return @_browser
 
   #  --------------------------------------------------------------------
   
@@ -388,7 +388,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   version: () ->
-    return @version
+    return @_version
 
   #  --------------------------------------------------------------------
   
@@ -399,7 +399,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   robot: () ->
-    return @robot
+    return @_robot
 
   #  --------------------------------------------------------------------
   
@@ -410,7 +410,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   mobile: () ->
-    return @mobile
+    return @_mobile
 
   
   #  --------------------------------------------------------------------
@@ -435,10 +435,10 @@ class global.Exspresso_User_agent
   # @return	array
   #
   languages: () ->
-    if count(@languages) is 0
+    if count(@_languages) is 0
       @_set_languages()
 
-    return @languages
+    return @_languages
 
   
   #  --------------------------------------------------------------------
@@ -450,10 +450,10 @@ class global.Exspresso_User_agent
   # @return	array
   #
   charsets: () ->
-    if count(@charsets) is 0
+    if count(@_charsets) is 0
       @_set_charsets()
 
-    return @charsets
+    return @_charsets
 
   
   #  --------------------------------------------------------------------
@@ -465,7 +465,7 @@ class global.Exspresso_User_agent
   # @return	bool
   #
   accept_lang: ($lang = 'en') ->
-    return (in_array(strtolower($lang), @languages(), true))
+    return (in_array(strtolower($lang), @_languages(), true))
 
   
   #  --------------------------------------------------------------------
@@ -477,7 +477,7 @@ class global.Exspresso_User_agent
   # @return	bool
   #
   accept_charset: ($charset = 'utf-8') ->
-    return (in_array(strtolower($charset), @charsets(), true))
+    return (in_array(strtolower($charset), @_charsets(), true))
 
 
 module.exports = Exspresso_User_agent

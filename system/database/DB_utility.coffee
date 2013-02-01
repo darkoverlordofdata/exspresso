@@ -63,10 +63,10 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @access	public
   # @return	bool
   #
-  list_databases: ($callback) ->
+  list_databases: ($next) ->
     #  Is there a cached result?
     if @data_cache['db_names']?
-      $callback null, @data_cache['db_names']
+      $next null, @data_cache['db_names']
 
     @db.query @_list_databases(), ($err, $query) =>
 
@@ -78,7 +78,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
 
         @data_cache['db_names'] = $dbs
 
-      $callback $err, @data_cache['db_names']
+      $next $err, @data_cache['db_names']
     
   
   #  --------------------------------------------------------------------
@@ -112,17 +112,17 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  optimize_table: ($table_name, $callback) ->
+  optimize_table: ($table_name, $next) ->
     $sql = @_optimize_table($table_name)
     
     if is_bool($sql)
-      $callback('db_must_use_set')
+      $next('db_must_use_set')
 
     @db.query $sql, ($err, $query) ->
 
       $res = $query.result_array() unless $err
 
-      $callback current($err, $res)
+      $next current($err, $res)
     
   
   #  --------------------------------------------------------------------
@@ -133,7 +133,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @access	public
   # @return	array
   #
-  optimize_database: ($callback) ->
+  optimize_database: ($next) ->
 
     $result = {}
     @db.list_tables ($table_list) =>
@@ -156,7 +156,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
             delete $res[$keys[0]]
             $result[$key] = $res
 
-        $callback $err, $result
+        $next $err, $result
 
 
   #  --------------------------------------------------------------------
@@ -168,15 +168,15 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  repair_table: ($table_name, $callback) ->
+  repair_table: ($table_name, $next) ->
     $sql = @_repair_table($table_name)
     
     if is_bool($sql)
-      $callback $sql, []
+      $next $sql, []
 
     @db.query $sql, ($err, $query) ->
       $res = $query.result_array() unless $err
-      $callback $err, current($res)
+      $next $err, current($res)
     
   
   #  --------------------------------------------------------------------
@@ -264,7 +264,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @access	public
   # @return	void
   #
-  backup: ($prefs = {}, $callback) ->
+  backup: ($prefs = {}, $next) ->
     #  If the parameters have not been submitted as an
     #  array then we know that it is simply the table
     #  name, which is a valid short cut.
@@ -291,10 +291,10 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     #  If no table names were submitted we'll fetch the entire table list
     if count($prefs['tables']) is 0
       @db.list_tables ($err, $result) =>
-        if $err then $callback $err
-        if count($result) is 0 then $callback 'no tables to backup'
+        if $err then $next $err
+        if count($result) is 0 then $next 'no tables to backup'
         $prefs['tables'] = $result
-        @backup $prefs, $callback
+        @backup $prefs, $next
       return
 
 

@@ -43,15 +43,15 @@
 #
 class Exspresso_Calendar
   
-  Exspresso: null
-  lang: {}
-  local_time: {}
-  template: ''
-  start_day: 'sunday'
-  month_type: 'long'
-  day_type: 'abr'
-  show_next_prev: false
-  next_prev_url: ''
+  Exspresso           : null
+
+  _local_time         : null
+  _template           : ''
+  _start_day          : 'sunday'
+  _month_type         : 'long'
+  _day_type           : 'abr'
+  _show_next_prev     : false
+  _next_prev_url      : ''
   
   #
   # Constructor
@@ -63,7 +63,8 @@ class Exspresso_Calendar
     if not in_array('calendar_lang' + EXT, @Exspresso.lang.is_loaded, true)
       @Exspresso.lang.load('calendar')
 
-    @local_time = time()
+    lang = {}
+    @_local_time = time()
 
     if count($config) > 0
       @initialize($config)
@@ -84,7 +85,7 @@ class Exspresso_Calendar
   initialize : ($config = {}) ->
     for $key, $val of $config
       if @$key? 
-        @$key = $val
+        @['_'+$key] = $val
 
   #  --------------------------------------------------------------------
   
@@ -99,8 +100,8 @@ class Exspresso_Calendar
   #
   generate : ($year = '', $month = '', $data = {}) ->
     #  Set and validate the supplied month/year
-    if $year is '' then $year = date("Y", @local_time)
-    if $month is '' then $month = date("m", @local_time)
+    if $year is '' then $year = date("Y", @_local_time)
+    if $month is '' then $month = date("m", @_local_time)
     if strlen($year) is 1 then $year = '200' + $year
     if strlen($year) is 2 then $year = '20' + $year
     if strlen($month) is 1 then $month = '0' + $month
@@ -113,7 +114,7 @@ class Exspresso_Calendar
 
     #  Set the starting day of the week
     $start_days = 'sunday':0, 'monday':1, 'tuesday':2, 'wednesday':3, 'thursday':4, 'friday':5, 'saturday':6
-    $start_day = if ( not $start_days[@start_day]? ) then 0 else $start_days[@start_day]
+    $start_day = if ( not $start_days[@_start_day]? ) then 0 else $start_days[@_start_day]
 
     #  Set the starting day number
     $local_date = mktime(12, 0, 0, $month, 1, $year)
@@ -125,9 +126,9 @@ class Exspresso_Calendar
 
     #  Set the current month/year/day
     #  We use this to determine the "today" date
-    $cur_year = date("Y", @local_time)
-    $cur_month = date("m", @local_time)
-    $cur_day = date("j", @local_time)
+    $cur_year = date("Y", @_local_time)
+    $cur_month = date("m", @_local_time)
+    $cur_day = date("j", @_local_time)
     $is_current_month = if ($cur_year is $year and $cur_month is $month) then true else false
 
     #  Generate the template data array
@@ -140,17 +141,17 @@ class Exspresso_Calendar
     $out+="\n"
     
     #  "previous" month link
-    if @show_next_prev is true
+    if @_show_next_prev is true
       #  Add a trailing slash to the  URL if needed
-      @next_prev_url = preg_replace("/(.+?)\/*$/", "\\1/", @next_prev_url)
+      @_next_prev_url = preg_replace("/(.+?)\/*$/", "\\1/", @_next_prev_url)
       
       $adjusted_date = @adjust_date($month - 1, $year)
-      $out+=str_replace('{previous_url}', @next_prev_url + $adjusted_date['year'] + '/' + $adjusted_date['month'], @temp['heading_previous_cell'])
+      $out+=str_replace('{previous_url}', @_next_prev_url + $adjusted_date['year'] + '/' + $adjusted_date['month'], @temp['heading_previous_cell'])
       $out+="\n"
       
     
     #  Heading containing the month/year
-    $colspan = if (@show_next_prev is true) then 5 else 7
+    $colspan = if (@_show_next_prev is true) then 5 else 7
     
     @temp['heading_title_cell'] = str_replace('{colspan}', $colspan, @temp['heading_title_cell'])
     @temp['heading_title_cell'] = str_replace('{heading}', @get_month_name($month) + "&nbsp;" + $year, @temp['heading_title_cell'])
@@ -159,9 +160,9 @@ class Exspresso_Calendar
     $out+="\n"
     
     #  "next" month link
-    if @show_next_prev is true
+    if @_show_next_prev is true
       $adjusted_date = @adjust_date($month + 1, $year)
-      $out+=str_replace('{next_url}', @next_prev_url + $adjusted_date['year'] + '/' + $adjusted_date['month'], @temp['heading_next_cell'])
+      $out+=str_replace('{next_url}', @_next_prev_url + $adjusted_date['year'] + '/' + $adjusted_date['month'], @temp['heading_next_cell'])
       
     
     $out+="\n"
@@ -234,7 +235,7 @@ class Exspresso_Calendar
   # @return	string
   #
   get_month_name : ($month) ->
-    if @month_type is 'short'
+    if @_month_type is 'short'
       $month_names =
         '01':'cal_jan'
         '02':'cal_feb'
@@ -287,11 +288,11 @@ class Exspresso_Calendar
   get_day_names: ($day_type = '') ->
 
     if $day_type isnt ''
-      @day_type = $day_type
+      @_day_type = $day_type
 
-    if @day_type is 'long'
+    if @_day_type is 'long'
       $day_names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-    else if @day_type is 'short'
+    else if @_day_type is 'short'
       $day_names = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
     else
       $day_names = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa']
@@ -403,13 +404,13 @@ class Exspresso_Calendar
   parse_template :  ->
     @temp = @default_template()
 
-    if @template is ''
+    if @_template is ''
       return
 
     $today = ['cal_cell_start_today', 'cal_cell_content_today', 'cal_cell_no_content_today', 'cal_cell_end_today']
 
     for $val in ['table_open', 'table_close', 'heading_row_start', 'heading_previous_cell', 'heading_title_cell', 'heading_next_cell', 'heading_row_end', 'week_row_start', 'week_day_cell', 'week_row_end', 'cal_row_start', 'cal_cell_start', 'cal_cell_content', 'cal_cell_no_content', 'cal_cell_blank', 'cal_cell_end', 'cal_row_end', 'cal_cell_start_today', 'cal_cell_content_today', 'cal_cell_no_content_today', 'cal_cell_end_today']
-      if preg_match("/\{" + $val + "\}(.*?)\{\/" + $val + "\}/si", @template, $match)
+      if preg_match("/\{" + $val + "\}(.*?)\{\/" + $val + "\}/si", @_template, $match)
         @temp[$val] = $match['1']
 
       else

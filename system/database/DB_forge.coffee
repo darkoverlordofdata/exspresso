@@ -67,12 +67,12 @@ class global.Exspresso_DB_forge
   # @param	string	the database name
   # @return	bool
   #
-  create_database: ($db_name, $callback) ->
+  create_database: ($db_name, $next) ->
     $sql = @_create_database($db_name)
     if is_bool($sql)
-      $callback $sql
+      $next $sql
       
-    @db.query($sql, $callback)
+    @db.query($sql, $next)
     
   
   #  --------------------------------------------------------------------
@@ -84,13 +84,13 @@ class global.Exspresso_DB_forge
   # @param	string	the database name
   # @return	bool
   #
-  drop_database: ($db_name, $callback) ->
+  drop_database: ($db_name, $next) ->
     $sql = @_drop_database($db_name)
     
     if is_bool($sql)
-      $callback $sql
+      $next $sql
 
-    @db.query($sql, $callback)
+    @db.query($sql, $next)
     
   
   #  --------------------------------------------------------------------
@@ -165,10 +165,10 @@ class global.Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  create_table: ($table = '', $if_not_exists = false, $callback) ->
+  create_table: ($table = '', $if_not_exists = false, $next) ->
     log_message 'debug', '>DB_forge::create_database'
     if typeof $if_not_exists is 'function'
-      $callback = $if_not_exists
+      $next = $if_not_exists
       $if_not_exists = false
 
     if $table is ''
@@ -180,7 +180,7 @@ class global.Exspresso_DB_forge
     $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, $if_not_exists)
     log_message 'debug', '>SQL: %s', $sql
     @_reset()
-    @db.query $sql, $callback
+    @db.query $sql, $next
 
   
   #  --------------------------------------------------------------------
@@ -192,13 +192,13 @@ class global.Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  drop_table: ($table_name, $callback) ->
+  drop_table: ($table_name, $next) ->
     $sql = @_drop_table(@db.dbprefix + $table_name)
     
     if is_bool($sql)
-      $callback $sql
+      $next $sql
 
-    @db.query($sql, $callback)
+    @db.query($sql, $next)
     
   
   #  --------------------------------------------------------------------
@@ -211,12 +211,12 @@ class global.Exspresso_DB_forge
   # @param	string	the new table name
   # @return	bool
   #
-  rename_table: ($table_name, $new_table_name, $callback) ->
+  rename_table: ($table_name, $new_table_name, $next) ->
     if $table_name is '' or $new_table_name is ''
-      $callback('A table name is required for that operation.')
+      $next('A table name is required for that operation.')
 
     $sql = @_rename_table($table_name, $new_table_name)
-    @db.query($sql, $callback)
+    @db.query($sql, $next)
     
   
   #  --------------------------------------------------------------------
@@ -230,12 +230,12 @@ class global.Exspresso_DB_forge
   # @param	string	the column definition
   # @return	bool
   #
-  add_column: ($table = '', $field = {}, $after_field = '', $callback) ->
+  add_column: ($table = '', $field = {}, $after_field = '', $next) ->
     if $table is ''
-      $callback('A table name is required for that operation.')
+      $next('A table name is required for that operation.')
 
-    if typeof $callback is 'undefined'
-      $callback = $after_field
+    if typeof $next is 'undefined'
+      $next = $after_field
       $after_field = ''
 
     #  add field info into field array, but we can only do one at a time
@@ -250,7 +250,7 @@ class global.Exspresso_DB_forge
       $sql = @_alter_table('ADD', @db.dbprefix + $table, @fields, $after_field)
       
       @_reset()
-      @db.query($sql, $callback)
+      @db.query($sql, $next)
     
     
   
@@ -264,18 +264,18 @@ class global.Exspresso_DB_forge
   # @param	string	the column name
   # @return	bool
   #
-  drop_column: ($table = '', $column_name = '', $callback) ->
+  drop_column: ($table = '', $column_name = '', $next) ->
     
     if $table is ''
-      $callback('A table name is required for that operation.')
+      $next('A table name is required for that operation.')
       
     if $column_name is ''
-      $callback('A column name is required for that operation.')
+      $next('A column name is required for that operation.')
       
     
     $sql = @_alter_table('DROP', @db.dbprefix + $table, $column_name)
     
-    return @db.query($sql, $callback)
+    return @db.query($sql, $next)
     
   
   #  --------------------------------------------------------------------
@@ -289,9 +289,9 @@ class global.Exspresso_DB_forge
   # @param	string	the column definition
   # @return	bool
   #
-  modify_column: ($table = '', $field = {}, $callback) ->
+  modify_column: ($table = '', $field = {}, $next) ->
     if $table is ''
-      $callback('A table name is required for that operation.')
+      $next('A table name is required for that operation.')
 
     #  add field info into field array, but we can only do one at a time
     #  so we cycle through
@@ -309,7 +309,7 @@ class global.Exspresso_DB_forge
       $sql = @_alter_table('CHANGE', @db.dbprefix + $table, @fields)
       
       @_reset()
-      @db.query($sql, $callback)
+      @db.query($sql, $next)
 
   
   #  --------------------------------------------------------------------

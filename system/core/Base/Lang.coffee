@@ -36,8 +36,8 @@
 #
 class global.Base_Lang
   
-  language: {}
-  is_loaded: []
+  _language     : null
+  _is_loaded    : null
   
   #
   # Constructor
@@ -45,6 +45,8 @@ class global.Base_Lang
   # @access  public
   #
   constructor :  ->
+    @_language = {}
+    @_is_loaded = []
     log_message 'debug', "Language Class Initialized"
     
   
@@ -66,7 +68,7 @@ class global.Base_Lang
 
     $langfile+=EXT
     
-    if in_array($langfile, @is_loaded, true)
+    if in_array($langfile, @_is_loaded, true)
       return 
 
     $config = get_config()
@@ -96,8 +98,8 @@ class global.Base_Lang
     if $return is true
       return $lang
 
-    @is_loaded.push $langfile
-    @language = array_merge(@language, $lang)
+    @_is_loaded.push $langfile
+    @_language = array_merge(@_language, $lang)
 
     log_message('debug', 'Language file loaded: language/%s/%s', $idiom, $langfile)
     return true
@@ -113,7 +115,7 @@ class global.Base_Lang
   # @return  string
   #
   line : ($line = '') ->
-    $line = if ($line is '' or  not @language[$line]? ) then false else @language[$line]
+    $line = if ($line is '' or  not @_language[$line]? ) then false else @_language[$line]
     
     #  Because killer robots like unicorns!
     if $line is false

@@ -73,7 +73,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	private called by the base class
   # @return	resource
   #
-  db_connect: ($callback) =>
+  db_connect: ($next) =>
 
     if not @connected
       mysql = require('mysql')
@@ -88,12 +88,12 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
 
       @connected = true
 
-    @client.connect $callback, ($err) =>
+    @client.connect $next, ($err) =>
       if ($err)
         @connected = false
         console.log $err
       else
-        $callback $err, @client
+        $next $err, @client
 
   #  --------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	private called by the base class
   # @return	resource
   #
-  db_pconnect: ($callback) ->
+  db_pconnect: ($next) ->
     throw new Error('Not Supported: mysql_driver::_db_pconnect')
 
   #  --------------------------------------------------------------------
@@ -117,8 +117,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	void
   #
-  reconnect: ($callback) ->
-    @client.ping($callback)
+  reconnect: ($next) ->
+    @client.ping($next)
 
   #  --------------------------------------------------------------------
 
@@ -128,8 +128,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	private called by the base class
   # @return	resource
   #
-  db_select: ($callback) ->
-    @client.useDatabase(@database, $callback)
+  db_select: ($next) ->
+    @client.useDatabase(@database, $next)
 
 
   #  --------------------------------------------------------------------
@@ -142,8 +142,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @param	string
   # @return	resource
   #
-  db_set_charset: ($charset, $collation, $callback) ->
-    @client.query("SET NAMES '" + @escape_str($charset) + "' COLLATE '" + @escape_str($collation) + "'", $callback)
+  db_set_charset: ($charset, $collation, $next) ->
+    @client.query("SET NAMES '" + @escape_str($charset) + "' COLLATE '" + @escape_str($collation) + "'", $next)
 
 
   #  --------------------------------------------------------------------
@@ -167,9 +167,9 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @param	string	an SQL query
   # @return	resource
   #
-  _execute: ($sql, $params, $callback) ->
+  _execute: ($sql, $params, $next) ->
     $sql = @_prep_query($sql)
-    @client.query $sql, $params, $callback
+    @client.query $sql, $params, $next
 
   #  --------------------------------------------------------------------
 
@@ -186,8 +186,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
     #  "DELETE FROM TABLE" returns 0 affected rows This hack modifies
     #  the query so that it returns the number of affected rows
     if @delete_hack is true
-      if preg_match('/^\s*DELETE\s+FROM\s+(\S+)\s*$/i', $sql)
-        $sql = preg_replace("/^\s*DELETE\s+FROM\s+(\S+)\s*$/", "DELETE FROM $1 WHERE 1=1", $sql)
+      if preg_match('/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/i', $sql)
+        $sql = preg_replace("/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/", "DELETE FROM $1 WHERE 1=1", $sql)
 
 
 
@@ -202,17 +202,17 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_begin: ($test_mode = false, $callback = null) ->
-    if $callback is null
-      $callback = $test_mode
+  trans_begin: ($test_mode = false, $next = null) ->
+    if $next is null
+      $next = $test_mode
       $test_mode = false
 
     if not @trans_enabled
-      return $callback null, true
+      return $next null, true
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
-      return $callback null, true
+      return $next null, true
 
     #  Reset the transaction failure flag.
     #  If the $test_mode flag is set to TRUE transactions will be rolled back
@@ -221,7 +221,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
 
     @simple_query 'SET AUTOCOMMIT=0', =>
       @simple_query 'START TRANSACTION', => #  can also be BEGIN or BEGIN WORK
-        $callback null, true
+        $next null, true
 
   #  --------------------------------------------------------------------
 
@@ -231,17 +231,17 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_commit: ($callback) ->
+  trans_commit: ($next) ->
     if not @trans_enabled
-      return $callback null, true
+      return $next null, true
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
-      return $callback null, true
+      return $next null, true
 
     @simple_query 'COMMIT', =>
       @simple_query 'SET AUTOCOMMIT=1', =>
-        $callback null, true
+        $next null, true
 
 
   #  --------------------------------------------------------------------
@@ -252,17 +252,17 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_rollback: ($callback) ->
+  trans_rollback: ($next) ->
     if not @trans_enabled
-      return $callback null, true
+      return $next null, true
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
-      return $callback null, true
+      return $next null, true
 
     @simple_query 'ROLLBACK', =>
       @simple_query 'SET AUTOCOMMIT=1', =>
-        $callback null, true
+        $next null, true
 
 
   #  --------------------------------------------------------------------
@@ -301,8 +301,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	integer
   #
-  affected_rows: ($callback) ->
-    #@client.affected_rows($callback)
+  affected_rows: ($next) ->
+    #@client.affected_rows($next)
 
 
   #  --------------------------------------------------------------------
@@ -313,14 +313,14 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	integer
   #
-  insert_id: ($callback) ->
+  insert_id: ($next) ->
 
     @query "SELECT LAST_INSERT_ID() AS id;", ($err, $insert) =>
 
       if $err
-        $callback $err
+        $next $err
       else
-        $callback null, $insert.row().id
+        $next null, $insert.row().id
 
 
 
@@ -336,14 +336,14 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @param	string
   # @return	string
   #
-  count_all: ($table = '', $callback) ->
+  count_all: ($table = '', $next) ->
     if $table is ''
       return 0
 
     @query @_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false), ($err, $query)->
 
-      if $err then $callback $err
-      else $callback null, $query.row().numrows
+      if $err then $next $err
+      else $next null, $query.row().numrows
 
   #  --------------------------------------------------------------------
 
@@ -694,8 +694,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @param	resource
   # @return	void
   #
-  _close: ($callback) ->
-    @client.end($callback)
+  _close: ($next) ->
+    @client.end($next)
 
 # End Class Exspresso_DB_mysql_driver
 module.exports = Exspresso_DB_mysql_driver

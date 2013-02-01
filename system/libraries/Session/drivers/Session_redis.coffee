@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| postgres.coffee
+#| Session_redis.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -11,7 +11,7 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	postgres driver for sessions
+#	redis driver for sessions
 #
 #  ------------------------------------------------------------------------
 
@@ -55,5 +55,5 @@ class Exspresso_Session_redis extends require('connect-redis')(require('express'
 
 
 module.exports = Exspresso_Session_redis
-# End of file postgres.coffee
-# Location: ./system/libraries/Session/postgres.coffee
+# End of file Session_redis.coffee
+# Location: ./system/libraries/Session/drivers/Session_redis.coffee

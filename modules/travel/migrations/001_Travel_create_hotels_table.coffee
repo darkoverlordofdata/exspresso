@@ -21,15 +21,15 @@ class Migration_Travel_create_hotels_table extends Exspresso_Migration
   description: 'Create the hotels table'
   table: 'hotel'
 
-  up: ($callback) ->
+  up: ($next) ->
 
     @dbforge.add_field @data
     @dbforge.add_key 'id', true
-    @dbforge.create_table @table, $callback
+    @dbforge.create_table @table, $next
 
-  down: ($callback) ->
+  down: ($next) ->
 
-    @dbforge.drop_table @table, $callback
+    @dbforge.drop_table @table, $next
 
 
   data:

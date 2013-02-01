@@ -421,8 +421,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  fadeIn : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._fadeIn($element, $speed, $callback)
+  fadeIn : ($element = 'this', $speed = '', $next = '') ->
+    return @js._fadeIn($element, $speed, $next)
     
   
   #  --------------------------------------------------------------------
@@ -438,8 +438,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  fadeOut : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._fadeOut($element, $speed, $callback)
+  fadeOut : ($element = 'this', $speed = '', $next = '') ->
+    return @js._fadeOut($element, $speed, $next)
     
   #  --------------------------------------------------------------------
   
@@ -454,8 +454,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  slideUp : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._slideUp($element, $speed, $callback)
+  slideUp : ($element = 'this', $speed = '', $next = '') ->
+    return @js._slideUp($element, $speed, $next)
     
     
   
@@ -488,8 +488,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  slideDown : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._slideDown($element, $speed, $callback)
+  slideDown : ($element = 'this', $speed = '', $next = '') ->
+    return @js._slideDown($element, $speed, $next)
     
   
   #  --------------------------------------------------------------------
@@ -505,8 +505,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  slideToggle : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._slideToggle($element, $speed, $callback)
+  slideToggle : ($element = 'this', $speed = '', $next = '') ->
+    return @js._slideToggle($element, $speed, $next)
     
     
   
@@ -523,8 +523,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  hide : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._hide($element, $speed, $callback)
+  hide : ($element = 'this', $speed = '', $next = '') ->
+    return @js._hide($element, $speed, $next)
     
   
   #  --------------------------------------------------------------------
@@ -571,8 +571,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  show : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._show($element, $speed, $callback)
+  show : ($element = 'this', $speed = '', $next = '') ->
+    return @js._show($element, $speed, $next)
     
   
   
@@ -708,8 +708,8 @@ class Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  update : ($element = 'this', $speed = '', $callback = '') ->
-    return @js._updater($element, $speed, $callback)
+  update : ($element = 'this', $speed = '', $next = '') ->
+    return @js._updater($element, $speed, $next)
     
   
   #  --------------------------------------------------------------------

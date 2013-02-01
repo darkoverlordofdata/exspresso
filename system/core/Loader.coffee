@@ -397,10 +397,10 @@ class global.Exspresso_Loader extends Base_Loader
   # @param	bool
   # @return	void
   #
-  view: ($view, $vars = {}, $callback) ->
+  view: ($view, $vars = {}, $next) ->
     [$path, $view] = Modules.find($view, @Exspresso._module, 'views/')
     @_ex_view_path = if $path then $path else APPPATH + config_item('views')
-    @_ex_load('', $view, $vars, $callback)
+    @_ex_load('', $view, $vars, $next)
 
   #  --------------------------------------------------------------------
 

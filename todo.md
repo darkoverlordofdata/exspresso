@@ -21,9 +21,4 @@
 
 ### Modules / Addins
 
-### Architecture
-
-    CI_Input, Output, Sesstion -do classes need to be instantiated per controller? Or does node hold
-    on to the correct closure? How can I test this?
-
 

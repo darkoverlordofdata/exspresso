@@ -44,10 +44,10 @@
 #
 class global.Exspresso_Benchmark
   
-  marker: {}
+  _marker: null
 
   constructor: ->
-    @marker = {}
+    @_marker = {}
   
   #  --------------------------------------------------------------------
   
@@ -62,7 +62,7 @@ class global.Exspresso_Benchmark
   # @return  void
   #
   mark : ($name) ->
-    @marker[$name] = new Date() # microtime()
+    @_marker[$name] = new Date()
     
   
   #  --------------------------------------------------------------------
@@ -86,19 +86,19 @@ class global.Exspresso_Benchmark
       return '{elapsed_time}'
       
     
-    if not @marker[$point1]? 
+    if not @_marker[$point1]? 
       return ''
       
     
-    if not @marker[$point2]? 
-      @marker[$point2] = new Date() # microtime()
+    if not @_marker[$point2]? 
+      @_marker[$point2] = new Date() # microtime()
       
     
-    #[$sm, $ss] = explode(' ', @marker[$point1])
-    #[$em, $es] = explode(' ', @marker[$point2])
+    #[$sm, $ss] = explode(' ', @_marker[$point1])
+    #[$em, $es] = explode(' ', @_marker[$point2])
 
     #return number_format(($em + $es) - ($sm + $ss), $decimals)
-    return @marker[$point2] - @marker[$point1]
+    return @_marker[$point2] - @_marker[$point1]
   
   #  --------------------------------------------------------------------
   

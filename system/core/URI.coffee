@@ -43,12 +43,10 @@
 #
 class global.Exspresso_URI
 
-  req: null
-  res: null
-  keyval: null
-  _uri_string: ''
-  segments: null
-  rsegments: null
+  _keyval       : null
+  _uri_string   : ''
+  _segments     : null
+  _rsegments    : null
 
   #
   # Constructor
@@ -59,11 +57,9 @@ class global.Exspresso_URI
 
     log_message('debug', "URI Class Initialized")
 
-    @keyval = {}
-    @segments = []
-    @rsegments = []
+    @_keyval = {}
     @_uri_string = $Exspresso.req.path
-    @rsegments = @segments = @_uri_string.split('/')
+    @_rsegments = @_segments = @_uri_string.split('/')
 
   #  --------------------------------------------------------------------
 
@@ -78,7 +74,7 @@ class global.Exspresso_URI
   # @return	string
   #
   segment : ($n, $no_result = false) ->
-    if not @segments[$n]? then $no_result else @segments[$n]
+    if not @_segments[$n]? then $no_result else @_segments[$n]
 
 
   #  --------------------------------------------------------------------
@@ -96,7 +92,7 @@ class global.Exspresso_URI
   # @return	string
   #
   rsegment : ($n, $no_result = false) ->
-    if not @rsegments[$n]? then $no_result else @rsegments[$n]
+    if not @_rsegments[$n]? then $no_result else @_rsegments[$n]
 
   #  --------------------------------------------------------------------
 
@@ -154,8 +150,8 @@ class global.Exspresso_URI
     if not is_numeric($n)
       return $default
 
-    if $keyval[$n]?
-      return $keyval[$n]
+    if @_keyval[$n]?
+      return @_keyval[$n]
 
     if @[$total_segments]() < $n
       if count($default) is 0
@@ -186,7 +182,7 @@ class global.Exspresso_URI
           $retval[$val] = false
 
     #  Cache the array for reuse
-    $keyval[$n] = $retval
+    @_keyval[$n] = $retval
     return $retval
 
   #  --------------------------------------------------------------------
@@ -268,7 +264,7 @@ class global.Exspresso_URI
   # @return	array
   #
   segment_array :  ->
-    @segments
+    @_segments
 
 
   #  --------------------------------------------------------------------
@@ -280,7 +276,7 @@ class global.Exspresso_URI
   # @return	array
   #
   rsegment_array :  ->
-    @rsegments
+    @_rsegments
 
 
   #  --------------------------------------------------------------------
@@ -292,7 +288,7 @@ class global.Exspresso_URI
   # @return	integer
   #
   total_segments :  ->
-    count(@segments)
+    count(@_segments)
 
 
   #  --------------------------------------------------------------------
@@ -304,7 +300,7 @@ class global.Exspresso_URI
   # @return	integer
   #
   total_rsegments :  ->
-    count(@rsegments)
+    count(@_rsegments)
 
 
   #  --------------------------------------------------------------------

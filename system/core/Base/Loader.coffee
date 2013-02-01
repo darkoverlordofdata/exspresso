@@ -372,9 +372,9 @@ class global.Base_Loader
   # @param	bool
   # @return	void
   #
-  view: ($view, $vars = {}, $callback = null) ->
+  view: ($view, $vars = {}, $next = null) ->
     log_message 'debug', 'Exspresso_Loader::view'
-    @_ex_load('', $view, $vars, $callback)
+    @_ex_load('', $view, $vars, $next)
 
   #  --------------------------------------------------------------------
 
@@ -410,8 +410,8 @@ class global.Base_Loader
   # @param	bool
   # @return	string
   #
-  file: ($path, $callback) ->
-    @_ex_load($path, '', {}, $callback)
+  file: ($path, $next) ->
+    @_ex_load($path, '', {}, $next)
 
   ## --------------------------------------------------------------------
 

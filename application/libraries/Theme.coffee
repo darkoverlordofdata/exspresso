@@ -19,21 +19,22 @@
 #
 class global.Theme
 
-  _location: ''
-  _path: ''
-  _id: ''
-  _name: ''
-  _author: ''
-  _website: ''
-  _version: ''
-  _description: ''
-  _location: ''
-  _favicon: ''
-  _layout: null
-  _meta: null
-  _script: null
-  _css: null
-  _menu: null
+  _location       : ''
+  _path           : ''
+  _id             : ''
+  _name           : ''
+  _author         : ''
+  _website        : ''
+  _version        : ''
+  _description    : ''
+  _location       : ''
+  _favicon        : ''
+  _layout         : null
+  _meta           : null
+  _script         : null
+  _css            : null
+  _menu           : null
+  Exspresso       : null
 
   constructor: ($config = {}, @Exspresso) ->
 

@@ -54,13 +54,13 @@ class Exspresso_Unit_test
 
   is_false = ($test) -> if (is_bool($test) and $test is false) then true else false
 
-  Exspresso: null
-  _active: true
-  _results: null
-  _strict: false
-  _template: null
-  _template_rows: null
-  _test_items_visible: null
+  Exspresso             : null
+  _active               : true
+  _results              : null
+  _strict               : false
+  _template             : null
+  _template_rows        : null
+  _test_items_visible   : null
   
   constructor: ($config = {}, @Exspresso) ->
     #  These are the default items visible when a test is run.

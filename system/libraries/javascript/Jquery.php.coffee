@@ -447,15 +447,15 @@ class Exspresso_Jquery extends Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  _fadeIn : ($element = 'this', $speed = '', $callback = '') ->
+  _fadeIn : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
     $speed = @_validate_speed($speed)
     
-    if $callback isnt ''
-      $callback = ", function(){\n{$callback}\n}"
+    if $next isnt ''
+      $next = ", function(){\n{$next}\n}"
       
     
-    $str = "$({$element}).fadeIn({$speed}{$callback});"
+    $str = "$({$element}).fadeIn({$speed}{$next});"
     
     return $str
     
@@ -473,15 +473,15 @@ class Exspresso_Jquery extends Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  _fadeOut : ($element = 'this', $speed = '', $callback = '') ->
+  _fadeOut : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
     $speed = @_validate_speed($speed)
     
-    if $callback isnt ''
-      $callback = ", function(){\n{$callback}\n}"
+    if $next isnt ''
+      $next = ", function(){\n{$next}\n}"
       
     
-    $str = "$({$element}).fadeOut({$speed}{$callback});"
+    $str = "$({$element}).fadeOut({$speed}{$next});"
     
     return $str
     
@@ -499,15 +499,15 @@ class Exspresso_Jquery extends Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  _hide : ($element = 'this', $speed = '', $callback = '') ->
+  _hide : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
     $speed = @_validate_speed($speed)
     
-    if $callback isnt ''
-      $callback = ", function(){\n{$callback}\n}"
+    if $next isnt ''
+      $next = ", function(){\n{$next}\n}"
       
     
-    $str = "$({$element}).hide({$speed}{$callback});"
+    $str = "$({$element}).hide({$speed}{$next});"
     
     return $str
     
@@ -542,15 +542,15 @@ class Exspresso_Jquery extends Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  _slideUp : ($element = 'this', $speed = '', $callback = '') ->
+  _slideUp : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
     $speed = @_validate_speed($speed)
     
-    if $callback isnt ''
-      $callback = ", function(){\n{$callback}\n}"
+    if $next isnt ''
+      $next = ", function(){\n{$next}\n}"
       
     
-    $str = "$({$element}).slideUp({$speed}{$callback});"
+    $str = "$({$element}).slideUp({$speed}{$next});"
     
     return $str
     
@@ -568,15 +568,15 @@ class Exspresso_Jquery extends Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  _slideDown : ($element = 'this', $speed = '', $callback = '') ->
+  _slideDown : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
     $speed = @_validate_speed($speed)
     
-    if $callback isnt ''
-      $callback = ", function(){\n{$callback}\n}"
+    if $next isnt ''
+      $next = ", function(){\n{$next}\n}"
       
     
-    $str = "$({$element}).slideDown({$speed}{$callback});"
+    $str = "$({$element}).slideDown({$speed}{$next});"
     
     return $str
     
@@ -594,15 +594,15 @@ class Exspresso_Jquery extends Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  _slideToggle : ($element = 'this', $speed = '', $callback = '') ->
+  _slideToggle : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
     $speed = @_validate_speed($speed)
     
-    if $callback isnt ''
-      $callback = ", function(){\n{$callback}\n}"
+    if $next isnt ''
+      $next = ", function(){\n{$next}\n}"
       
     
-    $str = "$({$element}).slideToggle({$speed}{$callback});"
+    $str = "$({$element}).slideToggle({$speed}{$next});"
     
     return $str
     
@@ -654,15 +654,15 @@ class Exspresso_Jquery extends Exspresso_Javascript
   # @param	string	- Javascript callback function
   # @return	string
   #
-  _show : ($element = 'this', $speed = '', $callback = '') ->
+  _show : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
     $speed = @_validate_speed($speed)
     
-    if $callback isnt ''
-      $callback = ", function(){\n{$callback}\n}"
+    if $next isnt ''
+      $next = ", function(){\n{$next}\n}"
       
     
-    $str = "$({$element}).show({$speed}{$callback});"
+    $str = "$({$element}).show({$speed}{$next});"
     
     return $str
     

@@ -3,12 +3,12 @@
         <div class="span4">
             <%- @form_open('/admin/authenticate', class: 'form-signin') %>
             <h2 class="form-signin-heading">Please sign in</h2>
-            <%- @form_input(class:"input-block-level", placeholder:"Email address") %>
-            <%- @form_password(class:"input-block-level", placeholder:"Password") %>
+            <%- @form_input(name: 'username', class:'input-block-level', placeholder:'Email address') %>
+            <%- @form_password(name: 'password', class:'input-block-level', placeholder:'Password') %>
             <label class="checkbox">
-                <%- @form_checkbox(value:"remember-me") %> Remember me
+                <%- @form_checkbox(name:'remember', checked: false, value: 'remember') %> Remember me
             </label>
-            <%- @form_submit('submit', 'Sign in', class:"btn btn-large btn-success") %>
+            <%- @form_submit('submit', 'Sign in', class:'btn btn-large btn-success') %>
             <%- @form_close() %>
         </div>
     </div>

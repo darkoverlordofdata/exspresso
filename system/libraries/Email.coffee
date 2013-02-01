@@ -722,7 +722,7 @@ class global.Exspresso_Email
   # @access	public
   # @return	bool
   #
-  send: ($callback) ->
+  send: ($next) ->
 
     $msg =
       from: @_get_from()
@@ -732,7 +732,7 @@ class global.Exspresso_Email
       text: @_get_alt_message()
       attachment: [ data: @_body, alternative:true].concat(@_get_attachments())
 
-    @server.send $msg, $callback
+    @server.send $msg, $next
 
 
 

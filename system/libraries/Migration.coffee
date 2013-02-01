@@ -31,16 +31,16 @@ class global.Exspresso_Migration extends Base_Migration
   # @param  function
   # @return void
   #
-  initialize: ($callback) ->
+  initialize: ($next) ->
 
-    if @connected is true then return $callback null
+    if @connected is true then return $next null
     @connected = true
 
     # If the migrations table is missing, make it
     @db.table_exists 'migrations', ($err, $table_exists) =>
 
-      if $err then return $callback $err
-      if $table_exists then return $callback null
+      if $err then return $next $err
+      if $table_exists then return $next null
 
       @dbforge.add_field
         'module' :
@@ -52,8 +52,8 @@ class global.Exspresso_Migration extends Base_Migration
 
       @dbforge.create_table 'migrations', true, ($err) =>
 
-        if $err then return $callback $err
-        @db.insert 'migrations', version: 0, $callback
+        if $err then return $next $err
+        @db.insert 'migrations', version: 0, $next
 
   #-------------------------------------------------------------------
 
@@ -97,14 +97,14 @@ class global.Exspresso_Migration extends Base_Migration
   #
   # @return  int  Current Migration
   #
-  get_version: ($callback) ->
+  get_version: ($next) ->
 
     #@db.where 'module', @_migration_module
     @db.get 'migrations', ($err, $result) ->
 
-      if $err then return $callback $err
+      if $err then return $next $err
       $row = $result.row()
-      $callback null, if $row then $row.version else 0
+      $next null, if $row then $row.version else 0
 
 
   #-------------------------------------------------------------------
@@ -115,11 +115,11 @@ class global.Exspresso_Migration extends Base_Migration
   # @param  int  Migration reached
   # @return  bool
   #
-  _update_version: ($migrations, $callback) ->
+  _update_version: ($migrations, $next) ->
 
     #@db.where 'module', @_migration_module
     @db.update 'migrations'
-      'version': $migrations, $callback
+      'version': $migrations, $next
 
 module.exports = Exspresso_Migration
 

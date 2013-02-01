@@ -47,9 +47,9 @@
 class global.Base_Config
 
 
-  config:         null
-  is_loaded:      null
-  _config_paths:  null
+  config          : null
+  _is_loaded      : null
+  _config_paths   : null
 
   #
   # Constructor
@@ -64,7 +64,7 @@ class global.Base_Config
   #
   constructor :  ->
     @_config_paths = [APPPATH]
-    @is_loaded = []
+    @_is_loaded = []
     @config = get_config()
 
     #  Set the base_url automatically if none was provided
@@ -120,7 +120,7 @@ class global.Base_Config
         @config = array_merge(@config, $config)
 
 
-      @is_loaded.push $file_path
+      @_is_loaded.push $file_path
 
       $loaded = true
 

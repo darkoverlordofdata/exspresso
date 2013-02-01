@@ -73,13 +73,13 @@ class global.Exspresso_Lang extends Base_Lang
     if is_array($langfile)
       for $_lang in $langfile
         @load($_lang)
-      return @language
+      return @_language
 
     $deft_lang = Exspresso.config.item('language')
     $idiom = if ($lang is '') then $deft_lang else $lang
 
-    if in_array($langfile + '_lang' + EXT, @is_loaded, true)
-      return @language
+    if in_array($langfile + '_lang' + EXT, @_is_loaded, true)
+      return @_language
 
     $_module = Exspresso.router.fetch_module()
     [$path, $_langfile] = Modules.find($langfile + '_lang', $_module, 'language/' + $idiom + '/')
@@ -89,10 +89,10 @@ class global.Exspresso_Lang extends Base_Lang
       else
         if $lang = Modules.load_file($_langfile, $path, 'lang')
           if $return then return $lang
-        @language = array_merge(@language, $lang)
-        @is_loaded.push $langfile + '_lang' + EXT
+        @_language = array_merge(@_language, $lang)
+        @_is_loaded.push $langfile + '_lang' + EXT
 
-      return @language
+      return @_language
 
 module.exports = Exspresso_Lang
 

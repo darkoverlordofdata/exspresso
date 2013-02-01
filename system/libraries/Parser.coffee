@@ -60,15 +60,15 @@ class global.Exspresso_Parser
   # @param	function
   # @return	void
   #
-  parse: ($template, $data, $callback) ->
+  parse: ($template, $data, $next) ->
 
-    $fn_err = $callback ? show_error
+    $fn_err = $next ? show_error
 
     @Exspresso.load.view $template, $data, ($err, $template) =>
 
       if $err then $fn_err $err
       else
-        if $callback? then $callback null, @_parse($template, $data, true)
+        if $next? then $next null, @_parse($template, $data, true)
         else
           @_parse($template, $data, false)
 

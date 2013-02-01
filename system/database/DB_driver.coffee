@@ -111,11 +111,11 @@ class Exspresso_DB_driver
   # @param	callback
   # @return	void
   #
-  initialize: ($callback) =>
+  initialize: ($next) =>
 
     log_message 'debug', 'Exspresso_DB_%s_driver initialize', @dbdriver
-    if $callback?
-      @db_connect $callback
+    if $next?
+      @db_connect $next
     #else
     #  @db_connect()
 
@@ -142,7 +142,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	string
   #
-  version: ($callback) ->
+  version: ($next) ->
     if false is ($sql = @_version())
       if @db_debug
         return @display_error('db_unsupported_function')
@@ -172,25 +172,25 @@ class Exspresso_DB_driver
   # @access	public
   # @return	array
   #
-  query_list: ($sql, $callback) ->
+  query_list: ($sql, $next) ->
 
     $results = []
     $index = 0
     $query = @query
 
-    $iterate = ->
+    $iterate = =>
 
-      if $sql.length is 0 then $callback null, $results
+      if $sql.length is 0 then $next null, $results
       else
         #
         # execute sql
         #
-        $query $sql[$index], ($err, $result)->
-          if $err then $callback $err
+        $query $sql[$index], ($err, $result) =>
+          if $err then $next $err
           else
             $results.push $result
             $index += 1
-            if $index is $sql.length then $callback null, $results
+            if $index is $sql.length then $next null, $results
             else $iterate()
 
     $iterate()
@@ -213,7 +213,7 @@ class Exspresso_DB_driver
   # @param	array	An array of binding data
   # @return	mixed
   #
-  query: ($sql, $binds, $callback = null) ->
+  query: ($sql, $binds, $next = null) =>
     if $sql is ''
       if @db_debug
         log_message('error', 'Invalid query: ' + $sql)
@@ -245,9 +245,9 @@ class Exspresso_DB_driver
     #  Start the Query Timer
     $time_start = (new Date()).getTime()
 
-    if $callback?
+    if $next?
       @_execute $sql, $binds, ($err, $results, $info) =>
-        @_query2 $err, $results, $info, $time_start, $sql, $callback
+        @_query2 $err, $results, $info, $time_start, $sql, $next
 
     else if $binds?
       @_execute $sql, ($err, $results, $info) =>
@@ -255,12 +255,12 @@ class Exspresso_DB_driver
 
     return $sql
 
-  _query2: ($err, $results, $info, $time_start, $sql, $callback) =>
+  _query2: ($err, $results, $info, $time_start, $sql, $next) =>
 
     $time_end = (new Date()).getTime()
 
     if $err
-      return $callback($err)
+      return $next($err)
       if @save_queries is true
         @query_times.push 0
 
@@ -338,7 +338,7 @@ class Exspresso_DB_driver
 
       @CACHE.write($sql, $CR)
 
-    $callback $err, $RES, $info
+    $next $err, $RES, $info
 
   #  --------------------------------------------------------------------
 
@@ -373,21 +373,21 @@ class Exspresso_DB_driver
   # @param	string	the sql query
   # @return	mixed
   #
-  simple_query : ($sql, $binds, $callback) ->
+  simple_query : ($sql, $binds, $next) ->
 
-    if $callback is null
+    if $next is null
       @_execute $sql, ($err, $results, $info) =>
         @_query2 $err, $results, $info, $time_start, $sql, $binds
 
     else
       @_execute $sql, $binds, ($err, $results, $info) =>
-        @_query2 $err, $results, $info, $time_start, $sql, $callback
+        @_query2 $err, $results, $info, $time_start, $sql, $next
 
-  _simple_query2:($err, $results, $info, $callback) =>
+  _simple_query2:($err, $results, $info, $next) =>
 
     if $results.length?
       if $results.length is 1 then $results = $results[0]
-    $callback $err, $results, $info
+    $next $err, $results, $info
 
 
   #  --------------------------------------------------------------------
@@ -427,20 +427,20 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  trans_start : ($test_mode = false, $callback) ->
-    if $callback is null
-      $callback = $test_mode
+  trans_start : ($test_mode = false, $next) ->
+    if $next is null
+      $next = $test_mode
       $test_mode = false
 
     if not @trans_enabled
-      return $callback null, false
+      return $next null, false
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
       @_trans_depth+=1
-      return $callback null
+      return $next null
 
-    @trans_begin($test_mode, $callback)
+    @trans_begin($test_mode, $next)
 
 
   #  --------------------------------------------------------------------
@@ -451,20 +451,20 @@ class Exspresso_DB_driver
   # @access	public
   # @return	bool
   #
-  trans_complete: ($callback) ->
+  trans_complete: ($next) ->
     if not @trans_enabled
-      return $callback null, false
+      return $next null, false
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 1
       @_trans_depth-=1
-      return $callback null, true
+      return $next null, true
 
     #  The query() function will set this flag to FALSE in the event that a query failed
     if @_trans_status is false
       @trans_rollback ($err) =>
 
-        if $err then return $callback $err
+        if $err then return $next $err
         #  If we are NOT running in strict mode, we will reset
         #  the _trans_status flag so that subsequent groups of transactions
         #  will be permitted.
@@ -472,9 +472,9 @@ class Exspresso_DB_driver
           @_trans_status = true
 
         log_message('debug', 'DB Transaction Failure')
-        return $callback null, false
+        return $next null, false
 
-    @trans_commit($callback)
+    @trans_commit($next)
 
 
   #  --------------------------------------------------------------------
@@ -654,22 +654,22 @@ class Exspresso_DB_driver
   # @access	public
   # @return	array
   #
-  list_tables : ($constrain_by_prefix = false, $callback = null) ->
+  list_tables : ($constrain_by_prefix = false, $next = null) ->
 
-    if $callback is null
-      $callback = $constrain_by_prefix
+    if $next is null
+      $next = $constrain_by_prefix
       $constrain_by_prefix = false
 
     #  Is there a cached result?
     if @data_cache['table_names']?
-      return $callback null,  @data_cache['table_names']
+      return $next null,  @data_cache['table_names']
 
 
     if false is ($sql = @_list_tables($constrain_by_prefix))
       if @db_debug
-        return $callback @display_error('db_unsupported_function')
+        return $next @display_error('db_unsupported_function')
 
-      return $callback false
+      return $next false
 
 
     $retval = []
@@ -684,7 +684,7 @@ class Exspresso_DB_driver
             $retval.push current($row)
 
       @data_cache['table_names'] = $retval
-      $callback $err, @data_cache['table_names']
+      $next $err, @data_cache['table_names']
 
 
   #  --------------------------------------------------------------------
@@ -694,14 +694,14 @@ class Exspresso_DB_driver
   # @access	public
   # @return	boolean
   #
-  table_exists : ($table_name, $callback) ->
+  table_exists : ($table_name, $next) ->
 
     @list_tables ($err, $table_names) =>
 
-      if $err then return $callback $err
+      if $err then return $next $err
 
       $table_exists = if ( not in_array(@_protect_identifiers($table_name, true, false, false), $table_names)) then false else true
-      $callback null, $table_exists
+      $next null, $table_exists
 
 
   #  --------------------------------------------------------------------
@@ -713,7 +713,7 @@ class Exspresso_DB_driver
   # @param	string	the table name
   # @return	array
   #
-  list_fields : ($table = '', $callback) ->
+  list_fields : ($table = '', $next) ->
     #  Is there a cached result?
     if @data_cache['field_names'][$table]?
       return @data_cache['field_names'][$table]
@@ -746,7 +746,7 @@ class Exspresso_DB_driver
 
 
       @data_cache['field_names'][$table] = $retval
-      $callback $err, @data_cache['field_names'][$table]
+      $next $err, @data_cache['field_names'][$table]
 
 
   #  --------------------------------------------------------------------
@@ -771,7 +771,7 @@ class Exspresso_DB_driver
   # @param	string	the table name
   # @return	object
   #
-  field_data : ($table = '', $callback) ->
+  field_data : ($table = '', $next) ->
     if $table is ''
       if @db_debug
         return @display_error('db_field_param_missing')
@@ -781,7 +781,7 @@ class Exspresso_DB_driver
 
     @query @_field_data(@_protect_identifiers($table, true, null, false)), ($err, $results) ->
 
-      $callback $err, $results
+      $next $err, $results
 
 
   #  --------------------------------------------------------------------
@@ -969,10 +969,10 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  close: ($callback)->
+  close: ($next)->
 
     @conn_id = false
-    @_close($callback)
+    @_close($next)
 
 
   #  --------------------------------------------------------------------

@@ -44,14 +44,14 @@ class global.Exspresso_Form_validation
   sprintf = require('util').format
 
 
-  Exspresso: null
-  _field_data: null
-  _config_rules: null
-  _error_array: null
-  _error_messages: null
-  _error_prefix: '<p>'
-  _error_suffix: '</p>'
-  _safe_form_data: false
+  Exspresso         : null
+  _field_data       : null
+  _config_rules     : null
+  _error_array      : null
+  _error_messages   : null
+  _error_prefix     : '<p>'
+  _error_suffix     : '</p>'
+  _safe_form_data   : false
   
   
   #
@@ -425,13 +425,13 @@ class global.Exspresso_Form_validation
     #  --------------------------------------------------------------------
     
     #  If the field is blank, but NOT required, no further tests are necessary
-    $callback = false
+    $next = false
     if in_array('required', $rules) is false and is_null($postdata)
       #  Before we bail out, does the rule contain a callback?
       $match = preg_match("/(callback_\\w+)/", implode(' ', $rules))
 
       if $match.length
-        $callback = true
+        $next = true
         $rules = ('1':$match[1])
         
       else 
@@ -442,7 +442,7 @@ class global.Exspresso_Form_validation
     #  --------------------------------------------------------------------
     
     #  Isset Test. Typically this rule will only apply to checkboxes.
-    if is_null($postdata) and $callback is false
+    if is_null($postdata) and $next is false
       if in_array('isset', $rules, true) or in_array('required', $rules)
         #  Set the message type
         $type = if (in_array('required', $rules)) then 'required' else 'isset'
@@ -493,10 +493,10 @@ class global.Exspresso_Form_validation
       #  --------------------------------------------------------------------
       
       #  Is the rule a callback?
-      $callback = false
+      $next = false
       if substr($rule, 0, 9) is 'callback_'
         $rule = substr($rule, 9)
-        $callback = true
+        $next = true
 
       #  Strip the parameter (if exists) from the rule
       #  Rules can contain a parameter: max_length[5]
@@ -506,7 +506,7 @@ class global.Exspresso_Form_validation
         $param = $match[2]
 
       #  Call the function that corresponds to the rule
-      if $callback is true
+      if $next is true
         if not method_exists(@Exspresso, $rule)
           continue
 

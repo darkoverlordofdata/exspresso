@@ -159,7 +159,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   select_max: ($select = '', $alias = '') ->
-    return @_max_min_avg_sum($select, $alias, 'MAX')
+    @_max_min_avg_sum($select, $alias, 'MAX')
     
   
   #  --------------------------------------------------------------------
@@ -175,7 +175,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   select_min: ($select = '', $alias = '') ->
-    return @_max_min_avg_sum($select, $alias, 'MIN')
+    @_max_min_avg_sum($select, $alias, 'MIN')
     
   
   #  --------------------------------------------------------------------
@@ -191,7 +191,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   select_avg: ($select = '', $alias = '') ->
-    return @_max_min_avg_sum($select, $alias, 'AVG')
+    @_max_min_avg_sum($select, $alias, 'AVG')
     
   
   #  --------------------------------------------------------------------
@@ -207,7 +207,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   select_sum: ($select = '', $alias = '') ->
-    return @_max_min_avg_sum($select, $alias, 'SUM')
+    @_max_min_avg_sum($select, $alias, 'SUM')
     
   
   #  --------------------------------------------------------------------
@@ -389,7 +389,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   where: ($key, $value = null, $escape = true) ->
-    return @_where($key, $value, 'AND ', $escape)
+    @_where($key, $value, 'AND ', $escape)
     
   
   #  --------------------------------------------------------------------
@@ -406,7 +406,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   or_where: ($key, $value = null, $escape = true) ->
-    return @_where($key, $value, 'OR ', $escape)
+    @_where($key, $value, 'OR ', $escape)
     
   
   #  --------------------------------------------------------------------
@@ -471,7 +471,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   where_in: ($key = null, $values = null) ->
-    return @_where_in($key, $values)
+    @_where_in($key, $values)
     
   
   #  --------------------------------------------------------------------
@@ -488,7 +488,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   or_where_in: ($key = null, $values = null) ->
-    return @_where_in($key, $values, false, 'OR ')
+    @_where_in($key, $values, false, 'OR ')
     
   
   #  --------------------------------------------------------------------
@@ -505,7 +505,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   where_not_in: ($key = null, $values = null) ->
-    return @_where_in($key, $values, true)
+    @_where_in($key, $values, true)
     
   
   #  --------------------------------------------------------------------
@@ -522,7 +522,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   or_where_not_in: ($key = null, $values = null) ->
-    return @_where_in($key, $values, true, 'OR ')
+    @_where_in($key, $values, true, 'OR ')
     
   
   #  --------------------------------------------------------------------
@@ -580,7 +580,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   like: ($field, $match = '', $side = 'both') ->
-    return @_like($field, $match, 'AND ', $side)
+    @_like($field, $match, 'AND ', $side)
     
   
   #  --------------------------------------------------------------------
@@ -597,7 +597,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   not_like: ($field, $match = '', $side = 'both') ->
-    return @_like($field, $match, 'AND ', $side, 'NOT')
+    @_like($field, $match, 'AND ', $side, 'NOT')
     
   
   #  --------------------------------------------------------------------
@@ -614,7 +614,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   or_like: ($field, $match = '', $side = 'both') ->
-    return @_like($field, $match, 'OR ', $side)
+    @_like($field, $match, 'OR ', $side)
     
   
   #  --------------------------------------------------------------------
@@ -631,7 +631,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   or_not_like: ($field, $match = '', $side = 'both') ->
-    return @_like($field, $match, 'OR ', $side, 'NOT')
+    @_like($field, $match, 'OR ', $side, 'NOT')
     
   
   #  --------------------------------------------------------------------
@@ -719,7 +719,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   having: ($key, $value = '', $escape = true) ->
-    return @_having($key, $value, 'AND ', $escape)
+    @_having($key, $value, 'AND ', $escape)
     
   
   #  --------------------------------------------------------------------
@@ -735,7 +735,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
   or_having: ($key, $value = '', $escape = true) ->
-    return @_having($key, $value, 'OR ', $escape)
+    @_having($key, $value, 'OR ', $escape)
     
   
   #  --------------------------------------------------------------------
@@ -889,10 +889,10 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	the offset clause
   # @return	object
   #
-  get: ($table, $callback = null) ->
+  get: ($table, $next = null) ->
 
-    if $callback is null
-      $callback = $table
+    if $next is null
+      $next = $table
       $table = ''
 
     if $table isnt ''
@@ -901,7 +901,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     $sql = @_compile_select()
     @_reset_select()
-    @query $sql, $callback
+    @query $sql, $next
 
   
   #
@@ -914,7 +914,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string
   # @return	string
   #
-  count_all_results: ($table = '', $callback) ->
+  count_all_results: ($table = '', $next) ->
     if $table isnt ''
       @_track_aliases($table)
       @from($table)
@@ -924,14 +924,14 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
 
     @query $sql, ($err, $query) =>
 
-      if $err then $callback $err
+      if $err then $next $err
       else
 
         if $query.num_rows is 0
-          $callback null, 0
+          $next null, 0
         else
           $row = $query.row()
-          $callback null, $row.numrows
+          $next null, $row.numrows
     
   
   #  --------------------------------------------------------------------
@@ -975,9 +975,9 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	array	an associative array of insert values
   # @return	object
   #
-  insert_batch : ($table = '', $set = null, $callback) ->
+  insert_batch : ($table = '', $set = null, $next) ->
     if typeof $set is 'function'
-      $callback = $set
+      $next = $set
       $set = null
 
     if not is_null($set)
@@ -1003,11 +1003,12 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     $sql = []
     for $i in [0..count(@ar_set)-1] by 100
 
-      $sql.push @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, array_slice(@ar_set, $i, 100))
+      $str = @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, array_slice(@ar_set, $i, 100))
+      $sql.push $str
 
     @_reset_write()
-    if $callback?
-      @query_list $sql, $callback
+    if $next?
+      @query_list $sql, $next
     else
       $sql
 
@@ -1073,10 +1074,10 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	array	an associative array of insert values
   # @return	object
   #
-  insert: ($table = '', $set = null, $callback = null) ->
+  insert: ($table = '', $set = null, $next = null) ->
 
-    if $callback is null
-      $callback = $set
+    if $next is null
+      $next = $set
       $set = null
 
     if not is_null($set)
@@ -1100,7 +1101,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     $sql = @_insert(@_protect_identifiers($table, true, null, false), array_keys(@ar_set), array_values(@ar_set))
     
     @_reset_write()
-    return @query($sql, $callback)
+    return @query($sql, $next)
   
   replace: ($table = '', $set = null) ->
     if not is_null($set)
@@ -1129,7 +1130,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
 
     log_message 'debug', 'SQL: %s', $sql
     @_reset_write()
-    return @query($sql, $callback)
+    return @query($sql, $next)
     
   
   #  --------------------------------------------------------------------
@@ -1145,17 +1146,17 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	mixed	the where clause
   # @return	object
   #
-  update: ($table = '', $set = null, $where = null, $limit = null, $callback = null) ->
+  update: ($table = '', $set = null, $where = null, $limit = null, $next = null) ->
 
-    if $callback is null
-      $callback = $limit
+    if $next is null
+      $next = $limit
       $limit = null
 
-    if $callback is null
-      $callback = $where
+    if $next is null
+      $next = $where
       $where = null
 
-    if $callback is null
+    if $next is null
       throw Error('DB_active_rec::update No callback passed to update')
 
 
@@ -1195,7 +1196,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     $sql = @_update(@_protect_identifiers($table, true, null, false), @ar_set, @ar_where, @ar_orderby, @ar_limit)
 
     @_reset_write()
-    @query($sql, $callback)
+    @query($sql, $next)
 
   #  --------------------------------------------------------------------
 
@@ -1253,7 +1254,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @query_list $sql, ($err) ->
 
       @_reset_write()
-      $callback $err
+      $next $err
 
 
 
@@ -1354,9 +1355,9 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	the table to truncate
   # @return	object
   #
-  truncate: ($table = '', $callback) ->
+  truncate: ($table = '', $next) ->
     if typeof table is 'function'
-      $callback = $table
+      $next = $table
       $table = ''
 
     if $table is ''
@@ -1377,7 +1378,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     @_reset_write()
     
-    @query($sql, $callback)
+    @query($sql, $next)
     
   
   #  --------------------------------------------------------------------
@@ -1397,12 +1398,12 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   delete: ($table = '', $where = '', $limit = null, $reset_data = true) ->
 
     if typeof $limit is 'function'
-      $callback = $limit
+      $next = $limit
       $limit = null
       $reset_data = true
 
     else if typeof $reset_data is 'function'
-      $callback = $reset_data
+      $next = $reset_data
       $reset_data = true
 
     #  Combine any cached components with the current statements
@@ -1444,7 +1445,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     if $reset_data
       @_reset_write()
 
-    @query($sql, $callback)
+    @query($sql, $next)
     
   
   #  --------------------------------------------------------------------

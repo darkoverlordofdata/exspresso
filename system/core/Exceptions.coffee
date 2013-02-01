@@ -149,10 +149,10 @@ class global.Exspresso_Exceptions
 
 
       #  --------------------------------------------------------------------
-      @show_404 = ($page = '', $log_error = true, $callback) =>
+      @show_404 = ($page = '', $log_error = true, $next) =>
 
         if typeof $log_error is 'function'
-          [$log_error, $callback] = [true, $log_error]
+          [$log_error, $next] = [true, $log_error]
 
         $err =
           status:       404
@@ -165,23 +165,23 @@ class global.Exspresso_Exceptions
         if $log_error
           log_message('error', '404 Page Not Found --> ' + $page)
 
-        @show_error $err, '404', 404, $callback
+        @show_error $err, '404', 404, $next
 
       #  --------------------------------------------------------------------
-      @show_error = ($err, $template = '5xx', $status_code = 500, $callback) ->
+      @show_error = ($err, $template = '5xx', $status_code = 500, $next) ->
 
         if typeof $template is 'function'
-          [$$template, $status_code, $callback] = ['5xx', 500, $template]
+          [$$template, $status_code, $next] = ['5xx', 500, $template]
 
         $error = new Exspresso_Error($err)
 
-        $callback = $callback ? ($err, $content) ->
+        $next = $next ? ($err, $content) ->
           $res.render APPPATH+'errors/layout.eco',
             title:      $error.code + ': ' + $error.desc
             content:    $content
             site_name:  config_item('site_name')
 
-        $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $callback
+        $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $next
 
       #  --------------------------------------------------------------------
       @show_native_error = ($severity, $message, $filepath, $line) ->

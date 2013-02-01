@@ -44,22 +44,16 @@
 #
 class global.Base_Migration
 
-  #
-  # config
-  #
-  _migration_enabled: false
-  _migration_path: ''
-  _migration_version: 0
-  _migration_db: ''
-  _error_string: ''
+  _migration_enabled    : false
+  _migration_path       : ''
+  _migration_version    : 0
+  _migration_db         : ''
+  _error_string         : ''
+  _connected            : false
 
-  #
-  #
-  #
-  Exspresso: null
-  db: null
-  dbforge: null
-  connected: false
+  Exspresso             : null
+  db                    : null
+  dbforge               : null
 
   constructor: ($config = {}, @Exspresso, @db, @dbforge) ->
 
@@ -97,19 +91,19 @@ class global.Base_Migration
     @db = @Exspresso.dbforge.db
     @dbforge = @Exspresso.dbforge
 
-    @Exspresso.queue ($callback) => @initialize $callback
+    @Exspresso.queue ($next) => @initialize $next
 
 
-  initialize: ($callback) ->
+  initialize: ($next) ->
 
-    if @connected is true then return $callback null
-    @connected = true
+    if @_connected is true then return $next null
+    @_connected = true
 
     # If the migrations table is missing, make it
     @db.table_exists 'migrations', ($err, $table_exists) =>
 
-      if $err then return $callback $err
-      if $table_exists then return $callback null
+      if $err then return $next $err
+      if $table_exists then return $next null
 
       @dbforge.add_field
         'version' :
@@ -118,8 +112,8 @@ class global.Base_Migration
 
       @dbforge.create_table 'migrations', true, ($err) =>
 
-        if $err then return $callback $err
-        @db.insert 'migrations', version: 0, $callback
+        if $err then return $next $err
+        @db.insert 'migrations', version: 0, $next
 
   #-------------------------------------------------------------------
 
@@ -132,10 +126,10 @@ class global.Base_Migration
   # @param  int  Target schema version
   # @return  mixed  true if already latest, false if failed, int if upgraded
   #
-  version: ($target_version, $callback) ->
+  version: ($target_version, $next) ->
 
     @get_version ($err, $current_version) =>
-      if $err then return $callback $err
+      if $err then return $next $err
 
       $start = $current_version
       $stop = $target_version
@@ -162,7 +156,7 @@ class global.Base_Migration
         # Only one migration per step is permitted
         if (count($f) > 1)
           @_error_string = sprintf(@Exspresso.lang.line('migration_multiple_version'), $i)
-          return $callback @_error_string
+          return $next @_error_string
 
         # Migration step not found
         if (count($f) is 0)
@@ -174,7 +168,7 @@ class global.Base_Migration
           # If trying to migrate down but we're missing a step,
           # something must definitely be wrong.
           @_error_string = sprintf(@Exspresso.lang.line('migration_not_found'), $i)
-          return $callback @_error_string
+          return $next @_error_string
 
         $file = basename($f[0])
         $name = basename($f[0], '.coffee')
@@ -187,24 +181,24 @@ class global.Base_Migration
           # Cannot repeat a migration at different steps
           if (in_array($match[1], $migrations))
             @_error_string = sprintf(@Exspresso.lang.line('migration_multiple_version'), $match[1])
-            return $callback @_error_string
+            return $next @_error_string
 
           $class = require($f[0])
 
           if not $class::[$method]?
             @_error_string = sprintf(@Exspresso.lang.line('migration_missing_'+$method+'_method'), $class)
-            return $callback @_error_string
+            return $next @_error_string
 
           if typeof $class::[$method] isnt 'function'
             @_error_string = sprintf(@Exspresso.lang.line('migration_missing_'+$method+'_method'), $class)
-            return $callback @_error_string
+            return $next @_error_string
 
           $migrations.push $class
 
         else
 
           @_error_string = sprintf(@Exspresso.lang.line('migration_invalid_filename'), $file)
-          return $callback @_error_string
+          return $next @_error_string
 
       log_message('debug', 'Current migration: ' + $current_version)
 
@@ -221,36 +215,34 @@ class global.Base_Migration
       #   @param	function callback
       #   @return	void
       #
-      migrate = ($callback) =>
-        if $migrations.length is 0 then $callback null
-        else
+      migrate = ($next) =>
+        return $next(null) if $migrations.length is 0
+        #
+        # run the migration at index
+        #
+        $class = $migrations[$index]
+        $migration = new $class({}, @Exspresso, @db, @dbforge)
+        #call_user_func [$migration, $method], ($err) =>
+        $migration[$method].call $migration, ($err) =>
+          return $next(null) if $err
           #
-          # run the migration at index
+          # bump the version number
           #
-          $class = $migrations[$index]
-          $migration = new $class({}, @Exspresso, @db, @dbforge)
-          call_user_func [$migration, $method], ($err) =>
-            if $err then $callback $err
-            else
-              #
-              # bump the version number
-              #
-              $current_version += $step
-              @_update_version $current_version, ($err) =>
-                if $err then $callback $err
-                else
-                  #
-                  # do the next migration
-                  #
-                  $index += 1
-                  if $index is $migrations.length then $callback null
-                  else migrate $callback
+          $current_version += $step
+          @_update_version $current_version, ($err) =>
+            return $next(null) if $err
+            #
+            # do the next migration
+            #
+            $index += 1
+            if $index is $migrations.length then $next null
+            else migrate $next
 
 
       migrate ($err) ->
 
         log_message('debug', 'Finished migrating to '+$current_version)
-        $callback $err, $current_version
+        $next $err, $current_version
 
 
   #-------------------------------------------------------------------
@@ -260,17 +252,17 @@ class global.Base_Migration
   #
   # @return  mixed  true if already latest, false if failed, int if upgraded
   #
-  latest: ($callback) ->
+  latest: ($next) ->
     if not ($migrations = @find_migrations())
       @_error_string = @Exspresso.lang.line('migration_none_found')
-      return $callback @_error_string
+      return $next @_error_string
 
     $last_migration = basename(end($migrations))
 
     # Calculate the last migration step from existing migration
     # filenames and procceed to the standard version migration
     @version substr($last_migration, 0, 3), ($err, $current_version) ->
-      $callback $err, $current_version
+      $next $err, $current_version
 
   #-------------------------------------------------------------------
 
@@ -279,9 +271,9 @@ class global.Base_Migration
   #
   # @return  mixed  true if already current, false if failed, int if upgraded
   #
-  current: ($callback) ->
+  current: ($next) ->
     @version @_migration_version, ($err, $current_version) ->
-      $callback $err, $current_version
+      $next $err, $current_version
 
   #-------------------------------------------------------------------
 
@@ -324,13 +316,13 @@ class global.Base_Migration
   #
   # @return  int  Current Migration
   #
-  get_version: ($callback) ->
+  get_version: ($next) ->
 
     $row = @db.get 'migrations', ($err, $result) ->
 
-      if $err then return $callback $err
+      if $err then return $next $err
       $row = $result.row()
-      $callback null, if $row then $row.version else 0
+      $next null, if $row then $row.version else 0
 
 
   #-------------------------------------------------------------------
@@ -341,10 +333,10 @@ class global.Base_Migration
   # @param  int  Migration reached
   # @return  bool
   #
-  _update_version: ($migrations, $callback) ->
+  _update_version: ($migrations, $next) ->
 
     @db.update 'migrations'
-      'version': $migrations, $callback
+      'version': $migrations, $next
 
 #  END Base_Migration class
 module.exports = Base_Migration

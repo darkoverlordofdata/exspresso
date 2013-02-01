@@ -44,38 +44,38 @@ class global.Exspresso_Pagination
   ceil = Math.ceil
   floor = Math.floor
 
-  base_url: ''#  The page we are linking to
-  prefix: ''#  A custom prefix added to the path.
-  suffix: ''#  A custom suffix added to the path.
-  
-  total_rows: ''#  Total number of items (database results)
-  per_page: 10 #  Max number of items you want shown per page
-  num_links: 2 #  Number of "digit" links to show before/after the currently viewed page
-  cur_page: 0 #  The current page being viewed
-  first_link: '&lsaquo; First'
-  next_link: '&gt;'
-  prev_link: '&lt;'
-  last_link: 'Last &rsaquo;'
-  uri_segment: 3
-  full_tag_open: ''
-  full_tag_close: ''
-  first_tag_open: ''
-  first_tag_close: '&nbsp;'
-  last_tag_open: '&nbsp;'
-  last_tag_close: ''
-  first_url: ''#  Alternative URL for the First Page.
-  cur_tag_open: '&nbsp;<strong>'
-  cur_tag_close: '</strong>'
-  next_tag_open: '&nbsp;'
-  next_tag_close: '&nbsp;'
-  prev_tag_open: '&nbsp;'
-  prev_tag_close: ''
-  num_tag_open: '&nbsp;'
-  num_tag_close: ''
-  page_query_string: false
-  query_string_segment: 'per_page'
-  display_pages: true
-  anchor_class: ''
+  Exspresso                 : null
+
+  _base_url                 : ''  #  The page we are linking to
+  _prefix                   : ''  #  A custom prefix added to the path.
+  _suffix                   : ''  #  A custom suffix added to the path.
+
+  _total_rows               : ''  #  Total number of items (database results)
+  _per_page                 : 10  #  Max number of items you want shown per page
+  _num_links                : 2   #  Number of "digit" links to show before/after the currently viewed page
+  _cur_page                 : 0   #  The current page being viewed
+  _first_link               : '&lsaquo; First'
+  _next_link                : '&gt;'
+  _prev_link                : '&lt;'
+  _last_link                : 'Last &rsaquo;'
+  _uri_segment              : 3
+  _full_tag_open            : ''
+  _full_tag_close           : ''
+  _first_tag_open           : ''
+  _first_tag_close          : '&nbsp;'
+  _first_url                : ''  #  Alternative URL for the First Page.
+  _cur_tag_open             : '&nbsp;<strong>'
+  _cur_tag_close            : '</strong>'
+  _next_tag_open            : '&nbsp;'
+  _next_tag_close           : '&nbsp;'
+  _prev_tag_open            : '&nbsp;'
+  _prev_tag_close           : ''
+  _num_tag_open             : '&nbsp;'
+  _num_tag_close            : ''
+  _page_query_string        : false
+  _query_string_segment     : 'per_page'
+  _display_pages            : true
+  _anchor_class             : ''
   
   #
   # Constructor
@@ -87,8 +87,8 @@ class global.Exspresso_Pagination
     if count($params) > 0
       @initialize($params)
 
-    if @anchor_class isnt ''
-      @anchor_class = 'class="' + @anchor_class + '" '
+    if @_anchor_class isnt ''
+      @_anchor_class = 'class="' + @_anchor_class + '" '
 
     log_message('debug', "Pagination Class Initialized")
 
@@ -104,8 +104,8 @@ class global.Exspresso_Pagination
   initialize : ($params = {}) ->
     if count($params) > 0
       for $key, $val of $params
-        if @[$key]?
-          @[$key] = $val
+        if @['_'+$key]?
+          @['_'+$key] = $val
 
   #  --------------------------------------------------------------------
   
@@ -117,122 +117,122 @@ class global.Exspresso_Pagination
   #
   create_links :  ->
     #  If our item count or per-page total is zero there is no need to continue.
-    if @total_rows is 0 or @per_page is 0
+    if @_total_rows is 0 or @_per_page is 0
       return ''
       
     
     #  Calculate the total number of pages
-    $num_pages = ceil(@total_rows / @per_page)
+    $num_pages = ceil(@_total_rows / @_per_page)
     
     #  Is there only one page? Hm... nothing more to do here then.
     if $num_pages is 1
       return ''
 
     #  Determine the current page number.
-    if @Exspresso.config.item('enable_query_strings') is true or @page_query_string is true
-      if @Exspresso.input.get(@query_string_segment) isnt 0
-        @cur_page = @Exspresso.input.get(@query_string_segment)
+    if @Exspresso.config.item('enable_query_strings') is true or @_page_query_string is true
+      if @Exspresso.input.get(@_query_string_segment) isnt 0
+        @_cur_page = @Exspresso.input.get(@_query_string_segment)
         
         #  Prep the current page - no funny business!
-        @cur_page = parseInt(@cur_page, 10)
+        @_cur_page = parseInt(@_cur_page, 10)
         
       
     else
-      if @Exspresso.uri.segment(@uri_segment) isnt 0
-        @cur_page = @Exspresso.uri.segment(@uri_segment)
+      if @Exspresso.uri.segment(@_uri_segment) isnt 0
+        @_cur_page = @Exspresso.uri.segment(@_uri_segment)
         
         #  Prep the current page - no funny business!
-        @cur_page = parseInt(@cur_page, 10)
+        @_cur_page = parseInt(@_cur_page, 10)
         
       
-    @num_links = parseInt(@num_links)
+    @_num_links = parseInt(@_num_links)
     
-    if @num_links < 1
+    if @_num_links < 1
       show_error('Your number of links must be a positive number.')
       
     
-    if not is_numeric(@cur_page)
-      @cur_page = 0
+    if not is_numeric(@_cur_page)
+      @_cur_page = 0
       
     
     #  Is the page number beyond the result range?
     #  If so we show the last page
-    if @cur_page > @total_rows
-      @cur_page = ($num_pages - 1) * @per_page
+    if @_cur_page > @_total_rows
+      @_cur_page = ($num_pages - 1) * @_per_page
       
     
-    $uri_page_number = @cur_page
-    @cur_page = floor((@cur_page / @per_page) + 1)
-    log_message 'debug', 'cur_page = %d', @cur_page
+    $uri_page_number = @_cur_page
+    @_cur_page = floor((@_cur_page / @_per_page) + 1)
+    log_message 'debug', 'cur_page = %d', @_cur_page
 
     #  Calculate the start and end numbers. These determine
     #  which number to start and end the digit links with
-    $start = if ((@cur_page - @num_links) > 0) then @cur_page - (@num_links - 1) else 1
-    $end = if ((@cur_page + @num_links) < $num_pages) then @cur_page + @num_links else $num_pages
+    $start = if ((@_cur_page - @_num_links) > 0) then @_cur_page - (@_num_links - 1) else 1
+    $end = if ((@_cur_page + @_num_links) < $num_pages) then @_cur_page + @_num_links else $num_pages
     
     #  Is pagination being used over GET or POST?  If get, add a per_page query
     #  string. If post, add a trailing slash to the base URL if needed
-    if @Exspresso.config.item('enable_query_strings') is true or @page_query_string is true
-      @base_url = rtrim(@base_url) + '&amp;' + @query_string_segment + '='
+    if @Exspresso.config.item('enable_query_strings') is true or @_page_query_string is true
+      @_base_url = rtrim(@_base_url) + '&amp;' + @_query_string_segment + '='
       
     else 
-      @base_url = rtrim(@base_url, '/') + '/'
+      @_base_url = rtrim(@_base_url, '/') + '/'
       
     
     #  And here we go...
     $output = ''
     
     #  Render the "First" link
-    if @first_link isnt false and @cur_page > (@num_links + 1)
-      $first_url = if (@first_url is '') then @base_url else @first_url
-      $output+=@first_tag_open + '<a ' + @anchor_class + 'href="' + $first_url + '">' + @first_link + '</a>' + @first_tag_close
+    if @_first_link isnt false and @_cur_page > (@_num_links + 1)
+      $first_url = if (@_first_url is '') then @_base_url else @_first_url
+      $output+=@_first_tag_open + '<a ' + @_anchor_class + 'href="' + $first_url + '">' + @_first_link + '</a>' + @_first_tag_close
       
     
     #  Render the "previous" link
-    if @prev_link isnt false and @cur_page isnt 1
-      $i = $uri_page_number - @per_page
+    if @_prev_link isnt false and @_cur_page isnt 1
+      $i = $uri_page_number - @_per_page
       
-      if $i is 0 and @first_url isnt ''
-        $output+=@prev_tag_open + '<a ' + @anchor_class + 'href="' + @first_url + '">' + @prev_link + '</a>' + @prev_tag_close
+      if $i is 0 and @_first_url isnt ''
+        $output+=@_prev_tag_open + '<a ' + @_anchor_class + 'href="' + @_first_url + '">' + @_prev_link + '</a>' + @_prev_tag_close
         
       else 
-        $i = if ($i is 0) then '' else @prefix + $i + @suffix
-        $output+=@prev_tag_open + '<a ' + @anchor_class + 'href="' + @base_url + $i + '">' + @prev_link + '</a>' + @prev_tag_close
+        $i = if ($i is 0) then '' else @_prefix + $i + @_suffix
+        $output+=@_prev_tag_open + '<a ' + @_anchor_class + 'href="' + @_base_url + $i + '">' + @_prev_link + '</a>' + @_prev_tag_close
         
       
       
     
     #  Render the pages
-    if @display_pages isnt false
+    if @_display_pages isnt false
       #  Write the digit links
       for $loop in [$start - 1..$end]
-        $i = ($loop * @per_page) - @per_page
+        $i = ($loop * @_per_page) - @_per_page
 
         if $i>=0
-          if @cur_page is $loop
-            $output+=@cur_tag_open + $loop + @cur_tag_close#  Current page
+          if @_cur_page is $loop
+            $output+=@_cur_tag_open + $loop + @_cur_tag_close#  Current page
 
           else
             $n = if ($i is 0) then '' else $i
 
-            if $n is '' and @first_url isnt ''
-              $output+=@num_tag_open + '<a ' + @anchor_class + 'href="' + @first_url + '">' + $loop + '</a>' + @num_tag_close
+            if $n is '' and @_first_url isnt ''
+              $output+=@_num_tag_open + '<a ' + @_anchor_class + 'href="' + @_first_url + '">' + $loop + '</a>' + @_num_tag_close
 
             else
-              $n = if ($n is '') then '' else @prefix + $n + @suffix
+              $n = if ($n is '') then '' else @_prefix + $n + @_suffix
 
-              $output+=@num_tag_open + '<a ' + @anchor_class + 'href="' + @base_url + $n + '">' + $loop + '</a>' + @num_tag_close
+              $output+=@_num_tag_open + '<a ' + @_anchor_class + 'href="' + @_base_url + $n + '">' + $loop + '</a>' + @_num_tag_close
             
 
     #  Render the "next" link
-    if @next_link isnt false and @cur_page < $num_pages
-      $output+=@next_tag_open + '<a ' + @anchor_class + 'href="' + @base_url + @prefix + (@cur_page * @per_page) + @suffix + '">' + @next_link + '</a>' + @next_tag_close
+    if @_next_link isnt false and @_cur_page < $num_pages
+      $output+=@_next_tag_open + '<a ' + @_anchor_class + 'href="' + @_base_url + @_prefix + (@_cur_page * @_per_page) + @_suffix + '">' + @_next_link + '</a>' + @_next_tag_close
       
     
     #  Render the "Last" link
-    if @last_link isnt false and (@cur_page + @num_links) < $num_pages
-      $i = (($num_pages * @per_page) - @per_page)
-      $output+=@last_tag_open + '<a ' + @anchor_class + 'href="' + @base_url + @prefix + $i + @suffix + '">' + @last_link + '</a>' + @last_tag_close
+    if @_last_link isnt false and (@_cur_page + @_num_links) < $num_pages
+      $i = (($num_pages * @_per_page) - @_per_page)
+      $output+=@_last_tag_open + '<a ' + @_anchor_class + 'href="' + @_base_url + @_prefix + $i + @_suffix + '">' + @_last_link + '</a>' + @_last_tag_close
       
     
     #  Kill double slashes.  Note: Sometimes we can end up with a double slash
@@ -240,7 +240,7 @@ class global.Exspresso_Pagination
     $output = preg_replace("#([^:])//+#", "$1/", $output)
     
     #  Add the wrapper HTML if exists
-    $output = @full_tag_open + $output + @full_tag_close
+    $output = @_full_tag_open + $output + @_full_tag_close
     
     return $output
     

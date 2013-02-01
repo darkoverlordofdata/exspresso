@@ -35,9 +35,9 @@
 #
 module.exports = class global.Exspresso_Input
 
-  Exspresso: null
-  req: null
-  server_array: null
+  Exspresso       : null
+  req             : null
+  _server_array   : null
 
   constructor: ($Exspresso) ->
 
@@ -46,7 +46,7 @@ module.exports = class global.Exspresso_Input
     $req = @req = $Exspresso.req
     os = require('os')
 
-    @server_array =
+    @_server_array =
       argv                  : $req.query
       argc                  : count($req.query)
       SERVER_ADDR           : $req.ip
@@ -70,9 +70,6 @@ module.exports = class global.Exspresso_Input
       REQUEST_URI           : $req.url
       PATH_INFO             : $req.path
       ORIG_PATH_INFO        : $req.path
-
-
-
 
   #  --------------------------------------------------------------------
 
@@ -103,10 +100,7 @@ module.exports = class global.Exspresso_Input
       if $segment is '' or typeof $segment isnt 'number' or $segment > 255 or $segment.length > 3
         return false
 
-
-
     return true
-
 
   #  --------------------------------------------------------------------
 
@@ -214,14 +208,11 @@ module.exports = class global.Exspresso_Input
     if $path is '/' and config_item('cookie_path') isnt '/'
       $path = config_item('cookie_path')
 
-
     $res.cookie $prefix+$name, $value,
-      expires: $expire
-      domain: $domain
-      path:   $path
-      secure: $secure
-
-
+      expires : $expire
+      domain  : $domain
+      path    : $path
+      secure  : $secure
 
   #  --------------------------------------------------------------------
 
@@ -235,14 +226,12 @@ module.exports = class global.Exspresso_Input
   #
   server : ($index = '', $xss_clean = false) ->
     if $index is ''
-      @server_array
+      @_server_array
     else
-      if @server_array[$index]?
-        @server_array[$index]
+      if @_server_array[$index]?
+        @_server_array[$index]
       else
         ''
-
-
   #  --------------------------------------------------------------------
 
   #
@@ -252,7 +241,6 @@ module.exports = class global.Exspresso_Input
   # @return	string
   #
   ip_address :  -> @req.ip
-
 
   #  --------------------------------------------------------------------
 

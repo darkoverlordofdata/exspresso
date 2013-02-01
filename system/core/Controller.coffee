@@ -31,18 +31,24 @@
 
 class global.Exspresso_Controller
 
-  _module     : ''        # module name
-  _class      : ''        # class name
-  _method     : ''        # method name
-  _queue      : null      # async queue
-  BM          : null      # Benchmark object
-  req         : null      # http Request object
-  res         : null      # http Response object
-  next        : null      # http next function
+  _module       : ''        # module name
+  _class        : ''        # class name
+  _method       : ''        # method name
+  _queue        : null      # async queue
 
-  fetch_module: -> @_module
-  fetch_class : -> @_class
-  fetch_method: -> @_method
+  BM            : null      # Benchmark object
+  req           : null      # http Request object
+  res           : null      # http Response object
+  next          : null      # http next function
+
+  @get $_GET    : -> @input.get()
+  @get $_POST   : -> @input.post()
+  @get $_SERVER : -> @input.server()
+  @get $_COOKIE : -> @input.cookie()
+
+  fetch_module  : -> @_module
+  fetch_class   : -> @_class
+  fetch_method  : -> @_method
 
   # --------------------------------------------------------------------
 
@@ -94,17 +100,12 @@ class global.Exspresso_Controller
     @uri    = load_new('URI', 'core', @)
     @output = load_new('Output', 'core', @)
     @input  = load_new('Input', 'core', @)
-    Object.defineProperties @,
-      $_GET     : get: -> return @input.get()
-      $_POST    : get: -> return @input.post()
-      $_SERVER  : get: -> return @input.server()
-      $_COOKIE  : get: -> return @input.cookie()
 
     # From here forward, custom controllers will use an
     # @load.method to load classes:
 
     @load = load_new('Loader', 'core', @)
-    @load.initialize()
+    @load.initialize()  # do the autoloads
 
 
   # --------------------------------------------------------------------
@@ -118,11 +119,11 @@ class global.Exspresso_Controller
   # @param	function
   # @return	void
   #
-  render: ($view, $data = {}, $callback) =>
+  render: ($view, $data = {}, $next) =>
     $data.Exspresso = @
     @res.render $view, $data, ($err, $html) =>
 
-      if $callback? then $callback $err, $html
+      if $next? then $next $err, $html
       else
         if $err then show_error $err
         else

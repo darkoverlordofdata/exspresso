@@ -87,7 +87,7 @@ class global.Exspresso_DB_mysql_utility extends Exspresso_DB_utility
   # @param	array	Preferences
   # @return	mixed
   #
-  _backup: ($params = {}, $callback) ->
+  _backup: ($params = {}, $next) ->
     if count($params) is 0
       return false
 
@@ -113,7 +113,7 @@ class global.Exspresso_DB_mysql_utility extends Exspresso_DB_utility
     @db.queries $sql_list, ($err, $results) =>
 
       #  No result means the table name was invalid
-      if $err then $callback $err
+      if $err then $next $err
 
       for $query, $index in $results
         $table = $tables[Math.floor($index/2)]
@@ -193,7 +193,7 @@ class global.Exspresso_DB_mysql_utility extends Exspresso_DB_utility
 
           $output+=$newline + $newline
 
-      $callback null, $output
+      $next null, $output
     
 module.exports = Exspresso_DB_mysql_utility
 

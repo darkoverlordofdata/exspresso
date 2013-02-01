@@ -21,17 +21,17 @@ class Migration_Blog_create_blog_table extends Exspresso_Migration
   description: 'Create the blog table'
   table: 'blog'
 
-  up: ($callback) ->
+  up: ($next) ->
 
     @dbforge.add_field @data
 
     @dbforge.add_key 'id', true
 
-    @dbforge.create_table @table, $callback
+    @dbforge.create_table @table, $next
 
-  down: ($callback) ->
+  down: ($next) ->
 
-    @dbforge.drop_table @table, $callback
+    @dbforge.drop_table @table, $next
 
 
   data:

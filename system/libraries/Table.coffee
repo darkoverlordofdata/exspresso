@@ -43,19 +43,19 @@
 #
 class global.Exspresso_Table
   
-  rows: null
-  heading: null
-  auto_heading: true
-  caption: null
-  template: null
-  newline: "\n"
-  empty_cells: ""
-  function: false
+  _rows             : null
+  _heading          : null
+  _auto_heading     : true
+  _caption          : null
+  _template         : null
+  _newline          : "\n"
+  _empty_cells      : ""
+  _function         : false
   
   constructor: () ->
     log_message('debug', "Table Class Initialized")
-    @rows = []
-    @heading = {}
+    @_rows = []
+    @_heading = {}
   
   #  --------------------------------------------------------------------
   
@@ -71,7 +71,7 @@ class global.Exspresso_Table
       return false
       
     
-    @template = $template
+    @_template = $template
     
   
   #  --------------------------------------------------------------------
@@ -87,7 +87,7 @@ class global.Exspresso_Table
   #
   set_heading :  ->
     $args = func_get_args()
-    @heading = @_prep_args($args)
+    @_heading = @_prep_args($args)
     
   
   #  --------------------------------------------------------------------
@@ -110,7 +110,7 @@ class global.Exspresso_Table
     
     #  Turn off the auto-heading feature since it's doubtful we
     #  will want headings from a one-dimensional array
-    @auto_heading = false
+    @_auto_heading = false
     
     if $col_limit is 0
       return $array
@@ -143,7 +143,7 @@ class global.Exspresso_Table
   # @return	void
   #
   set_empty : ($value) ->
-    @empty_cells = $value
+    @_empty_cells = $value
     
   
   #  --------------------------------------------------------------------
@@ -159,7 +159,7 @@ class global.Exspresso_Table
   #
   add_row :  ->
     $args = func_get_args()
-    @rows.push @_prep_args($args)
+    @_rows.push @_prep_args($args)
     
   
   #  --------------------------------------------------------------------
@@ -206,7 +206,7 @@ class global.Exspresso_Table
   # @return	void
   #
   set_caption : ($caption) ->
-    @caption = $caption
+    @_caption = $caption
     
   
   #  --------------------------------------------------------------------
@@ -226,13 +226,13 @@ class global.Exspresso_Table
         @_set_from_object($table_data)
         
       else if is_array($table_data)
-        $set_heading = if (count(@heading) is 0 and @auto_heading is false) then false else true
+        $set_heading = if (count(@_heading) is 0 and @_auto_heading is false) then false else true
         @_set_from_array($table_data, $set_heading)
         
       
     
     #  Is there anything to display?  No?  Smite them!
-    if count(@heading) is 0 and count(@rows) is 0
+    if count(@_heading) is 0 and count(@_rows) is 0
       return 'Undefined table data'
       
     
@@ -240,29 +240,29 @@ class global.Exspresso_Table
     @_compile_template()
     
     #  set a custom cell manipulation function to a locally scoped variable so its callable
-    $function = @function
+    $function = @_function
 
     #  Build the table!
     
-    $out = @template['table_open']
-    $out+=@newline
+    $out = @_template['table_open']
+    $out+=@_newline
     
     #  Add any caption here
-    if @caption
-      $out+=@newline
-      $out+='<caption>' + @caption + '</caption>'
-      $out+=@newline
+    if @_caption
+      $out+=@_newline
+      $out+='<caption>' + @_caption + '</caption>'
+      $out+=@_newline
       
     
     #  Is there a table heading to display?
-    if count(@heading) > 0
-      $out+=@template['thead_open']
-      $out+=@newline
-      $out+=@template['heading_row_start']
-      $out+=@newline
+    if count(@_heading) > 0
+      $out+=@_template['thead_open']
+      $out+=@_newline
+      $out+=@_template['heading_row_start']
+      $out+=@_newline
       
-      for $heading in @heading
-        $temp = @template['heading_cell_start']
+      for $heading in @_heading
+        $temp = @_template['heading_cell_start']
         
         for $key, $val of $heading
           if $key isnt 'data'
@@ -272,22 +272,22 @@ class global.Exspresso_Table
         
         $out+=$temp
         $out+= if $heading['data']?  then $heading['data'] else ''
-        $out+=@template['heading_cell_end']
+        $out+=@_template['heading_cell_end']
         
       
-      $out+=@template['heading_row_end']
-      $out+=@newline
-      $out+=@template['thead_close']
-      $out+=@newline
+      $out+=@_template['heading_row_end']
+      $out+=@_newline
+      $out+=@_template['thead_close']
+      $out+=@_newline
       
     
     #  Build the table rows
-    if count(@rows) > 0
-      $out+=@template['tbody_open']
-      $out+=@newline
+    if count(@_rows) > 0
+      $out+=@_template['tbody_open']
+      $out+=@_newline
       
       $i = 1
-      for $row in @rows
+      for $row in @_rows
         if not is_array($row)
           break
 
@@ -295,10 +295,10 @@ class global.Exspresso_Table
         #$name = if (fmod($i++, 2)) then '' else 'alt_'
         $name = if $i++ % 2 then '' else 'alt_'
         
-        $out+=@template['row_' + $name + 'start']
-        $out+=@newline
+        $out+=@_template['row_' + $name + 'start']
+        $out+=@_newline
         for $k, $cell of $row
-          $temp = @template['cell_' + $name + 'start']
+          $temp = @_template['cell_' + $name + 'start']
           
           for $key, $val of $cell
             if $key isnt 'data'
@@ -308,7 +308,7 @@ class global.Exspresso_Table
           $out+=$temp
           
           if $cell is "" or $cell is null
-            $out+=@empty_cells
+            $out+=@_empty_cells
             
           else
             if $function isnt false and typeof $function is 'function'
@@ -320,18 +320,18 @@ class global.Exspresso_Table
               
             
           
-          $out+=@template['cell_' + $name + 'end']
+          $out+=@_template['cell_' + $name + 'end']
           
         
-        $out+=@template['row_' + $name + 'end']
-        $out+=@newline
+        $out+=@_template['row_' + $name + 'end']
+        $out+=@_newline
         
       
-      $out+=@template['tbody_close']
-      $out+=@newline
+      $out+=@_template['tbody_close']
+      $out+=@_newline
       
     
-    $out+=@template['table_close']
+    $out+=@_template['table_close']
     
     #  Clear table class properties before generating the table
     @clear()
@@ -348,9 +348,9 @@ class global.Exspresso_Table
   # @return	void
   #
   clear :  ->
-    @rows = []
-    @heading = {}
-    @auto_heading = true
+    @_rows = []
+    @_heading = {}
+    @_auto_heading = true
     
   
   #  --------------------------------------------------------------------
@@ -367,19 +367,19 @@ class global.Exspresso_Table
       return false
       
     #  First generate the headings from the table column names
-    if count(@heading) is 0
+    if count(@_heading) is 0
       if not method_exists($query, 'list_fields')
         return false
         
       
-      @heading = @_prep_args($query.list_fields())
+      @_heading = @_prep_args($query.list_fields())
       
     
     #  Next blast through the result array and build out the rows
 
     if $query.num_rows > 0
       for $row in $query.result_array()
-        @rows.push @_prep_args($row)
+        @_rows.push @_prep_args($row)
 
   #  --------------------------------------------------------------------
   
@@ -398,11 +398,11 @@ class global.Exspresso_Table
     $i = 0
     for $row in $data
       #  If a heading hasn't already been set we'll use the first row of the array as the heading
-      if $i is 0 and count($data) > 1 and count(@heading) is 0 and $set_heading is true
-        @heading = @_prep_args($row)
+      if $i is 0 and count($data) > 1 and count(@_heading) is 0 and $set_heading is true
+        @_heading = @_prep_args($row)
         
       else
-        @rows.push @_prep_args($row)
+        @_rows.push @_prep_args($row)
 
       $i++
       
@@ -417,15 +417,15 @@ class global.Exspresso_Table
   # @return	void
   #
   _compile_template :  ->
-    if @template is null
-      @template = @_default_template()
+    if @_template is null
+      @_template = @_default_template()
       return 
       
     
     @temp = @_default_template()
     for $val in ['table_open', 'thead_open', 'thead_close', 'heading_row_start', 'heading_row_end', 'heading_cell_start', 'heading_cell_end', 'tbody_open', 'tbody_close', 'row_start', 'row_end', 'cell_start', 'cell_end', 'row_alt_start', 'row_alt_end', 'cell_alt_start', 'cell_alt_end', 'table_close']
-      if not @template[$val]? 
-        @template[$val] = @temp[$val]
+      if not @_template[$val]? 
+        @_template[$val] = @temp[$val]
         
       
     
