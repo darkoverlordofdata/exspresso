@@ -190,11 +190,8 @@ class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
           
         
         for $field in $key
-          $sql+="CREATE INDEX " + $table + "_" + str_replace(['"', "'"], '', $field) + "_index ON $table ($field); "
-          
-        
-      
-    
+          $sql+="CREATE INDEX " + $table + "_" + $field.replace(/[\"\']/g, '') + "_index ON #{$table} (#{$field}); "
+
     return $sql
     
   
