@@ -173,63 +173,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
     @app.use express.methodOverride()
     return
 
-  #  --------------------------------------------------------------------
 
-  #
-  # Sessions registration
-  #
-  #   called by the libraries/Session/Session class constructor
-  #
-  # @access	public
-  # @param	object Exspresso_Session
-  # @return	void
-  #
-  session: ($session) ->
-
-    @app.use express.cookieParser($session.encryption_key)
-    #  Are we using a database?  If so, load it
-    if $session.sess_use_database isnt false and $session.sess_table_name isnt ''
-
-      if $session.sess_use_database is true
-        $sess_driver = 'sql'
-      else
-        $sess_driver = parse_url($session.sess_use_database).scheme
-
-      $found = false
-      for $path in [BASEPATH, APPPATH]
-
-        if file_exists($path+'libraries/Session/drivers/Session_'+$sess_driver+EXT)
-
-          $found = true
-
-          $driver = require($path+'libraries/Session/drivers/Session_'+$sess_driver+EXT)
-          $store = new $driver($session)
-          $store.setup()
-
-          @app.use express.session
-            secret    : $session.encryption_key
-            store     : $store
-            cookie:
-              domain    : $session.cookie_domain
-              path      : $session.cookie_path
-              secure    : $session.cookie_secure
-              maxAge    : $session.sess_expiration
-
-      log_message('error', "Driver not found: Session_%s", $sess_driver) if not $found
-
-    else
-
-      @app.use express.session
-        secret    : $session.encryption_key
-        cookie:
-          domain    : $session.cookie_domain
-          path      : $session.cookie_path
-          secure    : $session.cookie_secure
-          maxAge    : $session.sess_expiration
-
-    @app.use express.csrf() if @_csrf
-
-    return
 
   # --------------------------------------------------------------------
 

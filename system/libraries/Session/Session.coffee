@@ -39,6 +39,8 @@ class global.Exspresso_Session
   {format}    = require('util')
   unserialize = JSON.parse
   serialize   = JSON.stringify
+  urldecode   = decodeURIComponent
+  urlencode   = encodeURIComponent
 
   Exspresso               : null
   req                     : null
@@ -52,8 +54,8 @@ class global.Exspresso_Session
   sess_expire_on_close    : false
   sess_match_ip           : false
   sess_match_useragent    : true
-  sess_cookie_name        : 'sessions'
-  cookie_prefix           : ''
+  sess_cookie_name        : 'sid'
+  cookie_prefix           : 'connect.'
   cookie_path             : ''
   cookie_domain           : ''
   cookie_secure           : false
@@ -104,7 +106,14 @@ class global.Exspresso_Session
       $req = @req = $Exspresso.req
       $res = @res = $Exspresso.res
 
-      $req.session.session_id     = $req.sessionID
+
+      $m = preg_match("/#{@sess_cookie_name}=([^ ,;]*)/", $req.headers.cookie)
+      if $m?
+        $m = $m[1].split('.')[0]
+        $m = urldecode($m).split(':')[1]
+
+        log_message 'debug', 'sid = %s', $m
+
       $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
       $req.session.user_agent     = $req.headers['user-agent']
       $req.session.last_activity  = (new Date()).getTime()
@@ -119,313 +128,21 @@ class global.Exspresso_Session
         $res.flashdata = @flashdata
 
 
-      ###
-      $Exspresso.queue ($next) =>
-        #  Run the Session routine. If a session doesn't exist we'll
-        #  create a new one.  If it does, we'll update it.
-        @sess_read ($err, $exists) =>
-          return $next($err) if log_message('error', 'Session::ctor %s', $err) if $err
-          if not $exists
-            @sess_create ($err) =>
-              return $next($err) if log_message('error', 'Session::ctor %s', $err) if $err
-              $next()
-          else
-            @sess_update ($err) =>
-              return $next($err) if log_message('error', 'Session::ctor %s', $err) if $err
-              $next()
+      @_flashdata_sweep()
 
-      ###
+      #  Mark all new flashdata as old (data will be deleted before next request)
+      @_flashdata_mark()
 
-      $Exspresso.queue ($next) =>
-        #  Delete 'old' flashdata (from last request)
-        @_flashdata_sweep()
+      #  Delete expired sessions if necessary
+      #@_sess_gc()
 
-        #  Mark all new flashdata as old (data will be deleted before next request)
-        @_flashdata_mark()
-
-        #  Delete expired sessions if necessary
-        #@_sess_gc()
-
-        log_message('debug', "Session routines successfully run")
-        $next()
+      log_message('debug', "Session routines successfully run")
 
     else
 
       # then we're booting.
       # Initialize the server:
       Exspresso.server.session @
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Fetch the current session data if it exists
-  #
-  # @access	public
-  # @return	bool
-  #
-  sess_read: ($next) ->
-    #  Fetch the cookie
-    $session = @Exspresso.input.cookie(@sess_cookie_name)
-
-    #  No cookie?  Goodbye cruel world!...
-    if $session is false
-      log_message('debug', 'A session cookie was not found.')
-      return $next(null, false)
-
-    #  Decrypt the cookie data
-    if @sess_encrypt_cookie is true
-      $session = @Exspresso.encrypt.decode($session)
-
-    else
-      #  encryption was not used, so we need to check the md5 hash
-      $hash = substr($session, strlen($session) - 32)#  get last 32 chars
-      $session = substr($session, 0, strlen($session) - 32)
-
-      #  Does the md5 hash match?  This is to prevent manipulation of session data in userspace
-      if $hash isnt md5($session + @encryption_key)
-        log_message('error', 'The session cookie data did not match what was expected. This could be a possible hacking attempt.')
-        @sess_destroy ($err) =>
-          return $next($err, false)
-
-    #  Unserialize the session array
-    $session = @_unserialize($session)
-
-    #  Is the session data we unserialized an array with the correct format?
-    if not is_array($session) or  not $session['session_id']?  or  not $session['ip_address']?  or  not $session['user_agent']?  or  not $session['last_activity']?
-      @sess_destroy ($err) =>
-        return $next($err, false)
-
-    #  Is the session current?
-    if ($session['last_activity'] + @sess_expiration) < @_now
-      @sess_destroy ($err) =>
-        return $next($err, false)
-
-    #  Does the IP Match?
-    if @sess_match_ip is true and $session['ip_address'] isnt @Exspresso.input.ip_address()
-      @sess_destroy ($err) =>
-        return $next($err, false)
-
-    #  Does the User Agent Match?
-    if @sess_match_useragent is true and trim($session['user_agent']) isnt trim(substr(@Exspresso.input.user_agent(), 0, 120))
-      @sess_destroy ($err) =>
-        return $next($err, false)
-
-    #  Is there a corresponding session in the DB?
-    if @sess_use_database is true
-      Exspresso.db.where('session_id', $session['session_id'])
-
-      if @sess_match_ip is true
-        Exspresso.db.where('ip_address', $session['ip_address'])
-
-      if @sess_match_useragent is true
-        Exspresso.db.where('user_agent', $session['user_agent'])
-
-      Exspresso.db.get @sess_table_name, ($err, $query) =>
-
-        #  No result?  Kill it!
-        if $query.num_rows() is 0
-          @sess_destroy ($err) =>
-            return $next($err, false)
-
-        #  Is there custom data?  If so, add it to the main session array
-        $row = $query.row()
-        if $row.user_data?  and $row.user_data isnt ''
-          $custom_data = @_unserialize($row.user_data)
-
-          if is_array($custom_data)
-            for $key, $val of $custom_data
-              $session[$key] = $val
-        #  Session is valid!
-        @_userdata = $session
-        return $next(null, true)
-
-    #  Session is valid!
-    @_userdata = $session
-    $session = null
-
-    return $next(null, true)
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Write the session data
-  #
-  # @access	public
-  # @return	void
-  #
-  sess_write: ($next) ->
-    #  Are we saving custom data to the DB?  If not, all we do is update the cookie
-    if @sess_use_database is false
-      @_set_cookie()
-      return $next()
-
-
-    #  set the custom userdata, the session data we will set in a second
-    $custom_userdata = @_userdata
-    $cookie_userdata = {}
-
-    #  Before continuing, we need to determine if there is any custom data to deal with.
-    #  Let's determine this by removing the default indexes to see if there's anything left in the array
-    #  and set the session data while we're at it
-    for $val in ['session_id', 'ip_address', 'user_agent', 'last_activity']
-      delete $custom_userdata[$val]
-      $cookie_userdata[$val] = @_userdata[$val]
-
-
-    #  Did we find any custom data?  If not, we turn the empty array into a string
-    #  since there's no reason to serialize and store an empty array in the DB
-    if count($custom_userdata) is 0
-      $custom_userdata = ''
-
-    else
-      #  Serialize the custom data array so we can store it
-      $custom_userdata = @_serialize($custom_userdata)
-
-
-    #  Run the update query
-    Exspresso.db.where 'session_id', @_userdata['session_id']
-    $data =
-      last_activity   : @_userdata['last_activity']
-      user_data       : $custom_userdata
-
-    Exspresso.db.update @sess_table_name, $data, ($err) =>
-
-      return $next($err) if log_message('error', 'Session::sess_write %s', $err) if $err
-      @_set_cookie($cookie_userdata)
-      $next()
-
-    #  Write the cookie.  Notice that we manually pass the cookie data array to the
-    #  _set_cookie() function. Normally that function will store $this->userdata, but
-    #  in this case that array contains custom data, which we do not want in the cookie.
-    @_set_cookie($cookie_userdata)
-    $next()
-
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Create a new session
-  #
-  # @access	public
-  # @return	void
-  #
-  sess_create: ($next) ->
-    $sessid = ''
-    while strlen($sessid) < 32
-      $sessid+=mt_rand(0, mt_getrandmax())
-
-    #  To make the session ID even more secure we'll combine it with the user's IP
-    $sessid+=@Exspresso.input.ip_address()
-
-    @_userdata =
-      session_id      : md5(uniqid($sessid, true)),
-      ip_address      : @Exspresso.input.ip_address(),
-      user_agent      : substr(@Exspresso.input.user_agent(), 0, 120),
-      last_activity   : @_now,
-      user_data       : ''
-
-    #  Save the data to the DB if needed
-    if @sess_use_database is true
-      $sql = Exspresso.db.insert_string(@sess_table_name, @_userdata)
-      Exspresso.db.query $sql, ($err) =>
-
-        return if log_message('error', 'Session::sess_create %s', $err) if $err
-        @_set_cookie()
-        $next()
-
-
-    #  Write the cookie
-    @_set_cookie()
-    $next()
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Update an existing session
-  #
-  # @access	public
-  # @return	void
-  #
-  sess_update: ($next) ->
-    #  We only update the session every five minutes by default
-    if (@_userdata['last_activity'] + @sess_time_to_update)>=@_now
-      return $next()
-
-
-    #  Save the old session id so we know which record to
-    #  update in the database if we need it
-    $old_sessid = @_userdata['session_id']
-    $new_sessid = ''
-    while strlen($new_sessid) < 32
-      $new_sessid+=mt_rand(0, mt_getrandmax())
-
-
-    #  To make the session ID even more secure we'll combine it with the user's IP
-    $new_sessid+=@Exspresso.input.ip_address()
-
-    #  Turn it into a hash
-    $new_sessid = md5(uniqid($new_sessid, true))
-
-    #  Update the session data in the session data array
-    @_userdata['session_id'] = $new_sessid
-    @_userdata['last_activity'] = @_now
-
-    #  _set_cookie() will handle this for us if we aren't using database sessions
-    #  by pushing all userdata to the cookie.
-    $cookie_data = null
-
-    #  Update the session ID and last_activity field in the DB if needed
-    if @sess_use_database is true
-      #  set cookie explicitly to only have our session data
-      $cookie_data = {}
-      for $val in ['session_id', 'ip_address', 'user_agent', 'last_activity']
-        $cookie_data[$val] = @_userdata[$val]
-
-
-      $sql = Exspresso.db.update_string(@sess_table_name, last_activity:@_now, session_id:$new_sessid, session_id:$old_sessid)
-      Exspresso.db.query $sql, ($err) =>
-        return $next($err) if log_message('error', 'Session::sess_update %s', $err) if $err
-        @_set_cookie($cookie_data)
-        return $next()
-
-    #  Write the cookie
-    @_set_cookie($cookie_data)
-    return $next()
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Destroy the current session
-  #
-  # @access	public
-  # @return	void
-  #
-  sess_destroy: ($next) ->
-    #  Kill the session DB row
-    if @sess_use_database is true and @_userdata['session_id']?
-      Exspresso.db.where 'session_id', @_userdata['session_id']
-      Exspresso.db.delete @sess_table_name, ($err) =>
-
-        return $next($err) log_message('error', 'Session::sess_destroy %s', $err) if $err
-        @_sess_destroy2($next)
-
-    else
-      @_sess_destroy2($next)
-
-  _sess_destroy2: ($next) ->
-    #  Kill the cookie
-    @_setcookie(
-      @sess_cookie_name,
-      addslashes(serialize({})),
-      (@_now - 31500000),
-      @cookie_path,
-      @cookie_domain,
-      0
-    )
-
-    #  Kill session data
-    @_userdata = {}
-    $next()
 
 
   # --------------------------------------------------------------------

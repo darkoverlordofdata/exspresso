@@ -99,9 +99,8 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   # @access	public
   # @return	void
   #
-  start: ($router, $autoload = true) ->
-
-    super $router, $autoload
+  start: ($router) ->
+    super $router, =>
 
     @_port = @_port || 3000
 
@@ -161,25 +160,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
       site_name:    @_site_name
       site_slogan:  @_site_slogan
 
-    return
-
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Output registration
-  #
-  #   called by the core/Output class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.output
-  # @return	void
-  #
-  output: ($output) ->
-
-    super $output
-    $config = @Exspresso.config.config
-
     #
     # Expose asset folders
     #
@@ -195,61 +175,9 @@ class global.Exspresso_Server_connect extends Exspresso_Server
     else
       @app.use connect.favicon()
 
-    return
-
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Input registration
-  #
-  #   called by the core/Input class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.input
-  # @return	void
-  #
-  input: ($input) ->
-
-    super $input
     @app.use connect.query()
     @app.use connect.bodyParser()
     @app.use connect.methodOverride()
-    return
-
-  #  --------------------------------------------------------------------
-
-  #
-  # URI registration
-  #
-  #   called by the core/URI class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.input
-  # @return	void
-  #
-  uri: ($uri) ->
-
-    super $uri
-    return
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Sessions registration
-  #
-  #   called by the libraries/Session/Session class constructor
-  #
-  # @access	public
-  # @param	object Exspresso.input
-  # @return	void
-  #
-  session: ($session) ->
-
-    @app.use connect.cookieParser($session.encryption_key)
-    @app.use connect.session(secret: $session.encryption_key)
-    @app.use connect.csrf() if @_csrf
-    super $session
     return
 
 

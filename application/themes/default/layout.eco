@@ -23,23 +23,24 @@
         </header>
         <div class="clearfix"></div>
         <%- @$menu %>
+
+        <div class="clearfix"></div>
+        <%- @$content %>
+
         <div class="clearfix"></div>
         <% err = @flashdata('error') %>
         <% if err isnt false : %>
         <div class='alert alert-error'>
-            <p><b>Error:</b><%= err %></p>
+            <p><b>Error:</b> <%= err %></p>
         </div>
         <% end %>
         <% info = @flashdata('info') %>
         <% if info isnt false : %>
         <div class='alert alert-info'>
-            <p><b>Info:</b><%= info %></p>
+            <p><b>Info:</b> <%= info %></p>
         </div>
         <% end %>
 
-        <div class="clearfix"></div>
-
-        <%- @$content %>
 
     </div>
     <div id="push"></div>

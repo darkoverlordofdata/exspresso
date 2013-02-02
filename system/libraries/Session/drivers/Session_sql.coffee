@@ -16,8 +16,30 @@
 #
 class Exspresso_Session_sql extends require('express').session.Store
 
-  _sess_table_name    : ''
-  _sess_expiration    : 0
+  DEFAULT_UID               = 1 # anonymus user id
+
+  fetch = ($obj, $key, $default='') ->
+    if $obj[$key]?
+      $val = $obj[$key]
+      delete $obj[$key]
+    else $val = $default
+    return $val
+
+  _sess_encrypt_cookie      : false
+  _sess_use_database        : false
+  _sess_table_name          : 'sessions'
+  _sess_expiration          : 7200
+  _sess_expire_on_close     : false
+  _sess_match_ip            : false
+  _sess_match_useragent     : true
+  _sess_cookie_name         : 'sid'
+  _cookie_prefix            : 'connect.'
+  _cookie_path              : ''
+  _cookie_domain            : ''
+  _cookie_secure            : false
+  _sess_time_to_update      : 300
+  _encryption_key           : ''
+  _time_reference           : 'local'
 
 
   ## --------------------------------------------------------------------
@@ -25,14 +47,16 @@ class Exspresso_Session_sql extends require('express').session.Store
   #
   # Constructor
   #
-  #   If needed, create the table and cleanup jobs
+  #   copy the config values
   #
   # @return 	nothing
   #
   constructor: ($config) ->
 
-    @_sess_table_name = $config.sess_table_name
-    @_sess_expiration = $config.sess_expiration
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
+
     return
 
 
@@ -59,7 +83,15 @@ class Exspresso_Session_sql extends require('express').session.Store
 
         return $next($err) if log_message('error', 'Session::get %s %s', $sid, $err) if $err
 
-        $next null, if $result.num_rows is 0 then null else JSON.parse($result.row().session)
+        return $next null, null if $result.num_rows is 0
+
+        $data = $result.row()
+        $session = JSON.parse($data.user_data)
+        $session.uid = $data.uid || DEFAULT_UID
+        $session.ip_address = $data.ip_address
+        $session.user_agent = $data.user_agent
+        $session.last_activity = $data.last_activity
+        $next null, $session
 
 
   ## --------------------------------------------------------------------
@@ -85,21 +117,30 @@ class Exspresso_Session_sql extends require('express').session.Store
 
         return $next($err) if log_message('error', 'Session::set %s %s', $sid, $err) if $err
 
+        $user_data = array_merge({}, $session)
+
         if $result.num_rows is 0
           $data =
-            sid     : $sid
-            session : JSON.stringify($session)
-            expires : new Date(Date.now()+@_sess_expiration).getTime()
+            sid             : $sid
+            uid             : fetch($user_data, 'uid', DEFAULT_UID)
+            ip_address      : fetch($user_data, 'ip_address')
+            user_agent      : substr(fetch($user_data, 'user_agent'), 0, 120)
+            last_activity   : fetch($user_data, 'last_activity')
+            user_data       : JSON.stringify($user_data)
 
           Exspresso.db.insert @_sess_table_name, $data, ($err) =>
             return $next($err) if log_message('error', 'Session::set insert %s', $err) if $err
             $next()
 
         else
+          delete $user_data['uid']
+          delete $user_data['ip_address']
+          delete $user_data['user_agent']
           $data =
-            session : JSON.stringify($session)
-            expires : new Date(Date.now()+@_sess_expiration).getTime()
+            last_activity   : fetch($user_data, 'last_activity')
+            user_data       : JSON.stringify($user_data)
 
+          Exspresso.db.where 'sid', $sid
           Exspresso.db.update @_sess_table_name, $data, ($err) =>
             return $next($err) if log_message('error', 'Session::set update %s', $err) if $err
             $next()
@@ -176,6 +217,7 @@ class Migrate
       Exspresso.load.dbforge()
       Exspresso.dbforge.add_field @fields
       Exspresso.dbforge.add_key @pkey, true
+      Exspresso.dbforge.add_key $key for $key in @key
       Exspresso.dbforge.create_table @name, ($err) =>
 
         if $err then return $next $err
@@ -193,14 +235,19 @@ class Migrate_session extends Migrate
 
   name: 'sessions'
   pkey: 'sid'
+  key: ['last_activity']
   fields:
     sid:
       type: 'VARCHAR', constraint: 24, default: '0', null: false
     uid:
+      type: 'INT', constraint: 10, unsigned: true, default: 1, null: false
+    ip_address:
+      type: 'VARCHAR', constraint: 45, default: '0', null: false
+    user_agent:
+      type: 'VARCHAR', constraint: 120, null: false
+    last_activity:
       type: 'INT', constraint: 10, unsigned: true, default: 0, null: false
-    expires:
-      type: 'INT', constraint: 11, unsigned: true, default: 0, null: false
-    session:
+    user_data:
       type: 'TEXT', null: true
   data: []
 
@@ -215,6 +262,7 @@ class Migrate_roles extends Migrate
 
   name: 'roles'
   pkey: 'rid'
+  key:  []
   fields:
     rid:
       type:'INT', constraint:10, unsigned:true, null:false, auto_increment:true
@@ -238,6 +286,7 @@ class Migrate_users extends Migrate
 
   name: 'users'
   pkey: 'uid'
+  key:  []
   fields:
     uid:
      type:'INT', constraint:10, unsigned:true, null:false, auto_increment:true
@@ -270,6 +319,7 @@ class Migrate_user_roles extends Migrate
 
   name: 'user_roles'
   pkey: 'id'
+  key:  []
   fields:
     id:
       type:'INT', constraint:10, 'unsigned':true, null:false, auto_increment:true

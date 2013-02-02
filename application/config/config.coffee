@@ -246,7 +246,7 @@ exports['encryption_key'] = process.env.CLIENT_SECRET ? 'ZAHvYIu8u1iRS6Hox7jADpn
 # 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 #
 
-exports['sess_cookie_name']		= 'ex_session'
+exports['sess_cookie_name']		= 'sid'
 exports['sess_expiration']		= 7200
 exports['sess_expire_on_close']	= false
 exports['sess_encrypt_cookie']	= false
@@ -268,7 +268,7 @@ exports['sess_time_to_update']	= 300
 # 'cookie_secure' =  Cookies will only be set if a secure HTTPS connection exists.
 #
 #
-exports['cookie_prefix']	= ""
+exports['cookie_prefix']	= "connect."
 exports['cookie_domain']	= ""
 exports['cookie_path']		= "/"
 exports['cookie_secure']	= false
