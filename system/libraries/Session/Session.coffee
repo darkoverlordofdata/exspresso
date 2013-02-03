@@ -107,12 +107,18 @@ class global.Exspresso_Session
       $res = @res = $Exspresso.res
 
 
-      $m = preg_match("/#{@sess_cookie_name}=([^ ,;]*)/", $req.headers.cookie)
-      if $m?
-        $m = $m[1].split('.')[0]
-        $m = urldecode($m).split(':')[1]
+      if not $req.headers.cookie?
+        log_message 'debug', 'no cookie'
 
-        log_message 'debug', 'sid = %s', $m
+      else
+        $m = preg_match("/#{@sess_cookie_name}=([^ ,;]*)/", $req.headers.cookie)
+        if not $m?
+          log_message 'debug', 'not $m'
+        else
+          $m = $m[1].split('.')[0]
+          $m = urldecode($m).split(':')[1]
+
+          log_message 'debug', 'sid = %s', $m
 
       $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
       $req.session.user_agent     = $req.headers['user-agent']
@@ -331,6 +337,7 @@ class global.Exspresso_Session
     return $time
 
 
+  ###
   #  --------------------------------------------------------------------
 
   #
@@ -436,7 +443,7 @@ class global.Exspresso_Session
 
     @res.set 'Set-Cookie', cookie.serialize($name, $value, $options)
 
-
+  ###
 #  END Session Class
 module.exports = Exspresso_Session
 #  End of file Session.php 

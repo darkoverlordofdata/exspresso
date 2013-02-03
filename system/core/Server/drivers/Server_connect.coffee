@@ -195,7 +195,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
     #  --------------------------------------------------------------------
 
     #
-    # Patch the connect server objects to render templates
+    # Patch the connect server objects
     #
     # @access	private
     # @return	void
@@ -218,6 +218,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
       #  --------------------------------------------------------------------
 
+      ###
       $res.cookie = ($name, $val, $options) ->
 
         $options = array_merge({}, $options)
@@ -235,7 +236,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
           $res.setHeader  'Set-Cookie': ''+cookie.serialize($name, ''+$val, $options)
         catch $err
           $next($err)
-
+      ###
 
       #  --------------------------------------------------------------------
 
