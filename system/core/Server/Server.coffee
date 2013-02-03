@@ -26,6 +26,7 @@ dispatch        = require('dispatch')   # URL dispatcher for Connect
 
 class global.Exspresso_Server
 
+  urldecode   = decodeURIComponent
   #
   # config settings
   #
@@ -262,8 +263,70 @@ class global.Exspresso_Server
                     secure    : $session.cookie_secure
                     maxAge    : $session.sess_expiration
 
+
+    @app.use @session_middleware($session.cookie_prefix + $session.sess_cookie_name)
     @app.use $driver.csrf() if @_csrf
     return
+
+  # --------------------------------------------------------------------
+
+  #
+  # Session middleware
+  #
+  #   @returns function middlware callback
+  #
+  session_middleware: ($cookie_name) =>
+
+    log_message 'debug',"session middleware initialized [%s]", $cookie_name
+
+    #  --------------------------------------------------------------------
+
+    #
+    # Patch the session object
+    #
+    # @access	private
+    # @return	void
+    #
+    ($req, $res, $next) ->
+
+      # set reasonable session defaults
+      $req.session.uid            = $req.session.uid || 1
+      $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
+      $req.session.user_agent     = $req.headers['user-agent']
+      $req.session.last_activity  = (new Date()).getTime()
+      $req.session.userdata       = $req.session.userdata || {}
+
+      if $req.headers.cookie?
+        $m = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie)
+        if $m?
+          $m = $m[1].split('.')[0]
+          $req.session.session_id = urldecode($m).split(':')[1]
+
+      #  --------------------------------------------------------------------
+
+      #
+      #   Get user data
+      #
+      Exspresso.db.reconnect ($err) ->
+
+        return $next($err) if log_message('error', 'Server::session middleware %s', $err) if $err
+        Exspresso.db.where 'uid', $req.session.uid
+        Exspresso.db.get 'users', ($err, $result) ->
+
+          return $next($err) if log_message('error', 'Server::session middleware %s', $err) if $err
+          $user = $result.row()
+          delete $user.password
+          delete $user.salt
+
+          #  --------------------------------------------------------------------
+
+          #
+          # User
+          #
+          #   return logged in user data
+          #
+          $req.user = () -> $user
+          $next()
 
   # --------------------------------------------------------------------
 

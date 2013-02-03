@@ -98,33 +98,12 @@ class global.Exspresso_Session
     if @sess_expiration is 0
       @sess_expiration = (60 * 60 * 24 * 365 * 2)
 
-    #  Set the cookie name
-    @sess_cookie_name = @cookie_prefix + @sess_cookie_name
-
     if $Exspresso.req?
 
       $req = @req = $Exspresso.req
       $res = @res = $Exspresso.res
 
-
-      if not $req.headers.cookie?
-        log_message 'debug', 'no cookie'
-
-      else
-        $m = preg_match("/#{@sess_cookie_name}=([^ ,;]*)/", $req.headers.cookie)
-        if not $m?
-          log_message 'debug', 'not $m'
-        else
-          $m = $m[1].split('.')[0]
-          $m = urldecode($m).split(':')[1]
-
-          log_message 'debug', 'sid = %s', $m
-
-      $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
-      $req.session.user_agent     = $req.headers['user-agent']
-      $req.session.last_activity  = (new Date()).getTime()
-      $req.session.userdata       = $req.session.userdata || {}
-
+      # expose flashdata method in views
       if $res.locals?
         if express.version[0] is '3'
           $res.locals.flashdata = @flashdata
@@ -133,14 +112,11 @@ class global.Exspresso_Session
       else
         $res.flashdata = @flashdata
 
-
+      #  Delete 'old' flashdata (from last request)
       @_flashdata_sweep()
 
       #  Mark all new flashdata as old (data will be deleted before next request)
       @_flashdata_mark()
-
-      #  Delete expired sessions if necessary
-      #@_sess_gc()
 
       log_message('debug', "Session routines successfully run")
 
@@ -156,8 +132,7 @@ class global.Exspresso_Session
   #
   # Get logged in user
   #
-  user: () ->
-    @req.session.user ? false
+  user: () -> @req.user()
   # --------------------------------------------------------------------
 
   #
@@ -336,114 +311,6 @@ class global.Exspresso_Session
       $time = $time - $date.getTimezoneOffset()
     return $time
 
-
-  ###
-  #  --------------------------------------------------------------------
-
-  #
-  # Write the session cookie
-  #
-  # @access	public
-  # @return	void
-  #
-  _set_cookie : ($cookie_data = null) ->
-    if is_null($cookie_data)
-      $cookie_data = @_userdata
-
-    #  Serialize the userdata for the cookie
-    $cookie_data = @_serialize($cookie_data)
-
-    if @sess_encrypt_cookie is true
-      $cookie_data = @Exspresso.encrypt.encode($cookie_data)
-
-    else
-      #  if encryption is not used, we provide an md5 hash to prevent userside tampering
-      $cookie_data = $cookie_data + md5($cookie_data + @encryption_key)
-
-    $expire = if (@sess_expire_on_close is true) then 0 else @sess_expiration + time()
-
-    #  Set the cookie
-    @_setcookie(
-      @sess_cookie_name,
-      $cookie_data,
-      $expire,
-      @cookie_path,
-      @cookie_domain,
-      @cookie_secure
-    )
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Serialize an array
-  #
-  # This function first converts any slashes found in the array to a temporary
-  # marker, so when it gets unserialized the slashes will be preserved
-  #
-  # @access	private
-  # @param	array
-  # @return	string
-  #
-  _serialize: ($data) ->
-    if is_array($data)
-      for $key, $val of $data
-        if is_string($val)
-          $data[$key] = str_replace('\\', '{{slash}}', $val)
-    else
-      if is_string($data)
-        $data = str_replace('\\', '{{slash}}', $data)
-
-    return serialize($data)
-
-  #  --------------------------------------------------------------------
-
-  #
-  # Unserialize
-  #
-  # This function unserializes a data string, then converts any
-  # temporary slash markers back to actual slashes
-  #
-  # @access	private
-  # @param	array
-  # @return	string
-  #
-  _unserialize: ($data) ->
-    $data = unserialize(strip_slashes($data))
-
-    if is_array($data)
-      for $key, $val of $data
-        if is_string($val)
-          $data[$key] = str_replace('{{slash}}', '\\', $val)
-
-      return $data
-
-    return if (is_string($data)) then str_replace('{{slash}}', '\\', $data) else $data
-
-  #  --------------------------------------------------------------------
-
-  #
-  # php setcookie
-  #
-  # @access	private
-  # @return	string
-  #
-  _setcookie: ($name, $value, $expire = 0, $path = '/', $domain, $secure = false, $httponly = false) ->
-
-    if $secure and not @req.secure
-      throw new Error('secure protocole required for signed cookies')
-    if $secure and not @req.secret
-      throw new Error('connect.cookieParser("secret") required for signed cookies')
-
-    $options =
-      path      : $path
-      expires   : $expire
-      domain    : $domain
-      secure    : $secure
-      httpOnly  : $httponly
-
-    @res.set 'Set-Cookie', cookie.serialize($name, $value, $options)
-
-  ###
 #  END Session Class
 module.exports = Exspresso_Session
 #  End of file Session.php 

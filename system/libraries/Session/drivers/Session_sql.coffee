@@ -201,6 +201,7 @@ class Exspresso_Session_sql extends require('express').session.Store
       $migrate = new Migrate_user_roles()
       $migrate.up $next
 
+
 ## --------------------------------------------------------------------
 
 #

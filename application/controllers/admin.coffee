@@ -29,6 +29,7 @@ class Admin extends AdminController
   #
   index: ->
 
+    log_message 'debug', 'User data: %j', @session.user()
     @template.view 'signin'
 
   ## --------------------------------------------------------------------
