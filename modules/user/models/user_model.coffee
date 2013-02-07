@@ -21,6 +21,7 @@ class global.User_model extends Exspresso_Model
 
   @UID_ANONYMOUS       = 1
   @UID_ADMIN           = 2
+  @UID_TEST            = 3
   @RID_ANONYMOUS       = 1
   @RID_ADMIN           = 2
   @RID_MEMBER          = 3
@@ -238,6 +239,7 @@ class Migrate_users extends Migrate
   data: [
     {uid: User_model.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
     {uid: User_model.UID_ADMIN, name: 'admin', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+    {uid: User_model.UID_TEST, name: 'shaggy', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
   ]
 
 ## --------------------------------------------------------------------
@@ -262,6 +264,7 @@ class Migrate_user_roles extends Migrate
     {uid: User_model.UID_ADMIN, rid: User_model.RID_ADMIN}
     {uid: User_model.UID_ADMIN, rid: User_model.RID_ANONYMOUS}
     {uid: User_model.UID_ADMIN, rid: User_model.RID_MEMBER}
+    {uid: User_model.UID_TEST, rid: User_model.RID_MEMBER}
   ]
 
 

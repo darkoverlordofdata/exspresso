@@ -30,7 +30,7 @@ class Admin extends AdminController
   index: ->
 
     if @user.is_logged_in
-      if @user.authorization_check('adminz')
+      if @user.authorization_check('admin')
         @template.view 'admin'
       else
         @template.view new Authorization_Error('No Admin Permissions')
