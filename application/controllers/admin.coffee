@@ -29,44 +29,19 @@ class Admin extends AdminController
   #
   index: ->
 
-    log_message 'debug', 'User data: %j', @session.user()
-    @template.view 'signin'
-
-  ## --------------------------------------------------------------------
-
-  #
-  # Customer Login
-  #
-  #   @access	public
-  #   @return	void
-  #
-  #
-  login: ->
-
-    if not @session.user()
-      @template.view 'admin/signin'
+    if @user.is_logged_in
+      if @user.authorization_check('adminz')
+        @template.view 'admin'
+      else
+        @template.view new Authorization_Error('No Admin Permissions')
     else
-      @db.from 'customer'
-      @db.where 'username', @input.cookie('username')
-      @db.get ($err, $customer) =>
+      @template.view 'signin'
 
-        if $err or $customer.num_rows is 0
-          @template.view "admin/signin"
-          return
-
-        $customer = $customer.row()
-        if $customer.password is @input.cookie('usercode')
-          @session.set_userdata 'usercode', $customer
-
-          @session.set_flashdata 'info', 'Hello '+$customer.name
-          return @redirect "/admin"
-        else
-          return @redirect "/admin/logout"
 
   ## --------------------------------------------------------------------
 
   #
-  # Authenticate Customer credentials
+  # Authenticate user credentials
   #
   #   @access	public
   #   @return	void
@@ -76,39 +51,23 @@ class Admin extends AdminController
 
     $username = @input.post("username")
     $password = @input.post("password")
-    $remember = @input.post("remember")
+    @user.authenticate $username, $password, ($err, $uid) =>
 
-    @db.from 'customer'
-    @db.where 'username', $username
-    @db.get ($err, $customer) =>
+      return @template.view($err) if $err
 
-      return @template.view $err if $err
-
-      if $customer.num_rows is 0
-        @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-        return @redirect "/admin"
-
-      $customer = $customer.row()
-      if $password is $customer.password
-
-        if $remember
-          @input.set_cookie 'username', $customer.username, new Date(Date.now()+900000)
-          @input.set_cookie 'usercode', $customer.password, new Date(Date.now()+900000)
-
-        delete $customer.password
-        @session.set_userdata 'customer', $customer
-
-        @session.set_flashdata  'info', 'Hello %s', $customer.name
-        return @redirect '/admin'
+      if $uid
+        @session.set_flashdata  'info', 'Hello %s', @user.name
+        @redirect '/admin'
       else
-        @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
-        return @redirect "/admin"
+        @session.set_flashdata 'error', 'Invalid credentialz. Please try again.'
+        @redirect "/admin"
+
 
 
   ## --------------------------------------------------------------------
 
   #
-  # Customer Logout
+  # User Logout
   #
   #   @access	public
   #   @return	void

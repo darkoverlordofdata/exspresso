@@ -45,6 +45,23 @@ class global.Exspresso_Error extends Error
     @stack    = '<ul>'+($err.stack || '').split('\n').slice(1).map((v) ->
       '<li>' + v + '</li>' ).join('')+'</ul>'
 
+
+#
+# Authorization Error Class
+#
+class global.Authorization_Error extends Error
+
+  constructor: ($msg, $status = 401) ->
+
+    @code     = $status
+    @desc     = set_status_header($status)
+    @name     = 'Authorization Check Failed'
+    @class    = 'info'
+    @message  = set_status_header($status)
+    @stack    = "\nAuthorization Check Failed\n#{$msg}"
+
+
+
 #
 # Exceptions Class
 #

@@ -17,43 +17,11 @@
 #
 class global.Auth_model extends Exspresso_Model
 
-  _db_exists    : false # do the auth tables exist?
-  _use_data     : false # use migration data?
-  _data         : null  # migration data
-
   #
   initialize: ($config = {}) ->
     log_message 'debug', 'Auth_model::initialize'
     console.log $config
-    @['_'+$k] = $v for $k, $v of $config
-
-  #
-  # check if the user table exists
-  #
-  check_db: ($next) =>
-
-    if not @Exspresso.db? then return $next Error('Auth_model: Db not loaded')
-    if @Exspresso.db is null then return $next Error('Auth_model: Db object is null')
-
-    @Exspresso.db.table_exists 'users', ($err, $exists) =>
-
-      if $err then return $next $err
-      @_db_exists = $exists
-      if $exists then return $next null
-      if @_data is null then return $next null
-      #
-      # load the migration data in place of a live db
-      #
-      try
-        for $key, $name of @_data
-          $class = require(APPPATH+'modules/user/migrations/'+$name+EXT)
-          @_data[$key] = (new $class()).data
-        @_use_data = true
-      catch $err
-        @_use_data = false
-      finally
-        $next null
-
+    @['_'+$key] = $val for $key, $val of $config
 
 
 
@@ -117,13 +85,6 @@ class global.Auth_model extends Exspresso_Model
   # @return bool
   #
   login: ($identity, $password, $remember = false, $next) ->
-
-    if not @_db_exists then return @login2($identity, $password, $remember, $next)
-
-  login2: ($identity, $password, $remember = false, $next) ->
-
-    if not @_use_data then return $next Error('Auth_model: Unable to login')
-    $next Error('Auth_model: Unable to login')
 
   #
   # users
@@ -199,4 +160,4 @@ class global.Auth_model extends Exspresso_Model
 module.exports = Auth_model
 
     # End of file auth_model.coffee
-# Location: .application/modules/auth/models/auth_model.coffee
+# Location: .modules/user/models/auth_model.coffee

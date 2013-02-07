@@ -28,15 +28,15 @@
 # @since      Version 1.0
 #
 
-express         = require('express')                    # Express 3.0 Framework
-cookie          = require('cookie')                     # cookie parsing and serialization
 #  ------------------------------------------------------------------------
 #
 # Session Class
 #
 class global.Exspresso_Session
 
-  {format}    = require('util')
+  express     = require('express')                    # Express 3.0 Framework
+  cookie      = require('cookie')                     # cookie parsing and serialization
+  format      = require('util').format
   unserialize = JSON.parse
   serialize   = JSON.stringify
   urldecode   = decodeURIComponent
@@ -126,14 +126,47 @@ class global.Exspresso_Session
       # Initialize the server:
       Exspresso.server.session @
 
-
   # --------------------------------------------------------------------
 
   #
-  # Get logged in user
+  # Parse the session properties
   #
-  user: () -> @req.user()
-  # --------------------------------------------------------------------
+  # @access	public
+  # @param object Exspresso_Session instance
+  # @returns function middleware callback
+  #
+  @parse = ($session) ->
+
+    $cookie_name = $session.cookie_prefix + $session.sess_cookie_name
+    #  --------------------------------------------------------------------
+
+    #
+    # Called prior to each controller constructor, ensures
+    # that the expected session objects are available
+    #
+    # @access	private
+    # @param object
+    # @param object
+    # @param function
+    # @return	void
+    #
+    ($req, $res, $next) ->
+
+      # parse the session id
+      if $req.headers.cookie?
+        $m = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie)
+        if $m?
+          $m = $m[1].split('.')[0]
+          $req.session.session_id = urldecode($m).split(':')[1]
+
+      # set reasonable session defaults
+      $req.session.uid            = $req.session.uid || User_model.UID_ANONYMOUS
+      $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
+      $req.session.user_agent     = $req.headers['user-agent']
+      $req.session.last_activity  = (new Date()).getTime()
+      $req.session.userdata       = $req.session.userdata || {}
+
+      $next()
 
   #
   # Add or change data in the "userdata" array
@@ -310,6 +343,7 @@ class global.Exspresso_Session
     if strtolower(@time_reference) is 'gmt'
       $time = $time - $date.getTimezoneOffset()
     return $time
+
 
 #  END Session Class
 module.exports = Exspresso_Session

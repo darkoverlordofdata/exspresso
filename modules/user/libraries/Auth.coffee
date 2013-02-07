@@ -20,22 +20,17 @@ class global.Auth
   constructor: ($config = {}, @Exspresso) ->
 
     @auth_model = @Exspresso.load.model('user/auth_model')
-    #@Exspresso.load.config('user/auth', true)
     @auth_model.initialize $config
     @Exspresso.queue ($next) => @auth_model.check_db $next
 
     
-  login: ($args...) ->
-    @auth_model.login.apply(@auth_model, $args...)
+  login: () ->
 
-  reset_password: ($args...) ->
-    @auth_model.reset_password.apply(@auth_model, $args...)
+  reset_password: () ->
 
-  activate: ($args...) ->
-    @auth_model.activate.apply(@auth_model, $args...)
+  activate: () ->
 
-  deactivate: ($args...) ->
-    @auth_model.deactivate.apply(@auth_model, $args...)
+  deactivate: () ->
 
   #
   # logout

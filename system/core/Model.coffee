@@ -66,6 +66,8 @@ class global.Exspresso_Model
     #    if typeof $var isnt 'function' and not Array.isArray($var)
     #      @[$name] = $var
 
+    @db = @Exspresso.db
+
 
 
 # END Exspresso_Model class

@@ -24,7 +24,7 @@ class global.AdminController extends PublicController
     super $args...
 
     @theme.more 'signin', 'sidenav'
-    #@load.library 'user/auth'
+    @load.library 'user/user'
 
   ## --------------------------------------------------------------------
 
