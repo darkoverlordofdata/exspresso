@@ -158,7 +158,7 @@ class global.User
   #
   check_password: ($password, $user) ->
 
-    bcrypt.compareSync($password, $user.password+$user.salt)
+    bcrypt.compareSync($password, String($user.password)+String($user.salt))
 
 
 
