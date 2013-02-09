@@ -28,8 +28,6 @@
 # @since      Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Exspresso Output Class
 #
@@ -48,7 +46,6 @@ module.exports = class global.Exspresso_Output
   res                 : null  # http Response object
 
   constructor: (@Exspresso) ->
-
 
     log_message('debug', "Output Class Initialized")
 
@@ -69,8 +66,6 @@ module.exports = class global.Exspresso_Output
     @_mime_types = $mimes
     load_class('Cache', 'core')
 
-  #  --------------------------------------------------------------------
-
   #
   # Get Output
   #
@@ -83,8 +78,6 @@ module.exports = class global.Exspresso_Output
     @_final_output
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Set Output
   #
@@ -96,11 +89,8 @@ module.exports = class global.Exspresso_Output
   #
   set_output : ($output) ->
     @_final_output = $output
-
     @
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Append Output
@@ -114,15 +104,10 @@ module.exports = class global.Exspresso_Output
   append_output : ($output) ->
     if @_final_output is ''
       @_final_output = $output
-
     else
       @_final_output+=$output
-
-
     @
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Set Header
@@ -146,11 +131,8 @@ module.exports = class global.Exspresso_Output
       return
 
     @_headers.push [$header, $replace]
-
     @
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Set Content Type Header
@@ -171,13 +153,9 @@ module.exports = class global.Exspresso_Output
           $mime_type = current($mime_type)
 
     $header = 'Content-Type: ' + $mime_type
-
     @_headers.push [$header, true]
-
     @
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Set HTTP Status Header
@@ -192,8 +170,6 @@ module.exports = class global.Exspresso_Output
     @res.status($code)
     @
 
-  #  --------------------------------------------------------------------
-
   #
   # Enable/disable Profiler
   #
@@ -205,8 +181,6 @@ module.exports = class global.Exspresso_Output
     @_enable_profiler = if (is_bool($val)) then $val else true
     @
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Set Profiler Sections
@@ -223,8 +197,6 @@ module.exports = class global.Exspresso_Output
     @
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Set Cache
   #
@@ -236,9 +208,6 @@ module.exports = class global.Exspresso_Output
     @_cache_expiration = if ( not is_numeric($time)) then 0 else $time
     @
 
-
-
-  #  --------------------------------------------------------------------
 
   #
   # Display Output
@@ -350,8 +319,6 @@ module.exports = class global.Exspresso_Output
     log_message('debug', "Total execution time: " + $elapsed)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Write a Cache File
   #
@@ -392,8 +359,6 @@ module.exports = class global.Exspresso_Output
 
     log_message('debug', "Cache file written: " + $cache_path)
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Update/serve a cached file

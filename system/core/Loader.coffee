@@ -66,10 +66,8 @@ class global.Exspresso_Loader extends Base_Loader
     super $Exspresso
     @_module = $Exspresso._module
 
-  ## --------------------------------------------------------------------
-
   #
-  # Add a module path loader variables
+  # Add a module path
   #
   #
   # @param 	string  module to add
@@ -77,15 +75,13 @@ class global.Exspresso_Loader extends Base_Loader
   #
   _add_module_paths: ($module = '') ->
 
-    if $module is '' #  Load a module config file *
-      return
+    return if $module is ''
 
     for  $location, $offset of Modules.locations
       # only add a module path if it exists
       if is_dir($module_path = $location+$module+'/')
         array_unshift(@_ex_model_paths, $module_path)
-
-  ## --------------------------------------------------------------------
+    return
 
   #
   # Load a module config file
@@ -100,8 +96,6 @@ class global.Exspresso_Loader extends Base_Loader
 
     @Exspresso.config.load($file, $use_sections, $fail_gracefully, @_module)
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Load a module helper
@@ -128,8 +122,6 @@ class global.Exspresso_Loader extends Base_Loader
     # expose the helpers to template engine
     Exspresso.server.set_helpers @_ex_helpers[$helper]
 
-  ## --------------------------------------------------------------------
-
   #
   # Load an array of helpers
   #
@@ -140,8 +132,7 @@ class global.Exspresso_Loader extends Base_Loader
   helpers: ($helpers) ->
     for $_helper in $helpers
       @helper $_helper
-
-  ## --------------------------------------------------------------------
+    return
 
   #
   # Load a module language file
@@ -155,8 +146,6 @@ class global.Exspresso_Loader extends Base_Loader
     return @Exspresso.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Load an array of languages
   #
@@ -167,8 +156,7 @@ class global.Exspresso_Loader extends Base_Loader
   languages: ($languages) ->
     for $_language in $languages
       @language($language)
-
-  ## --------------------------------------------------------------------
+    return
 
   #
   # Module Class Loader
@@ -218,8 +206,6 @@ class global.Exspresso_Loader extends Base_Loader
     return @Exspresso[$_alias]
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Load an array of libraries
   #
@@ -230,9 +216,8 @@ class global.Exspresso_Loader extends Base_Loader
   libraries: ($libraries) ->
     for $_library in $libraries
       @library($_library)
+    return
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Module Model Loader
@@ -279,8 +264,6 @@ class global.Exspresso_Loader extends Base_Loader
 
     return @Exspresso[$_alias]
 
-  ## --------------------------------------------------------------------
-
   #
   # Load an array of models
   #
@@ -291,8 +274,7 @@ class global.Exspresso_Loader extends Base_Loader
   models: ($models) ->
     for $_model in $models
       @model($_model)
-
-  ## --------------------------------------------------------------------
+    return
 
   #
   # Load a module controller
@@ -312,8 +294,6 @@ class global.Exspresso_Loader extends Base_Loader
     return @Exspresso[$_alias]
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Load an array of controllers
   #
@@ -324,8 +304,7 @@ class global.Exspresso_Loader extends Base_Loader
   modules: ($modules) ->
     for $_module in $modules
       @module($_module)
-
-  ## --------------------------------------------------------------------
+    return
 
   #
   # Load a module plugin
@@ -352,8 +331,6 @@ class global.Exspresso_Loader extends Base_Loader
     Modules.load_file($_plugin, $path)
     @_ex_plugins[$plugin] = true
 
-  ## --------------------------------------------------------------------
-
   #
   # Load an array of plugins
   #
@@ -364,8 +341,7 @@ class global.Exspresso_Loader extends Base_Loader
   plugins: ($plugins) ->
     for $_plugin in $plugins
       @plugin($_plugin)
-
-  #  --------------------------------------------------------------------
+    return
 
   #
   # Load a module View
@@ -388,8 +364,6 @@ class global.Exspresso_Loader extends Base_Loader
     [$path, $view] = Modules.find($view, @Exspresso._module, 'views/')
     @_ex_view_path = if $path then $path else APPPATH + config_item('views')
     @_ex_load('', $view, $vars, $next)
-
-  #  --------------------------------------------------------------------
 
   #
   # Autoload module items
@@ -463,6 +437,8 @@ class global.Exspresso_Loader extends Base_Loader
     if $autoload['modules']?
       for $controller in $autoload['modules']
         ($controller isnt @_module) and @module($controller)
+
+    return
 
 module.exports = Exspresso_Loader
 

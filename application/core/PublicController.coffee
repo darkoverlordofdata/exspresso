@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| MY_Controller.coffee
+#| PublicController.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -10,6 +10,21 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
+#
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
 #
 #	PublicController
 #

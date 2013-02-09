@@ -11,13 +11,27 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	User Library
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 #
+
+#  ------------------------------------------------------------------------
 #
+#	  User Library
+#
+
 class global.User
 
-  bcrypt          = require('bcrypt')
+  bcrypt          = require('bcrypt')     # A bcrypt library for NodeJS
 
   Exspresso       : null  # the local exspresso object
   model           : null  # the user data model
@@ -25,12 +39,8 @@ class global.User
   _field_list     : ['uid', 'name', 'email', 'created_on', 'last_login', 'active']
   _user           : null
 
-  ## --------------------------------------------------------------------
-
   #
-  # Constructor
-  #
-  #   load the user model
+  # Load the user model
   #
   # @return 	nothing
   #
@@ -47,8 +57,6 @@ class global.User
     @Exspresso.queue ($next) =>
       @initialize $next
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Initialize the User object
@@ -68,9 +76,6 @@ class global.User
         @_user.roles = if $err then [] else $roles
         $next()
 
-
-
-  ## --------------------------------------------------------------------
 
   #
   # User read-only properties
@@ -93,12 +98,8 @@ class global.User
   @get active       : -> @_user.active
 
 
-  ## --------------------------------------------------------------------
-
   #
-  # Authenticate
-  #
-  #   Authenticate the user
+  # Authenticate the user
   #
   # @param    string
   # @param    string
@@ -127,8 +128,6 @@ class global.User
         @Exspresso.req.session.uid = $user.uid
         $next null, false
 
-  ## --------------------------------------------------------------------
-
   #
   # Authorization Check
   #
@@ -144,8 +143,6 @@ class global.User
       return true if $role.name is $auth
 
     return false
-
-  ## --------------------------------------------------------------------
 
   #
   # Check password

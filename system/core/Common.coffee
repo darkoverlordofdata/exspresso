@@ -35,52 +35,16 @@
 #
 # Loads the base classes and executes the request.
 #
-# @package		Exspresso
-# @subpackage	codeigniter
-# @category	Common Functions
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/
 #
 
-{format} = require('util')
-#
-# core/config cache
-#
-# @var array
-#
+format = require('util').format
+
 _config       = []
-#
-# core/config item cache
-#
-# @var object
-#
 _config_item  = {}
-#
-# class instance cache
-#
-# @var object
-#
 _classes      = {}
-#
-# class names hash
-#
-# @var object
-#
 _is_loaded    = {}
-#
-# Exspresso_Log instance
-#
-# @var object
-#
 _log          = null
-#
-# Exspresso_Exception instance
-#
-# @var object
-#
 _error        = null
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Object Creation
@@ -128,9 +92,6 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
 
   return new (global[$name])($config)
 
-
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Class registry
@@ -184,8 +145,8 @@ exports.load_class = load_class = ($class, $directory = 'libraries', $prefix = '
   _classes[$core] = new (global[$name])($config)
   return _classes[$core]
 
-
-#  --------------------------------------------------------------------
+#
+# Is Loaded
 #
 # Keeps track of which libraries have been loaded.  This function is
 # called by the load_class() function above
@@ -200,10 +161,6 @@ exports.is_loaded = is_loaded = ($class = '') ->
 
   return _is_loaded
 
-
-#  ------------------------------------------------------------------------
-
-#  ------------------------------------------------------------------------
 
 #
 # Loads the main config.coffee file
@@ -248,8 +205,6 @@ exports.get_config = get_config = ($replace = {}) ->
 
   return _config[0] = $config
 
-#  ------------------------------------------------------------------------
-
 #
 # Returns the specified config item
 #
@@ -268,8 +223,6 @@ exports.config_item = config_item = ($item) ->
 
 
   return _config_item[$item]
-
-#  ------------------------------------------------------------------------
 
 #
 # Error Handler
@@ -293,8 +246,6 @@ exports.show_error = show_error = ($args...) ->
     _error.show_error $args[0], '5xx', 500
   true
 
-#  ------------------------------------------------------------------------
-
 #
 # 404 Page Handler
 #
@@ -309,8 +260,6 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
   _error = load_class('Exceptions', 'core')
   _error.show_404 $page, $log_error
   true
-
-#  ------------------------------------------------------------------------
 
 #
 # Error Logging Interface
@@ -329,8 +278,6 @@ exports.log_message = log_message = ($level = 'error', $args...) ->
   _log = load_class('Log')
   _log.write_log $level, format.apply(undefined, $args)
   true
-
-#  ------------------------------------------------------------------------
 
 #
 # Set HTTP Status Header

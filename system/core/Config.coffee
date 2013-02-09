@@ -58,7 +58,6 @@ require BASEPATH+'core/Base/Config.coffee'
 
 class global.Exspresso_Config extends Base_Config
 
-  #  --------------------------------------------------------------------
 
   #
   # Load Module Config File

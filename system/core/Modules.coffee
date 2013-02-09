@@ -62,8 +62,6 @@ class global.Modules
 
   @locations = config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
 
-  ## --------------------------------------------------------------------
-
   #
   # Returns a list of modules
   #
@@ -73,8 +71,6 @@ class global.Modules
     for $location, $offset of Modules.locations
       $modules.concat(readdirSync($location))
     $modules
-
-  ## --------------------------------------------------------------------
 
   #
   # Load a module file
@@ -87,8 +83,6 @@ class global.Modules
     $result = require($location)
     log_message 'debug', "File loaded: %s", $location
     return $result
-
-  ## --------------------------------------------------------------------
 
   #
   # Find a file

@@ -11,12 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	redis driver for sessions
+# Exspresso
 #
-#  ------------------------------------------------------------------------
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
 
+#  ------------------------------------------------------------------------
 #
-# Redis Session store driver
+#   Redis Session store driver
 #
 #
 class Exspresso_Session_redis extends require('connect-redis')(require('express'))

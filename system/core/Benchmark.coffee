@@ -36,11 +36,6 @@
 # This class enables you to mark points and calculate the time difference
 # between them.  Memory consumption can also be displayed.
 #
-# @package    Exspresso
-# @subpackage  Libraries
-# @category  Libraries
-# @author    darkoverlordofdata
-# @link    http://darkoverlordofdata.com/user_guide/libraries/benchmark.html
 #
 class global.Exspresso_Benchmark
   
@@ -48,8 +43,6 @@ class global.Exspresso_Benchmark
 
   constructor: ->
     @_marker = {}
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set a benchmark marker
@@ -64,8 +57,6 @@ class global.Exspresso_Benchmark
   mark : ($name) ->
     @_marker[$name] = new Date()
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Calculates the time difference between two marked points.
@@ -99,8 +90,6 @@ class global.Exspresso_Benchmark
 
     #return number_format(($em + $es) - ($sm + $ss), $decimals)
     return @_marker[$point2] - @_marker[$point1]
-  
-  #  --------------------------------------------------------------------
   
   #
   # Memory Usage

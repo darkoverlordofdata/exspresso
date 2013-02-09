@@ -11,7 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Server Class
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
+#
+#	  Server Class
 #
 #   Base class for Server/drivers
 #   it exposes adapter registration points for each of these core classes:
@@ -41,8 +56,6 @@ class global.Exspresso_Server
   _site_slogan  : 'My Slogan'
   _queue        : null
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Set server config
@@ -220,10 +233,10 @@ class global.Exspresso_Server
 
     #  Are we using a database?  If so, load the driver
     if $session.sess_use_database
-      $options['store'] = $session.load_driver($session.sess_driver).setup()
+      $options['store'] = $session.load_driver($session.sess_driver).install_check()
 
     @app.use $server.session($options)
-    @app.use $session.parse()
+    @app.use $session.parse_request($session.cookie_prefix + $session.sess_cookie_name)
     @app.use $server.csrf() if @_csrf
     return
 
@@ -266,25 +279,6 @@ class global.Exspresso_Server
     # handle 404 not found error
     #
     ($req, $res, $next) -> show_404 $req.originalUrl
-
-  # --------------------------------------------------------------------
-
-  #
-  # Authentication
-  #
-  #   middleware hook for authentication
-  #
-  #   @param object $req
-  #   @param object $res
-  #   @param function $next
-  #
-
-  authenticate: ->
-
-    log_message 'debug',"Authentication middleware initialized"
-    ($req, $res, $next) ->
-
-      $next()
 
 module.exports = Exspresso_Server
 

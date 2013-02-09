@@ -34,10 +34,10 @@
 #
 class global.Exspresso_Session extends Exspresso_Driver_Library
 
-  express     = require('express')                    # Express 3.0 Framework
-  cookie      = require('cookie')                     # cookie parsing and serialization
-  format      = require('util').format
-  urldecode   = decodeURIComponent
+  express         = require('express')            # Express 3.0 Framework
+  cookie          = require('cookie')             # cookie parsing and serialization
+  format          = require('util').format        # sprintf style formated string
+  urldecode       = decodeURIComponent            # Decodes any %## encoding in the given string
 
   FLASH_KEY               = 'flash'
   FLASH_NEW               = ':new:'
@@ -122,40 +122,33 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   #
   # Parse the session properties
   #
-  # @access	public
-  # @returns function middleware callback
+  # Called prior to each controller constructor, ensures
+  # that the expected session objects are available
   #
-  parse: ->
+  # @access	private
+  # @param object
+  # @param object
+  # @param function
+  # @return	void
+  #
+  #
+  parse_request: ($cookie_name) -> ($req, $res, $next) =>
 
-    $cookie_name = @cookie_prefix + @sess_cookie_name
+    # parse the session id
+    if $req.headers.cookie?
+      $m = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie)
+      if $m?
+        $m = $m[1].split('.')[0]
+        $req.session.session_id = urldecode($m).split(':')[1]
 
-    #
-    # Called prior to each controller constructor, ensures
-    # that the expected session objects are available
-    #
-    # @access	private
-    # @param object
-    # @param object
-    # @param function
-    # @return	void
-    #
-    ($req, $res, $next) =>
+    # set reasonable session defaults
+    $req.session.uid            = $req.session.uid || User_model.UID_ANONYMOUS
+    $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
+    $req.session.user_agent     = $req.headers['user-agent']
+    $req.session.last_activity  = @_get_time()
+    $req.session.userdata       = $req.session.userdata || {}
 
-      # parse the session id
-      if $req.headers.cookie?
-        $m = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie)
-        if $m?
-          $m = $m[1].split('.')[0]
-          $req.session.session_id = urldecode($m).split(':')[1]
-
-      # set reasonable session defaults
-      $req.session.uid            = $req.session.uid || User_model.UID_ANONYMOUS
-      $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
-      $req.session.user_agent     = $req.headers['user-agent']
-      $req.session.last_activity  = @_get_time()
-      $req.session.userdata       = $req.session.userdata || {}
-
-      $next()
+    $next()
 
   #
   # Add or change data in the "userdata" array

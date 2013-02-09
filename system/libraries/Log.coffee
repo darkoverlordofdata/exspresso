@@ -28,23 +28,20 @@
 # @since      Version 1.0
 #
 
-
-
-
-fs              = require('fs')                         # Standard POSIX file i/o
-util            = require('util')
-
 class global.Exspresso_Log
 
-  _log_path:    ''
-  _threshold:   1
-  _date_fmt:    'Y-m-d H:i:s'
-  _enabled:     true
+  fs              = require('fs')                         # Standard POSIX file i/o
+  util            = require('util')
+
+  _log_path       : ''
+  _threshold      : 1
+  _date_fmt       : 'Y-m-d H:i:s'
+  _enabled        : true
   _levels:
-    ERROR:        1
-    DEBUG:        2
-    INFO:         3
-    ALL:          4
+    ERROR         : 1
+    DEBUG         : 2
+    INFO          : 3
+    ALL           : 4
 
   constructor: ->
 

@@ -57,18 +57,11 @@ class global.Base_Loader
   _ex_models            : null
   _ex_helpers           : null
   _ex_varmap:
-    unit_test: 'unit'
-    user_agent: 'agent'
-  #
-  # Parent controller instance
-  #
-  # @var object
-  #
-  Exspresso:                     null
-  ## --------------------------------------------------------------------
+    unit_test           : 'unit'
+    user_agent          : 'agent'
 
-  #
-  # Constructor
+  Exspresso             : null
+
   #
   # Initiailize the loader search paths
   #
@@ -82,8 +75,6 @@ class global.Base_Loader
     @_ex_model_paths        = [APPPATH]
 
     log_message 'debug', "Loader Class Initialized"
-
-  ## --------------------------------------------------------------------
 
   #
   # Initialize the Loader
@@ -216,6 +207,7 @@ class global.Base_Loader
 
     # couldn't find the model
     show_error 'Unable to locate the model you have specified: %s', $model
+    return
 
   ## --------------------------------------------------------------------
 
@@ -335,10 +327,10 @@ class global.Base_Loader
     if $val isnt '' and is_string($vars)
       $vars = array($vars, $val)
 
-
     if is_array($vars) and count($vars) > 0
       for $key, $val of $vars
         @_ex_cached_vars[$key] = $val
+    return
 
 
   ## --------------------------------------------------------------------
@@ -420,6 +412,7 @@ class global.Base_Loader
 
     for $langfile in $file
       @Exspresso.lang.load $langfile, $lang
+    return
 
 
   ## --------------------------------------------------------------------
@@ -485,6 +478,7 @@ class global.Base_Loader
     #  Add config file path
     $config = @_ex_get_component('config')
     array_unshift($config._config_paths, $path)
+    return
 
 
 
@@ -531,18 +525,15 @@ class global.Base_Loader
         if ($key = array_search($path, @[$var])) isnt false
           delete @[$var][$key]
 
-
-
       if ($key = array_search($path, $config._config_paths)) isnt false
         delete $config._config_paths[$key]
-
-
 
     #  make sure the application default paths are still in the array
     @_ex_library_paths = array_unique(array_merge(@_ex_library_paths, [APPPATH, BASEPATH]))
     @_ex_helper_paths = array_unique(array_merge(@_ex_helper_paths, [APPPATH, BASEPATH]))
     @_ex_model_paths = array_unique(array_merge(@_ex_model_paths, [APPPATH]))
     $config._config_paths = array_unique(array_merge($config._config_paths, [APPPATH]))
+    return
 
 
 
@@ -713,7 +704,7 @@ class global.Base_Loader
     if $is_duplicate is false
       log_message('error', "Unable to load the requested class: %s", $class)
       show_error("Unable to load the requested class: %s", $class)
-
+    return
 
 
 
@@ -791,7 +782,6 @@ class global.Base_Loader
 
     #  Instantiate the class
     @Exspresso[$classvar] = new global[$name]($config, @Exspresso)
-    return @Exspresso[$classvar]
 
 
   #  --------------------------------------------------------------------
@@ -853,11 +843,7 @@ class global.Base_Loader
     if $autoload['model']?
       @model $autoload['model']
 
-
-    #  Autoload models
-    if $autoload['middleware']?
-      @middleware $autoload['middleware']
-
+    return
 
   #  --------------------------------------------------------------------
 
@@ -871,8 +857,7 @@ class global.Base_Loader
   # @return	array
   #
   _ex_object_to_array : ($object) ->
-    return $object
-  #return if (is_object($object)) then get_object_vars($object) else $object
+    $object
 
 
   #  --------------------------------------------------------------------
@@ -884,7 +869,7 @@ class global.Base_Loader
   # @return	bool
   #
   _ex_get_component : ($component) ->
-    return @Exspresso[$component]
+    @Exspresso[$component]
 
 
   #  --------------------------------------------------------------------

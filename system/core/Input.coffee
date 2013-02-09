@@ -71,8 +71,6 @@ module.exports = class global.Exspresso_Input
       PATH_INFO             : $req.path
       ORIG_PATH_INFO        : $req.path
 
-  #  --------------------------------------------------------------------
-
   #
   # Validate IP Address
   #
@@ -102,8 +100,6 @@ module.exports = class global.Exspresso_Input
 
     return true
 
-  #  --------------------------------------------------------------------
-
   #
   # Fetch an item from the GET array
   #
@@ -121,8 +117,6 @@ module.exports = class global.Exspresso_Input
         @req.query[$index]
       else
         null
-
-  #  --------------------------------------------------------------------
 
   #
   # Fetch an item from the POST array
@@ -142,8 +136,6 @@ module.exports = class global.Exspresso_Input
       else
         null
 
-  #  --------------------------------------------------------------------
-
   #
   # Fetch an item from either the GET array or the POST
   #
@@ -162,8 +154,6 @@ module.exports = class global.Exspresso_Input
     else
       @req.body[$index]
 
-  #  --------------------------------------------------------------------
-
   #
   # Fetch an item from the COOKIE array
   #
@@ -180,8 +170,6 @@ module.exports = class global.Exspresso_Input
         @req.cookies[$index]
       else
         ''
-
-  #  ------------------------------------------------------------------------
 
   #
   # Set cookie
@@ -214,8 +202,6 @@ module.exports = class global.Exspresso_Input
       path    : $path
       secure  : $secure
 
-  #  --------------------------------------------------------------------
-
   #
   # Fetch an item from the SERVER array
   #
@@ -232,8 +218,6 @@ module.exports = class global.Exspresso_Input
         @_server_array[$index]
       else
         ''
-  #  --------------------------------------------------------------------
-
   #
   # Fetch the IP Address
   #
@@ -241,8 +225,6 @@ module.exports = class global.Exspresso_Input
   # @return	string
   #
   ip_address :  -> @req.ip
-
-  #  --------------------------------------------------------------------
 
   #
   # User Agent

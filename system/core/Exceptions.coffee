@@ -71,8 +71,6 @@ class global.Exspresso_Exceptions
 
     log_message 'debug', "Exceptions Class Initialized"
 
-  #  --------------------------------------------------------------------
-
   #
   # Exception Logger
   #
@@ -87,8 +85,6 @@ class global.Exspresso_Exceptions
   #
   log_exception : ($severity, $message, $filepath, $line) ->
     log_message('error', 'Severity: ' + $severity + '  --> ' + $message + ' ' + $filepath + ' ' + $line, true)
-
-  #  --------------------------------------------------------------------
 
   #
   # 404 Page Not Found Handler
@@ -106,14 +102,6 @@ class global.Exspresso_Exceptions
 
 
     @show_error($message, '404', 404)
-
-  # --------------------------------------------------------------------
-  # Method Stubs
-  #
-  #   These methods will be overriden by the middleware
-  # --------------------------------------------------------------------
-
-  #  --------------------------------------------------------------------
 
   #
   # General Error Page
@@ -133,8 +121,6 @@ class global.Exspresso_Exceptions
     console.log "Exceptions::show_error --> #{$message}"
     process.exit 1
 
-  #  --------------------------------------------------------------------
-
   #
   # Native error handler
   #
@@ -151,105 +137,99 @@ class global.Exspresso_Exceptions
     console.log " at line #{$line},  #{$filepath}"
     process.exit 1
 
-  # --------------------------------------------------------------------
-
   #
-  # We're booted - now display in browser
+  # Exception handler
   #
-  #   @returns function middlware callback
+  # @access	public
+  # @param object
+  # @param object
+  # @param function
+  # @return	void
   #
-  exception_handler: ()->
+  exception_handler: -> ($req, $res, $next) =>
 
-    log_message 'debug',"Exceptions middleware initialized"
+    #
+    # 404 Page Not Found Handler
+    #
+    # @access	private
+    # @param	string
+    # @return	string
+    #
+    @show_404 = ($page = '', $log_error = true, $next) =>
 
-    ($req, $res, $next) =>
+      if typeof $log_error is 'function'
+        [$log_error, $next] = [true, $log_error]
 
+      $err =
+        status:       404
+        stack:        [
+          "The page you requested was not found."
+          set_status_header(404)+': ' +$req.originalUrl
+          ].join("\n")
 
-      #  --------------------------------------------------------------------
+      #  By default we log this, but allow a dev to skip it
+      if $log_error
+        log_message('error', '404 Page Not Found --> ' + $page)
 
-      #
-      # 404 Page Not Found Handler
-      #
-      # @access	private
-      # @param	string
-      # @return	string
-      #
-      @show_404 = ($page = '', $log_error = true, $next) =>
-
-        if typeof $log_error is 'function'
-          [$log_error, $next] = [true, $log_error]
-
-        $err =
-          status:       404
-          stack:        [
-            "The page you requested was not found."
-            set_status_header(404)+': ' +$req.originalUrl
-            ].join("\n")
-
-        #  By default we log this, but allow a dev to skip it
-        if $log_error
-          log_message('error', '404 Page Not Found --> ' + $page)
-
-        @show_error $err, '404', 404, $next
-
-      #  --------------------------------------------------------------------
-      #
-      # General Error Page
-      #
-      # This function takes an error message as input
-      # (either as a string or an array) and displays
-      # it using the specified template.
-      #
-      # @access	private
-      # @param	string	the heading
-      # @param	string	the message
-      # @param	string	the template name
-      # @return	string
-      #
-      @show_error = ($err, $template = '5xx', $status_code = 500, $next) ->
-
-        if typeof $template is 'function'
-          [$$template, $status_code, $next] = ['5xx', 500, $template]
-
-        $error = new Exspresso_Error($err)
-
-        $next = $next ? ($err, $content) ->
-          $res.render APPPATH+'errors/layout.eco',
-            title:      $error.code + ': ' + $error.desc
-            content:    $content
-            site_name:  config_item('site_name')
-
-        $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $next
-
-      #  --------------------------------------------------------------------
-
-      #
-      # Native error handler
-      #
-      # @access	private
-      # @param	string	the error severity
-      # @param	string	the error string
-      # @param	string	the error filepath
-      # @param	string	the error line number
-      # @return	string
-      #
-      @show_native_error = ($severity, $message, $filepath, $line) ->
-
-        $filepath = str_replace("\\", "/", $filepath)
-
-        #  For safety reasons we do not show the full file path
-        if false isnt strpos($filepath, '/')
-          $x = explode('/', $filepath)
-          $filepath = $x[count($x) - 2] + '/' + end($x)
+      @show_error $err, '404', 404, $next
 
 
-        $res.render 'errors/native',
-          severity: $severity
-          message:  $message
-          filepath: $filepath
-          line:     $line
+    #
+    # General Error Page
+    #
+    # This function takes an error message as input
+    # (either as a string or an array) and displays
+    # it using the specified template.
+    #
+    # @access	private
+    # @param	string	the heading
+    # @param	string	the message
+    # @param	string	the template name
+    # @return	string
+    #
+    @show_error = ($err, $template = '5xx', $status_code = 500, $next) ->
 
-      $next()
+      if typeof $template is 'function'
+        [$$template, $status_code, $next] = ['5xx', 500, $template]
+
+      $error = new Exspresso_Error($err)
+
+      $next = $next ? ($err, $content) ->
+        $res.render APPPATH+'errors/layout.eco',
+          title:      $error.code + ': ' + $error.desc
+          content:    $content
+          site_name:  config_item('site_name')
+
+      $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $next
+
+
+    #
+    # Native error handler
+    #
+    # @access	private
+    # @param	string	the error severity
+    # @param	string	the error string
+    # @param	string	the error filepath
+    # @param	string	the error line number
+    # @return	string
+    #
+    @show_native_error = ($severity, $message, $filepath, $line) ->
+
+      $filepath = str_replace("\\", "/", $filepath)
+
+      #  For safety reasons we do not show the full file path
+      if false isnt strpos($filepath, '/')
+        $x = explode('/', $filepath)
+        $filepath = $x[count($x) - 2] + '/' + end($x)
+
+
+      $res.render 'errors/native',
+        severity: $severity
+        message:  $message
+        filepath: $filepath
+        line:     $line
+
+    $next()
 
 module.exports = Exspresso_Exceptions
 #  END Exceptions Class

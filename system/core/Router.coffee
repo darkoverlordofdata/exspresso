@@ -53,13 +53,12 @@
 
 require BASEPATH+'core/Modules.coffee'
 require BASEPATH+'core/Base/Router.coffee'
-fs = require('fs')
 
 class global.Exspresso_Router extends Base_Router
 
-  _module: ''
+  fs = require('fs')
 
-  # --------------------------------------------------------------------
+  _module: ''
 
   #
   # Controller binding
@@ -102,8 +101,6 @@ class global.Exspresso_Router extends Base_Router
           $next $err
 
 
-  # --------------------------------------------------------------------
-
   #
   # Set the route mapping
   #
@@ -116,8 +113,6 @@ class global.Exspresso_Router extends Base_Router
   set_routing: ($uri) ->
     @_module = ''
     super $uri
-
-  # --------------------------------------------------------------------
 
   #
   #  Load Routes
@@ -141,8 +136,6 @@ class global.Exspresso_Router extends Base_Router
           $routes = array_merge($routes, Modules.load_file('routes', $path, 'route'))
 
     return $routes
-
-  # --------------------------------------------------------------------
 
   #
   # Validates the supplied segments.  Attempts to determine the path to
@@ -175,7 +168,13 @@ class global.Exspresso_Router extends Base_Router
     return []
 
 
-  # Locate the controller 
+  #
+  # Locate the controller
+  #
+  # @access	private
+  # @param	array
+  # @return	array
+  #
   locate: ($segments) ->
 
     @_module = ''
@@ -234,8 +233,6 @@ class global.Exspresso_Router extends Base_Router
       @_directory = $module+'/'
       return array(@default_controller)
 
-  # --------------------------------------------------------------------
-
   #
   # Set the class name
   #
@@ -245,8 +242,6 @@ class global.Exspresso_Router extends Base_Router
   #
   set_class: ($class) ->
     @_class = $class+@config.item('controller_suffix')
-
-  # --------------------------------------------------------------------
 
   #
   # Fetch the current module

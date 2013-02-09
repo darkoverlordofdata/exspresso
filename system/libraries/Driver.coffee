@@ -48,6 +48,8 @@ class global.Exspresso_Driver_Library
   # @return	object
   #
   load_driver: ($driver) ->
+    
+    UNABLE_TO = "Unable to load the requested driver: %s"
 
     $lib_name = str_replace(['Exspresso_', config_item('subclass_prefix')], '', @constructor.name)
     $class_name = ucfirst($lib_name + '_' + $driver)
@@ -55,37 +57,24 @@ class global.Exspresso_Driver_Library
     $class = null
 
     #  Is this a class extension request?
-    $file = APPPATH+'libraries/'+$subdir+config_item('subclass_prefix')+$class_name+EXT
-    if file_exists($file)
-      $baseclass = BASEPATH+'libraries/'+$subdir+ucfirst($class_name)+EXT
-
-      if not file_exists($baseclass)
-        log_message('error', "Unable to load the requested driver: %s", $class_name)
-        show_error("Unable to load the requested driver: %s", $class_name)
+    if file_exists($file = APPPATH+'libraries/'+$subdir+config_item('subclass_prefix')+$class_name+EXT)
+      if not file_exists($baseclass = BASEPATH+'libraries/'+$subdir+ucfirst($class_name)+EXT)
+        log_message('error', UNABLE_TO, $class_name) if show_error(UNABLE_TO, $class_name)
 
       require $baseclass
       $class = require($file)
 
     else
       for $path in Exspresso.load.get_package_paths(true)
-        $file = $path+'libraries/'+$subdir+$class_name+EXT
-        if file_exists($file)
+        if file_exists($file = $path+'libraries/'+$subdir+$class_name+EXT)
           $class = require($file)
           break
 
-    if $class is null
-      log_message('error', "Unable to load the requested driver: %s", $class_name)
-      show_error("Unable to load the requested driver: %s", $class_name)
+    log_message('error', UNABLE_TO, $class_name) if show_error(UNABLE_TO, $class_name) if $class is null
 
-    if $class::decorate?
-      $child = new $class()
-      $child.decorate @
-    else
-      $child = new $class(@)
+    @[$driver] = if $class::decorate? then new $class().decorate(@) else new $class(@)
 
-    @[$driver] = $child
-    return @[$driver]
-
+      
 module.exports = Exspresso_Driver_Library
 #  END Exspresso_Driver_Library CLASS
 
@@ -106,7 +95,7 @@ class global.Exspresso_Driver
   # @param	object
   # @return	void
   #
-  decorate : ($parent) ->
+  decorate: ($parent) ->
 
     # Decorate the driver with forwarders to the
     # parent driver lib's methods and properties
@@ -122,6 +111,7 @@ class global.Exspresso_Driver
             Object.defineProperties @,
             array($name,  get:  -> $parent[$name])
             array($name,  set: ($newval) -> $parent[$name] = $newval)
+    return @
 
 module.exports = Exspresso_Driver
 #  END Exspresso_Driver CLASS

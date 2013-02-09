@@ -33,16 +33,8 @@
 #
 # Exspresso Model Class
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Libraries
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/config.html
-#
 
 class global.Exspresso_Model
-
-  ## --------------------------------------------------------------------
 
   #
   # Model Constructor
@@ -55,16 +47,6 @@ class global.Exspresso_Model
   constructor: (@Exspresso) ->
 
     log_message 'debug', "Model Class Initialized"
-    #
-    # mixin CI objects to emulate php's magic __get
-    #
-    # this allows models to access CI's loaded classes
-    # using the same syntax as controllers:
-    #
-    #for $name, $var of $Exspresso
-    #  if typeof $var is 'object'
-    #    if typeof $var isnt 'function' and not Array.isArray($var)
-    #      @[$name] = $var
 
     @db = @Exspresso.db
 

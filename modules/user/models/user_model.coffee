@@ -11,11 +11,23 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	User Model
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 #
+
+#  ------------------------------------------------------------------------
 #
-#  --------------------------------------------------------------------
+#   User Model
+#
 
 class global.User_model extends Exspresso_Model
 
@@ -37,8 +49,6 @@ class global.User_model extends Exspresso_Model
       {rid: User_model.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
     ]
 
-  ## --------------------------------------------------------------------
-
   #
   # Anonymous user
   #
@@ -48,8 +58,6 @@ class global.User_model extends Exspresso_Model
   # @return	object
   #
   anonymous_user: () -> @_anonymous_user
-
-  ## --------------------------------------------------------------------
 
   #
   # Load by id
@@ -66,8 +74,6 @@ class global.User_model extends Exspresso_Model
       $user = $user.row() unless $err
       $next $err, $user
 
-  ## --------------------------------------------------------------------
-
   #
   # Load by name
   #
@@ -83,6 +89,12 @@ class global.User_model extends Exspresso_Model
       $user = $user.row() unless $err
       $next $err, $user
 
+  #
+  # Load roles for a user
+  #
+  # @access	public
+  # @return	object
+  #
   load_roles: ($uid, $next) =>
 
     @db.select 'roles.rid, name, description'
@@ -95,13 +107,17 @@ class global.User_model extends Exspresso_Model
 
 
 
+  #
+  # Delete a user
+  #
+  # @access	public
+  # @return	object
+  #
   delete: ($uid, $next) ->
 
 
-  ## --------------------------------------------------------------------
-
   #
-  # Session Database setup
+  # Installation check
   #
   #   create session table if it doesn't exist
   #   this is called by Exspresso.server.start
@@ -109,7 +125,7 @@ class global.User_model extends Exspresso_Model
   # @access	public
   # @return	void
   #
-  setup: () ->
+  install_check: () ->
 
     # Create the session table
     Exspresso.queue ($next) ->
@@ -131,42 +147,70 @@ class global.User_model extends Exspresso_Model
       $migrate = new Migrate_user_roles()
       $migrate.up $next
 
+# END CLASS User_model
+
 module.exports = User_model
-## --------------------------------------------------------------------
+
+#  ------------------------------------------------------------------------
 
 #
 # Class Migrate
 #
+#   Base class for database migrations
+#
 class Migrate
+
+  name        : ''      # table name
+  pkey        : ''      # primary key
+  key         : null    # secondary key(s)
+  fields      : null    # database column definitions
+  data        : null    # data rows to insert
+  #
+  # Apply database changes
+  #
+  #
   up: ($next) =>
 
+    # check if the migration is needed
     Exspresso.db.table_exists @name, ($err, $table_exists) =>
 
-      if $err then return $next $err
-      if $table_exists then return $next null
+      return $next($err) if $err
+      return $next(null) if $table_exists
 
+      # The table doesn't exist, create it
       Exspresso.load.dbforge()
       Exspresso.dbforge.add_field @fields
       Exspresso.dbforge.add_key @pkey, true
       Exspresso.dbforge.add_key $key for $key in @key
       Exspresso.dbforge.create_table @name, ($err) =>
 
-        if $err then return $next $err
-        if @data.length is 0
-          $next()
-        else
-          Exspresso.db.insert_batch @name, @data, $next
+        # populate the table
+        return $next($err) if $err
+        return if @data.length is 0 then $next()
+        else Exspresso.db.insert_batch @name, @data, $next
 
-## --------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 #
-# Class Migrate
+# Migrate Session table
 #
 class Migrate_session extends Migrate
 
-  name: 'sessions'
-  pkey: 'sid'
-  key: ['last_activity']
+  #
+  # sessions Table
+  #
+  name  : 'sessions'
+  #
+  # sid Primary key
+  #
+  pkey  : 'sid'
+  #
+  # Indexes
+  #
+  key   : ['last_activity']
+  #
+  # Fields
+  #
   fields:
         sid:
           type: 'VARCHAR', constraint: 24, default: '0', null: false
@@ -180,20 +224,35 @@ class Migrate_session extends Migrate
           type: 'INT', constraint: 10, unsigned: true, default: 0, null: false
         user_data:
           type: 'TEXT', null: true
-  data: []
+  #
+  # Initial data
+  #
+  data  : []
 
 
 
-## --------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 #
-# Class Migrate
+# Migrate roles
 #
 class Migrate_roles extends Migrate
 
-  name: 'roles'
-  pkey: 'rid'
-  key:  []
+  #
+  # Table name
+  #
+  name  : 'roles'
+  #
+  # Primary key
+  #
+  pkey  : 'rid'
+  #
+  # Indexes
+  #
+  key   :  []
+  #
+  # Fields
+  #
   fields:
         rid:
           type:'INT', constraint:10, unsigned:true, null:false, auto_increment:true
@@ -202,22 +261,37 @@ class Migrate_roles extends Migrate
         description:
           type:'VARCHAR', constraint:'100', null:false
 
-  data: [
+  #
+  # Initial data
+  #
+  data  : [
     {rid: User_model.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
     {rid: User_model.RID_ADMIN, name:'admin', description:'Administrator'}
     {rid: User_model.RID_MEMBER, name:'member', description:'Member'}
   ]
 
-## --------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 #
-# Class Migrate
+# Migrate users
 #
 class Migrate_users extends Migrate
 
-  name: 'users'
-  pkey: 'uid'
-  key:  []
+  #
+  # Table name
+  #
+  name  : 'users'
+  #
+  # Primary key
+  #
+  pkey  : 'uid'
+  #
+  # Indexes
+  #
+  key   :  []
+  #
+  # Fields
+  #
   fields:
         uid:
           type:'INT', constraint:10, unsigned:true, null:false, auto_increment:true
@@ -236,22 +310,37 @@ class Migrate_users extends Migrate
         active:
           type:'tinyint', constraint:'1', unsigned:true, null:true
 
-  data: [
+  #
+  # Initial data
+  #
+  data  : [
     {uid: User_model.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
     {uid: User_model.UID_ADMIN, name: 'admin', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
     {uid: User_model.UID_TEST, name: 'shaggy', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
   ]
 
-## --------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 #
-# Class Migrate
+# Migrate users x roles
 #
 class Migrate_user_roles extends Migrate
 
-  name: 'user_roles'
-  pkey: 'id'
-  key:  []
+  #
+  # Table name
+  #
+  name  : 'user_roles'
+  #
+  # Primary key
+  #
+  pkey  : 'id'
+  #
+  # Indexes
+  #
+  key   : []
+  #
+  # Fields
+  #
   fields:
         id:
           type:'INT', constraint:10, 'unsigned':true, null:false, auto_increment:true
@@ -259,7 +348,10 @@ class Migrate_user_roles extends Migrate
           type:'INT', constraint:10, 'unsigned':true, null:false
         rid:
           type:'INT', constraint:10, 'unsigned':true, null:false
-  data: [
+  #
+  # Initial data
+  #
+  data  : [
     {uid: User_model.UID_ANONYMOUS, rid: User_model.RID_ANONYMOUS}
     {uid: User_model.UID_ADMIN, rid: User_model.RID_ADMIN}
     {uid: User_model.UID_ADMIN, rid: User_model.RID_ANONYMOUS}

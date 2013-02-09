@@ -11,12 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Server_express - Server driver for expressjs
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 #
+
+#  ------------------------------------------------------------------------
 #
-#
-#	Server Class
+#	  Express driver
 #
 #   An adapter to the express.js server instance
 #   it exposes adapter registration points for each of these core classes:
@@ -35,9 +45,8 @@ class global.Exspresso_Server_express extends Exspresso_Server
   cache             = require("connect-cache")  # Caching system for Connect
   eco               = require('eco')            # Embedded CoffeeScript templates
   fs                = require("fs")             # File system
-  _driver           : 'express'
 
-  #  --------------------------------------------------------------------
+  _driver           : 'express'
 
   #
   # Set the server instance
@@ -47,12 +56,10 @@ class global.Exspresso_Server_express extends Exspresso_Server
   #
   constructor: ($config = {}) ->
 
-    log_message('debug', "Server_express driver Class Initialized")
+    log_message('debug', "Express Driver Initialized")
 
     super $config, if express.version[0] is '3' then express() else express.createServer()
-    @app.use @middleware()
-
-  #  --------------------------------------------------------------------
+    @app.use @patch()
 
   #
   # Add view helpers
@@ -64,9 +71,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     @app.locals $helpers
     $helpers
-
-
-  #  --------------------------------------------------------------------
 
   #
   # Start me up ...
@@ -80,7 +84,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
       if typeof @_port is 'undefined'
         @_port = 3000
 
-      @app.use @authenticate()
       @app.use @app.router
       @app.use @error_5xx()
       @app.use @error_404()
@@ -113,8 +116,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
         return
       return
     return
-
-  #  --------------------------------------------------------------------
 
   #
   # Config registration
@@ -174,36 +175,24 @@ class global.Exspresso_Server_express extends Exspresso_Server
     @app.use express.methodOverride()
     return
 
-
-
-  # --------------------------------------------------------------------
-
   #
-  # Server middleware
+  # Patch the express server objects
   #
-  #   @returns function middlware callback
+  # @access	public
+  # @param object
+  # @param object
+  # @param function
+  # @return	void
   #
-  middleware: ->
+  patch: -> ($req, $res, $next) =>
 
-    log_message 'debug',"express middleware initialized"
+    Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers['host']
 
-    #  --------------------------------------------------------------------
-
-    #
-    # Patch the express server objects
-    #
-    # @access	private
-    # @return	void
-    #
-    ($req, $res, $next) =>
-
-      Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers['host']
-
-      $res._error_handler = ($err) ->
-        $next $err
+    #$res._error_handler = ($err) ->
+    #  $next $err
 
 
-      $next()
+    $next()
 
 
 module.exports = Exspresso_Server_express

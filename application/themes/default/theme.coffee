@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| theme.coffee.coffee
+#| theme.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -11,7 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	theme.coffee - Default
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
+#
+#	  Default Theme Manifest
 #
 #
 #
@@ -24,8 +39,18 @@ exports.version =       '1.0'
 exports.description =   'Exspresso Default Public Theme'
 exports.location =      APPPATH+'themes/public'
 
+#
+# Layout
+#
+# This is the main page layout template
+#
 exports.layout = 'layout.eco'
 
+#
+# Menu
+#
+# Defines the main page menu
+#
 exports.menu =
   tabs: # tabs | pills
 
@@ -36,6 +61,11 @@ exports.menu =
     Admin   : ['/admin', 'Login']
 
 
+#
+# Scripts
+#
+# The script blocks available to this template
+#
 exports.script =
   default: [
     'js/jquery-1.8.1.min.js'
@@ -52,6 +82,11 @@ exports.script =
     """
   ]
 
+#
+# CSS
+#
+# The sstyle sheets available to this template
+#
 exports.css =
   default: [
     'css/bootstrap.min.css'
@@ -73,4 +108,4 @@ exports.css =
   ]
 
 # End of file theme.coffee
-# Location = .application/themes/public/theme.coffee
+# Location = .application/themes/default/theme.coffee

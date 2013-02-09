@@ -11,7 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Template
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
+#
+#	  Template Class
 #
 #
 #
@@ -37,8 +52,6 @@ class global.Template
   _css:             null
 
 
-  ## --------------------------------------------------------------------
-
   #
   # constructor
   #
@@ -62,8 +75,6 @@ class global.Template
     @set_theme @_theme_name
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Set data name/value pair
   #
@@ -79,8 +90,6 @@ class global.Template
       @_data[$name] = $value
     @
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Set the theme
@@ -100,8 +109,6 @@ class global.Template
     @
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Set the layout
   #
@@ -113,8 +120,6 @@ class global.Template
     @_layout = $layout
     @
 
-  ## --------------------------------------------------------------------
-
   #
   # Set the title
   #
@@ -125,8 +130,6 @@ class global.Template
   set_title: ($title...) ->
     @_title = $title.join(' | ')
     @
-
-  ## --------------------------------------------------------------------
 
   #
   # Set a named partial
@@ -141,8 +144,6 @@ class global.Template
     @_partials[$name] = 'view':$view, 'data':$data
     @
 
-  ## --------------------------------------------------------------------
-
   #
   # Add breadcrumb
   #
@@ -155,9 +156,6 @@ class global.Template
     @_breadcrumbs.push 'name':$name, 'uri':$uri
     @
 
-
-  ## --------------------------------------------------------------------
-
   #
   # Set doctype
   #
@@ -168,8 +166,6 @@ class global.Template
   set_doctype: ($doctype = 'html5') ->
     @_doctype = $doctype
     @
-
-  ## --------------------------------------------------------------------
 
   #
   # Add css tag
@@ -186,8 +182,6 @@ class global.Template
       @_css.push $str for $str in $css
     @
 
-  ## --------------------------------------------------------------------
-
   #
   # Add script
   #
@@ -203,8 +197,6 @@ class global.Template
       @_script.push $str for $str in $script
     @
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Add meta tags
@@ -229,8 +221,6 @@ class global.Template
     @_menu = $menu
     @
 
-
-  ## --------------------------------------------------------------------
 
   #
   # render a template
@@ -335,8 +325,6 @@ class global.Template
           @Exspresso.output._display()
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Menu
   #
@@ -362,8 +350,6 @@ class global.Template
     $menu+"</ul>\n"
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Sidenav
   #
@@ -385,8 +371,6 @@ class global.Template
         $menu += "<li>"
       $menu += "<a href=\"#{$u}\"><i class=\"icon-chevron-right\"></i> #{$k}</a></li>\n"
     $menu += "</ul>\n"
-
-  ## --------------------------------------------------------------------
 
   #
   # Submenu

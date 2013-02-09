@@ -36,11 +36,6 @@
 # All migrations should implement this, forces up() and down() and gives
 # access to the CI super-global.
 #
-# @package    Exspresso
-# @subpackage  Libraries
-# @category  Libraries
-# @author    Reactor Engineers
-# @link
 #
 class global.Base_Migration
 
@@ -114,8 +109,6 @@ class global.Base_Migration
 
         if $err then return $next $err
         @db.insert 'migrations', version: 0, $next
-
-  #-------------------------------------------------------------------
 
   #
   # Migrate to a schema version
@@ -245,8 +238,6 @@ class global.Base_Migration
         $next $err, $current_version
 
 
-  #-------------------------------------------------------------------
-
   #
   # Set's the schema to the latest migration
   #
@@ -264,8 +255,6 @@ class global.Base_Migration
     @version substr($last_migration, 0, 3), ($err, $current_version) ->
       $next $err, $current_version
 
-  #-------------------------------------------------------------------
-
   #
   # Set's the schema to the migration version set in config
   #
@@ -275,8 +264,6 @@ class global.Base_Migration
     @version @_migration_version, ($err, $current_version) ->
       $next $err, $current_version
 
-  #-------------------------------------------------------------------
-
   #
   # Error string
   #
@@ -284,8 +271,6 @@ class global.Base_Migration
   #
   error_string: () ->
     return @_error_string
-
-  #-------------------------------------------------------------------
 
   #
   # Set's the schema to the latest migration
@@ -309,8 +294,6 @@ class global.Base_Migration
     return $files
 
 
-  #-------------------------------------------------------------------
-
   #
   # Retrieves current schema version
   #
@@ -324,8 +307,6 @@ class global.Base_Migration
       $row = $result.row()
       $next null, if $row then $row.version else 0
 
-
-  #-------------------------------------------------------------------
 
   #
   # Stores the current schema version

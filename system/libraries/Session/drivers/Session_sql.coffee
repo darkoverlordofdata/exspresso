@@ -11,20 +11,33 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# Sql Session store driver
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
+#
+#   Sql Session store driver
 #
 #
 class Exspresso_Session_sql extends require('express').session.Store
 
-  serialize         = JSON.stringify
-  unserialize       = JSON.parse
+  serialize       = JSON.stringify                # Generates a storable representation of a value
+  unserialize     = JSON.parse                    # Creates an object from a stored representation
 
-  ## --------------------------------------------------------------------
+  parent          : null  # The parent session class for this driver
 
   #
-  # Constructor
-  #
-  #   Load the user data model
+  # Load the user data model
   #
   # @param  object
   # @return 	nothing
@@ -35,12 +48,8 @@ class Exspresso_Session_sql extends require('express').session.Store
     return
 
 
-  ## --------------------------------------------------------------------
-
   #
-  # get
-  #
-  #   Gets the session data
+  # Get the session data
   #
   # @param string session id
   # @param function next
@@ -71,13 +80,8 @@ class Exspresso_Session_sql extends require('express').session.Store
 
         $next null, $session
 
-
-  ## --------------------------------------------------------------------
-
   #
-  # set
-  #
-  #   Sets the session data
+  # Set the session data
   #
   # @param string session id
   # @param string session data
@@ -122,13 +126,8 @@ class Exspresso_Session_sql extends require('express').session.Store
             return $next($err) if log_message('error', 'Session::set update %s', $err) if $err
             $next()
 
-
-  ## --------------------------------------------------------------------
-
   #
-  # destroy
-  #
-  #   Delete the session data
+  # Delete the session data
   #
   # @param string session id
   # @param function $next
@@ -147,10 +146,8 @@ class Exspresso_Session_sql extends require('express').session.Store
         return $next($err) if log_message('error', 'Session::destroy delete %s', $err) if $err
         $next()
 
-  ## --------------------------------------------------------------------
-
   #
-  # Session Database setup
+  # Installation check
   #
   #   create user & session tables if they doesn't exist
   #   called when Session library is auto loaded during boot
@@ -158,12 +155,10 @@ class Exspresso_Session_sql extends require('express').session.Store
   # @access	public
   # @return	void
   #
-  setup: () ->
+  install_check: ->
 
-    Exspresso.user_model.setup()
+    Exspresso.user_model.install_check()
     @
-
-  ## --------------------------------------------------------------------
 
   #
   # Fetch

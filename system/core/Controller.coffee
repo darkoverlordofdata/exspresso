@@ -50,8 +50,6 @@ class global.Exspresso_Controller
   fetch_class   : -> @_class
   fetch_method  : -> @_method
 
-  # --------------------------------------------------------------------
-
   #
   # Initialize Controller objects
   #
@@ -108,8 +106,6 @@ class global.Exspresso_Controller
     @load.initialize()  # do the autoloads
 
 
-  # --------------------------------------------------------------------
-
   #
   # Render a view
   #
@@ -129,8 +125,6 @@ class global.Exspresso_Controller
         else
           @res.send $html
 
-  # --------------------------------------------------------------------
-
   #
   # Redirect to another url
   #
@@ -141,8 +135,6 @@ class global.Exspresso_Controller
   redirect: ($url) =>
     @res.redirect $url
 
-  # --------------------------------------------------------------------
-
   #
   # Async job queue for the controller
   #
@@ -152,8 +144,6 @@ class global.Exspresso_Controller
   #
   queue: ($fn) ->
     if $fn then @_queue.push($fn) else @_queue
-
-  # --------------------------------------------------------------------
 
   #
   # Run the functions in the queue

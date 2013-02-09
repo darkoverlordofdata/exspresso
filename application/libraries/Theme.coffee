@@ -11,7 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Theme
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
+#
+#	  Theme Class
 #
 #   Provision a theme
 #
@@ -43,8 +58,6 @@ class global.Theme
     $theme = $config.name ? 'default'
     @load $theme
 
-  ## --------------------------------------------------------------------
-
   #
   # Loads a theme manifest
   #
@@ -68,8 +81,6 @@ class global.Theme
 
     @
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Initialize a template with theme resources

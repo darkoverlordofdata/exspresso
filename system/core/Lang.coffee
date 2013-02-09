@@ -58,8 +58,6 @@ require BASEPATH+'core/Base/Lang.coffee'
 
 class global.Exspresso_Lang extends Base_Lang
 
-  #  --------------------------------------------------------------------
-
   #
   # Load a module language file
   #

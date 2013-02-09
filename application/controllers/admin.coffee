@@ -11,14 +11,27 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Admin
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
+#
+#	  Admin
 #
 require APPPATH+'core/AdminController.coffee'
 
 class Admin extends AdminController
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Admin overview
@@ -37,8 +50,6 @@ class Admin extends AdminController
     else
       @template.view 'signin'
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Authenticate user credentials
@@ -64,8 +75,6 @@ class Admin extends AdminController
 
 
 
-  ## --------------------------------------------------------------------
-
   #
   # User Logout
   #
@@ -89,4 +98,4 @@ class Admin extends AdminController
 module.exports = Admin
 
 # End of file Admin.coffee
-# Location: .modules/admin/controllers/Admin.coffee
+# Location: .application/controllers/Admin.coffee

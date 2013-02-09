@@ -27,27 +27,15 @@
 #       * URI
 #
 #
-require BASEPATH+'core/Server/Server.coffee'
-
-connect         = require("connect")        # High performance middleware framework
-cache           = require("connect-cache")  # Caching system for Connect
-eco             = require('eco')            # Embedded CoffeeScript templates
-fs              = require("fs")             # File system
-
-parseUrl        = connect.utils.parseUrl
-cookie          = require('cookie')
-sign            = require('cookie-signature')
-
 class Variables
 
-#  --------------------------------------------------------------------
-
-#
-# Wrap the data array passed to render
-#
-# @access	public
-# @return	void
-#
+  #
+  # Provides variables to a view
+  #
+  # @access	public
+  # @param array
+  # @return	void
+  #
   constructor: ($args...) ->
 
     for $data in $args
@@ -56,32 +44,41 @@ class Variables
 
 
 
+require BASEPATH+'core/Server/Server.coffee'
+
 class global.Exspresso_Server_connect extends Exspresso_Server
 
-  _driver           : 'connect'
+  connect         = require("connect")            # High performance middleware framework
+  cache           = require("connect-cache")      # Caching system for Connect
+  eco             = require('eco')                # Embedded CoffeeScript templates
+  fs              = require("fs")                 # File system
+  cookie          = require('cookie')             # cookie parsing and serialization
+  sign            = require('cookie-signature')   # Sign and unsign cookies
+  parseUrl        = connect.utils.parseUrl        # Parse the `req` url with memoization.
 
-  #  --------------------------------------------------------------------
+
+  _driver         : 'connect'
 
   #
   # Set the server instance
   #
   # @access	public
+  # @param object
   # @return	void
   #
   constructor: ($config = {}) ->
 
-    log_message('debug', "Server_connect driver Class Initialized")
+    log_message('debug', "Connect Driver Initialized")
 
     super $config, connect()
-    @app.use @middleware()
-
-  #  --------------------------------------------------------------------
+    @app.use @patch()
 
   #
   # Add view helpers
   #
   # @access	public
-  # @return	void
+  # @param array
+  # @return	object
   #
   set_helpers: ($helpers) ->
     for $key, $val of $helpers
@@ -101,9 +98,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
     @_port = @_port || 3000
 
-    #@app.use connect.directory(APPPATH+'modules/blog', icons: true)
-
-    #@app.use @authenticate()
     @app.use @error_5xx()
     @app.use @error_404()
 
@@ -178,32 +172,21 @@ class global.Exspresso_Server_connect extends Exspresso_Server
     return
 
 
-  # --------------------------------------------------------------------
-
   #
-  # Server middleware
+  # Patch the connect server objects
   #
-  #   @returns function middlware callback
+  # @access	public
+  # @param object
+  # @param object
+  # @param function
+  # @return	void
   #
-  middleware: ->
-
-    log_message 'debug',"connect middleware initialized"
-
-    #  --------------------------------------------------------------------
-
-    #
-    # Patch the connect server objects
-    #
-    # @access	private
-    # @return	void
-    #
-    ($req, $res, $next) =>
-
-      #  --------------------------------------------------------------------
+  patch: -> ($req, $res, $next) =>
 
       #
       # Set expected request object properties
       #
+
       Object.defineProperties $req,
         protocol:   get: -> if $req.connection.encrypted then 'https' else 'http'
         secure:     get: -> if $req.protocol is 'https' then true else false
@@ -213,29 +196,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
       Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers.host
 
-      #  --------------------------------------------------------------------
-
-      ###
-      $res.cookie = ($name, $val, $options) ->
-
-        $options = array_merge({}, $options)
-        if $options.signed and not $req.secret then throw new Error('signed cookies require encryption key')
-        if typeof $val is 'object' then $val = 'j:'+JSON.stringify($val)
-        if $options.signed then $val = 's:'+sign($val, $req.secret)
-        if $options.maxAge?
-          $options.expires = new Date(Date.now() + $options.maxAge)
-          $options.maxAge /= 1000
-        if not $options.path? then $options.path = '/'
-        log_message 'debug', 'cookie name = %s', $name
-        log_message 'debug', 'cookie val = %s', $val
-        log_message 'debug', 'cookie options = %j', $options
-        try
-          $res.setHeader  'Set-Cookie': ''+cookie.serialize($name, ''+$val, $options)
-        catch $err
-          $next($err)
-      ###
-
-      #  --------------------------------------------------------------------
 
       #
       # Send
@@ -252,7 +212,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
           'Content-Type': 'text/html; charset=utf-8'
         $res.end $data
 
-      #  --------------------------------------------------------------------
 
       #
       # Redirect
@@ -268,14 +227,13 @@ class global.Exspresso_Server_connect extends Exspresso_Server
           'Location': $url
         $res.end null
 
-      $res._error_handler = ($err) ->
-        $next $err
-      #  --------------------------------------------------------------------
+      #$res._error_handler = ($err) ->
+      #  $next $err
 
       #
       # Render
       #
-      #   called by a controller to display the view
+      #   called by the controller to display a view
       #
       # @access	public
       # @param	string    path to view

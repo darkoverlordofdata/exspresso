@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| MY_Controller.coffee
+#| AdminController.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -11,7 +11,22 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	PublicController
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
+#
+#
+
+#  ------------------------------------------------------------------------
+#
+#	  AdminController
 #
 #   Base class for all publicly viewable pages
 #
@@ -25,8 +40,6 @@ class global.AdminController extends PublicController
 
     @theme.more 'signin', 'sidenav'
     @load.library 'user/user'
-
-  ## --------------------------------------------------------------------
 
   #
   # Sidenav
@@ -50,8 +63,6 @@ class global.AdminController extends PublicController
       Demo         : '/admin/travel'
     
     @template.html_sidenav($admin_menu, $active)
-
-  ## --------------------------------------------------------------------
 
   #
   # Submenu
