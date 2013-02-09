@@ -158,8 +158,6 @@ class global.User
   #
   check_password: ($password, $user) ->
 
-    log_message 'debug', 'pass is a %s', (typeof $user.password)
-    log_message 'debug', 'salt is a %s', (typeof $user.salt)
     bcrypt.compareSync($password, String($user.password)+String($user.salt))
 
 module.exports = User

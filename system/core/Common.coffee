@@ -129,46 +129,6 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
   return new (global[$name])($config)
 
 
-#  ------------------------------------------------------------------------
-
-#
-# Exspresso Driver registry
-#
-# Loads a driver subclass as a class singleton.
-#
-# @access	public
-# @param	string	the class name of the driver being requested
-# @param	string	the directory where the class should be found
-# @param	string	the subclass name of the driver being requested
-# @param	string	the class name prefix
-# @param	string	configuration
-# @return	object
-#
-exports.load_driver = load_driver = ($class, $directory = 'libraries', $driver, $prefix = 'Exspresso_', $config = {}) ->
-
-  if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso_', $prefix]
-
-  #  Does the class exist?  If so, we're done...
-  if _classes[$prefix+$class+'_'+$driver]?
-    return _classes[$prefix+$class+'_'+$driver]
-
-  $name = strtolower($class)
-  if not file_exists($file_path = APPPATH + 'config/drivers/' + $name+EXT)
-    show_error('The driver configuration file %s does not exist.', $name+EXT)
-
-  $config = require($file_path)
-  if $driver is '' then $driver = $config['active_'+$name]
-  $config = $config[$name]
-
-  if not $config? or count($config) is 0
-    show_error 'No driver settings were found in the %s config file.', $name
-
-  if not $driver? or not $config[$driver]?
-    show_error 'You have specified an invalid driver for %s [%s]', $name, $subclass
-
-  $parent = require(BASEPATH + $directory + '/' + $class + '/' + $class + EXT)
-  $parent.load($driver, $config[$driver])
-
 
 #  ------------------------------------------------------------------------
 

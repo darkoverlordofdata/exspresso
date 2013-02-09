@@ -312,21 +312,18 @@ class global.Template
 
     #
     # load all partials
-    #
     get_partials ($err) =>
 
       return log_message('error', 'Template::view get_partials %s', $err) if show_error($err)
 
       #
       # load the body view & merge with partials
-      #
       @Exspresso.load.view $view, @_data, ($err, $content) =>
 
         return log_message('error', 'Template::view load.view %s', $err) if show_error($err)
 
         #
         # merge the body into the theme layout
-        #
         @set '$content', $content
         @Exspresso.render @_theme_path+@_layout, @_data, ($err, $page) =>
 

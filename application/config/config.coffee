@@ -246,6 +246,7 @@ exports['encryption_key'] = process.env.CLIENT_SECRET ? 'ZAHvYIu8u1iRS6Hox7jADpn
 # 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 #
 
+exports['sess_driver'] = 'sql'
 exports['sess_cookie_name']		= 'sid'
 exports['sess_expiration']		= 7200
 exports['sess_expire_on_close']	= false

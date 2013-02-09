@@ -22,10 +22,10 @@
 #       * Session
 #       * URI
 #
-dispatch        = require('dispatch')   # URL dispatcher for Connect
 
 class global.Exspresso_Server
 
+  dispatch      = require('dispatch')   # URL dispatcher for Connect
   #
   # config settings
   #
@@ -41,19 +41,6 @@ class global.Exspresso_Server
   _site_slogan  : 'My Slogan'
   _queue        : null
 
-  #  --------------------------------------------------------------------
-
-  #
-  # Load the driver subclass
-  #
-  # @access	public
-  # @param string   Driver name <express|connect|appjs>
-  # @param object   config array
-  # @return	object
-  #
-  @load = ($driver, $args...) ->
-    $class = require(BASEPATH+'core/Server/drivers/Server_'+$driver)
-    new $class($args...)
 
   #  --------------------------------------------------------------------
 
@@ -178,7 +165,7 @@ class global.Exspresso_Server
   start: ($router, $next) ->
 
     Exspresso.load.initialize()
-    @app.use load_class('Exceptions',  'core').middleware()
+    @app.use load_class('Exceptions',  'core').exception_handler()
     @app.use dispatch($router.routes)
     @run Exspresso.queue().concat(@queue()), ($err) ->
       $next($err)
@@ -210,7 +197,7 @@ class global.Exspresso_Server
   #
   # Sessions 
   #
-  #   called by the libraries/Session/Session class constructor
+  #   called by the Session driver constructor
   #
   # @access	public
   # @param	object
@@ -218,53 +205,26 @@ class global.Exspresso_Server
   #
   session: ($session) ->
 
-    $driver = require(@_driver) # connect | express
-    @app.use $driver.cookieParser($session.encryption_key)
-    #  Are we using a database?  If so, load it
-    if $session.sess_use_database isnt false and $session.sess_table_name isnt ''
+    $server = require(@_driver) # connect | express
+    @app.use $server.cookieParser($session.encryption_key)
 
-      if $session.sess_use_database is true
-        $sess_store = 'sql'
-      else
-        $sess_store = parse_url($session.sess_use_database).scheme
+    # Session middleware options
+    $options =
+      secret    : $session.encryption_key
+      cookie:
+          domain    : $session.cookie_domain
+          path      : $session.cookie_path
+          name      : $session.sess_cookie_name
+          secure    : $session.cookie_secure
+          maxAge    : $session.sess_expiration
 
-      $found = false
-      for $path in [BASEPATH, APPPATH]
+    #  Are we using a database?  If so, load the driver
+    if $session.sess_use_database
+      $options['store'] = $session.load_driver($session.sess_driver).setup()
 
-        if file_exists($path+'libraries/Session/drivers/Session_'+$sess_store+EXT)
-
-          $found = true
-
-          $store_driver = require($path+'libraries/Session/drivers/Session_'+$sess_store+EXT)
-          $store = new $store_driver($session)
-          $store.setup()
-
-          @app.use $driver.session
-            secret    : $session.encryption_key
-            store     : $store
-            cookie:
-                        domain    : $session.cookie_domain
-                        path      : $session.cookie_path
-                        name      : $session.sess_cookie_name
-                        secure    : $session.cookie_secure
-                        maxAge    : $session.sess_expiration
-
-      log_message('error', "Driver not found: Session_%s", $sess_store) if not $found
-
-    else
-
-      @app.use $driver.session
-        secret    : $session.encryption_key
-        cookie:
-                    domain    : $session.cookie_domain
-                    path      : $session.cookie_path
-                    name      : $session.sess_cookie_name
-                    secure    : $session.cookie_secure
-                    maxAge    : $session.sess_expiration
-
-
-    @app.use $session.constructor.parse($session)
-    @app.use $driver.csrf() if @_csrf
+    @app.use $server.session($options)
+    @app.use $session.parse()
+    @app.use $server.csrf() if @_csrf
     return
 
 

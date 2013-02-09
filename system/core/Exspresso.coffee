@@ -83,10 +83,9 @@ exports.config = load_class('Config', 'core')
 #   Get the 1st command line arg
 #     if it's not an option, then it's the driver name
 #
-$driver = if ~($argv[2] ? '').indexOf('-') then '' else $argv[2] ? ''
+$driver = if ~($argv[2] ? '').indexOf('-') then 'express' else $argv[2] ? 'express'
 
-exports.server = load_driver('Server', 'core', $driver)
-
+exports.server = load_class('Server_'+$driver, 'core/Server/drivers')
 #
 # ------------------------------------------------------
 #  Instantiate the routing class and set the routing

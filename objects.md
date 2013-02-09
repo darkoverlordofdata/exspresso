@@ -27,11 +27,11 @@
         * DB_active_rec         X       X
         * DB_cache              ?       ?
         * DB_driver             X       X
-        * DB_forge              X       ?
+        * DB_forge              X       X
         * DB_result             X       X
-        * DB_utility            X       ?
+        * DB_utility            X       X
     * Helpers
-        * array_helper          ?
+        * array_helper          X
         * captcha_helper        ?
         * cookie_helper         ?
         * date_helper           ?
@@ -54,7 +54,7 @@
     * Libraries
         * Calendar              ?
         * Cart                  ?
-        * Driver                ?
+        * Driver                X
         * Email                 X
         * Encrypt               -
         * Form_validation       X

@@ -32,21 +32,23 @@
 #
 # Session Class
 #
-class global.Exspresso_Session
+class global.Exspresso_Session extends Exspresso_Driver_Library
 
   express     = require('express')                    # Express 3.0 Framework
   cookie      = require('cookie')                     # cookie parsing and serialization
   format      = require('util').format
-  unserialize = JSON.parse
-  serialize   = JSON.stringify
   urldecode   = decodeURIComponent
-  urlencode   = encodeURIComponent
+
+  FLASH_KEY               = 'flash'
+  FLASH_NEW               = ':new:'
+  FLASH_OLD               = ':old:'
 
   Exspresso               : null
   req                     : null
   res                     : null
 
   # expose config as public properties
+  sess_driver             : 'sql'
   sess_encrypt_cookie     : false
   sess_use_database       : false
   sess_table_name         : ''
@@ -63,10 +65,7 @@ class global.Exspresso_Session
   encryption_key          : ''
   time_reference          : 'local'
 
-  _flashdata_key          : 'flash'
-  _gc_probability         : 5
   _userdata               : null
-  _now                    : 0
 
   #
   # Session Constructor
@@ -78,30 +77,26 @@ class global.Exspresso_Session
 
     log_message 'debug', "Session Class Initialized"
 
-    @_userdata = {}
-    @_now = 0
-
     #  Set all the session preferences, which can either be set
     #  manually via the $params array above or via the config file
-    for $key in ['sess_encrypt_cookie', 'sess_use_database', 'sess_table_name', 'sess_expiration', 'sess_expire_on_close', 'sess_match_ip', 'sess_match_useragent', 'sess_cookie_name', 'cookie_path', 'cookie_domain', 'cookie_secure', 'sess_time_to_update', 'time_reference', 'cookie_prefix', 'encryption_key']
+    for $key in ['sess_driver', 'sess_encrypt_cookie', 'sess_use_database', 'sess_table_name', 'sess_expiration', 'sess_expire_on_close', 'sess_match_ip', 'sess_match_useragent', 'sess_cookie_name', 'cookie_path', 'cookie_domain', 'cookie_secure', 'sess_time_to_update', 'time_reference', 'cookie_prefix', 'encryption_key']
       @[$key] = if ($params[$key]?) then $params[$key] else config_item($key)
 
     if @_encryption_key is ''
       show_error('In order to use the Session class you are required to set an encryption key in your config file.')
-
-    #  Set the "now" time.  Can either be GMT or server time, based on the
-    #  config prefs.  We use this to set the "last activity" time
-    @_now = @_get_time()
 
     #  Set the session length. If the session expiration is
     #  set to zero we'll set the expiration two years from now.
     if @sess_expiration is 0
       @sess_expiration = (60 * 60 * 24 * 365 * 2)
 
+    # Is there an http request?
     if $Exspresso.req?
 
       $req = @req = $Exspresso.req
       $res = @res = $Exspresso.res
+
+      @_userdata = {}
 
       # expose flashdata method in views
       if $res.locals?
@@ -120,25 +115,19 @@ class global.Exspresso_Session
 
       log_message('debug', "Session routines successfully run")
 
-    else
-
-      # then we're booting.
-      # Initialize the server:
+    else # we're booting, initialize the driver
       Exspresso.server.session @
 
-  # --------------------------------------------------------------------
 
   #
   # Parse the session properties
   #
   # @access	public
-  # @param object Exspresso_Session instance
   # @returns function middleware callback
   #
-  @parse = ($session) ->
+  parse: ->
 
-    $cookie_name = $session.cookie_prefix + $session.sess_cookie_name
-    #  --------------------------------------------------------------------
+    $cookie_name = @cookie_prefix + @sess_cookie_name
 
     #
     # Called prior to each controller constructor, ensures
@@ -150,7 +139,7 @@ class global.Exspresso_Session
     # @param function
     # @return	void
     #
-    ($req, $res, $next) ->
+    ($req, $res, $next) =>
 
       # parse the session id
       if $req.headers.cookie?
@@ -163,7 +152,7 @@ class global.Exspresso_Session
       $req.session.uid            = $req.session.uid || User_model.UID_ANONYMOUS
       $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
       $req.session.user_agent     = $req.headers['user-agent']
-      $req.session.last_activity  = (new Date()).getTime()
+      $req.session.last_activity  = @_get_time()
       $req.session.userdata       = $req.session.userdata || {}
 
       $next()
@@ -188,7 +177,6 @@ class global.Exspresso_Session
         $data[$key] = $val
 
     return
-  # --------------------------------------------------------------------
 
   #
   # Delete a session variable from the "userdata" array
@@ -209,7 +197,6 @@ class global.Exspresso_Session
         delete $data[$key]
 
     return
-  # --------------------------------------------------------------------
 
   #
   # Fetch a specific item from the session array
@@ -224,8 +211,6 @@ class global.Exspresso_Session
 
     if not $data[$item]? then false else $data[$item]
 
-  # --------------------------------------------------------------------
-
   #
   # Fetch all session data
   #
@@ -235,8 +220,6 @@ class global.Exspresso_Session
   all_userdata: () ->
 
     if not @req.session.userdata? then false else @req.session.userdata
-
-  #  ------------------------------------------------------------------------
 
   #
   # Add or change flashdata, only available
@@ -259,11 +242,9 @@ class global.Exspresso_Session
 
     if count($newdata) > 0
       for $key, $val of $newdata
-        $flashdata_key = @_flashdata_key + ':new:' + $key
+        $flashdata_key = FLASH_KEY + FLASH_NEW + $key
         @set_userdata($flashdata_key, $val)
 
-
-  #  ------------------------------------------------------------------------
 
   #
   # Keeps existing flashdata available to next request.
@@ -277,13 +258,11 @@ class global.Exspresso_Session
     #  flashdata as 'new' to preserve it from _flashdata_sweep()
     #  Note the function will return FALSE if the $key
     #  provided cannot be found
-    $old_flashdata_key = @_flashdata_key + ':old:' + $key
+    $old_flashdata_key = FLASH_KEY + FLASH_OLD + $key
     $value = @userdata($old_flashdata_key)
 
-    $new_flashdata_key = @_flashdata_key + ':new:' + $key
+    $new_flashdata_key = FLASH_KEY + FLASH_NEW + $key
     @set_userdata($new_flashdata_key, $value)
-
-  #  ------------------------------------------------------------------------
 
   #
   # Fetch a specific flashdata item from the session array
@@ -294,10 +273,8 @@ class global.Exspresso_Session
   #
   flashdata : ($key) =>
 
-    $flashdata_key = @_flashdata_key + ':old:' + $key
+    $flashdata_key = FLASH_KEY + FLASH_OLD + $key
     return @userdata($flashdata_key)
-
-  #  ------------------------------------------------------------------------
 
   #
   # Identifies flashdata as 'old' for removal
@@ -309,13 +286,11 @@ class global.Exspresso_Session
   _flashdata_mark :  ->
     $userdata = @all_userdata()
     for $name, $value of $userdata
-      $parts = explode(':new:', $name)
+      $parts = explode(FLASH_NEW, $name)
       if is_array($parts) and count($parts) is 2
-        $new_name = @_flashdata_key + ':old:' + $parts[1]
+        $new_name = FLASH_KEY + FLASH_OLD + $parts[1]
         @set_userdata($new_name, $value)
         @unset_userdata($name)
-
-  #  ------------------------------------------------------------------------
 
   #
   # Removes all flashdata marked as 'old'
@@ -326,10 +301,8 @@ class global.Exspresso_Session
   _flashdata_sweep :  ->
     $userdata = @all_userdata()
     for $key, $value of $userdata
-      if strpos($key, ':old:')
+      if strpos($key, FLASH_OLD)
         @unset_userdata($key)
-
-  #  --------------------------------------------------------------------
 
   #
   # Get the "now" time
@@ -347,5 +320,6 @@ class global.Exspresso_Session
 
 #  END Session Class
 module.exports = Exspresso_Session
-#  End of file Session.php 
-#  Location: ./system/libraries/Session.php 
+
+#  End of file Session.php
+#  Location: ./system/libraries/Session.php

@@ -31,10 +31,11 @@
 #|
 #| 1. Packages
 #| 2. Libraries
-#| 3. Helper files
-#| 4. Custom config files
-#| 5. Language files
-#| 6. Models
+#| 3. Drivers
+#| 4. Helper files
+#| 5. Custom config files
+#| 6. Language files
+#| 7. Models
 #|
 #
 
@@ -58,9 +59,22 @@ exports['packages'] = [APPPATH+'third_party/ckeditor/', APPPATH+'third_party/gra
 #|
 #| Prototype:
 #|
-#|	$autoload['libraries'] = ['database', 'session']
+#|	$autoload['libraries'] = ['database']
 #
-exports['libraries'] = ['database', 'Session/session']
+exports['libraries'] = ['database'] #, 'Session/session']
+
+#
+#| -------------------------------------------------------------------
+#|  Auto-load Drivers
+#| -------------------------------------------------------------------
+#| These are the classes located in the system/libraries folder
+#| or in your application/libraries folder.
+#|
+#| Prototype:
+#|
+#|	$autoload['drivers'] = ['session']
+#
+exports['drivers'] = ['session']
 
 #
 #|--------------------------------------------------------------------------

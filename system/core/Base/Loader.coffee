@@ -46,72 +46,16 @@ class global.Base_Loader
 
   path = require('path')
 
-  # All these are set automatically. Don't mess with them.
-  #
-  # List of loaded base classes
-  #
-  # @var array
-  #
-  _base_classes:        null # Set by the controller class
-  #
-  # path to load views from
-  #
-  # @var string
-  #
-  _ex_view_path:        ''
-  #
-  # List of paths to load libraries from
-  #
-  # @var array
-  #
-  _ex_library_paths:    null
-  #
-  # List of paths to load models from
-  #
-  # @var array
-  #
-  _ex_model_paths:      null
-  #
-  # List of paths to load helpers from
-  #
-  # @var array
-  #
-  _ex_helper_paths:     null
-  #
-  # Cached variables
-  #
-  # @var object
-  #
-  _ex_cached_vars:      null
-  #
-  # Cached classes
-  #
-  # @var array
-  #
-  _ex_classes:          null
-  #
-  # List of loaded files
-  #
-  # @var array
-  #
-  _ex_loaded_files:     null
-  #
-  # List of loaded models
-  #
-  # @var array
-  #
-  _ex_models:           null
-  #
-  # List of loaded helpers
-  #
-  # @var array
-  #
-  _ex_helpers:          null
-  #
-  # List of class name mappings
-  #
-  # @var array
-  #
+  _base_classes         : null
+  _ex_view_path         : ''
+  _ex_library_paths     : null
+  _ex_model_paths       : null
+  _ex_helper_paths      : null
+  _ex_cached_vars       : null
+  _ex_classes           : null
+  _ex_loaded_files      : null
+  _ex_models            : null
+  _ex_helpers           : null
   _ex_varmap:
     unit_test: 'unit'
     user_agent: 'agent'
@@ -373,7 +317,6 @@ class global.Base_Loader
   # @return	void
   #
   view: ($view, $vars = {}, $next = null) ->
-    log_message 'debug', 'Exspresso_Loader::view'
     @_ex_load('', $view, $vars, $next)
 
   #  --------------------------------------------------------------------
@@ -506,7 +449,7 @@ class global.Base_Loader
   # @return	void
   #
 
-  driver: ($library = '', $params = NULL, $object_name = NULL) ->
+  driver: ($library = '', $params = null, $object_name = null) ->
 
     if not class_exists('Exspresso_Driver_Library')
       # we aren't instantiating an object here, that'll be done by the Library itself
@@ -516,7 +459,7 @@ class global.Base_Loader
     # We can save the loader some time since Drivers will #always# be in a subfolder,
     # and typically identically named to the library
     if $library.indexOf('/') is -1
-      $library = $library+'/'+$library
+      $library = ucfirst($library)+'/'+$library
 
     @library($library, $params, $object_name)
 
@@ -757,19 +700,19 @@ class global.Base_Loader
         return @_ex_init_class($class, '', $params, $object_name)
 
 
-      #  END FOREACH
+    #  END FOREACH
 
-      #  One last attempt.  Maybe the library is in a subdirectory, but it wasn't specified?
-      if $subdir is ''
-        $path = strtolower($class) + '/' + $class
-        return @_ex_load_class($path, $params)
+    #  One last attempt.  Maybe the library is in a subdirectory, but it wasn't specified?
+    if $subdir is ''
+      $path = strtolower($class) + '/' + $class
+      return @_ex_load_class($path, $params)
 
 
-      #  If we got this far we were unable to find the requested class.
-      #  We do not issue errors if the load call failed due to a duplicate request
-      if $is_duplicate is false
-        log_message('error', "Unable to load the requested class: %s", $class)
-        show_error("Unable to load the requested class: %s", $class)
+    #  If we got this far we were unable to find the requested class.
+    #  We do not issue errors if the load call failed due to a duplicate request
+    if $is_duplicate is false
+      log_message('error', "Unable to load the requested class: %s", $class)
+      show_error("Unable to load the requested class: %s", $class)
 
 
 
@@ -900,6 +843,11 @@ class global.Base_Loader
       #  Load all other libraries
       for $item in $autoload['libraries']
         @library $item unless $item is 'database'
+
+    #  autoload drivers
+    if $autoload['drivers']?
+      for $item in $autoload['drivers']
+        @driver $item
 
     #  Autoload models
     if $autoload['model']?

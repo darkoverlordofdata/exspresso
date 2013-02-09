@@ -158,7 +158,7 @@ class global.Exspresso_Exceptions
   #
   #   @returns function middlware callback
   #
-  middleware: ()->
+  exception_handler: ()->
 
     log_message 'debug',"Exceptions middleware initialized"
 
@@ -166,6 +166,14 @@ class global.Exspresso_Exceptions
 
 
       #  --------------------------------------------------------------------
+
+      #
+      # 404 Page Not Found Handler
+      #
+      # @access	private
+      # @param	string
+      # @return	string
+      #
       @show_404 = ($page = '', $log_error = true, $next) =>
 
         if typeof $log_error is 'function'
@@ -185,6 +193,19 @@ class global.Exspresso_Exceptions
         @show_error $err, '404', 404, $next
 
       #  --------------------------------------------------------------------
+      #
+      # General Error Page
+      #
+      # This function takes an error message as input
+      # (either as a string or an array) and displays
+      # it using the specified template.
+      #
+      # @access	private
+      # @param	string	the heading
+      # @param	string	the message
+      # @param	string	the template name
+      # @return	string
+      #
       @show_error = ($err, $template = '5xx', $status_code = 500, $next) ->
 
         if typeof $template is 'function'
@@ -201,6 +222,17 @@ class global.Exspresso_Exceptions
         $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $next
 
       #  --------------------------------------------------------------------
+
+      #
+      # Native error handler
+      #
+      # @access	private
+      # @param	string	the error severity
+      # @param	string	the error string
+      # @param	string	the error filepath
+      # @param	string	the error line number
+      # @return	string
+      #
       @show_native_error = ($severity, $message, $filepath, $line) ->
 
         $filepath = str_replace("\\", "/", $filepath)

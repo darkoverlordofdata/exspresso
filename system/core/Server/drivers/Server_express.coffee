@@ -27,13 +27,14 @@
 #       * Session
 #       * URI
 #
-express         = require('express')        # Web development framework
-cache           = require("connect-cache")  # Caching system for Connect
-eco             = require('eco')            # Embedded CoffeeScript templates
-fs              = require("fs")             # File system
+require BASEPATH+'core/Server/Server.coffee'
 
 class global.Exspresso_Server_express extends Exspresso_Server
 
+  express           = require('express')        # Web development framework
+  cache             = require("connect-cache")  # Caching system for Connect
+  eco               = require('eco')            # Embedded CoffeeScript templates
+  fs                = require("fs")             # File system
   _driver           : 'express'
 
   #  --------------------------------------------------------------------

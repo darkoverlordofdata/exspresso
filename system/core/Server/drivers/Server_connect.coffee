@@ -27,12 +27,9 @@
 #       * URI
 #
 #
+require BASEPATH+'core/Server/Server.coffee'
+
 connect         = require("connect")        # High performance middleware framework
-#
-# known issues:
-#   1. Cookies not working
-#
-#
 cache           = require("connect-cache")  # Caching system for Connect
 eco             = require('eco')            # Embedded CoffeeScript templates
 fs              = require("fs")             # File system

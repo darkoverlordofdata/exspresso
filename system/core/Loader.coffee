@@ -58,26 +58,13 @@ require BASEPATH+'core/Base/Loader.coffee'
 
 class global.Exspresso_Loader extends Base_Loader
 
-  #
-  # Module state
-  #
-  # @var array
-  #
-  _module: {}
-  #
-  # List of paths to load plugins from
-  #
-  # @var array
-  #
-  _ex_plugins: {}
-  #
-  # List of variables for rendering templates
-  #
-  # @var array
-  #
-  _ex_cached_vars: {}
+  _module       : ''
+  _ex_plugins   : null
 
 
+  constructor: ($Exspresso) ->
+    super $Exspresso
+    @_module = $Exspresso._module
 
   ## --------------------------------------------------------------------
 
@@ -137,11 +124,9 @@ class global.Exspresso_Loader extends Base_Loader
 
     @_ex_helpers[$_helper] = Modules.load_file($_helper, $path)
 
-    # expose the helpers to template engine
-    # for $name, $value of @_ex_helpers[$helper]
-    #   Exspresso.server.app.locals[$name] = $value
-
     @_ex_helpers[$helper]
+    # expose the helpers to template engine
+    Exspresso.server.set_helpers @_ex_helpers[$helper]
 
   ## --------------------------------------------------------------------
 
@@ -355,6 +340,8 @@ class global.Exspresso_Loader extends Base_Loader
 
     if (is_array($plugin)) then return @plugins($plugin)
 
+    if not @_ex_plugins? then @_ex_plugins = {}
+
     if @_ex_plugins[$plugin]?
       return
 
@@ -414,14 +401,16 @@ class global.Exspresso_Loader extends Base_Loader
   # @param	array
   # @return	void
   #
-  _autoloader: ($autoload) ->
+  _ex_autoloader:  ->
 
+    super() # application autoload first
     $path = false
 
     if (@_module)
       [$path, $file] = Modules.find('autoload', @_module, 'config/')
 
     #  module autoload file
+    $autoload = {}
     if ($path isnt false)
       $autoload = array_merge(Modules.load_file($file, $path, 'autoload'), $autoload)
 
@@ -458,6 +447,12 @@ class global.Exspresso_Loader extends Base_Loader
       #  autoload libraries
       for $library in $autoload['libraries']
         @library($library)
+
+    #  autoload drivers
+    if $autoload['drivers']?
+      for $driver in $autoload['drivers']
+        @driver($driver)
+
 
     #  autoload models
     if $autoload['model']?
