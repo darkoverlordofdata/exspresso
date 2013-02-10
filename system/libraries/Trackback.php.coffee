@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -59,8 +59,6 @@ class Exspresso_Trackback
   {
   log_message('debug', "Trackback Class Initialized")
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Send Trackback
@@ -125,8 +123,6 @@ class Exspresso_Trackback
     return $return
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Receive Trackback  Data
   #
@@ -163,8 +159,6 @@ class Exspresso_Trackback
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Send Trackback Error Message
   #
@@ -181,8 +175,6 @@ class Exspresso_Trackback
     die()
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Send Trackback Success Message
   #
@@ -197,8 +189,6 @@ class Exspresso_Trackback
     die()
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Fetch a particular item
   #
@@ -209,8 +199,6 @@ class Exspresso_Trackback
   data : ($item) ->
     return if ( not @data[$item]? ) then '' else @data[$item]
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Process Trackback
@@ -267,8 +255,6 @@ class Exspresso_Trackback
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Extract Trackback URLs
   #
@@ -303,8 +289,6 @@ class Exspresso_Trackback
     return $urls
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Validate URL
   #
@@ -321,8 +305,6 @@ class Exspresso_Trackback
       $url = "http://" + $url
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Find the Trackback URL's ID
@@ -364,8 +346,6 @@ class Exspresso_Trackback
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Convert Reserved XML characters to Entities
   #
@@ -388,8 +368,6 @@ class Exspresso_Trackback
     
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Character limiter
@@ -421,8 +399,6 @@ class Exspresso_Trackback
         
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # High ASCII to Entities
@@ -466,8 +442,6 @@ class Exspresso_Trackback
     return $out
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set error message
   #
@@ -479,8 +453,6 @@ class Exspresso_Trackback
     log_message('error', $msg)
     @error_msg.push $msg
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Show error messages

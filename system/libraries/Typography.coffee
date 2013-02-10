@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -232,8 +232,6 @@ class global.Exspresso_Typography
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Format Characters
   #
@@ -295,8 +293,6 @@ class global.Exspresso_Typography
     return preg_replace(array_keys($table), $table, $str)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Format Newlines
   #
@@ -353,8 +349,6 @@ class global.Exspresso_Typography
   _protect_characters : ($match) ->
     return str_replace(["'", '"', '--', '  '], ['{@SQ}', '{@DQ}', '{@DD}', '{@NBS}'], $match[0])
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Convert newlines to HTML line breaks except within PRE tags

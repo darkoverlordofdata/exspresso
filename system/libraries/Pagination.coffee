@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -33,11 +33,6 @@
 #
 # Pagination Class
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Pagination
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/pagination.html
 #
 class global.Exspresso_Pagination
 
@@ -92,8 +87,6 @@ class global.Exspresso_Pagination
 
     log_message('debug', "Pagination Class Initialized")
 
-  #  --------------------------------------------------------------------
-  
   #
   # Initialize Preferences
   #
@@ -107,8 +100,6 @@ class global.Exspresso_Pagination
         if @['_'+$key]?
           @['_'+$key] = $val
 
-  #  --------------------------------------------------------------------
-  
   #
   # Generate the pagination links
   #

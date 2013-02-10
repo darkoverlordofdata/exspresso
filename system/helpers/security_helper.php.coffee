@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com

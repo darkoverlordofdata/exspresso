@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -122,8 +122,6 @@ class global.Exspresso_Email
     log_message('debug', "Email Class Initialized")
 
     
-  #  --------------------------------------------------------------------
-  
   #
   # Initialize preferences
   #
@@ -151,8 +149,6 @@ class global.Exspresso_Email
     return @
 
     
-  #  --------------------------------------------------------------------
-  
   #
   # Initialize the Email Data
   #
@@ -183,8 +179,6 @@ class global.Exspresso_Email
 
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set FROM
   #
@@ -207,8 +201,6 @@ class global.Exspresso_Email
 
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Reply-to
   #
@@ -234,8 +226,6 @@ class global.Exspresso_Email
 
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Recipients
   #
@@ -255,8 +245,6 @@ class global.Exspresso_Email
 
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set CC
   #
@@ -277,8 +265,6 @@ class global.Exspresso_Email
 
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set BCC
   #
@@ -303,8 +289,6 @@ class global.Exspresso_Email
     return @
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Email Subject
   #
@@ -317,8 +301,6 @@ class global.Exspresso_Email
     @_subject = $subject
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Body
   #
@@ -331,8 +313,6 @@ class global.Exspresso_Email
     @_body = $body
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Assign file attachments
   #
@@ -347,8 +327,6 @@ class global.Exspresso_Email
     @_attach_disp.push $disposition #  Can also be 'inline'  Not sure if it matters
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Convert a String to an Array
   #
@@ -367,8 +345,6 @@ class global.Exspresso_Email
 
     return $email
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Multipart Value
   #
@@ -381,8 +357,6 @@ class global.Exspresso_Email
     @alt_message = if ($str is '') then '' else $str
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Mailtype
   #
@@ -395,8 +369,6 @@ class global.Exspresso_Email
     @mailtype = if ($type is 'html') then 'html' else 'text'
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Wordwrap
   #
@@ -409,8 +381,6 @@ class global.Exspresso_Email
     @wordwrap = if ($wordwrap is false) then false else true
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Protocol
   #
@@ -423,8 +393,6 @@ class global.Exspresso_Email
     @protocol = if ( not in_array($protocol, @_protocols, true)) then 'mail' else strtolower($protocol)
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Priority
   #
@@ -445,8 +413,6 @@ class global.Exspresso_Email
     @priority = $n
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Newline Character
   #
@@ -464,8 +430,6 @@ class global.Exspresso_Email
 
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set CRLF
   #
@@ -483,8 +447,6 @@ class global.Exspresso_Email
 
     return @
 
-  #  --------------------------------------------------------------------
-  
   #
   # Get Mail Protocol
   #
@@ -502,8 +464,6 @@ class global.Exspresso_Email
     
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Get content type (text/html/attachment)
   #
@@ -526,8 +486,6 @@ class global.Exspresso_Email
 
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Mime message
   #
@@ -538,8 +496,6 @@ class global.Exspresso_Email
 
     return "This is a multi-part message in MIME format." + @newline + "Your email application may not support this format."
 
-  #  --------------------------------------------------------------------
-  
   #
   # Validate Email Address
   #
@@ -560,8 +516,6 @@ class global.Exspresso_Email
 
     return true
 
-  #  --------------------------------------------------------------------
-  
   #
   # Email Validation
   #
@@ -573,8 +527,6 @@ class global.Exspresso_Email
 
     return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
 
-  #  --------------------------------------------------------------------
-  
   #
   # Clean Extended Email Address: Joe Smith <joe@smith.com>
   #
@@ -602,8 +554,6 @@ class global.Exspresso_Email
 
     return $clean_email
 
-  #  --------------------------------------------------------------------
-  
   #
   # Build alternative plain text message
   #
@@ -641,8 +591,6 @@ class global.Exspresso_Email
 
     return @word_wrap($body, '76')
 
-  #  --------------------------------------------------------------------
-  
   #
   # Word Wrap
   #
@@ -714,8 +662,6 @@ class global.Exspresso_Email
     return $output
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Send Email
   #

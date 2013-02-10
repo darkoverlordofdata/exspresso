@@ -85,6 +85,7 @@ class Variables
 
 class global.Exspresso_Server_appjs extends Exspresso_Server
 
+  __defineProperties = {}.defineProperties
   _driver           : 'appjs'
   _secure           : false
   _protocol         : ''
@@ -285,7 +286,7 @@ class global.Exspresso_Server_appjs extends Exspresso_Server
       #
       # Set expected request object properties
       #
-      Object.defineProperties $req,
+      __defineProperties $req,
         secure:       get: -> if $req.protocol is 'https' then true else false
         ip:           value: $req.ip ? @_ip
         host:         value: $req.host ? @_host

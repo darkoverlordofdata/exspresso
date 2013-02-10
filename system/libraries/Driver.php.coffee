@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -97,9 +97,7 @@ class global.Exspresso_Driver_Library
     show_error("Invalid driver requested: %s", $child_class)
     
   
-  #  --------------------------------------------------------------------
-  
-  
+
 module.exports = Exspresso_Driver_Library
 #  END Exspresso_Driver_Library CLASS
 
@@ -162,8 +160,6 @@ class global.Exspresso_Driver
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # __call magic method
   #
@@ -184,8 +180,6 @@ class global.Exspresso_Driver
     die 
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # __get magic method
   #
@@ -199,8 +193,6 @@ class global.Exspresso_Driver
       return @parent.$var
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # __set magic method
@@ -217,9 +209,7 @@ class global.Exspresso_Driver
       
     
   
-  #  --------------------------------------------------------------------
-  
-  
+
 module.exports = Exspresso_Driver
 #  END Exspresso_Driver CLASS
 

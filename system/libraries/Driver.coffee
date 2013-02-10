@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -87,6 +87,8 @@ module.exports = Exspresso_Driver_Library
 #
 class global.Exspresso_Driver
 
+  __defineProperties = Object.defineProperties
+
   #
   # Decorate
   #
@@ -108,7 +110,7 @@ class global.Exspresso_Driver
               $fn.apply($parent, $args)
           else
             # forward the parent accessor
-            Object.defineProperties @,
+            __defineProperties @,
             array($name,  get:  -> $parent[$name])
             array($name,  set: ($newval) -> $parent[$name] = $newval)
     return @

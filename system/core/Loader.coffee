@@ -172,6 +172,9 @@ class global.Exspresso_Loader extends Base_Loader
   #
   library: ($library, $params = null, $object_name = null) ->
 
+    if not class_exists('Exspresso_Class')
+      require BASEPATH+'core/Class'+EXT
+
     if is_array($library) then return @libraries($library)
 
     $class = strtolower(end(explode('/', $library)))

@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -116,7 +116,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
       log_message('debug', "Session routines successfully run")
 
     else # we're booting, initialize the driver
-      Exspresso.server.session @
+      $Exspresso.server.session @
 
 
   #
@@ -125,11 +125,11 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # Called prior to each controller constructor, ensures
   # that the expected session objects are available
   #
-  # @access	private
+  # @access private
   # @param object
   # @param object
   # @param function
-  # @return	void
+  # @return void
   #
   #
   parse_request: ($cookie_name) -> ($req, $res, $next) =>

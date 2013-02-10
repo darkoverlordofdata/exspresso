@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -64,8 +64,6 @@ class Exspresso_FTP
   log_message('debug', "FTP Class Initialized")
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Initialize preferences
   #
@@ -83,8 +81,6 @@ class Exspresso_FTP
     #  Prep the hostname
     @hostname = preg_replace('|.+?://|', '', @hostname)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # FTP Connect
@@ -120,8 +116,6 @@ class Exspresso_FTP
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # FTP Login
   #
@@ -131,8 +125,6 @@ class Exspresso_FTP
   _login :  ->
     return ftp_login(@conn_id, @username, @password)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Validates the connection ID
@@ -150,9 +142,7 @@ class Exspresso_FTP
     return true
     
   
-  #  --------------------------------------------------------------------
-  
-  
+
   #
   # Change directory
   #
@@ -184,8 +174,6 @@ class Exspresso_FTP
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Create a directory
   #
@@ -214,8 +202,6 @@ class Exspresso_FTP
     
     return true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Upload a file to the server
@@ -262,8 +248,6 @@ class Exspresso_FTP
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Download a file from a remote server to the local server
   #
@@ -299,8 +283,6 @@ class Exspresso_FTP
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Rename (or move) a file
   #
@@ -329,8 +311,6 @@ class Exspresso_FTP
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Move a file
   #
@@ -342,8 +322,6 @@ class Exspresso_FTP
   move : ($old_file, $new_file) ->
     return @rename($old_file, $new_file, true)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Rename (or move) a file
@@ -368,8 +346,6 @@ class Exspresso_FTP
     
     return true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Delete a folder and recursively delete everything (including sub-folders)
@@ -411,8 +387,6 @@ class Exspresso_FTP
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set file permissions
   #
@@ -445,8 +419,6 @@ class Exspresso_FTP
     
     return true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # FTP List files in the specified directory

@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -35,12 +35,8 @@
 #
 # Lets you create tables manually or from database result objects, or arrays.
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	HTML Tables
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/uri.html
 #
+
 class global.Exspresso_Table
   
   _rows             : null
@@ -57,8 +53,6 @@ class global.Exspresso_Table
     @_rows = []
     @_heading = {}
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set the template
   #
@@ -74,8 +68,6 @@ class global.Exspresso_Table
     @_template = $template
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set the table heading
   #
@@ -89,8 +81,6 @@ class global.Exspresso_Table
     $args = func_get_args()
     @_heading = @_prep_args($args)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set columns.  Takes a one-dimensional array as input and creates
@@ -131,8 +121,6 @@ class global.Exspresso_Table
     return $new
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set "empty" cells
   #
@@ -145,8 +133,6 @@ class global.Exspresso_Table
   set_empty : ($value) ->
     @_empty_cells = $value
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Add a table row
@@ -161,8 +147,6 @@ class global.Exspresso_Table
     $args = func_get_args()
     @_rows.push @_prep_args($args)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Prep Args
@@ -196,8 +180,6 @@ class global.Exspresso_Table
     return $args
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Add a table caption
   #
@@ -208,8 +190,6 @@ class global.Exspresso_Table
   set_caption : ($caption) ->
     @_caption = $caption
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Generate the table
@@ -339,8 +319,6 @@ class global.Exspresso_Table
     return $out
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Clears the table arrays.  Useful if multiple tables are being generated
   #
@@ -352,8 +330,6 @@ class global.Exspresso_Table
     @_heading = {}
     @_auto_heading = true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set table data from a database result object
@@ -381,8 +357,6 @@ class global.Exspresso_Table
       for $row in $query.result_array()
         @_rows.push @_prep_args($row)
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set table data from an array
   #
@@ -408,8 +382,6 @@ class global.Exspresso_Table
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Compile Template
   #
@@ -429,8 +401,6 @@ class global.Exspresso_Table
         
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Default Template

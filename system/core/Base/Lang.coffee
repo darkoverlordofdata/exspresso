@@ -21,7 +21,7 @@
 #
 # @package		Exspresso
 # @author		  darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
 # @link		    http://darkoverlordofdata.com
@@ -49,8 +49,6 @@ class global.Base_Lang
     @_is_loaded = []
     log_message 'debug', "Language Class Initialized"
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Load a language file
@@ -104,8 +102,6 @@ class global.Base_Lang
     log_message('debug', 'Language file loaded: language/%s/%s', $idiom, $langfile)
     return true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Fetch a single line of text from the language array

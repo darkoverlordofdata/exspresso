@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -83,8 +83,6 @@ class Exspresso_Upload
   log_message('debug', "Upload Class Initialized")
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Initialize preferences
   #
@@ -141,8 +139,6 @@ class Exspresso_Upload
   #  supplied file name for all uploads until initialized again
   @_file_name_override = @file_name
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Perform the file upload
@@ -318,8 +314,6 @@ class Exspresso_Upload
   return true
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Finalized Data Array
   #
@@ -348,8 +342,6 @@ class Exspresso_Upload
   )
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Upload Path
   #
@@ -361,8 +353,6 @@ class Exspresso_Upload
   #  Make sure it has a trailing slash
   @upload_path = rtrim($path, '/') + '/'
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set the file name
@@ -406,8 +396,6 @@ class Exspresso_Upload
     
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Maximum File Size
   #
@@ -418,8 +406,6 @@ class Exspresso_Upload
   {
   @max_size = if ($n < 0) then 0 else $n
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set Maximum File Name Length
@@ -432,8 +418,6 @@ class Exspresso_Upload
   @max_filename = if ($n < 0) then 0 else $n
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Maximum Image Width
   #
@@ -445,8 +429,6 @@ class Exspresso_Upload
   @max_width = if ($n < 0) then 0 else $n
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Maximum Image Height
   #
@@ -457,8 +439,6 @@ class Exspresso_Upload
   {
   @max_height = if ($n < 0) then 0 else $n
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set Allowed File Types
@@ -474,8 +454,6 @@ class Exspresso_Upload
     
   @allowed_types = explode('|', $types)
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set Image Properties
@@ -503,8 +481,6 @@ class Exspresso_Upload
     
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set XSS Clean
   #
@@ -518,8 +494,6 @@ class Exspresso_Upload
   {
   @xss_clean = if ($flag is true) then true else false
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Validate the image
@@ -550,8 +524,6 @@ class Exspresso_Upload
   
   return if (in_array(@file_type, $img_mimes, true)) then true else false
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Verify that the filetype is allowed
@@ -602,8 +574,6 @@ class Exspresso_Upload
   return false
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Verify that the file is within the allowed size
   #
@@ -618,8 +588,6 @@ class Exspresso_Upload
     return true
     
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Verify that the image is within the allowed width/height
@@ -648,8 +616,6 @@ class Exspresso_Upload
   
   return true
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Validate Upload Path
@@ -684,8 +650,6 @@ class Exspresso_Upload
   return true
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Extract the file extension
   #
@@ -697,8 +661,6 @@ class Exspresso_Upload
   $x = explode('.', $filename)
   return '.' + end($x)
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Clean the file name for security
@@ -742,8 +704,6 @@ class Exspresso_Upload
   return stripslashes($filename)
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Limit the File Name Length
   #
@@ -765,8 +725,6 @@ class Exspresso_Upload
   
   return substr($filename, 0, ($length - strlen($ext))) + $ext
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Runs the file through the XSS clean function
@@ -829,8 +787,6 @@ class Exspresso_Upload
   return $Exspresso.security.xss_clean($data, true)
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set an error message
   #
@@ -856,8 +812,6 @@ class Exspresso_Upload
     
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Display the error message
   #
@@ -874,8 +828,6 @@ class Exspresso_Upload
   
   return $str
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # List of Mime Types
@@ -907,8 +859,6 @@ class Exspresso_Upload
   
   return if ( not @mimes[$mime]? ) then false else @mimes[$mime]
   }
-  
-  #  --------------------------------------------------------------------
   
   #
   # Prep Filename
@@ -943,9 +893,7 @@ class Exspresso_Upload
   return $filename
   }
   
-  #  --------------------------------------------------------------------
-  
-  
+
 
 register_class 'Exspresso_Upload', Exspresso_Upload
 module.exports = Exspresso_Upload

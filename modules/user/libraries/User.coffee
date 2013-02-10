@@ -17,7 +17,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
 # @since      Version 1.0
@@ -29,7 +29,7 @@
 #	  User Library
 #
 
-class global.User
+class global.User extends Exspresso_Class
 
   bcrypt          = require('bcrypt')     # A bcrypt library for NodeJS
 
@@ -44,17 +44,15 @@ class global.User
   #
   # @return 	nothing
   #
-  constructor: ($config = {}, @Exspresso) ->
+  constructor: ($args...) ->
 
+    super $args...
     log_message 'debug', "User Class Initialized"
 
-    for $key, $val of $config
-      if @['_'+$key]?
-        @['_'+$key] = $val
+    @user_model = @load.model('user/user_model')
 
-    @model = @Exspresso.load.model('user/user_model')
     # add to the controller queue
-    @Exspresso.queue ($next) =>
+    @queue ($next) =>
       @initialize $next
 
 
@@ -64,7 +62,7 @@ class global.User
   #
   initialize: ($next) ->
 
-    @model.load_by_id @Exspresso.req.session.uid, ($err, $user) =>
+    @user_model.load_by_id @req.session.uid, ($err, $user) =>
 
       return $next($err) if $err
 
@@ -72,7 +70,7 @@ class global.User
       for $field in @_field_list
         @_user[$field] = $user[$field]
 
-      @model.load_roles $user.uid, ($err, $roles) =>
+      @user_model.load_roles $user.uid, ($err, $roles) =>
         @_user.roles = if $err then [] else $roles
         $next()
 
@@ -108,24 +106,24 @@ class global.User
   #
   authenticate: ($name, $password, $next) ->
 
-    @model.load_by_name $name, ($err, $user) =>
+    @user_model.load_by_name $name, ($err, $user) =>
 
       $next($err) if $err
 
       if @check_password($password, $user)
         for $field in @_field_list
           @_user[$field] = $user[$field]
-        @Exspresso.req.session.uid = $user.uid
-        @model.load_roles $user.uid, ($err, $roles) =>
+        @req.session.uid = $user.uid
+        @user_model.load_roles $user.uid, ($err, $roles) =>
 
           @_user.roles = if $err then [] else $roles
           $next null, $user.uid
 
       else
-        $user = @model.anonymous_user()
+        $user = @user_model.anonymous_user()
         for $field in @_field_list
           @_user[$field] = $user[$field]
-        @Exspresso.req.session.uid = $user.uid
+        @req.session.uid = $user.uid
         $next null, false
 
   #

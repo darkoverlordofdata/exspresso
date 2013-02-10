@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -58,8 +58,6 @@ class global.Exspresso_DB_forge
     log_message('debug', "Database Forge Class Initialized")
     
 
-  #  --------------------------------------------------------------------
-  
   #
   # Create database
   #
@@ -74,8 +72,6 @@ class global.Exspresso_DB_forge
       
     @db.query($sql, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Drop database
@@ -92,8 +88,6 @@ class global.Exspresso_DB_forge
 
     @db.query($sql, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Add Key
@@ -120,8 +114,6 @@ class global.Exspresso_DB_forge
       @keys.push $key
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Add Field
@@ -156,8 +148,6 @@ class global.Exspresso_DB_forge
 
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Create Table
   #
@@ -183,8 +173,6 @@ class global.Exspresso_DB_forge
     @db.query $sql, $next
 
   
-  #  --------------------------------------------------------------------
-  
   #
   # Drop Table
   #
@@ -201,8 +189,6 @@ class global.Exspresso_DB_forge
     @db.query($sql, $next)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Rename Table
   #
@@ -218,8 +204,6 @@ class global.Exspresso_DB_forge
     $sql = @_rename_table($table_name, $new_table_name)
     @db.query($sql, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Column Add
@@ -254,8 +238,6 @@ class global.Exspresso_DB_forge
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Column Drop
   #
@@ -277,8 +259,6 @@ class global.Exspresso_DB_forge
     
     return @db.query($sql, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Column Modify
@@ -311,8 +291,6 @@ class global.Exspresso_DB_forge
       @_reset()
       @db.query($sql, $next)
 
-  
-  #  --------------------------------------------------------------------
   
   #
   # Reset

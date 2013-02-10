@@ -351,8 +351,6 @@ class global.Exspresso_Profiler extends Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Run the Profiler
   #

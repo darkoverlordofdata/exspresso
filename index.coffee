@@ -46,11 +46,11 @@ __defineProperty = Object.defineProperty
 
 Function::get = ($def) ->
   $name = __keys($def)[0]
-  __defineProperty @::, $name, {get: $def[$name], configurable: yes}
+  __defineProperty @::, $name, {get: $def[$name]}
 
 Function::set = ($def) ->
   $name = __keys($def)[0]
-  __defineProperty @::, $name, {set: $def[$name], configurable: yes}
+  __defineProperty @::, $name, {set: $def[$name]}
 
 #
 #---------------------------------------------------------------

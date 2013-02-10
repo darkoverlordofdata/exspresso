@@ -17,7 +17,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
 # @since      Version 1.0
@@ -106,6 +106,21 @@ class global.User_model extends Exspresso_Model
       $next $err, $roles
 
 
+  #
+  # Add role to user
+  #
+  # @access	public
+  # @return	object
+  #
+  add_role: ($uid, $role, $next) ->
+
+    #
+    # Remove role from user
+    #
+    # @access	public
+    # @return	object
+    #
+  remove_role: ($uid, $role, $next) ->
 
   #
   # Delete a user

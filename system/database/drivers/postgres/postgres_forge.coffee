@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -50,8 +50,6 @@ class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
     return "CREATE DATABASE " + $name
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Drop database
   #
@@ -62,8 +60,6 @@ class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
   _drop_database : ($name) ->
     return "DROP DATABASE " + $name
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Create Table
@@ -195,8 +191,6 @@ class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
     return $sql
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Drop Table
   #
@@ -206,8 +200,6 @@ class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
   _drop_table : ($table) ->
     return "DROP TABLE IF EXISTS " + @db._escape_identifiers($table) + " CASCADE"
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Alter table query
@@ -253,8 +245,6 @@ class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
     return $sql
     
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Rename a table

@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -110,8 +110,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @ar_cache_orderby =   []
     @ar_cache_set =       []
 
-  #  --------------------------------------------------------------------
-  
   #
   # Select
   #
@@ -146,8 +144,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Select Max
   #
@@ -161,8 +157,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   select_max: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'MAX')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Select Min
@@ -178,8 +172,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_max_min_avg_sum($select, $alias, 'MIN')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Select Average
   #
@@ -194,8 +186,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_max_min_avg_sum($select, $alias, 'AVG')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Select Sum
   #
@@ -209,8 +199,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   select_sum: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'SUM')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Processing Function for the four functions above:
@@ -252,8 +240,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Determines the alias name based on the table
   #
@@ -269,8 +255,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return $item
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # DISTINCT
   #
@@ -284,8 +268,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @ar_distinct = if (is_bool($val)) then $val else true
     return @
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # From
@@ -325,8 +307,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
 
     return @
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Join
@@ -375,8 +355,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Where
   #
@@ -392,8 +370,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_where($key, $value, 'AND ', $escape)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # OR Where
   #
@@ -408,8 +384,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   or_where: ($key, $value = null, $escape = true) ->
     @_where($key, $value, 'OR ', $escape)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Where
@@ -457,8 +431,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Where_in
   #
@@ -473,8 +445,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   where_in: ($key = null, $values = null) ->
     @_where_in($key, $values)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Where_in_or
@@ -491,8 +461,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_where_in($key, $values, false, 'OR ')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Where_not_in
   #
@@ -508,8 +476,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_where_in($key, $values, true)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Where_not_in_or
   #
@@ -524,8 +490,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   or_where_not_in: ($key = null, $values = null) ->
     @_where_in($key, $values, true, 'OR ')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Where_in
@@ -566,8 +530,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Like
   #
@@ -582,8 +544,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   like: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'AND ', $side)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Not Like
@@ -600,8 +560,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_like($field, $match, 'AND ', $side, 'NOT')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # OR Like
   #
@@ -617,8 +575,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_like($field, $match, 'OR ', $side)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # OR Not Like
   #
@@ -633,8 +589,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   or_not_like: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'OR ', $side, 'NOT')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Like
@@ -680,8 +634,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # GROUP BY
   #
@@ -706,8 +658,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Sets the HAVING value
   #
@@ -722,8 +672,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_having($key, $value, 'AND ', $escape)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Sets the OR HAVING value
   #
@@ -737,8 +685,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   or_having: ($key, $value = '', $escape = true) ->
     @_having($key, $value, 'OR ', $escape)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Sets the HAVING values
@@ -773,8 +719,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     return @
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Sets the ORDER BY value
@@ -816,8 +760,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Sets the LIMIT value
   #
@@ -835,8 +777,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Sets the OFFSET value
   #
@@ -848,8 +788,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @ar_offset = $offset
     return @
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # The "set" function.  Allows key/value pairs to be set for inserting or updating
@@ -874,8 +812,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     return @
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get
@@ -933,8 +869,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
           $row = $query.row()
           $next null, $row.numrows
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get_Where
@@ -1062,8 +996,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
 
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Insert
   #
@@ -1132,8 +1064,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @_reset_write()
     return @query($sql, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Update
@@ -1309,8 +1239,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
 
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Empty Table
   #
@@ -1341,8 +1269,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     return @query($sql)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Truncate
@@ -1380,8 +1306,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     @query($sql, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Delete
@@ -1448,8 +1372,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @query($sql, $next)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # DB Prefix
   #
@@ -1466,8 +1388,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     return @dbprefix + $table
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Track Aliases
@@ -1506,8 +1426,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
         
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Compile the SELECT statement
@@ -1664,8 +1582,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
 
     return $array
 
-  #  --------------------------------------------------------------------
-  
   #
   # Start Cache
   #
@@ -1678,8 +1594,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     @ar_caching = true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Stop Cache
   #
@@ -1691,8 +1605,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   stop_cache:  ->
     @ar_caching = false
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Flush Cache
@@ -1718,8 +1630,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
       
     )
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Merge Cache
@@ -1753,8 +1663,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Resets the active record values.  Called by the get() function
   #
@@ -1769,8 +1677,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
         
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Resets the active record values.  Called by the get() function
@@ -1798,8 +1704,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     @_reset_run($ar_reset_items)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Resets the active record "write" values.

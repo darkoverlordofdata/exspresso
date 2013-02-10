@@ -1,18 +1,15 @@
 #+--------------------------------------------------------------------+
-#  Model.coffee
+#| Class.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#| Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
-#
-#  This file is a part of Exspresso
-#
-#  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the MIT License
-#
+#|
+#| This file is a part of Exspresso
+#|
+#| Exspresso is free software; you can copy, modify, and distribute
+#| it under the terms of the GNU General Public License Version 3
+#|
 #+--------------------------------------------------------------------+
-#
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
 #
 #
 # Exspresso
@@ -21,46 +18,44 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
 # @since      Version 1.0
 #
+#
 
 #  ------------------------------------------------------------------------
-
 #
-# Exspresso Model Class
+#	Base Library Class
 #
-
-class global.Exspresso_Model
+class global.Exspresso_Class
 
   __hasOwnProperty = Object.hasOwnProperty
   __defineProperty = Object.defineProperty
 
   #
-  # Model Constructor
+  # Library Class Constructor
   #
+  # Copies the config properties with underscore prefix
   # Copies the Exspresso_Controllers public base class properties
   #
   # @access	public
-  # @param	object	$Exspresso Controller Instance mixin
+  # @param	object
   # @return	void
   #
-  constructor: ($Exspresso) ->
+  constructor: ($config = {}, $Exspresso) ->
 
-    log_message 'debug', "Model Class Initialized"
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
 
     for $key, $obj of $Exspresso
       if $key[0] isnt '_' and __hasOwnProperty.call($Exspresso, $key)
         __defineProperty @, $key, {value: $obj, writeable: false}
 
 
-
-# END Exspresso_Model class
-
-module.exports = Exspresso_Model
-
-# End of file Model.coffee
-# Location: ./system/core/Model.coffee
+# END CLASS Class
+module.exports = Exspresso_Class
+# End of file Class.coffee
+# Location: ./libraries/Class.coffee

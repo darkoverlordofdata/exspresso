@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -91,8 +91,6 @@ class global.Exspresso_User_agent
 
     log_message('debug', "User Agent Class Initialized")
 
-  #  --------------------------------------------------------------------
-  
   #
   # Compile the User Agent Data
   #
@@ -132,8 +130,6 @@ class global.Exspresso_User_agent
 
     return $return
 
-  #  --------------------------------------------------------------------
-  
   #
   # Compile the User Agent Data
   #
@@ -147,8 +143,6 @@ class global.Exspresso_User_agent
       if @[$function()] is true
         break
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set the Platform
   #
@@ -166,8 +160,6 @@ class global.Exspresso_User_agent
     @_platform = 'Unknown Platform'
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set the Browser
   #
@@ -188,8 +180,6 @@ class global.Exspresso_User_agent
 
     return false
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set the Robot
   #
@@ -207,8 +197,6 @@ class global.Exspresso_User_agent
 
     return false
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set the Mobile Device
   #
@@ -227,8 +215,6 @@ class global.Exspresso_User_agent
     return false
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set the accepted languages
   #
@@ -248,8 +234,6 @@ class global.Exspresso_User_agent
       @_languages = ['Undefined']
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set the accepted character sets
   #
@@ -269,8 +253,6 @@ class global.Exspresso_User_agent
       @_charsets = ['Undefined']
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Is Browser
   #
@@ -289,8 +271,6 @@ class global.Exspresso_User_agent
     #  Check for a specific browser
     return array_key_exists($key, @_browsers) and @_browser is @_browsers[$key]
 
-  #  --------------------------------------------------------------------
-  
   #
   # Is Robot
   #
@@ -309,8 +289,6 @@ class global.Exspresso_User_agent
     #  Check for a specific robot
     return array_key_exists($key, @_robots) and @_robot is @_robots[$key]
 
-  #  --------------------------------------------------------------------
-  
   #
   # Is Mobile
   #
@@ -330,8 +308,6 @@ class global.Exspresso_User_agent
     return array_key_exists($key, @_mobiles) and @_mobile is @_mobiles[$key]
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Is this a referral from another site?
   #
@@ -346,8 +322,6 @@ class global.Exspresso_User_agent
     return true
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Agent String
   #
@@ -357,8 +331,6 @@ class global.Exspresso_User_agent
   agent_string: () ->
     return @_agent
 
-  #  --------------------------------------------------------------------
-  
   #
   # Get Platform
   #
@@ -368,8 +340,6 @@ class global.Exspresso_User_agent
   platform: () ->
     return @_platform
 
-  #  --------------------------------------------------------------------
-  
   #
   # Get Browser Name
   #
@@ -379,8 +349,6 @@ class global.Exspresso_User_agent
   browser: () ->
     return @_browser
 
-  #  --------------------------------------------------------------------
-  
   #
   # Get the Browser Version
   #
@@ -390,8 +358,6 @@ class global.Exspresso_User_agent
   version: () ->
     return @_version
 
-  #  --------------------------------------------------------------------
-  
   #
   # Get The Robot Name
   #
@@ -401,8 +367,6 @@ class global.Exspresso_User_agent
   robot: () ->
     return @_robot
 
-  #  --------------------------------------------------------------------
-  
   #
   # Get the Mobile Device
   #
@@ -412,8 +376,6 @@ class global.Exspresso_User_agent
   mobile: () ->
     return @_mobile
 
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get the referrer
@@ -425,8 +387,6 @@ class global.Exspresso_User_agent
   referrer: () ->
     return if ( not @Exspresso.$_SERVER['HTTP_REFERER']?  or @Exspresso.$_SERVER['HTTP_REFERER'] is '') then '' else trim(@Exspresso.$_SERVER['HTTP_REFERER'])
 
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get the accepted languages
@@ -441,8 +401,6 @@ class global.Exspresso_User_agent
     return @_languages
 
   
-  #  --------------------------------------------------------------------
-  
   #
   # Get the accepted Character Sets
   #
@@ -456,8 +414,6 @@ class global.Exspresso_User_agent
     return @_charsets
 
   
-  #  --------------------------------------------------------------------
-  
   #
   # Test for a particular language
   #
@@ -467,8 +423,6 @@ class global.Exspresso_User_agent
   accept_lang: ($lang = 'en') ->
     return (in_array(strtolower($lang), @_languages(), true))
 
-  
-  #  --------------------------------------------------------------------
   
   #
   # Test for a particular character set

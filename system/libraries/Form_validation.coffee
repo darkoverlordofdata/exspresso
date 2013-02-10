@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -75,8 +75,6 @@ class global.Exspresso_Form_validation
 
     log_message('debug', "Form Validation Class Initialized")
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Rules
   #
@@ -154,8 +152,6 @@ class global.Exspresso_Form_validation
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Error Message
   #
@@ -176,8 +172,6 @@ class global.Exspresso_Form_validation
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set The Error Delimiter
   #
@@ -194,8 +188,6 @@ class global.Exspresso_Form_validation
     
     return @
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get Error Message
@@ -221,8 +213,6 @@ class global.Exspresso_Form_validation
 
     return $prefix + @_field_data[$field]['error'] + $suffix
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Error String
@@ -253,8 +243,6 @@ class global.Exspresso_Form_validation
 
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Run the Validator
@@ -330,8 +318,6 @@ class global.Exspresso_Form_validation
     return false
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Traverse a multidimensional @Exspresso.$_POST array index until the data is found
   #
@@ -353,8 +339,6 @@ class global.Exspresso_Form_validation
         return $array
     return $array
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Re-populate the _POST array with our finalized and processed data
@@ -399,8 +383,6 @@ class global.Exspresso_Form_validation
         
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Executes the Validation routines
@@ -575,8 +557,6 @@ class global.Exspresso_Form_validation
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Translate a field name
   #
@@ -599,8 +579,6 @@ class global.Exspresso_Form_validation
     
     return $fieldname
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get the value from a form
@@ -626,8 +604,6 @@ class global.Exspresso_Form_validation
     
     return @_field_data[$field]['postdata']
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set Select
@@ -664,8 +640,6 @@ class global.Exspresso_Form_validation
     return ' selected="selected"'
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Radio
   #
@@ -699,8 +673,6 @@ class global.Exspresso_Form_validation
     return ' checked="checked"'
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Checkbox
   #
@@ -732,8 +704,6 @@ class global.Exspresso_Form_validation
     return ' checked="checked"'
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Required
   #
@@ -749,8 +719,6 @@ class global.Exspresso_Form_validation
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Performs a Regular Expression match test.
   #
@@ -764,8 +732,6 @@ class global.Exspresso_Form_validation
       return false
     return true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Match one field to another
@@ -784,8 +750,6 @@ class global.Exspresso_Form_validation
     return if ($str isnt $field) then false else true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Minimum Length
   #
@@ -803,8 +767,6 @@ class global.Exspresso_Form_validation
 
     return if (strlen($str) < $val) then false else true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Max Length
@@ -826,8 +788,6 @@ class global.Exspresso_Form_validation
     return if (strlen($str) > $val) then false else true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Exact Length
   #
@@ -848,8 +808,6 @@ class global.Exspresso_Form_validation
     return if (strlen($str) isnt $val) then false else true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Valid Email
   #
@@ -860,8 +818,6 @@ class global.Exspresso_Form_validation
   valid_email: ($str) ->
     return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/ix", $str)) then false else true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Valid Emails
@@ -884,8 +840,6 @@ class global.Exspresso_Form_validation
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Validate IP Address
   #
@@ -896,8 +850,6 @@ class global.Exspresso_Form_validation
   valid_ip: ($ip) ->
     return @Exspresso.input.valid_ip($ip)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Alpha
@@ -910,8 +862,6 @@ class global.Exspresso_Form_validation
     return if ( not preg_match("/^([a-z])+$/i", $str)) then false else true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Alpha-numeric
   #
@@ -923,8 +873,6 @@ class global.Exspresso_Form_validation
     return if ( not preg_match("/^([a-z0-9])+$/i", $str)) then false else true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Alpha-numeric with underscores and dashes
   #
@@ -935,8 +883,6 @@ class global.Exspresso_Form_validation
   alpha_dash: ($str) ->
     return if ( not preg_match("/^([-a-z0-9_-])+$/i", $str)) then false else true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Numeric
@@ -950,8 +896,6 @@ class global.Exspresso_Form_validation
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Is Numeric
   #
@@ -962,8 +906,6 @@ class global.Exspresso_Form_validation
   is_numeric: ($str) ->
     return if ( not is_numeric($str)) then false else true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Integer
@@ -976,8 +918,6 @@ class global.Exspresso_Form_validation
     return preg_match('/^[\\-+]?[0-9]+$/', $str)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Decimal number
   #
@@ -988,8 +928,6 @@ class global.Exspresso_Form_validation
   decimal: ($str) ->
     return preg_match('/^[\\-+]?[0-9]+\\.[0-9]+$/', $str)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Greather than
@@ -1005,8 +943,6 @@ class global.Exspresso_Form_validation
     return $str > $min
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Less than
   #
@@ -1021,8 +957,6 @@ class global.Exspresso_Form_validation
     return $str < $max
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Is a Natural number  (0,1,2,3, etc.)
   #
@@ -1033,8 +967,6 @@ class global.Exspresso_Form_validation
   is_natural: ($str) ->
     return preg_match('/^[0-9]+$/', $str)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Is a Natural number, but not a zero  (1,2,3, etc.)
@@ -1055,8 +987,6 @@ class global.Exspresso_Form_validation
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Valid Base64
   #
@@ -1070,8 +1000,6 @@ class global.Exspresso_Form_validation
   valid_base64: ($str) ->
     return  not preg_match('/[^a-zA-Z0-9\\/\\+=]/', $str)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Prep data for form
@@ -1095,8 +1023,6 @@ class global.Exspresso_Form_validation
     return str_replace(["'", '"', '<', '>'], ["&#39;", "&quot;", '&lt;', '&gt;'], stripslashes($data))
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Prep URL
   #
@@ -1114,8 +1040,6 @@ class global.Exspresso_Form_validation
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Strip Image Tags
   #
@@ -1127,8 +1051,6 @@ class global.Exspresso_Form_validation
     return @Exspresso.input.strip_image_tags($str)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # XSS Clean
   #
@@ -1139,8 +1061,6 @@ class global.Exspresso_Form_validation
   xss_clean: ($str) ->
     return @Exspresso.security.xss_clean($str)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Convert PHP tags to entities

@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -67,8 +67,6 @@ class Exspresso_Javascript
   
   #  --------------------------------------------------------------------
   #  Event Code
-  #  --------------------------------------------------------------------
-  
   #
   # Blur
   #
@@ -83,8 +81,6 @@ class Exspresso_Javascript
     return @js._blur($element, $js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Change
   #
@@ -98,8 +94,6 @@ class Exspresso_Javascript
   change : ($element = 'this', $js = '') ->
     return @js._change($element, $js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Click
@@ -116,8 +110,6 @@ class Exspresso_Javascript
     return @js._click($element, $js, $ret_false)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Double Click
   #
@@ -131,8 +123,6 @@ class Exspresso_Javascript
   dblclick : ($element = 'this', $js = '') ->
     return @js._dblclick($element, $js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Error
@@ -148,8 +138,6 @@ class Exspresso_Javascript
     return @js._error($element, $js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Focus
   #
@@ -163,8 +151,6 @@ class Exspresso_Javascript
   focus : ($element = 'this', $js = '') ->
     return @js.__add_event($focus, $js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Hover
@@ -181,8 +167,6 @@ class Exspresso_Javascript
     return @js.__hover($element, $over, $out)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Keydown
   #
@@ -196,8 +180,6 @@ class Exspresso_Javascript
   keydown : ($element = 'this', $js = '') ->
     return @js._keydown($element, $js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Keyup
@@ -213,8 +195,6 @@ class Exspresso_Javascript
     return @js._keyup($element, $js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Load
   #
@@ -228,8 +208,6 @@ class Exspresso_Javascript
   load : ($element = 'this', $js = '') ->
     return @js._load($element, $js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Mousedown
@@ -245,8 +223,6 @@ class Exspresso_Javascript
     return @js._mousedown($element, $js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Mouse Out
   #
@@ -260,8 +236,6 @@ class Exspresso_Javascript
   mouseout : ($element = 'this', $js = '') ->
     return @js._mouseout($element, $js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Mouse Over
@@ -277,8 +251,6 @@ class Exspresso_Javascript
     return @js._mouseover($element, $js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Mouseup
   #
@@ -293,8 +265,6 @@ class Exspresso_Javascript
     return @js._mouseup($element, $js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Output
   #
@@ -307,8 +277,6 @@ class Exspresso_Javascript
   output : ($js) ->
     return @js._output($js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Ready
@@ -324,8 +292,6 @@ class Exspresso_Javascript
     return @js._document_ready($js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Resize
   #
@@ -340,8 +306,6 @@ class Exspresso_Javascript
     return @js._resize($element, $js)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Scroll
   #
@@ -355,8 +319,6 @@ class Exspresso_Javascript
   scroll : ($element = 'this', $js = '') ->
     return @js._scroll($element, $js)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Unload
@@ -374,9 +336,7 @@ class Exspresso_Javascript
   
   #  --------------------------------------------------------------------
   #  Effects
-  #  --------------------------------------------------------------------
-  
-  
+
   #
   # Add Class
   #
@@ -390,8 +350,6 @@ class Exspresso_Javascript
   addClass : ($element = 'this', $class = '') ->
     return @js._addClass($element, $class)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Animate
@@ -408,8 +366,6 @@ class Exspresso_Javascript
     return @js._animate($element, $params, $speed, $extra)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Fade In
   #
@@ -425,8 +381,6 @@ class Exspresso_Javascript
     return @js._fadeIn($element, $speed, $next)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Fade Out
   #
@@ -441,8 +395,6 @@ class Exspresso_Javascript
   fadeOut : ($element = 'this', $speed = '', $next = '') ->
     return @js._fadeOut($element, $speed, $next)
     
-  #  --------------------------------------------------------------------
-  
   #
   # Slide Up
   #
@@ -459,8 +411,6 @@ class Exspresso_Javascript
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Remove Class
   #
@@ -474,8 +424,6 @@ class Exspresso_Javascript
   removeClass : ($element = 'this', $class = '') ->
     return @js._removeClass($element, $class)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Slide Down
@@ -491,8 +439,6 @@ class Exspresso_Javascript
   slideDown : ($element = 'this', $speed = '', $next = '') ->
     return @js._slideDown($element, $speed, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Slide Toggle
@@ -510,8 +456,6 @@ class Exspresso_Javascript
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Hide
   #
@@ -527,8 +471,6 @@ class Exspresso_Javascript
     return @js._hide($element, $speed, $next)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Toggle
   #
@@ -543,8 +485,6 @@ class Exspresso_Javascript
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Toggle Class
   #
@@ -557,8 +497,6 @@ class Exspresso_Javascript
   toggleClass : ($element = 'this', $class = '') ->
     return @js._toggleClass($element, $class)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Show
@@ -575,8 +513,6 @@ class Exspresso_Javascript
     return @js._show($element, $speed, $next)
     
   
-  
-  #  --------------------------------------------------------------------
   
   #
   # Compile
@@ -602,8 +538,6 @@ class Exspresso_Javascript
   clear_compile :  ->
     @js._clear_compile()
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # External
@@ -638,8 +572,6 @@ class Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Inline
   #
@@ -658,8 +590,6 @@ class Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Open Script
   #
@@ -674,8 +604,6 @@ class Exspresso_Javascript
     $str+=($src is '') then '>' else ' src="' + $src + '">'
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Close Script
@@ -695,8 +623,6 @@ class Exspresso_Javascript
   #  --------------------------------------------------------------------
   #  AJAX-Y STUFF - still a testbed
   #  --------------------------------------------------------------------
-  #  --------------------------------------------------------------------
-  
   #
   # Update
   #
@@ -711,8 +637,6 @@ class Exspresso_Javascript
   update : ($element = 'this', $speed = '', $next = '') ->
     return @js._updater($element, $speed, $next)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Generate JSON
@@ -766,8 +690,6 @@ class Exspresso_Javascript
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Is associative array
   #
@@ -786,8 +708,6 @@ class Exspresso_Javascript
     
     return false
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Prep Args
@@ -812,8 +732,6 @@ class Exspresso_Javascript
       return $result
       
     
-  
-  #  --------------------------------------------------------------------
   
 
 register_class 'Exspresso_Javascript', Exspresso_Javascript

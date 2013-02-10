@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -40,23 +40,23 @@
 #
 class Exspresso_DB_postgre_driver extends Exspresso_DB
 
-  dbdriver:   'postgres'
-  port:       5432
-  connected:  false
+  dbdriver          : 'postgres'
+  port              : 5432
+  connected         : false
 
-  _escape_char: '"'
+  _escape_char      : '"'
 
   #  clause and character used for LIKE escape sequences
-  _like_escape_str: '' # " ESCAPE '%s' "
-  _like_escape_chr: '' # !'
+  _like_escape_str  : '' # " ESCAPE '%s' "
+  _like_escape_chr  : '' # !'
 
   #
   # The syntax to count rows is slightly different across different
   # database engines, so this string appears in each driver and is
   # used for the count_all() and count_all_results() functions.
   #
-  _count_string: "SELECT COUNT(*) AS "
-  _random_keyword: ' RANDOM()'#  database specific random keyword
+  _count_string     : "SELECT COUNT(*) AS "
+  _random_keyword   : ' RANDOM()'#  database specific random keyword
 
   #
   # Connection String

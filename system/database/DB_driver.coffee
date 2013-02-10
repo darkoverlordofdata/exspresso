@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -38,47 +38,47 @@
 
 class Exspresso_DB_driver
 
-  url: ''
-  client: null
-  username: ''
-  password: ''
-  hostname: ''
-  database: ''
-  dbdriver: ''
-  dbprefix: ''
-  char_set: 'utf8'
-  dbcollat: 'utf8_general_ci'
-  autoinit: true#  Whether to automatically initialize the DB
-  swap_pre: ''
-  port: ''
-  pconnect: false
-  conn_id: false
-  result_id: false
-  db_debug: true #false
-  benchmark: 0
-  query_count: 0
-  bind_marker: '?'
-  save_queries: true
-  queries: null
-  query_times: null
-  data_cache: null
-  trans_enabled: true
-  trans_strict: true
-  _trans_depth: 0
-  _trans_status: true#  Used with transactions to determine if a rollback should occur
-  cache_on: false
-  cachedir: ''
-  cache_autodel: false
-  CACHE: null#  The cache class object
+  url             : ''
+  client          : null
+  username        : ''
+  password        : ''
+  hostname        : ''
+  database        : ''
+  dbdriver        : ''
+  dbprefix        : ''
+  char_set        : 'utf8'
+  dbcollat        : 'utf8_general_ci'
+  autoinit        : true    #  Whether to automatically initialize the DB
+  swap_pre        : ''
+  port            : ''
+  pconnect        : false
+  conn_id         : false
+  result_id       : false
+  db_debug        : true
+  benchmark       : 0
+  query_count     : 0
+  bind_marker     : '?'
+  save_queries    : true
+  queries         : null
+  query_times     : null
+  data_cache      : null
+  trans_enabled   : true
+  trans_strict    : true
+  _trans_depth    : 0
+  _trans_status   : true    #  Used with transactions to determine if a rollback should occur
+  cache_on        : false
+  cachedir        : ''
+  cache_autodel   : false
+  cache           : null    #  The cache class object
 
   #  Private variables
   _protect_identifiers_default: true
-  _reserved_identifiers: ['*']#  Identifiers that should NOT be escaped
+  _reserved_identifiers: ['*']  #  Identifiers that should NOT be escaped
 
   #  These are use with Oracle
-  stmt_id: null
-  curs_id: null
-  limit_used: null
+  stmt_id         : null
+  curs_id         : null
+  limit_used      : null
 
 
 
@@ -93,7 +93,7 @@ class Exspresso_DB_driver
     @queries = []
     @query_times = []
     @data_cache = {}
-    @CACHE = {}
+    @cache = {}
     @stmt_id = {}
     @curs_id = {}
     @limit_used = {}
@@ -116,8 +116,6 @@ class Exspresso_DB_driver
     log_message 'debug', 'Exspresso_DB_%s_driver initialize', @dbdriver
     if $next?
       @db_connect $next
-    #else
-    #  @db_connect()
 
 
 
@@ -180,18 +178,17 @@ class Exspresso_DB_driver
 
     $iterate = =>
 
-      if $sql.length is 0 then $next null, $results
-      else
-        #
-        # execute sql
-        #
-        $query $sql[$index], ($err, $result) =>
-          if $err then $next $err
-          else
-            $results.push $result
-            $index += 1
-            if $index is $sql.length then $next null, $results
-            else $iterate()
+      return $next(null, $results) if $sql.length is 0
+      #
+      # execute sql
+      #
+      $query $sql[$index], ($err, $result) =>
+        return $next($err) if $err
+
+        $results.push $result
+        $index += 1
+        if $index is $sql.length then $next null, $results
+        else $iterate()
 
     $iterate()
 
@@ -233,7 +230,7 @@ class Exspresso_DB_driver
     if @cache_on is true and stristr($sql, 'SELECT')
       if @_cache_init()
         @load_rdriver()
-        if false isnt ($cache = @CACHE.read($sql))
+        if false isnt ($cache = @cache.read($sql))
           return $cache
 
     #  Save the  query for debugging
@@ -305,7 +302,7 @@ class Exspresso_DB_driver
       #  If caching is enabled we'll auto-cleanup any
       #  existing files related to this particular URI
       if @cache_on is true and @cache_autodel is true and @_cache_init()
-        @CACHE.delete()
+        @cache.delete()
 
     #  Load and instantiate the result driver
 
@@ -336,7 +333,7 @@ class Exspresso_DB_driver
       $CR.conn_id = null
       $CR.result_id = null
 
-      @CACHE.write($sql, $CR)
+      @cache.write($sql, $CR)
 
     $next $err, $RES, $info
 
@@ -352,8 +349,8 @@ class Exspresso_DB_driver
     $driver = 'Exspresso_DB_' + @dbdriver + '_result'
 
     if not class_exists($driver)
-      Exspresso_DB_result = require(BASEPATH + 'database/DB_result' + EXT)
-      $driver = require(BASEPATH + 'database/drivers/' + @dbdriver + '/' + @dbdriver + '_result' + EXT)(Exspresso_DB_result)
+      require BASEPATH + 'database/DB_result' + EXT
+      $driver = require(BASEPATH + 'database/drivers/' + @dbdriver + '/' + @dbdriver + '_result' + EXT)
     else
       $driver = global[$driver]
 
@@ -920,7 +917,7 @@ class Exspresso_DB_driver
     if not @_cache_init()
       return false
 
-    return @CACHE.delete($segment_one, $segment_two)
+    return @cache.delete($segment_one, $segment_two)
 
 
   #  --------------------------------------------------------------------
@@ -936,7 +933,7 @@ class Exspresso_DB_driver
       return false
 
 
-    return @CACHE.delete_all()
+    return @cache.delete_all()
 
 
   #  --------------------------------------------------------------------
@@ -948,7 +945,7 @@ class Exspresso_DB_driver
   # @return	void
   #
   _cache_init: ->
-    if is_object(@CACHE) and class_exists('Exspresso_DB_Cache')
+    if is_object(@cache) and class_exists('Exspresso_DB_Cache')
       return true
 
 
@@ -958,7 +955,7 @@ class Exspresso_DB_driver
 
 
 
-    @CACHE = new Exspresso_DB_Cache(@)#  pass db object to support multiple db connections and returned db objects
+    @cache = new Exspresso_DB_Cache(@)#  pass db object to support multiple db connections and returned db objects
     return true
 
   # --------------------------------------------------------------------

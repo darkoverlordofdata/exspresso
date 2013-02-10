@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -75,8 +75,6 @@ class global.Base_Profiler
 
     @set_sections($config)
 
-  #  --------------------------------------------------------------------
-  
   #
   # Set Sections
   #
@@ -93,8 +91,6 @@ class global.Base_Profiler
 
     
 
-  #  --------------------------------------------------------------------
-  
   #
   # Auto Profiler
   #
@@ -139,8 +135,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Compile Queries
   #
@@ -203,8 +197,6 @@ class global.Base_Profiler
     return $output
 
   
-  #  --------------------------------------------------------------------
-  
   #
   # Compile @Exspresso.$_GET Data
   #
@@ -243,8 +235,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Compile @Exspresso.$_POST Data
   #
@@ -284,8 +274,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Show query string
   #
@@ -308,8 +296,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Show the controller and function that were called
   #
@@ -328,8 +314,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Compile memory usage
   #
@@ -354,8 +338,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Compile header information
   #
@@ -381,8 +363,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Compile config information
   #
@@ -410,8 +390,6 @@ class global.Base_Profiler
 
     return $output
 
-  #  --------------------------------------------------------------------
-  
   #
   # Run the Profiler
   #

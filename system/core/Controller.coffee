@@ -27,6 +27,8 @@
 # Exspresso Application Controller Class
 #
 # This class object is the super class for all controllers
+# Methods are bound with fat arrow ( => ) so that they are selected
+# for copying by the Exspresso_Class and Exspresso_Model constructors
 #
 
 class global.Exspresso_Controller
@@ -45,10 +47,6 @@ class global.Exspresso_Controller
   @get $_POST   : -> @input.post()
   @get $_SERVER : -> @input.server()
   @get $_COOKIE : -> @input.cookie()
-
-  fetch_module  : -> @_module
-  fetch_class   : -> @_class
-  fetch_method  : -> @_method
 
   #
   # Initialize Controller objects
@@ -107,6 +105,28 @@ class global.Exspresso_Controller
 
 
   #
+  # Get the controller module name
+  #
+  # @access	public
+  # @return	string
+  #
+  fetch_module  : => @_module
+  #
+  # Get the controller class name
+  #
+  # @access	public
+  # @return	string
+  #
+  fetch_class   : => @_class
+  #
+  # Get the controller method name
+  #
+  # @access	public
+  # @return	string
+  #
+  fetch_method  : => @_method
+
+  #
   # Render a view
   #
   # @access	public
@@ -142,7 +162,7 @@ class global.Exspresso_Controller
   # @param	function
   # @return	array
   #
-  queue: ($fn) ->
+  queue: ($fn) =>
     if $fn then @_queue.push($fn) else @_queue
 
   #
@@ -153,7 +173,7 @@ class global.Exspresso_Controller
   #   @param	function
   #   @return	void
   #
-  run: ($queue, $next) ->
+  run: ($queue, $next) =>
 
     if typeof $next isnt 'function'
       [$queue, $next] = [@_queue, $queue]

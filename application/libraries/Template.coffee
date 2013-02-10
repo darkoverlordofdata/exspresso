@@ -17,7 +17,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
 # @since      Version 1.0
@@ -31,25 +31,26 @@
 #
 #
 
-class global.Template
+class global.Template extends Exspresso_Class
 
-  __keys = Object.keys
+  __keys              = Object.keys
 
-  Exspresso: null
-  html: null
+  Exspresso           : null
+  html                : null
+  theme               : null
 
-  _title:           ''
-  _doctype:         'html5'
-  _layout:          'layout'
-  _theme_name:      'default'
-  _theme_locations: null
-  _menu:            null
-  _data:            null
-  _partials:        null
-  _breadcrumbs:     null
-  _metadata:        null
-  _script:          null
-  _css:             null
+  _title              : ''
+  _doctype            : 'html5'
+  _layout             : 'layout'
+  _theme_name         : 'default'
+  _theme_locations    : null
+  _menu               : null
+  _data               : null
+  _partials           : null
+  _breadcrumbs        : null
+  _metadata           : null
+  _script             : null
+  _css                : null
 
 
   #
@@ -58,11 +59,11 @@ class global.Template
   #   @access	public
   #   @return	void
   #
-  constructor: ($config = {}, @Exspresso) ->
+  constructor: ($args...) ->
 
+    super $args...
     log_message('debug', "Template Class Initialized")
 
-    @["_#{$key}"] = $val for $key, $val of $config
     @_theme_locations = [APPPATH + 'themes/'] if @_theme_locations is null
     @_menu = {}
     @_data = {}
@@ -71,7 +72,7 @@ class global.Template
     @_breadcrumbs = []
     @_script = []
     @_css = []
-    @html = @Exspresso.load.helper('html')
+    @html = @load.helper('html')
     @set_theme @_theme_name
 
 
@@ -103,8 +104,8 @@ class global.Template
     for $location in @_theme_locations
       if file_exists($location + @_theme_name)
         @_theme_path = rtrim($location + @_theme_name + '/')
-        @Exspresso.load.library 'theme', location: $location, name: $theme_name
-        @Exspresso.theme.init @, $extra
+        @theme = @load.library 'theme', location: $location, name: $theme_name
+        @theme.init @, $extra
         break
     @
 
@@ -269,7 +270,7 @@ class global.Template
     @set '$style',      $css.join("\n")
     @set '$script',     $script.join("\n")
     @set '$title',      @_title
-    @set '$menu',       @html_menu(@_menu, @Exspresso.uri.segment(1, ''))
+    @set '$menu',       @html_menu(@_menu, @uri.segment(1, ''))
     @set 'site_name',   config_item('site_name')
     @set 'site_slogan', config_item('site_slogan')
     @set $data
@@ -289,7 +290,7 @@ class global.Template
       # process the partial at index
       #
       $partial = @_partials[$index]
-      @Exspresso.load.view $partial.view, $partial.data, ($err, $html) =>
+      @load.view $partial.view, $partial.data, ($err, $html) =>
 
         return $next($err) if $err
         #
@@ -308,21 +309,21 @@ class global.Template
 
       #
       # load the body view & merge with partials
-      @Exspresso.load.view $view, @_data, ($err, $content) =>
+      @load.view $view, @_data, ($err, $content) =>
 
         return log_message('error', 'Template::view load.view %s', $err) if show_error($err)
 
         #
         # merge the body into the theme layout
         @set '$content', $content
-        @Exspresso.render @_theme_path+@_layout, @_data, ($err, $page) =>
+        @render @_theme_path+@_layout, @_data, ($err, $page) =>
 
           return log_message('error', 'Template::view render %s', $err) if show_error($err)
 
           return $next(null, $page) if $next?
 
-          @Exspresso.output.set_output $page
-          @Exspresso.output._display()
+          @output.set_output $page
+          @output._display()
 
 
   #

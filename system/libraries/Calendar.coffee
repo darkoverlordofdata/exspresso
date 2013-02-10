@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -71,8 +71,6 @@ class Exspresso_Calendar
 
     log_message('debug', "Calendar Class Initialized")
 
-  #  --------------------------------------------------------------------
-  
   #
   # Initialize the user preferences
   #
@@ -87,8 +85,6 @@ class Exspresso_Calendar
       if @$key? 
         @['_'+$key] = $val
 
-  #  --------------------------------------------------------------------
-  
   #
   # Generate the calendar
   #
@@ -222,8 +218,6 @@ class Exspresso_Calendar
     return $out
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Get Month Name
   #
@@ -272,8 +266,6 @@ class Exspresso_Calendar
 
     return @Exspresso.lang.line($month)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get Day Names

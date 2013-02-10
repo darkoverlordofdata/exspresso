@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -77,8 +77,6 @@ class Exspresso_Unit_test
 
     log_message('debug', "Unit Testing Class Initialized")
 
-  #  --------------------------------------------------------------------
-  
   #
   # Run the tests
   #
@@ -93,8 +91,6 @@ class Exspresso_Unit_test
       @_test_items_visible = $items
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Run the tests
@@ -137,8 +133,6 @@ class Exspresso_Unit_test
     return @report(@result($report))
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Generate a report
   #
@@ -177,8 +171,6 @@ class Exspresso_Unit_test
     return $r
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Use strict comparison
   #
@@ -192,8 +184,6 @@ class Exspresso_Unit_test
     @_strict = if ($state is false) then false else true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Make Unit testing active
   #
@@ -206,8 +196,6 @@ class Exspresso_Unit_test
   active : ($state = true) ->
     @_active = if ($state is false) then false else true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Result Array
@@ -249,8 +237,6 @@ class Exspresso_Unit_test
     return $retval
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set the template
   #
@@ -263,8 +249,6 @@ class Exspresso_Unit_test
   set_template : ($template) ->
     @_template = $template
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Generate a backtrace
@@ -286,8 +270,6 @@ class Exspresso_Unit_test
     return 'file':'Unknown', 'line':'Unknown'
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Get Default Template
   #
@@ -304,8 +286,6 @@ class Exspresso_Unit_test
     @_template_rows+="\n\t\t" + '<td style="border-bottom:1px solid #CCC;">{result}</td>'
     @_template_rows+="\n\t" + '</tr>'
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Parse Template

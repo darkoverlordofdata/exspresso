@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -49,8 +49,6 @@ class global.Exspresso_DB_mysql_utility extends Exspresso_DB_utility
     return "SHOW DATABASES"
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Optimize table query
   #
@@ -63,8 +61,6 @@ class global.Exspresso_DB_mysql_utility extends Exspresso_DB_utility
   _optimize_table: ($table) ->
     return "OPTIMIZE TABLE " + @db._escape_identifiers($table)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Repair table query

@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -63,8 +63,6 @@ class Exspresso_Encrypt
   log_message('debug', "Encrypt Class Initialized")
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Fetch the encryption key
   #
@@ -92,8 +90,6 @@ class Exspresso_Encrypt
     return md5($key)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set the encryption key
   #
@@ -104,8 +100,6 @@ class Exspresso_Encrypt
   set_key : ($key = '') ->
     @encryption_key = $key
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Encode
@@ -135,8 +129,6 @@ class Exspresso_Encrypt
     
     return base64_encode($enc)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Decode
@@ -168,8 +160,6 @@ class Exspresso_Encrypt
     
     return $dec
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Encode from Legacy
@@ -220,8 +210,6 @@ class Exspresso_Encrypt
     return base64_encode(@mcrypt_encode($dec, $key))
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # XOR Encode
   #
@@ -250,8 +238,6 @@ class Exspresso_Encrypt
     return @_xor_merge($enc, $key)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # XOR Decode
   #
@@ -275,8 +261,6 @@ class Exspresso_Encrypt
     return $dec
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # XOR key + string Combiner
   #
@@ -298,8 +282,6 @@ class Exspresso_Encrypt
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Encrypt using Mcrypt
   #
@@ -313,8 +295,6 @@ class Exspresso_Encrypt
     $init_vect = mcrypt_create_iv($init_size, MCRYPT_RAND)
     return @_add_cipher_noise($init_vect + mcrypt_encrypt(@_get_cipher(), $key, $data, @_get_mode(), $init_vect), $key)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Decrypt using Mcrypt
@@ -336,8 +316,6 @@ class Exspresso_Encrypt
     $data = substr($data, $init_size)
     return rtrim(mcrypt_decrypt(@_get_cipher(), $key, $data, @_get_mode(), $init_vect), "\0")
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Adds permuted noise to the IV + encrypted data to protect
@@ -367,8 +345,6 @@ class Exspresso_Encrypt
     
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Removes permuted noise from the IV + encrypted data, reversing
@@ -403,8 +379,6 @@ class Exspresso_Encrypt
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set the Mcrypt Cipher
   #
@@ -416,8 +390,6 @@ class Exspresso_Encrypt
     @_mcrypt_cipher = $cipher
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set the Mcrypt Mode
   #
@@ -428,8 +400,6 @@ class Exspresso_Encrypt
   set_mode : ($mode) ->
     @_mcrypt_mode = $mode
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get Mcrypt cipher Value
@@ -445,8 +415,6 @@ class Exspresso_Encrypt
     return @_mcrypt_cipher
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Get Mcrypt Mode Value
   #
@@ -461,8 +429,6 @@ class Exspresso_Encrypt
     return @_mcrypt_mode
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set the Hash type
   #
@@ -474,8 +440,6 @@ class Exspresso_Encrypt
     @_hash_type = if ($type isnt 'sha1' and $type isnt 'md5') then 'sha1' else $type
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Hash encode a string
   #
@@ -486,8 +450,6 @@ class Exspresso_Encrypt
   hash : ($str) ->
     return if (@_hash_type is 'sha1') then @sha1($str) else md5($str)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Generate an SHA1 Hash

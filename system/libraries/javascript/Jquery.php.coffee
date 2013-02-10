@@ -28,7 +28,7 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # @package		Exspresso
 # @author		darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license		http://www.codeigniter.com/user_guide/license.html
 # @link		http://www.codeigniter.com
 # @since		Version 1.0
@@ -69,8 +69,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   
   #  --------------------------------------------------------------------
   #  Event Code
-  #  --------------------------------------------------------------------
-  
   #
   # Blur
   #
@@ -85,8 +83,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return @_add_event($element, $js, 'blur')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Change
   #
@@ -100,8 +96,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _change : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'change')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Click
@@ -126,8 +120,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return @_add_event($element, $js, 'click')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Double Click
   #
@@ -141,8 +133,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _dblclick : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'dblclick')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Error
@@ -158,8 +148,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return @_add_event($element, $js, 'error')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Focus
   #
@@ -173,8 +161,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _focus : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'focus')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Hover
@@ -195,8 +181,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return $event
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Keydown
   #
@@ -210,8 +194,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _keydown : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'keydown')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Keyup
@@ -227,8 +209,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return @_add_event($element, $js, 'keyup')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Load
   #
@@ -242,8 +222,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _load : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'load')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Mousedown
@@ -259,8 +237,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return @_add_event($element, $js, 'mousedown')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Mouse Out
   #
@@ -274,8 +250,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _mouseout : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'mouseout')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Mouse Over
@@ -291,8 +265,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return @_add_event($element, $js, 'mouseover')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Mouseup
   #
@@ -306,8 +278,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _mouseup : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'mouseup')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Output
@@ -329,8 +299,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Resize
   #
@@ -345,8 +313,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return @_add_event($element, $js, 'resize')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Scroll
   #
@@ -360,8 +326,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _scroll : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'scroll')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Unload
@@ -379,8 +343,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   
   #  --------------------------------------------------------------------
   #  Effects
-  #  --------------------------------------------------------------------
-  
   #
   # Add Class
   #
@@ -395,8 +357,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     $str = "$({$element}).addClass(\"$class\");"
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Animate
@@ -434,8 +394,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Fade In
   #
@@ -459,8 +417,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Fade Out
@@ -486,8 +442,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Hide
   #
@@ -512,8 +466,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Remove Class
   #
@@ -528,8 +480,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     $str = "$({$element}).removeClass(\"$class\");"
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Slide Up
@@ -555,8 +505,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Slide Down
   #
@@ -580,8 +528,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Slide Toggle
@@ -607,8 +553,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Toggle
   #
@@ -624,8 +568,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Toggle Class
   #
@@ -640,8 +582,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     $str = "$({$element}).toggleClass(\"$class\");"
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Show
@@ -666,8 +606,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Updater
@@ -712,8 +650,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   
   #  --------------------------------------------------------------------
   #  Pre-written handy stuff
-  #  --------------------------------------------------------------------
-  
   #
   # Zebra tables
   #
@@ -740,8 +676,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   
   #  --------------------------------------------------------------------
   #  Plugins
-  #  --------------------------------------------------------------------
-  
   #
   # Corner Plugin
   #
@@ -762,8 +696,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return "$(" + @_prep_element($element) + ").corner(" + $corner_style + ");"
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # modal window
   #
@@ -775,8 +707,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   modal : ($src, $relative = false) ->
     @jquery_code_for_load.push @external($src, $relative)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Effect
@@ -790,8 +720,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     @jquery_code_for_load.push @external($src, $relative)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Plugin
   #
@@ -804,8 +732,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     @jquery_code_for_load.push @external($src, $relative)
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # UI
   #
@@ -817,8 +743,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   ui : ($src, $relative = false) ->
     @jquery_code_for_load.push @external($src, $relative)
     
-  #  --------------------------------------------------------------------
-  
   #
   # Sortable
   #
@@ -843,8 +767,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     return "$(" + @_prep_element($element) + ").sortable({" + $sort_options + "\n\t});"
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Table Sorter Plugin
   #
@@ -859,8 +781,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   
   #  --------------------------------------------------------------------
   #  Class functions
-  #  --------------------------------------------------------------------
-  
   #
   # Add Event
   #
@@ -882,8 +802,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     @jquery_code_for_compile.push $event
     return $event
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Compile
@@ -915,8 +833,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Clear Compile
   #
@@ -928,8 +844,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _clear_compile :  ->
     @jquery_code_for_compile = {}
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Document Ready
@@ -950,8 +864,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Script Tag
   #
@@ -966,8 +878,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     @jquery_code_for_load.push $library_src
     return $library_src
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Prep Element
@@ -987,8 +897,6 @@ class Exspresso_Jquery extends Exspresso_Javascript
     
     return $element
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Validate Speed

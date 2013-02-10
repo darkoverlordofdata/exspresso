@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -34,7 +34,7 @@
 #
 # @package		Exspresso
 # @author		darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license		MIT License
 # @link		http://darkoverlordofdata.com
 # @since		Version 1.0
@@ -84,8 +84,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
   log_message('debug', "XML-RPC Server Class Initialized")
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Initialize Prefs and Serve
   #
@@ -110,8 +108,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
       @xss_clean = $config['xss_clean']
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Setting of System Methods
@@ -140,8 +136,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Main Server Function
   #
@@ -158,8 +152,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
     header("Content-Length: " + strlen($payload))
     die $payload
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Add Method to Class
@@ -178,8 +170,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
       'docstring':$doc
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Parse Server Request
@@ -267,8 +257,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
     
     return $r
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Executes the Method
@@ -367,8 +355,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Server Function:  List Methods
   #
@@ -391,8 +377,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
     $v.addArray($output)
     return new XML_RPC_Response($v)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Server Function:  Return Signature for Method
@@ -432,8 +416,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
     return $r
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Server Function:  Doc String for Method
   #
@@ -454,8 +436,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
       return new XML_RPC_Response(0, @xmlrpcerr['introspect_unknown'], @xmlrpcstr['introspect_unknown'])
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Server Function:  Multi-call
@@ -496,8 +476,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
     return new XML_RPC_Response(new XML_RPC_Values($result, 'array'))
     
   
-  #  --------------------------------------------------------------------
-  
   #
   #  Multi-call Function:  Error Handling
   #
@@ -514,8 +492,6 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
     
     return new XML_RPC_Values($struct, 'struct')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   #  Multi-call Function:  Processes method

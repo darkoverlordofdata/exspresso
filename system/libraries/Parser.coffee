@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -73,8 +73,6 @@ class global.Exspresso_Parser
           @_parse($template, $data, false)
 
 
-  #  --------------------------------------------------------------------
-  
   #
   #  Parse a String
   #
@@ -90,8 +88,6 @@ class global.Exspresso_Parser
   parse_string: ($template, $data, $return = false) ->
     @_parse($template, $data, $return)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   #  Parse a template
@@ -124,8 +120,6 @@ class global.Exspresso_Parser
     return $template
     
   
-  #  --------------------------------------------------------------------
-  
   #
   #  Set the left/right variable delimiters
   #
@@ -140,8 +134,6 @@ class global.Exspresso_Parser
     return
     
   
-  #  --------------------------------------------------------------------
-  
   #
   #  Parse a single key/value
   #
@@ -154,8 +146,6 @@ class global.Exspresso_Parser
   _parse_single: ($key, $val, $string) ->
     return str_replace(@l_delim + $key + @r_delim, $val, $string)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   #  Parse a tag pair
@@ -186,8 +176,6 @@ class global.Exspresso_Parser
 
     return str_replace($match['0'], $str, $string)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   #  Matches a variable pair

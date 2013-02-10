@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -49,8 +49,6 @@ class global.Exspresso_DB_postgres_utility extends Exspresso_DB_utility
     return "SELECT datname FROM pg_database"
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Optimize table query
   #
@@ -64,8 +62,6 @@ class global.Exspresso_DB_postgres_utility extends Exspresso_DB_utility
     return false
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Repair table query
   #
@@ -78,8 +74,6 @@ class global.Exspresso_DB_postgres_utility extends Exspresso_DB_utility
   _repair_table : ($table) ->
     return false
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Postgre Export

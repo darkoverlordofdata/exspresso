@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -54,8 +54,6 @@ class global.Exspresso_DB_Cache
     @Exspresso.load.helper('file')
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Cache Directory Path
   #
@@ -85,8 +83,6 @@ class global.Exspresso_DB_Cache
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Retrieve a cached query
   #
@@ -113,8 +109,6 @@ class global.Exspresso_DB_Cache
     
     return unserialize($cachedata)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Write a query to a cache file
@@ -151,8 +145,6 @@ class global.Exspresso_DB_Cache
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Delete cache files within a particular directory
   #
@@ -172,8 +164,6 @@ class global.Exspresso_DB_Cache
     
     delete_files($dir_path, true)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Delete all existing cache files

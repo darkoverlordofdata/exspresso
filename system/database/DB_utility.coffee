@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -55,8 +55,6 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     log_message('debug', "Database Utility Class Initialized")
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # List databases
   #
@@ -81,8 +79,6 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
       $next $err, @data_cache['db_names']
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Determine if a particular database exists
   #
@@ -102,8 +98,6 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
       
     
   
-  
-  #  --------------------------------------------------------------------
   
   #
   # Optimize Table
@@ -159,8 +153,6 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
         $next $err, $result
 
 
-  #  --------------------------------------------------------------------
-  
   #
   # Repair Table
   #
@@ -178,8 +170,6 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
       $res = $query.result_array() unless $err
       $next $err, current($res)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Generate CSV from a query result object
@@ -218,8 +208,6 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     return $out
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Generate XML data from a query result object
   #
@@ -255,8 +243,6 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     
     return $xml
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Database Backup

@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -64,8 +64,6 @@ class Exspresso_Zip
   @now = time()
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Add Directory
   #
@@ -87,8 +85,6 @@ class Exspresso_Zip
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   #	Get file/directory modification time
   #
@@ -106,8 +102,6 @@ class Exspresso_Zip
     
     return $time
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Add Directory
@@ -154,8 +148,6 @@ class Exspresso_Zip
     @entries++
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Add Data to Zip
   #
@@ -182,8 +174,6 @@ class Exspresso_Zip
       @_add_data($filepath, $data, $file_data['file_mtime'], $file_data['file_mdate'])
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Add Data to Zip
@@ -235,8 +225,6 @@ class Exspresso_Zip
     @entries++
     @file_num++
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Read the contents of a file and add it to the zip

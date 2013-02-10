@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -84,8 +84,6 @@ class Exspresso_Cart
   log_message('debug', "Cart Class Initialized")
   }
   
-  #  --------------------------------------------------------------------
-  
   #
   # Insert items into the cart and save it to the session table
   #
@@ -129,8 +127,6 @@ class Exspresso_Cart
     
     return false
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Insert
@@ -239,8 +235,6 @@ class Exspresso_Cart
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Update the cart
   #
@@ -289,8 +283,6 @@ class Exspresso_Cart
     return false
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Update the cart
   #
@@ -334,8 +326,6 @@ class Exspresso_Cart
     
     return true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Save the cart array to the session DB
@@ -382,8 +372,6 @@ class Exspresso_Cart
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Cart Total
   #
@@ -393,8 +381,6 @@ class Exspresso_Cart
   total :  ->
     return @_cart_contents['cart_total']
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Total Items
@@ -407,8 +393,6 @@ class Exspresso_Cart
   total_items :  ->
     return @_cart_contents['total_items']
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Cart Contents
@@ -428,8 +412,6 @@ class Exspresso_Cart
     return $cart
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Has options
   #
@@ -447,8 +429,6 @@ class Exspresso_Cart
     return true
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Product options
   #
@@ -464,8 +444,6 @@ class Exspresso_Cart
     
     return @_cart_contents[$rowid]['options']
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Format Number
@@ -485,8 +463,6 @@ class Exspresso_Cart
     
     return number_format($n, 2, '.', ',')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Destroy the cart

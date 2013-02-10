@@ -22,7 +22,7 @@
 #
 # @package		Exspresso
 # @author		  darkoverlordofdata
-# @copyright	Copyright (c) 2012, Dark Overlord of Data
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
 # @link		    http://darkoverlordofdata.com
@@ -143,6 +143,8 @@ class global.Base_Loader
     if $params isnt null and not is_array($params)
       $params = null
 
+    if not class_exists('Exspresso_Class')
+      require BASEPATH+'core/Class'+EXT
     @_ex_load_class $library, $params, $object_name
 
   ## --------------------------------------------------------------------

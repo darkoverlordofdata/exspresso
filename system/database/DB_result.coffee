@@ -21,7 +21,7 @@
 #
 # @package    Exspresso
 # @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012, Dark Overlord of Data
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license    MIT License
 # @link       http://darkoverlordofdata.com
@@ -37,7 +37,7 @@
 # This class will not be called directly. Rather, the adapter
 # class for the specific database will extend and instantiate it.
 #
-class Exspresso_DB_result
+class global.Exspresso_DB_result
   
   conn_id: null
   result_id: null
@@ -67,8 +67,6 @@ class Exspresso_DB_result
       return @custom_result_object($type)
       
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Custom query result.
@@ -108,8 +106,6 @@ class Exspresso_DB_result
     return @_result_array
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Query result.  "array" version.
   #
@@ -119,8 +115,6 @@ class Exspresso_DB_result
   result_array : () ->
     return @_result_array
 
-  
-  #  --------------------------------------------------------------------
   
   #
   # Query result.  Acts as a wrapper function for the following functions.
@@ -152,7 +146,7 @@ class Exspresso_DB_result
     else
       return @custom_row_object($n, $type)
 
-  #  --------------------------------------------------------------------#
+  #
   # Assigns an item into a particular column slot
   #
   # @access	public
@@ -171,7 +165,8 @@ class Exspresso_DB_result
     if $key isnt '' and  not is_null($value)
       @_row_data[$key] = $value
 
-  ##  --------------------------------------------------------------------#
+
+  #
   # Returns a single result row - custom object version
   #
   # @access	public
@@ -189,7 +184,7 @@ class Exspresso_DB_result
 
     return $result[@_current_row]
 
-  ##
+  #
   # Returns a single result row - object version
   #
   # @access	public
@@ -204,7 +199,7 @@ class Exspresso_DB_result
 
     return @_result_object[@_current_row]
 
-  ##  --------------------------------------------------------------------#
+  #
   # Returns a single result row - array version
   #
   # @access	public
@@ -219,7 +214,7 @@ class Exspresso_DB_result
 
     return @_result_array[@_current_row]
 
-  ##  --------------------------------------------------------------------#
+  #
   # Returns the "first" row
   #
   # @access	public
@@ -231,7 +226,7 @@ class Exspresso_DB_result
 
     return @_result_array[0]
 
-  ##  --------------------------------------------------------------------#
+  #
   # Returns the "last" row
   #
   # @access	public
@@ -243,7 +238,7 @@ class Exspresso_DB_result
 
     return @_result_array[@_result_array.length - 1]
 
-  ##  --------------------------------------------------------------------#
+  #
   # Returns the "next" row
   #
   # @access	public
@@ -260,7 +255,7 @@ class Exspresso_DB_result
 
     return @_result_array[@_current_row]
 
-  ##  --------------------------------------------------------------------#
+  #
   # Returns the "previous" row
   #
   # @access	public
@@ -276,7 +271,7 @@ class Exspresso_DB_result
 
     return @_result_array[@_current_row]
 
-  ##  --------------------------------------------------------------------#
+  #
   # The following functions are normally overloaded by the identically named
   # methods in the platform-specific driver -- except when query caching
   # is used.  When caching is enabled we do not load the other driver.
@@ -295,7 +290,7 @@ class Exspresso_DB_result
   _fetch_object :  -> return []
 
   ##  END DB_result class
-register_class 'Exspresso_DB_result', Exspresso_DB_result
+
 module.exports = Exspresso_DB_result
 #  End of file DB_result.php
 #  Location: ./system/database/DB_result.php
