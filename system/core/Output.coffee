@@ -31,7 +31,7 @@
 #
 # Exspresso Output Class
 #
-module.exports = class global.Exspresso_Output
+module.exports = class global.Exspresso_Output extends Exspresso_Object
 
   _parse_exec_vars    : true  # parse profiler vars {elapsed_time} and {memory_usage}
   _enable_profiler    : false # create profiler outout?
@@ -42,14 +42,11 @@ module.exports = class global.Exspresso_Output
   _mime_types         : null  # array of valid mime types
   _profiler_sections  : null  # array of profiler sections to process
 
-  Exspresso           : null  # Exspresso controller object
-  res                 : null  # http Response object
+  constructor: ($Exspresso) ->
 
-  constructor: (@Exspresso) ->
-
+    super $Exspresso
     log_message('debug', "Output Class Initialized")
 
-    @res = @Exspresso.res
     @_final_output = ''
     @_cache_expiration = 0
     @_headers = {}
@@ -159,7 +156,6 @@ module.exports = class global.Exspresso_Output
 
   #
   # Set HTTP Status Header
-  # moved to Common procedural functions in 1.7.2
   #
   # @access	public
   # @param	int		the status code
@@ -239,15 +235,15 @@ module.exports = class global.Exspresso_Output
     #  Do we need to write a cache file?  Only if the controller does not have its
     #  own _output() method and we are not dealing with a cache file, which we
     #  can determine by the existence of the $Exspresso object above
-    if @_cache_expiration > 0 and @Exspresso?  and  not method_exists(@Exspresso, '_output')
-      @_write_cache($output)
+    # if @_cache_expiration > 0 and @Exspresso?  and  not method_exists(@Exspresso, '_output')
+    #  @_write_cache($output)
 
     #  --------------------------------------------------------------------
 
     #  Parse out the elapsed time and memory usage,
     #  then swap the pseudo-variables with the data
 
-    $elapsed = @Exspresso.BM.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    $elapsed = @BM.elapsed_time('total_execution_time_start', 'total_execution_time_end')
 
     if @_parse_exec_vars is true
       $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
@@ -259,9 +255,9 @@ module.exports = class global.Exspresso_Output
     #  --------------------------------------------------------------------
 
     #  Is compression requested?
-    if Exspresso.config.item('compress_output') is true and @_zlib_oc is false
+    if @config.item('compress_output') is true and @_zlib_oc is false
       if extension_loaded('zlib')
-        if @Exspresso.$_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos(@Exspresso.$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
+        if @$_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
           ob_start('ob_gzhandler')
 
     #  --------------------------------------------------------------------
@@ -276,40 +272,40 @@ module.exports = class global.Exspresso_Output
     #  Does the $Exspresso object exist?
     #  If not we know we are dealing with a cache file so we'll
     #  simply echo out the data and exit.
-    if not @Exspresso?
-      @res.send $output
-      log_message('debug', "Final output sent to browser")
-      log_message('debug', "Total execution time: " + $elapsed)
-      return true
+    #if not @Exspresso?
+    #  @res.send $output
+    #  log_message('debug', "Final output sent to browser")
+    #  log_message('debug', "Total execution time: " + $elapsed)
+    #  return true
 
     #  --------------------------------------------------------------------
 
     #  Do we need to generate profile data?
     #  If so, load the Profile class and run it.
     if @_enable_profiler is true
-      @Exspresso.load.library('profiler')
+      @profiler = @load.library('profiler')
 
       if not empty(@_profiler_sections)
-        @Exspresso.profiler.set_sections(@_profiler_sections)
+        @profiler.set_sections(@_profiler_sections)
 
       #  If the output data contains closing </body> and </html> tags
       #  we will remove them and add them back after we insert the profile data
       $match = preg_match("|<footer[^]*?</html>|igm", $output)
       if $match?
         $output = preg_replace("|<footer[^]*?</html>|igm", '', $output)
-        $output+=@Exspresso.profiler.run()
+        $output+=@profiler.run()
         $output+='</body></html>'
 
       else
-        $output+=@Exspresso.profiler.run()
+        $output+=@profiler.run()
 
 
     #  --------------------------------------------------------------------
 
     #  Does the controller contain a function named _output()?
     #  If so send the output there.  Otherwise, echo it.
-    if method_exists(@Exspresso, '_output')
-      @Exspresso._output($output)
+    if method_exists(@, '_output')
+      @_output($output)
 
     else
       @res.send $output #  Send it to the browser!
@@ -327,7 +323,7 @@ module.exports = class global.Exspresso_Output
   #
   _write_cache: ($output) ->
 
-    $path = Exspresso.config.item('cache_path')
+    $path = @config.item('cache_path')
 
     $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 
@@ -336,7 +332,7 @@ module.exports = class global.Exspresso_Output
       return
 
 
-    $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string()
+    $uri = @config.item('base_url') + @config.item('index_page') + @uri.uri_string()
 
     $cache_path+=md5($uri)
 
@@ -367,10 +363,10 @@ module.exports = class global.Exspresso_Output
   # @return	void
   #
   _display_cache: () ->
-    $cache_path = if (Exspresso.config.item('cache_path') is '') then APPPATH + 'cache/' else Exspresso.config.item('cache_path')
+    $cache_path = if (@config.item('cache_path') is '') then APPPATH + 'cache/' else @config.item('cache_path')
 
     #  Build the file path.  The file name is an MD5 hash of the full URI
-    $uri = Exspresso.config.item('base_url') + Exspresso.config.item('index_page') + Exspresso.uri.uri_string
+    $uri = @config.item('base_url') + @config.item('index_page') + @uri.uri_string
 
     $filepath = $cache_path + md5($uri)
 

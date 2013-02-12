@@ -46,6 +46,13 @@
       ...
 
 
+## Loading
+
+
+    @mylib = @load.library('mylib')
+
+
+
 ## Error Handling
 
   * In middleware, call the server next handler
@@ -60,6 +67,7 @@
 
   * Use show_error to send error display to the browser
   * Use log_message to record the message for support
+  * Use 'return if' style
 
 
     return log_message('error', 'My message: %s', err) if show_error(err)

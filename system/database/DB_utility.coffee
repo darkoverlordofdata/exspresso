@@ -50,7 +50,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   #
   constructor: ($Exspresso) ->
     #  Assign the main database object to $this->db
-    super($Exspresso)
+    super $Exspresso
     
     log_message('debug', "Database Utility Class Initialized")
     
@@ -227,7 +227,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     $tab      = $params.tab ? "\t"
 
     #  Load the xml helper
-    @Exspresso.load.helper('xml')
+    xml = @load.helper('xml')
     
     #  Generate the result
     $xml = "<#{$root}>" + $newline
@@ -235,7 +235,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
       $xml+=$tab + "<#{$element}>" + $newline
       
       for $key, $val of $row
-        $xml+=$tab + $tab + "<#{$key}>" + xml_convert($val) + "</#{$key}>" + $newline
+        $xml+=$tab + $tab + "<#{$key}>" + xml.xml_convert($val) + "</#{$key}>" + $newline
         
       $xml+=$tab + "</#{$element}>" + $newline
       
@@ -255,20 +255,20 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     #  array then we know that it is simply the table
     #  name, which is a valid short cut.
     if is_string($prefs)
-      $prefs = array('tables', $prefs)
+      $prefs = {tables: $prefs}
       
     
     #  ------------------------------------------------------
     
     #  Set up our default preferences
     $prefs.__proto__ =
-      'tables':[],
-      'ignore':[],
-      'filename':'', 
-      'format':'gzip', #  gzip, zip, txt
-      'add_drop':true, 
-      'add_insert':true, 
-      'newline':"\n"
+      tables      :[]
+      ignore      :[]
+      filename    :''
+      format      :'gzip' #  gzip, zip, txt
+      add_drop    :true
+      add_insert  :true
+      newline     :"\n"
       
 
     #  ------------------------------------------------------
@@ -341,9 +341,9 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
       
       #  Load the Zip class and output it
       
-      @Exspresso.load.library('zip')
-      @Exspresso.zip.add_data($prefs['filename'], @_backup($prefs))
-      return @Exspresso.zip.get_zip()
+      @zip = @load.library('zip')
+      @zip.add_data($prefs['filename'], @_backup($prefs))
+      return @zip.get_zip()
       
 module.exports = Exspresso_DB_utility
 

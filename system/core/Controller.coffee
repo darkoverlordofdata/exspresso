@@ -28,10 +28,14 @@
 #
 # This class object is the super class for all controllers
 # Methods are bound with fat arrow ( => ) so that they are selected
-# for copying by the Exspresso_Object and Exspresso_Model constructors
+# for copying by the Exspresso_Object constructor. When called from
+# child objects, they will run in the Controller context.
 #
 
 class global.Exspresso_Controller
+
+  __hasOwnProperty    = Object.hasOwnProperty
+  __defineProperties  = Object.defineProperties
 
   _module       : ''        # module name
   _class        : ''        # class name
@@ -93,15 +97,15 @@ class global.Exspresso_Controller
     # The remaining class objects are unique for each Expresso
     # application controller
 
-    @uri    = load_new('URI', 'core', @)
-    @output = load_new('Output', 'core', @)
-    @input  = load_new('Input', 'core', @)
-
-    # From here forward, custom controllers will use an
-    # @load.method to load classes:
-
-    @load = load_new('Loader', 'core', @)
+    @load   = load_new('Loader',  'core', @)
+    @uri    = load_new('URI',     'core', @)
+    @output = load_new('Output',  'core', @)
+    @input  = load_new('Input',   'core', @)
     @load.initialize()  # do the autoloads
+
+    # From here forward, custom controllers
+    # shall use the @load.method to load classes
+
 
 
   #
@@ -136,14 +140,23 @@ class global.Exspresso_Controller
   # @return	void
   #
   render: ($view, $data = {}, $next) =>
-    $data.Exspresso = @
+    # $data.Exspresso = @
+
+    __defineProperties $data,
+      $_GET    : get: -> @input.get()
+      $_POST   : get: -> @input.post()
+      $_SERVER : get: -> @input.server()
+      $_COOKIE : get: -> @input.cookie()
+
+    for $key, $obj of @
+      if $key[0] isnt '_' and __hasOwnProperty.call(@, $key)
+        $data[$key] = $obj
+
     @res.render $view, $data, ($err, $html) =>
 
-      if $next? then $next $err, $html
-      else
-        if $err then show_error $err
-        else
-          @res.send $html
+      return $next($err, $html) if $next?
+      return show_error($err) if $err
+      @res.send $html
 
   #
   # Redirect to another url

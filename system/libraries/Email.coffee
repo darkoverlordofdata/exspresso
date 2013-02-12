@@ -97,7 +97,6 @@ class global.Exspresso_Email
   #
   constructor: ($Exspresso, $config = {}) ->
 
-
     @_debug_msg = {}
     @_recipients = {}
     @_cc_array = {}

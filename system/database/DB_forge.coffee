@@ -37,14 +37,13 @@
 # @author		darkoverlordofdata
 # @link		http://darkoverlordofdata.com/user_guide/database/
 #
-class global.Exspresso_DB_forge
+class global.Exspresso_DB_forge extends Exspresso_Object
 
-  Exspresso: null
-  db: null
-  fields: []
-  keys: []
-  primary_keys: []
-  db_char_set: ''
+  db            : null
+  fields        : []
+  keys          : []
+  primary_keys  : []
+  db_char_set   : ''
   
   #
   # Constructor
@@ -52,8 +51,10 @@ class global.Exspresso_DB_forge
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: (@Exspresso, @db) ->
+  constructor: ($Exspresso, $db) ->
 
+    super $Exspresso
+    @db = $db
     @_reset() # always initialize arrays in the constructor!
     log_message('debug', "Database Forge Class Initialized")
     

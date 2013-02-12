@@ -185,90 +185,90 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   #
   patch: -> ($req, $res, $next) =>
 
-      #
-      # Set expected request object properties
-      #
+    #
+    # Set expected request object properties
+    #
 
-      __defineProperties $req,
-        protocol:   get: -> if $req.connection.encrypted then 'https' else 'http'
-        secure:     get: -> if $req.protocol is 'https' then true else false
-        path:       value: parseUrl($req).pathname
-        host:       value: $req.headers.host
-        ip:         value: $req.connection.remoteAddress
+    __defineProperties $req,
+      protocol:   get: -> if $req.connection.encrypted then 'https' else 'http'
+      secure:     get: -> if $req.protocol is 'https' then true else false
+      path:       value: parseUrl($req).pathname
+      host:       value: $req.headers.host
+      ip:         value: $req.connection.remoteAddress
 
-      Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers.host
-
-
-      #
-      # Send
-      #
-      #   send response string
-      #
-      # @access	public
-      # @param	string
-      # @return	void
-      #
-      $res.send = ($data) ->
-        $res.writeHead 200,
-          'Content-Length': $data.length
-          'Content-Type': 'text/html; charset=utf-8'
-        $res.end $data
+    Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers.host
 
 
-      #
-      # Redirect
-      #
-      #   Redirect to url
-      #
-      # @access	public
-      # @param	string
-      # @return	void
-      #
-      $res.redirect = ($url) ->
-        $res.writeHead 302,
-          'Location': $url
-        $res.end null
+    #
+    # Send
+    #
+    #   send response string
+    #
+    # @access	public
+    # @param	string
+    # @return	void
+    #
+    $res.send = ($data) ->
+      $res.writeHead 200,
+        'Content-Length': $data.length
+        'Content-Type': 'text/html; charset=utf-8'
+      $res.end $data
 
-      #$res._error_handler = ($err) ->
-      #  $next $err
+
+    #
+    # Redirect
+    #
+    #   Redirect to url
+    #
+    # @access	public
+    # @param	string
+    # @return	void
+    #
+    $res.redirect = ($url) ->
+      $res.writeHead 302,
+        'Location': $url
+      $res.end null
+
+    #$res._error_handler = ($err) ->
+    #  $next $err
+
+    #
+    # Render
+    #
+    #   called by the controller to display a view
+    #
+    # @access	public
+    # @param	string    path to view
+    # @param	object    data to render in the view
+    # @param	function  callback
+    # @return	void
+    #
+    $res.render = ($view, $data = {}, $next) ->
 
       #
-      # Render
+      # $data argument is optional
       #
-      #   called by the controller to display a view
+      if typeof $data is 'function' then [$data, $next] = [{}, $data]
+
       #
-      # @access	public
-      # @param	string    path to view
-      # @param	object    data to render in the view
-      # @param	function  callback
-      # @return	void
+      # $next argument is optional
       #
-      $res.render = ($view, $data = {}, $next) ->
+      $next = $next ? ($err, $str) -> if $err then $next($err) else $res.send($str)
 
-        #
-        # $data argument is optional
-        #
-        if typeof $data is 'function' then [$data, $next] = [{}, $data]
+      #
+      # load the view and render it with data+helpers
+      #
+      fs.readFile $view, 'utf8', ($err, $str) ->
+        if $err then $next($err)
+        else
+          try
+            $data.filename = $view
+            $next null, eco.render($str, new Variables($data, flashdata: $res.flashdata))
+          catch $err
+            console.log $err
+            $next($err)
 
-        #
-        # $next argument is optional
-        #
-        $next = $next ? ($err, $str) -> if $err then $next($err) else $res.send($str)
-
-        #
-        # load the view and render it with data+helpers
-        #
-        fs.readFile $view, 'utf8', ($err, $str) ->
-          if $err then $next($err)
-          else
-            try
-              $data.filename = $view
-              $next null, eco.render($str, new Variables($data, flashdata: $res.flashdata))
-            catch $err
-              console.log $err
-              $next($err)
-
-      $next()
+    $next()
 
 
 module.exports = Exspresso_Server_connect

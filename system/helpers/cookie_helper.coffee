@@ -80,7 +80,7 @@ if not function_exists('get_cookie')
 
     $prefix = ''
     
-    if not @Exspresso.$_COOKIE[$index]?  and config_item('cookie_prefix') isnt ''
+    if not @$_COOKIE[$index]?  and config_item('cookie_prefix') isnt ''
       $prefix = config_item('cookie_prefix')
       
     

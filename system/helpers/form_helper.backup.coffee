@@ -62,11 +62,11 @@ if not function_exists('form_open')
 
     #  If an action is not a full URL then turn it into one
     #if $action and strpos($action, '://') is false
-    #  $action = @config.site_url($action)
+    #  $action = @Exspresso.config.site_url($action)
 
 
     #  If no action is provided then set to the current url
-    $action or ($action = @config.site_url(@uri.uri_string()))
+    $action or ($action = @Exspresso.config.site_url(@Exspresso.uri.uri_string()))
 
     $form = '<form action="' + $action + '"'
 
@@ -75,8 +75,8 @@ if not function_exists('form_open')
     $form+='>'
 
     #  CSRF
-    if @config.item('csrf_protection') is true
-      $hidden[@security.get_csrf_token_name()] = @security.get_csrf_hash()
+    if @Exspresso.config.item('csrf_protection') is true
+      $hidden[@Exspresso.security.get_csrf_token_name()] = @Exspresso.security.get_csrf_hash()
 
     if is_array($hidden) and count($hidden) > 0
       {format} = require('util')
@@ -289,9 +289,9 @@ if not function_exists('form_dropdown')
     
     #  If no selected state was submitted we will attempt to set it automatically
     if count($selected) is 0
-      #  If the form name appears in the @$_POST array we have a winner!
-      if @$_POST[$name]?
-        $selected = @$_POST[$name]
+      #  If the form name appears in the @Exspresso.$_POST array we have a winner!
+      if @Exspresso.$_POST[$name]?
+        $selected = @Exspresso.$_POST[$name]
 
       
     
@@ -590,10 +590,10 @@ if not function_exists('set_value')
   exports.set_value = set_value = ($field = '', $default = '') ->
     if false is ($OBJ = @_get_validation_object())
       
-      if not @$_POST[$field]
+      if not @Exspresso.$_POST[$field]
         return $default
 
-      return form_prep(@$_POST[$field], $field)
+      return form_prep(@Exspresso.$_POST[$field], $field)
 
     return form_prep($OBJ.set_value($field, $default), $field)
     
@@ -619,13 +619,13 @@ if not function_exists('set_select')
 
     
     if $OBJ is false
-      if not @$_POST[$field]
-        if count(@$_POST) is 0 and $default is true
+      if not @Exspresso.$_POST[$field]
+        if count(@Exspresso.$_POST) is 0 and $default is true
           return ' selected="selected"'
           
         return ''
 
-      $field = @$_POST[$field]
+      $field = @Exspresso.$_POST[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -660,13 +660,13 @@ if not function_exists('set_checkbox')
     $OBJ = @_get_validation_object()
 
     if $OBJ is false
-      if not @$_POST[$field]
-        if count(@$_POST) is 0 and $default is true
+      if not @Exspresso.$_POST[$field]
+        if count(@Exspresso.$_POST) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
 
-      $field = @$_POST[$field]
+      $field = @Exspresso.$_POST[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -701,13 +701,13 @@ if not function_exists('set_radio')
     $OBJ = @_get_validation_object()
 
     if $OBJ is false
-      if not @$_POST[$field]
-        if count(@$_POST) is 0 and $default is true
+      if not @Exspresso.$_POST[$field]
+        if count(@Exspresso.$_POST) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
 
-      $field = @$_POST[$field]
+      $field = @Exspresso.$_POST[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -871,15 +871,15 @@ if not function_exists('_get_validation_object')
     #  We set this as a variable since we're returning by reference
     $return = false
 
-    if not @load._ex_classes?  or  not @load._ex_classes['form_validation']?
+    if not @Exspresso.load._ex_classes?  or  not @Exspresso.load._ex_classes['form_validation']?
       return $return
 
-    $object = @load._ex_classes['form_validation']
+    $object = @Exspresso.load._ex_classes['form_validation']
     
-    if not @[$object]?  or  not is_object(@[$object])
+    if not @Exspresso[$object]?  or  not is_object(@Exspresso[$object])
       return $return
 
-    return @[$object]
+    return @Exspresso[$object]
 
 
 #  ------------------------------------------------------------------------

@@ -34,10 +34,7 @@
 # Exspresso Model Class
 #
 
-class global.Exspresso_Model
-
-  __hasOwnProperty = Object.hasOwnProperty
-  __defineProperty = Object.defineProperty
+class global.Exspresso_Model extends Exspresso_Object
 
   #
   # Model Constructor
@@ -50,15 +47,8 @@ class global.Exspresso_Model
   #
   constructor: ($Exspresso) ->
 
+    super $Exspresso
     log_message 'debug', "Model Class Initialized"
-
-    #
-    # Mixin the base controller
-    #
-    for $key, $obj of $Exspresso
-      if $key[0] isnt '_' and __hasOwnProperty.call($Exspresso, $key)
-        __defineProperty @, $key, {value: $obj, writeable: false}
-
 
 
 # END Exspresso_Model class

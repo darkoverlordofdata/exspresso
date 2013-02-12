@@ -11,34 +11,47 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#  Breadcrumb - Main application
+# Exspresso
+#
+# An open source application development framework for coffee-script
+#
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 #
-#
-class global.Breadcrumb
 
-  _output: ''
-  _crumbs: null
-  _location: ''
+#
+#  Breadcrumb Class
+#
+#
+#
+class global.Breadcrumb extends Exspresso_Object
 
-  _path_sep:     '>'
-  _left_outer:   '<ul id="breadcrumb">'
-  _right_outer:  '</ul>'
-  _left_inner:   '<li>'
-  _right_inner:  '</li>'
-  _left_inner_active: '<li>'
+  _output               : ''
+  _crumbs               : null
+  _location             : ''
+  _path_sep             : '>'
+  _left_outer           : '<ul id="breadcrumb">'
+  _right_outer          : '</ul>'
+  _left_inner           : '<li>'
+  _right_inner          : '</li>'
+  _left_inner_active    : '<li>'
 
   #
   # Constructor
   #
-  constructor: ($config, @Exspresso) ->
+  constructor: ($Exspresso, $config = {}) ->
 
+    super $Exspresso, $config
     log_message('debug', "Breadcrumb Class Initialized")
 
-    @["_#{$key}"] = $val for $key, $val of $config
-
-    if @Exspresso.session.userdata('breadcrumb') isnt null
-      @_crumbs = @Exspresso.session.userdata('breadcrumb')
+    
+    if @session.userdata('breadcrumb') isnt null
+      @_crumbs = @session.userdata('breadcrumb')
     else
       @_crumbs = []
 
@@ -69,7 +82,7 @@ class global.Breadcrumb
 
       @_crumbs[$level] = $crumb
 
-    @Exspresso.session.set_userdata('breadcrumb', @_crumbs) # Persist the data
+    @session.set_userdata('breadcrumb', @_crumbs) # Persist the data
     @_crumbs[$level]['url'] = null # Ditch the underlying url for the current page.
 
    #

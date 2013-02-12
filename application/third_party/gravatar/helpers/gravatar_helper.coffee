@@ -47,7 +47,7 @@
 #
 if not function_exists('gravatar')
   exports.gravatar = gravatar = ($email, $s = 80, $img = true, $d = 'identicon', $r = 'x', $atts = {}) ->
-    $url = if (@Exspresso.$_SERVER['HTTPS']? ) then 'https://secure.' else 'http://www.'
+    $url = if (@$_SERVER['HTTPS']? ) then 'https://secure.' else 'http://www.'
     $url+='gravatar.com/avatar/'
     $url+=md5(strtolower(trim($email)))
     $url+="?s=#{$s}&d=#{$d}&r=#{$r}"
@@ -69,7 +69,7 @@ if not function_exists('gravatar')
 #
 if not function_exists('gravatar_profile')
   exports.gravatar_profile = gravatar_profile = ($email) ->
-    $url = if (@Exspresso.$_SERVER['HTTPS']? ) then 'https://secure.' else 'http://www.'
+    $url = if (@$_SERVER['HTTPS']? ) then 'https://secure.' else 'http://www.'
     $url+='gravatar.com/'
     $url+=md5(strtolower(trim($email)))
     return $url

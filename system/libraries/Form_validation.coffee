@@ -486,11 +486,11 @@ class global.Exspresso_Form_validation
 
       #  Call the function that corresponds to the rule
       if $next is true
-        if not method_exists(@Exspresso, $rule)
+        if not method_exists(@, $rule)
           continue
 
         #  Run the function and grab the result
-        $result = @Exspresso[$rule]($postdata, $param)
+        $result = @[$rule]($postdata, $param)
         
         #  Re-assign the result to the master data array
         if $_in_array is true

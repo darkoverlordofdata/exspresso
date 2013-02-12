@@ -35,7 +35,6 @@
 #
 module.exports = class global.Exspresso_Input
 
-  Exspresso       : null
   req             : null
   _server_array   : null
 
