@@ -114,21 +114,21 @@ class global.Exspresso_Controller
   # @access	public
   # @return	string
   #
-  fetch_module  : => @_module
+  fetch_module: => @_module
   #
   # Get the controller class name
   #
   # @access	public
   # @return	string
   #
-  fetch_class   : => @_class
+  fetch_class: => @_class
   #
   # Get the controller method name
   #
   # @access	public
   # @return	string
   #
-  fetch_method  : => @_method
+  fetch_method: => @_method
 
   #
   # Render a view
