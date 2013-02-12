@@ -783,8 +783,7 @@ class Exspresso_Upload
     return false
     
   
-  $Exspresso = Exspresso
-  return $Exspresso.security.xss_clean($data, true)
+  return @security.xss_clean($data, true)
   }
   
   #
@@ -796,17 +795,17 @@ class Exspresso_Upload
   set_error($msg)
   {
   $Exspresso = Exspresso
-  $Exspresso.lang.load('upload')
+  @lang.load('upload')
   
   if is_array($msg)
     for $val in $msg
-      $msg = if ($Exspresso.lang.line($val) is false) then $val else $Exspresso.lang.line($val)
+      $msg = if (@lang.line($val) is false) then $val else @lang.line($val)
       @error_msg.push $msg
       log_message('error', $msg)
       
     
   else 
-    $msg = if ($Exspresso.lang.line($msg) is false) then $msg else $Exspresso.lang.line($msg)
+    $msg = if (@lang.line($msg) is false) then $msg else @lang.line($msg)
     @error_msg.push $msg
     log_message('error', $msg)
     

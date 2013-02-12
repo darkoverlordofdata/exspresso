@@ -136,24 +136,24 @@ class Exspresso_Trackback
   #
   receive :  ->
     for $val in ['url', 'title', 'blog_name', 'excerpt']
-      if not @Exspresso.$_POST[$val]?  or @Exspresso.$_POST[$val] is ''
+      if not @$_POST[$val]?  or @$_POST[$val] is ''
         @set_error('The following required POST variable is missing: ' + $val)
         return false
         
       
-      @data['charset'] = if ( not @Exspresso.$_POST['charset']? ) then 'auto' else strtoupper(trim(@Exspresso.$_POST['charset']))
+      @data['charset'] = if ( not @$_POST['charset']? ) then 'auto' else strtoupper(trim(@$_POST['charset']))
       
       if $val isnt 'url' and function_exists('mb_convert_encoding')
-        @Exspresso.$_POST[$val] = mb_convert_encoding(@Exspresso.$_POST[$val], @charset, @data['charset'])
+        @$_POST[$val] = mb_convert_encoding(@$_POST[$val], @charset, @data['charset'])
         
       
-      @Exspresso.$_POST[$val] = if ($val isnt 'url') then @convert_xml(strip_tags(@Exspresso.$_POST[$val])) else strip_tags(@Exspresso.$_POST[$val])
+      @$_POST[$val] = if ($val isnt 'url') then @convert_xml(strip_tags(@$_POST[$val])) else strip_tags(@$_POST[$val])
       
       if $val is 'excerpt'
-        @Exspresso.$_POST['excerpt'] = @limit_characters(@Exspresso.$_POST['excerpt'])
+        @$_POST['excerpt'] = @limit_characters(@$_POST['excerpt'])
         
       
-      @data[$val] = @Exspresso.$_POST[$val]
+      @data[$val] = @$_POST[$val]
       
     
     return true

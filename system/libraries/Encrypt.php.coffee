@@ -58,7 +58,6 @@ class Exspresso_Encrypt
   #
   __construct()
   {
-  @Exspresso = Exspresso
   @_mcrypt_exists = if ( not function_exists('mcrypt_encrypt')) then false else true
   log_message('debug', "Encrypt Class Initialized")
   }

@@ -220,11 +220,6 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
   # @return	mixed
   #
   _display: ($output = '') ->
-    #  Note:  We use globals because we can't use $Exspresso =& Exspresso
-    #  since this function is sometimes called by the caching mechanism,
-    #  which happens before the CI super object is available.
-
-    #  --------------------------------------------------------------------
 
     #  Set the output data
     if $output is ''
@@ -235,8 +230,8 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
     #  Do we need to write a cache file?  Only if the controller does not have its
     #  own _output() method and we are not dealing with a cache file, which we
     #  can determine by the existence of the $Exspresso object above
-    # if @_cache_expiration > 0 and @Exspresso?  and  not method_exists(@Exspresso, '_output')
-    #  @_write_cache($output)
+    if @_cache_expiration > 0 and not method_exists(@, '_output')
+      @_write_cache($output)
 
     #  --------------------------------------------------------------------
 
@@ -266,17 +261,6 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
     if count(@_headers) > 0
       for $header in @_headers
         @res.header($header[0], $header[1])
-
-    #  --------------------------------------------------------------------
-
-    #  Does the $Exspresso object exist?
-    #  If not we know we are dealing with a cache file so we'll
-    #  simply echo out the data and exit.
-    #if not @Exspresso?
-    #  @res.send $output
-    #  log_message('debug', "Final output sent to browser")
-    #  log_message('debug', "Total execution time: " + $elapsed)
-    #  return true
 
     #  --------------------------------------------------------------------
 

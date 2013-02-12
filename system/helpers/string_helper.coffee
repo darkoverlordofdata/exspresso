@@ -221,9 +221,9 @@ if not function_exists('random_string')
         
       when 'encrypt','sha1'
         
-        Exspresso.load.helper('security')
+        $s = @load.helper('security')
         
-        return do_hash(uniqid(mt_rand(), true), 'sha1')
+        return $s.do_hash(uniqid(mt_rand(), true), 'sha1')
         
         
     

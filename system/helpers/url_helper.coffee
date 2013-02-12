@@ -54,7 +54,7 @@
 #
 if not function_exists('site_url')
   exports.site_url = site_url = ($uri = '') ->
-    return Exspresso.config.site_url($uri)
+    return @config.site_url($uri)
     
   
 
@@ -71,7 +71,7 @@ if not function_exists('site_url')
 if not function_exists('base_url')
   exports.base_url = base_url =  ->
     
-    return Exspresso.config.slash_item('base_url')
+    return @config.slash_item('base_url')
     
   
 
@@ -89,7 +89,7 @@ if not function_exists('base_url')
 if not function_exists('current_url')
   exports.current_url = current_url =  ->
     
-    return Exspresso.config.site_url(Exspresso.uri.uri_string())
+    return @config.site_url(@uri.uri_string())
     
   
 
@@ -105,7 +105,7 @@ if not function_exists('current_url')
 if not function_exists('uri_string')
   exports.uri_string = uri_string =  ->
     
-    return Exspresso.uri.uri_string()
+    return @uri.uri_string()
     
   
 
@@ -122,7 +122,7 @@ if not function_exists('uri_string')
 if not function_exists('index_page')
   exports.index_page = index_page =  ->
     
-    return Exspresso.config.item('index_page')
+    return @config.item('index_page')
     
   
 

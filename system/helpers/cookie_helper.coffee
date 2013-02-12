@@ -61,7 +61,7 @@ if not function_exists('set_cookie')
   exports.set_cookie = set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
     #  Set the config file options
 
-    Exspresso.input.set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure)
+    @input.set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure)
     
   
 
@@ -84,7 +84,7 @@ if not function_exists('get_cookie')
       $prefix = config_item('cookie_prefix')
       
     
-    return Exspresso.input.cookie($prefix + $index, $xss_clean)
+    return @input.cookie($prefix + $index, $xss_clean)
     
   
 

@@ -58,8 +58,7 @@ class Exspresso_Cart
   __construct($params = {})
   {
   #  Set the super object to a local variable for use later
-  @Exspresso = Exspresso
-  
+
   #  Are any config settings being passed manually?  If so, set them
   $config = {}
   if count($params) > 0
@@ -69,11 +68,11 @@ class Exspresso_Cart
     
   
   #  Load the Sessions class
-  @Exspresso.load.library('session', $config)
+  @load.library('session', $config)
   
   #  Grab the shopping cart array from the session table, if it exists
-  if @Exspresso.session.userdata('cart_contents') isnt false
-    @_cart_contents = @Exspresso.session.userdata('cart_contents')
+  if @session.userdata('cart_contents') isnt false
+    @_cart_contents = @session.userdata('cart_contents')
     
   else 
     #  No cart exists so we'll set some base values
@@ -358,7 +357,7 @@ class Exspresso_Cart
     
     #  Is our cart empty?  If so we delete it from the session
     if count(@_cart_contents)<=2
-      @Exspresso.session.unset_userdata('cart_contents')
+      @session.unset_userdata('cart_contents')
       
       #  Nothing more to do... coffee time!
       return false
@@ -366,7 +365,7 @@ class Exspresso_Cart
     
     #  If we made it this far it means that our cart has data.
     #  Let's pass it to the Session class so it can be stored
-    @Exspresso.session.set_userdata('cart_contents':@_cart_contents)
+    @session.set_userdata('cart_contents':@_cart_contents)
     
     #  Woot!
     return true
@@ -478,7 +477,7 @@ class Exspresso_Cart
     @_cart_contents['cart_total'] = 0
     @_cart_contents['total_items'] = 0
     
-    @Exspresso.session.unset_userdata('cart_contents')
+    @session.unset_userdata('cart_contents')
     
   
   

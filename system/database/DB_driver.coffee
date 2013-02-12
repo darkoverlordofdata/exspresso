@@ -985,17 +985,15 @@ class Exspresso_DB_driver
   #
   display_error : ($error = '', $swap = '', $native = false) ->
 
-    Exspresso.lang = load_class('Lang', 'core')
-    #Exspresso.lang._CI = @_CI
-    Exspresso.lang.load('db')
+    @lang.load('db')
 
-    $heading = Exspresso.lang.line('db_error_heading')
+    $heading = @lang.line('db_error_heading')
 
     if $native is true
       $message = $error
 
     else
-      $message = if ( not is_array($error)) then [str_replace('%s', $swap, Exspresso.lang.line($error))] else $error
+      $message = if ( not is_array($error)) then [str_replace('%s', $swap, @lang.line($error))] else $error
 
 
     console.log $message

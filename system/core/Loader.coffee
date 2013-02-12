@@ -94,7 +94,7 @@ class global.Exspresso_Loader extends Base_Loader
   #
   config: ($file = 'config', $use_sections = false, $fail_gracefully = false) ->
 
-    @Exspresso.config.load($file, $use_sections, $fail_gracefully, @_module)
+    @controller.config.load($file, $use_sections, $fail_gracefully, @_module)
 
 
   #
@@ -143,7 +143,7 @@ class global.Exspresso_Loader extends Base_Loader
   # @return	void
   #
   language: ($langfile, $idiom = '', $return = false, $add_suffix = true, $alt_path = '') ->
-    return @Exspresso.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
+    return @controller.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
 
 
   #
@@ -180,15 +180,15 @@ class global.Exspresso_Loader extends Base_Loader
     $class = strtolower(end(explode('/', $library)))
 
     if @_ex_classes[$class]? and ($_alias = @_ex_classes[$class])
-      return @Exspresso[$_alias]
+      return @controller[$_alias]
 
     ($_alias = strtolower($object_name)) or ($_alias = $class)
 
-    [$path, $_library] = Modules.find($library, @Exspresso._module, 'libraries/')
+    [$path, $_library] = Modules.find($library, @controller._module, 'libraries/')
 
     # load library config file as params *
 
-    [$path2, $file] = Modules.find($_alias, @Exspresso._module, 'config/')
+    [$path2, $file] = Modules.find($_alias, @controller._module, 'config/')
     ($path2) and ($params = array_merge(Modules.load_file($file, $path2, 'config'), $params))
 
     if $path is false
@@ -200,11 +200,11 @@ class global.Exspresso_Loader extends Base_Loader
 
       $library = Modules.load_file($_library, $path)
 
-      @Exspresso[$_alias] = new $library(@Exspresso, $params)
+      @controller[$_alias] = new $library(@controller, $params)
 
       @_ex_classes[$class] = $_alias
 
-    return @Exspresso[$_alias]
+    return @controller[$_alias]
 
 
   #
@@ -238,7 +238,7 @@ class global.Exspresso_Loader extends Base_Loader
     ($_alias = $object_name) or ($_alias = end(explode('/', $model)))
 
     if in_array($_alias, @_ex_models, true)
-      return @Exspresso[$_alias]
+      return @controller[$_alias]
 
     # check module *
     [$path, $_model] = Modules.find(strtolower($model), @_module, 'models/')
@@ -259,11 +259,11 @@ class global.Exspresso_Loader extends Base_Loader
 
       $model = Modules.load_file($_model, $path)
 
-      @Exspresso[$_alias] = new $model(@Exspresso)
+      @controller[$_alias] = new $model(@controller)
 
       @_ex_models.push $_alias
 
-    return @Exspresso[$_alias]
+    return @controller[$_alias]
 
   #
   # Load an array of models
@@ -291,8 +291,8 @@ class global.Exspresso_Loader extends Base_Loader
     if is_array($module) then return @modules($module)
 
     $_alias = strtolower(end(explode('/', $module)))
-    @Exspresso[$_alias] = Modules.load(array($module , $params))
-    return @Exspresso[$_alias]
+    @controller[$_alias] = Modules.load(array($module , $params))
+    return @controller[$_alias]
 
 
   #
@@ -362,7 +362,7 @@ class global.Exspresso_Loader extends Base_Loader
   # @return	void
   #
   view: ($view, $vars = {}, $next) ->
-    [$path, $view] = Modules.find($view, @Exspresso._module, 'views/')
+    [$path, $view] = Modules.find($view, @controller._module, 'views/')
     @_ex_view_path = if $path then $path else APPPATH + config_item('views')
     @_ex_load('', $view, $vars, $next)
 
@@ -412,7 +412,7 @@ class global.Exspresso_Loader extends Base_Loader
     if $autoload['libraries']?
       if in_array('database', $autoload['libraries'])
         #  autoload database
-        if not ($db = @Exspresso.config.item('database'))
+        if not ($db = @controller.config.item('database'))
           $db['params'] = 'default'
           $db['active_record'] = true
 

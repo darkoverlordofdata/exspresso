@@ -60,14 +60,14 @@ class global.Base_Loader
     unit_test           : 'unit'
     user_agent          : 'agent'
 
-  Exspresso             : null
+  controller            : null
 
   #
   # Initiailize the loader search paths
   #
   # @return 	nothing
   #
-  constructor: (@Exspresso)->
+  constructor: (@controller)->
 
     @_ex_view_path          = APPPATH + config_item('views')
     @_ex_library_paths      = [APPPATH, BASEPATH]
@@ -185,7 +185,7 @@ class global.Base_Loader
     if in_array($name, @_ex_models, true)
       return
 
-    if @Exspresso[$name]?
+    if @controller[$name]?
       show_error 'The model name you are loading is the name of a resource that is already being used: %s', $name
 
 
@@ -195,15 +195,15 @@ class global.Base_Loader
 
       if $db_conn isnt false and not class_exists('Exspresso_DB')
         if $db_conn is true then $db_conn = ''
-        @Exspresso.load.database $db_conn, false, true
+        @controller.load.database $db_conn, false, true
 
       if not class_exists('Exspresso_Model')
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
-      $model = new $Model(@Exspresso)
+      $model = new $Model(@controller)
 
-      @Exspresso[$name] = $model
+      @controller[$name] = $model
       @_ex_models.push $name
       return
 
@@ -225,23 +225,23 @@ class global.Base_Loader
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Do we even need to load the database class?
-    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @Exspresso['db']?
+    if class_exists('Exspresso_DB') and $return is false and $active_record is null and @controller['db']?
       return false
 
     $params = $params || Exspresso.server._db
 
     DB = require(BASEPATH+'database/DB'+EXT)($params, $active_record)
 
-    @Exspresso.queue ($next) -> DB.initialize $next
+    @controller.queue ($next) -> DB.initialize $next
 
     if $return is true then return DB #($params, $active_record)
 
     # Initialize the db variable.  Needed to prevent
     # reference errors with some configurations
-    @Exspresso.db = ''
+    @controller.db = ''
 
     # Load the DB class
-    @Exspresso.db = DB #($params, $active_record)
+    @controller.db = DB #($params, $active_record)
 
   ## --------------------------------------------------------------------
 
@@ -256,7 +256,7 @@ class global.Base_Loader
     if $params is ''
       if not class_exists('Exspresso_DB')
         @database()
-      $db = @Exspresso.db
+      $db = @controller.db
     else
       $db = @database($params, true)
 
@@ -265,8 +265,8 @@ class global.Base_Loader
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_utility' + EXT)
     # ex: Exspresso_DB_sqlite_utility
 
-    if $return is true then return new $class(@Exspresso, $db)
-    @Exspresso.dbutil = new $class(@Exspresso, $db)
+    if $return is true then return new $class(@controller, $db)
+    @controller.dbutil = new $class(@controller, $db)
 
   #  --------------------------------------------------------------------
 
@@ -281,15 +281,15 @@ class global.Base_Loader
     if $params is ''
       if not class_exists('Exspresso_DB')
         @database()
-      $db = @Exspresso.db
+      $db = @controller.db
     else
       $db = @database($params, true)
 
     require(BASEPATH + 'database/DB_forge' + EXT)
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_forge' + EXT)
 
-    if $return is true then return new $class(@Exspresso, $db)
-    @Exspresso.dbforge = new $class(@Exspresso, $db)
+    if $return is true then return new $class(@controller, $db)
+    @controller.dbforge = new $class(@controller, $db)
 
   #  --------------------------------------------------------------------
 
@@ -413,7 +413,7 @@ class global.Base_Loader
       $file = [$file]
 
     for $langfile in $file
-      @Exspresso.lang.load $langfile, $lang
+      @controller.lang.load $langfile, $lang
     return
 
 
@@ -428,7 +428,7 @@ class global.Base_Loader
   #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
 
-    @Exspresso.config.load $file, $use_sections, $fail_gracefully
+    @controller.config.load $file, $use_sections, $fail_gracefully
 
 
   ## --------------------------------------------------------------------
@@ -572,10 +572,10 @@ class global.Base_Loader
     #  to become accessible from within the Controller and Model functions.
 
     #$_ex_CI = Exspresso
-    #for $_ex_key, $_ex_var of @Exspresso
-    #  if typeof @Exspresso[$_ex_key] isnt 'function'
+    #for $_ex_key, $_ex_var of @controller
+    #  if typeof @controller[$_ex_key] isnt 'function'
     #    if not @[$_ex_key]?
-    #      @[$_ex_key] = @Exspresso[$_ex_key]
+    #      @[$_ex_key] = @controller[$_ex_key]
 
     #
     # Extract and cache variables
@@ -589,14 +589,14 @@ class global.Base_Loader
       @_ex_cached_vars = array_merge(@_ex_cached_vars, $_ex_vars)
 
 
-    @Exspresso.render $_ex_path, @_ex_cached_vars, ($err, $html) =>
+    @controller.render $_ex_path, @_ex_cached_vars, ($err, $html) =>
 
       log_message('debug', 'File loaded: ' + $_ex_path)
       if $_ex_return isnt null
         $_ex_return $err, $html
       else
-        @Exspresso.output.append_output $html
-        @Exspresso.output._display()
+        @controller.output.append_output $html
+        @controller.output._display()
 
 
 
@@ -651,7 +651,7 @@ class global.Base_Loader
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
-            if not @Exspresso[$object_name]?
+            if not @controller[$object_name]?
               return @_ex_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
           $is_duplicate = true
@@ -681,7 +681,7 @@ class global.Base_Loader
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
-            if not @Exspresso[$object_name]?
+            if not @controller[$object_name]?
               return @_ex_init_class($class, '', $params, $object_name)
 
           $is_duplicate = true
@@ -783,7 +783,7 @@ class global.Base_Loader
     @_ex_classes[$class] = $classvar
 
     #  Instantiate the class
-    @Exspresso[$classvar] = new global[$name](@Exspresso, $config)
+    @controller[$classvar] = new global[$name](@controller, $config)
 
 
   #  --------------------------------------------------------------------
@@ -819,7 +819,7 @@ class global.Base_Loader
     #  Load any custom config file
     if $autoload['config'].length > 0
       for $val, $key in as
-        @Exspresso.config.load $val
+        @controller.config.load $val
 
     #  Autoload helpers and languages
     for $type in ['helper', 'language']
@@ -871,7 +871,7 @@ class global.Base_Loader
   # @return	bool
   #
   _ex_get_component : ($component) ->
-    @Exspresso[$component]
+    @controller[$component]
 
 
   #  --------------------------------------------------------------------

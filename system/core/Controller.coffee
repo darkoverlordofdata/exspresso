@@ -140,19 +140,27 @@ class global.Exspresso_Controller
   # @return	void
   #
   render: ($view, $data = {}, $next) =>
-    # $data.Exspresso = @
 
-    __defineProperties $data,
-      $_GET    : get: -> @input.get()
-      $_POST   : get: -> @input.post()
-      $_SERVER : get: -> @input.server()
-      $_COOKIE : get: -> @input.cookie()
+    #
+    # View Controller constructor
+    #
+    #   Wrap view data with controller methods
+    #   This gives the view access to all methods and
+    #   properties of the controller
+    #
+    # @access	private
+    # @param	object
+    #
+    Controller = ($data) ->
+      for $key, $obj of $data
+        @[$key] = $obj
+      return
 
-    for $key, $obj of @
-      if $key[0] isnt '_' and __hasOwnProperty.call(@, $key)
-        $data[$key] = $obj
+    # Here's the magic -
+    # expose the current controller via the prototype
+    Controller:: = @
 
-    @res.render $view, $data, ($err, $html) =>
+    @res.render $view, new Controller($data), ($err, $html) =>
 
       return $next($err, $html) if $next?
       return show_error($err) if $err
