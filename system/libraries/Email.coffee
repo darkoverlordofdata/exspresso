@@ -35,72 +35,67 @@
 #
 # Permits email to be sent using Mail, Sendmail, or SMTP.
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Libraries
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/email.html
 #
 class global.Exspresso_Email
   
-  useragent: "Exspresso"
-  mailpath: "/usr/sbin/sendmail"#  Sendmail path
-  protocol: "mail"#  mail/sendmail/smtp
-  smtp_host: ""#  SMTP Server.  Example: mail.earthlink.net
-  smtp_user: ""#  SMTP Username
-  smtp_pass: ""#  SMTP Password
-  smtp_port: "25"#  SMTP Port
-  smtp_timeout: 5 #  SMTP Timeout in seconds
-  wordwrap: true#  TRUE/FALSE  Turns word-wrap on/off
-  wrapchars: "76"#  Number of characters to wrap at.
-  mailtype: "text"#  text/html  Defines email formatting
-  charset: "utf-8"#  Default char set: iso-8859-1 or us-ascii
-  multipart: "mixed"#  "mixed" (in the body) or "related" (separate)
-  alt_message: ''#  Alternative message for HTML emails
-  validate: false#  TRUE/FALSE.  Enables email validation
-  priority: "3"#  Default priority (1 - 5)
-  newline: "\n"#  Default newline. "\r\n" or "\n" (Use "\r\n" to comply with RFC 822)
-  crlf: "\n"#  The RFC 2045 compliant CRLF for quoted-printable is "\r\n".  Apparently some servers,
+  useragent       : "Exspresso"
+  mailpath        : "/usr/sbin/sendmail"  #  Sendmail path
+  protocol        : "mail"    #  mail/sendmail/smtp
+  smtp_host       : ""        #  SMTP Server.  Example: mail.earthlink.net
+  smtp_user       : ""        #  SMTP Username
+  smtp_pass       : ""        #  SMTP Password
+  smtp_port       : "25"      #  SMTP Port
+  smtp_timeout    : 5         #  SMTP Timeout in seconds
+  wordwrap        : true      #  TRUE/FALSE  Turns word-wrap on/off
+  wrapchars       : "76"      #  Number of characters to wrap at.
+  mailtype        : "text"    #  text/html  Defines email formatting
+  charset         : "utf-8"   #  Default char set: iso-8859-1 or us-ascii
+  multipart       : "mixed"   #  "mixed" (in the body) or "related" (separate)
+  alt_message     : ''        #  Alternative message for HTML emails
+  validate        : false     #  TRUE/FALSE.  Enables email validation
+  priority        : "3"       #  Default priority (1 - 5)
+  newline         : "\n"      #  Default newline. "\r\n" or "\n" (Use "\r\n" to comply with RFC 822)
+  crlf            : "\n"      #  The RFC 2045 compliant CRLF for quoted-printable is "\r\n".  Apparently some servers,
   #  even on the receiving end think they need to muck with CRLFs, so using "\n", while
   #  distasteful, is the only thing that seems to work for all environments.
-  send_multipart: true#  TRUE/FALSE - Yahoo does not like multipart alternative, so this is an override.  Set to FALSE for Yahoo.
-  bcc_batch_mode: false#  TRUE/FALSE  Turns on/off Bcc batch feature
-  bcc_batch_size: 200 #  If bcc_batch_mode = TRUE, sets max number of Bccs in each batch
-  _safe_mode: false
-  _subject: ""
-  _body: ""
-  _from: ''
-  _name: ''
-  _reply_to: ''
-  _reply_name: ''
-  _finalbody: ""
-  _alt_boundary: ""
-  _atc_boundary: ""
-  _header_str: ""
-  _smtp_connect: ""
-  _encoding: "8bit"
-  _IP: false
-  _smtp_auth: false
-  _replyto_flag: false
-  _debug_msg: null
-  _recipients: null
-  _cc_array: null
-  _bcc_array: null
-  _headers: null
-  _attach_name: null
-  _attach_type: null
-  _attach_disp: null
-  _protocols: ['mail', 'sendmail', 'smtp']
-  _base_charsets: ['us-ascii', 'iso-2022-']#  7-bit charsets (excluding language suffix)
-  _bit_depths: ['7bit', '8bit']
-  _priorities: ['1 (Highest)', '2 (High)', '3 (Normal)', '4 (Low)', '5 (Lowest)']
+  send_multipart  : true      #  TRUE/FALSE - Yahoo does not like multipart alternative, so this is an override.  Set to FALSE for Yahoo.
+  bcc_batch_mode  : false     #  TRUE/FALSE  Turns on/off Bcc batch feature
+  bcc_batch_size  : 200       #  If bcc_batch_mode = TRUE, sets max number of Bccs in each batch
+  _safe_mode      : false
+  _subject        : ""
+  _body           : ""
+  _from           : ''
+  _name           : ''
+  _reply_to       : ''
+  _reply_name     : ''
+  _finalbody      : ""
+  _alt_boundary   : ""
+  _atc_boundary   : ""
+  _header_str     : ""
+  _smtp_connect   : ""
+  _encoding       : "8bit"
+  _IP             : false
+  _smtp_auth      : false
+  _replyto_flag   : false
+  _debug_msg      : null
+  _recipients     : null
+  _cc_array       : null
+  _bcc_array      : null
+  _headers        : null
+  _attach_name    : null
+  _attach_type    : null
+  _attach_disp    : null
+  _protocols      : ['mail', 'sendmail', 'smtp']
+  _base_charsets  : ['us-ascii', 'iso-2022-'] #  7-bit charsets (excluding language suffix)
+  _bit_depths     : ['7bit', '8bit']
+  _priorities     : ['1 (Highest)', '2 (High)', '3 (Normal)', '4 (Low)', '5 (Lowest)']
   
   #
   # Constructor - Sets Email Preferences
   #
   # The constructor can be passed an array of config values
   #
-  constructor: ($config = {}, @Exspresso) ->
+  constructor: ($Exspresso, $config = {}) ->
 
 
     @_debug_msg = {}

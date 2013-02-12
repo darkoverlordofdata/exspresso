@@ -73,7 +73,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # The constructor runs the session routines automatically
   # whenever the class is instantiated.
   #
-  constructor: ($params = {}, $Exspresso) ->
+  constructor: ($Exspresso, $params = {}) ->
 
     log_message 'debug', "Session Class Initialized"
 

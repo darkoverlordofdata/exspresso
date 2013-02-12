@@ -31,11 +31,10 @@
 #
 #
 
-class global.Template extends Exspresso_Class
+class global.Template extends Exspresso_Object
 
   __keys              = Object.keys
 
-  Exspresso           : null
   html                : null
   theme               : null
 

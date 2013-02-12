@@ -33,21 +33,17 @@
 #
 # Parser Class
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Parser
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/parser.html
 #
-class global.Exspresso_Parser
+class global.Exspresso_Parser extends Exspresso_Object
   
-  l_delim: '{'
-  r_delim: '}'
+  _l_delim        : '{'   # Left delimiter
+  _r_delim        : '}'   # Right delimiter
 
-  constructor: ($config = {}, @Exspresso) ->
+  constructor: ($Exspresso, $config = {}) ->
 
-    @[$key] = $val for $key, $val of $config
-
+    super $Exspresso, $config
+    log_message 'debug', "Parser Class Initialized"
+    
   #
   #  Parse a template
   #
@@ -64,7 +60,7 @@ class global.Exspresso_Parser
 
     $fn_err = $next ? show_error
 
-    @Exspresso.load.view $template, $data, ($err, $template) =>
+    @load.view $template, $data, ($err, $template) =>
 
       if $err then $fn_err $err
       else
@@ -114,8 +110,8 @@ class global.Exspresso_Parser
         $template = @_parse_single($key, ''+$val, $template)
 
     if $return is false
-      @Exspresso.output.append_output($template)
-      @Exspresso.output._display()
+      @output.append_output($template)
+      @output._display()
 
     return $template
     
@@ -128,9 +124,9 @@ class global.Exspresso_Parser
   # @param	string
   # @return	void
   #
-  set_delimiters: ($l = '{', $r = '}') ->
-    @l_delim = $l
-    @r_delim = $r
+  set_delimiters: ($l_delim = '{', $r_delim = '}') ->
+    @_l_delim = $l_delim
+    @_r_delim = $r_delim
     return
     
   
@@ -144,7 +140,7 @@ class global.Exspresso_Parser
   # @return	string
   #
   _parse_single: ($key, $val, $string) ->
-    return str_replace(@l_delim + $key + @r_delim, $val, $string)
+    return str_replace(@_l_delim + $key + @_r_delim, $val, $string)
     
   
   #
@@ -186,7 +182,7 @@ class global.Exspresso_Parser
   # @return	mixed
   #
   _match_pair: ($string, $variable) ->
-    $match = preg_match("|" + preg_quote(@l_delim) + $variable + preg_quote(@r_delim) + "(.+?)" + preg_quote(@l_delim) + '/' + $variable + preg_quote(@r_delim) + "|s", $string)
+    $match = preg_match("|" + preg_quote(@_l_delim) + $variable + preg_quote(@_r_delim) + "(.+?)" + preg_quote(@_l_delim) + '/' + $variable + preg_quote(@_r_delim) + "|s", $string)
     if $match.length is 0
       return false
 

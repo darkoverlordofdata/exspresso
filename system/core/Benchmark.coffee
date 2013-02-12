@@ -41,9 +41,11 @@ class global.Exspresso_Benchmark
   
   _marker: null
 
+  @get marker    : -> @_marker
+
   constructor: ->
     @_marker = {}
-  
+
   #
   # Set a benchmark marker
   #
@@ -56,8 +58,8 @@ class global.Exspresso_Benchmark
   #
   mark : ($name) ->
     @_marker[$name] = new Date()
-    
-  
+
+
   #
   # Calculates the time difference between two marked points.
   #
@@ -75,16 +77,16 @@ class global.Exspresso_Benchmark
   elapsed_time : ($point1 = '', $point2 = '', $decimals = 4) ->
     if $point1 is ''
       return '{elapsed_time}'
-      
-    
-    if not @_marker[$point1]? 
+
+
+    if not @_marker[$point1]?
       return ''
-      
-    
-    if not @_marker[$point2]? 
+
+
+    if not @_marker[$point2]?
       @_marker[$point2] = new Date() # microtime()
-      
-    
+
+
     #[$sm, $ss] = explode(' ', @_marker[$point1])
     #[$em, $es] = explode(' ', @_marker[$point2])
 

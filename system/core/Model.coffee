@@ -52,6 +52,9 @@ class global.Exspresso_Model
 
     log_message 'debug', "Model Class Initialized"
 
+    #
+    # Mixin the base controller
+    #
     for $key, $obj of $Exspresso
       if $key[0] isnt '_' and __hasOwnProperty.call($Exspresso, $key)
         __defineProperty @, $key, {value: $obj, writeable: false}

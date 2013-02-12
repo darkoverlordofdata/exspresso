@@ -170,10 +170,10 @@ class global.Exspresso_Loader extends Base_Loader
   # @param	string	an optional object name
   # @return	void
   #
-  library: ($library, $params = null, $object_name = null) ->
+  library: ($library, $params = {}, $object_name = null) ->
 
-    if not class_exists('Exspresso_Class')
-      require BASEPATH+'core/Class'+EXT
+    if not class_exists('Exspresso_Object')
+      require BASEPATH+'core/Object'+EXT
 
     if is_array($library) then return @libraries($library)
 
@@ -187,8 +187,6 @@ class global.Exspresso_Loader extends Base_Loader
     [$path, $_library] = Modules.find($library, @Exspresso._module, 'libraries/')
 
     # load library config file as params *
-    if $params is null
-      $params = {}
 
     [$path2, $file] = Modules.find($_alias, @Exspresso._module, 'config/')
     ($path2) and ($params = array_merge(Modules.load_file($file, $path2, 'config'), $params))
@@ -202,7 +200,7 @@ class global.Exspresso_Loader extends Base_Loader
 
       $library = Modules.load_file($_library, $path)
 
-      @Exspresso[$_alias] = new $library($params, @Exspresso)
+      @Exspresso[$_alias] = new $library(@Exspresso, $params)
 
       @_ex_classes[$class] = $_alias
 

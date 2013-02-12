@@ -34,17 +34,12 @@
 # Form Validation Class
 #
 # @package		Exspresso
-# @subpackage	Libraries
-# @category	Validation
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/form_validation.html
 #
 class global.Exspresso_Form_validation
 
   sprintf = require('util').format
 
 
-  Exspresso         : null
   _field_data       : null
   _config_rules     : null
   _error_array      : null
@@ -57,7 +52,9 @@ class global.Exspresso_Form_validation
   #
   # Constructor
   #
-  constructor: ($rules = {}, @Exspresso) ->
+  constructor: ($Exspresso, $rules = {}) ->
+
+    super $Exspresso
 
     #  Validation rules can be stored in a config file.
     @_config_rules = $rules
@@ -66,11 +63,11 @@ class global.Exspresso_Form_validation
     @_error_messages = {}
 
     #  Automatically load the form helper
-    @Exspresso.load.helper('form')
+    @load.helper('form')
 
     #  Set the character encoding in MB.
     if function_exists('mb_internal_encoding')
-      mb_internal_encoding(@Exspresso.config.item('charset'))
+      mb_internal_encoding(@config.item('charset'))
 
 
     log_message('debug', "Form Validation Class Initialized")
@@ -88,7 +85,7 @@ class global.Exspresso_Form_validation
   #
   set_rules: ($field, $label = '', $rules = '') ->
     #  No reason to set rules if we have no POST data
-    if count(@Exspresso.$_POST) is 0
+    if count(@$_POST) is 0
       return @
 
     $indexes = []
@@ -254,7 +251,7 @@ class global.Exspresso_Form_validation
   #
   run: ($group = '') ->
     #  Do we even have any data to process?  Mm?
-    if count(@Exspresso.$_POST) is 0
+    if count(@$_POST) is 0
       return false
       
     
@@ -263,11 +260,11 @@ class global.Exspresso_Form_validation
     if count(@_field_data) is 0
       #  No validation rules?  We're done...
       if count(@_config_rules) is 0
-        return false
+        return false`
         
       
       #  Is there a validation rule for the particular URI being accessed?
-      # $uri = if ($group is '') then trim(@Exspresso.uri.ruri_string(), '/') else $group
+      # $uri = if ($group is '') then trim(@uri.ruri_string(), '/') else $group
       $uri = $group
       if $uri isnt '' and @_config_rules[$uri]? 
         @set_rules(@_config_rules[$uri])
@@ -284,20 +281,20 @@ class global.Exspresso_Form_validation
       
     
     #  Load the language file containing error messages
-    @Exspresso.lang.load('form_validation')
+    @lang.load('form_validation')
     
     #  Cycle through the rules for each field, match the
-    #  corresponding @Exspresso.$_POST item and test for errors
+    #  corresponding @$_POST item and test for errors
     for $field, $row of @_field_data
-      #  Fetch the data from the corresponding @Exspresso.$_POST array and cache it in the _field_data array.
+      #  Fetch the data from the corresponding @$_POST array and cache it in the _field_data array.
       #  Depending on whether the field name is an array or a string will determine where we get it from.
       
       if $row['is_array'] is true
-        @_field_data[$field]['postdata'] = @_reduce_array(@Exspresso.$_POST, $row['keys'])
+        @_field_data[$field]['postdata'] = @_reduce_array(@$_POST, $row['keys'])
         
       else 
-        if @Exspresso.$_POST[$field]?  and @Exspresso.$_POST[$field] isnt ""
-          @_field_data[$field]['postdata'] = @Exspresso.$_POST[$field]
+        if @$_POST[$field]?  and @$_POST[$field] isnt ""
+          @_field_data[$field]['postdata'] = @$_POST[$field]
 
       @_execute($row, explode('|', $row['rules']), @_field_data[$field]['postdata'])
 
@@ -319,7 +316,7 @@ class global.Exspresso_Form_validation
     
   
   #
-  # Traverse a multidimensional @Exspresso.$_POST array index until the data is found
+  # Traverse a multidimensional @$_POST array index until the data is found
   #
   # @access	private
   # @param	array
@@ -350,13 +347,13 @@ class global.Exspresso_Form_validation
     for $field, $row of @_field_data
       if not is_null($row['postdata'])
         if $row['is_array'] is false
-          if @Exspresso.$_POST[$row['field']]?
-            @Exspresso.$_POST[$row['field']] = @prep_for_form($row['postdata'])
+          if @$_POST[$row['field']]?
+            @$_POST[$row['field']] = @prep_for_form($row['postdata'])
             
           
         else 
           #  start with a reference
-          $post_ref = @Exspresso.$_POST
+          $post_ref = @$_POST
           
           #  before we assign values, make a reference to the right POST key
           if count($row['keys']) is 1
@@ -395,7 +392,7 @@ class global.Exspresso_Form_validation
   # @return	mixed
   #
   _execute: ($row, $rules, $postdata = null, $cycles = 0) ->
-    #  If the @Exspresso.$_POST data is an array we will run a recursive call
+    #  If the @$_POST data is an array we will run a recursive call
     if is_array($postdata)
       for $key, $val of $postdata
         @_execute($row, $rules, $val, $cycles)
@@ -430,7 +427,7 @@ class global.Exspresso_Form_validation
         $type = if (in_array('required', $rules)) then 'required' else 'isset'
 
         if not @_error_messages[$type]?
-          if false is ($line = @Exspresso.lang.line($type))
+          if false is ($line = @lang.line($type))
             $line = 'The field was not set'
             
           
@@ -532,7 +529,7 @@ class global.Exspresso_Form_validation
       #  Did the rule test negatively?  If so, grab the error.
       if $result is false
         if not @_error_messages[$rule]?
-          if false is ($line = @Exspresso.lang.line($rule))
+          if false is ($line = @lang.line($rule))
             $line = 'Unable to access an error message corresponding to your field name.'
 
         else
@@ -572,7 +569,7 @@ class global.Exspresso_Form_validation
       $line = substr($fieldname, 5)
       
       #  Were we able to translate the field name?  If not we use $line
-      if false is ($fieldname = @Exspresso.lang.line($line))
+      if false is ($fieldname = @lang.line($line))
         return $line
         
       
@@ -742,10 +739,10 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   matches: ($str, $field) ->
-    if not @Exspresso.$_POST[$field]?
+    if not @$_POST[$field]?
       return false
 
-    $field = @Exspresso.$_POST[$field]
+    $field = @$_POST[$field]
     
     return if ($str isnt $field) then false else true
     
@@ -848,7 +845,7 @@ class global.Exspresso_Form_validation
   # @return	string
   #
   valid_ip: ($ip) ->
-    return @Exspresso.input.valid_ip($ip)
+    return @input.valid_ip($ip)
     
   
   #
@@ -1048,7 +1045,7 @@ class global.Exspresso_Form_validation
   # @return	string
   #
   strip_image_tags: ($str) ->
-    return @Exspresso.input.strip_image_tags($str)
+    return @input.strip_image_tags($str)
     
   
   #
@@ -1059,7 +1056,7 @@ class global.Exspresso_Form_validation
   # @return	string
   #
   xss_clean: ($str) ->
-    return @Exspresso.security.xss_clean($str)
+    return @security.xss_clean($str)
     
   
   #

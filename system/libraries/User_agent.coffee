@@ -35,15 +35,9 @@
 #
 # Identifies the platform, browser, robot, or mobile devise of the browsing agent
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	User Agent
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/user_agent.html
 #
 class global.Exspresso_User_agent
 
-  Exspresso       : null
   _agent          : null
   
   _is_browser     : false
@@ -72,7 +66,9 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	void
   #
-  constructor: ($config = {}, @Exspresso) ->
+  constructor: ($Exspresso, $config = {}) ->
+
+    super $Exspresso, $config
 
     @_languages = {}
     @_charsets = {}
@@ -82,8 +78,8 @@ class global.Exspresso_User_agent
     @_mobiles = {}
     @_robots = {}
 
-    if @Exspresso.$_SERVER['HTTP_USER_AGENT']?
-      @_agent = trim(@Exspresso.$_SERVER['HTTP_USER_AGENT'])
+    if @$_SERVER['HTTP_USER_AGENT']?
+      @_agent = trim(@$_SERVER['HTTP_USER_AGENT'])
 
     if not is_null(@_agent)
       if @_load_agent_file()
@@ -142,6 +138,7 @@ class global.Exspresso_User_agent
     for $function in ['_set_browser', '_set_robot', '_set_mobile']
       if @[$function()] is true
         break
+    return
 
   #
   # Set the Platform
@@ -158,6 +155,7 @@ class global.Exspresso_User_agent
           return true
 
     @_platform = 'Unknown Platform'
+    return
 
 
   #
@@ -178,7 +176,7 @@ class global.Exspresso_User_agent
           @_set_mobile()
           return true
 
-    return false
+    false
 
   #
   # Set the Robot
@@ -195,7 +193,7 @@ class global.Exspresso_User_agent
           @_robot = $val
           return true
 
-    return false
+    false
 
   #
   # Set the Mobile Device
@@ -212,7 +210,7 @@ class global.Exspresso_User_agent
           @_mobile = $val
           return true
 
-    return false
+    false
 
 
   #
@@ -224,14 +222,15 @@ class global.Exspresso_User_agent
   _set_languages: () ->
 
     # req.acceptedLanguages
-    if (count(@_languages) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
-      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim(@Exspresso.$_SERVER['HTTP_ACCEPT_LANGUAGE'])))
+    if (count(@_languages) is 0) and @$_SERVER['HTTP_ACCEPT_LANGUAGE']?  and @$_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
+      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim(@$_SERVER['HTTP_ACCEPT_LANGUAGE'])))
 
       @_languages = explode(',', $languages)
 
 
     if count(@_languages) is 0
       @_languages = ['Undefined']
+    return
 
 
   #
@@ -243,14 +242,15 @@ class global.Exspresso_User_agent
   _set_charsets: () ->
 
     # req.acceptedCharsets
-    if (count(@_charsets) is 0) and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET']?  and @Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
-      $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim(@Exspresso.$_SERVER['HTTP_ACCEPT_CHARSET'])))
+    if (count(@_charsets) is 0) and @$_SERVER['HTTP_ACCEPT_CHARSET']?  and @$_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
+      $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim(@$_SERVER['HTTP_ACCEPT_CHARSET'])))
 
       @_charsets = explode(',', $charsets)
 
 
     if count(@_charsets) is 0
       @_charsets = ['Undefined']
+    return
 
 
   #
@@ -269,7 +269,7 @@ class global.Exspresso_User_agent
       return true
 
     #  Check for a specific browser
-    return array_key_exists($key, @_browsers) and @_browser is @_browsers[$key]
+    array_key_exists($key, @_browsers) and @_browser is @_browsers[$key]
 
   #
   # Is Robot
@@ -287,7 +287,7 @@ class global.Exspresso_User_agent
       return true
 
     #  Check for a specific robot
-    return array_key_exists($key, @_robots) and @_robot is @_robots[$key]
+    array_key_exists($key, @_robots) and @_robot is @_robots[$key]
 
   #
   # Is Mobile
@@ -305,7 +305,7 @@ class global.Exspresso_User_agent
       return true
 
     #  Check for a specific robot
-    return array_key_exists($key, @_mobiles) and @_mobile is @_mobiles[$key]
+    array_key_exists($key, @_mobiles) and @_mobile is @_mobiles[$key]
 
 
   #
@@ -316,10 +316,7 @@ class global.Exspresso_User_agent
   #
   is_referral: () ->
 
-    if not @Exspresso.$_SERVER['HTTP_REFERER']?  or @Exspresso.$_SERVER['HTTP_REFERER'] is ''
-      return false
-
-    return true
+    if not @$_SERVER['HTTP_REFERER']?  or @$_SERVER['HTTP_REFERER'] is '' then false else true
 
 
   #
@@ -329,7 +326,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   agent_string: () ->
-    return @_agent
+    @_agent
 
   #
   # Get Platform
@@ -338,7 +335,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   platform: () ->
-    return @_platform
+    @_platform
 
   #
   # Get Browser Name
@@ -347,7 +344,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   browser: () ->
-    return @_browser
+    @_browser
 
   #
   # Get the Browser Version
@@ -356,7 +353,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   version: () ->
-    return @_version
+    @_version
 
   #
   # Get The Robot Name
@@ -365,7 +362,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   robot: () ->
-    return @_robot
+    @_robot
 
   #
   # Get the Mobile Device
@@ -374,7 +371,7 @@ class global.Exspresso_User_agent
   # @return	string
   #
   mobile: () ->
-    return @_mobile
+    @_mobile
 
   
   #
@@ -385,7 +382,7 @@ class global.Exspresso_User_agent
   #
   #req.headers['referer']
   referrer: () ->
-    return if ( not @Exspresso.$_SERVER['HTTP_REFERER']?  or @Exspresso.$_SERVER['HTTP_REFERER'] is '') then '' else trim(@Exspresso.$_SERVER['HTTP_REFERER'])
+    if ( not @$_SERVER['HTTP_REFERER']?  or @$_SERVER['HTTP_REFERER'] is '') then '' else trim(@$_SERVER['HTTP_REFERER'])
 
   
   #
@@ -398,7 +395,7 @@ class global.Exspresso_User_agent
     if count(@_languages) is 0
       @_set_languages()
 
-    return @_languages
+    @_languages
 
   
   #
@@ -411,7 +408,7 @@ class global.Exspresso_User_agent
     if count(@_charsets) is 0
       @_set_charsets()
 
-    return @_charsets
+    @_charsets
 
   
   #
@@ -421,7 +418,7 @@ class global.Exspresso_User_agent
   # @return	bool
   #
   accept_lang: ($lang = 'en') ->
-    return (in_array(strtolower($lang), @_languages(), true))
+    in_array(strtolower($lang), @_languages(), true)
 
   
   #
@@ -431,7 +428,7 @@ class global.Exspresso_User_agent
   # @return	bool
   #
   accept_charset: ($charset = 'utf-8') ->
-    return (in_array(strtolower($charset), @_charsets(), true))
+    in_array(strtolower($charset), @_charsets(), true)
 
 
 module.exports = Exspresso_User_agent

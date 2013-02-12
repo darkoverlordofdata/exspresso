@@ -32,7 +32,7 @@
 #
 #
 #
-class global.Theme
+class global.Theme extends Exspresso_Object
 
   _location       : ''
   _path           : ''
@@ -49,14 +49,14 @@ class global.Theme
   _script         : null
   _css            : null
   _menu           : null
-  Exspresso       : null
 
-  constructor: ($config = {}, @Exspresso) ->
+  constructor: ($args...) ->
 
+    super $args...
     log_message('debug', "Theme Class Initialized")
 
-    $theme = $config.name ? 'default'
-    @load $theme
+    $theme = @_name ? 'default'
+    @load_theme $theme
 
   #
   # Loads a theme manifest
@@ -65,7 +65,7 @@ class global.Theme
   #   @param	string theme name
   #   @return object
   #
-  load: ($theme) ->
+  load_theme: ($theme) ->
 
     if file_exists(APPPATH + 'themes/all/theme' + EXT)
       $config = require(APPPATH + 'themes/all/theme' + EXT)
@@ -76,9 +76,6 @@ class global.Theme
     @['_'+$key] = $val for $key, $val of $config
     @_path = @_location + $theme + '/theme' + EXT
     
-    if not @Exspresso.template?
-      @template = @Exspresso.load.library 'template'
-
     @
 
 
@@ -92,6 +89,7 @@ class global.Theme
   #
   init: ($template, $extra = []) ->
 
+    @template = $template
     $template._metadata = []
     $template._script = []
     $template._css = []
@@ -113,7 +111,7 @@ class global.Theme
       $template.set_script @_script.default
 
     if not Array.isArray($extra) then $extra = [$extra]
-    if @Exspresso.output._enable_profiler is true
+    if @output._enable_profiler is true
       if $extra.indexOf('prettify') is -1
         $extra.push 'prettify'
 
@@ -127,16 +125,16 @@ class global.Theme
 
   more: ($extra...) ->
 
-    if @Exspresso.output._enable_profiler is true
+    if @output._enable_profiler is true
       if $extra.indexOf('prettify') is -1
         $extra.push 'prettify'
 
     for $name in $extra
       if @_css[$name]?
-        @Exspresso.template.set_css @_css[$name]
+        @template.set_css @_css[$name]
 
       if @_script[$name]?
-        @Exspresso.template.set_script @_script[$name]
+        @template.set_script @_script[$name]
     @
 
 module.exports = Theme

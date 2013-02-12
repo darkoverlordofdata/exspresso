@@ -28,7 +28,7 @@
 #
 # This class object is the super class for all controllers
 # Methods are bound with fat arrow ( => ) so that they are selected
-# for copying by the Exspresso_Class and Exspresso_Model constructors
+# for copying by the Exspresso_Object and Exspresso_Model constructors
 #
 
 class global.Exspresso_Controller
@@ -173,7 +173,7 @@ class global.Exspresso_Controller
   #   @param	function
   #   @return	void
   #
-  run: ($queue, $next) =>
+  run: ($queue, $next) ->
 
     if typeof $next isnt 'function'
       [$queue, $next] = [@_queue, $queue]

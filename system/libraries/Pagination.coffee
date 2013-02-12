@@ -34,12 +34,10 @@
 # Pagination Class
 #
 #
-class global.Exspresso_Pagination
+class global.Exspresso_Pagination extends Exspresso_Object
 
   ceil = Math.ceil
   floor = Math.floor
-
-  Exspresso                 : null
 
   _base_url                 : ''  #  The page we are linking to
   _prefix                   : ''  #  A custom prefix added to the path.
@@ -78,27 +76,14 @@ class global.Exspresso_Pagination
   # @access	public
   # @param	array	initialization parameters
   #
-  constructor: ($params = {}, @Exspresso) ->
-    if count($params) > 0
-      @initialize($params)
+  constructor: ($Exspresso, $config = {}) ->
+
+    super $Exspresso, $config
 
     if @_anchor_class isnt ''
       @_anchor_class = 'class="' + @_anchor_class + '" '
 
     log_message('debug', "Pagination Class Initialized")
-
-  #
-  # Initialize Preferences
-  #
-  # @access	public
-  # @param	array	initialization parameters
-  # @return	void
-  #
-  initialize : ($params = {}) ->
-    if count($params) > 0
-      for $key, $val of $params
-        if @['_'+$key]?
-          @['_'+$key] = $val
 
   #
   # Generate the pagination links
@@ -120,17 +105,17 @@ class global.Exspresso_Pagination
       return ''
 
     #  Determine the current page number.
-    if @Exspresso.config.item('enable_query_strings') is true or @_page_query_string is true
-      if @Exspresso.input.get(@_query_string_segment) isnt 0
-        @_cur_page = @Exspresso.input.get(@_query_string_segment)
+    if @config.item('enable_query_strings') is true or @_page_query_string is true
+      if @input.get(@_query_string_segment) isnt 0
+        @_cur_page = @input.get(@_query_string_segment)
         
         #  Prep the current page - no funny business!
         @_cur_page = parseInt(@_cur_page, 10)
         
       
     else
-      if @Exspresso.uri.segment(@_uri_segment) isnt 0
-        @_cur_page = @Exspresso.uri.segment(@_uri_segment)
+      if @uri.segment(@_uri_segment) isnt 0
+        @_cur_page = @uri.segment(@_uri_segment)
         
         #  Prep the current page - no funny business!
         @_cur_page = parseInt(@_cur_page, 10)
@@ -163,7 +148,7 @@ class global.Exspresso_Pagination
     
     #  Is pagination being used over GET or POST?  If get, add a per_page query
     #  string. If post, add a trailing slash to the base URL if needed
-    if @Exspresso.config.item('enable_query_strings') is true or @_page_query_string is true
+    if @config.item('enable_query_strings') is true or @_page_query_string is true
       @_base_url = rtrim(@_base_url) + '&amp;' + @_query_string_segment + '='
       
     else 

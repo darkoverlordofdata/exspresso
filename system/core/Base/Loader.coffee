@@ -143,8 +143,8 @@ class global.Base_Loader
     if $params isnt null and not is_array($params)
       $params = null
 
-    if not class_exists('Exspresso_Class')
-      require BASEPATH+'core/Class'+EXT
+    if not class_exists('Exspresso_Object')
+      require BASEPATH+'core/Object'+EXT
     @_ex_load_class $library, $params, $object_name
 
   ## --------------------------------------------------------------------
@@ -783,7 +783,7 @@ class global.Base_Loader
     @_ex_classes[$class] = $classvar
 
     #  Instantiate the class
-    @Exspresso[$classvar] = new global[$name]($config, @Exspresso)
+    @Exspresso[$classvar] = new global[$name](@Exspresso, $config)
 
 
   #  --------------------------------------------------------------------
