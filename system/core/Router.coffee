@@ -89,14 +89,42 @@ class global.Exspresso_Router extends Base_Router
     @routes[$route] = ($req, $res, $next, $args...) =>
 
       try
+
+        #
+        # ------------------------------------------------------
+        #  Is there a "pre_controller" hook?
+        # ------------------------------------------------------
+        #
+        Exspresso.hooks._call_hook 'pre_controller'
+
+        #
+        # ------------------------------------------------------
+        #  Instantiate the requested controller
+        # ------------------------------------------------------
+        #
         $Exspresso = new $class($req, $res, $next, $module, $class.name, $method)
+
+        #
+        # ------------------------------------------------------
+        #  Is there a "post_controller_constructor" hook?
+        # ------------------------------------------------------
+        #
+        Exspresso.hooks._call_hook 'post_controller_constructor', $Exspresso
+
       catch $err
         return $next($err)
 
       $Exspresso.run ($err) ->
         return $next($err) if $err
         try
+
+          #
+          # ------------------------------------------------------
+          #  Call the requested method
+          # ------------------------------------------------------
+          #
           $Exspresso[$method].apply($Exspresso, $args)
+
         catch $err
           $next $err
 

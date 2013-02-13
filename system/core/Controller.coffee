@@ -43,6 +43,14 @@ class global.Exspresso_Controller
   _queue        : null      # async queue
 
   BM            : null      # Benchmark object
+  config        : null      # Config
+  server        : null      # Server
+  router        : null      # Router
+  lang          : null      # Lang
+  load          : null      # Loader
+  uri           : null      # URI
+  output        : null      # Output
+  input         : null      # Input
   req           : null      # http Request object
   res           : null      # http Response object
   next          : null      # http next function
@@ -70,6 +78,11 @@ class global.Exspresso_Controller
     @_class = $class
     @_method = $method
     @_queue = []
+    @req = $req
+    @res = $res
+    @next = $next
+    $res.Exspresso = $req.Exspresso = @
+
     log_message 'debug', "Controller Class Initialized"
 
     #
@@ -80,14 +93,8 @@ class global.Exspresso_Controller
     @BM = load_new('Benchmark', 'core', @)
     @BM.mark 'total_execution_time_start'
 
-    @req = $req
-    @res = $res
-    @next = $next
-    $res.Exspresso = $req.Exspresso = @
-
     # Assign all the class objects that were instantiated by the
     # bootstrap file (Exspresso.coffee) to local class variables
-    # so that the Exspresso app can run as one big super object.
 
     @config = Exspresso.config
     @server = Exspresso.server
@@ -162,8 +169,13 @@ class global.Exspresso_Controller
 
     @res.render $view, new Controller($data), ($err, $html) =>
 
-
       return $next($err, $html) if $next?
+      #
+      # ------------------------------------------------------
+      #  Is there a "post_controller" hook?
+      # ------------------------------------------------------
+      #
+      Exspresso.hooks._call_hook 'post_controller', @
       return show_error($err) if $err
       @res.send $html
 
@@ -175,6 +187,12 @@ class global.Exspresso_Controller
   # @return	void
   #
   redirect: ($url) =>
+    #
+    # ------------------------------------------------------
+    #  Is there a "post_controller" hook?
+    # ------------------------------------------------------
+    #
+    Exspresso.hooks._call_hook 'post_controller', @
     @res.redirect $url
 
   #
@@ -195,7 +213,7 @@ class global.Exspresso_Controller
   #   @param	function
   #   @return	void
   #
-  run: ($queue, $next) ->
+  run: ($queue, $next) =>
 
     if typeof $next isnt 'function'
       [$queue, $next] = [@_queue, $queue]

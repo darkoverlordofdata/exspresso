@@ -69,6 +69,20 @@ if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/consta
 else
   require APPPATH+'config/constants.coffee'
 
+#
+# ------------------------------------------------------
+#  Instantiate the hooks class
+# ------------------------------------------------------
+#
+exports.hooks = hooks = load_class('Hooks', 'core')
+
+#
+# ------------------------------------------------------
+#  Is there a "pre_system" hook?
+# ------------------------------------------------------
+#
+hooks._call_hook 'pre_system'
+
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------

@@ -118,6 +118,18 @@ class global.Exspresso_Server_express extends Exspresso_Server
     return
 
   #
+  # ...that's all folks
+  #
+  end: ->
+
+    #
+    # ------------------------------------------------------
+    #  Is there a "post_system" hook?
+    # ------------------------------------------------------
+    #
+    Exspresso._call_hook 'post_system'
+
+  #
   # Config registration
   #
   #   called by the Server class constructor
@@ -148,6 +160,11 @@ class global.Exspresso_Server_express extends Exspresso_Server
     if express.version[0] is '3'
       @app.engine $config.view_ext, ($view, $data, $next) ->
 
+        Object.defineProperties $data,
+          $_GET     :get: -> @input.get()
+          $_POST    :get: -> @input.post()
+          $_SERVER  :get: -> @input.server()
+          $_COOKIE  :get: -> @input.cookie()
         fs.readFile $view, 'utf8', ($err, $str) ->
           if $err then $next($err)
           else

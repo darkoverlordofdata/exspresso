@@ -221,6 +221,14 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
   #
   _display: ($output = '') ->
 
+    #
+    # ------------------------------------------------------
+    #  Is there a "post_controller" hook?
+    # ------------------------------------------------------
+    #
+    Exspresso.hooks._call_hook 'post_controller', @
+    #return if Exspresso.hooks._call_hook('display_override', @)
+
     #  Set the output data
     if $output is ''
       $output = @_final_output

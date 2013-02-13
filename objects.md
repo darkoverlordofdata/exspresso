@@ -14,7 +14,7 @@
         * Config                X
         * Controller            X
         * Exceptions            X
-        * Hooks                 ?
+        * Hooks                 X
         * Input                 X
         * Lang                  X
         * Loader                X

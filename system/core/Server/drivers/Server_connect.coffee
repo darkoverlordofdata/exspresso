@@ -27,22 +27,6 @@
 #       * URI
 #
 #
-class Variables
-
-  #
-  # Provides variables to a view
-  #
-  # @access	public
-  # @param array
-  # @return	void
-  #
-  constructor: ($args...) ->
-
-    for $data in $args
-      for $key, $val of $data
-        @[$key] = $val
-
-
 
 require BASEPATH+'core/Server/Server.coffee'
 
@@ -272,6 +256,28 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
 
 module.exports = Exspresso_Server_connect
+
+class Variables
+
+  @get $_GET    : -> @input.get()
+  @get $_POST   : -> @input.post()
+  @get $_SERVER : -> @input.server()
+  @get $_COOKIE : -> @input.cookie()
+  #
+  # Provides variables to a view
+  #
+  # @access	public
+  # @param array
+  # @return	void
+  #
+  constructor: ($args...) ->
+
+    for $data in $args
+      for $key, $val of $data
+        @[$key] = $val
+
+
+
 
 # End of file Server_connect.coffee
 # Location: .application/core/Server/drivers/Server_connect.coffee

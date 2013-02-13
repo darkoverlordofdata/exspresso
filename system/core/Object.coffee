@@ -62,7 +62,7 @@ class global.Exspresso_Object
     #
     for $key, $obj of $Exspresso
       if $key[0] isnt '_' and __hasOwnProperty.call($Exspresso, $key)
-        @[$key] = $obj
+        @[$key] = $obj unless @[$key]?
     #
     # Initialize config preferences
     #

@@ -18,7 +18,7 @@
 #| -------------------------------------------------------------------------
 #| Hooks
 #| -------------------------------------------------------------------------
-#| This file lets you define "hooks" to extend CI without hacking the core
+#| This file lets you define "hooks" to extend Exspresso without hacking the core
 #| files.  Please see the user guide for info:
 #|
 #|	http://darkoverlordofdata.com/user_guide/general/hooks.html

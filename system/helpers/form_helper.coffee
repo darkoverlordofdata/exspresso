@@ -56,6 +56,8 @@
 if not function_exists('form_open')
   exports.form_open = form_open = ($action = '', $attributes = '', $hidden = {}) ->
 
+    console.log @$_SERVER
+
     if $attributes is ''
       $attributes = 'method="post"'
 
