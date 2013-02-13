@@ -180,7 +180,7 @@ class Travel extends PublicController
       return @template.view($err) if $err
 
       @load.library 'pagination',
-        base_url    : base_url()+'travel/hotels/'
+        base_url    : base_url.call(@)+'travel/hotels/'
         uri_segment : 3
         total_rows  : parseInt($count, 10)
         per_page    : $pageSize

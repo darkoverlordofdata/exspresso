@@ -55,10 +55,9 @@
 #
 if not function_exists('form_open')
   exports.form_open = form_open = ($action = '', $attributes = '', $hidden = {}) ->
-    
+
     if $attributes is ''
       $attributes = 'method="post"'
-
 
     #  If an action is not a full URL then turn it into one
     #if $action and strpos($action, '://') is false

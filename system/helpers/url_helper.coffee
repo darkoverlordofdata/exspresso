@@ -70,7 +70,6 @@ if not function_exists('site_url')
 #
 if not function_exists('base_url')
   exports.base_url = base_url =  ->
-    
     return @config.slash_item('base_url')
     
   

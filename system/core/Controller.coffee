@@ -162,6 +162,7 @@ class global.Exspresso_Controller
 
     @res.render $view, new Controller($data), ($err, $html) =>
 
+
       return $next($err, $html) if $next?
       return show_error($err) if $err
       @res.send $html
