@@ -65,12 +65,14 @@ class global.Exspresso_Object
     # Mixin the controller public members
     #
     $properties = {}
-    for $key, $obj of $controller
+    for $key in __getOwnPropertyNames($controller)
+      #
+      # skip protected members
+      # don't override
+      #
       if $key[0] isnt '_' and not @[$key]?
-        if __hasOwnProperty.call($controller, $key)
-          $properties[$key] = {enumerable: true, writeable: false, value: $controller[$key]}
+        $properties[$key] = __getOwnPropertyDescriptor($controller, $key)
     __defineProperties @, $properties
-
     #
     # Initialize the config preferences
     #

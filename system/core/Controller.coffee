@@ -98,7 +98,7 @@ class global.Exspresso_Controller
   # @param	function
   # @return	void
   #
-  render: ($view, $data = {}, $next) ->
+  render: ($view, $data = {}, $next) =>
 
     #
     # Inner Controller class
@@ -135,7 +135,7 @@ class global.Exspresso_Controller
   # @param	function
   # @return	array
   #
-  queue: ($fn) ->
+  queue: ($fn) =>
     if $fn then @_queue.push($fn) else @_queue
 
   #
@@ -146,7 +146,7 @@ class global.Exspresso_Controller
   # @param	function
   # @return	void
   #
-  run: ($queue, $next) ->
+  run: ($queue, $next) =>
 
     if typeof $next isnt 'function'
       [$queue, $next] = [@_queue, $queue]
@@ -158,8 +158,8 @@ class global.Exspresso_Controller
       #
       # call the function at index
       #
-      $ctor = $queue[$index]
-      $ctor ($err) ->
+      $function = $queue[$index]
+      $function ($err) ->
         return $next($err) if $err
         $index += 1
         if $index is $queue.length then $next null
@@ -174,7 +174,7 @@ class global.Exspresso_Controller
   # @param	string
   # @return	void
   #
-  redirect: ($url) ->
+  redirect: ($url) =>
     Exspresso.hooks._call_hook 'post_controller', @
     @res.redirect $url
 
