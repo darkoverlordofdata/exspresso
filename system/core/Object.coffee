@@ -80,6 +80,9 @@ class global.Exspresso_Object
       if @['_'+$key]?
         @['_'+$key] = $val
 
+    if $controller._child?
+      $controller._child.push @
+
 
 # END CLASS Object
 module.exports = Exspresso_Object

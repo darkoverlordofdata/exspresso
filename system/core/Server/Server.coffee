@@ -149,21 +149,16 @@ class global.Exspresso_Server
     $index = 0
     $iterate = ->
 
-      if $queue.length is 0 then $next null
-      else
-        #
-        # call the function at index
-        #
-        $fn = $queue[$index]
-        $fn ($err)->
-          if $err
-            log_message 'debug', 'Server::run'
-            console.log $err
-            return $next $err
-
-          $index += 1
-          if $index is $queue.length then $next null
-          else $iterate()
+      $next (null) if $queue.length is 0
+      #
+      # call the function at index
+      #
+      $function = $queue[$index]
+      $function ($err) ->
+        return $next($err) if $err
+        $index += 1
+        if $index is $queue.length then $next null
+        else $iterate()
 
     $iterate()
 

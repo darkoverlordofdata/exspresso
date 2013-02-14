@@ -46,10 +46,11 @@
 
 class global.Base_Config
 
+  __defineProperties  = Object.defineProperties
 
-  config          : null
   _is_loaded      : null
   _config_paths   : null
+  config          : null
 
   #
   # Constructor
@@ -63,11 +64,12 @@ class global.Base_Config
   # @return  boolean  if the file was successfully loaded or not
   #
   constructor :  ->
-    @_config_paths = [APPPATH]
-    @_is_loaded = []
-    @config = get_config()
+    $this = @
 
-    #  Set the base_url automatically if none was provided
+    __defineProperties $this,
+      _is_loaded    : {enumerable: false, writeable: false, value: []}
+      _config_paths : {enumerable: false, writeable: false, value: [APPPATH]}
+      config        : {enumerable: true,  writeable: false, value: get_config()}
 
     log_message('debug', "Config Class Initialized")
 

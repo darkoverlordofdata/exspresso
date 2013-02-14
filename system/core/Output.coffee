@@ -61,7 +61,7 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
       $mimes = require(APPPATH + 'config/mimes' + EXT)
 
     @_mime_types = $mimes
-    load_class('Cache', 'core')
+    #load_class('Cache', 'core')
 
   #
   # Get Output

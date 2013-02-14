@@ -49,7 +49,8 @@ class global.User extends Exspresso_Object
 
     log_message 'debug', "User Class Initialized"
 
-    @user_model = @load.model('user/user_model')
+    @load.model('user/user_model')
+
 
     # add to the controller queue
     @queue ($next) =>

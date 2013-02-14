@@ -43,6 +43,8 @@
 #
 class global.Exspresso_URI
 
+  __defineProperties  = Object.defineProperties
+
   _keyval       : null
   _uri_string   : ''
   _segments     : null
@@ -57,9 +59,16 @@ class global.Exspresso_URI
 
     log_message('debug', "URI Class Initialized")
 
-    @_keyval = {}
-    @_uri_string = $Exspresso.req.path
-    @_rsegments = @_segments = @_uri_string.split('/')
+    $this = @
+
+    __defineProperties $this,
+      _uri_string   : {enumerable: false, writeable: false, value: $Exspresso.req.path}
+    __defineProperties $this,
+      _keyval       : {enumerable: false, writeable: false, value: {}}
+      _rsegments    : {enumerable: false, writeable: false, value: $this._uri_string.split('/')}
+      _segments     : {enumerable: false, writeable: false, value: $this._uri_string.split('/')}
+
+
 
   #  --------------------------------------------------------------------
 

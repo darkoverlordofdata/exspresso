@@ -212,6 +212,14 @@ class global.Exspresso_Loader extends Base_Loader
 
       @_ex_classes[$class] = $_alias
 
+      if @controller._child?
+        for $child in @controller._child
+          if not $child[$_alias]?
+            __defineProperty $child, $_alias,
+              enumerable  : true
+              writeable   : false
+              value       : @controller[$_alias]
+
     return @controller[$_alias]
 
 
@@ -273,6 +281,14 @@ class global.Exspresso_Loader extends Base_Loader
         value       : new $Model(@controller)
 
       @_ex_models.push $_alias
+
+      if @controller._child?
+        for $child in @controller._child
+          if not $child[$_alias]?
+            __defineProperty $child, $_alias,
+              enumerable  : true
+              writeable   : false
+              value       : @controller[$_alias]
 
     return @controller[$_alias]
 

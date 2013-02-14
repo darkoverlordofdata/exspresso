@@ -38,13 +38,14 @@
 #
 #
 class global.Exspresso_Benchmark
-  
-  _marker: null
 
-  @get marker    : -> @_marker
+  __defineProperties  = Object.defineProperties
+
 
   constructor: ->
-    @_marker = {}
+
+    __defineProperties @,
+      marker : {enumerable: true, writeable: false, value: {}}
 
   #
   # Set a benchmark marker
@@ -57,7 +58,7 @@ class global.Exspresso_Benchmark
   # @return  void
   #
   mark : ($name) ->
-    @_marker[$name] = new Date()
+    @marker[$name] = new Date()
 
 
   #
@@ -79,19 +80,19 @@ class global.Exspresso_Benchmark
       return '{elapsed_time}'
 
 
-    if not @_marker[$point1]?
+    if not @marker[$point1]?
       return ''
 
 
-    if not @_marker[$point2]?
-      @_marker[$point2] = new Date() # microtime()
+    if not @marker[$point2]?
+      @marker[$point2] = new Date() # microtime()
 
 
-    #[$sm, $ss] = explode(' ', @_marker[$point1])
-    #[$em, $es] = explode(' ', @_marker[$point2])
+    #[$sm, $ss] = explode(' ', @marker[$point1])
+    #[$em, $es] = explode(' ', @marker[$point2])
 
     #return number_format(($em + $es) - ($sm + $ss), $decimals)
-    return @_marker[$point2] - @_marker[$point1]
+    return @marker[$point2] - @marker[$point1]
   
   #
   # Memory Usage

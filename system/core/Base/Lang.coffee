@@ -35,7 +35,7 @@
 #
 #
 class global.Base_Lang
-  
+
   _language     : null
   _is_loaded    : null
   

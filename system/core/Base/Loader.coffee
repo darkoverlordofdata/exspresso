@@ -55,6 +55,7 @@ class global.Base_Loader
   _ex_loaded_files      : null
   _ex_models            : null
   _ex_helpers           : null
+  _ex_children          : null
   _ex_varmap:
     unit_test           : 'unit'
     user_agent          : 'agent'
@@ -90,6 +91,7 @@ class global.Base_Loader
     @_ex_models         = []
     @_ex_cached_vars    = {}
     @_ex_helpers        = {}
+    @_ex_children       = []
     @_base_classes      = is_loaded()
 
     @_ex_autoloader()
@@ -806,7 +808,15 @@ class global.Base_Loader
       writeable   : false
       value       : new global[$name](@controller, $config)
 
-    return @controller[$classvar]
+    if @controller._child?
+      for $child in @controller._child
+        if not $child[$classvar]?
+          __defineProperty $child, $classvar,
+            enumerable  : true
+            writeable   : false
+            value       : @controller[$classvar]
+
+    @controller[$classvar]
 
 
   #  --------------------------------------------------------------------

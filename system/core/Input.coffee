@@ -35,17 +35,17 @@
 #
 module.exports = class global.Exspresso_Input
 
-  req             : null
-  _server_array   : null
+  __defineProperties  = Object.defineProperties
+  __freeze            = Object.freeze
 
   constructor: ($Exspresso) ->
 
     log_message('debug', "Input Class Initialized")
 
-    $req = @req = $Exspresso.req
     os = require('os')
-
-    @_server_array =
+    $req = $Exspresso.req
+    $res = $Exspresso.res
+    $server_array =
       argv                  : $req.query
       argc                  : count($req.query)
       SERVER_ADDR           : $req.ip
@@ -69,6 +69,12 @@ module.exports = class global.Exspresso_Input
       REQUEST_URI           : $req.url
       PATH_INFO             : $req.path
       ORIG_PATH_INFO        : $req.path
+
+    __defineProperties @,
+      _server_array : {enumerable: false, writeable: false, value: __freeze($server_array)}
+      req           : {enumerable: true, writeable: false, value: $req}
+      res           : {enumerable: true, writeable: false, value: $res}
+
 
   #
   # Validate IP Address
@@ -195,7 +201,7 @@ module.exports = class global.Exspresso_Input
     if $path is '/' and config_item('cookie_path') isnt '/'
       $path = config_item('cookie_path')
 
-    $res.cookie $prefix+$name, $value,
+    @res.cookie $prefix+$name, $value,
       expires : $expire
       domain  : $domain
       path    : $path
