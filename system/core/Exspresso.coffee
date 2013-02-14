@@ -49,6 +49,15 @@ require BASEPATH + 'core/Common.coffee'
 log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", Exspresso_VERSION
 
 #
+# ------------------------------------------------------
+#  Start the timer... tick tock tick tock...
+# ------------------------------------------------------
+#
+exports.BM = $BM = load_new('Benchmark', 'core', Exspresso)
+$BM.mark 'total_execution_time_start'
+$BM.mark 'loading_time:_base_classes_start'
+
+#
 #
 # Async job queue
 #
@@ -121,6 +130,8 @@ exports.lang = load_class('Lang', 'core')
 #
 exports.load = load_class('Loader', 'core', Exspresso)
 
+# Set a mark point for benchmarking
+
 #
 # ------------------------------------------------------
 #  Load the app controller and local controllers
@@ -173,6 +184,7 @@ for $path, $uri of Exspresso.router.load_routes()
 
   Exspresso.router.bind $path, $class, $method
 
+$BM.mark 'loading_time:_base_classes_end'
 #
 # ------------------------------------------------------
 #  Start me up...

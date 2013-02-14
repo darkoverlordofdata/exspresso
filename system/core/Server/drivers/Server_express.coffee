@@ -128,6 +128,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
     # ------------------------------------------------------
     #
     Exspresso._call_hook 'post_system'
+    Exspresso.BM.mark 'total_execution_time_end'
 
   #
   # Config registration
@@ -160,11 +161,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
     if express.version[0] is '3'
       @app.engine $config.view_ext, ($view, $data, $next) ->
 
-        Object.defineProperties $data,
-          $_GET     :get: -> @input.get()
-          $_POST    :get: -> @input.post()
-          $_SERVER  :get: -> @input.server()
-          $_COOKIE  :get: -> @input.cookie()
         fs.readFile $view, 'utf8', ($err, $str) ->
           if $err then $next($err)
           else
@@ -205,12 +201,12 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers['host']
 
-    #$res._error_handler = ($err) ->
-    #  $next $err
-
+    #$end = $res.end
+    #$res.end = ($data, $encoding) ->
+      #$res.end = $end
+      #$res.end $data, $encoding
 
     $next()
-
 
 module.exports = Exspresso_Server_express
 

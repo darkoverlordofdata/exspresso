@@ -36,13 +36,12 @@
 #
 # Loads views and files
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @author		darkoverlordofdata
-# @category	Loader
-# @link		http://darkoverlordofdata.com/user_guide/libraries/loader.html
 #
 class global.Base_Loader
+
+  __hasOwnProperty    = Object.hasOwnProperty
+  __defineProperty    = Object.defineProperty
+  __defineProperties  = Object.defineProperties
 
   path = require('path')
 
@@ -201,9 +200,13 @@ class global.Base_Loader
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
-      $model = new $Model(@controller)
+      #$model = new $Model(@controller)
 
-      @controller[$name] = $model
+      #@controller[$name] = $model
+      __defineProperty @controller, $name
+        enumerable  : true
+        writeable   : false
+        value       : new $Model(@controller)
       @_ex_models.push $name
       return
 
@@ -236,12 +239,12 @@ class global.Base_Loader
 
     if $return is true then return DB #($params, $active_record)
 
-    # Initialize the db variable.  Needed to prevent
-    # reference errors with some configurations
-    @controller.db = ''
-
     # Load the DB class
-    @controller.db = DB #($params, $active_record)
+    # @controller.db = DB #($params, $active_record)
+    __defineProperty @controller, 'db'
+      enumerable  : true
+      writeable   : false
+      value       : DB
 
   ## --------------------------------------------------------------------
 
@@ -266,7 +269,11 @@ class global.Base_Loader
     # ex: Exspresso_DB_sqlite_utility
 
     if $return is true then return new $class(@controller, $db)
-    @controller.dbutil = new $class(@controller, $db)
+    # @controller.dbutil = new $class(@controller, $db)
+    __defineProperty @controller, 'dbutil'
+      enumerable  : true
+      writeable   : false
+      value       : new $class(@controller, $db)
 
   #  --------------------------------------------------------------------
 
@@ -289,7 +296,11 @@ class global.Base_Loader
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_forge' + EXT)
 
     if $return is true then return new $class(@controller, $db)
-    @controller.dbforge = new $class(@controller, $db)
+    #@controller.dbforge = new $class(@controller, $db)
+    __defineProperty @controller, 'dbforge'
+      enumerable  : true
+      writeable   : false
+      value       : new $class(@controller, $db)
 
   #  --------------------------------------------------------------------
 
@@ -596,7 +607,13 @@ class global.Base_Loader
         $_ex_return $err, $html
       else
         @controller.output.append_output $html
-        @controller.output._display()
+        #
+        # ------------------------------------------------------
+        #  Send the final rendered output to the browser
+        # ------------------------------------------------------
+        #
+        if Exspresso.hooks._call_hook('display_override', @controller) is false
+          @controller.output._display()
 
 
 
@@ -783,7 +800,13 @@ class global.Base_Loader
     @_ex_classes[$class] = $classvar
 
     #  Instantiate the class
-    @controller[$classvar] = new global[$name](@controller, $config)
+    #@controller[$classvar] = new global[$name](@controller, $config)
+    __defineProperty @controller, $classvar,
+      enumerable  : true
+      writeable   : false
+      value       : new global[$name](@controller, $config)
+
+    return @controller[$classvar]
 
 
   #  --------------------------------------------------------------------

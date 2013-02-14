@@ -322,7 +322,13 @@ class global.Template extends Exspresso_Object
           return $next(null, $page) if $next?
 
           @output.set_output $page
-          @output._display()
+          #
+          # ------------------------------------------------------
+          #  Send the final rendered output to the browser
+          # ------------------------------------------------------
+          #
+          if Exspresso.hooks._call_hook('display_override', @) is false
+            @output._display()
 
 
   #

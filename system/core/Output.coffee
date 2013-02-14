@@ -227,7 +227,6 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
     # ------------------------------------------------------
     #
     Exspresso.hooks._call_hook 'post_controller', @
-    #return if Exspresso.hooks._call_hook('display_override', @)
 
     #  Set the output data
     if $output is ''
@@ -258,10 +257,10 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
     #  --------------------------------------------------------------------
 
     #  Is compression requested?
-    if @config.item('compress_output') is true and @_zlib_oc is false
-      if extension_loaded('zlib')
-        if @$_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
-          ob_start('ob_gzhandler')
+    #if @config.item('compress_output') is true and @_zlib_oc is false
+    #  if extension_loaded('zlib')
+    #    if @$_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
+    #      ob_start('ob_gzhandler')
 
     #  --------------------------------------------------------------------
 

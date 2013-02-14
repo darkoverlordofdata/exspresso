@@ -37,23 +37,6 @@ require('not-php').export global
 
 #
 #---------------------------------------------------------------
-# GETTERS & SETTERS
-#---------------------------------------------------------------
-#
-
-__keys = Object.keys
-__defineProperty = Object.defineProperty
-
-Function::get = ($def) ->
-  $name = __keys($def)[0]
-  __defineProperty @::, $name, {get: $def[$name]}
-
-Function::set = ($def) ->
-  $name = __keys($def)[0]
-  __defineProperty @::, $name, {set: $def[$name]}
-
-#
-#---------------------------------------------------------------
 # APPLICATION ENVIRONMENT
 #---------------------------------------------------------------
 #

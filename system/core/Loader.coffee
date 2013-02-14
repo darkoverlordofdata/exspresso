@@ -58,8 +58,12 @@ require BASEPATH+'core/Base/Loader.coffee'
 
 class global.Exspresso_Loader extends Base_Loader
 
-  _module       : ''
-  _ex_plugins   : null
+  __hasOwnProperty    = Object.hasOwnProperty
+  __defineProperty    = Object.defineProperty
+  __defineProperties  = Object.defineProperties
+
+  _module             : ''
+  _ex_plugins         : null
 
 
   constructor: ($Exspresso) ->
@@ -200,7 +204,11 @@ class global.Exspresso_Loader extends Base_Loader
 
       $library = Modules.load_file($_library, $path)
 
-      @controller[$_alias] = new $library(@controller, $params)
+      #@controller[$_alias] = new $library(@controller, $params)
+      __defineProperty @controller, $_alias,
+        enumerable  : true
+        writeable   : false
+        value       : new $library(@controller, $params)
 
       @_ex_classes[$class] = $_alias
 
@@ -256,10 +264,13 @@ class global.Exspresso_Loader extends Base_Loader
         if $connect is true then $connect = ''
         @database($connect, false, true)
 
+      $Model = Modules.load_file($_model, $path)
 
-      $model = Modules.load_file($_model, $path)
-
-      @controller[$_alias] = new $model(@controller)
+      #@controller[$_alias] = new $model(@controller)
+      __defineProperty @controller, $_alias,
+        enumerable  : true
+        writeable   : false
+        value       : new $Model(@controller)
 
       @_ex_models.push $_alias
 

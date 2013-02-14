@@ -92,6 +92,13 @@ class global.Exspresso_Router extends Base_Router
 
         #
         # ------------------------------------------------------
+        #  Start the timer... tick tock tick tock...
+        # ------------------------------------------------------
+        #
+        $BM = load_new('Benchmark', 'core', @)
+        $BM.mark 'total_execution_time_start'
+        #
+        # ------------------------------------------------------
         #  Is there a "pre_controller" hook?
         # ------------------------------------------------------
         #
@@ -102,7 +109,8 @@ class global.Exspresso_Router extends Base_Router
         #  Instantiate the requested controller
         # ------------------------------------------------------
         #
-        $Exspresso = new $class($req, $res, $next, $module, $class.name, $method)
+        $BM.mark 'controller_execution_time_( '+$class.name+' / '+$method+' )_start'
+        $Exspresso = new $class($BM, $req, $res, $module, $class.name, $method)
 
         #
         # ------------------------------------------------------
@@ -124,6 +132,9 @@ class global.Exspresso_Router extends Base_Router
           # ------------------------------------------------------
           #
           $Exspresso[$method].apply($Exspresso, $args)
+
+          # Mark a benchmark end point
+          $BM.mark 'controller_execution_time_( '+$class.name+' / '+$method+' )_end'
 
         catch $err
           $next $err

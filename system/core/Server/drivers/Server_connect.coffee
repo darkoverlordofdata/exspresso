@@ -259,10 +259,6 @@ module.exports = Exspresso_Server_connect
 
 class Variables
 
-  @get $_GET    : -> @input.get()
-  @get $_POST   : -> @input.post()
-  @get $_SERVER : -> @input.server()
-  @get $_COOKIE : -> @input.cookie()
   #
   # Provides variables to a view
   #

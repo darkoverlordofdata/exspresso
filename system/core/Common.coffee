@@ -36,7 +36,6 @@
 # Loads the base classes and executes the request.
 #
 #
-
 format = require('util').format
 
 _config       = []
@@ -45,6 +44,24 @@ _classes      = {}
 _is_loaded    = {}
 _log          = null
 _error        = null
+
+#
+#---------------------------------------------------------------
+# Define get & set
+#---------------------------------------------------------------
+#
+
+__keys = Object.keys
+__defineProperty = Object.defineProperty
+
+Function::get = ($def) ->
+  $name = __keys($def)[0]
+  __defineProperty @::, $name, {get: $def[$name]}
+
+Function::set = ($def) ->
+  $name = __keys($def)[0]
+  __defineProperty @::, $name, {set: $def[$name]}
+
 
 #
 # Exspresso Object Creation

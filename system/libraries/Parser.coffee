@@ -111,7 +111,13 @@ class global.Exspresso_Parser extends Exspresso_Object
 
     if $return is false
       @output.append_output($template)
-      @output._display()
+      #
+      # ------------------------------------------------------
+      #  Send the final rendered output to the browser
+      # ------------------------------------------------------
+      #
+      if Exspresso.hooks._call_hook('display_override', @) is false
+        @output._display()
 
     return $template
     

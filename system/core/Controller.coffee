@@ -35,107 +35,60 @@
 class global.Exspresso_Controller
 
   __hasOwnProperty    = Object.hasOwnProperty
+  __defineProperty    = Object.defineProperty
   __defineProperties  = Object.defineProperties
-
-  _module       : ''        # module name
-  _class        : ''        # class name
-  _method       : ''        # method name
-  _queue        : null      # async queue
-
-  BM            : null      # Benchmark object
-  config        : null      # Config
-  server        : null      # Server
-  router        : null      # Router
-  lang          : null      # Lang
-  load          : null      # Loader
-  uri           : null      # URI
-  output        : null      # Output
-  input         : null      # Input
-  req           : null      # http Request object
-  res           : null      # http Response object
-  next          : null      # http next function
-
-  @get $_GET    : -> @input.get()
-  @get $_POST   : -> @input.post()
-  @get $_SERVER : -> @input.server()
-  @get $_COOKIE : -> @input.cookie()
 
   #
   # Initialize Controller objects
   #
   # @access	public
+  # @param  object    Benchmark object
   # @param	object    Request object
   # @param	object    Response object
-  # @param	function  Next middleware in stack
   # @param	string    module name
   # @param	string    class name
   # @param	string    method name
   # @return	void
   #
-  constructor: ($req, $res, $next, $module, $class, $method) ->
-
-    @_module = $module
-    @_class = $class
-    @_method = $method
-    @_queue = []
-    @req = $req
-    @res = $res
-    @next = $next
-    $res.Exspresso = $req.Exspresso = @
+  constructor: ($BM, $req, $res, $module, $class, $method) ->
 
     log_message 'debug', "Controller Class Initialized"
 
-    #
-    # ------------------------------------------------------
-    #  Start the timer... tick tock tick tock...
-    # ------------------------------------------------------
-    #
-    @BM = load_new('Benchmark', 'core', @)
-    @BM.mark 'total_execution_time_start'
+    __defineProperties @,
+      _queue    : {enumerable: false, writeable: false, value: []}
+      BM        : {enumerable: true, writeable: false, value: $BM}
+      req       : {enumerable: true, writeable: false, value: $req}
+      res       : {enumerable: true, writeable: false, value: $res}
+      module    : {enumerable: true, writeable: false, value: $module}
+      class     : {enumerable: true, writeable: false, value: $class}
+      method    : {enumerable: true, writeable: false, value: $method}
+      config    : {enumerable: true, writeable: false, value: Exspresso.config}
+      server    : {enumerable: true, writeable: false, value: Exspresso.server}
+      router    : {enumerable: true, writeable: false, value: Exspresso.router}
+      lang      : {enumerable: true, writeable: false, value: Exspresso.lang}
 
-    # Assign all the class objects that were instantiated by the
-    # bootstrap file (Exspresso.coffee) to local class variables
+    $BM.mark 'loading_time:_base_classes_start'
+    $this = @ # resolve the scope for object literals
 
-    @config = Exspresso.config
-    @server = Exspresso.server
-    @router = Exspresso.router
-    @lang   = Exspresso.lang
+    __defineProperties @,
+      load      : {enumerable: true, writeable: false, value: load_new('Loader',  'core', $this)}
 
-    # The remaining class objects are unique for each Expresso
-    # application controller
+    __defineProperties @,
+      uri       : {enumerable: true, writeable: false, value: load_new('URI',     'core', $this)}
+      output    : {enumerable: true, writeable: false, value: load_new('Output',  'core', $this)}
+      input     : {enumerable: true, writeable: false, value: load_new('Input',   'core', $this)}
 
-    @load   = load_new('Loader',  'core', @)
-    @uri    = load_new('URI',     'core', @)
-    @output = load_new('Output',  'core', @)
-    @input  = load_new('Input',   'core', @)
+    __defineProperties @,
+      $_SERVER  : {enumerable: true, writeable: false, get: -> $this.input.server()}
+      $_GET     : {enumerable: true, writeable: false, get: -> $this.input.get()}
+      $_POST    : {enumerable: true, writeable: false, get: -> $this.input.post()}
+      $_COOKIE  : {enumerable: true, writeable: false, get: -> $this.input.cookie()}
+
     @load.initialize()  # do the autoloads
+    $BM.mark 'loading_time:_base_classes_end'
 
     # From here forward, custom controllers
     # shall use the @load.method to load classes
-
-
-
-  #
-  # Get the controller module name
-  #
-  # @access	public
-  # @return	string
-  #
-  fetch_module: => @_module
-  #
-  # Get the controller class name
-  #
-  # @access	public
-  # @return	string
-  #
-  fetch_class: => @_class
-  #
-  # Get the controller method name
-  #
-  # @access	public
-  # @return	string
-  #
-  fetch_method: => @_method
 
   #
   # Render a view

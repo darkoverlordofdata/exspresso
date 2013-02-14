@@ -89,9 +89,6 @@ class Exspresso_Profiler extends Exspresso_Object
         if @BM.marker[$match[1] + '_end']?  and @BM.marker[$match[1] + '_start']?
           $profile[$match[1]] = @BM.elapsed_time($match[1] + '_start', $key)
 
-
-
-
     #  Build a table containing the profile data.
     #  Note: At some point we should turn this into a template that can
     #  be modified.  We also might want to make this data available to be logged
@@ -124,7 +121,7 @@ class Exspresso_Profiler extends Exspresso_Object
 
     #  Let's determine which databases are currently connected to
     for $name, $object of @
-      if $object.dbdriver?
+      if $object? and $object.dbdriver?
         $dbs.push $object
 
     if count($dbs) is 0
@@ -138,7 +135,6 @@ class Exspresso_Profiler extends Exspresso_Object
       $output+="</table></dd>\n"
       $output+="</dl>"
       return $output
-
 
     #  Load the text helper so we can highlight the SQL
     @load.helper('text')
@@ -285,7 +281,7 @@ class Exspresso_Profiler extends Exspresso_Object
     $output+='<dt>' + 'MODULE' + '</dt>'
     $output+="\n"
 
-    $output+="<dd>" + @fetch_module() + "</dd>"
+    $output+="<dd>" + @module + "</dd>"
 
     $output+="</dl>"
     $output+='<dl id="ex_profiler_controller_info">'
@@ -293,7 +289,7 @@ class Exspresso_Profiler extends Exspresso_Object
     $output+='<dt>' + @lang.line('profiler_controller_info') + '</dt>'
     $output+="\n"
 
-    $output+="<dd>" + @fetch_class() + "/" + @fetch_method() + "</dd>"
+    $output+="<dd>" + @class + "/" + @method + "</dd>"
 
     $output+="</dl>"
 

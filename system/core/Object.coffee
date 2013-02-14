@@ -31,40 +31,48 @@
 #
 class global.Exspresso_Object
 
-  __hasOwnProperty = Object.hasOwnProperty
+  __hasOwnProperty            = Object.hasOwnProperty
+  __defineProperty            = Object.defineProperty
+  __defineProperties          = Object.defineProperties
+  __getOwnPropertyNames       = Object.getOwnPropertyNames
+  __getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
 
-  @get $_GET    : -> @input.get()
-  @get $_POST   : -> @input.post()
-  @get $_SERVER : -> @input.server()
-  @get $_COOKIE : -> @input.cookie()
 
   #
-  # Library Class Constructor
+  # Exspresso Constructor
   #
   # Copies the config properties with underscore prefix
   # Mixin the Exspresso_Controller public properties
   #
   # @access	public
-  # @param	object
-  # @param	object
+  # @param	object  the parent controller object
+  # @param	mixed   initial config values, or true to clone from parent
   # @return	void
   #
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
+
+    if typeof $config is 'boolean'
+      #
+      # clone the parent object
+      #
+      $properties = {}
+      for $key in __getOwnPropertyNames($controller)
+        $properties[$key] = __getOwnPropertyDescriptor($controller, $key)
+      __defineProperties @, $properties
+      return $config
 
     #
-    # if 2nd param is boolean, we're cloning a parent object
+    # Mixin the controller public members
     #
-    if typeof $config is 'boolean'
-      @[$key] = $obj for $key, $obj of $Exspresso
-      return $config
+    $properties = {}
+    for $key, $obj of $controller
+      if $key[0] isnt '_' and not @[$key]?
+        if __hasOwnProperty.call($controller, $key)
+          $properties[$key] = {enumerable: true, writeable: false, value: $controller[$key]}
+    __defineProperties @, $properties
+
     #
-    # Mixin the base controller members
-    #
-    for $key, $obj of $Exspresso
-      if $key[0] isnt '_' and __hasOwnProperty.call($Exspresso, $key)
-        @[$key] = $obj unless @[$key]?
-    #
-    # Initialize config preferences
+    # Initialize the config preferences
     #
     for $key, $val of $config
       if @['_'+$key]?
