@@ -7,11 +7,11 @@
   * prefer unquoted key values
 
 
-    options =
-      expires : expire_on
-      domain  : ''
-      path    : '/'
-      secure  : true
+      options =
+        expires : expire_on
+        domain  : ''
+        path    : '/'
+        secure  : true
 
 
 ## Classes
@@ -21,29 +21,29 @@
   * Public classes may be defined global
   * Include private helper classes in the same file
   * Prefix protected member names with an undersocore
-  * Initiale array and object members in the constructor. Set the prototype value to null
+  * Initialize array and object members in the constructor. Set the prototype value to null
   * Define static members using this context
 
   Example MyBase.coffee:
 
-    class global.MyBase
+      class global.MyBase
 
-      @DEFAULT      = 0
-      @READY        = 1
+        @DEFAULT      = 0
+        @READY        = 1
 
-      _headers      : null
-      cookie_path   : '/'
+        _headers      : null
+        cookie_path   : '/'
 
-      constructor: () ->
-        @_headers = []
+        constructor: () ->
+          @_headers = []
 
-      ...
+        ...
 
-    module.exports = MyBase
+      module.exports = MyBase
 
-    class MyHelper
+      class MyHelper
 
-      ...
+        ...
 
 
 ## Loading
@@ -58,26 +58,26 @@
   * In middleware, call the server next handler
 
 
-    (req, res, next) ->
-      try
-        ...
-        next()
-      catch err
-        next err
+      (req, res, next) ->
+        try
+          ...
+          next()
+        catch err
+          next err
 
   * Use show_error to send error display to the browser
   * Use log_message to record the message for support
   * Use 'return if' style
 
 
-    return log_message('error', 'My message: %s', err) if show_error(err)
+      return log_message('error', 'My message: %s', err) if show_error(err)
 
   * Use a short circuit evaluation to pass either error or result to template.view
 
 
-    @db.get ($err, $data) =>
+      @db.get ($err, $data) =>
 
-      @template.view "myview", $err || $data
+        @template.view "myview", $err || $data
 
 
 
