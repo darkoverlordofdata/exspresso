@@ -316,8 +316,8 @@ class Exspresso_Zip
         $filename+='.zip'
         
       
-      $Exspresso = Exspresso
-      $Exspresso.load.helper('download')
+      $controller = Exspresso
+      $controller.load.helper('download')
       
       $get_zip = @get_zip()
       

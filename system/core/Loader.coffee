@@ -64,9 +64,9 @@ class global.Exspresso_Loader extends Base_Loader
   _ex_plugins         : null
 
 
-  constructor: ($Exspresso) ->
-    super $Exspresso
-    @_module = $Exspresso._module
+  constructor: ($controller) ->
+    super $controller
+    @_module = $controller.module
 
   #
   # Add a module path

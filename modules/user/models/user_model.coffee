@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #| user_model.coffee
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012
+#| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
 #|
 #| This file is a part of Exspresso
@@ -26,7 +26,7 @@
 
 #  ------------------------------------------------------------------------
 #
-#   User Model
+#   User Data Model
 #
 class global.User_model extends Exspresso_Model
 
@@ -352,10 +352,10 @@ class Migrate_user_roles extends Migrate
   #
   data  : [
     {uid: User_model.UID_ANONYMOUS, rid: User_model.RID_ANONYMOUS}
-    {uid: User_model.UID_ADMIN, rid: User_model.RID_ADMIN}
-    {uid: User_model.UID_ADMIN, rid: User_model.RID_ANONYMOUS}
-    {uid: User_model.UID_ADMIN, rid: User_model.RID_MEMBER}
-    {uid: User_model.UID_TEST, rid: User_model.RID_MEMBER}
+    {uid: User_model.UID_ADMIN,     rid: User_model.RID_ADMIN}
+    {uid: User_model.UID_ADMIN,     rid: User_model.RID_ANONYMOUS}
+    {uid: User_model.UID_ADMIN,     rid: User_model.RID_MEMBER}
+    {uid: User_model.UID_TEST,      rid: User_model.RID_MEMBER}
   ]
 
 

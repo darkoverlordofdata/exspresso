@@ -51,9 +51,9 @@ class global.Exspresso_DB_forge extends Exspresso_Object
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: ($Exspresso, $db) ->
+  constructor: ($controller, $db) ->
 
-    super $Exspresso
+    super $controller
     @db = $db
     @_reset() # always initialize arrays in the constructor!
     log_message('debug', "Database Forge Class Initialized")

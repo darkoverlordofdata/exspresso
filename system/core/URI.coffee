@@ -55,14 +55,14 @@ class global.Exspresso_URI
   #
   # @access	public
   #
-  constructor : ($Exspresso) ->
+  constructor : ($controller) ->
 
     log_message('debug', "URI Class Initialized")
 
     $this = @
 
     __defineProperties $this,
-      _uri_string   : {enumerable: false, writeable: false, value: $Exspresso.req.path}
+      _uri_string   : {enumerable: false, writeable: false, value: $controller.req.path}
     __defineProperties $this,
       _keyval       : {enumerable: false, writeable: false, value: {}}
       _rsegments    : {enumerable: false, writeable: false, value: $this._uri_string.split('/')}

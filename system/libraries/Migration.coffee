@@ -48,9 +48,9 @@ class global.Exspresso_Migration extends Exspresso_Object
 
   dbforge               : null
 
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    return if super($Exspresso, $config)
+    return if super($controller, $config)
 
     # Are they trying to use migrations while it is disabled?
     if (@_migration_enabled isnt true)

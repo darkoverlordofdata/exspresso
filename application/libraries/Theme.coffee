@@ -50,9 +50,9 @@ class global.Theme extends Exspresso_Object
   _css            : null
   _menu           : null
 
-  constructor: ($args...) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $args...
+    super $controller, $config
     log_message('debug', "Theme Class Initialized")
 
     $theme = @_name ? 'default'

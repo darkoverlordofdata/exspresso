@@ -60,9 +60,9 @@ class Exspresso_Profiler extends Exspresso_Object
     'config'
   ]
 
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $Exspresso, $config
+    super $controller, $config
     log_message 'debug', "Profiler Class Initialized"
 
     @load.language('profiler')

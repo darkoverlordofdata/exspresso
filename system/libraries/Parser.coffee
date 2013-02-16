@@ -39,9 +39,9 @@ class global.Exspresso_Parser extends Exspresso_Object
   _l_delim        : '{'   # Left delimiter
   _r_delim        : '}'   # Right delimiter
 
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $Exspresso, $config
+    super $controller, $config
     log_message 'debug', "Parser Class Initialized"
     
   #

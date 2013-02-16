@@ -47,8 +47,8 @@ class global.Exspresso_DB_Cache extends Exspresso_Object
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: ($Exspresso, @db) ->
-    super $Exspresso
+  constructor: ($controller, @db) ->
+    super $controller
     #  Assign the main CI object to $this->CI
     #  and load the file helper since we use it a lot
     @load.helper('file')

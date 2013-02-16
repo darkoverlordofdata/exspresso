@@ -58,9 +58,9 @@ class global.Template extends Exspresso_Object
   #   @access	public
   #   @return	void
   #
-  constructor: ($args...) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $args...
+    super $controller, $config
     log_message('debug', "Template Class Initialized")
 
     @_theme_locations = [APPPATH + 'themes/'] if @_theme_locations is null

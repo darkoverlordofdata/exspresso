@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #| User.coffee
 #+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012
+#| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
 #|
 #| This file is a part of Exspresso
@@ -40,9 +40,9 @@ class global.User extends Exspresso_Object
   #
   # @return 	nothing
   #
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $Exspresso, $config
+    super $controller, $config
 
     log_message 'debug', "User Class Initialized"
     @load.model('user/user_model')

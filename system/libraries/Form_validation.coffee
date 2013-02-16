@@ -52,9 +52,9 @@ class global.Exspresso_Form_validation
   #
   # Constructor
   #
-  constructor: ($Exspresso, $rules = {}) ->
+  constructor: ($controller, $rules = {}) ->
 
-    super $Exspresso
+    super $controller
 
     #  Validation rules can be stored in a config file.
     @_config_rules = $rules

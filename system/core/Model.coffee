@@ -42,12 +42,12 @@ class global.Exspresso_Model extends Exspresso_Object
   # Copies the Exspresso_Controllers public base class properties
   #
   # @access	public
-  # @param	object	$Exspresso Controller Instance mixin
+  # @param	object	Controller Instance mixin
   # @return	void
   #
-  constructor: ($Exspresso) ->
+  constructor: ($controller) ->
 
-    super $Exspresso
+    super $controller
     log_message 'debug', "Model Class Initialized"
 
 

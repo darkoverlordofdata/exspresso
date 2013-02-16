@@ -66,9 +66,9 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	void
   #
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $Exspresso, $config
+    super $controller, $config
 
     @_languages = {}
     @_charsets = {}

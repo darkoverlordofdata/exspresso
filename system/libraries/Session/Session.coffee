@@ -73,7 +73,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # The constructor runs the session routines automatically
   # whenever the class is instantiated.
   #
-  constructor: ($Exspresso, $params = {}) ->
+  constructor: ($controller, $params = {}) ->
 
     log_message 'debug', "Session Class Initialized"
 
@@ -91,10 +91,10 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
       @sess_expiration = (60 * 60 * 24 * 365 * 2)
 
     # Is there an http request?
-    if $Exspresso.req?
+    if $controller.req?
 
-      $req = @req = $Exspresso.req
-      $res = @res = $Exspresso.res
+      $req = @req = $controller.req
+      $res = @res = $controller.res
 
       @_userdata = {}
 
@@ -116,7 +116,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
       log_message('debug', "Session routines successfully run")
 
     else # we're booting, initialize the driver
-      $Exspresso.server.session @
+      $controller.server.session @
 
 
   #

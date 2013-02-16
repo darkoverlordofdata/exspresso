@@ -794,7 +794,7 @@ class Exspresso_Upload
   #
   set_error($msg)
   {
-  $Exspresso = Exspresso
+  $controller = Exspresso
   @lang.load('upload')
   
   if is_array($msg)

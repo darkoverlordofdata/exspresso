@@ -76,9 +76,9 @@ class global.Exspresso_Pagination extends Exspresso_Object
   # @access	public
   # @param	array	initialization parameters
   #
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $Exspresso, $config
+    super $controller, $config
 
     if @_anchor_class isnt ''
       @_anchor_class = 'class="' + @_anchor_class + '" '

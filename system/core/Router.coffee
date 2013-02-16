@@ -110,19 +110,19 @@ class global.Exspresso_Router extends Base_Router
         # ------------------------------------------------------
         #
         $BM.mark 'controller_execution_time_( '+$class.name+' / '+$method+' )_start'
-        $Exspresso = new $class($BM, $req, $res, $module, $class.name, $method)
+        $controller = new $class($BM, $req, $res, $module, $class.name, $method)
 
         #
         # ------------------------------------------------------
         #  Is there a "post_controller_constructor" hook?
         # ------------------------------------------------------
         #
-        Exspresso.hooks._call_hook 'post_controller_constructor', $Exspresso
+        Exspresso.hooks._call_hook 'post_controller_constructor', $controller
 
       catch $err
         return $next($err)
 
-      $Exspresso.run ($err) ->
+      $controller.run ($err) ->
         return $next($err) if $err
         try
 
@@ -131,7 +131,7 @@ class global.Exspresso_Router extends Base_Router
           #  Call the requested method
           # ------------------------------------------------------
           #
-          $Exspresso[$method].apply($Exspresso, $args)
+          $controller[$method].apply($controller, $args)
 
           # Mark a benchmark end point
           $BM.mark 'controller_execution_time_( '+$class.name+' / '+$method+' )_end'

@@ -58,9 +58,9 @@ class Exspresso_Calendar extends Exspresso_Object
   #
   # Loads the calendar language file and sets the default time reference
   #
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
     
-    super $Exspresso, $config
+    super $controller, $config
 
     if not in_array('calendar_lang' + EXT, @lang.is_loaded, true)
       @lang.load('calendar')

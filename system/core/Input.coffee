@@ -38,13 +38,13 @@ module.exports = class global.Exspresso_Input
   __defineProperties  = Object.defineProperties
   __freeze            = Object.freeze
 
-  constructor: ($Exspresso) ->
+  constructor: ($controller) ->
 
     log_message('debug', "Input Class Initialized")
 
     os = require('os')
-    $req = $Exspresso.req
-    $res = $Exspresso.res
+    $req = $controller.req
+    $res = $controller.res
     $server_array =
       argv                  : $req.query
       argc                  : count($req.query)

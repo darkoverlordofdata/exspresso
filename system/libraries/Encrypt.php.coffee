@@ -78,8 +78,8 @@ class Exspresso_Encrypt
         return @encryption_key
         
       
-      $Exspresso = Exspresso
-      $key = $Exspresso.config.item('encryption_key')
+      $controller = Exspresso
+      $key = $controller.config.item('encryption_key')
       
       if $key is false
         show_error('In order to use the encryption class requires that you set an encryption key in your config file.')

@@ -44,9 +44,9 @@ class global.Breadcrumb extends Exspresso_Object
   #
   # Constructor
   #
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    super $Exspresso, $config
+    super $controller, $config
     log_message('debug', "Breadcrumb Class Initialized")
 
     

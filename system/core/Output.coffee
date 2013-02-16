@@ -42,9 +42,9 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
   _mime_types         : null  # array of valid mime types
   _profiler_sections  : null  # array of profiler sections to process
 
-  constructor: ($Exspresso) ->
+  constructor: ($controller) ->
 
-    super $Exspresso
+    super $controller
     log_message('debug', "Output Class Initialized")
 
     @_final_output = ''
@@ -236,7 +236,7 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
 
     #  Do we need to write a cache file?  Only if the controller does not have its
     #  own _output() method and we are not dealing with a cache file, which we
-    #  can determine by the existence of the $Exspresso object above
+    #  can determine by the existence of the $controller object above
     if @_cache_expiration > 0 and not method_exists(@, '_output')
       @_write_cache($output)
 

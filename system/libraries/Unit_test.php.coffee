@@ -62,7 +62,7 @@ class Exspresso_Unit_test
   _template_rows        : null
   _test_items_visible   : null
   
-  constructor: ($Exspresso, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
     #  These are the default items visible when a test is run.
     @_test_items_visible = [
       'test_name',
