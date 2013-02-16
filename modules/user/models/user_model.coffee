@@ -28,7 +28,6 @@
 #
 #   User Model
 #
-
 class global.User_model extends Exspresso_Model
 
   @UID_ANONYMOUS       = 1
@@ -38,27 +37,6 @@ class global.User_model extends Exspresso_Model
   @RID_ADMIN           = 2
   @RID_MEMBER          = 3
 
-  _anonymous_user:
-    uid           : User_model.UID_ANONYMOUS
-    name          : 'anonymous'
-    email         : ''
-    created_on    : Date.now()
-    last_login    : Date.now()
-    active        : 1 # $config.allow_anonymous
-    roles         : [
-      {rid: User_model.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
-    ]
-
-  #
-  # Anonymous user
-  #
-  #   Get the default anonymous use record
-  #
-  # @access	public
-  # @return	object
-  #
-  anonymous_user: () -> @_anonymous_user
-
   #
   # Load by id
   #
@@ -67,12 +45,15 @@ class global.User_model extends Exspresso_Model
   # @access	public
   # @return	object
   #
-  load_by_id: ($id, $next) =>
+  load_by_id: ($id, $next) ->
 
     @db.where 'uid', $id
     @db.get 'users', ($err, $user) =>
-      $user = $user.row() unless $err
-      $next $err, $user
+      return $next($err) if $err
+      $user = $user.row()
+      @load_roles $user.uid, ($err, $roles) =>
+        $user.roles = $roles
+        $next(null, $user)
 
   #
   # Load by name
@@ -82,12 +63,15 @@ class global.User_model extends Exspresso_Model
   # @access	public
   # @return	object
   #
-  load_by_name: ($name, $next) =>
+  load_by_name: ($name, $next) ->
 
     @db.where 'name', $name
     @db.get 'users', ($err, $user) =>
-      $user = $user.row() unless $err
-      $next $err, $user
+      return $next($err) if $err
+      $user = $user.row()
+      @load_roles $user.uid, ($err, $roles) =>
+        $user.roles = $roles
+        $next(null, $user)
 
   #
   # Load roles for a user
@@ -95,15 +79,15 @@ class global.User_model extends Exspresso_Model
   # @access	public
   # @return	object
   #
-  load_roles: ($uid, $next) =>
+  load_roles: ($uid, $next) ->
 
     @db.select 'roles.rid, name, description'
     @db.from 'roles'
     @db.join 'user_roles', 'user_roles.rid = roles.rid'
     @db.where 'uid', $uid
     @db.get ($err, $roles) =>
-      $roles = $roles.result() unless $err
-      $next $err, $roles
+      if $err then $next(null, [])
+      else $next(null, $roles.result())
 
 
   #

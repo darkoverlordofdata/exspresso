@@ -809,6 +809,7 @@ class global.Base_Loader
       value       : new global[$name](@controller, $config)
 
     if @controller._child?
+      # sync with child objects
       for $child in @controller._child
         if not $child[$classvar]?
           __defineProperty $child, $classvar,

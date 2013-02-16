@@ -60,19 +60,7 @@ class Admin extends AdminController
   #
   authenticate: ->
 
-    $username = @input.post("username")
-    $password = @input.post("password")
-    @user.authenticate $username, $password, ($err, $uid) =>
-
-      return @template.view($err) if $err
-
-      if $uid
-        @session.set_flashdata  'info', 'Hello %s', @user.name
-        @redirect '/admin'
-      else
-        @session.set_flashdata 'error', 'Invalid credentialz. Please try again.'
-        @redirect "/admin"
-
+    @user.login @input.post("username"), @input.post("password")
 
 
   #
@@ -84,12 +72,7 @@ class Admin extends AdminController
   #
   logout: ->
 
-    @session.set_flashdata  'info', 'Goodbye!'
-    @session.unset_userdata 'customer'
-    @input.set_cookie 'username', ''
-    @input.set_cookie 'usercode', ''
-    return @redirect "/admin"
-
+    @user.logout()
 
 
 #

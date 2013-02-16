@@ -54,36 +54,36 @@ class global.Exspresso_Controller
     $this = @
 
     __defineProperties $this,
-      _queue    : {enumerable: false, writeable: false, value: []}
-      _child    : {enumerable: false, writeable: false, value: []}
-      BM        : {enumerable: true,  writeable: false, value: $BM}
-      req       : {enumerable: true,  writeable: false, value: $req}
-      res       : {enumerable: true,  writeable: false, value: $res}
-      module    : {enumerable: true,  writeable: false, value: $module}
-      class     : {enumerable: true,  writeable: false, value: $class}
-      method    : {enumerable: true,  writeable: false, value: $method}
-      instance  : {enumerable: true,  writeable: false, value: $this}
-      queue     : {enumerable: true,  writeable: false, value: $this.queue}
-      run       : {enumerable: true,  writeable: false, value: $this.run}
-      redirect  : {enumerable: true,  writeable: false, value: $this.redirect}
-      render    : {enumerable: true,  writeable: false, value: $this.render}
-      config    : {enumerable: true,  writeable: false, value: Exspresso.config}
-      server    : {enumerable: true,  writeable: false, value: Exspresso.server}
-      router    : {enumerable: true,  writeable: false, value: Exspresso.router}
-      lang      : {enumerable: true,  writeable: false, value: Exspresso.lang}
+      _queue      : {enumerable: false, writeable: false, value: []}
+      _child      : {enumerable: false, writeable: false, value: []}
+      BM          : {enumerable: true,  writeable: false, value: $BM}
+      req         : {enumerable: true,  writeable: false, value: $req}
+      res         : {enumerable: true,  writeable: false, value: $res}
+      module      : {enumerable: true,  writeable: false, value: $module}
+      class       : {enumerable: true,  writeable: false, value: $class}
+      method      : {enumerable: true,  writeable: false, value: $method}
+      controller  : {enumerable: true,  writeable: false, value: $this}
+      queue       : {enumerable: true,  writeable: false, value: $this.queue}
+      run         : {enumerable: true,  writeable: false, value: $this.run}
+      redirect    : {enumerable: true,  writeable: false, value: $this.redirect}
+      render      : {enumerable: true,  writeable: false, value: $this.render}
+      config      : {enumerable: true,  writeable: false, value: Exspresso.config}
+      server      : {enumerable: true,  writeable: false, value: Exspresso.server}
+      router      : {enumerable: true,  writeable: false, value: Exspresso.router}
+      lang        : {enumerable: true,  writeable: false, value: Exspresso.lang}
 
     $BM.mark 'loading_time:_base_classes_start'
     __defineProperties $this,
-      load      : {enumerable: true,  writeable: false, value: load_new('Loader',  'core', $this)}
-      uri       : {enumerable: true,  writeable: false, value: load_new('URI',     'core', $this)}
-      input     : {enumerable: true,  writeable: false, value: load_new('Input',   'core', $this)}
+      load        : {enumerable: true,  writeable: false, value: load_new('Loader',  'core', $this)}
+      uri         : {enumerable: true,  writeable: false, value: load_new('URI',     'core', $this)}
+      input       : {enumerable: true,  writeable: false, value: load_new('Input',   'core', $this)}
 
     __defineProperties $this,
-      output    : {enumerable: true,  writeable: false, value: load_new('Output',  'core', $this)}
-      $_SERVER  : {enumerable: true,  writeable: false, get: -> $this.input.server()}
-      $_GET     : {enumerable: true,  writeable: false, get: -> $this.input.get()}
-      $_POST    : {enumerable: true,  writeable: false, get: -> $this.input.post()}
-      $_COOKIE  : {enumerable: true,  writeable: false, get: -> $this.input.cookie()}
+      output      : {enumerable: true,  writeable: false, value: load_new('Output',  'core', $this)}
+      $_SERVER    : {enumerable: true,  writeable: false, get: -> $this.input.server()}
+      $_GET       : {enumerable: true,  writeable: false, get: -> $this.input.get()}
+      $_POST      : {enumerable: true,  writeable: false, get: -> $this.input.post()}
+      $_COOKIE    : {enumerable: true,  writeable: false, get: -> $this.input.cookie()}
 
     @load.initialize()  # do the autoloads
     $BM.mark 'loading_time:_base_classes_end'

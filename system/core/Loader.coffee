@@ -58,9 +58,7 @@ require BASEPATH+'core/Base/Loader.coffee'
 
 class global.Exspresso_Loader extends Base_Loader
 
-  __hasOwnProperty    = Object.hasOwnProperty
   __defineProperty    = Object.defineProperty
-  __defineProperties  = Object.defineProperties
 
   _module             : ''
   _ex_plugins         : null
@@ -146,8 +144,8 @@ class global.Exspresso_Loader extends Base_Loader
   # @param	string
   # @return	void
   #
-  language: ($langfile, $idiom = '', $return = false, $add_suffix = true, $alt_path = '') ->
-    return @controller.lang.load($langfile, $idiom, $return, $add_suffix, $alt_path, @_module)
+  language: ($langfile, $idiom = '', $return = false) ->
+    return @controller.lang.load($langfile, $idiom, $return)
 
 
   #
@@ -213,6 +211,7 @@ class global.Exspresso_Loader extends Base_Loader
       @_ex_classes[$class] = $_alias
 
       if @controller._child?
+        # sync with child objects
         for $child in @controller._child
           if not $child[$_alias]?
             __defineProperty $child, $_alias,
@@ -282,6 +281,7 @@ class global.Exspresso_Loader extends Base_Loader
 
       @_ex_models.push $_alias
 
+      # sync with child objects
       if @controller._child?
         for $child in @controller._child
           if not $child[$_alias]?

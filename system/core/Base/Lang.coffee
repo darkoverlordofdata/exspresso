@@ -58,11 +58,10 @@ class global.Base_Lang
   # @param  string  the language (english, etc.)
   # @return  mixed
   #
-  load: ($langfile = '', $idiom = '', $return = false, $add_suffix = true, $alt_path = '') ->
+  load: ($langfile = '', $idiom = '', $return = false) ->
     $langfile = str_replace(EXT, '', $langfile)
     
-    if $add_suffix is true
-      $langfile = str_replace('_lang.', '', $langfile) + '_lang'
+    $langfile = str_replace('_lang.', '', $langfile) + '_lang'
 
     $langfile+=EXT
     
@@ -76,18 +75,15 @@ class global.Base_Lang
       $idiom = if $deft_lang is '' then 'english' else $deft_lang
 
     #  Determine where the language file is and load it
-    if $alt_path isnt '' and file_exists($alt_path + 'language/' + $idiom + '/' + $langfile)
-      $lang = require($alt_path + 'language/' + $idiom + '/' + $langfile)
-    else 
-      $found = false
-      for $package_path in Exspresso.load.get_package_paths(true)
-        if file_exists($package_path + 'language/' + $idiom + '/' + $langfile)
-          $lang = require($package_path + 'language/' + $idiom + '/' + $langfile)
-          $found = true
-          break
+    $found = false
+    for $package_path in Exspresso.load.get_package_paths(true)
+      if file_exists($package_path + 'language/' + $idiom + '/' + $langfile)
+        $lang = require($package_path + 'language/' + $idiom + '/' + $langfile)
+        $found = true
+        break
 
-      if $found isnt true
-        show_error('Unable to load the requested language file: language/' + $idiom + '/' + $langfile)
+    if $found isnt true
+      show_error('Unable to load the requested language file: language/' + $idiom + '/' + $langfile)
 
     if not $lang?
       log_message('error', 'Language file contains no data: language/' + $idiom + '/' + $langfile)

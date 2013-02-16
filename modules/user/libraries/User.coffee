@@ -31,12 +31,9 @@
 
 class global.User extends Exspresso_Object
 
-  bcrypt          = require('bcrypt')     # A bcrypt library for NodeJS
-
-  user_model      : null  # the user data model
-
-  _field_list     : ['uid', 'name', 'email', 'created_on', 'last_login', 'active']
-  _user           : null
+  bcrypt              = require('bcrypt')     # A bcrypt library for NodeJS
+  __defineProperties  = Object.defineProperties
+  __freeze            = Object.freeze
 
   #
   # Load the user model
@@ -48,11 +45,8 @@ class global.User extends Exspresso_Object
     super $Exspresso, $config
 
     log_message 'debug', "User Class Initialized"
-
     @load.model('user/user_model')
-
-
-    # add to the controller queue
+    @lang.load('user/user')
     @queue ($next) =>
       @initialize $next
 
@@ -61,71 +55,68 @@ class global.User extends Exspresso_Object
   # Initialize the User object
   #
   #
-  initialize: ($next) ->
+  initialize: ($next) =>
 
+    #
+    # Reload the current user
     @user_model.load_by_id @req.session.uid, ($err, $user) =>
 
+      $roles = []
+      for $row in $user.roles
+        $roles.push __freeze(array_merge($row, {}))
+
       return $next($err) if $err
-
-      @_user = {}
-      for $field in @_field_list
-        @_user[$field] = $user[$field]
-
-      @user_model.load_roles $user.uid, ($err, $roles) =>
-        @_user.roles = if $err then [] else $roles
-        $next()
-
-
-  #
-  # User read-only properties
-  #
-  #
-  @get is_anonymous : -> @_user.uid is User_model.UID_ANONYMOUS
-
-  @get is_logged_in : -> @_user.uid isnt User_model.UID_ANONYMOUS
-
-  @get uid          : -> @_user.uid
-
-  @get name         : -> @_user.name
-
-  @get email        : -> @_user.email
-
-  @get created_on   : -> @_user.created_on
-
-  @get last_login   : -> @_user.last_login
-
-  @get active       : -> @_user.active
-
+      __defineProperties @,
+        is_anonymous  : {enumerable: true,   get: -> $user.uid is User_model.UID_ANONYMOUS}
+        is_logged_in  : {enumerable: true,   get: -> $user.uid isnt User_model.UID_ANONYMOUS}
+        uid           : {enumerable: true,   get: -> $user.uid}
+        name          : {enumerable: true,   get: -> $user.name}
+        email         : {enumerable: true,   get: -> $user.email}
+        created_on    : {enumerable: true,   get: -> $user.created_on}
+        last_login    : {enumerable: true,   get: -> $user.last_login}
+        active        : {enumerable: true,   get: -> $user.active}
+        roles         : {enumerable: true,   get: -> __freeze($roles)}
+      $next()
 
   #
   # Authenticate the user
   #
   # @param    string
   # @param    string
-  # @param    function
+  # @param    string
   # @return 	nothing
   #
-  authenticate: ($name, $password, $next) ->
-
+  login: ($name, $password, $action = '/admin') =>
+    #
+    #
     @user_model.load_by_name $name, ($err, $user) =>
+      return if log_error('error', 'load by name: %s', $err) if show_error($err)
 
-      $next($err) if $err
+      bcrypt.compare $password, String($user.password)+String($user.salt), ($err, $ok) =>
+        return if log_error('error', 'bcrypt compare: %s', $err) if show_error($err)
 
-      if @check_password($password, $user)
-        for $field in @_field_list
-          @_user[$field] = $user[$field]
-        @req.session.uid = $user.uid
-        @user_model.load_roles $user.uid, ($err, $roles) =>
+        if $ok
+          @req.session.uid = $user.uid
+          @session.set_flashdata  'info', @lang.line('user_hello'), $user.name
+          @redirect $action
 
-          @_user.roles = if $err then [] else $roles
-          $next null, $user.uid
+        else
+          @req.session.uid = User_model.UID_ANONYMOUS
+          @session.set_flashdata 'error', @lang.line('user_invalid_credentials')
+          @redirect $action
 
-      else
-        $user = @user_model.anonymous_user()
-        for $field in @_field_list
-          @_user[$field] = $user[$field]
-        @req.session.uid = $user.uid
-        $next null, false
+  #
+  # User logout
+  #
+  # @param    string
+  # @return 	nothing
+  #
+  logout: ($action = '/admin') =>
+
+    @session.set_flashdata  'info', @lang.line('user_goodbye')
+    @req.session.uid = User_model.UID_ANONYMOUS
+    @redirect $action
+
 
   #
   # Authorization Check
@@ -136,25 +127,12 @@ class global.User extends Exspresso_Object
   # @param    string
   # @return 	boolean
   #
-  authorization_check: ($auth) ->
+  authorization_check: ($auth) =>
 
-    for $role in @_user.roles
+    for $role in @roles
       return true if $role.name is $auth
 
     return false
-
-  #
-  # Check password
-  #
-  #   Check if the password is valid for the user
-  #
-  # @param    string
-  # @param    string
-  # @return 	boolean
-  #
-  check_password: ($password, $user) ->
-
-    bcrypt.compareSync($password, String($user.password)+String($user.salt))
 
 module.exports = User
 
