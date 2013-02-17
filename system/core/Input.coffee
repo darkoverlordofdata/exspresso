@@ -33,7 +33,7 @@
 #
 # Exspresso Input Class
 #
-module.exports = class global.Exspresso_Input
+class global.Exspresso_Input
 
   __defineProperties  = Object.defineProperties
   __freeze            = Object.freeze
@@ -240,6 +240,6 @@ module.exports = class global.Exspresso_Input
   user_agent :  -> @req.useragent["Browser"]
 
 # END Exspresso_Input class
-
+module.exports = Exspresso_Input
 # End of file Input.coffee
 # Location: ./system/core/Input.coffee

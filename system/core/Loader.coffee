@@ -59,6 +59,8 @@ require BASEPATH+'core/Base/Loader.coffee'
 class global.Exspresso_Loader extends Base_Loader
 
   __defineProperty    = Object.defineProperty
+  __defineProperties          = Object.defineProperties
+  __getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
 
   _module             : ''
   _ex_plugins         : null
@@ -200,6 +202,23 @@ class global.Exspresso_Loader extends Base_Loader
 
     else
 
+      Child = ($parent) ->
+        @[$key]=$obj for $key, $obj of $parent
+        return
+      Child:: = @controller
+
+      $library = Modules.load_file($_library, $path)
+
+      @_ex_classes[$class] = $_alias
+      __defineProperty @controller, $_alias,
+        enumerable  : true
+        writeable   : false
+        value       : new Child(new $library())
+
+      return @controller[$_alias].__constructor($params)
+
+
+
       $library = Modules.load_file($_library, $path)
 
       #@controller[$_alias] = new $library(@controller, $params)
@@ -220,6 +239,10 @@ class global.Exspresso_Loader extends Base_Loader
               value       : @controller[$_alias]
 
     return @controller[$_alias]
+
+
+
+
 
 
   #

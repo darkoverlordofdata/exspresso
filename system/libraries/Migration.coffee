@@ -46,8 +46,6 @@ class global.Exspresso_Migration extends Exspresso_Object
   _migration_db         : ''
   _error_string         : ''
 
-  dbforge               : null
-
   constructor: ($controller, $config = {}) ->
 
     return if super($controller, $config)
@@ -66,7 +64,7 @@ class global.Exspresso_Migration extends Exspresso_Object
     @lang.load('migration')
 
     # They'll probably be using dbforge
-    @dbforge = @load.dbforge(@_migration_db)
+    @load.dbforge(@_migration_db)
 
     @queue ($next) => @initialize $next
 

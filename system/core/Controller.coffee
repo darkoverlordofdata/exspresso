@@ -116,8 +116,7 @@ class global.Exspresso_Controller
       # @param	object
       #
       constructor: ($data) ->
-        for $key, $obj of $data
-          @[$key] = $obj
+        @[$key] = $obj for $key, $obj of $data
 
     # Here's the magic -
     # expose the current controller via the prototype

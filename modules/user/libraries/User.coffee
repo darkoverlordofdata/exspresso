@@ -29,7 +29,7 @@
 #	  User Library
 #
 
-class global.User extends Exspresso_Object
+class global.User # extends Exspresso_Object
 
   bcrypt              = require('bcrypt')     # A bcrypt library for NodeJS
   __defineProperties  = Object.defineProperties
@@ -40,22 +40,22 @@ class global.User extends Exspresso_Object
   #
   # @return 	nothing
   #
-  constructor: ($controller, $config = {}) ->
+  __constructor: ($controller, $config = {}) ->
 
-    super $controller, $config
+    #super $controller, $config
 
     log_message 'debug', "User Class Initialized"
     @load.model('user/user_model')
     @lang.load('user/user')
-    @queue ($next) =>
-      @initialize $next
+    @queue ($next) => @initialize $next
+    @
 
 
   #
   # Initialize the User object
   #
   #
-  initialize: ($next) =>
+  initialize: ($next) ->
 
     #
     # Reload the current user
@@ -86,7 +86,7 @@ class global.User extends Exspresso_Object
   # @param    string
   # @return 	nothing
   #
-  login: ($name, $password, $action = '/admin') =>
+  login: ($name, $password, $action = '/admin') ->
     #
     #
     @user_model.load_by_name $name, ($err, $user) =>
@@ -111,7 +111,7 @@ class global.User extends Exspresso_Object
   # @param    string
   # @return 	nothing
   #
-  logout: ($action = '/admin') =>
+  logout: ($action = '/admin') ->
 
     @session.set_flashdata  'info', @lang.line('user_goodbye')
     @req.session.uid = User_model.UID_ANONYMOUS
@@ -127,7 +127,7 @@ class global.User extends Exspresso_Object
   # @param    string
   # @return 	boolean
   #
-  authorization_check: ($auth) =>
+  authorization_check: ($auth) ->
 
     for $role in @roles
       return true if $role.name is $auth
