@@ -33,9 +33,6 @@
 #
 # Common Functions
 #
-# Loads the base classes and executes the request.
-#
-#
 format = require('util').format
 
 _config       = []
@@ -45,44 +42,23 @@ _is_loaded    = {}
 _log          = null
 _error        = null
 
-#
-#---------------------------------------------------------------
-# Define get & set
-#---------------------------------------------------------------
-#
+__keys                      = Object.keys
+__defineProperty            = Object.defineProperty
 
-__keys = Object.keys
-__defineProperty = Object.defineProperty
-
-Function::get = ($def) ->
+#
+# Define Getter/Setter
+#
+# @access	public
+# @param	object	property definition
+# @return	object
+#
+Function::getter = ($def) ->
   $name = __keys($def)[0]
   __defineProperty @::, $name, {get: $def[$name]}
 
-Function::set = ($def) ->
+Function::setter = ($def) ->
   $name = __keys($def)[0]
   __defineProperty @::, $name, {set: $def[$name]}
-
-exports.create_mixin = ($controller, $class, $config) ->
-
-  Mixin = ($class) ->
-
-    for $key, $obj of $class::
-      @[$key] = $obj
-    $class.apply(@, $controller, $config)
-    return
-  Mixin:: = $controller
-  new Mixin($class)
-
-Object.__addSuper = ($object, $prototype) ->
-
-  # follow the thread to the base prototype
-  $current = $next = $object.__proto__
-  while ($current isnt Object::)
-    $next = $current
-    $current = $next.__proto__
-
-  $next.__proto__ = $prototype
-  $object
 
 
 #

@@ -55,7 +55,6 @@ class global.Exspresso_Controller
 
     __defineProperties $this,
       _queue      : {enumerable: false, writeable: false, value: []}
-      _child      : {enumerable: false, writeable: false, value: []}
       BM          : {enumerable: true,  writeable: false, value: $BM}
       req         : {enumerable: true,  writeable: false, value: $req}
       res         : {enumerable: true,  writeable: false, value: $res}
@@ -102,27 +101,9 @@ class global.Exspresso_Controller
   #
   render: ($view, $data = {}, $next) =>
 
-    #
-    # Inner Controller class
-    #
-    class Controller
-
-      #
-      # Wrap view data with controller methods
-      # This gives the view access to all methods and
-      # properties of the controller
-      #
-      # @access	private
-      # @param	object
-      #
-      constructor: ($data) ->
-        @[$key] = $obj for $key, $obj of $data
-
-    # Here's the magic -
-    # expose the current controller via the prototype
-    Controller:: = @
-
-    @res.render $view, new Controller($data), ($err, $html) =>
+    # expose the controller via the prototype
+    $data.__proto__ = @
+    @res.render $view, $data, ($err, $html) =>
 
       return $next($err, $html) if $next?
       Exspresso.hooks._call_hook 'post_controller', @

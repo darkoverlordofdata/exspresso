@@ -31,17 +31,55 @@
 #
 class global.Exspresso_Object
 
-  __hasOwnProperty            = Object.hasOwnProperty
-  __defineProperty            = Object.defineProperty
+  __SELF__ = @  # reference to this class
   __defineProperties          = Object.defineProperties
   __getOwnPropertyNames       = Object.getOwnPropertyNames
   __getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
+
+  #
+  # Copy Own Properties
+  #
+  # Copy all properties from a source or template object
+  # Getters, setters, read only, and other custom attributes
+  # are safely copied
+  #
+  # @access	private
+  # @param	object	destination object
+  # @param	object	source object
+  # @return	object
+  #
+  __copyOwnProperties = ($dst, $src) ->
+  
+    $properties = {}
+    for $key in __getOwnPropertyNames($src)
+      $properties[$key] = __getOwnPropertyDescriptor($src, $key)
+  
+    __defineProperties $dst, $properties
+  
+  #
+  # Insert Super Prototype
+  #
+  # Follow the __proto__ chain to insert a new prototype object
+  #
+  # @access	private
+  # @param	object  class instance
+  # @param	mixed   the prototype to insert
+  # @return	void
+  #
+  __insertProto = ($object, $super, $marker = __SELF__::) ->
+
+    $proto = $object.__proto__
+    while ($proto isnt $marker)
+      $proto = $proto.__proto__
+
+    $proto.__proto__ = $super
+    return
 
 
   #
   # Exspresso Constructor
   #
-  # Mixin the Exspresso_Controller public properties
+  # Mixin the Exspresso_Controller properties
   # Set the config property preferences
   #
   # @access	public
@@ -54,12 +92,9 @@ class global.Exspresso_Object
     if typeof $config is 'boolean'
       #
       # The controller is a parent object, we just want to
-      # perform a shallow clone all of the properties as is.
+      # perform a shallow clone of all the properties.
       #
-      $properties = {}
-      for $key in __getOwnPropertyNames($controller)
-        $properties[$key] = __getOwnPropertyDescriptor($controller, $key)
-      __defineProperties @, $properties
+      __copyOwnProperties @, $controller
       return $config
 
 
@@ -67,17 +102,15 @@ class global.Exspresso_Object
     # Copy the prototype properties to 'this' context, so we
     # don't lose them when we reset the prototype
     #
-    $properties = {}
-    for $key in __getOwnPropertyNames(@__proto__)
-      $properties[$key] = __getOwnPropertyDescriptor(@__proto__, $key)
-    __defineProperties @, $properties
+    __copyOwnProperties @, @__proto__
+
     #
     # Reset the prototype so that we inherit the active controller members
     # The load property is bound so that objects are loaded into the controller
-    # and thus propogated to all child members via the protototype, thus
-    # mimicking the 'magic __get' used in the original php.
+    # and thus propogated to all child members via the protototype.
+    # This mimicks the 'magic __get' code used in the original php.
     #
-    @__proto__ = $controller
+    __insertProto @, $controller
 
     #
     # Initialize the config preferences
