@@ -43,7 +43,6 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   FLASH_NEW               = ':new:'
   FLASH_OLD               = ':old:'
 
-  Exspresso               : null
   req                     : null
   res                     : null
 

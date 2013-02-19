@@ -41,8 +41,8 @@ class global.Exspresso_Object
   #
   # Exspresso Constructor
   #
+  # Copies the config properties with underscore prefix
   # Mixin the Exspresso_Controller public properties
-  # Set the config property preferences
   #
   # @access	public
   # @param	object  the parent controller object
@@ -53,8 +53,7 @@ class global.Exspresso_Object
 
     if typeof $config is 'boolean'
       #
-      # The controller is a parent object, we just want to
-      # perform a shallow clone all of the properties as is.
+      # clone the parent object
       #
       $properties = {}
       for $key in __getOwnPropertyNames($controller)
@@ -62,11 +61,18 @@ class global.Exspresso_Object
       __defineProperties @, $properties
       return $config
 
-
     #
-    # Reset the prototype to inherit the active controller members
+    # Mixin the controller public members
     #
-    @__proto__.__proto__ = $controller
+    $properties = {}
+    for $key in __getOwnPropertyNames($controller)
+      #
+      # skip protected members
+      # don't override
+      #
+      if $key[0] isnt '_' and not @[$key]?
+        $properties[$key] = __getOwnPropertyDescriptor($controller, $key)
+    __defineProperties @, $properties
 
     #
     # Initialize the config preferences
@@ -74,6 +80,9 @@ class global.Exspresso_Object
     for $key, $val of $config
       if @['_'+$key]?
         @['_'+$key] = $val
+
+    if $controller._child?
+      $controller._child.push @
 
 
 # END CLASS Object

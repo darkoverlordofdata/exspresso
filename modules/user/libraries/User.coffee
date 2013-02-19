@@ -29,7 +29,7 @@
 #	  User Library
 #
 
-class global.User # extends Exspresso_Object
+class global.User extends Exspresso_Object
 
   bcrypt              = require('bcrypt')     # A bcrypt library for NodeJS
   __defineProperties  = Object.defineProperties
@@ -40,9 +40,9 @@ class global.User # extends Exspresso_Object
   #
   # @return 	nothing
   #
-  __constructor: ($controller, $config = {}) ->
+  constructor: ($controller, $config = {}) ->
 
-    #super $controller, $config
+    super $controller, $config
 
     log_message 'debug', "User Class Initialized"
     @load.model('user/user_model')

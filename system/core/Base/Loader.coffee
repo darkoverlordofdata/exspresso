@@ -798,26 +798,17 @@ class global.Base_Loader
       $classvar = $object_name
 
 
+    $controller = @controller
     #  Save the class name and object name
     @_ex_classes[$class] = $classvar
-
     #  Instantiate the class
-    #@controller[$classvar] = new global[$name](@controller, $config)
-    __defineProperty @controller, $classvar,
+
+    __defineProperty $controller, $classvar,
       enumerable  : true
       writeable   : false
-      value       : new global[$name](@controller, $config)
+      value       : new global[$name]($controller, $config)
 
-    if @controller._child?
-      # sync with child objects
-      for $child in @controller._child
-        if not $child[$classvar]?
-          __defineProperty $child, $classvar,
-            enumerable  : true
-            writeable   : false
-            value       : @controller[$classvar]
-
-    @controller[$classvar]
+    $controller[$classvar]
 
 
   #  --------------------------------------------------------------------

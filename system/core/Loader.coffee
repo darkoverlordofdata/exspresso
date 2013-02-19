@@ -68,7 +68,7 @@ class global.Exspresso_Loader extends Base_Loader
 
   constructor: ($controller) ->
     super $controller
-    @_module = $controller.module
+    @module = $controller.module
 
   #
   # Add a module path
@@ -98,7 +98,7 @@ class global.Exspresso_Loader extends Base_Loader
   #
   config: ($file = 'config', $use_sections = false, $fail_gracefully = false) ->
 
-    @controller.config.load($file, $use_sections, $fail_gracefully, @_module)
+    @controller.config.load($file, $use_sections, $fail_gracefully, @module)
 
 
   #
@@ -116,7 +116,7 @@ class global.Exspresso_Loader extends Base_Loader
 
     if @_ex_helpers[$helper]? then return
 
-    [$path, $_helper] = Modules.find($helper+'_helper', @_module, 'helpers/')
+    [$path, $_helper] = Modules.find($helper+'_helper', @module, 'helpers/')
 
     if $path is false then return super($helper)
 
@@ -176,6 +176,8 @@ class global.Exspresso_Loader extends Base_Loader
   #
   library: ($library, $params = {}, $object_name = null) ->
 
+    $controller = @controller
+
     if not class_exists('Exspresso_Object')
       require BASEPATH+'core/Object'+EXT
 
@@ -184,15 +186,15 @@ class global.Exspresso_Loader extends Base_Loader
     $class = strtolower(end(explode('/', $library)))
 
     if @_ex_classes[$class]? and ($_alias = @_ex_classes[$class])
-      return @controller[$_alias]
+      return $controller[$_alias]
 
     ($_alias = strtolower($object_name)) or ($_alias = $class)
 
-    [$path, $_library] = Modules.find($library, @controller._module, 'libraries/')
+    [$path, $_library] = Modules.find($library, $controller.module, 'libraries/')
 
     # load library config file as params *
 
-    [$path2, $file] = Modules.find($_alias, @controller._module, 'config/')
+    [$path2, $file] = Modules.find($_alias, $controller.module, 'config/')
     ($path2) and ($params = array_merge(Modules.load_file($file, $path2, 'config'), $params))
 
     if $path is false
@@ -202,48 +204,18 @@ class global.Exspresso_Loader extends Base_Loader
 
     else
 
-      Child = ($parent) ->
-        @[$key]=$obj for $key, $obj of $parent
-        return
-      Child:: = @controller
-
       $library = Modules.load_file($_library, $path)
 
       @_ex_classes[$class] = $_alias
-      __defineProperty @controller, $_alias,
+
+      __defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : new Child(new $library())
-
-      return @controller[$_alias].__constructor($params)
-
-
-
-      $library = Modules.load_file($_library, $path)
-
-      #@controller[$_alias] = new $library(@controller, $params)
-      __defineProperty @controller, $_alias,
-        enumerable  : true
-        writeable   : false
-        value       : new $library(@controller, $params)
+        value       : new $library($controller, $params)
 
       @_ex_classes[$class] = $_alias
 
-      if @controller._child?
-        # sync with child objects
-        for $child in @controller._child
-          if not $child[$_alias]?
-            __defineProperty $child, $_alias,
-              enumerable  : true
-              writeable   : false
-              value       : @controller[$_alias]
-
-    return @controller[$_alias]
-
-
-
-
-
+    return $controller[$_alias]
 
   #
   # Load an array of libraries
@@ -271,15 +243,17 @@ class global.Exspresso_Loader extends Base_Loader
   #
   model: ($model, $object_name = null,$connect = false) ->
 
+    $controller = @controller
+
     if (is_array($model)) then return @models($model)
 
     ($_alias = $object_name) or ($_alias = end(explode('/', $model)))
 
     if in_array($_alias, @_ex_models, true)
-      return @controller[$_alias]
+      return $controller[$_alias]
 
     # check module *
-    [$path, $_model] = Modules.find(strtolower($model), @_module, 'models/')
+    [$path, $_model] = Modules.find(strtolower($model), @module, 'models/')
 
     if $path is false
 
@@ -296,24 +270,14 @@ class global.Exspresso_Loader extends Base_Loader
 
       $Model = Modules.load_file($_model, $path)
 
-      #@controller[$_alias] = new $model(@controller)
-      __defineProperty @controller, $_alias,
+      __defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : new $Model(@controller)
+        value       : new $Model($controller)
 
       @_ex_models.push $_alias
 
-      # sync with child objects
-      if @controller._child?
-        for $child in @controller._child
-          if not $child[$_alias]?
-            __defineProperty $child, $_alias,
-              enumerable  : true
-              writeable   : false
-              value       : @controller[$_alias]
-
-    return @controller[$_alias]
+    return $controller[$_alias]
 
   #
   # Load an array of models
@@ -375,7 +339,7 @@ class global.Exspresso_Loader extends Base_Loader
     if @_ex_plugins[$plugin]?
       return
 
-    [$path, $_plugin] = Modules.find($plugin+'_pi', @_module, 'plugins/')
+    [$path, $_plugin] = Modules.find($plugin+'_pi', @module, 'plugins/')
 
     if ($path is false) then return
 
@@ -412,7 +376,7 @@ class global.Exspresso_Loader extends Base_Loader
   # @return	void
   #
   view: ($view, $vars = {}, $next) ->
-    [$path, $view] = Modules.find($view, @controller._module, 'views/')
+    [$path, $view] = Modules.find($view, @controller.module, 'views/')
     @_ex_view_path = if $path then $path else APPPATH + config_item('views')
     @_ex_load('', $view, $vars, $next)
 
@@ -431,8 +395,8 @@ class global.Exspresso_Loader extends Base_Loader
     super() # application autoload first
     $path = false
 
-    if (@_module)
-      [$path, $file] = Modules.find('autoload', @_module, 'config/')
+    if (@module)
+      [$path, $file] = Modules.find('autoload', @module, 'config/')
 
     #  module autoload file
     $autoload = {}
@@ -487,7 +451,7 @@ class global.Exspresso_Loader extends Base_Loader
     #  autoload module controllers
     if $autoload['modules']?
       for $controller in $autoload['modules']
-        ($controller isnt @_module) and @module($controller)
+        ($controller isnt @module) and @module($controller)
 
     return
 
