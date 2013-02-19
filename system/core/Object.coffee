@@ -64,9 +64,20 @@ class global.Exspresso_Object
 
 
     #
-    # Reset the prototype to inherit the active controller members
+    # Copy the prototype properties to 'this' context, so we
+    # don't lose them when we reset the prototype
     #
-    @__proto__.__proto__ = $controller
+    $properties = {}
+    for $key in __getOwnPropertyNames(@__proto__)
+      $properties[$key] = __getOwnPropertyDescriptor(@__proto__, $key)
+    __defineProperties @, $properties
+    #
+    # Reset the prototype so that we inherit the active controller members
+    # The load property is bound so that objects are loaded into the controller
+    # and thus propogated to all child members via the protototype, thus
+    # mimicking the 'magic __get' used in the original php.
+    #
+    @__proto__ = $controller
 
     #
     # Initialize the config preferences
