@@ -66,39 +66,29 @@ class global.Exspresso_Migration extends Exspresso_Object
     # They'll probably be using dbforge
     @load.dbforge(@_migration_db)
 
-    @queue ($next) => @initialize $next
+    @queue ($next) =>
+      # Create migration table if it isn't found
+      if @connected is true then return $next null
+      @connected = true
 
-
-  #
-  # Create migration table if it isn't found
-  #
-  #
-  # @param  function
-  # @return void
-  #
-  initialize: ($next) ->
-
-    if @connected is true then return $next null
-    @connected = true
-
-    # If the migrations table is missing, make it
-    @db.table_exists 'migrations', ($err, $table_exists) =>
-
-      return $next($err) if $err
-      return $next(null) if $table_exists
-
-      @dbforge.add_field
-        'module' :
-          'type'        : 'VARCHAR'
-          'constraint'  : 40
-        'version' :
-          'type'        : 'INT'
-          'constraint'  : 3
-
-      @dbforge.create_table 'migrations', true, ($err) =>
+      # If the migrations table is missing, make it
+      @db.table_exists 'migrations', ($err, $table_exists) =>
 
         return $next($err) if $err
-        @db.insert 'migrations', version: 0, $next
+        return $next(null) if $table_exists
+
+        @dbforge.add_field
+          'module' :
+            'type'        : 'VARCHAR'
+            'constraint'  : 40
+          'version' :
+            'type'        : 'INT'
+            'constraint'  : 3
+
+        @dbforge.create_table 'migrations', true, ($err) =>
+
+          return $next($err) if $err
+          @db.insert 'migrations', version: 0, $next
 
   #
   # Override migration path to include module name

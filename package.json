@@ -14,24 +14,21 @@
     "php2coffee": "./bin/php2coffee"
   },
   "dependencies": {
-    "appjs": "*",
-    "bcrypt": "*",
     "coffee-script": "*",
+    "not-php": "*",
+    "mysql": "*",
+    "pg": "*",
     "connect": "*",
+    "express": "",
+    "bcrypt": "*",
     "connect-cache": "*",
-    "connect-redis": "*",
     "cookie": "*",
     "cookie-signature": "*",
     "dispatch": "*",
     "eco": "*",
     "emailjs": "*",
-    "express": "",
     "marked": "*",
-    "moment": "*",
-    "mysql": "*",
-    "not-php": "*",
-    "pg": "*",
-    "redis": "*"
+    "moment": "*"
   },
   "scripts": {
     "start": "foreman start web",

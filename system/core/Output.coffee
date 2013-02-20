@@ -33,6 +33,8 @@
 #
 module.exports = class global.Exspresso_Output extends Exspresso_Object
 
+  fs = require('fs')
+
   _parse_exec_vars    : true  # parse profiler vars {elapsed_time} and {memory_usage}
   _enable_profiler    : false # create profiler outout?
   _zlib_oc            : false # output compression?
@@ -327,22 +329,18 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
 
     $cache_path+=md5($uri)
 
-    if not ($fp = fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+    if not ($fp = fs.openSync($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
       log_message('error', "Unable to write cache file: " + $cache_path)
       return
 
     $expire = time() + (@_cache_expiration * 60)
 
-    if flock($fp, LOCK_EX)
-      fwrite($fp, $expire + 'TS--->' + $output)
-      flock($fp, LOCK_UN)
+    $buffer = $expire + 'TS--->' + $output
+    fs.writeSync($fp, $buffer, 0, $buffer.length, null)
 
-    else
-      log_message('error', "Unable to secure a file lock for file at: " + $cache_path)
-      return
 
-    fclose($fp)
-    chmod($cache_path, FILE_WRITE_MODE)
+    fs.closeSync($fp)
+    fs.chmodSync($cache_path, FILE_WRITE_MODE)
 
     log_message('debug', "Cache file written: " + $cache_path)
 
@@ -365,26 +363,23 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
       return false
 
 
-    if not ($fp = fopen($filepath, FOPEN_READ)) then return false
-    flock($fp, LOCK_SH)
+    if not ($fp = fs.openSync($filepath, FOPEN_READ)) then return false
 
     $cache = ''
     if filesize($filepath) > 0
-      $cache = fread($fp, filesize($filepath))
+      fs.readSync($fp, $cache, 0, filesize($filepath), null)
 
-
-    flock($fp, LOCK_UN)
-    fclose($fp)
+    fs.closeSync($fp)
 
     #  Strip out the embedded timestamp
-    if not preg_match("/(\d+TS--->)/", $cache, $match)
+    if not preg_match("/(\\d+TS--->)/", $cache, $match)
       return false
 
 
     #  Has the file expired? If so we'll delete it.
     if time()>=trim(str_replace('TS--->', '', $match['1']))
       if is_really_writable($cache_path)
-        unlink($filepath)
+        fs.unlinkSync($filepath)
         log_message('debug', "Cache file has expired. File deleted")
         return false
 

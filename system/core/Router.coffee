@@ -39,19 +39,19 @@ class global.Exspresso_Router
 
   fs = require('fs')
 
-  routes                  : {}          # route dispatch bindings
+  routes                  : null        # route dispatch bindings
 
   _default_controller     : false       # matches route '/'
   _404_override           : false       # when the specified controller is not found
   _directory              : ''          # parsed directory
-  _module                 : ''
+  _module                 : ''          # parsed module
   _class                  : ''          # parsed class
   _method                 : ''          # parsed method
 
   constructor: ->
 
-    #@config = load_class('Config', 'core')
     @config = Exspresso.config
+    @routes = {}
     log_message('debug', "Router Class Initialized")
 
 
@@ -501,29 +501,6 @@ class global.Exspresso_Router
   fetch_module: ->
     @_module
 
-  #
-  #  Set the controller overrides
-  #
-  # @access	public
-  # @param	array
-  # @return	null
-  #
-  _set_overrides : ($routing) ->
-    if not is_array($routing)
-      return
-
-
-    if $routing['directory']?
-      @set_directory($routing['directory'])
-
-
-    if $routing['controller']?  and $routing['controller'] isnt ''
-      @set_class($routing['controller'])
-
-
-    if $routing['function']?
-      $routing['function'] = if ($routing['function'] is '') then 'index' else $routing['function']
-      @set_method($routing['function'])
 
 # END Exspresso_Router class
 

@@ -35,12 +35,6 @@
 #
 # Parses URIs and determines routing
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	URI
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/uri.html
-#
 class global.Exspresso_URI
 
   __defineProperties  = Object.defineProperties

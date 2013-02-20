@@ -651,23 +651,6 @@ class global.Exspresso_Loader
     @library($library, $params, $object_name)
 
   #
-  # Add a module path
-  #
-  #
-  # @param 	string  module to add
-  # @return void
-  #
-  _add_module_paths: ($module = '') ->
-
-    return if $module is ''
-
-    for  $location, $offset of Modules.locations
-      # only add a module path if it exists
-      if is_dir($module_path = $location+$module+'/')
-        array_unshift(@_ex_model_paths, $module_path)
-    return
-
-  #
   # Add Package Path
   #
   # Prepends a parent path to the library, model, helper, and config path arrays
@@ -768,15 +751,6 @@ class global.Exspresso_Loader
 
     if not file_exists($_ex_path)
       show_error('Unable to load the requested file: %s', $_ex_file)
-
-    #  This allows anything loaded using $this->load (views, files, etc.)
-    #  to become accessible from within the Controller and Model functions.
-
-    #$_ex_CI = Exspresso
-    #for $_ex_key, $_ex_var of @controller
-    #  if typeof @controller[$_ex_key] isnt 'function'
-    #    if not @[$_ex_key]?
-    #      @[$_ex_key] = @controller[$_ex_key]
 
     #
     # Extract and cache variables

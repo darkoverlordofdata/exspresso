@@ -47,36 +47,27 @@ class global.User extends Exspresso_Object
     log_message 'debug', "User Class Initialized"
     @load.model('user/user_model')
     @lang.load('user/user')
-    @queue ($next) => @initialize $next
-    @
+    @queue ($next) =>
+      #
+      # Reload the current user
+      @user_model.load_by_id @req.session.uid, ($err, $user) =>
 
+        $roles = []
+        for $row in $user.roles
+          $roles.push __freeze(array_merge($row, {}))
 
-  #
-  # Initialize the User object
-  #
-  #
-  initialize: ($next) ->
-
-    #
-    # Reload the current user
-    @user_model.load_by_id @req.session.uid, ($err, $user) =>
-
-      $roles = []
-      for $row in $user.roles
-        $roles.push __freeze(array_merge($row, {}))
-
-      return $next($err) if $err
-      __defineProperties @,
-        is_anonymous  : {enumerable: true,   get: -> $user.uid is User_model.UID_ANONYMOUS}
-        is_logged_in  : {enumerable: true,   get: -> $user.uid isnt User_model.UID_ANONYMOUS}
-        uid           : {enumerable: true,   get: -> $user.uid}
-        name          : {enumerable: true,   get: -> $user.name}
-        email         : {enumerable: true,   get: -> $user.email}
-        created_on    : {enumerable: true,   get: -> $user.created_on}
-        last_login    : {enumerable: true,   get: -> $user.last_login}
-        active        : {enumerable: true,   get: -> $user.active}
-        roles         : {enumerable: true,   get: -> __freeze($roles)}
-      $next()
+        return $next($err) if $err
+        __defineProperties @,
+          is_anonymous  : {enumerable: true,   get: -> $user.uid is User_model.UID_ANONYMOUS}
+          is_logged_in  : {enumerable: true,   get: -> $user.uid isnt User_model.UID_ANONYMOUS}
+          uid           : {enumerable: true,   get: -> $user.uid}
+          name          : {enumerable: true,   get: -> $user.name}
+          email         : {enumerable: true,   get: -> $user.email}
+          created_on    : {enumerable: true,   get: -> $user.created_on}
+          last_login    : {enumerable: true,   get: -> $user.last_login}
+          active        : {enumerable: true,   get: -> $user.active}
+          roles         : {enumerable: true,   get: -> __freeze($roles)}
+        $next()
 
   #
   # Authenticate the user
