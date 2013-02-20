@@ -11,52 +11,47 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from Modular Extensions - HMVC to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
+#
 #
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
+# @package		Exspresso
+# @author		  darkoverlordofdata
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright	Copyright (c) 2011 Wiredesignz
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-# Description:
-# This library extends the Exspresso_Language class
-# and adds features allowing use of modules and the HMVC design pattern.
-#
-# @copyright	Copyright (c) 2011 Wiredesignz
-# @version 	5.4
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		MIT License
+# @link		    http://darkoverlordofdata.com
+# @since		  Version 1.0
 #
 
+#  ------------------------------------------------------------------------
+
+#
+# Language Class
+#
+#
 
 require BASEPATH+'core/Modules.coffee'
-require BASEPATH+'core/Base/Lang.coffee'
 
-class global.Exspresso_Lang extends Base_Lang
+class global.Exspresso_Lang
+
+  _language     : null
+  _is_loaded    : null
+
+  #
+  # Constructor
+  #
+  # @access  public
+  #
+  constructor :  ->
+    @_language = {}
+    @_is_loaded = []
+    log_message 'debug', "Language Class Initialized"
 
   #
   # Load a module language file
@@ -81,7 +76,7 @@ class global.Exspresso_Lang extends Base_Lang
 
     [$path, $_langfile] = Modules.find($langfile + '_lang', $module, 'language/' + $idiom + '/')
     if $path is false
-      if $lang = super($langfile, $lang, $return)
+      if $lang = @_application_load($langfile, $lang, $return)
         return $lang
     else
       if $lang = Modules.load_file($_langfile, $path, 'lang')
@@ -91,7 +86,73 @@ class global.Exspresso_Lang extends Base_Lang
 
     return @_language
 
-module.exports = Exspresso_Lang
+  #
+  # Load a language file
+  #
+  # @access  public
+  # @param  mixed  the name of the language file to be loaded. Can be an array
+  # @param  string  the language (english, etc.)
+  # @return  mixed
+  #
+  _application_load: ($langfile = '', $idiom = '', $return = false) ->
+    $langfile = str_replace(EXT, '', $langfile)
 
-# End of file Lang.coffee
-# Location: ./system/core/Lang.coffee
+    $langfile = str_replace('_lang.', '', $langfile) + '_lang'
+
+    $langfile+=EXT
+
+    if in_array($langfile, @_is_loaded, true)
+      return
+
+    $config = get_config()
+
+    if $idiom is ''
+      $deft_lang = if not $config['language']? then 'english' else $config['language']
+      $idiom = if $deft_lang is '' then 'english' else $deft_lang
+
+    #  Determine where the language file is and load it
+    $found = false
+    for $package_path in Exspresso.load.get_package_paths(true)
+      if file_exists($package_path + 'language/' + $idiom + '/' + $langfile)
+        $lang = require($package_path + 'language/' + $idiom + '/' + $langfile)
+        $found = true
+        break
+
+    if $found isnt true
+      show_error('Unable to load the requested language file: language/' + $idiom + '/' + $langfile)
+
+    if not $lang?
+      log_message('error', 'Language file contains no data: language/' + $idiom + '/' + $langfile)
+      return
+
+    if $return is true
+      return $lang
+
+    @_is_loaded.push $langfile
+    @_language = array_merge(@_language, $lang)
+
+    log_message('debug', 'Language file loaded: language/%s/%s', $idiom, $langfile)
+    return true
+
+
+  #
+  # Fetch a single line of text from the language array
+  #
+  # @access  public
+  # @param  string  $line  the language line
+  # @return  string
+  #
+  line : ($line = '') ->
+    $line = if ($line is '' or  not @_language[$line]? ) then false else @_language[$line]
+
+    #  Because killer robots like unicorns!
+    if $line is false
+      log_message('error', 'Could not find the language line "' + $line + '"')
+
+
+    return $line
+
+#  END Exspresso_Lang Class
+module.exports = Exspresso_Lang
+#  End of file Lang.php 
+#  Location: ./system/core/Lang.coffee

@@ -11,52 +11,64 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from Modular Extensions - HMVC to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
+#
 #
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
+# @package		Exspresso
+# @author		  darkoverlordofdata
+# @author		  darkoverlordofdata
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright	Copyright (c) 2011 Wiredesignz
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-# Description:
-# This library extends the Exspresso_Config class
-# and adds features allowing use of modules and the HMVC design pattern.
-#
-# @copyright	Copyright (c) 2011 Wiredesignz
-# @version 	5.4
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		MIT License
+# @link		    http://darkoverlordofdata.com
+# @since		  Version 1.0
 #
 
+#  ------------------------------------------------------------------------
+
+#
+# Exspresso Config Class
+#
+# This class contains functions that enable config files to be managed
+#
+#
 
 require BASEPATH+'core/Modules.coffee'
-require BASEPATH+'core/Base/Config.coffee'
 
-class global.Exspresso_Config extends Base_Config
+class global.Exspresso_Config
+
+  __defineProperties  = Object.defineProperties
+
+  _is_loaded      : null
+  _config_paths   : null
+  config          : null
+
+  #
+  # Constructor
+  #
+  # Sets the $config data from the primary config.php file as a class variable
+  #
+  # @access   public
+  # @param   string	the config file name
+  # @param   boolean  if configuration values should be loaded into their own section
+  # @param   boolean  true if errors should just return false, false if an error message should be displayed
+  # @return  boolean  if the file was successfully loaded or not
+  #
+  constructor :  ->
+    $this = @
+
+    __defineProperties $this,
+      _is_loaded    : {enumerable: false, writeable: false, value: []}
+      _config_paths : {enumerable: false, writeable: false, value: [APPPATH]}
+      config        : {enumerable: true,  writeable: false, value: get_config()}
+
+    log_message('debug', "Config Class Initialized")
 
 
   #
@@ -74,24 +86,200 @@ class global.Exspresso_Config extends Base_Config
     $_module = Exspresso.router.fetch_module()
     [$path, $file] = Modules.find($file, $_module, 'config/')
     if $path is false
-      super($file, $use_sections, $fail_gracefully)
+      @_application_load($file, $use_sections, $fail_gracefully)
       return @item($file)
     if $config = Modules.load_file($file, $path, 'config')
       #  reference to the config array
       $current_config = @config
       if $use_sections is true
         if $current_config[$file]?
-          log_message 'debug', 'CONFIG 1'
           $current_config[$file] = array_merge($current_config[$file], $config)
         else
-          log_message 'debug', 'CONFIG 2'
           $current_config[$file] = $config
 
       else
-        log_message 'debug', 'CONFIG 3'
         $current_config = array_merge($current_config, $config)
         @_is_loaded.push $file
         return @item($file)
 
+  #
+  # Load Application Config File
+  #
+  # @access	public
+  # @param	string	the config file name
+  # @param   boolean  if configuration values should be loaded into their own section
+  # @param   boolean  true if errors should just return false, false if an error message should be displayed
+  # @return	boolean	if the file was loaded correctly
+  #
+  _application_load : ($file = '', $use_sections = false, $fail_gracefully = false) ->
+    $file = if $file is '' then 'config' else $file.replace(EXT, '')
+    $loaded = false
 
+    for $path in @_config_paths
+
+      $config = {}
+      $found = false
+      $check_locations = [$file, ENVIRONMENT + '/' + $file]
+      for $location in $check_locations
+
+        $file_path = $path + 'config/' + $location + EXT
+
+        if file_exists($file_path)
+          $found = true
+          $config = array_merge($config, require($file_path))
+
+      if not $found
+        if $fail_gracefully is true
+          return false
+
+        show_error('Your %s file does not appear to contain a valid configuration array.', $file_path)
+
+      if $use_sections is true
+        if @config[$file]?
+          @config[$file] = array_merge(@config[$file], $config)
+
+        else
+          @config[$file] = $config
+
+      else
+        @config = array_merge(@config, $config)
+
+      @_is_loaded.push $file_path
+      $loaded = true
+
+    if $loaded is false
+      if $fail_gracefully is true
+        return false
+
+      show_error('The configuration file %s does not exist.', $file+EXT)
+
+    return true
+
+
+  #
+  # Fetch a config file item
+  #
+  #
+  # @access	public
+  # @param	string	the config item name
+  # @param	string	the index name
+  # @param	bool
+  # @return	string
+  #
+  item : ($item, $index = '') ->
+    if $index is ''
+      if not @config[$item]?
+        return '' #false
+
+      $pref = @config[$item]
+
+    else
+      if not @config[$index]?
+        return '' #false
+
+      if not @config[$index][$item]?
+        return '' #false
+
+      $pref = @config[$index][$item]
+
+    return $pref
+
+
+  #
+  # Fetch a config file item - adds slash after item
+  #
+  # The second parameter allows a slash to be added to the end of
+  # the item, in the case of a path.
+  #
+  # @access	public
+  # @param	string	the config item name
+  # @param	bool
+  # @return	string
+  #
+  slash_item : ($item) ->
+    if not @config[$item]?
+      return false
+
+    return rtrim(@config[$item], '/') + '/'
+
+
+  #
+  # Site URL
+  #
+  # @access	public
+  # @param	string	the URI string
+  # @return	string
+  #
+  site_url : ($uri = '') ->
+
+    if typeof $uri is 'string' and $uri is ''
+      return @slash_item('base_url') + @item('index_page')
+
+    if @item('enable_query_strings') is false
+      if Array.isArray($uri)
+        $uri = $uri.join('/')
+
+      $index = if @item('index_page') is '' then '' else @slash_item('index_page')
+      $suffix = if (@item('url_suffix') is false) then '' else @item('url_suffix')
+      return @slash_item('base_url') + $index + trim($uri, '/') + $suffix
+
+    else
+      if typeof $uri is 'object'
+        $i = 0
+        $str = ''
+        for $val, $key of $uri
+          $prefix = if ($i is 0) then '' else '&'
+          $str+=$prefix + $key + '=' + $val
+          $i++
+
+        $uri = $str
+
+      return @slash_item('base_url') + @item('index_page') + '?' + $uri
+
+
+
+  #
+  # System URL
+  #
+  # @access	public
+  # @return	string
+  #
+  system_url :  ->
+
+    $x = BASEPATH.split("/")
+    return @slash_item('base_url') + $x[$x.length-1] + '/'
+
+
+  #
+  # Set a config file item
+  #
+  # @access	public
+  # @param	string	the config item key
+  # @param	string	the config item value
+  # @return	void
+  #
+  set_item : ($item, $value) ->
+    @config[$item] = $value
+
+
+  #
+  # Assign to Config
+  #
+  # This function is called by the front controller (Exspresso.php)
+  # after the Config class is instantiated.  It permits config items
+  # to be assigned or overriden by variables contained in the index.php file
+  #
+  # @access	private
+  # @param	array
+  # @return	void
+  #
+  _assign_toconfig : ($items = {}) ->
+    for $val, $key of $items
+      @set_item($key, $val)
+
+
+# END Exspresso_Config class
 module.exports = Exspresso_Config
+
+# End of file Config.coffee
+# Location: ./system/core/Config.coffee

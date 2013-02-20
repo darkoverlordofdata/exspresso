@@ -57,26 +57,6 @@ class global.Exspresso_Object
     __defineProperties $dst, $properties
   
   #
-  # Insert Super Prototype
-  #
-  # Follow the __proto__ chain to insert a new prototype object
-  #
-  # @access	private
-  # @param	object  class instance
-  # @param	mixed   the prototype to insert
-  # @return	void
-  #
-  __insertProto = ($object, $super, $marker = __SELF__::) ->
-
-    $proto = $object.__proto__
-    while ($proto isnt $marker)
-      $proto = $proto.__proto__
-
-    $proto.__proto__ = $super
-    return
-
-
-  #
   # Exspresso Constructor
   #
   # Mixin the Exspresso_Controller properties
@@ -99,20 +79,26 @@ class global.Exspresso_Object
 
 
     #
-    # Copy the prototype properties to 'this' context, so we
-    # don't lose them when we reset the prototype
-    #
-    __copyOwnProperties @, @__proto__
-
-    #
     # Reset the prototype so that we inherit the active controller members
     # The load property is bound so that objects are loaded into the controller
     # and thus propogated to all child members via the protototype.
     # This mimicks the 'magic __get' code used in the original php.
     #
-    __insertProto @, $controller
 
+    # Copy the prototype properties to 'this' context, so we
+    # don't lose them when we reset the prototype
     #
+    __copyOwnProperties @, @__proto__
+
+    # Staring at 'this' object, follow
+    # the prototype chain to 'this' class
+    #
+    $proto = @.__proto__
+    until $proto is __SELF__::
+      $proto = $proto.__proto__
+
+    $proto.__proto__ = $controller
+
     # Initialize the config preferences
     #
     for $key, $val of $config

@@ -11,54 +11,49 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from Modular Extensions - HMVC to coffee-script using php2coffee
+# This file was ported from CodeIgniter to coffee-script using php2coffee
+#
 #
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
+# @package		Exspresso
+# @author		  darkoverlordofdata
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright	Copyright (c) 2011 Wiredesignz
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
-# @since      Version 1.0
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license		MIT License
+# @link		    http://darkoverlordofdata.com
+# @since		  Version 1.0
 #
-# Description:
-# This library extends the Exspresso base router class.
+#  ------------------------------------------------------------------------
 #
-# @copyright	Copyright (c) 2011 Wiredesignz
-# @version 	5.4
+# Exspresso Router Class
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-
 require BASEPATH+'core/Modules.coffee'
-require BASEPATH+'core/Base/Router.coffee'
+require BASEPATH+'core/URI.coffee'
 
-class global.Exspresso_Router extends Base_Router
+class global.Exspresso_Router
 
   fs = require('fs')
 
-  _module: ''
+  routes                  : {}          # route dispatch bindings
+
+  _default_controller     : false       # matches route '/'
+  _404_override           : false       # when the specified controller is not found
+  _directory              : ''          # parsed directory
+  _module                 : ''
+  _class                  : ''          # parsed class
+  _method                 : ''          # parsed method
+
+  constructor: ->
+
+    #@config = load_class('Config', 'core')
+    @config = Exspresso.config
+    log_message('debug', "Router Class Initialized")
+
 
   #
   # Controller binding
@@ -90,11 +85,11 @@ class global.Exspresso_Router extends Base_Router
 
       try
 
-        #
-        # ------------------------------------------------------
-        #  Start the timer... tick tock tick tock...
-        # ------------------------------------------------------
-        #
+      #
+      # ------------------------------------------------------
+      #  Start the timer... tick tock tick tock...
+      # ------------------------------------------------------
+      #
         $BM = load_new('Benchmark', 'core', @)
         $BM.mark 'total_execution_time_start'
         #
@@ -126,11 +121,11 @@ class global.Exspresso_Router extends Base_Router
         return $next($err) if $err
         try
 
-          #
-          # ------------------------------------------------------
-          #  Call the requested method
-          # ------------------------------------------------------
-          #
+        #
+        # ------------------------------------------------------
+        #  Call the requested method
+        # ------------------------------------------------------
+        #
           $controller[$method].apply($controller, $args)
 
           # Mark a benchmark end point
@@ -138,7 +133,6 @@ class global.Exspresso_Router extends Base_Router
 
         catch $err
           $next $err
-
 
   #
   # Set the route mapping
@@ -150,31 +144,72 @@ class global.Exspresso_Router extends Base_Router
   # @return	void
   #
   set_routing: ($uri) ->
+
+    @_directory = ''
     @_module = ''
-    super $uri
+    @_class = ''
+    @_method = ''
+    @_set_request $uri.split('/')
+
 
   #
-  #  Load Routes
-  #
-  # This function loads routes that may exist in
-  # the module/config/routes.php file
+  # Set the default controller
   #
   # @access	private
-  # @return	object routes
+  # @return	void
   #
-  load_routes: ->
+  _set_default_controller: ->
 
-    $routes = super()
+    if @_default_controller is false
+      show_error "Unable to determine what should be displayed. A default route has not been specified in the routing file."
 
-    for $location, $offset of Modules.locations
-      $modules = fs.readdirSync($location)
-      for $module in $modules
-        $path = $location + $module + '/config/'
+    # Is the method being specified?
+    if @_default_controller.indexOf('/') isnt -1
 
-        if file_exists($path+'routes.coffee')
-          $routes = array_merge($routes, Modules.load_file('routes', $path, 'route'))
+      $x = @_default_controller.split('/')
+      @set_class $x[0]
+      @set_method $x[1]
+      @_set_request $x
 
-    return $routes
+    else
+
+      @set_class @_default_controller
+      @set_method 'index'
+      @_set_request [@_default_controller, 'index']
+
+    log_message 'debug', "No URI present. Default controller set."
+
+  #
+  # Set the Route
+  #
+  # This takes an array of URI segments as
+  # input, and sets the current class/method
+  #
+  # @access	private
+  # @param	array
+  # @param	bool
+  # @return	void
+  #
+  _set_request: ($segments = []) ->
+
+    $segments = @_validate_request($segments)
+
+    if $segments.length is 0
+      return @_set_default_controller()
+
+    @set_class $segments[0]
+
+    if $segments[1]?
+
+      # A standard method request
+      @set_method $segments[1]
+
+    else
+
+      # This lets the "routed" segment array identify that the default
+      # index method is being used.
+      $segments[1] = 'index'
+
 
   #
   # Validates the supplied segments.  Attempts to determine the path to
@@ -194,18 +229,138 @@ class global.Exspresso_Router extends Base_Router
     if ($located) then return $located
 
 
-    # use a default 404_override controller 
+    # use a default 404_override controller
     if @_404_override
       $segments = explode('/', @_404_override)
       if ($located = @locate($segments)) then return $located
-    
-  
+
+
     # no controller found
     #show_404()
     # Nothing else to do at this point but show a 404
     log_message 'error', "Unable to validate uri %j", $segments
     return []
 
+
+  #
+  # Validates the supplied segments.  Attempts to determine the path to
+  # the controller.
+  #
+  # @access	private
+  # @param	array
+  # @return	array
+  #
+  _application_validate_request: ($segments) ->
+
+    if $segments.length is 0
+      return $segments
+
+
+    # Does the requested controller exist in the root folder?
+    if file_exists(APPPATH + 'controllers/' + $segments[0] + EXT)
+      return $segments
+
+
+    # Is the controller in a sub-folder?
+    if is_dir(APPPATH + 'controllers/' + $segments[0])
+
+      # Set the directory and remove it from the segment array
+      @set_directory $segments[0]
+      $segments = $segments.shift()
+
+      if $segments.length > 0
+
+        # Does the requested controller exist in the sub-folder?
+        if not file_exists(APPPATH + 'controllers/' + @fetch_directory() + $segments[0] + EXT)
+          console.log "Unable to validate" + @fetch_directory() + $segments[0]
+          return []
+
+      else
+
+        # Is the method being specified in the route?
+        if @_default_controller.indexOf('/') isnt -1
+
+          $x = @_default_controller.split('/')
+
+          @set_class $x[0]
+          @set_method $x[1]
+
+        else
+
+          @set_class @_default_controller
+          @set_method 'index'
+
+        # Does the default controller exist in the sub-folder?
+        if not file_exists(APPPATH + 'controllers/' + @fetch_directory() + @_default_controller + EXT)
+          @_directory = ''
+          return []
+
+      return $segments
+
+    # If we've gotten this far it means that the URI does not correlate to a valid
+    # controller class.  We will now see if there is an override
+    if @_404_override isnt false
+
+      $x = @_404_override.split('/')
+
+      @set_class $x[0]
+      @set_method $x[1] ? 'index'
+
+      return $x
+
+
+    # Nothing else to do at this point but show a 404
+    log_message 'error', "Unable to validate uri %j", $segments
+    return []
+
+  #
+  #  Load Routes
+  #
+  # This function loads routes that may exist in
+  # the module/config/routes.php file
+  #
+  # @access	private
+  # @return	object routes
+  #
+  load_routes: ->
+
+    $routes = @_application_load_routes()
+
+    for $location, $offset of Modules.locations
+      $modules = fs.readdirSync($location)
+      for $module in $modules
+        $path = $location + $module + '/config/'
+
+        if file_exists($path+'routes.coffee')
+          $routes = array_merge($routes, Modules.load_file('routes', $path, 'route'))
+
+    return $routes
+
+  #
+  #  Load Routes
+  #
+  # This function loads routes that may exist in
+  # the config/routes.php file
+  #
+  # @access	private
+  # @return	object routes
+  #
+  _application_load_routes: ->
+
+    if not @config.load('routes', true, true)
+      show_error 'The config/routes file does not exist.'
+
+    $routes = @config.config.routes
+
+    # Set the default controller so we can display it in the event
+    # the URI doesn't correlated to a valid controller.
+    @_default_controller = $routes['default_controller'] ? false
+    @_404_override = $routes['404_override'] ? false
+
+    delete $routes['default_controller']
+    delete $routes['404_override']
+    $routes['/'] = @_default_controller
+    $routes
 
   #
   # Locate the controller
@@ -222,7 +377,7 @@ class global.Exspresso_Router extends Base_Router
 
     # use module route if available
     #if $segments[0]? and $routes = Modules.parse_routes($segments[0], implode('/', $segments))
-      #$segments = $routes
+    #$segments = $routes
 
     # get the segments array elements
     [$module, $directory, $controller] = array_pad($segments, 3, null)
@@ -281,6 +436,61 @@ class global.Exspresso_Router extends Base_Router
   #
   set_class: ($class) ->
     @_class = $class+@config.item('controller_suffix')
+  # - pre module - @_class = $class.replace('/', '').replace('.', '')
+
+
+  #
+  # Fetch the current class
+  #
+  # @access	public
+  # @return	string
+  #
+  fetch_class: ->
+    return @_class
+
+
+  #
+  #  Set the method name
+  #
+  # @access	public
+  # @param	string
+  # @return	void
+  #
+  set_method: ($method) ->
+    @_method = $method
+
+
+  #
+  #  Fetch the current method
+  #
+  # @access	public
+  # @return	string
+  #
+  fetch_method: ->
+    if @_method is @fetch_class()
+      return 'index'
+
+    return @_method || 'index'
+
+  #
+  #  Set the directory name
+  #
+  # @access	public
+  # @param	string
+  # @return	void
+  #
+  set_directory: ($dir) ->
+    @_directory = $dir.replace('/', '').replace('.', '') + '/'
+
+
+  #
+  #  Fetch the sub-directory (if any) that contains the requested controller class
+  #
+  # @access	public
+  # @return	string
+  #
+  fetch_directory: ->
+    return @_directory
 
   #
   # Fetch the current module
@@ -291,5 +501,33 @@ class global.Exspresso_Router extends Base_Router
   fetch_module: ->
     @_module
 
+  #
+  #  Set the controller overrides
+  #
+  # @access	public
+  # @param	array
+  # @return	null
+  #
+  _set_overrides : ($routing) ->
+    if not is_array($routing)
+      return
+
+
+    if $routing['directory']?
+      @set_directory($routing['directory'])
+
+
+    if $routing['controller']?  and $routing['controller'] isnt ''
+      @set_class($routing['controller'])
+
+
+    if $routing['function']?
+      $routing['function'] = if ($routing['function'] is '') then 'index' else $routing['function']
+      @set_method($routing['function'])
+
+# END Exspresso_Router class
 
 module.exports = Exspresso_Router
+
+# End of file Router.coffee
+# Location: ./system/core/Router.coffee
