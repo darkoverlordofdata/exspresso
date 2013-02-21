@@ -41,10 +41,8 @@
 # @author		darkoverlordofdata
 # @link		http://darkoverlordofdata.com/user_guide/libraries/calendar.html
 #
-class Exspresso_Calendar extends Exspresso_Object
+class Exspresso_Calendar
   
-  Exspresso           : null
-
   _local_time         : null
   _template           : ''
   _start_day          : 'sunday'
@@ -59,8 +57,11 @@ class Exspresso_Calendar extends Exspresso_Object
   # Loads the calendar language file and sets the default time reference
   #
   constructor: ($controller, $config = {}) ->
-    
-    super $controller, $config
+
+    # Initialize the config preferences
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
 
     if not in_array('calendar_lang' + EXT, @lang.is_loaded, true)
       @lang.load('calendar')

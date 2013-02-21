@@ -34,14 +34,18 @@
 # Parser Class
 #
 #
-class global.Exspresso_Parser extends Exspresso_Object
+class global.Exspresso_Parser
   
   _l_delim        : '{'   # Left delimiter
   _r_delim        : '}'   # Right delimiter
 
   constructor: ($controller, $config = {}) ->
 
-    super $controller, $config
+    # Initialize the config preferences
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
+
     log_message 'debug', "Parser Class Initialized"
     
   #

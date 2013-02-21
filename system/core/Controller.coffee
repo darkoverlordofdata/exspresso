@@ -27,8 +27,7 @@
 # Exspresso Application Controller Class
 #
 # This class object is the super class for all controllers
-# Methods are bound with fat arrow ( => ) so that they are selected
-# for copying by the Exspresso_Object constructor. When called from
+# Methods are bound with fat arrow ( => ) so that when called from
 # child objects, they will run in the Controller context.
 #
 

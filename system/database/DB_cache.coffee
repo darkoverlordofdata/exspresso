@@ -37,9 +37,9 @@
 # @author		darkoverlordofdata
 # @link		http://darkoverlordofdata.com/user_guide/database/
 #
-class global.Exspresso_DB_Cache extends Exspresso_Object
+class global.Exspresso_DB_Cache
   
-  db: {}#  allows passing of db object so that multiple database connections and returned db objects can be supported
+  db: null #  allows passing of db object so that multiple database connections and returned db objects can be supported
   
   #
   # Constructor

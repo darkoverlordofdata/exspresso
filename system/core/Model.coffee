@@ -34,7 +34,7 @@
 # Exspresso Model Class
 #
 
-class global.Exspresso_Model extends Exspresso_Object
+class global.Exspresso_Model
 
   #
   # Model Constructor
@@ -47,7 +47,6 @@ class global.Exspresso_Model extends Exspresso_Object
   #
   constructor: ($controller) ->
 
-    super $controller
     log_message 'debug', "Model Class Initialized"
 
 

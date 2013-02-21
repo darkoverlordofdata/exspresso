@@ -36,7 +36,7 @@
 # Displays modaly from a bottom toolbar
 #
 #
-class Exspresso_Profiler extends Exspresso_Object
+class Exspresso_Profiler
 
   _benchmarks         : true
   _get                : true
@@ -62,7 +62,11 @@ class Exspresso_Profiler extends Exspresso_Object
 
   constructor: ($controller, $config = {}) ->
 
-    super $controller, $config
+    # Initialize the config preferences
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
+
     log_message 'debug', "Profiler Class Initialized"
 
     @load.language('profiler')

@@ -135,9 +135,6 @@ class global.Exspresso_Loader
 
     $controller = @controller
 
-    if not class_exists('Exspresso_Object')
-      require BASEPATH+'core/Object'+EXT
-
     if is_array($library) then return @libraries($library)
 
     $class = strtolower(end(explode('/', $library)))

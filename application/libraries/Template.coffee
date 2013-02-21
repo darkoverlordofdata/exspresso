@@ -31,7 +31,7 @@
 #
 #
 
-class global.Template extends Exspresso_Object
+class global.Template
 
   html                : null
   theme               : null
@@ -58,7 +58,11 @@ class global.Template extends Exspresso_Object
   #
   constructor: ($controller, $config = {}) ->
 
-    super $controller, $config
+    # Initialize the config preferences
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
+
     log_message('debug', "Template Class Initialized")
 
     @_theme_locations = [APPPATH + 'themes/'] if @_theme_locations is null

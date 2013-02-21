@@ -32,7 +32,7 @@
 #
 #
 #
-class global.Theme extends Exspresso_Object
+class global.Theme
 
   _location       : ''
   _path           : ''
@@ -52,7 +52,11 @@ class global.Theme extends Exspresso_Object
 
   constructor: ($controller, $config = {}) ->
 
-    super $controller, $config
+    # Initialize the config preferences
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
+
     log_message('debug', "Theme Class Initialized")
 
     $theme = @_name ? 'default'

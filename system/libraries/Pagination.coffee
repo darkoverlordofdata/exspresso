@@ -34,7 +34,7 @@
 # Pagination Class
 #
 #
-class global.Exspresso_Pagination extends Exspresso_Object
+class global.Exspresso_Pagination
 
   ceil = Math.ceil
   floor = Math.floor
@@ -78,7 +78,10 @@ class global.Exspresso_Pagination extends Exspresso_Object
   #
   constructor: ($controller, $config = {}) ->
 
-    super $controller, $config
+    # Initialize the config preferences
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
 
     if @_anchor_class isnt ''
       @_anchor_class = 'class="' + @_anchor_class + '" '

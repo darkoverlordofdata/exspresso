@@ -37,7 +37,7 @@
 # access to the CI super-global.
 #
 #
-class global.Exspresso_Migration extends Exspresso_Object
+class global.Exspresso_Migration
 
   _migration_enabled    : false
   _migration_module     : ''
@@ -48,7 +48,18 @@ class global.Exspresso_Migration extends Exspresso_Object
 
   constructor: ($controller, $config = {}) ->
 
-    return if super($controller, $config)
+    if typeof $config is 'boolean'
+      #
+      # The controller is a parent object, we just want to
+      # perform a shallow clone of all the properties.
+      #
+      copyOwnProperties @, $controller
+      return
+
+    # Initialize the config preferences
+    for $key, $val of $config
+      if @['_'+$key]?
+        @['_'+$key] = $val
 
     # Are they trying to use migrations while it is disabled?
     if (@_migration_enabled isnt true)

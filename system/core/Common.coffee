@@ -120,10 +120,10 @@ exports.mixin_class = ($controller, $class, $config) ->
         $props[$key] = getOwnPropertyDescriptor($proto, $key)
 
   # Create an object using the controller as the prototype
-  $mixin = create($controller, $props)
+  $this = create($controller, $props)
   # Invoke the constructor in 'this' context
-  $class.call $mixin, $controller, $config
-  $mixin
+  $class.call $this, $controller, $config
+  $this
 
 
 #

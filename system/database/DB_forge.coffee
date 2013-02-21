@@ -34,7 +34,7 @@
 # Database Utility Class
 #
 #
-class global.Exspresso_DB_forge extends Exspresso_Object
+class global.Exspresso_DB_forge
 
   db            : null
   fields        : []
@@ -50,7 +50,6 @@ class global.Exspresso_DB_forge extends Exspresso_Object
   #
   constructor: ($controller, $db) ->
 
-    super $controller
     @db = $db
     @_reset() # always initialize arrays in the constructor!
     log_message('debug', "Database Forge Class Initialized")

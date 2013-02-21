@@ -31,7 +31,7 @@
 #
 # Exspresso Output Class
 #
-module.exports = class global.Exspresso_Output extends Exspresso_Object
+class global.Exspresso_Output
 
   fs = require('fs')  # file system
 
@@ -46,7 +46,6 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
 
   constructor: ($controller) ->
 
-    super $controller
     log_message('debug', "Output Class Initialized")
 
     @_final_output = ''
@@ -392,6 +391,7 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
 
 
 # END Exspresso_Output class
+module.exports = Exspresso_Output
 
 # End of file Output.coffee
 # Location: ./system/core/Output.coffee
