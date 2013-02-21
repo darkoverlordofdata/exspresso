@@ -37,12 +37,10 @@
 #
 class global.Exspresso_URI
 
-  __defineProperties  = Object.defineProperties
-
-  _keyval       : null
-  _uri_string   : ''
-  _segments     : null
-  _rsegments    : null
+  _uri_string       : ''    # raw uri string value
+  _keyval           : null  # key-value pairs parsed from uri string
+  _segments         : null  # array of uri string segments, parsed on '/'
+  _rsegments        : null  # array of uri string segments, parsed on '/'
 
   #
   # Constructor
@@ -55,9 +53,10 @@ class global.Exspresso_URI
 
     $this = @
 
-    __defineProperties $this,
+    defineProperties $this,
       _uri_string   : {enumerable: false, writeable: false, value: $controller.req.path}
-    __defineProperties $this,
+
+    defineProperties $this,
       _keyval       : {enumerable: false, writeable: false, value: {}}
       _rsegments    : {enumerable: false, writeable: false, value: $this._uri_string.split('/')}
       _segments     : {enumerable: false, writeable: false, value: $this._uri_string.split('/')}

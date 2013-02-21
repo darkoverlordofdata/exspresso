@@ -33,17 +33,89 @@
 #
 # Common Functions
 #
-format = require('util').format
+format            = require('util').format
 
-_config       = []
-_config_item  = {}
-_classes      = {}
-_is_loaded    = {}
-_log          = null
-_error        = null
+_config           = []    # [0] is reference to config array
+_config_item      = {}    # config item cache
+_classes          = {}    # class cache
+_is_loaded        = {}    # class loaded flag
+_log              = null  # loging object
+_error            = null  # error display object
 
-__keys                      = Object.keys
-__defineProperty            = Object.defineProperty
+#
+# Metaprogramming
+#
+#
+exports.USE__PROTO__              = false # true to use __proto__, false to use getPrototypeOf
+exports.defineProperties          = Object.defineProperties
+exports.defineProperty            = Object.defineProperty
+exports.freeze                    = Object.freeze
+exports.getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
+exports.getOwnPropertyNames       = Object.getOwnPropertyNames
+exports.getPrototypeOf            = Object.getPrototypeOf
+exports.keys                      = Object.keys
+
+#
+# Copy Own Properties
+#
+# Copy all properties from a source or template object
+# Getters, setters, read only, and other custom attributes
+# are safely copied
+#
+# @param	object	destination object
+# @param	object	source object
+# @return	object
+#
+exports.copyOwnProperties = ($dst, $src) ->
+  $properties = {}
+  for $key in getOwnPropertyNames($src)
+    $properties[$key] = getOwnPropertyDescriptor($src, $key)
+
+  defineProperties $dst, $properties
+
+#
+# Create Mixin
+#
+# Creates a controller mixin object
+#
+# @param	object	an Exspresso_Controller object
+# @param	mixed   class name or object
+# @param	object	(optional) config data
+# @return	object
+#
+exports.create_mixin = ($controller, $class, $config) ->
+  # dereference the class name
+  if typeof $class is 'string' then $class = global[$class]
+
+  if USE__PROTO__
+    new $class($controller, $config) # handled in Exspresso_Object
+
+  else
+    mixin = -> # the mixin constructor
+
+      $chain = []
+      $proto = $class::
+
+      # Build an inheritance chain
+      while $proto isnt Object::
+        $chain.push $proto
+        $proto = getPrototypeOf($proto)
+
+      # Copy properties from super objects, processing
+      # in reverse order, base class to most specific
+      # so that overrides are taken into account
+      for $proto in $chain.reverse()
+        if $proto isnt Object::
+          copyOwnProperties @, $proto
+
+      # Invoke the constructor in 'this' context
+      $class.call @, $controller, $config
+      return
+
+    # set the prototype to the main controller instance
+    mixin:: = $controller
+    new mixin
+
 
 #
 # Define Getter/Setter
@@ -53,12 +125,14 @@ __defineProperty            = Object.defineProperty
 # @return	object
 #
 Function::getter = ($def) ->
-  $name = __keys($def)[0]
-  __defineProperty @::, $name, {get: $def[$name]}
+  $name = keys($def)[0]
+  defineProperty @::, $name, {get: $def[$name]}
 
 Function::setter = ($def) ->
-  $name = __keys($def)[0]
-  __defineProperty @::, $name, {set: $def[$name]}
+  $name = keys($def)[0]
+  defineProperty @::, $name, {set: $def[$name]}
+
+
 
 
 #
@@ -73,13 +147,14 @@ Function::setter = ($def) ->
 # @param	string	the class name prefix
 # @return	object
 #
-exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $config = {}) ->
+exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $controller) ->
 
-  if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso_', $prefix]
+  if typeof $prefix isnt 'string' then [$prefix, $controller] = ['Exspresso_', $prefix]
 
   #  Does the class exist?  If so, we're done...
   if class_exists($prefix+$class)
-    return new (global[$prefix+$class])($config)
+    #return new (global[$prefix+$class])($controller)
+    return create_mixin($controller, $prefix+$class)
 
   $name = false
 
@@ -105,7 +180,8 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
   if not class_exists($name)
     die 'Unable to locate the specified class: ' + $class + EXT
 
-  return new (global[$name])($config)
+  #return new (global[$name])($controller)
+  create_mixin($controller, $name)
 
 
 #

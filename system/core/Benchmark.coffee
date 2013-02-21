@@ -39,12 +39,11 @@
 #
 class global.Exspresso_Benchmark
 
-  __defineProperties  = Object.defineProperties
-
+  marker            : null  # hash to store benchmark results
 
   constructor: ->
 
-    __defineProperties @,
+    defineProperties @,
       marker : {enumerable: true, writeable: false, value: {}}
 
   #

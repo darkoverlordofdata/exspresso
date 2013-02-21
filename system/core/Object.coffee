@@ -27,35 +27,19 @@
 
 #  ------------------------------------------------------------------------
 #
-#	Exspresso Base Object
+#	Exspresso Object
 #
+# Reset the prototype so that we inherit the controller instance members
+# The load property is bound so that objects are loaded into the controller
+# and thus propogated to all child members via the protototype.
+# This mimicks the 'magic __get' code used in the original php.
+#
+#
+
 class global.Exspresso_Object
 
   __SELF__ = @  # reference to this class
-  __defineProperties          = Object.defineProperties
-  __getOwnPropertyNames       = Object.getOwnPropertyNames
-  __getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
 
-  #
-  # Copy Own Properties
-  #
-  # Copy all properties from a source or template object
-  # Getters, setters, read only, and other custom attributes
-  # are safely copied
-  #
-  # @access	private
-  # @param	object	destination object
-  # @param	object	source object
-  # @return	object
-  #
-  __copyOwnProperties = ($dst, $src) ->
-  
-    $properties = {}
-    for $key in __getOwnPropertyNames($src)
-      $properties[$key] = __getOwnPropertyDescriptor($src, $key)
-  
-    __defineProperties $dst, $properties
-  
   #
   # Exspresso Constructor
   #
@@ -74,33 +58,26 @@ class global.Exspresso_Object
       # The controller is a parent object, we just want to
       # perform a shallow clone of all the properties.
       #
-      __copyOwnProperties @, $controller
+      copyOwnProperties @, $controller
       return $config
 
 
-    #
-    # Reset the prototype so that we inherit the active controller members
-    # The load property is bound so that objects are loaded into the controller
-    # and thus propogated to all child members via the protototype.
-    # This mimicks the 'magic __get' code used in the original php.
-    #
+    if USE__PROTO__
+      # Copy the prototype properties to 'this' context, so we
+      # don't lose them when we reset the prototype
+      copyOwnProperties @, @__proto__
 
-    # Copy the prototype properties to 'this' context, so we
-    # don't lose them when we reset the prototype
+      # Staring at 'this' object, follow the
+      # prototype chain to 'this' class
+      $proto = @__proto__
+      until $proto is __SELF__::
+        $proto = $proto.__proto__
+
+      # set the prototype to the main controller instance
+      $proto.__proto__ = $controller
+
     #
-    __copyOwnProperties @, @__proto__
-
-    # Staring at 'this' object, follow
-    # the prototype chain to 'this' class
-    #
-    $proto = @.__proto__
-    until $proto is __SELF__::
-      $proto = $proto.__proto__
-
-    $proto.__proto__ = $controller
-
     # Initialize the config preferences
-    #
     for $key, $val of $config
       if @['_'+$key]?
         @['_'+$key] = $val

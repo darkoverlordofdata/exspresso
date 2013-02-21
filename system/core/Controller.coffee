@@ -34,7 +34,30 @@
 
 class global.Exspresso_Controller
 
-  __defineProperties  = Object.defineProperties
+  _queue            : null  # async function queue
+  BM                : null  # Expresso_Benchmark
+  req               : null  # http request object
+  res               : null  # http response object
+  module            : null  # module parsed from the uri
+  class             : null  # class parsed from the uri
+  method            : null  # method parsed from the uri
+  controller        : null  # controller (this)
+  queue             : null  # access to view or add to _queue
+  run               : null  # runs _queue
+  redirect          : null  # http header redirect
+  render            : null  # render output to the browser
+  config            : null  # Expresso_Config
+  server            : null  # Expresso_Server
+  router            : null  # Expresso_Router
+  lang              : null  # Expresso_Lang
+  load              : null  # Expresso_Loader
+  uri               : null  # Expresso_URI
+  input             : null  # Expresso_Input
+  output            : null  # Expresso_Output
+  $_SERVER          : null  # fabricated table to mimic PHP
+  $_GET             : null  # shortcut to @input.get()
+  $_POST            : null  # shortcut to @input.post()
+  $_COOKIE          : null  # shortcut to @input.cookie()
 
   #
   # Initialize Controller objects
@@ -53,7 +76,7 @@ class global.Exspresso_Controller
     log_message 'debug', "Controller Class Initialized"
     $this = @
 
-    __defineProperties $this,
+    defineProperties $this,
       _queue      : {enumerable: false, writeable: false, value: []}
       BM          : {enumerable: true,  writeable: false, value: $BM}
       req         : {enumerable: true,  writeable: false, value: $req}
@@ -72,12 +95,12 @@ class global.Exspresso_Controller
       lang        : {enumerable: true,  writeable: false, value: Exspresso.lang}
 
     $BM.mark 'loading_time:_base_classes_start'
-    __defineProperties $this,
+    defineProperties $this,
       load        : {enumerable: true,  writeable: false, value: load_new('Loader',  'core', $this)}
       uri         : {enumerable: true,  writeable: false, value: load_new('URI',     'core', $this)}
       input       : {enumerable: true,  writeable: false, value: load_new('Input',   'core', $this)}
 
-    __defineProperties $this,
+    defineProperties $this,
       output      : {enumerable: true,  writeable: false, value: load_new('Output',  'core', $this)}
       $_SERVER    : {enumerable: true,  writeable: false, get: -> $this.input.server()}
       $_GET       : {enumerable: true,  writeable: false, get: -> $this.input.get()}
@@ -90,6 +113,22 @@ class global.Exspresso_Controller
     # From here forward, custom controllers
     # shall use the @load.method to load classes
 
+  if USE__PROTO__
+    mixin = ($controller, $data) ->
+      $data.__proto__ = $controller
+      return $data
+
+  else
+    mixin = ($controller, $data) ->
+
+      class Mixin
+        constructor: ($data) ->
+          for $key, $val of $data
+            @[$key] = $val
+      Mixin:: = $controller
+      return new Mixin($data)
+
+
   #
   # Render a view
   #
@@ -101,9 +140,7 @@ class global.Exspresso_Controller
   #
   render: ($view, $data = {}, $next) =>
 
-    # expose the controller via the prototype
-    $data.__proto__ = @
-    @res.render $view, $data, ($err, $html) =>
+    @res.render $view, mixin(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
       Exspresso.hooks._call_hook 'post_controller', @

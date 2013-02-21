@@ -39,32 +39,32 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   format          = require('util').format        # sprintf style formated string
   urldecode       = decodeURIComponent            # Decodes any %## encoding in the given string
 
-  FLASH_KEY               = 'flash'
-  FLASH_NEW               = ':new:'
-  FLASH_OLD               = ':old:'
+  FLASH_KEY               = 'flash'     # flash data key prefix
+  FLASH_NEW               = ':new:'     # flash data key new flag
+  FLASH_OLD               = ':old:'     # flash data key old flag
 
-  req                     : null
-  res                     : null
+  req                     : null        # http request object
+  res                     : null        # http response object
 
   # expose config as public properties
-  sess_driver             : 'sql'
-  sess_encrypt_cookie     : false
-  sess_use_database       : false
-  sess_table_name         : ''
-  sess_expiration         : 7200
-  sess_expire_on_close    : false
-  sess_match_ip           : false
-  sess_match_useragent    : true
-  sess_cookie_name        : 'sid'
-  cookie_prefix           : 'connect.'
-  cookie_path             : ''
-  cookie_domain           : ''
-  cookie_secure           : false
-  sess_time_to_update     : 300
-  encryption_key          : ''
-  time_reference          : 'local'
+  sess_driver             : 'sql'       # Session storage driver
+  sess_encrypt_cookie     : false       # are cookies encrypted?
+  sess_use_database       : false       # are sessions stored to database?
+  sess_table_name         : ''          # storage table name in database
+  sess_expiration         : 7200        # how long until the session expires
+  sess_expire_on_close    : false       # expire session when browser is closed?
+  sess_match_ip           : false       # match users ip to identify?
+  sess_match_useragent    : true        # match the user agent to identify?
+  sess_cookie_name        : 'sid'       # cookie name used for sessions
+  cookie_prefix           : 'connect.'  # cookie name prefix used for sessions
+  cookie_path             : ''          # path associated with cookies
+  cookie_domain           : ''          # domain associated with cookies
+  cookie_secure           : false       # using secure cookies?
+  sess_time_to_update     : 300         # interval to update database
+  encryption_key          : ''          # secure encryption key
+  time_reference          : 'local'     # time specified as 'local' or 'gmt'
 
-  _userdata               : null
+  _userdata               : null        # user data memory
 
   #
   # Session Constructor

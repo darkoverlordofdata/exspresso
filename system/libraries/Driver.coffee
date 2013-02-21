@@ -87,8 +87,6 @@ module.exports = Exspresso_Driver_Library
 #
 class global.Exspresso_Driver
 
-  __defineProperties = Object.defineProperties
-
   #
   # Decorate
   #
@@ -110,7 +108,7 @@ class global.Exspresso_Driver
               $fn.apply($parent, $args)
           else
             # forward the parent accessor
-            __defineProperties @,
+            defineProperties @,
             array($name,  get:  -> $parent[$name])
             array($name,  set: ($newval) -> $parent[$name] = $newval)
     return @

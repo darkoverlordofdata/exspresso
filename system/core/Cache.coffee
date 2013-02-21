@@ -23,14 +23,15 @@
 # @link       http://darkoverlordofdata.com
 # @since      Version 1.0
 #
-cache           = require('connect-cache')              # Caching system for Connect
 
 #  ------------------------------------------------------------------------
 
 #
 # Exspresso Cache Class
 #
-module.exports = class global.Exspresso_Cache
+class global.Exspresso_Cache
+
+  cache           = require('connect-cache')              # Caching system for Connect
 
   constructor: ->
 
@@ -93,6 +94,7 @@ module.exports = class global.Exspresso_Cache
 
 
 # END Exspresso_Cache class
+module.exports = Exspresso_Cache
 
 # End of file Cache.coffee
 # Location: ./system/core/Cache.coffee

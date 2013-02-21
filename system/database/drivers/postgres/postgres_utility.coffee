@@ -33,9 +33,6 @@
 #
 # Postgre Utility Class
 #
-# @category	Database
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/database/
 #
 class global.Exspresso_DB_postgres_utility extends Exspresso_DB_utility
   

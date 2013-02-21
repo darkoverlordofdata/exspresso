@@ -33,9 +33,6 @@
 #
 # Initialize the database
 #
-# @category  Database
-# @author    darkoverlordofdata
-# @link    http://darkoverlordofdata.com/user_guide/database/
 #
 module.exports = ($params = '', active_record_override = null) ->
   #  Load the DB config file if a DSN string wasn't passed

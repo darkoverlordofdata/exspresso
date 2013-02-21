@@ -15,15 +15,15 @@
 #
 #
 #
-express         = require('express')                    # Express 3.0 Framework
 
 #  ------------------------------------------------------------------------
 
 #
 # Exspresso Security Class
 #
-module.exports = class global.Exspresso_Security
+class global.Exspresso_Security
 
+  express         = require('express')                    # Express 3.0 Framework
   constructor: ->
 
     @_initialize()
@@ -45,6 +45,7 @@ module.exports = class global.Exspresso_Security
     return
 
 # END Exspresso_Security class
+module.exports = Exspresso_Security
 
 # End of file Security.coffee
 # Location: ./system/core/Security.coffee

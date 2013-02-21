@@ -35,8 +35,9 @@
 #
 class global.Exspresso_Input
 
-  __defineProperties  = Object.defineProperties
-  __freeze            = Object.freeze
+  _server_array     : null  # fabricated table to mimic PHP
+  req               : null  # http request object
+  res               : null  # http response object
 
   constructor: ($controller) ->
 
@@ -70,8 +71,8 @@ class global.Exspresso_Input
       PATH_INFO             : $req.path
       ORIG_PATH_INFO        : $req.path
 
-    __defineProperties @,
-      _server_array : {enumerable: false, writeable: false, value: __freeze($server_array)}
+    defineProperties @,
+      _server_array : {enumerable: false, writeable: false, value: freeze($server_array)}
       req           : {enumerable: true, writeable: false, value: $req}
       res           : {enumerable: true, writeable: false, value: $res}
 

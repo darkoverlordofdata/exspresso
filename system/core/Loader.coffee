@@ -40,43 +40,44 @@
 #
 require BASEPATH+'core/Modules.coffee'
 
-class global.Exspresso_Loader
 
-  __defineProperty    = Object.defineProperty
+class global.Exspresso_Loader
 
   path = require('path')
 
-  _module               : ''
-  _base_classes         : null
-  _ex_view_path         : ''
-  _ex_library_paths     : null
-  _ex_model_paths       : null
-  _ex_helper_paths      : null
-  _ex_cached_vars       : null
-  _ex_classes           : null
-  _ex_loaded_files      : null
-  _ex_models            : null
-  _ex_helpers           : null
-  _ex_children          : null
-  _ex_plugins           : null
-  _ex_varmap:
-                          unit_test           : 'unit'
-                          user_agent          : 'agent'
-
-  controller            : null
+  _module               : ''    # uri module
+  _view_path            : ''    # path to view modules (*.eco)
+  _library_paths        : null  # array of paths to libraries
+  _model_paths          : null  # array of paths to models
+  _helper_paths         : null  # array of paths to helpers
+  _base_classes         : null  # cache of classes loaded by Exspresso
+  _classes              : null  # cache of classes loaded by Loader
+  _cached_vars          : null  # cache of view data variables
+  _loaded_files         : null  # array list of loaded files
+  _models               : null  # array list of loaded models
+  _helpers              : null  # chache of loaded helpers
+  _plugins              : null  # chache of loaded plugins
+  _varmap               : null  # standard object aliases
 
   #
   # Initiailize the loader search paths
   #
   # @return 	nothing
   #
-  constructor: (@controller)->
+  constructor: ($controller)->
 
-    @_module = @controller.module
-    @_ex_view_path          = APPPATH + config_item('views')
-    @_ex_library_paths      = [APPPATH, BASEPATH]
-    @_ex_helper_paths       = [APPPATH, BASEPATH]
-    @_ex_model_paths        = [APPPATH]
+    defineProperties @,
+      controller      : {enumerable: true, writeable: false, value: $controller}
+
+
+    @_module          = $controller.module
+    @_view_path       = APPPATH + config_item('views')
+    @_library_paths   = [APPPATH, BASEPATH]
+    @_helper_paths    = [APPPATH, BASEPATH]
+    @_model_paths     = [APPPATH]
+    @_varmap          =
+      unit_test       : 'unit'
+      user_agent      : 'agent'
 
     log_message 'debug', "Loader Class Initialized"
 
@@ -90,21 +91,20 @@ class global.Exspresso_Loader
   #
   initialize: () ->
 
-    @_ex_classes        = {}
-    @_ex_loaded_files   = []
-    @_ex_models         = []
-    @_ex_cached_vars    = {}
-    @_ex_helpers        = {}
-    @_ex_children       = []
-    @_base_classes      = is_loaded()
+    @_loaded_files   = []
+    @_models         = []
+    @_cached_vars    = {}
+    @_classes        = {}
+    @_helpers        = {}
+    @_base_classes   = is_loaded()
 
-    @_ex_autoloader()
+    @_autoloader()
     return @
 
   #
   # Is Loaded
   #
-  # A utility function to test if a class is in the self::$_ex_classes array.
+  # A utility function to test if a class is in the self::$_classes array.
   # This function returns the object name if the class tested for is loaded,
   # and returns FALSE if it isn't.
   #
@@ -114,8 +114,8 @@ class global.Exspresso_Loader
   # @return 	mixed	class object name on the CI SuperObject or FALSE
   #
   is_loaded: ($class) ->
-    if @_ex_classes[$class]?
-      return @_ex_classes[$class]
+    if @_classes[$class]?
+      return @_classes[$class]
 
     return false
 
@@ -142,7 +142,7 @@ class global.Exspresso_Loader
 
     $class = strtolower(end(explode('/', $library)))
 
-    if @_ex_classes[$class]? and ($_alias = @_ex_classes[$class])
+    if @_classes[$class]? and ($_alias = @_classes[$class])
       return $controller[$_alias]
 
     ($_alias = strtolower($object_name)) or ($_alias = $class)
@@ -156,21 +156,22 @@ class global.Exspresso_Loader
 
     if $path is false
 
-      @_ex_load_class($library, $params, $object_name)
-      $_alias = @_ex_classes[$class]
+      @_load_class($library, $params, $object_name)
+      $_alias = @_classes[$class]
 
     else
 
       $library = Modules.load_file($_library, $path)
 
-      @_ex_classes[$class] = $_alias
+      @_classes[$class] = $_alias
 
-      __defineProperty $controller, $_alias,
+      defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : new $library($controller, $params)
+        #value       : new $library($controller, $params)
+        value       : create_mixin($controller, $library, $params)
 
-      @_ex_classes[$class] = $_alias
+      @_classes[$class] = $_alias
 
     return $controller[$_alias]
 
@@ -205,7 +206,7 @@ class global.Exspresso_Loader
 
     ($_alias = $object_name) or ($_alias = end(explode('/', $model)))
 
-    if in_array($_alias, @_ex_models, true)
+    if in_array($_alias, @_models, true)
       return $controller[$_alias]
 
     # check module
@@ -226,12 +227,13 @@ class global.Exspresso_Loader
 
       $Model = Modules.load_file($_model, $path)
 
-      __defineProperty $controller, $_alias,
+      defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : new $Model($controller)
+        #value       : new $Model($controller)
+        value       : create_mixin($controller, $Model)
 
-      @_ex_models.push $_alias
+      @_models.push $_alias
 
     return $controller[$_alias]
 
@@ -280,14 +282,14 @@ class global.Exspresso_Loader
 
     if $name is '' then $name = $model
 
-    if in_array($name, @_ex_models, true)
+    if in_array($name, @_models, true)
       return
 
     if @controller[$name]?
       show_error 'The model name you are loading is the name of a resource that is already being used: %s', $name
 
 
-    for $mod_path in @_ex_model_paths
+    for $mod_path in @_model_paths
       if not file_exists($mod_path+'models/'+$path+$model+EXT)
         continue
 
@@ -300,11 +302,12 @@ class global.Exspresso_Loader
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
 
-      __defineProperty @controller, $name
+      defineProperty @controller, $name
         enumerable  : true
         writeable   : false
-        value       : new $Model(@controller)
-      @_ex_models.push $name
+        #value       : new $Model($controller)
+        value       : create_mixin($controller, $Model)
+      @_models.push $name
       return
 
     # couldn't find the model
@@ -335,7 +338,7 @@ class global.Exspresso_Loader
     if $return is true then return DB #($params, $active_record)
 
     # Load the DB class
-    __defineProperty @controller, 'db'
+    defineProperty @controller, 'db'
       enumerable  : true
       writeable   : false
       value       : DB
@@ -361,7 +364,7 @@ class global.Exspresso_Loader
     # ex: Exspresso_DB_sqlite_utility
 
     if $return is true then return new $class(@controller, $db)
-    __defineProperty @controller, 'dbutil'
+    defineProperty @controller, 'dbutil'
       enumerable  : true
       writeable   : false
       value       : new $class(@controller, $db)
@@ -385,7 +388,7 @@ class global.Exspresso_Loader
     $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + $db.dbdriver + '_forge' + EXT)
 
     if $return is true then return new $class(@controller, $db)
-    __defineProperty @controller, 'dbforge'
+    defineProperty @controller, 'dbforge'
       enumerable  : true
       writeable   : false
       value       : new $class(@controller, $db)
@@ -433,9 +436,9 @@ class global.Exspresso_Loader
 
     if (is_array($plugin)) then return @plugins($plugin)
 
-    if not @_ex_plugins? then @_ex_plugins = {}
+    if not @_plugins? then @_plugins = {}
 
-    if @_ex_plugins[$plugin]?
+    if @_plugins[$plugin]?
       return
 
     [$path, $_plugin] = Modules.find($plugin+'_pi', @_module, 'plugins/')
@@ -443,7 +446,7 @@ class global.Exspresso_Loader
     if ($path is false) then return
 
     Modules.load_file($_plugin, $path)
-    @_ex_plugins[$plugin] = true
+    @_plugins[$plugin] = true
 
   #
   # Load an array of plugins
@@ -476,8 +479,8 @@ class global.Exspresso_Loader
   #
   view: ($view, $vars = {}, $next = null) ->
     [$path, $view] = Modules.find($view, @controller.module, 'views/')
-    @_ex_view_path = if $path then $path else APPPATH + config_item('views')
-    @_ex_load('', $view, $vars, $next)
+    @_view_path = if $path then $path else APPPATH + config_item('views')
+    @_load('', $view, $vars, $next)
 
   #
   # Set Variables
@@ -495,7 +498,7 @@ class global.Exspresso_Loader
 
     if is_array($vars) and count($vars) > 0
       for $key, $val of $vars
-        @_ex_cached_vars[$key] = $val
+        @_cached_vars[$key] = $val
     return
 
 
@@ -510,7 +513,7 @@ class global.Exspresso_Loader
   # @return	string
   #
   file: ($path, $next) ->
-    @_ex_load($path, '', {}, $next)
+    @_load($path, '', {}, $next)
 
   #
   # Load a module helper
@@ -525,16 +528,16 @@ class global.Exspresso_Loader
 
     if is_array($helper) then return @helpers($helper)
 
-    if @_ex_helpers[$helper]? then return
+    if @_helpers[$helper]? then return
 
     [$path, $_helper] = Modules.find($helper+'_helper', @_module, 'helpers/')
 
     if $path is false then return @_application_helper($helper)
 
-    @_ex_helpers[$_helper] = Modules.load_file($_helper, $path)
+    @_helpers[$_helper] = Modules.load_file($_helper, $path)
 
     # expose the helpers to template engine
-    Exspresso.server.set_helpers @_ex_helpers[$helper]
+    Exspresso.server.set_helpers @_helpers[$helper]
 
   #
   # Load an array of helpers
@@ -559,8 +562,8 @@ class global.Exspresso_Loader
   #
   _application_helper: ($helpers = []) ->
 
-    for $helper in @_ex_prep_filename($helpers, '_helper')
-      if @_ex_helpers[$helper]?
+    for $helper in @_prep_filename($helpers, '_helper')
+      if @_helpers[$helper]?
         continue
 
       $ext_helper = APPPATH+'helpers/'+config_item('subclass_prefix')+$helper+EXT
@@ -572,23 +575,23 @@ class global.Exspresso_Loader
         if not file_exists($base_helper)
           show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
-        @_ex_helpers[$helper] = array_merge(require($base_helper), require($ext_helper))
+        @_helpers[$helper] = array_merge(require($base_helper), require($ext_helper))
         log_message 'debug', 'Helper loaded: '+$helper
         continue
 
       # Try to load the helper
-      for $path in @_ex_helper_paths
+      for $path in @_helper_paths
         if file_exists($path+'helpers/'+$helper+EXT)
-          @_ex_helpers[$helper] = require($path+'helpers/'+$helper+EXT)
+          @_helpers[$helper] = require($path+'helpers/'+$helper+EXT)
           log_message 'debug', 'Helper loaded: '+$helper
           break
 
     # unable to load the helper
-    if not @_ex_helpers[$helper]
+    if not @_helpers[$helper]
       show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
     # expose the helpers to template engine
-    Exspresso.server.set_helpers @_ex_helpers[$helper]
+    Exspresso.server.set_helpers @_helpers[$helper]
 
   #
   # Load a module language file
@@ -663,12 +666,12 @@ class global.Exspresso_Loader
 
     $path = rtrim($path, '/')+'/'
 
-    array_unshift(@_ex_library_paths, $path)
-    array_unshift(@_ex_model_paths, $path)
-    array_unshift(@_ex_helper_paths, $path)
+    array_unshift(@_library_paths, $path)
+    array_unshift(@_model_paths, $path)
+    array_unshift(@_helper_paths, $path)
 
     #  Add config file path
-    $config = @_ex_get_component('config')
+    $config = @_get_component('config')
     array_unshift($config._config_paths, $path)
     return
 
@@ -683,8 +686,8 @@ class global.Exspresso_Loader
   # @param	string
   # @return	void
   #
-  get_package_paths : ($include_base = false) ->
-    return if $include_base is true then @_ex_library_paths else @_ex_model_paths
+  get_package_paths: ($include_base = false) ->
+    return if $include_base is true then @_library_paths else @_model_paths
 
 
   #
@@ -697,19 +700,19 @@ class global.Exspresso_Loader
   # @param	type
   # @return	type
   #
-  remove_package_path : ($path = '', $remove_config_path = true) ->
-    $config = @_ex_get_component('config')
+  remove_package_path: ($path = '', $remove_config_path = true) ->
+    $config = @_get_component('config')
 
     if $path is ''
-      $void = array_shift(@_ex_library_paths)
-      $void = array_shift(@_ex_model_paths)
-      $void = array_shift(@_ex_helper_paths)
+      $void = array_shift(@_library_paths)
+      $void = array_shift(@_model_paths)
+      $void = array_shift(@_helper_paths)
       $void = array_shift($config._config_paths)
 
     else
       $path = rtrim($path, '/') + '/'
 
-      for $var in ['_ex_library_paths', '_ex_model_paths', '_ex_helper_paths']
+      for $var in ['_library_paths', '_model_paths', '_helper_paths']
         if ($key = array_search($path, @[$var])) isnt false
           delete @[$var][$key]
 
@@ -717,9 +720,9 @@ class global.Exspresso_Loader
         delete $config._config_paths[$key]
 
     #  make sure the application default paths are still in the array
-    @_ex_library_paths = array_unique(array_merge(@_ex_library_paths, [APPPATH, BASEPATH]))
-    @_ex_helper_paths = array_unique(array_merge(@_ex_helper_paths, [APPPATH, BASEPATH]))
-    @_ex_model_paths = array_unique(array_merge(@_ex_model_paths, [APPPATH]))
+    @_library_paths = array_unique(array_merge(@_library_paths, [APPPATH, BASEPATH]))
+    @_helper_paths = array_unique(array_merge(@_helper_paths, [APPPATH, BASEPATH]))
+    @_model_paths = array_unique(array_merge(@_model_paths, [APPPATH]))
     $config._config_paths = array_unique(array_merge($config._config_paths, [APPPATH]))
     return
 
@@ -729,28 +732,28 @@ class global.Exspresso_Loader
   # Loader
   #
   # This function is used to load views and files.
-  # Variables are prefixed with _ex_ to avoid symbol collision with
+  # Variables are prefixed with _ to avoid symbol collision with
   # variables made available to view files
   #
   # @access	private
   # @param	array
   # @return	void
   #
-  _ex_load : ($_ex_path = '', $_ex_view = '', $_ex_vars = {}, $_ex_return = null) ->
+  _load: ($_path = '', $_view = '', $_vars = {}, $_return = null) ->
 
     #  Set the path to the requested file
-    if $_ex_path is ''
-      $_ex_ext = path.extname($_ex_view)
-      $_ex_file = if ($_ex_ext is '') then $_ex_view + config_item('view_ext') else $_ex_view
-      $_ex_path = rtrim(@_ex_view_path, '/') + '/' + $_ex_file
+    if $_path is ''
+      $_ext = path.extname($_view)
+      $_file = if ($_ext is '') then $_view + config_item('view_ext') else $_view
+      $_path = rtrim(@_view_path, '/') + '/' + $_file
 
     else
-      $_ex_x = explode('/', $_ex_path)
-      $_ex_file = end($_ex_x)
+      $_x = explode('/', $_path)
+      $_file = end($_x)
 
 
-    if not file_exists($_ex_path)
-      show_error('Unable to load the requested file: %s', $_ex_file)
+    if not file_exists($_path)
+      show_error('Unable to load the requested file: %s', $_file)
 
     #
     # Extract and cache variables
@@ -760,15 +763,15 @@ class global.Exspresso_Loader
     # the two types and cache them so that views that are embedded within
     # other views can have access to these variables.
     #
-    if is_array($_ex_vars)
-      @_ex_cached_vars = array_merge(@_ex_cached_vars, $_ex_vars)
+    if is_array($_vars)
+      @_cached_vars = array_merge(@_cached_vars, $_vars)
 
 
-    @controller.render $_ex_path, @_ex_cached_vars, ($err, $html) =>
+    @controller.render $_path, @_cached_vars, ($err, $html) =>
 
-      log_message('debug', 'File loaded: ' + $_ex_path)
-      if $_ex_return isnt null
-        $_ex_return $err, $html
+      log_message('debug', 'File loaded: ' + $_path)
+      if $_return isnt null
+        $_return $err, $html
       else
         @controller.output.append_output $html
         #
@@ -795,7 +798,7 @@ class global.Exspresso_Loader
   # @param	string	an optional object name
   # @return	void
   #
-  _ex_load_class : ($class, $params = null, $object_name = null) ->
+  _load_class : ($class, $params = null, $object_name = null) ->
     #  Get the class name, and while we're at it trim any slashes.
     #  The directory path can be included as part of the class name,
     #  but we don't want a leading slash
@@ -826,13 +829,13 @@ class global.Exspresso_Loader
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if in_array($subclass, @_ex_loaded_files)
+        if in_array($subclass, @_loaded_files)
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
             if not @controller[$object_name]?
-              return @_ex_init_class($class, config_item('subclass_prefix'), $params, $object_name)
+              return @_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
           $is_duplicate = true
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
@@ -840,14 +843,14 @@ class global.Exspresso_Loader
 
         require($baseclass)
         require($subclass)
-        @_ex_loaded_files.push $subclass
+        @_loaded_files.push $subclass
 
-        return @_ex_init_class($class, config_item('subclass_prefix'), $params, $object_name)
+        return @_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
 
       #  Lets search for the requested library file and load it.
       $is_duplicate = false
-      for $path in @_ex_library_paths
+      for $path in @_library_paths
         $filepath = $path + 'libraries/' + $subdir + $class + EXT
 
         #  Does the file exist?  No?  Bummer...
@@ -856,21 +859,21 @@ class global.Exspresso_Loader
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if in_array($filepath, @_ex_loaded_files)
+        if in_array($filepath, @_loaded_files)
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
           if not is_null($object_name)
             if not @controller[$object_name]?
-              return @_ex_init_class($class, '', $params, $object_name)
+              return @_init_class($class, '', $params, $object_name)
 
           $is_duplicate = true
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
 
         require($filepath)
-        @_ex_loaded_files.push $filepath
-        return @_ex_init_class($class, '', $params, $object_name)
+        @_loaded_files.push $filepath
+        return @_init_class($class, '', $params, $object_name)
 
 
     #  END FOREACH
@@ -878,7 +881,7 @@ class global.Exspresso_Loader
     #  One last attempt.  Maybe the library is in a subdirectory, but it wasn't specified?
     if $subdir is ''
       $path = strtolower($class) + '/' + $class
-      return @_ex_load_class($path, $params)
+      return @_load_class($path, $params)
 
 
     #  If we got this far we were unable to find the requested class.
@@ -899,13 +902,13 @@ class global.Exspresso_Loader
   # @param	string	an optional object name
   # @return	null
   #
-  _ex_init_class : ($class, $prefix = '', $config = false, $object_name = null) ->
+  _init_class : ($class, $prefix = '', $config = false, $object_name = null) ->
 
     #  Is there an associated config file for this class?  Note: these should always be lowercase
     if $config is false
       $config = {}
     #  Fetch the config paths containing any package paths
-    $config_component = @_ex_get_component('config')
+    $config_component = @_get_component('config')
     if Array.isArray($config_component._config_paths)
       #  Break on the first found file, thus package files
       #  are not overridden by default paths
@@ -951,7 +954,7 @@ class global.Exspresso_Loader
     $class = $class.toLowerCase()
 
     if $object_name is null
-      $classvar = if ( not @_ex_varmap[$class]? ) then $class else @_ex_varmap[$class]
+      $classvar = if ( not @_varmap[$class]? ) then $class else @_varmap[$class]
 
     else
       $classvar = $object_name
@@ -959,13 +962,14 @@ class global.Exspresso_Loader
 
     $controller = @controller
     #  Save the class name and object name
-    @_ex_classes[$class] = $classvar
+    @_classes[$class] = $classvar
     #  Instantiate the class
 
-    __defineProperty $controller, $classvar,
+    defineProperty $controller, $classvar,
       enumerable  : true
       writeable   : false
-      value       : new global[$name]($controller, $config)
+      #value       : new global[$name]($controller, $config)
+      value       : create_mixin($controller, $name, $config)
 
     $controller[$classvar]
 
@@ -980,7 +984,7 @@ class global.Exspresso_Loader
   # @param	array
   # @return	void
   #
-  _ex_autoloader:  ->
+  _autoloader:  ->
 
     @_application_autoloader() # application autoload first
     $path = false
@@ -1112,7 +1116,7 @@ class global.Exspresso_Loader
   # @param	object
   # @return	array
   #
-  _ex_object_to_array : ($object) ->
+  _object_to_array : ($object) ->
     $object
 
 
@@ -1122,7 +1126,7 @@ class global.Exspresso_Loader
   # @access	private
   # @return	bool
   #
-  _ex_get_component : ($component) ->
+  _get_component : ($component) ->
     @controller[$component]
 
 
@@ -1137,7 +1141,7 @@ class global.Exspresso_Loader
   # @param	mixed
   # @return	array
   #
-  _ex_prep_filename : ($filename, $extension) ->
+  _prep_filename : ($filename, $extension) ->
 
     if not is_array($filename)
       return [($filename.replace($extension, '').replace(EXT, '') + $extension).toLowerCase()]

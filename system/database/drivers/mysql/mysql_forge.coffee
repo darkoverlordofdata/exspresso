@@ -33,9 +33,6 @@
 #
 # MySQL Forge Class
 #
-# @category	Database
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/database/
 #
 class global.Exspresso_DB_mysql_forge extends Exspresso_DB_forge
   

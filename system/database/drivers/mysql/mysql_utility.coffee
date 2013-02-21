@@ -33,9 +33,6 @@
 #
 # MySQL Utility Class
 #
-# @category	Database
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/database/
 #
 class global.Exspresso_DB_mysql_utility extends Exspresso_DB_utility
   

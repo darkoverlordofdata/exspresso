@@ -31,9 +31,17 @@
 
 class global.User extends Exspresso_Object
 
-  bcrypt              = require('bcrypt')     # A bcrypt library for NodeJS
-  __defineProperties  = Object.defineProperties
-  __freeze            = Object.freeze
+  bcrypt            = require('bcrypt')     # A bcrypt library for NodeJS
+
+  is_anonymous      : null  # returns true for anonymous user
+  is_logged_in      : null  # returns true for authenticated user
+  uid               : null  # returns current user database id
+  name              : null  # returns current user name
+  email             : null  # returns current user email
+  created_on        : null  # returns date the current user was created
+  last_login        : null  # returns last login date for current user
+  active            : null  # returns true if the current user is not blocked
+  roles             : null  # returns an array of the current users roles
 
   #
   # Load the user model
@@ -54,10 +62,10 @@ class global.User extends Exspresso_Object
 
         $roles = []
         for $row in $user.roles
-          $roles.push __freeze(array_merge($row, {}))
+          $roles.push freeze(array_merge($row, {}))
 
         return $next($err) if $err
-        __defineProperties @,
+        defineProperties @,
           is_anonymous  : {enumerable: true,   get: -> $user.uid is User_model.UID_ANONYMOUS}
           is_logged_in  : {enumerable: true,   get: -> $user.uid isnt User_model.UID_ANONYMOUS}
           uid           : {enumerable: true,   get: -> $user.uid}
@@ -66,7 +74,7 @@ class global.User extends Exspresso_Object
           created_on    : {enumerable: true,   get: -> $user.created_on}
           last_login    : {enumerable: true,   get: -> $user.last_login}
           active        : {enumerable: true,   get: -> $user.active}
-          roles         : {enumerable: true,   get: -> __freeze($roles)}
+          roles         : {enumerable: true,   get: -> freeze($roles)}
         $next()
 
   #

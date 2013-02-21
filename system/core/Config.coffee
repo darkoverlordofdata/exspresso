@@ -43,11 +43,9 @@ require BASEPATH+'core/Modules.coffee'
 
 class global.Exspresso_Config
 
-  __defineProperties  = Object.defineProperties
-
-  _is_loaded      : null
-  _config_paths   : null
-  config          : null
+  _is_loaded        : null  # array list of loaded config files
+  _config_paths     : null  # array list of paths to load config files at
+  config            : null  # cache of loaded config values
 
   #
   # Constructor
@@ -63,7 +61,7 @@ class global.Exspresso_Config
   constructor :  ->
     $this = @
 
-    __defineProperties $this,
+    defineProperties $this,
       _is_loaded    : {enumerable: false, writeable: false, value: []}
       _config_paths : {enumerable: false, writeable: false, value: [APPPATH]}
       config        : {enumerable: true,  writeable: false, value: get_config()}

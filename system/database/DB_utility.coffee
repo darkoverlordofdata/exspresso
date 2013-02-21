@@ -33,14 +33,11 @@
 #
 # Database Utility Class
 #
-# @category	Database
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/database/
 #
 class global.Exspresso_DB_utility extends Exspresso_DB_forge
   
-  db: null
-  data_cache: {}
+  db            : null
+  data_cache    : {}
   
   #
   # Constructor

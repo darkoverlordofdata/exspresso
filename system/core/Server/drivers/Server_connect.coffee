@@ -40,9 +40,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
   sign            = require('cookie-signature')   # Sign and unsign cookies
   parseUrl        = connect.utils.parseUrl        # Parse the `req` url with memoization.
 
-  __defineProperties = Object.defineProperties
-
-
   _driver         : 'connect'
 
   #
@@ -173,7 +170,7 @@ class global.Exspresso_Server_connect extends Exspresso_Server
     # Set expected request object properties
     #
 
-    __defineProperties $req,
+    defineProperties $req,
       protocol:   get: -> if $req.connection.encrypted then 'https' else 'http'
       secure:     get: -> if $req.protocol is 'https' then true else false
       path:       value: parseUrl($req).pathname

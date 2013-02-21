@@ -39,15 +39,20 @@
 #
 class global.Exspresso_DB_result
   
-  conn_id: null
-  result_id: null
-  _result_array: []
-  _result_object: []
-  _custom_result_object: []
-  _current_row: 0
-  _num_rows: 0
-  _row_data: null
-  
+  conn_id                 : null
+  result_id               : null
+  _result_array           : null
+  _result_object          : null
+  _custom_result_object   : null
+  _current_row            : 0
+  _num_rows               : 0
+  _row_data               : null
+
+  constructor: ->
+
+    @_result_array           = []
+    @_result_object          = []
+    @_custom_result_object   = []
 
 
   #

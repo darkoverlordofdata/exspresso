@@ -40,8 +40,8 @@ require BASEPATH+'core/Modules.coffee'
 
 class global.Exspresso_Lang
 
-  _language     : null
-  _is_loaded    : null
+  _language         : null  # cache of loaded l10n strings
+  _is_loaded        : null  # list of loaded l10n files
 
   #
   # Constructor

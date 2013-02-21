@@ -30,11 +30,6 @@
 
 Exspresso_DB_driver   = require(BASEPATH + 'database/DB_driver') # Exspresso DB driver Base Class
 
-array = ($field, $match) ->
-  $array = {}
-  $array[$field] = $match
-  return $array
-
 #  ------------------------------------------------------------------------
 
 #

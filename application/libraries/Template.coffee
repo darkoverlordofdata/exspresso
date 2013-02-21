@@ -33,8 +33,6 @@
 
 class global.Template extends Exspresso_Object
 
-  __keys              = Object.keys
-
   html                : null
   theme               : null
 
@@ -342,7 +340,7 @@ class global.Template extends Exspresso_Object
   #
   html_menu: ($items, $active) ->
 
-    $k = __keys($items)[0]
+    $k = keys($items)[0]
     $active = '/'+$active
 
     $menu = "<ul class=\"nav nav-#{$k}\">\n"

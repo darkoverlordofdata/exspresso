@@ -33,16 +33,16 @@
 #
 module.exports = class global.Exspresso_Output extends Exspresso_Object
 
-  fs = require('fs')
+  fs = require('fs')  # file system
 
   _parse_exec_vars    : true  # parse profiler vars {elapsed_time} and {memory_usage}
   _enable_profiler    : false # create profiler outout?
   _zlib_oc            : false # output compression?
-  _final_output       : ''    # resultant html output
-  _cache_expiration   : 0     # cache flag
   _headers            : null  # array of http headers
   _mime_types         : null  # array of valid mime types
   _profiler_sections  : null  # array of profiler sections to process
+  _final_output       : ''    # resultant html output
+  _cache_expiration   : 0     # cache flag
 
   constructor: ($controller) ->
 
@@ -212,7 +212,7 @@ module.exports = class global.Exspresso_Output extends Exspresso_Object
   #
   # All "view" data is automatically put into this variable by the controller class:
   #
-  # $this->final_output
+  # @final_output
   #
   # This function sends the finalized output data to the browser along
   # with any server headers and profile data.  It also stops the
