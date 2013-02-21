@@ -46,6 +46,7 @@ _error            = null  # error display object
 # Metaprogramming
 #
 #
+create                            = Object.create
 exports.defineProperties          = Object.defineProperties
 exports.defineProperty            = Object.defineProperty
 exports.freeze                    = Object.freeze
@@ -102,40 +103,33 @@ exports.mixin_class = ($controller, $class, $config) ->
   # dereference the class name
   if typeof $class is 'string' then $class = global[$class]
 
-  # class Mixin
-  Mixin = ->
+  $chain = []
+  $props = {}
+  $proto = $class::
 
-    $chain = []
-    $proto = $class::
+  # Build an inheritance chain
+  while $proto isnt Object::
+    $chain.push $proto
+    $proto = getPrototypeOf($proto)
 
-    # Build an inheritance chain
-    while $proto isnt Object::
-      $chain.push $proto
-      $proto = getPrototypeOf($proto)
+  # Get inherited properties
+  # Reverse the order so that overrides occur in order
+  for $proto in $chain.reverse()
+    if $proto isnt Object::
+      for $key in getOwnPropertyNames($proto)
+        $props[$key] = getOwnPropertyDescriptor($proto, $key)
 
-    # Copy properties from super objects, processing
-    # in reverse order, base class to most specific
-    # so that overrides are taken into account
-    for $proto in $chain.reverse()
-      if $proto isnt Object::
-        copyOwnProperties @, $proto
+  # Create an object using the controller as the prototype
+  $mixin = create($controller, $props)
+  # Invoke the constructor in 'this' context
+  $class.call $mixin, $controller, $config
+  $mixin
 
-    # Invoke the constructor in 'this' context
-    $class.call @, $controller, $config
-    return
-
-  # set the prototype to the main controller instance
-  Mixin:: = $controller
-  new Mixin
 
 #
 # Create View Mixin
 #
 # Creates a controller mixin object with view data
-#
-#   Equivalent to:
-#
-#     $data.__proto__ = $controller
 #
 #
 # @param	object	an Exspresso_Controller object
@@ -144,13 +138,13 @@ exports.mixin_class = ($controller, $class, $config) ->
 #
 exports.mixin_view = ($controller, $data) ->
 
-  class Mixin
-    constructor: ($data) ->
-      for $key, $val of $data
-        @[$key] = $val
-  Mixin:: = $controller
-  return new Mixin($data)
+  # Get the data properties
+  $props = {}
+  for $key in getOwnPropertyNames($data)
+    $props[$key] = getOwnPropertyDescriptor($data, $key)
 
+  # Create an object using the controller as the prototype
+  create($controller, $props)
 
 #
 # Exspresso Object Creation
