@@ -46,7 +46,6 @@ _error            = null  # error display object
 # Metaprogramming
 #
 #
-exports.USE__PROTO__              = false # true to use __proto__, false to use getPrototypeOf
 exports.defineProperties          = Object.defineProperties
 exports.defineProperty            = Object.defineProperty
 exports.freeze                    = Object.freeze
@@ -54,6 +53,20 @@ exports.getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
 exports.getOwnPropertyNames       = Object.getOwnPropertyNames
 exports.getPrototypeOf            = Object.getPrototypeOf
 exports.keys                      = Object.keys
+#
+# Define Getter/Setter
+#
+# @access	public
+# @param	object	property definition
+# @return	object
+#
+Function::getter = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {get: $def[$name]}
+
+Function::setter = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {set: $def[$name]}
 
 #
 # Copy Own Properties
@@ -74,65 +87,69 @@ exports.copyOwnProperties = ($dst, $src) ->
   defineProperties $dst, $properties
 
 #
-# Create Mixin
+# Create Class Mixin
 #
-# Creates a controller mixin object
+# Creates a controller mixin object with an
+# Exspresso_ class
+#
 #
 # @param	object	an Exspresso_Controller object
 # @param	mixed   class name or object
 # @param	object	(optional) config data
 # @return	object
 #
-exports.create_mixin = ($controller, $class, $config) ->
+exports.mixin_class = ($controller, $class, $config) ->
   # dereference the class name
   if typeof $class is 'string' then $class = global[$class]
 
-  if USE__PROTO__
-    new $class($controller, $config) # handled in Exspresso_Object
+  # class Mixin
+  Mixin = ->
 
-  else
-    mixin = -> # the mixin constructor
+    $chain = []
+    $proto = $class::
 
-      $chain = []
-      $proto = $class::
+    # Build an inheritance chain
+    while $proto isnt Object::
+      $chain.push $proto
+      $proto = getPrototypeOf($proto)
 
-      # Build an inheritance chain
-      while $proto isnt Object::
-        $chain.push $proto
-        $proto = getPrototypeOf($proto)
+    # Copy properties from super objects, processing
+    # in reverse order, base class to most specific
+    # so that overrides are taken into account
+    for $proto in $chain.reverse()
+      if $proto isnt Object::
+        copyOwnProperties @, $proto
 
-      # Copy properties from super objects, processing
-      # in reverse order, base class to most specific
-      # so that overrides are taken into account
-      for $proto in $chain.reverse()
-        if $proto isnt Object::
-          copyOwnProperties @, $proto
+    # Invoke the constructor in 'this' context
+    $class.call @, $controller, $config
+    return
 
-      # Invoke the constructor in 'this' context
-      $class.call @, $controller, $config
-      return
-
-    # set the prototype to the main controller instance
-    mixin:: = $controller
-    new mixin
-
+  # set the prototype to the main controller instance
+  Mixin:: = $controller
+  new Mixin
 
 #
-# Define Getter/Setter
+# Create View Mixin
 #
-# @access	public
-# @param	object	property definition
+# Creates a controller mixin object with view data
+#
+#   Equivalent to:
+#
+#     $data.__proto__ = $controller
+#
+#
+# @param	object	an Exspresso_Controller object
+# @param	object	data
 # @return	object
 #
-Function::getter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {get: $def[$name]}
+exports.mixin_view = ($controller, $data) ->
 
-Function::setter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {set: $def[$name]}
-
-
+  class Mixin
+    constructor: ($data) ->
+      for $key, $val of $data
+        @[$key] = $val
+  Mixin:: = $controller
+  return new Mixin($data)
 
 
 #
@@ -154,7 +171,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
   #  Does the class exist?  If so, we're done...
   if class_exists($prefix+$class)
     #return new (global[$prefix+$class])($controller)
-    return create_mixin($controller, $prefix+$class)
+    return mixin_class($controller, $prefix+$class)
 
   $name = false
 
@@ -181,7 +198,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
     die 'Unable to locate the specified class: ' + $class + EXT
 
   #return new (global[$name])($controller)
-  create_mixin($controller, $name)
+  mixin_class($controller, $name)
 
 
 #

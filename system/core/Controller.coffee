@@ -113,22 +113,6 @@ class global.Exspresso_Controller
     # From here forward, custom controllers
     # shall use the @load.method to load classes
 
-  if USE__PROTO__
-    mixin = ($controller, $data) ->
-      $data.__proto__ = $controller
-      return $data
-
-  else
-    mixin = ($controller, $data) ->
-
-      class Mixin
-        constructor: ($data) ->
-          for $key, $val of $data
-            @[$key] = $val
-      Mixin:: = $controller
-      return new Mixin($data)
-
-
   #
   # Render a view
   #
@@ -140,7 +124,7 @@ class global.Exspresso_Controller
   #
   render: ($view, $data = {}, $next) =>
 
-    @res.render $view, mixin(@, $data), ($err, $html) =>
+    @res.render $view, mixin_view(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
       Exspresso.hooks._call_hook 'post_controller', @

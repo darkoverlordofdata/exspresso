@@ -38,8 +38,6 @@
 
 class global.Exspresso_Object
 
-  __SELF__ = @  # reference to this class
-
   #
   # Exspresso Constructor
   #
@@ -60,22 +58,6 @@ class global.Exspresso_Object
       #
       copyOwnProperties @, $controller
       return $config
-
-
-    if USE__PROTO__
-      # Copy the prototype properties to 'this' context, so we
-      # don't lose them when we reset the prototype
-      copyOwnProperties @, @__proto__
-
-      # Staring at 'this' object, follow the
-      # prototype chain to 'this' class
-      $proto = @__proto__
-      until $proto is __SELF__::
-        $proto = $proto.__proto__
-
-      # set the prototype to the main controller instance
-      $proto.__proto__ = $controller
-
     #
     # Initialize the config preferences
     for $key, $val of $config
