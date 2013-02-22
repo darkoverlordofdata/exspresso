@@ -34,6 +34,13 @@
 # Common Functions
 #
 format            = require('util').format
+path              = require('path')
+fs                = require('fs')
+
+fopen             = fs.openSync
+fclose            = fs.closeSync
+unlink            = fs.unlinkSync
+chmod             = fs.chmodSync
 
 _config           = []    # [0] is reference to config array
 _config_item      = {}    # config item cache
@@ -41,6 +48,41 @@ _classes          = {}    # class cache
 _is_loaded        = {}    # class loaded flag
 _log              = null  # loging object
 _error            = null  # error display object
+
+#  ------------------------------------------------------------------------
+
+#
+# Tests for file writability
+#
+# is_writable() returns TRUE on Windows servers when you really can't write to
+# the file, based on the read-only attribute.  is_writable() is also unreliable
+# on Unix servers if safe_mode is on.
+#
+# @access	private
+# @return	void
+#
+exports.is_really_writable = is_really_writable = ($file) ->
+
+
+  #  We'll actually write a file then read it.  Bah...
+  if is_dir($file)
+    $file = rtrim($file, '/') + '/' + md5(mt_rand(1, 100) + mt_rand(1, 100))
+
+    if ($fp = fopen($file, FOPEN_WRITE_CREATE)) is false
+      return false
+
+    fclose($fp)
+    chmod($file, DIR_WRITE_MODE)
+    unlink($file)
+    return true
+
+  else if not is_file($file) or ($fp = fopen($file, FOPEN_WRITE_CREATE)) is false
+    return false
+
+  fclose($fp)
+  return true
+
+
 
 #
 # Exspresso Object Creation

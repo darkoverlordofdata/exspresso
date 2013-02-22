@@ -31,16 +31,12 @@
 #
 #   Metaprogramming utils
 #
+# publicly dereference some Object utility members
+exports.defineProperties  = Object.defineProperties
+exports.defineProperty    = Object.defineProperty
+exports.freeze            = Object.freeze
+exports.keys              = Object.keys
 
-_class = {}    # metadata cache
-
-#
-# privately dereference some Object utility members
-create                            = Object.create
-getPrototypeOf                    = Object.getPrototypeOf
-getOwnPropertyDescriptor          = Object.getOwnPropertyDescriptor
-getOwnPropertyNames               = Object.getOwnPropertyNames
-prototype                         = Object.prototype
 #
 # Copy Own Properties
 #
@@ -60,11 +56,6 @@ exports.copyOwnProperties = ($dst, $src) ->
   defineProperties $dst, $properties
 
 #
-# publicly dereference some Object utility members
-exports.defineProperties          = Object.defineProperties
-exports.defineProperty            = Object.defineProperty
-exports.freeze                    = Object.freeze
-exports.keys                      = Object.keys
 
 #
 # Define Getter
@@ -87,6 +78,20 @@ Function::getter = ($def) ->
 Function::setter = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {set: $def[$name]}
+
+
+__PROTO__                 = true      # if true, set using the '__proto__' property
+_class                    = {}        # metadata cache
+# privately dereference some Object utility members
+create                    = Object.create
+defineProperties          = Object.defineProperties
+defineProperty            = Object.defineProperty
+freeze                    = Object.freeze
+getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
+getOwnPropertyNames       = Object.getOwnPropertyNames
+getPrototypeOf            = Object.getPrototypeOf
+keys                      = Object.keys
+prototype                 = Object.prototype
 
 #
 # Define Class Metadata
@@ -148,48 +153,65 @@ exports.create_mixin = ($object, $args...) ->
 
   # get the mixin class(es)
   while 'function' is typeof ($mixin = $args[$pos])
-    # the 1st mixin will also be a constructor
+    # the 1st mixin class will also be the constructor
     $class = $mixin if $pos is 0
     $pos++
     for $key, $val of defineClass($mixin)
       $properties[$key] = $val
 
   # no class was encountered
-  if $class?
-    # clone the object with all properties
-    $this = create($object, $properties)
-    # call the constructor
-    $class.apply $this, $args[$pos..]
-    $this
-
-  else switch $args.length
+  if not $class? then switch $args.length
     when 0
       # simple case -
-      #   just clone the object
-      create($object)
+      return create($object)
 
     when 1
       # optimized case -
-      #   merge object with object
-      $args[0].__proto__ = $object
-      create($args[0])
-      
-    else
-      # optimized case -
-      #   merge object with object
-      for $i in [1...$args.length]
-        $args[$i-1] = $args[$i].__proto__
-      $args[$args.length-1].__proto__ = $object
-      create($args[0])
+      if __PROTO__
+        # array inherits from the object
+        $args[0].__proto__ = $object
+        return create($args[0])
 
+      else
+        for $key in getOwnPropertyNames($args[0])
+          $properties[$key] = getOwnPropertyDescriptor($args[0], $key)
+
+    else
+      # multiple arrays -
+      if __PROTO__
+        # each array inherits from the next
+        for $i in [0...$args.length]
+          $args[$i].__proto__ = $args[$i+1]
+        # last array inherits from the object
+        $args[$args.length-1].__proto__ = $object
+        return create($args[0])
+
+      else
+        for $data in $args
+          for $key in getOwnPropertyNames($data)
+            $properties[$key] = getOwnPropertyDescriptor($data, $key)
+
+  # clone the object with all properties
+  $this = create($object, $properties)
+  # call the constructor
+  $class.apply $this, $args[$pos..] if $class?
+  $this
 
 
 #  ------------------------------------------------------------------------
 #
-# Export module to the global namespace
+# Export the module
 #
 #
-for $name, $body of module.exports
-  define $name, $body
+exports.export = ($scope = global) ->
+
+  for $name, $body of module.exports
+    if $name isnt 'export'
+      Object.defineProperty $scope, $name,
+        'value':			$body
+        'enumerable': true
+        'writable':		false
+
+
 # End of file Meta.coffee
 # Location: .system/core/Meta.coffee
