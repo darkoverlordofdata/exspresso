@@ -154,29 +154,35 @@ exports.create_mixin = ($object, $args...) ->
     for $key, $val of defineClass($mixin)
       $properties[$key] = $val
 
-  # or just merge simple tables?
-  if not $class?
-    switch $args.length
-      when 0
-        # simple case -
-        #   just clone the object
-        return create($object)
-      when 1
-        # optimized case -
-        #   merge object with object
-        $args[0].__proto__ = $object
-        return create($args[0])
+  # no class was encountered
+  if $class?
+    # clone the object with all properties
+    $this = create($object, $properties)
+    # call the constructor
+    $class.apply $this, $args[$pos..]
+    $this
 
-    # build a merged properties table
-    for $data in $args
-      for $key in getOwnPropertyNames($data)
-        $properties[$key] = getOwnPropertyDescriptor($data, $key)
+  else switch $args.length
+    when 0
+      # simple case -
+      #   just clone the object
+      create($object)
 
-  # clone the object with all properties
-  $this = create($object, $properties)
-  # if there was a constructor, call it
-  $class.apply $this, $args[$pos..] if $class
-  $this
+    when 1
+      # optimized case -
+      #   merge object with object
+      $args[0].__proto__ = $object
+      create($args[0])
+      
+    else
+      # optimized case -
+      #   merge object with object
+      for $i in [1...$args.length]
+        $args[$i-1] = $args[$i].__proto__
+      $args[$args.length-1].__proto__ = $object
+      create($args[0])
+
+
 
 #  ------------------------------------------------------------------------
 #
