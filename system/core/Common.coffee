@@ -60,8 +60,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
 
   #  Does the class exist?  If so, we're done...
   if class_exists($prefix+$class)
-    #return new (global[$prefix+$class])($controller)
-    return mixin_class($controller, global[$prefix+$class])
+    return create_mixin($controller, global[$prefix+$class], $controller)
 
   $name = false
 
@@ -87,8 +86,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
   if not class_exists($name)
     die 'Unable to locate the specified class: ' + $class + EXT
 
-  #return new (global[$name])($controller)
-  mixin_class($controller, global[$name])
+  create_mixin($controller, global[$name], $controller)
 
 
 #

@@ -163,7 +163,7 @@ class global.Exspresso_Loader
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : mixin_class($controller, $Library, $params)
+        value       : create_mixin($controller, $Library, $controller, $params)
 
     return $controller[$_alias]
 
@@ -221,7 +221,7 @@ class global.Exspresso_Loader
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : mixin_class($controller, $Model)
+        value       : create_mixin($controller, $Model, $controller)
 
       @_models.push $_alias
 
@@ -294,7 +294,7 @@ class global.Exspresso_Loader
       defineProperty @controller, $name
         enumerable  : true
         writeable   : false
-        value       : mixin_class($controller, $Model)
+        value       : create_mixin($controller, $Model, $controller)
 
       @_models.push $name
       return
@@ -958,7 +958,7 @@ class global.Exspresso_Loader
     defineProperty $controller, $classvar,
       enumerable  : true
       writeable   : false
-      value       : mixin_class($controller, $Class, $config)
+      value       : create_mixin($controller, $Class, $controller, $config)
 
     $controller[$classvar]
 

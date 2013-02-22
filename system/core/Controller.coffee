@@ -123,7 +123,7 @@ class global.Exspresso_Controller
   #
   render: ($view, $data = {}, $next) =>
 
-    @res.render $view, mixin_view(@, $data), ($err, $html) =>
+    @res.render $view, create_mixin(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
       Exspresso.hooks._call_hook 'post_controller', @

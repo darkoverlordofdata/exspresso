@@ -35,11 +35,12 @@
 _class = {}    # metadata cache
 
 #
-# privately dereference some Object utility functions
+# privately dereference some Object utility members
 create                            = Object.create
 getPrototypeOf                    = Object.getPrototypeOf
 getOwnPropertyDescriptor          = Object.getOwnPropertyDescriptor
 getOwnPropertyNames               = Object.getOwnPropertyNames
+prototype                         = Object.prototype
 #
 # Copy Own Properties
 #
@@ -59,7 +60,7 @@ exports.copyOwnProperties = ($dst, $src) ->
   defineProperties $dst, $properties
 
 #
-# publicly dereference some Object utility functions
+# publicly dereference some Object utility members
 exports.defineProperties          = Object.defineProperties
 exports.defineProperty            = Object.defineProperty
 exports.freeze                    = Object.freeze
@@ -107,7 +108,7 @@ exports.defineClass = ($class) ->
     $proto = $class:: # starting point in the chain
 
     # Build an inheritance list
-    while $proto isnt Object::
+    until $proto is prototype
       $chain.push $proto
       $proto = getPrototypeOf($proto)
 
@@ -125,8 +126,15 @@ exports.defineClass = ($class) ->
 #
 # Create a Mixin
 #
-# Create a mixin object from a prototype and
-# list of classes
+# Create a mixin object from a prototype object
+# with an optional list of classes to mixin,
+# followed by an optional list of arguments to the
+# constructor of the first class.
+#
+# If there are no classes, the list of args is a list
+# of additional objects that are simply merged into the
+# first object. These objects are expected to be literal
+# based, and only the own properties are used
 #
 #
 # @param	object	object to use as the prototype
@@ -137,58 +145,38 @@ exports.create_mixin = ($object, $args...) ->
 
   $properties = {}
   $pos = 0
+
+  # get the mixin class(es)
   while 'function' is typeof ($mixin = $args[$pos])
+    # the 1st mixin will also be a constructor
+    $class = $mixin if $pos is 0
     $pos++
     for $key, $val of defineClass($mixin)
       $properties[$key] = $val
 
+  # or just merge simple tables?
+  if not $class?
+    switch $args.length
+      when 0
+        # simple case -
+        #   just clone the object
+        return create($object)
+      when 1
+        # optimized case -
+        #   merge object with object
+        $args[0].__proto__ = $object
+        return create($args[0])
+
+    # build a merged properties table
+    for $data in $args
+      for $key in getOwnPropertyNames($data)
+        $properties[$key] = getOwnPropertyDescriptor($data, $key)
+
+  # clone the object with all properties
   $this = create($object, $properties)
-  $args[0].apply $this, $args[$pos..]
+  # if there was a constructor, call it
+  $class.apply $this, $args[$pos..] if $class
   $this
-
-
-#
-# Mixin from Class
-#
-# Creates a controller mixin object from a class
-#
-#
-# @param	object	an Exspresso_Controller object
-# @param	mixed   class name or object
-# @param	object	(optional) config data
-# @return	object
-#
-exports.mixin_class = ($controller, $class, $config) ->
-
-  create_mixin($controller, $class, $controller, $config)
-
-
-#
-# Mixin from View Data
-#
-# Creates a controller mixin object from view data
-#
-#
-# @param	object	an Exspresso_Controller object
-# @param	object	data
-# @return	object
-#
-exports.mixin_view = ($controller, $data) ->
-
-  __PROTO__ = true # Use the non-standard __proto__ property
-  if __PROTO__
-    $data.__proto__ = $controller
-    return $data
-
-  $props = {}       # an array to build the object property def
-
-  # Build the data elements property table
-  for $key in getOwnPropertyNames($data)
-    $props[$key] = getOwnPropertyDescriptor($data, $key)
-
-  # Now, create the object
-  create($controller, $props)
-
 
 #  ------------------------------------------------------------------------
 #
