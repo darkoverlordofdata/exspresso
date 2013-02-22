@@ -158,16 +158,12 @@ class global.Exspresso_Loader
 
     else
 
-      $library = Modules.load_file($_library, $path)
-
+      $Library = Modules.load_file($_library, $path)
       @_classes[$class] = $_alias
-
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : mixin_class($controller, $library, $params)
-
-      @_classes[$class] = $_alias
+        value       : mixin_class($controller, $Library, $params)
 
     return $controller[$_alias]
 
@@ -222,7 +218,6 @@ class global.Exspresso_Loader
         @database($connect, false, true)
 
       $Model = Modules.load_file($_model, $path)
-
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
@@ -296,7 +291,6 @@ class global.Exspresso_Loader
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
-
       defineProperty @controller, $name
         enumerable  : true
         writeable   : false
@@ -959,11 +953,12 @@ class global.Exspresso_Loader
     #  Save the class name and object name
     @_classes[$class] = $classvar
     #  Instantiate the class
+    $Class = global[$name]
 
     defineProperty $controller, $classvar,
       enumerable  : true
       writeable   : false
-      value       : mixin_class($controller, $name, $config)
+      value       : mixin_class($controller, $Class, $config)
 
     $controller[$classvar]
 

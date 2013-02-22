@@ -44,6 +44,7 @@ define 'Exspresso_VERSION', require(FCPATH + 'package.json').version
 #  Load the global functions
 # ------------------------------------------------------
 #
+require BASEPATH + 'core/Meta.coffee'
 require BASEPATH + 'core/Common.coffee'
 
 log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", Exspresso_VERSION

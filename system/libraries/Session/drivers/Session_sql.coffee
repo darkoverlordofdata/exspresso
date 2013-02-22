@@ -31,10 +31,10 @@
 #
 class Exspresso_Session_sql extends require('express').session.Store
 
-  serialize       = JSON.stringify                # Generates a storable representation of a value
-  unserialize     = JSON.parse                    # Creates an object from a stored representation
+  serialize       = JSON.stringify      # Generates a storable representation of a value
+  unserialize     = JSON.parse          # Creates an object from a stored representation
 
-  parent          : null  # The parent session class for this driver
+  parent                  : null        # The parent class for this driver
 
   #
   # Load the user data model

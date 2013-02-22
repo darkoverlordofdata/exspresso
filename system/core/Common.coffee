@@ -43,110 +43,6 @@ _log              = null  # loging object
 _error            = null  # error display object
 
 #
-# Metaprogramming
-#
-#
-create                            = Object.create
-exports.defineProperties          = Object.defineProperties
-exports.defineProperty            = Object.defineProperty
-exports.freeze                    = Object.freeze
-exports.getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
-exports.getOwnPropertyNames       = Object.getOwnPropertyNames
-exports.getPrototypeOf            = Object.getPrototypeOf
-exports.keys                      = Object.keys
-#
-# Define Getter/Setter
-#
-# @access	public
-# @param	object	property definition
-# @return	object
-#
-Function::getter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {get: $def[$name]}
-
-Function::setter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {set: $def[$name]}
-
-#
-# Copy Own Properties
-#
-# Copy all properties from a source or template object
-# Getters, setters, read only, and other custom attributes
-# are safely copied
-#
-# @param	object	destination object
-# @param	object	source object
-# @return	object
-#
-exports.copyOwnProperties = ($dst, $src) ->
-  $properties = {}
-  for $key in getOwnPropertyNames($src)
-    $properties[$key] = getOwnPropertyDescriptor($src, $key)
-
-  defineProperties $dst, $properties
-
-#
-# Create Class Mixin
-#
-# Creates a controller mixin object with an
-# Exspresso_ class
-#
-#
-# @param	object	an Exspresso_Controller object
-# @param	mixed   class name or object
-# @param	object	(optional) config data
-# @return	object
-#
-exports.mixin_class = ($controller, $class, $config) ->
-  # dereference the class name
-  if typeof $class is 'string' then $class = global[$class]
-
-  $chain = []
-  $props = {}
-  $proto = $class::
-
-  # Build an inheritance chain
-  while $proto isnt Object::
-    $chain.push $proto
-    $proto = getPrototypeOf($proto)
-
-  # Get inherited properties
-  # Reverse the order so that overrides occur in order
-  for $proto in $chain.reverse()
-    if $proto isnt Object::
-      for $key in getOwnPropertyNames($proto)
-        $props[$key] = getOwnPropertyDescriptor($proto, $key)
-
-  # Create an object using the controller as the prototype
-  $this = create($controller, $props)
-  # Invoke the constructor in 'this' context
-  $class.call $this, $controller, $config
-  $this
-
-
-#
-# Create View Mixin
-#
-# Creates a controller mixin object with view data
-#
-#
-# @param	object	an Exspresso_Controller object
-# @param	object	data
-# @return	object
-#
-exports.mixin_view = ($controller, $data) ->
-
-  # Get the data properties
-  $props = {}
-  for $key in getOwnPropertyNames($data)
-    $props[$key] = getOwnPropertyDescriptor($data, $key)
-
-  # Create an object using the controller as the prototype
-  create($controller, $props)
-
-#
 # Exspresso Object Creation
 #
 # Load the class if not already in cache.
@@ -165,7 +61,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
   #  Does the class exist?  If so, we're done...
   if class_exists($prefix+$class)
     #return new (global[$prefix+$class])($controller)
-    return mixin_class($controller, $prefix+$class)
+    return mixin_class($controller, global[$prefix+$class])
 
   $name = false
 
@@ -192,7 +88,7 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
     die 'Unable to locate the specified class: ' + $class + EXT
 
   #return new (global[$name])($controller)
-  mixin_class($controller, $name)
+  mixin_class($controller, global[$name])
 
 
 #

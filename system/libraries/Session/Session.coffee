@@ -34,10 +34,10 @@
 #
 class global.Exspresso_Session extends Exspresso_Driver_Library
 
-  express         = require('express')            # Express 3.0 Framework
-  cookie          = require('cookie')             # cookie parsing and serialization
-  format          = require('util').format        # sprintf style formated string
-  urldecode       = decodeURIComponent            # Decodes any %## encoding in the given string
+  express     = require('express')      # Express 3.0 Framework
+  cookie      = require('cookie')       # cookie parsing and serialization
+  format      = require('util').format  # sprintf style formated string
+  urldecode   = decodeURIComponent      # Decodes any %## encoding in the given string
 
   FLASH_KEY               = 'flash'     # flash data key prefix
   FLASH_NEW               = ':new:'     # flash data key new flag
@@ -45,8 +45,9 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
 
   req                     : null        # http request object
   res                     : null        # http response object
-
+  #
   # expose config as public properties
+  #
   sess_driver             : 'sql'       # Session storage driver
   sess_encrypt_cookie     : false       # are cookies encrypted?
   sess_use_database       : false       # are sessions stored to database?
@@ -95,6 +96,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
       $req = @req = $controller.req
       $res = @res = $controller.res
 
+      # initialize userdata for this session
       @_userdata = {}
 
       # expose flashdata method in views
