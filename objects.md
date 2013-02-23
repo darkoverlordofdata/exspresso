@@ -5,7 +5,7 @@
     X in use
 
 
-    CI System Framework files
+    Exspresso System Framework files
     -----------------------------------------------------------
     * Core
         * Benchmark             X

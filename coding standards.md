@@ -7,11 +7,11 @@
   * prefer unquoted key values
 
 
-      options =
-        expires : expire_on
-        domain  : ''
-        path    : '/'
-        secure  : true
+    options =
+      expires : expire_on
+      domain  : ''
+      path    : '/'
+      secure  : true
 
 
 ## Classes

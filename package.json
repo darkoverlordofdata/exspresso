@@ -16,6 +16,7 @@
   "dependencies": {
     "coffee-script": "*",
     "not-php": "*",
+    "mysql": "*",
     "pg": "*",
     "connect": "*",
     "express": "",
