@@ -49,16 +49,47 @@ class Exspresso_Profiler
   _config             : true
 
   _available_sections: [
-    'benchmarks',
-    'get',
-    'memory_usage',
-    'post',
-    'uri_string',
-    'controller_info',
-    'queries',
-    'http_headers',
+    'benchmarks'
+    'get'
+    'memory_usage'
+    'post'
+    'uri_string'
+    'controller_info'
+    'queries'
+    'http_headers'
     'config'
   ]
+
+  _server_headers: [
+    'CONTENT_TYPE'
+    'DOCUMENT_ROOT'
+    'HTTP_ACCEPT'
+    'HTTP_ACCEPT_CHARSET'
+    'HTTP_ACCEPT_ENCODING'
+    'HTTP_ACCEPT_LANGUAGE'
+    'HTTP_CLIENT_IP'
+    'HTTP_CONNECTION'
+    'HTTP_HOST'
+    'HTTP_REFERER'
+    'HTTP_USER_AGENT'
+    'HTTP_X_CLIENT_IP'
+    'HTTP_X_CLUSTER_CLIENT_IP'
+    'HTTP_X_FORWARDED_FOR'
+    'PATH_INFO'
+    'QUERY_STRING'
+    'REMOTE_ADDR'
+    'REMOTE_HOST'
+    'REQUEST_METHOD'
+    'REQUEST_TIME'
+    'REQUEST_URI'
+    'SERVER_ADDR'
+    'SERVER_NAME'
+    'SERVER_PORT'
+    'SERVER_PROTOCOL'
+    'SERVER_SOFTWARE'
+    'SCRIPT_NAME'
+  ]
+
 
   constructor: ($controller, $config = {}) ->
 
@@ -339,7 +370,7 @@ class Exspresso_Profiler
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-    for $header in ['HTTP_ACCEPT', 'HTTP_USER_AGENT', 'HTTP_CONNECTION', 'SERVER_PORT', 'SERVER_NAME', 'REMOTE_ADDR', 'SERVER_SOFTWARE', 'HTTP_ACCEPT_LANGUAGE', 'SCRIPT_NAME', 'REQUEST_METHOD', ' HTTP_HOST', 'REMOTE_HOST', 'CONTENT_TYPE', 'SERVER_PROTOCOL', 'QUERY_STRING', 'HTTP_ACCEPT_ENCODING', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP']
+    for $header in @_server_headers
       $val = if (@$_SERVER[$header]? ) then @$_SERVER[$header] else ''
       $output+="<tr><td>" + $header + "</td><td>" + $val + "</td></tr>\n"
 

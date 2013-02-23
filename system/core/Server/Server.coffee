@@ -98,7 +98,6 @@ class global.Exspresso_Server
     # the Expresso core instance
     #
     @config get_config()
-    @app.use @server()
 
 
   #  --------------------------------------------------------------------
@@ -173,6 +172,7 @@ class global.Exspresso_Server
   #
   start: ($router, $next) ->
 
+    @app.use @server()
     Exspresso.load.initialize()
     @app.use load_class('Exceptions',  'core').exception_handler()
     @app.use dispatch($router.routes)
@@ -289,30 +289,37 @@ class global.Exspresso_Server
     $server =
       argv                  : $req.query
       argc                  : count($req.query)
-      SERVER_ADDR           : $req.ip
-      SERVER_NAME           : $req.host
-      SERVER_SOFTWARE       : @get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
-      SERVER_PROTOCOL       : strtoupper($req.protocol)+"/"+$req.httpVersion
-      REQUEST_METHOD        : $req.method
-      REQUEST_TIME          : $req._startTime
-      QUERY_STRING          : if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
+      CONTENT_TYPE          : ''
       DOCUMENT_ROOT         : process.cwd()
       HTTP_ACCEPT           : $req.headers['accept']
       HTTP_ACCEPT_CHARSET   : $req.headers['accept-charset']
       HTTP_ACCEPT_ENCODING  : $req.headers['accept-encoding']
       HTTP_ACCEPT_LANGUAGE  : $req.headers['accept-language']
+      HTTP_CLIENT_IP        : ''
       HTTP_CONNECTION       : $req.headers['connection']
       HTTP_HOST             : $req.headers['host']
       HTTP_REFERER          : $req.headers['referer']
       HTTP_USER_AGENT       : $req.headers['user-agent']
       HTTPS                 : $req.secure
-      REMOTE_ADDR           : ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
-      REQUEST_URI           : $req.url
-      PATH_INFO             : $req.path
       ORIG_PATH_INFO        : $req.path
+      PATH_INFO             : $req.path
+      QUERY_STRING          : if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
+      REMOTE_ADDR           : ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
+      REMOTE_HOST           : ''
+      REMOTE_PORT           : ''
+      REMOTE_USER           : ''
+      REQUEST_METHOD        : $req.method
+      REQUEST_TIME          : $req._startTime
+      REQUEST_URI           : $req.url
+      SERVER_ADDR           : $req.ip
+      SERVER_NAME           : $req.host
+      SERVER_PORT           : ''+@_port
+      SERVER_PROTOCOL       : strtoupper($req.protocol)+"/"+$req.httpVersion
+      SERVER_SOFTWARE       : @get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
 
     for $key, $val of $req.headers
       $server['HTTP_'+$key.toUpperCase().replace('-','_')] = $val
+      log_message 'debug', 'HEADER [\'%s\'] = %s', $key, $val
 
     $req.server = freeze($server)
     $next()

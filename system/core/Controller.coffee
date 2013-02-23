@@ -34,9 +34,13 @@
 class global.Exspresso_Controller
 
   _queue            : null  # async function queue
-  BM                : null  # Expresso_Benchmark
   req               : null  # http request object
   res               : null  # http response object
+  $_COOKIE          : null  # http cookies
+  $_FILES           : null  # http file upload vars
+  $_GET             : null  # http get vars
+  $_POST            : null  # http post vars
+  $_SERVER          : null  # server environment info
   module            : null  # module parsed from the uri
   class             : null  # class parsed from the uri
   method            : null  # method parsed from the uri
@@ -45,6 +49,7 @@ class global.Exspresso_Controller
   run               : null  # runs _queue
   redirect          : null  # http header redirect
   render            : null  # render output to the browser
+  BM                : null  # Expresso_Benchmark
   config            : null  # Expresso_Config
   uni               : null  # Expresso_Utf8
   server            : null  # Expresso_Server
@@ -54,10 +59,6 @@ class global.Exspresso_Controller
   uri               : null  # Expresso_URI
   input             : null  # Expresso_Input
   output            : null  # Expresso_Output
-  $_SERVER          : null  # fabricated table to mimic PHP
-  $_GET             : null  # shortcut to @input.get()
-  $_POST            : null  # shortcut to @input.post()
-  $_COOKIE          : null  # shortcut to @input.cookie()
 
   #
   # Initialize Controller objects
@@ -103,10 +104,11 @@ class global.Exspresso_Controller
 
     defineProperties $this,
       output        : {enumerable: true,  writeable: false, value: load_new('Output',  'core', $this)}
-      $_SERVER      : {enumerable: true,  writeable: false, get: -> $this.req.server}
+      $_COOKIE      : {enumerable: true,  writeable: false, get: -> $this.req.cookies}
+      $_FILES       : {enumerable: true,  writeable: false, get: -> $this.req.files}
       $_GET         : {enumerable: true,  writeable: false, get: -> $this.req.query}
       $_POST        : {enumerable: true,  writeable: false, get: -> $this.req.body}
-      $_COOKIE      : {enumerable: true,  writeable: false, get: -> $this.req.cookies}
+      $_SERVER      : {enumerable: true,  writeable: false, get: -> $this.req.server}
 
     @load.initialize()  # do the autoloads
     $BM.mark 'loading_time:_base_classes_end'
