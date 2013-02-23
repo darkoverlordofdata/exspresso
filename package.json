@@ -28,7 +28,8 @@
     "eco": "*",
     "emailjs": "*",
     "marked": "*",
-    "moment": "*"
+    "moment": "*",
+    "utf8": "*"
   },
   "scripts": {
     "start": "foreman start web",

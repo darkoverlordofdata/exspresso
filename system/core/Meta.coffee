@@ -33,6 +33,7 @@
 #
 __PROTO__                 = true      # if true, set using the '__proto__' property
 _class                    = {}        # metadata cache
+
 # privately dereference some Object utility members
 create                    = Object.create
 defineProperties          = Object.defineProperties

@@ -101,6 +101,19 @@ exports.config = load_class('Config', 'core')
 
 #
 # ------------------------------------------------------
+#  Instantiate the UTF-8 class
+# ------------------------------------------------------
+#
+# Note: Order here is rather important as the UTF-8
+# class needs to be used very early on, but it cannot
+# properly determine if UTf-8 can be supported until
+# after the Config class is instantiated.
+#
+#
+exports.uni = load_class('Utf8', 'core')
+
+#
+# ------------------------------------------------------
 #  Instantiate the core server app
 # ------------------------------------------------------
 #

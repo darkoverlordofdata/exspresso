@@ -40,7 +40,7 @@ class global.Exspresso_Input
   headers                 : null  # List of all HTTP request headers
   ip_address              : false # IP address of the current user
   user_agent              : false # user agent (web browser) being used by the current user
-  _server                 : null  # fabricated table to mimic PHP
+  _server_array           : null  # fabricated table to mimic PHP
   _allow_get_array        : false # If FALSE, then $_GET will be set to an empty array
   _standardize_newlines   : false # If TRUE, then newlines are standardized
   _enable_xss             : false # Determines whether the XSS filter is always active
@@ -56,32 +56,42 @@ class global.Exspresso_Input
     @_allow_get_array = if config_item('allow_get_array') then true else false
     @_enable_xss      = if config_item('global_xss_filtering') then true else false
     @_enable_csrf     = if config_item('csrf_protection') then true else false
-    #@_sanitize_globals()
+    @_sanitize_globals()
+
+    os = require('os')
+    $req = $controller.req
+    $res = $controller.res
+    $server_array =
+      argv                  : $req.query
+      argc                  : count($req.query)
+      SERVER_ADDR           : $req.ip
+      SERVER_NAME           : $req.host
+      SERVER_SOFTWARE       : Exspresso.server.get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
+      SERVER_PROTOCOL       : strtoupper($req.protocol)+"/"+$req.httpVersion
+      REQUEST_METHOD        : $req.method
+      REQUEST_TIME          : $req._startTime
+      QUERY_STRING          : if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
+      DOCUMENT_ROOT         : process.cwd()
+      HTTP_ACCEPT           : $req.headers['accept']
+      HTTP_ACCEPT_CHARSET   : $req.headers['accept-charset']
+      HTTP_ACCEPT_ENCODING  : $req.headers['accept-encoding']
+      HTTP_ACCEPT_LANGUAGE  : $req.headers['accept-language']
+      HTTP_CONNECTION       : $req.headers['connection']
+      HTTP_HOST             : $req.headers['host']
+      HTTP_REFERER          : $req.headers['referer']
+      HTTP_USER_AGENT       : $req.headers['user-agent']
+      HTTPS                 : $req.secure
+      REMOTE_ADDR           : ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
+      REQUEST_URI           : $req.url
+      PATH_INFO             : $req.path
+      ORIG_PATH_INFO        : $req.path
 
     defineProperties @,
-      req           : {enumerable: true, writeable: false, value: $controller.req}
-      res           : {enumerable: true, writeable: false, value: $controller.res}
+      _server_array : {enumerable: false, writeable: false, value: freeze($server_array)}
+      req           : {enumerable: true, writeable: false, value: $req}
+      res           : {enumerable: true, writeable: false, value: $res}
 
 
-  #
-  # Fetch from array
-  #
-  # This is a helper function to retrieve values from global arrays
-  #
-  # @access	private
-  # @param	array
-  # @param	string
-  # @param	bool
-  # @return	string
-  #
-  _fetch_from_array : ($array, $index = '', $xss_clean = false) ->
-    if not $array[$index]?
-      return false
-
-    if $xss_clean is true
-      return @security.xss_clean($array[$index])
-
-    return $array[$index]
   #
   # Validate IP Address
   #
@@ -121,17 +131,13 @@ class global.Exspresso_Input
   #
   get : ($index = null, $xss_clean = false) ->
 
-    #  Check if a field has been provided
-    if $index is null and  not empty(@$_GET)
-      $get = {}
-
-      #  loop through the full _GET array
-      for $key in array_keys(@$_GET)
-        $get[$key] = @_fetch_from_array(@$_GET, $key, $xss_clean)
-      return $get
-
-    return @_fetch_from_array(@$_GET, $index, $xss_clean)
-
+    if $index is null
+      @req.query
+    else
+      if @req.query[$index]?
+        @req.query[$index]
+      else
+        null
 
   #
   # Fetch an item from the POST array
@@ -143,16 +149,13 @@ class global.Exspresso_Input
   #
   post : ($index = null, $xss_clean = false) ->
 
-    #  Check if a field has been provided
-    if $index is null and  not empty(@$_POST)
-      $post = {}
-
-      #  Loop through the full _POST array and return it
-      for $key in array_keys(@$_POST)
-        $post[$key] = @_fetch_from_array(@$_POST, $key, $xss_clean)
-      return $post
-
-    return @_fetch_from_array(@$_POST, $index, $xss_clean)
+    if $index is null
+      @req.body
+    else
+      if @req.body[$index]?
+        @req.body[$index]
+      else
+        null
 
   #
   # Fetch an item from either the GET array or the POST
@@ -164,10 +167,13 @@ class global.Exspresso_Input
   #
   get_post : ($index = '', $xss_clean = false) ->
 
-    if not @$_POST[$index]?
-      @get($index, $xss_clean)
+    if not @req.body[$index]?
+      if @req.query[$index]?
+        @req.query[$index]
+      else
+        null
     else
-      @post($index, $xss_clean)
+      @req.body[$index]
 
   #
   # Fetch an item from the COOKIE array
@@ -178,7 +184,13 @@ class global.Exspresso_Input
   # @return	string
   #
   cookie : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@$_COOKIE, $index, $xss_clean)
+    if $index is null
+      @req.cookies
+    else
+      if @req.cookies[$index]?
+        @req.cookies[$index]
+      else
+        ''
 
   #
   # Set cookie
@@ -205,15 +217,6 @@ class global.Exspresso_Input
     if $path is '/' and config_item('cookie_path') isnt '/'
       $path = config_item('cookie_path')
 
-    if $secure is false and config_item('cookie_secure') isnt false
-      $secure = config_item('cookie_secure')
-
-    if not is_numeric($expire)
-      $expire = time() - 86500
-
-    else
-      $expire = if ($expire > 0) then time() + $expire else 0
-
     @res.cookie $prefix+$name, $value,
       expires : $expire
       domain  : $domain
@@ -229,47 +232,20 @@ class global.Exspresso_Input
   # @return	string
   #
   server : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@$_SERVER, $index, $xss_clean)
-
+    if $index is ''
+      @_server_array
+    else
+      if @_server_array[$index]?
+        @_server_array[$index]
+      else
+        ''
   #
   # Fetch the IP Address
   #
   # @access	public
   # @return	string
   #
-  ip_address :  ->
-    return @req.ip
-    if @ip_address isnt false
-      return @ip_address
-
-    $proxy_ips = config_item('proxy_ips')
-    if not empty($proxy_ips)
-      $proxy_ips = explode(',', str_replace(' ', '', $proxy_ips))
-      for $header in ['HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP']
-        if ($spoof = @server($header)) isnt false
-          #  Some proxies typically list the whole chain of IP
-          #  addresses through which the client has reached us.
-          #  e.g. client_ip, proxy_ip1, proxy_ip2, etc.
-          if strpos($spoof, ',') isnt false
-            $spoof = explode(',', $spoof, 2)
-            $spoof = $spoof[0]
-          if not @valid_ip($spoof)
-            $spoof = false
-
-          else
-            break
-      @ip_address = if ($spoof isnt false and in_array($_SERVER['REMOTE_ADDR'], $proxy_ips, true)) then $spoof else $_SERVER['REMOTE_ADDR']
-
-    else
-      @ip_address = $_SERVER['REMOTE_ADDR']
-
-
-    if not @valid_ip(@ip_address)
-      @ip_address = '0.0.0.0'
-
-
-    return @ip_address
-
+  ip_address :  -> @req.ip
 
   #
   # User Agent

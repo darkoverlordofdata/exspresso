@@ -46,6 +46,7 @@ class global.Exspresso_Controller
   redirect          : null  # http header redirect
   render            : null  # render output to the browser
   config            : null  # Expresso_Config
+  uni               : null  # Expresso_Utf8
   server            : null  # Expresso_Server
   router            : null  # Expresso_Router
   lang              : null  # Expresso_Lang
@@ -89,6 +90,7 @@ class global.Exspresso_Controller
       redirect      : {enumerable: true,  writeable: false, value: $this.redirect}
       render        : {enumerable: true,  writeable: false, value: $this.render}
       config        : {enumerable: true,  writeable: false, value: Exspresso.config}
+      uni           : {enumerable: true,  writeable: false, value: Exspresso.uni}
       server        : {enumerable: true,  writeable: false, value: Exspresso.server}
       router        : {enumerable: true,  writeable: false, value: Exspresso.router}
       lang          : {enumerable: true,  writeable: false, value: Exspresso.lang}
@@ -101,10 +103,10 @@ class global.Exspresso_Controller
 
     defineProperties $this,
       output        : {enumerable: true,  writeable: false, value: load_new('Output',  'core', $this)}
-      $_SERVER      : {enumerable: true,  writeable: false, get: -> $this.input.server()}
-      $_GET         : {enumerable: true,  writeable: false, get: -> $this.input.get()}
-      $_POST        : {enumerable: true,  writeable: false, get: -> $this.input.post()}
-      $_COOKIE      : {enumerable: true,  writeable: false, get: -> $this.input.cookie()}
+      $_SERVER      : {enumerable: true,  writeable: false, get: -> $this.req.server}
+      $_GET         : {enumerable: true,  writeable: false, get: -> $this.req.query}
+      $_POST        : {enumerable: true,  writeable: false, get: -> $this.req.body}
+      $_COOKIE      : {enumerable: true,  writeable: false, get: -> $this.req.cookies}
 
     @load.initialize()  # do the autoloads
     $BM.mark 'loading_time:_base_classes_end'
