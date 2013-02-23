@@ -31,6 +31,19 @@
 #
 #   Metaprogramming utils
 #
+__PROTO__                 = true      # if true, set using the '__proto__' property
+_class                    = {}        # metadata cache
+# privately dereference some Object utility members
+create                    = Object.create
+defineProperties          = Object.defineProperties
+defineProperty            = Object.defineProperty
+freeze                    = Object.freeze
+getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
+getOwnPropertyNames       = Object.getOwnPropertyNames
+getPrototypeOf            = Object.getPrototypeOf
+keys                      = Object.keys
+prototype                 = Object.prototype
+
 # publicly dereference some Object utility members
 exports.defineProperties  = Object.defineProperties
 exports.defineProperty    = Object.defineProperty
@@ -56,8 +69,6 @@ exports.copyOwnProperties = ($dst, $src) ->
   defineProperties $dst, $properties
 
 #
-
-#
 # Define Getter
 #
 # @access	public
@@ -79,19 +90,6 @@ Function::setter = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {set: $def[$name]}
 
-
-__PROTO__                 = true      # if true, set using the '__proto__' property
-_class                    = {}        # metadata cache
-# privately dereference some Object utility members
-create                    = Object.create
-defineProperties          = Object.defineProperties
-defineProperty            = Object.defineProperty
-freeze                    = Object.freeze
-getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
-getOwnPropertyNames       = Object.getOwnPropertyNames
-getPrototypeOf            = Object.getPrototypeOf
-keys                      = Object.keys
-prototype                 = Object.prototype
 
 #
 # Define Class Metadata
@@ -203,15 +201,8 @@ exports.create_mixin = ($object, $args...) ->
 # Export the module
 #
 #
-exports.export = ($scope = global) ->
-
-  for $name, $body of module.exports
-    if $name isnt 'export'
-      Object.defineProperty $scope, $name,
-        'value':			$body
-        'enumerable': true
-        'writable':		false
-
+for $name, $body of module.exports
+  define $name, $body
 
 # End of file Meta.coffee
 # Location: .system/core/Meta.coffee
