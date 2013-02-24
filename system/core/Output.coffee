@@ -371,7 +371,7 @@ class global.Exspresso_Output
     fs.closeSync($fp)
 
     #  Strip out the embedded timestamp
-    if not preg_match("/(\\d+TS--->)/", $cache, $match)
+    if not preg_match("/(\\d+TS--->)/", $cache, $match)?
       return false
 
 

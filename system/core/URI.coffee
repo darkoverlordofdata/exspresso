@@ -75,7 +75,7 @@ class global.Exspresso_URI
   # @param	bool
   # @return	string
   #
-  segment : ($n, $no_result = false) ->
+  segment : ($n, $no_result = 0) ->
     if not @_segments[$n]? then $no_result else @_segments[$n]
 
 
@@ -93,7 +93,7 @@ class global.Exspresso_URI
   # @param	bool
   # @return	string
   #
-  rsegment : ($n, $no_result = false) ->
+  rsegment : ($n, $no_result = 0) ->
     if not @_rsegments[$n]? then $no_result else @_rsegments[$n]
 
   #  --------------------------------------------------------------------

@@ -79,6 +79,11 @@ class global.Exspresso_Controller
 
     defineProperties $this,
       _queue        : {enumerable: false, writeable: false, value: []}
+      $_COOKIE      : {enumerable: true,  writeable: false, value: $req.cookies}
+      $_FILES       : {enumerable: true,  writeable: false, value: $req.files}
+      $_GET         : {enumerable: true,  writeable: false, value: $req.query}
+      $_POST        : {enumerable: true,  writeable: false, value: $req.body}
+      $_SERVER      : {enumerable: true,  writeable: false, value: $req.server}
       BM            : {enumerable: true,  writeable: false, value: $BM}
       req           : {enumerable: true,  writeable: false, value: $req}
       res           : {enumerable: true,  writeable: false, value: $res}
@@ -97,18 +102,19 @@ class global.Exspresso_Controller
       lang          : {enumerable: true,  writeable: false, value: Exspresso.lang}
 
     $BM.mark 'loading_time:_base_classes_start'
+
     defineProperties $this,
       load          : {enumerable: true,  writeable: false, value: load_new('Loader',  'core', $this)}
+
+    defineProperties $this,
       uri           : {enumerable: true,  writeable: false, value: load_new('URI',     'core', $this)}
+
+    defineProperties $this,
       input         : {enumerable: true,  writeable: false, value: load_new('Input',   'core', $this)}
 
     defineProperties $this,
       output        : {enumerable: true,  writeable: false, value: load_new('Output',  'core', $this)}
-      $_COOKIE      : {enumerable: true,  writeable: false, get: -> $this.req.cookies}
-      $_FILES       : {enumerable: true,  writeable: false, get: -> $this.req.files}
-      $_GET         : {enumerable: true,  writeable: false, get: -> $this.req.query}
-      $_POST        : {enumerable: true,  writeable: false, get: -> $this.req.body}
-      $_SERVER      : {enumerable: true,  writeable: false, get: -> $this.req.server}
+
 
     @load.initialize()  # do the autoloads
     $BM.mark 'loading_time:_base_classes_end'

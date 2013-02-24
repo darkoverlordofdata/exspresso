@@ -311,7 +311,7 @@ class global.Exspresso_Migration
 
       # Mark wrongly formatted files as false for later filtering
       $name = basename($files[$i], '.coffee')
-      if not preg_match('/^\\d{3}_(\\w+)$/', $name)
+      if not preg_match('/^\\d{3}_(\\w+)$/', $name)?
         $files[$i] = false
 
     sort($files)

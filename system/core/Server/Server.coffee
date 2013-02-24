@@ -41,6 +41,8 @@
 class global.Exspresso_Server
 
   dispatch      = require('dispatch')   # URL dispatcher for Connect
+  os            = require('os')         # A few basic operating-system related utility functions
+
   #
   # config settings
   #
@@ -276,6 +278,8 @@ class global.Exspresso_Server
   #
   # Patch the express server objects
   #
+  #   fabricate a table similar to $_SERVER
+  #
   # @access	public
   # @param object
   # @param object
@@ -284,27 +288,26 @@ class global.Exspresso_Server
   #
   server: -> ($req, $res, $next) =>
 
-    os = require('os')
 
-    $server =
+    $_SERVER =
       argv                  : $req.query
       argc                  : count($req.query)
-      CONTENT_TYPE          : ''
+      CONTENT_TYPE          : $req.headers['content-type']
       DOCUMENT_ROOT         : process.cwd()
       HTTP_ACCEPT           : $req.headers['accept']
       HTTP_ACCEPT_CHARSET   : $req.headers['accept-charset']
       HTTP_ACCEPT_ENCODING  : $req.headers['accept-encoding']
       HTTP_ACCEPT_LANGUAGE  : $req.headers['accept-language']
-      HTTP_CLIENT_IP        : ''
+      HTTP_CLIENT_IP        : ($req.headers['x-forwarded-for'] || '').split(',')[0]
       HTTP_CONNECTION       : $req.headers['connection']
       HTTP_HOST             : $req.headers['host']
       HTTP_REFERER          : $req.headers['referer']
       HTTP_USER_AGENT       : $req.headers['user-agent']
-      HTTPS                 : $req.secure
+      HTTPS                 : if $req.secure then 'on' else 'off'
       ORIG_PATH_INFO        : $req.path
       PATH_INFO             : $req.path
       QUERY_STRING          : if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
-      REMOTE_ADDR           : ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
+      REMOTE_ADDR           : $req.connection.remoteAddress
       REMOTE_HOST           : ''
       REMOTE_PORT           : ''
       REMOTE_USER           : ''
@@ -318,10 +321,9 @@ class global.Exspresso_Server
       SERVER_SOFTWARE       : @get_version()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
 
     for $key, $val of $req.headers
-      $server['HTTP_'+$key.toUpperCase().replace('-','_')] = $val
-      log_message 'debug', 'HEADER [\'%s\'] = %s', $key, $val
+      $_SERVER['HTTP_'+$key.toUpperCase().replace('-','_')] = $val
 
-    $req.server = freeze($server)
+    $req.server = freeze($_SERVER)
     $next()
 
 module.exports = Exspresso_Server

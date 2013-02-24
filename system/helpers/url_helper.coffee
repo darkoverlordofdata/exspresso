@@ -143,7 +143,7 @@ if not function_exists('anchor')
     $title = ''+$title
     
     if not is_array($uri)
-      $site_url = if ( not preg_match('!^\w+://!i', $uri)) then @site_url($uri) else $uri
+      $site_url = if ( not preg_match('!^\\w+://!i', $uri)?) then @site_url($uri) else $uri
       #$site_url = $uri
       
     else 
@@ -181,7 +181,7 @@ if not function_exists('anchor_popup')
   exports.anchor_popup = anchor_popup = ($uri = '', $title = '', $attributes = false) ->
     $title = ''+$title
     
-    $site_url = if ( not preg_match('!^\w+://! i', $uri)) then site_url($uri) else $uri
+    $site_url = if ( not preg_match('!^\\w+://! i', $uri)? ) then site_url($uri) else $uri
     
     if $title is ''
       $title = $site_url
@@ -329,7 +329,7 @@ if not function_exists('auto_link')
         
         for $i in [0..count($matches['0'])-1]
           $period = ''
-          if preg_match("|\.$|", $matches['6'][$i])
+          if preg_match("|\\.$|", $matches['6'][$i])?
             $period = '.'
             $matches['6'][$i] = substr($matches['6'][$i], 0,  - 1)
 
@@ -339,10 +339,10 @@ if not function_exists('auto_link')
       
     
     if $type isnt 'url'
-      if preg_match_all("/([a-zA-Z0-9_\.\-\+]+)@([a-zA-Z0-9\-]+)\.([a-zA-Z0-9\-\.]*)/i", $str, $matches)
+      if preg_match_all("/([a-zA-Z0-9_\\.\\-\\+]+)@([a-zA-Z0-9\\-]+)\\.([a-zA-Z0-9\\-\\.]*)/i", $str, $matches)
         for $i in [0..count($matches['0'])-1]
           $period = ''
-          if preg_match("|\.$|", $matches['3'][$i])
+          if preg_match("|\\.$|", $matches['3'][$i])
             $period = '.'
             $matches['3'][$i] = substr($matches['3'][$i], 0,  - 1)
 

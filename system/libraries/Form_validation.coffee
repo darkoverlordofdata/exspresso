@@ -411,7 +411,7 @@ class global.Exspresso_Form_validation
 
       if $match.length
         $next = true
-        $rules = ('1':$match[1])
+        $rules = '1':$match[1]
         
       else 
         return
@@ -480,7 +480,8 @@ class global.Exspresso_Form_validation
       #  Strip the parameter (if exists) from the rule
       #  Rules can contain a parameter: max_length[5]
       $param = false
-      if preg_match("/(.*?)\\[(.*)\\]/", $rule, $match)
+      $match = preg_match("/(.*?)\\[(.*)\\]/", $rule)
+      if $match?
         $rule = $match[1]
         $param = $match[2]
 
@@ -725,7 +726,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   regex_match: ($str, $regex) ->
-    if not preg_match($regex, $str)
+    if not preg_match($regex, $str)?
       return false
     return true
     
@@ -756,7 +757,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   min_length: ($str, $val) ->
-    if preg_match("/[^0-9]/", $val)
+    if preg_match("/[^0-9]/", $val)?
       return false
 
     if function_exists('mb_strlen')
@@ -774,7 +775,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   max_length: ($str, $val) ->
-    if preg_match("/[^0-9]/", $val)
+    if preg_match("/[^0-9]/", $val)?
       return false
       
     
@@ -794,7 +795,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   exact_length: ($str, $val) ->
-    if preg_match("/[^0-9]/", $val)
+    if preg_match("/[^0-9]/", $val)?
       return false
       
     
@@ -813,7 +814,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   valid_email: ($str) ->
-    return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/ix", $str)) then false else true
+    return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/i", $str)?) then false else true
     
   
   #
@@ -856,7 +857,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   alpha: ($str) ->
-    return if ( not preg_match("/^([a-z])+$/i", $str)) then false else true
+    return if ( not preg_match("/^([a-z])+$/i", $str)?) then false else true
     
   
   #
@@ -867,7 +868,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   alpha_numeric: ($str) ->
-    return if ( not preg_match("/^([a-z0-9])+$/i", $str)) then false else true
+    return if ( not preg_match("/^([a-z0-9])+$/i", $str)?) then false else true
     
   
   #
@@ -878,7 +879,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   alpha_dash: ($str) ->
-    return if ( not preg_match("/^([-a-z0-9_-])+$/i", $str)) then false else true
+    return if ( not preg_match("/^([-a-z0-9_-])+$/i", $str)?) then false else true
     
   
   #
@@ -995,7 +996,7 @@ class global.Exspresso_Form_validation
   # @return	bool
   #
   valid_base64: ($str) ->
-    return  not preg_match('/[^a-zA-Z0-9\\/\\+=]/', $str)
+    return  not preg_match('/[^a-zA-Z0-9\\/\\+=]/', $str)?
     
   
   #

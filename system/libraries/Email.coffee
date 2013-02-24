@@ -183,7 +183,8 @@ class global.Exspresso_Email
   #
   from: ($from, $name = '') ->
 
-    if preg_match('/\<(.*)\>/', $from, $match)
+    $match = preg_match('/\\<(.*)\\>/', $from)
+    if $match?
       $from = $match['1']
 
     if @validate
@@ -205,7 +206,8 @@ class global.Exspresso_Email
   #
   reply_to: ($replyto, $name = '') ->
 
-    if preg_match('/\<(.*)\>/', $replyto, $match)
+    $match = preg_match('/\\<(.*)\\>/', $replyto)
+    if $match?
       $replyto = $match['1']
 
     if @validate
@@ -519,7 +521,7 @@ class global.Exspresso_Email
   #
   valid_email: ($address) ->
 
-    return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
+    return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/i", $address)?) then false else true
 
   #
   # Clean Extended Email Address: Joe Smith <joe@smith.com>
@@ -531,7 +533,8 @@ class global.Exspresso_Email
   clean_email: ($email) ->
 
     if not is_array($email)
-      if preg_match('/\<(.*)\>/', $email, $match)
+      $match = preg_match('/\\<(.*)\\>/', $email)
+      if $match?
         return $match['1']
 
       else
@@ -540,7 +543,8 @@ class global.Exspresso_Email
     $clean_email = []
 
     for $addy in $email
-      if preg_match('/\<(.*)\>/', $addy, $match)
+      $match = preg_match('/\<(.*)\>/', $addy)
+      if $match?
         $clean_email.push $match['1']
 
       else
@@ -565,7 +569,8 @@ class global.Exspresso_Email
       return @word_wrap(@alt_message, '76')
 
 
-    if preg_match('/\<body.*?\>(.*)\<\/body\>/si', @_body, $match)
+    $match = preg_match('/\\<body.*?\\>(.*)\\<\\/body\\>/mgi', @_body)
+    if $match?
       $body = $match['1']
 
     else
@@ -631,7 +636,7 @@ class global.Exspresso_Email
       $temp = ''
       while (strlen($line)) > $charlim
         #  If the over-length word is a URL we won't wrap it
-        if preg_match("!\[url.+\]|://|wwww.!", $line)
+        if preg_match("!\\[url.+\\]|://|wwww.!", $line)?
           break
 
         #  Trim the word down

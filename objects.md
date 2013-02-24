@@ -23,7 +23,7 @@
         * Router                X
         * Security              ?
         * URI                   X
-        * Utf8                  ?
+        * Utf8                  X
     * Database                  mysql   postgresql
         * DB_active_rec         X       X
         * DB_cache              ?       ?

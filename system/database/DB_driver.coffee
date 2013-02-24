@@ -535,7 +535,7 @@ class Exspresso_DB_driver
   # @return	boolean
   #
   is_write_type : ($sql) ->
-    if not preg_match('/^\\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\\s+/i', $sql)
+    if not preg_match('/^\\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\\s+/i', $sql)?
       return false
 
     return true
@@ -858,7 +858,7 @@ class Exspresso_DB_driver
   #
   _has_operator : ($str) ->
     $str = trim($str)
-    if not preg_match("/(\\s|<|>|!|=|is null|is not null)/i", $str)
+    if not preg_match("/(\\s|<|>|!|=|is null|is not null)/i", $str)?
       return false
 
 

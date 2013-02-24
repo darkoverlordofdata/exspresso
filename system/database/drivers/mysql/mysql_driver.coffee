@@ -186,7 +186,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
     #  "DELETE FROM TABLE" returns 0 affected rows This hack modifies
     #  the query so that it returns the number of affected rows
     if @delete_hack is true
-      if preg_match('/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/i', $sql)
+      if preg_match('/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/i', $sql)?
         $sql = preg_replace("/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/", "DELETE FROM $1 WHERE 1=1", $sql)
 
 

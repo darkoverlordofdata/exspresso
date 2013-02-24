@@ -327,12 +327,12 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
     #  Was a Zip file requested?
     if $prefs['format'] is 'zip'
       #  If they included the .zip file extension we'll remove it
-      if preg_match("|.+?\.zip$|", $prefs['filename'])
+      if preg_match("|.+?\\.zip$|", $prefs['filename'])?
         $prefs['filename'] = str_replace('.zip', '', $prefs['filename'])
         
       
       #  Tack on the ".sql" file extension if needed
-      if not preg_match("|.+?\.sql$|", $prefs['filename'])
+      if not preg_match("|.+?\\.sql$|", $prefs['filename'])?
         $prefs['filename']+='.sql'
         
       

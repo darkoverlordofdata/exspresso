@@ -49,7 +49,7 @@
 #
 if not function_exists('valid_email')
   exports.valid_email = valid_email = ($address) ->
-    return if ( not preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) then false else true
+    return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/i", $address)?) then false else true
     
   
 

@@ -43,8 +43,6 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   FLASH_NEW               = ':new:'     # flash data key new flag
   FLASH_OLD               = ':old:'     # flash data key old flag
 
-  req                     : null        # http request object
-  res                     : null        # http response object
   #
   # expose config as public properties
   #
@@ -91,22 +89,19 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
       @sess_expiration = (60 * 60 * 24 * 365 * 2)
 
     # Is there an http request?
-    if $controller.req?
-
-      $req = @req = $controller.req
-      $res = @res = $controller.res
+    if @req?
 
       # initialize userdata for this session
       @_userdata = {}
 
       # expose flashdata method in views
-      if $res.locals?
+      if @res.locals?
         if express.version[0] is '3'
-          $res.locals.flashdata = @flashdata
+          @res.locals.flashdata = @flashdata
         else
-          $res.local('flashdata', @flashdata)
+          @res.local('flashdata', @flashdata)
       else
-        $res.flashdata = @flashdata
+        @res.flashdata = @flashdata
 
       #  Delete 'old' flashdata (from last request)
       @_flashdata_sweep()
@@ -117,7 +112,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
       log_message('debug', "Session routines successfully run")
 
     else # we're booting, initialize the driver
-      $controller.server.session @
+      @server.session @
 
 
   #

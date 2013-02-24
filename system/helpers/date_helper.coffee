@@ -360,7 +360,7 @@ if not function_exists('human_to_unix')
     $datestr = trim($datestr)
     $datestr = preg_replace("/\h20+/", ' ', $datestr)
 
-    if not preg_match('/^[0-9]{2,4}\-[0-9]{1,2}\-[0-9]{1,2}\s[0-9]{1,2}:[0-9]{1,2}(?::[0-9]{1,2})?(?:\s[AP]M)?$/i', $datestr)
+    if not preg_match('/^[0-9]{2,4}\\-[0-9]{1,2}\\-[0-9]{1,2}\\s[0-9]{1,2}:[0-9]{1,2}(?::[0-9]{1,2})?(?:\\s[AP]M)?$/i', $datestr)?
       return false
 
 
@@ -377,7 +377,7 @@ if not function_exists('human_to_unix')
     $hour = if (strlen($ex['0']) is 1) then '0' + $ex['0'] else $ex['0']
     $min = if (strlen($ex['1']) is 1) then '0' + $ex['1'] else $ex['1']
 
-    if $ex['2']?  and preg_match('/[0-9]{1,2}/', $ex['2'])
+    if $ex['2']?  and preg_match('/[0-9]{1,2}/', $ex['2'])?
       $sec = if (strlen($ex['2']) is 1) then '0' + $ex['2'] else $ex['2']
 
     else

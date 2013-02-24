@@ -774,7 +774,7 @@ class Exspresso_Upload
     #  <a, <body, <head, <html, <img, <plaintext, <pre, <script, <table, <title
     #  title is basically just in SVG, but we filter it anyhow
     
-    if not preg_match('/<(a|body|head|html|img|plaintext|pre|script|table|title)[\s>]/i', $opening_bytes)
+    if not preg_match('/<(a|body|head|html|img|plaintext|pre|script|table|title)[\\s>]/i', $opening_bytes)?
       return true#  its an image, no "triggers" detected in the first 256 bytes, we're good
       
     

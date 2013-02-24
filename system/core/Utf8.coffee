@@ -127,7 +127,9 @@ class global.Exspresso_Utf8
   # @return	bool
   #
   _is_ascii : ($str) ->
-    return (preg_match('/[^\x00-\x7F]/S', $str) is 0)
+    #not preg_match('/[^\\x00-\\x7F]/', $str)?
+    not /[^\x00-\x7F]/.test($str)
+
     
   
   #  --------------------------------------------------------------------

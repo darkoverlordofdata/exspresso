@@ -36,73 +36,29 @@
 #
 class global.Exspresso_Security
   
-  #
-  # Random Hash for protecting URLs
-  #
-  # @var string
-  # @access protected
-  #
-  _xss_hash: ''
-  #
-  # Random Hash for Cross Site Request Forgery Protection Cookie
-  #
-  # @var string
-  # @access protected
-  #
-  _csrf_hash: ''
-  #
-  # Expiration time for Cross Site Request Forgery Protection Cookie
-  # Defaults to two hours (in seconds)
-  #
-  # @var int
-  # @access protected
-  #
-  _csrf_expire: 7200
-  #
-  # Token name for Cross Site Request Forgery Protection Cookie
-  #
-  # @var string
-  # @access protected
-  #
-  _csrf_token_name: 'ex_csrf_token'
-  #
-  # Cookie name for Cross Site Request Forgery Protection Cookie
-  #
-  # @var string
-  # @access protected
-  #
-  _csrf_cookie_name: 'ex_csrf_token'
-  #
-  # List of never allowed strings
-  #
-  # @var array
-  # @access protected
-  #
-  _never_allowed_str:
-    'document.cookie'   :'[removed]'
-    'document.write'    :'[removed]'
-    '.parentNode'       :'[removed]'
-    '.innerHTML'        :'[removed]'
-    'window.location'   :'[removed]'
-    '-moz-binding'      :'[removed]'
-    '<!--'              :'&lt;!--'
-    '-->'               :'--&gt;'
-    '<![CDATA['         :'&lt;![CDATA['
-    '<comment>'         :'&lt;comment&gt;'
+  _xss_hash             : ''              # Random Hash for protecting URLs
+  _csrf_hash            : ''              # Random Hash for Cross Site Request Forgery Protection Cookie
+  _csrf_expire          : 7200            # Expiration time for Cross Site Request Forgery Protection Cookie
+  _csrf_token_name      : 'ex_csrf_token' # Token name for Cross Site Request Forgery Protection Cookie
+  _csrf_cookie_name     : 'ex_csrf_token' # Cookie name for Cross Site Request Forgery Protection Cookie
+  _never_allowed_str    :                 # List of never allowed strings
+    'document.cookie'   : '[removed]'
+    'document.write'    : '[removed]'
+    '.parentNode'       : '[removed]'
+    '.innerHTML'        : '[removed]'
+    'window.location'   : '[removed]'
+    '-moz-binding'      : '[removed]'
+    '<!--'              : '&lt;!--'
+    '-->'               : '--&gt;'
+    '<![CDATA['         : '&lt;![CDATA['
+    '<comment>'         : '&lt;comment&gt;'
     
   
-  #  never allowed, regex replacement 
-  #
-  # List of never allowed regex replacement
-  #
-  # @var array
-  # @access protected
-  #
-  _never_allowed_regex = [
-    'javascript\s*:'
-    'expression\s*(\(|&\#40;)' #  CSS and IE
-    'vbscript\s*:' #  IE, surprise!
-    'Redirect\s+302'
+  _never_allowed_regex : [                # List of never allowed regex replacement
+    'javascript\s*:'                      #  javascript
+    'expression\s*(\(|&\#40;)'            #  CSS and IE
+    'vbscript\s*:'                        #  IE, surprise!
+    'Redirect\s+302'                      #  Redirects
     "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?"
     ]
   
@@ -128,8 +84,6 @@ class global.Exspresso_Security
     
     log_message('debug', "Security Class Initialized")
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Verify Cross Site Request Forgery Protection
@@ -164,8 +118,6 @@ class global.Exspresso_Security
     return @
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Set Cross Site Request Forgery Protection Cookie
   #
@@ -177,16 +129,13 @@ class global.Exspresso_Security
     
     if $secure_cookie and (empty(@$_SERVER['HTTPS']) or strtolower(@$_SERVER['HTTPS']) is 'off') 
       return false
-      
-    
+
     setcookie(@_csrf_cookie_name, @_csrf_hash, $expire, config_item('cookie_path'), config_item('cookie_domain'), $secure_cookie)
     
     log_message('debug', "CRSF cookie Set")
     
     return @
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Show CSRF Error
@@ -196,8 +145,6 @@ class global.Exspresso_Security
   csrf_show_error :  ->
     show_error('The action you have requested is not allowed.')
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Get CSRF Hash
@@ -210,8 +157,6 @@ class global.Exspresso_Security
     return @_csrf_hash
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Get CSRF Token Name
   #
@@ -222,8 +167,6 @@ class global.Exspresso_Security
   get_csrf_token_name :  ->
     return @_csrf_token_name
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # XSS Clean
@@ -283,8 +226,8 @@ class global.Exspresso_Security
     # these are the ones that will pose security problems.
     #
     ##
-    $str = preg_replace_callback("/[a-z]+=([\'\"]).*?$1/si", [@, '_convert_attribute'], $str)
-    $str = preg_replace_callback("/<\w+.*?(?=>|<|$)/si", [@, '_decode_entity'], $str)
+    $str = preg_replace_callback("/[a-z]+=([\\'\\\"]).*?$1/mig", [@, '_convert_attribute'], $str)
+    $str = preg_replace_callback("/<\w+.*?(?=>|<|$)/mig", [@, '_decode_entity'], $str)
     # Remove Invisible Characters Again!
     $str = remove_invisible_characters($str)
     ##
@@ -312,7 +255,7 @@ class global.Exspresso_Security
     if $is_image is true       #  Images have a tendency to have the PHP short opening and
       #  closing tags every so often so we skip those and only
       #  do the long opening tags.
-      $str = preg_replace('/<\?(php)/i', "&lt;?\\1", $str)
+      $str = preg_replace('/<\\?(php)/i', "&lt;?$1", $str)
     else
       $str = str_replace(['<?', '?' + '>'], ['&lt;?', '?&gt;'], $str)
     ##
@@ -330,8 +273,8 @@ class global.Exspresso_Security
 
       $wordlen = strlen($word)
       for $i in [0...$wordlen]
-        $temp+=substr($word, $i, 1) + "\s*"
-      $str = preg_replace_callback('#(' + substr($temp, 0,  - 3) + ')(\W)#is', [@, '_compact_exploded_words'], $str)
+        $temp+=substr($word, $i, 1) + "\\s*"
+      $str = preg_replace_callback('#(' + substr($temp, 0,  - 3) + ')(\\W)#im', [@, '_compact_exploded_words'], $str)
     # Remove disallowed Javascript in links or img tags
     # We used to do some version comparisons and use of stripos for PHP5,
     # but it is dog slow compared to these simplified non-capturing
@@ -342,13 +285,13 @@ class global.Exspresso_Security
       #  That way valid stuff like "dealer to" does not become "dealerto"
       $original = $str
 
-      if preg_match("/<a/i", $str) then $str = preg_replace_callback("#<a\s+([^>]*?)(>|$)#si", [@, '_js_link_removal'], $str)
+      if preg_match("/<a/i", $str)? then $str = preg_replace_callback("#<a\\s+([^>]*?)(>|$)#mig", [@, '_js_link_removal'], $str)
 
 
-      if preg_match("/<img/i", $str) then $str = preg_replace_callback("#<img\s+([^>]*?)(\s?/?>|$)#si", [@, '_js_img_removal'], $str)
+      if preg_match("/<img/i", $str)? then $str = preg_replace_callback("#<img\\s+([^>]*?)(\\s?/?>|$)#mig", [@, '_js_img_removal'], $str)
 
 
-      if preg_match("/script/i", $str) or preg_match("/xss/i", $str) then $str = preg_replace("#<(/*)(script|xss)(.*?)\>#si", '[removed]', $str)
+      if preg_match("/script/i", $str)? or preg_match("/xss/i", $str)? then $str = preg_replace("#<(/*)(script|xss)(.*?)\\>#mig", '[removed]', $str)
 
       break unless $original isnt $str
     # delete $original
@@ -365,7 +308,7 @@ class global.Exspresso_Security
     # Becomes: &lt;blink&gt;
     #
     $naughty = 'alert|applet|audio|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|isindex|layer|link|meta|object|plaintext|style|script|textarea|title|video|xml|xss'
-    $str = preg_replace_callback('#<(/*\s*)(' + $naughty + ')([^><]*)([><]*)#is', [@, '_sanitize_naughty_html'], $str)
+    $str = preg_replace_callback('#<(/*\\s*)(' + $naughty + ')([^><]*)([><]*)#img', [@, '_sanitize_naughty_html'], $str)
     
     #
     # Sanitize naughty scripting elements
@@ -379,7 +322,7 @@ class global.Exspresso_Security
     # For example:	eval('some code')
     # Becomes:		eval&#40;'some code'&#41;
     #
-    $str = preg_replace('#(alert|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\s*)\((.*?)\)#si', "\\1\\2&#40;\\3&#41;", $str)
+    $str = preg_replace('#(alert|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\\s*)\\((.*?)\\)#mig', "$1$2&#40;$3&#41;", $str)
 
     #  Final clean up
     #  This adds a bit of extra precaution in case
@@ -403,8 +346,6 @@ class global.Exspresso_Security
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Random Hash for protecting URLs
   #
@@ -417,8 +358,6 @@ class global.Exspresso_Security
 
     return @_xss_hash
 
-  #  --------------------------------------------------------------------
-  
   #
   # HTML Entities Decode
   #
@@ -439,12 +378,11 @@ class global.Exspresso_Security
       return $str
       
     
-    $str = html_entity_decode($str, ENT_COMPAT, $charset)
-    $str = preg_replace('~&#x(0*[0-9a-f]{2,5})~ei', 'chr(hexdec("\\1"))', $str)
-    return preg_replace('~&#([0-9]{2,4})~e', 'chr(\\1)', $str)
+    #$str = html_entity_decode($str, ENT_COMPAT, $charset)
+    $str = htmlspecialchars($str)
+    $str = preg_replace('~&#x(0*[0-9a-f]{2,5})~i', 'chr(hexdec("$1"))', $str)
+    return preg_replace('~&#([0-9]{2,4})~', 'chr($1)', $str)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Filename Security
@@ -455,37 +393,37 @@ class global.Exspresso_Security
   #
   sanitize_filename : ($str, $relative_path = false) ->
     $bad = [
-      "../", 
-      "<!--", 
-      "-->", 
-      "<", 
-      ">", 
-      "'", 
-      '"', 
-      '&', 
-      '$', 
-      '#', 
-      '{', 
-      '}', 
-      '[', 
-      ']', 
-      '=', 
-      ';', 
-      '?', 
-      "%20", 
-      "%22", 
-      "%3c", #  <
-      "%253c", #  <
-      "%3e", #  >
-      "%0e", #  >
-      "%28", #  (
-      "%29", #  )
-      "%2528", #  (
-      "%26", #  &
-      "%24", #  $
-      "%3f", #  ?
-      "%3b", #  ;
-      "%3d"#  =
+      "../" 
+      "<!--" 
+      "-->" 
+      "<" 
+      ">" 
+      "'" 
+      '"' 
+      '&' 
+      '$' 
+      '#' 
+      '{' 
+      '}' 
+      '[' 
+      ']' 
+      '=' 
+      ';' 
+      '?' 
+      "%20" 
+      "%22" 
+      "%3c"     #  <
+      "%253c"   #  <
+      "%3e"     #  >
+      "%0e"     #  >
+      "%28"     #  (
+      "%29"     #  )
+      "%2528"   #  (
+      "%26"     #  &
+      "%24"     #  $
+      "%3f"     #  ?
+      "%3b"     #  ;
+      "%3d"     #  =
       ]
     
     if not $relative_path 
@@ -497,8 +435,6 @@ class global.Exspresso_Security
     return stripslashes(str_replace($bad, '', $str))
     
   
-  #  ----------------------------------------------------------------
-  
   #
   # Compact Exploded Words
   #
@@ -508,11 +444,9 @@ class global.Exspresso_Security
   # @param	type
   # @return	type
   #
-  _compact_exploded_words : ($matches) ->
-    return preg_replace('/\s+/s', '', $matches[1]) + $matches[2]
+  _compact_exploded_words : ($matches...) ->
+    return preg_replace('/\\s+/gm', '', $matches[1]) + $matches[2]
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Remove Evil HTML Attributes (like evenhandlers and style)
@@ -546,7 +480,7 @@ class global.Exspresso_Security
       $attribs = {}
       
       #  find occurrences of illegal attribute strings without quotes
-      preg_match_all('/(' + implode('|', $evil_attributes) + ')\s*=\s*([^\s>]*)/is', $str, $matches, PREG_SET_ORDER)
+      preg_match_all('/(' + implode('|', $evil_attributes) + ')\\s*=\\s*([^\\s>]*)/img', $str, $matches, PREG_SET_ORDER)
       
       for $attr in $matches
         
@@ -554,7 +488,7 @@ class global.Exspresso_Security
         
       
       #  find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
-      preg_match_all("/(" + implode('|', $evil_attributes) + ")\s*=\s*(\x22|\x27)([^\\2]*?)(\\2)/is", $str, $matches, PREG_SET_ORDER)
+      preg_match_all("/(" + implode('|', $evil_attributes) + ")\\s*=\\s*(\\x22|\\x27)([^\\\\2]*?)(\\\\2)/img", $str, $matches, PREG_SET_ORDER)
       
       for $attr in $matches
         $attribs.push preg_quote($attr[0], '/')
@@ -562,15 +496,12 @@ class global.Exspresso_Security
       
       #  replace illegal attribute strings that are inside an html tag
       if count($attribs) > 0 
-        $str = preg_replace("/<(\/?[^><]+?)([^A-Za-z<>\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\s><])([><]*)/i", '<$1 $3$5$6$7', $str,  - 1, $count)
-        
-      
+        $str = preg_replace("/<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\\s><])([><]*)/i", '<$1 $3$5$6$7', $str,  - 1, $count)
+
       break unless $count
     
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Sanitize Naughty HTML
@@ -580,7 +511,7 @@ class global.Exspresso_Security
   # @param	array
   # @return	string
   #
-  _sanitize_naughty_html : ($matches) ->
+  _sanitize_naughty_html : ($matches...) =>
     #  encode opening brace
     $str = '&lt;' + $matches[1] + $matches[2] + $matches[3]
     
@@ -590,8 +521,6 @@ class global.Exspresso_Security
     
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # JS Link Removal
@@ -604,14 +533,12 @@ class global.Exspresso_Security
   # @param	array
   # @return	string
   #
-  _js_link_removal : ($match) ->
-    return str_replace($match[1], preg_replace('#href=.*?(alert\(|alert&\#40;|javascript\:|livescript\:|mocha\:|charset\=|window\.|document\.|\.cookie|<script|<xss|data\s*:)#si', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
+  _js_link_removal : ($match...) =>
+    return str_replace($match[1], preg_replace('#href=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|data\\s*:)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
     ), 
     $match[0]
     )
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # JS Image Removal
@@ -624,14 +551,12 @@ class global.Exspresso_Security
   # @param	array
   # @return	string
   #
-  _js_img_removal : ($match) ->
-    return str_replace($match[1], preg_replace('#src=.*?(alert\(|alert&\#40;|javascript\:|livescript\:|mocha\:|charset\=|window\.|document\.|\.cookie|<script|<xss|base64\s*,)#si', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
+  _js_img_removal : ($match...) =>
+    return str_replace($match[1], preg_replace('#src=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|base64\\s*,)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
     ), 
     $match[0]
     )
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Attribute Conversion
@@ -641,11 +566,9 @@ class global.Exspresso_Security
   # @param	array
   # @return	string
   #
-  _convert_attribute : ($match) ->
+  _convert_attribute : ($match...) =>
     return str_replace(['>', '<', '\\'], ['&gt;', '&lt;', '\\\\'], $match[0])
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Filter Attributes
@@ -658,13 +581,12 @@ class global.Exspresso_Security
   _filter_attributes : ($str) ->
     $out = ''
     
-    if preg_match_all('#\s*[a-z\-]+\s*=\s*(\x22|\x27)([^\\1]*?)\\1#is', $str, $matches)       for $match in $matches[0]
-        $out+=preg_replace("#/\*.*?\*/#s", '', $match)
+    if preg_match_all('#\\s*[a-z\\-]+\\s*=\\s*(\\x22|\\x27)([^\\\\1]*?)\\\\1#img', $str, $matches)
+    for $match in $matches[0]
+      $out+=preg_replace("#/\\*.*?\\*/#mg", '', $match)
 
     return $out
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # HTML Entity Decode Callback
@@ -674,11 +596,9 @@ class global.Exspresso_Security
   # @param	array
   # @return	string
   #
-  _decode_entity : ($match) ->
+  _decode_entity : ($match...) =>
     return @entity_decode($match[0], strtoupper(config_item('charset')))
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Validate URL entities
@@ -695,7 +615,7 @@ class global.Exspresso_Security
     
     #  901119URL5918AMP18930PROTECT8198
     
-    $str = preg_replace('|\&([a-z\_0-9\-]+)\=([a-z\_0-9\-]+)|i', @xss_hash() + "\\1=\\2", $str)
+    $str = preg_replace('|\\&([a-z\\_0-9\\-]+)\\=([a-z\\_0-9\\-]+)|i', @xss_hash() + "$1=$2", $str)
     
     #
     # Validate standard character entities
@@ -704,7 +624,7 @@ class global.Exspresso_Security
     # the conversion of entities to ASCII later.
     #
     #
-    $str = preg_replace('#(&\#?[0-9a-z]{2,})([\x00-\x20])*;?#i', "\\1;\\2", $str)
+    $str = preg_replace('#(&\\#?[0-9a-z]{2,})([\\x00-\\x20])*;?#i', "$1;$2", $str)
     
     #
     # Validate UTF16 two byte encoding (x00)
@@ -712,7 +632,7 @@ class global.Exspresso_Security
     # Just as above, adds a semicolon if missing.
     #
     #
-    $str = preg_replace('#(&\#x?)([0-9A-F]+);?#i', "\\1\\2;", $str)
+    $str = preg_replace('#(&\\#x?)([0-9A-F]+);?#i', "$1$2;", $str)
     
     #
     # Un-Protect GET variables in URLs
@@ -721,8 +641,6 @@ class global.Exspresso_Security
     
     return $str
     
-  
-  #  ----------------------------------------------------------------------
   
   #
   # Do Never Allowed
@@ -736,13 +654,10 @@ class global.Exspresso_Security
     $str = str_replace(array_keys(@_never_allowed_str), @_never_allowed_str, $str)
     
     for $regex in @_never_allowed_regex
-      $str = preg_replace('#' + $regex + '#is', '[removed]', $str)
-      
-    
+      $str = preg_replace('#' + $regex + '#im', '[removed]', $str)
+
     return $str
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set Cross Site Request Forgery Protection Cookie
@@ -755,15 +670,14 @@ class global.Exspresso_Security
       #  We don't necessarily want to regenerate it with
       #  each page load since a page could contain embedded
       #  sub-pages causing this feature to fail
-      if @$_COOKIE[@_csrf_cookie_name]?  and preg_match('#^[0-9a-f]{32}$#iS', @$_COOKIE[@_csrf_cookie_name]) is 1 
+      if @$_COOKIE[@_csrf_cookie_name]?  and preg_match('#^[0-9a-f]{32}$#i', @$_COOKIE[@_csrf_cookie_name])?
         return @_csrf_hash = @$_COOKIE[@_csrf_cookie_name]
       
       return @_csrf_hash = md5(uniqid(rand(), true))
     
     return @_csrf_hash
-    
-  
-  
+
+
 module.exports = Exspresso_Security
 
 #  End of file Security.php 

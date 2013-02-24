@@ -381,6 +381,26 @@ exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
 
   $text
 
+#
+# Remove Invisible Characters
+#
+# This prevents sandwiching null characters
+# between ascii characters, like Java\0script.
+#
+# @access	public
+# @param	string
+# @return	string
+#
+exports.remove_invisible_characters = remove_invisible_characters = ($str, $url_encoded = true) ->
+
+  #  every control character except newline (dec 10)
+  #  carriage return (dec 13), and horizontal tab (dec 09)
+
+  if $url_encoded
+    #     url encoded 00-08, 11, 12, 14, 15       url encoded 16-31
+    $str = $str.replace(/%0[0-8bcef]/g, '').replace(/%1[0-9a-f]/g, '')
+
+  $str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/g, '')  #  00-08, 11, 12, 14-31, 127
 
 #  ------------------------------------------------------------------------
 #

@@ -98,8 +98,7 @@ class global.Exspresso_Pagination
     #  If our item count or per-page total is zero there is no need to continue.
     if @_total_rows is 0 or @_per_page is 0
       return ''
-      
-    
+
     #  Calculate the total number of pages
     $num_pages = ceil(@_total_rows / @_per_page)
     
@@ -123,7 +122,7 @@ class global.Exspresso_Pagination
         #  Prep the current page - no funny business!
         @_cur_page = parseInt(@_cur_page, 10)
         
-      
+
     @_num_links = parseInt(@_num_links)
     
     if @_num_links < 1
@@ -142,7 +141,7 @@ class global.Exspresso_Pagination
     
     $uri_page_number = @_cur_page
     @_cur_page = floor((@_cur_page / @_per_page) + 1)
-    log_message 'debug', 'cur_page = %d', @_cur_page
+    log_message 'debug', 'cur_page = %s', @_cur_page
 
     #  Calculate the start and end numbers. These determine
     #  which number to start and end the digit links with

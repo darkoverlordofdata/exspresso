@@ -150,7 +150,7 @@ class global.Exspresso_User_agent
 
     if is_array(@_platforms) and count(@_platforms) > 0
       for $key, $val of @_platforms
-        if preg_match("|" + preg_quote($key) + "|i", @_agent)
+        if preg_match("|" + preg_quote($key) + "|i", @_agent)?
           @_platform = $val
           return true
 
