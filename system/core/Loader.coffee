@@ -326,6 +326,9 @@ class global.Exspresso_Loader
 
     if $return is true then return DB #($params, $active_record)
 
+    @controller.db = DB
+    return
+    
     # Load the DB class
     defineProperty @controller, 'db'
       enumerable  : true
