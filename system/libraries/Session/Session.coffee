@@ -111,8 +111,8 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
 
       log_message('debug', "Session routines successfully run")
 
-    else # we're booting, initialize the driver
-      @server.session @
+    else @server.session @ # we're booting, initialize the driver
+
 
 
   #
@@ -132,10 +132,9 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
 
     # parse the session id
     if $req.headers.cookie?
-      $m = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie)
-      if $m?
-        $m = $m[1].split('.')[0]
-        $req.session.session_id = urldecode($m).split(':')[1]
+      if ($match = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie))?
+        $sid = $match[1].split('.')[0]
+        $req.session.session_id = urldecode($sid).split(':')[1]
 
     # set reasonable session defaults
     $req.session.uid            = $req.session.uid || User_model.UID_ANONYMOUS

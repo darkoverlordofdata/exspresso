@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #  Cache_dummy.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -11,25 +11,21 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 
-
-{cache_info, clean, defined, delete, get, get_metadata, is_supported, save}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
+<% if not defined('BASEPATH') then die ('No direct script access allowed')
 #
-# Exspresso
+# CodeIgniter
 #
 # An open source application development framework for PHP 4.3.2 or newer
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2006 - 2011 EllisLab, Inc.
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
+# @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
+# @copyright	Copyright (c) 2006 - 2012 EllisLab, Inc.
+# @license		http://codeigniter.com/user_guide/license.html
+# @link		http://codeigniter.com
 # @since		Version 2.0
 # @filesource
 #
@@ -37,16 +33,16 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #  ------------------------------------------------------------------------
 
 #
-# Exspresso Dummy Caching Class
+# CodeIgniter Dummy Caching Class
 #
-# @package		Exspresso
+# @package		CodeIgniter
 # @subpackage	Libraries
 # @category	Core
-# @author		darkoverlordofdata
+# @author		ExpressionEngine Dev Team
 # @link
 #
 
-class Exspresso_Cache_dummy extends Exspresso_Driver
+class CI_Cache_dummy extends CI_Driver
   
   #
   # Get
@@ -56,10 +52,9 @@ class Exspresso_Cache_dummy extends Exspresso_Driver
   # @param 	string
   # @return 	Boolean		FALSE
   #
-  get($id)
-  {
-  return false
-  }
+  get : ($id) ->
+    return false
+    
   
   #  ------------------------------------------------------------------------
   
@@ -72,10 +67,9 @@ class Exspresso_Cache_dummy extends Exspresso_Driver
   #
   # @return 	boolean		TRUE, Simulating success
   #
-  save($id, $data, $ttl = 60)
-  {
-  return true
-  }
+  save : ($id, $data, $ttl = 60) ->
+    return true
+    
   
   #  ------------------------------------------------------------------------
   
@@ -85,10 +79,9 @@ class Exspresso_Cache_dummy extends Exspresso_Driver
   # @param 	mixed		unique identifier of the item in the cache
   # @param 	boolean		TRUE, simulating success
   #
-  delete($id)
-  {
-  return true
-  }
+  delete : ($id) ->
+    return true
+    
   
   #  ------------------------------------------------------------------------
   
@@ -97,10 +90,9 @@ class Exspresso_Cache_dummy extends Exspresso_Driver
   #
   # @return 	boolean		TRUE, simulating success
   #
-  clean()
-  {
-  return true
-  }
+  clean :  ->
+    return true
+    
   
   #  ------------------------------------------------------------------------
   
@@ -110,10 +102,9 @@ class Exspresso_Cache_dummy extends Exspresso_Driver
   # @param 	string		user/filehits
   # @return 	boolean		FALSE
   #
-  cache_info($type = null)
-  {
-  return false
-  }
+  cache_info : ($type = null) ->
+    return false
+    
   
   #  ------------------------------------------------------------------------
   
@@ -123,10 +114,9 @@ class Exspresso_Cache_dummy extends Exspresso_Driver
   # @param 	mixed		key to get cache metadata on
   # @return 	boolean		FALSE
   #
-  get_metadata($id)
-  {
-  return false
-  }
+  get_metadata : ($id) ->
+    return false
+    
   
   #  ------------------------------------------------------------------------
   
@@ -136,18 +126,15 @@ class Exspresso_Cache_dummy extends Exspresso_Driver
   #
   # @return TRUE;
   #
-  is_supported()
-  {
-  return true
-  }
+  is_supported :  ->
+    return true
+    
   
   #  ------------------------------------------------------------------------
   
   
-
-register_class 'Exspresso_Cache_dummy', Exspresso_Cache_dummy
-module.exports = Exspresso_Cache_dummy
+module.exports = CI_Cache_dummy
 #  End Class
 
-#  End of file Cache_apc.php 
-#  Location: ./system/libraries/Cache/drivers/Cache_apc.php 
+#  End of file Cache_dummy.php 
+#  Location: ./system/libraries/Cache/drivers/Cache_dummy.php 

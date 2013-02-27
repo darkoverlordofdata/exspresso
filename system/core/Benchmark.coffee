@@ -39,8 +39,6 @@
 #
 class global.Exspresso_Benchmark
 
-  marker            : null  # hash to store benchmark results
-
   constructor: ->
 
     defineProperties @,

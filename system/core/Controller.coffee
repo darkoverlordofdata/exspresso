@@ -31,40 +31,19 @@
 # child objects, they will run in the Controller context.
 #
 
-class global.Exspresso_Controller
-
-  _queue            : null  # async function queue
-  req               : null  # http request object
-  res               : null  # http response object
-  $_COOKIE          : null  # http cookies
-  $_FILES           : null  # http file upload vars
-  $_GET             : null  # http get vars
-  $_POST            : null  # http post vars
-  $_SERVER          : null  # server environment info
-  module            : null  # module parsed from the uri
-  class             : null  # class parsed from the uri
-  method            : null  # method parsed from the uri
-  controller        : null  # controller (this)
-  queue             : null  # access to view or add to _queue
-  run               : null  # runs _queue
-  redirect          : null  # http header redirect
-  render            : null  # render output to the browser
-  BM                : null  # Expresso_Benchmark
-  config            : null  # Expresso_Config
-  uni               : null  # Expresso_Utf8
-  server            : null  # Expresso_Server
-  router            : null  # Expresso_Router
-  lang              : null  # Expresso_Lang
-  load              : null  # Expresso_Loader
-  uri               : null  # Expresso_URI
-  input             : null  # Expresso_Input
-  output            : null  # Expresso_Output
+class global.Exspresso_Controller extends Exspresso_Object
 
   #
   # Initialize Controller objects
   #
   # @access	public
   # @param  object    Benchmark object
+  # @param  object    Server object
+  # @param  object    Hooks object
+  # @param  object    Config object
+  # @param  object    Utf8 object
+  # @param  object    Lang object
+  # @param  object    Router object
   # @param	object    Request object
   # @param	object    Response object
   # @param	string    module name
@@ -72,55 +51,55 @@ class global.Exspresso_Controller
   # @param	string    method name
   # @return	void
   #
-  constructor: ($BM, $req, $res, $module, $class, $method) ->
+  constructor: ($SRV, $BM, $EXT, $CFG, $UNI, $URI, $RTR, $OUT, $SEC, $IN, $LANG, $req, $res, $module, $class, $method) ->
 
     log_message 'debug', "Controller Class Initialized"
-    $this = @
 
-    defineProperties $this,
-      _queue        : {enumerable: false, writeable: false, value: []}
-      $_COOKIE      : {enumerable: true,  writeable: false, value: $req.cookies}
-      $_FILES       : {enumerable: true,  writeable: false, value: $req.files}
-      $_GET         : {enumerable: true,  writeable: false, value: $req.query}
-      $_POST        : {enumerable: true,  writeable: false, value: $req.body}
-      $_SERVER      : {enumerable: true,  writeable: false, value: $req.server}
-      BM            : {enumerable: true,  writeable: false, value: $BM}
-      req           : {enumerable: true,  writeable: false, value: $req}
-      res           : {enumerable: true,  writeable: false, value: $res}
-      module        : {enumerable: true,  writeable: false, value: $module}
-      class         : {enumerable: true,  writeable: false, value: $class}
-      method        : {enumerable: true,  writeable: false, value: $method}
-      controller    : {enumerable: true,  writeable: false, value: $this}
-      queue         : {enumerable: true,  writeable: false, value: $this.queue}
-      run           : {enumerable: true,  writeable: false, value: $this.run}
-      redirect      : {enumerable: true,  writeable: false, value: $this.redirect}
-      render        : {enumerable: true,  writeable: false, value: $this.render}
-      config        : {enumerable: true,  writeable: false, value: Exspresso.config}
-      uni           : {enumerable: true,  writeable: false, value: Exspresso.uni}
-      server        : {enumerable: true,  writeable: false, value: Exspresso.server}
-      router        : {enumerable: true,  writeable: false, value: Exspresso.router}
-      lang          : {enumerable: true,  writeable: false, value: Exspresso.lang}
+    @properties
 
-    $BM.mark 'loading_time:_base_classes_start'
+      # uri segments
+      module      : $module             # uri module name
+      class       : $class              # uri class name
+      method      : $method             # uri method name
 
-    defineProperties $this,
-      load          : {enumerable: true,  writeable: false, value: load_new('Loader',  'core', $this)}
+      # http objects
+      req         : $req                # http Request object
+      res         : $res                # http Response object
+      $_COOKIE    : $req.cookies        # http cookies object
+      $_FILES     : $req.files          # http download files object
+      $_GET       : $req.query          # http get object
+      $_POST      : $req.body           # http post object
+      $_SERVER    : $req.server         # http server properties
 
-    defineProperties $this,
-      uri           : {enumerable: true,  writeable: false, value: load_new('URI',     'core', $this)}
+      # methods
+      queue       : @queue              # accessor method for @_queue
+      run         : @run                # run the queue
+      redirect    : @redirect           # redirect url
+      render      : @render             # render view
 
-    defineProperties $this,
-      input         : {enumerable: true,  writeable: false, value: load_new('Input',   'core', $this)}
+      # properties
+      _queue      : []                  # async queue
 
-    defineProperties $this,
-      output        : {enumerable: true,  writeable: false, value: load_new('Output',  'core', $this)}
+      # Assign all the class objects that were instantiated by the
+      # bootstrap file (Exspresso.coffee) to local class variables
+      # so that Exspresso can run as one big super object.
+
+      server      : $SRV                # Exspresso_Server
+      bm          : $BM                 # Exspresso_Benchmark
+      hooks       : $EXT                # Exspresso_Hooks
+      config      : $CFG                # Exspresso_Config
+      uni         : $UNI                # Exspresso_Utf8
+      uri         : $URI                # Exspresso_URI
+      router      : $RTR                # Exspresso_Router
+      output      : $OUT                # Exspresso_Output
+      input       : $IN                 # Exspresso_Input
+      security    : $SEC                # Exspresso_Security
+      lang        : $LANG               # Exspresso_Lang
 
 
+    @property load: load_mixin('Loader', 'core', @)
     @load.initialize()  # do the autoloads
-    $BM.mark 'loading_time:_base_classes_end'
 
-    # From here forward, custom controllers
-    # shall use the @load.method to load classes
 
   #
   # Render a view
@@ -131,12 +110,12 @@ class global.Exspresso_Controller
   # @param	function
   # @return	void
   #
-  render: ($view, $data = {}, $next) =>
+  render: ($view, $data = {}, $next) ->
 
     @res.render $view, create_mixin(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
-      Exspresso.hooks._call_hook 'post_controller', @
+      @hooks._call_hook 'post_controller', @
       return show_error($err) if $err
       @res.send $html
 
@@ -147,7 +126,7 @@ class global.Exspresso_Controller
   # @param	function
   # @return	array
   #
-  queue: ($fn) =>
+  queue: ($fn) ->
     if $fn then @_queue.push($fn) else @_queue
 
   #
@@ -158,7 +137,7 @@ class global.Exspresso_Controller
   # @param	function
   # @return	void
   #
-  run: ($queue, $next) =>
+  run: ($queue, $next) ->
 
     if typeof $next isnt 'function'
       [$queue, $next] = [@_queue, $queue]
@@ -186,8 +165,8 @@ class global.Exspresso_Controller
   # @param	string
   # @return	void
   #
-  redirect: ($url) =>
-    Exspresso.hooks._call_hook 'post_controller', @
+  redirect: ($url) ->
+    @hooks._call_hook 'post_controller', @
     @res.redirect $url
 
 

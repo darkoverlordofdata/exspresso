@@ -143,8 +143,7 @@ class global.Exspresso_Typography
       
       #  Are we dealing with a tag? If so, we'll skip the processing for this cycle.
       #  Well also set the "process" flag which allows us to skip <pre> tags and a few other things.
-      $match = preg_match("#<(/*)(" + @block_elements + ").*?>#", $chunk)
-      if $match.length > 0
+      if ($match = preg_match("#<(/*)(" + @block_elements + ").*?>#", $chunk))?
         if preg_match("#" + @skip_elements + "#", $match[2]).length > 0
           $process = if ($match[1] is '/') then true else false
 

@@ -99,9 +99,7 @@ class global.Exspresso_Hooks
   #
   _call_hook : ($which = '', $instance = null) ->
 
-    log_message 'debug', '$HOOK %s', $which
-
-    if not @enabled or  not @hooks[$which]? 
+    if not @enabled or  not @hooks[$which]?
       return false
 
     if @hooks[$which][0]?  and is_array(@hooks[$which][0])

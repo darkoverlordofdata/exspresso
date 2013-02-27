@@ -46,11 +46,9 @@ class global.Exspresso_Utf8
   # Determines if UTF-8 support is to be enabled
   #
   #
-  constructor :  ->
+  constructor : ($CFG) ->
     log_message('debug', "Utf8 Class Initialized")
     
-    $CFG = Exspresso.config
-
     if preg_match('/./', 'é')? and $CFG.item('charset') is 'UTF-8'
     #  PCRE must support UTF-8
     #  Application charset must be UTF-8 then

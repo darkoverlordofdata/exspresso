@@ -192,8 +192,7 @@ class global.Exspresso_Migration
         $name = basename($f[0], '.coffee')
 
         # Filename validations
-        $match = preg_match('/^\\d{3}_(\\w+)$/', $name)
-        if $match.length > 0
+        if ($match = preg_match('/^\\d{3}_(\\w+)$/', $name))?
           $match[1] = strtolower($match[1])
 
           # Cannot repeat a migration at different steps

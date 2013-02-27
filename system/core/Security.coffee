@@ -55,11 +55,11 @@ class global.Exspresso_Security
     
   
   _never_allowed_regex : [                # List of never allowed regex replacement
-    'javascript\s*:'                      #  javascript
-    'expression\s*(\(|&\#40;)'            #  CSS and IE
-    'vbscript\s*:'                        #  IE, surprise!
-    'Redirect\s+302'                      #  Redirects
-    "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?"
+    'javascript\\s*:'                     #  javascript
+    'expression\\s*(\\(|&\\#40;)'         #  CSS and IE
+    'vbscript\\s*:'                       #  IE, surprise!
+    'Redirect\\s+302'                     #  Redirects
+    "([\\\"'])?data\\s*:[^\\\\1]*?base64[^\\\\1]*?,[^\\\\1]*?\\\\1?"
     ]
   
   #
@@ -67,7 +67,7 @@ class global.Exspresso_Security
   #
   # @return	void
   #
-  constructor :  ->
+  constructor :  (@$_COOKIE, @$_GET, @$_POST, @$_SERVER) ->
     #  Is CSRF protection enabled?
     if config_item('csrf_protection') is true 
       #  CSRF config
@@ -162,7 +162,7 @@ class global.Exspresso_Security
   #
   # Getter Method
   #
-  # @return 	string 	self::csrf_token_name
+  # @return 	string 	self::cstrf_token_name
   #
   get_csrf_token_name :  ->
     return @_csrf_token_name
@@ -345,7 +345,7 @@ class global.Exspresso_Security
     log_message('debug', "XSS Filtering completed")
     return $str
     
-  
+  time = -> Math.floor(Date.now()/100000)
   #
   # Random Hash for protecting URLs
   #
@@ -353,8 +353,8 @@ class global.Exspresso_Security
   #
   xss_hash :  ->
     if @_xss_hash is '' 
-      mt_srand()
-      @_xss_hash = md5(time() + mt_rand(0, 1999999999))
+      # mt_srand()
+      @_xss_hash = md5(''+time() + mt_rand(0, 1999999999))
 
     return @_xss_hash
 
@@ -464,8 +464,9 @@ class global.Exspresso_Security
   # @return string The string with the evil attributes removed
   #
   _remove_evil_attributes : ($str, $is_image) ->
+
     #  All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
-    $evil_attributes = ['on\w*', 'style', 'xmlns', 'formaction']
+    $evil_attributes = ['on\\w*', 'style', 'xmlns', 'formaction']
     
     if $is_image is true
       #
@@ -477,26 +478,30 @@ class global.Exspresso_Security
     
     while true
       $count = 0
-      $attribs = {}
+      $attribs = []
       
       #  find occurrences of illegal attribute strings without quotes
-      preg_match_all('/(' + implode('|', $evil_attributes) + ')\\s*=\\s*([^\\s>]*)/img', $str, $matches, PREG_SET_ORDER)
-      
-      for $attr in $matches
-        
-        $attribs.push preg_quote($attr[0], '/')
-        
-      
+      $matches = preg_match_all('/(' + implode('|', $evil_attributes) + ')\\s*=\\s*([^\\s>]*)/img', $str, $matches, PREG_SET_ORDER)
+
+      if $matches?
+        for $attr in $matches
+          $attribs.push preg_quote($attr[0], '/')
+
       #  find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
-      preg_match_all("/(" + implode('|', $evil_attributes) + ")\\s*=\\s*(\\x22|\\x27)([^\\\\2]*?)(\\\\2)/img", $str, $matches, PREG_SET_ORDER)
-      
-      for $attr in $matches
-        $attribs.push preg_quote($attr[0], '/')
-        
-      
+      $matches = preg_match_all("/(" + implode('|', $evil_attributes) + ")\\s*=\\s*(\\x22|\\x27)([^\\\\2]*?)(\\\\2)/img", $str, $matches, PREG_SET_ORDER)
+
+      if $matches?
+        for $attr in $matches
+          $attribs.push preg_quote($attr[0], '/')
+
       #  replace illegal attribute strings that are inside an html tag
-      if count($attribs) > 0 
-        $str = preg_replace("/<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\\s><])([><]*)/i", '<$1 $3$5$6$7', $str,  - 1, $count)
+
+      if count($attribs) > 0
+        #$str = preg_replace("/<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\\s><])([><]*)/i", '<$1 $3$5$6$7', $str,  - 1, $count)
+        $re = new RegExp("<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\\s><])([><]*)", 'i')
+        $count = $re.match($str).length
+        $str = $str.replace($re, '<$1 $3$5$6$7')
+        counsole.log $re
 
       break unless $count
     
@@ -582,8 +587,8 @@ class global.Exspresso_Security
     $out = ''
     
     if preg_match_all('#\\s*[a-z\\-]+\\s*=\\s*(\\x22|\\x27)([^\\\\1]*?)\\\\1#img', $str, $matches)
-    for $match in $matches[0]
-      $out+=preg_replace("#/\\*.*?\\*/#mg", '', $match)
+      for $match in $matches[0]
+        $out+=preg_replace("#/\\*.*?\\*/#mg", '', $match)
 
     return $out
     

@@ -44,7 +44,7 @@ class global.Exspresso_Output
   _final_output       : ''    # resultant html output
   _cache_expiration   : 0     # cache flag
 
-  constructor: ($controller) ->
+  constructor: (@req, @res, @EXP, @BM, @CFG, @URI) ->
 
     log_message('debug', "Output Class Initialized")
 
@@ -62,7 +62,6 @@ class global.Exspresso_Output
       $mimes = require(APPPATH + 'config/mimes' + EXT)
 
     @_mime_types = $mimes
-    #load_class('Cache', 'core')
 
   #
   # Get Output
@@ -220,28 +219,23 @@ class global.Exspresso_Output
   # @access	public
   # @return	mixed
   #
-  _display: ($output = '') ->
-
+  _display: ($controller = null, $output = '') ->
     #
     # ------------------------------------------------------
     #  Is there a "post_controller" hook?
     # ------------------------------------------------------
     #
-    Exspresso.hooks._call_hook 'post_controller', @
+    @EXP._call_hook 'post_controller', @
 
     #  Set the output data
     if $output is ''
       $output = @_final_output
 
-    #  --------------------------------------------------------------------
-
     #  Do we need to write a cache file?  Only if the controller does not have its
     #  own _output() method and we are not dealing with a cache file, which we
     #  can determine by the existence of the $controller object above
-    if @_cache_expiration > 0 and not method_exists(@, '_output')
+    if @_cache_expiration > 0 and $controller? is true and not method_exists(@, '_output')
       @_write_cache($output)
-
-    #  --------------------------------------------------------------------
 
     #  Parse out the elapsed time and memory usage,
     #  then swap the pseudo-variables with the data
@@ -255,49 +249,49 @@ class global.Exspresso_Output
       $output = str_replace('{memory_usage}', $memory, $output)
       $output = str_replace('{memory_usage}', $memory, $output)
 
-    #  --------------------------------------------------------------------
-
     #  Is compression requested?
     #if @config.item('compress_output') is true and @_zlib_oc is false
     #  if extension_loaded('zlib')
     #    if @$_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
     #      ob_start('ob_gzhandler')
 
-    #  --------------------------------------------------------------------
-
     #  Are there any server headers to send?
     if count(@_headers) > 0
       for $header in @_headers
         @res.header($header[0], $header[1])
 
-    #  --------------------------------------------------------------------
+    # Does the $controller object exist?
+    # If not we know we are dealing with a cache file so we'll
+    # simply echo out the data and exit.
+    if not $controller?
+      @res.send $output
+      log_message('debug', "Final output sent to browser")
+      log_message('debug', "Total execution time: " + $elapsed)
+      return true
+
 
     #  Do we need to generate profile data?
     #  If so, load the Profile class and run it.
     if @_enable_profiler is true
-      @profiler = @load.library('profiler')
+      $controller.load.library('profiler')
 
       if not empty(@_profiler_sections)
-        @profiler.set_sections(@_profiler_sections)
+        $controller.profiler.set_sections(@_profiler_sections)
 
       #  If the output data contains closing </body> and </html> tags
       #  we will remove them and add them back after we insert the profile data
-      $match = preg_match("|<footer[^]*?</html>|igm", $output)
-      if $match?
+      if ($match = preg_match("|<footer[^]*?</html>|igm", $output))?
         $output = preg_replace("|<footer[^]*?</html>|igm", '', $output)
-        $output+=@profiler.run()
+        $output+=$controller.profiler.run()
         $output+='</body></html>'
 
       else
-        $output+=@profiler.run()
-
-
-    #  --------------------------------------------------------------------
+        $output+=$controller.profiler.run()
 
     #  Does the controller contain a function named _output()?
     #  If so send the output there.  Otherwise, echo it.
-    if method_exists(@, '_output')
-      @_output($output)
+    if method_exists($controller, '_output')
+      $controller._output($output)
 
     else
       @res.send $output #  Send it to the browser!
@@ -315,7 +309,9 @@ class global.Exspresso_Output
   #
   _write_cache: ($output) ->
 
-    $path = @config.item('cache_path')
+    time = -> Math.floor(Date.now()/100000)
+
+    $path = @CFG.item('cache_path')
 
     $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 
@@ -323,8 +319,7 @@ class global.Exspresso_Output
       log_message('error', "Unable to write cache file: " + $cache_path)
       return
 
-
-    $uri = @config.item('base_url') + @config.item('index_page') + @uri.uri_string()
+    $uri = @CFG.item('base_url') + @CFG.item('index_page') + @URI.uri_string()
 
     $cache_path+=md5($uri)
 
@@ -350,30 +345,32 @@ class global.Exspresso_Output
   # @access	public
   # @return	void
   #
-  _display_cache: () ->
-    $cache_path = if (@config.item('cache_path') is '') then APPPATH + 'cache/' else @config.item('cache_path')
+  _display_cache: ($CFG, $URI) ->
+
+    time = -> Math.floor(Date.now()/100000)
+
+    $cache_path = if ($CFG.item('cache_path') is '') then APPPATH + 'cache/' else $CFG.item('cache_path')
 
     #  Build the file path.  The file name is an MD5 hash of the full URI
-    $uri = @config.item('base_url') + @config.item('index_page') + @uri.uri_string
+    $uri = $CFG.item('base_url') + $CFG.item('index_page') + $URI.uri_string()
 
     $filepath = $cache_path + md5($uri)
 
     if not file_exists($filepath)
       return false
 
+    #if not ($fp = fs.openSync($filepath, FOPEN_READ)) then return false
 
-    if not ($fp = fs.openSync($filepath, FOPEN_READ)) then return false
+    #$cache = ''
+    #if filesize($filepath) > 0
+    #  fs.readSync($fp, $cache, 0, filesize($filepath), null)
 
-    $cache = ''
-    if filesize($filepath) > 0
-      fs.readSync($fp, $cache, 0, filesize($filepath), null)
+    #fs.closeSync($fp)
 
-    fs.closeSync($fp)
-
+    $cache = String(fs.readFileSync($filepath))
     #  Strip out the embedded timestamp
-    if not preg_match("/(\\d+TS--->)/", $cache, $match)?
+    if not ($match = preg_match("/(\\d+TS--->)/", $cache))?
       return false
-
 
     #  Has the file expired? If so we'll delete it.
     if time()>=trim(str_replace('TS--->', '', $match['1']))
@@ -382,11 +379,10 @@ class global.Exspresso_Output
         log_message('debug', "Cache file has expired. File deleted")
         return false
 
-
-
     #  Display the cache
-    @_display(str_replace($match['0'], '', $cache))
     log_message('debug', "Cache file is current. Sending it to browser.")
+    @enable_profiler true
+    @_display(null, str_replace($match['0'], '', $cache))
     return true
 
 

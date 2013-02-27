@@ -48,7 +48,7 @@ class global.Exspresso_Lang
   #
   # @access  public
   #
-  constructor :  ->
+  constructor : (@CFG) ->
     @_language = {}
     @_is_loaded = []
     log_message 'debug', "Language Class Initialized"
@@ -68,7 +68,7 @@ class global.Exspresso_Lang
         @load($_lang)
       return @_language
 
-    $deft_lang = Exspresso.config.item('language')
+    $deft_lang = @CFG.item('language')
     $idiom = if ($lang is '') then $deft_lang else $lang
 
     if in_array($langfile + '_lang' + EXT, @_is_loaded, true)

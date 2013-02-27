@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #  Cache.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -11,27 +11,22 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 
-
-{__construct, __get, _initialize, cache_info, clean, defined, delete, get, get_metadata, in_array, is_supported, parent, save}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Exspresso
 #
-# An open source application development framework for PHP 4.3.2 or newer
+# An open source application development framework for coffee-script
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2006 - 2011 EllisLab, Inc.
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
-# @since		Version 2.0
-# @filesource
+# @package    Exspresso
+# @author     darkoverlordofdata
+# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
+# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @license    MIT License
+# @link       http://darkoverlordofdata.com
+# @since      Version 1.0
 #
 
 #  ------------------------------------------------------------------------
@@ -39,37 +34,27 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #
 # Exspresso Caching Class
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Core
-# @author		darkoverlordofdata
-# @link
 #
 class Exspresso_Cache extends Exspresso_Driver_Library
+
+  self = @
   
-  valid_drivers: [
+  $valid_drivers = [
     'cache_apc', 'cache_file', 'cache_memcached', 'cache_dummy'
     ]
   
-  _cache_path: null#  Path of cache files (if file-based cache)
-  _adapter: 'dummy'
-  _backup_driver: {}
-  
-  #  ------------------------------------------------------------------------
+  $_cache_path = null#  Path of cache files (if file-based cache)
+  $_adapter = 'dummy'
+  $_backup_driver
   
   #
   # Constructor
   #
   # @param array
   #
-  __construct($config = {})
-  {
-  if not empty($config)
-    @_initialize($config)
-    
-  }
-  
-  #  ------------------------------------------------------------------------
+  constructor : ($controller, $config = {}) ->
+    if not empty($config) then 
+      @_initialize($config)
   
   #
   # Get
@@ -80,13 +65,9 @@ class Exspresso_Cache extends Exspresso_Driver_Library
   # @param 	string
   # @return 	mixed		value that is stored/FALSE on failure
   #
-  get($id)
-  {
-  return @{@_adapter}.get($id)
-  }
-  
-  #  ------------------------------------------------------------------------
-  
+  get : ($id) ->
+    @[@_adapter].get($id)
+
   #
   # Cache Save
   #
@@ -96,12 +77,9 @@ class Exspresso_Cache extends Exspresso_Driver_Library
   #
   # @return 	boolean		true on success/false on failure
   #
-  save($id, $data, $ttl = 60)
-  {
-  return @{@_adapter}.save($id, $data, $ttl)
-  }
-  
-  #  ------------------------------------------------------------------------
+  save : ($id, $data, $ttl = 60) ->
+    @[@_adapter].save($id, $data, $ttl)
+    
   
   #
   # Delete from Cache
@@ -109,24 +87,18 @@ class Exspresso_Cache extends Exspresso_Driver_Library
   # @param 	mixed		unique identifier of the item in the cache
   # @return 	boolean		true on success/false on failure
   #
-  delete($id)
-  {
-  return @{@_adapter}.delete($id)
-  }
-  
-  #  ------------------------------------------------------------------------
+  delete : ($id) ->
+    @[@_adapter].delete($id)
+    
   
   #
   # Clean the cache
   #
   # @return 	boolean		false on failure/true on success
   #
-  clean()
-  {
-  return @{@_adapter}.clean()
-  }
-  
-  #  ------------------------------------------------------------------------
+  clean :  ->
+    @[@_adapter].clean()
+    
   
   #
   # Cache Info
@@ -134,12 +106,9 @@ class Exspresso_Cache extends Exspresso_Driver_Library
   # @param 	string		user/filehits
   # @return 	mixed		array on success, false on failure
   #
-  cache_info($type = 'user')
-  {
-  return @{@_adapter}.cache_info($type)
-  }
-  
-  #  ------------------------------------------------------------------------
+  cache_info : ($type = 'user') ->
+    @[@_adapter].cache_info($type)
+    
   
   #
   # Get Cache Metadata
@@ -147,12 +116,9 @@ class Exspresso_Cache extends Exspresso_Driver_Library
   # @param 	mixed		key to get cache metadata on
   # @return 	mixed		return value from child method
   #
-  get_metadata($id)
-  {
-  return @{@_adapter}.get_metadata($id)
-  }
-  
-  #  ------------------------------------------------------------------------
+  get_metadata : ($id) ->
+    @[@_adapter].get_metadata($id)
+    
   
   #
   # Initialize
@@ -162,48 +128,36 @@ class Exspresso_Cache extends Exspresso_Driver_Library
   # @param	array
   # @return 	void
   #
-  _initialize($config)
-  {
-  $default_config = [
-    'adapter', 
-    'memcached'
+  _initialize : ($config) ->
+    $default_config = [
+      'adapter', 
+      'memcached'
     ]
-  
-  for $key in $default_config
-    if $config[$key]? 
-      $param = '_' + $key
-      
-      @{$param} = $config[$key]
-      
     
-  
-  if $config['backup']? 
-    if in_array('cache_' + $config['backup'], @valid_drivers)
-      @_backup_driver = $config['backup']
-      
-    
-  }
-  
-  #  ------------------------------------------------------------------------
-  
+    for $key in $default_config
+      if $config[$key]?  then 
+        $param = '_' + $key
+        @[$param] = $config[$key]
+
+    if $config['backup']?  then 
+      if in_array('cache_' + $config['backup'], @valid_drivers) then 
+        @_backup_driver = $config['backup']
+        
   #
   # Is the requested driver supported in this environment?
   #
   # @param 	string	The driver to test.
   # @return 	array
   #
-  is_supported($driver)
-  {
-  @$support = @$support ? {} = {}
-  
-  if not $support[$driver]? 
-    $support[$driver] = @{$driver}.is_supported()
+  is_supported : ($driver) ->
+    self.support = self.support ? {}
     
-  
-  return $support[$driver]
-  }
-  
-  #  ------------------------------------------------------------------------
+    if not self.support[$driver]?  then
+      self[$driver] = @[$driver].is_supported()
+      
+    
+    return self.support[$driver]
+    
   
   #
   # __get()
@@ -211,23 +165,19 @@ class Exspresso_Cache extends Exspresso_Driver_Library
   # @param 	child
   # @return 	object
   #
-  __get($child)
-  {
-  $obj = parent::__get($child)
-  
-  if not @is_supported($child)
-    @_adapter = @_backup_driver
+  __get : ($child) ->
+    $obj = parent::__get($child)
     
-  
-  return $obj
-  }
+    if not @is_supported($child) then 
+      @_adapter = @_backup_driver
+      
+    
+    return $obj
+    
   
   #  ------------------------------------------------------------------------
   
-
-register_class 'Exspresso_Cache', Exspresso_Cache
-module.exports = Exspresso_Cache
 #  End Class
-
+module.exports = Exspresso_Cache
 #  End of file Cache.php 
 #  Location: ./system/libraries/Cache/Cache.php 

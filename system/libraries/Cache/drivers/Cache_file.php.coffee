@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #  Cache_file.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -11,25 +11,20 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 
-
-{__construct, cache_info, chmod, clean, config, defined, delete, delete_files, file_exists, filemtime, get, get_dir_file_info, get_instance, get_metadata, helper, is_array, is_supported, item, load, read_file, save, serialize, time, unlink, unserialize, write_file}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
 #
-# Exspresso
+# CodeIgniter
 #
 # An open source application development framework for PHP 4.3.2 or newer
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2006 - 2011 EllisLab, Inc.
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
+# @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
+# @copyright	Copyright (c) 2006 - 2012 EllisLab, Inc.
+# @license		http://codeigniter.com/user_guide/license.html
+# @link		http://codeigniter.com
 # @since		Version 2.0
 # @filesource
 #
@@ -37,31 +32,30 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #  ------------------------------------------------------------------------
 
 #
-# Exspresso Memcached Caching Class
+# CodeIgniter Memcached Caching Class
 #
-# @package		Exspresso
+# @package		CodeIgniter
 # @subpackage	Libraries
 # @category	Core
-# @author		darkoverlordofdata
+# @author		ExpressionEngine Dev Team
 # @link
 #
 
-class Exspresso_Cache_file extends Exspresso_Driver
+class CI_Cache_file extends CI_Driver
   
-  _cache_path: {}
+  $_cache_path
   
   #
   # Constructor
   #
-  __construct()
-  {
-  $controller = Exspresso
-  $controller.load.helper('file')
-  
-  $path = $controller.config.item('cache_path')
-  
-  @_cache_path = if ($path is '') then APPPATH + 'cache/' else $path
-  }
+  constructor :  ->
+    $CI = get_instance()
+    $CI.load.helper('file')
+    
+    $path = $CI.config.item('cache_path')
+    
+    @_cache_path = if ($path is '') then APPPATH + 'cache/' else $path
+    
   
   #  ------------------------------------------------------------------------
   
@@ -71,22 +65,21 @@ class Exspresso_Cache_file extends Exspresso_Driver
   # @param 	mixed		unique key id
   # @return 	mixed		data on success/false on failure
   #
-  get($id)
-  {
-  if not file_exists(@_cache_path + $id)
-    return false
+  get : ($id) ->
+    if not file_exists(@_cache_path + $id) then 
+      return false
+      
     
-  
-  $data = read_file(@_cache_path + $id)
-  $data = unserialize($data)
-  
-  if time() > $data['time'] + $data['ttl']
-    unlink(@_cache_path + $id)
-    return false
+    $data = read_file(@_cache_path + $id)
+    $data = unserialize($data)
     
-  
-  return $data['data']
-  }
+    if time() > $data['time'] + $data['ttl'] then 
+      unlink(@_cache_path + $id)
+      return false
+      
+    
+    return $data['data']
+    
   
   #  ------------------------------------------------------------------------
   
@@ -99,21 +92,20 @@ class Exspresso_Cache_file extends Exspresso_Driver
   #						- Default is 60 seconds
   # @return 	boolean		true on success/false on failure
   #
-  save($id, $data, $ttl = 60)
-  {
-  $contents = 
-    'time':time(,
-  'ttl':$ttl, 
-  'data':$data
-  )
-  
-  if write_file(@_cache_path + $id, serialize($contents))
-    chmod(@_cache_path + $id, 0o0777)
-    return true
+  save : ($id, $data, $ttl = 60) ->
+    $contents = 
+      'time':time(,
+    'ttl':$ttl, 
+    'data':$data
+    )
     
-  
-  return false
-  }
+    if write_file(@_cache_path + $id, serialize($contents)) then 
+      chmod(@_cache_path + $id, 0o0777)
+      return true
+      
+    
+    return false
+    
   
   #  ------------------------------------------------------------------------
   
@@ -123,10 +115,9 @@ class Exspresso_Cache_file extends Exspresso_Driver
   # @param 	mixed		unique identifier of item in cache
   # @return 	boolean		true on success/false on failure
   #
-  delete($id)
-  {
-  return unlink(@_cache_path + $id)
-  }
+  delete : ($id) ->
+    return unlink(@_cache_path + $id)
+    
   
   #  ------------------------------------------------------------------------
   
@@ -135,10 +126,9 @@ class Exspresso_Cache_file extends Exspresso_Driver
   #
   # @return 	boolean		false on failure/true on success
   #
-  clean()
-  {
-  return delete_files(@_cache_path)
-  }
+  clean :  ->
+    return delete_files(@_cache_path)
+    
   
   #  ------------------------------------------------------------------------
   
@@ -150,10 +140,9 @@ class Exspresso_Cache_file extends Exspresso_Driver
   # @param 	string	user/filehits
   # @return 	mixed 	FALSE
   #
-  cache_info($type = null)
-  {
-  return get_dir_file_info(@_cache_path)
-  }
+  cache_info : ($type = null) ->
+    return get_dir_file_info(@_cache_path)
+    
   
   #  ------------------------------------------------------------------------
   
@@ -163,31 +152,29 @@ class Exspresso_Cache_file extends Exspresso_Driver
   # @param 	mixed		key to get cache metadata on
   # @return 	mixed		FALSE on failure, array on success.
   #
-  get_metadata($id)
-  {
-  if not file_exists(@_cache_path + $id)
-    return false
-    
-  
-  $data = read_file(@_cache_path + $id)
-  $data = unserialize($data)
-  
-  if is_array($data)
-    $data = $data['data']
-    $mtime = filemtime(@_cache_path + $id)
-    
-    if not $data['ttl']? 
+  get_metadata : ($id) ->
+    if not file_exists(@_cache_path + $id) then 
       return false
       
     
-    return 
-      'expire':$mtime + $data['ttl'], 
-      'mtime':$mtime
+    $data = read_file(@_cache_path + $id)
+    $data = unserialize($data)
+    
+    if is_array($data) then 
+      $mtime = filemtime(@_cache_path + $id)
+      
+      if not $data['ttl']?  then 
+        return false
+        
+      
+      return 
+        'expire':$mtime + $data['ttl'], 
+        'mtime':$mtime
+        
       
     
-  
-  return false
-  }
+    return false
+    
   
   #  ------------------------------------------------------------------------
   
@@ -198,16 +185,13 @@ class Exspresso_Cache_file extends Exspresso_Driver
   #
   # @return boolean
   #
-  is_supported()
-  {
-  return is_really_writable(@_cache_path)
-  }
+  is_supported :  ->
+    return is_really_writable(@_cache_path)
+    
   
   #  ------------------------------------------------------------------------
   
-
-register_class 'Exspresso_Cache_file', Exspresso_Cache_file
-module.exports = Exspresso_Cache_file
+module.exports = CI_Cache_file
 #  End Class
 
 #  End of file Cache_file.php 

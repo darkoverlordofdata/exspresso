@@ -47,7 +47,7 @@ class global.Exspresso_Input
                                   # when GET, POST or COOKIE data is encountered
   _enable_csrf            : false # Enables a CSRF cookie token to be set.
 
-  constructor: ($controller) ->
+  constructor: (@$UNI, @$SEC, @$_COOKIE, @$_GET, @$_POST, @$_SERVER) ->
 
     log_message('debug', "Input Class Initialized")
 
@@ -74,7 +74,7 @@ class global.Exspresso_Input
       return null #false
 
     if $xss_clean is true
-      return @security.xss_clean($array[$index])
+      return @$SEC.xss_clean($array[$index])
 
     return $array[$index]
 
@@ -391,7 +391,7 @@ class global.Exspresso_Input
 
     #  CSRF Protection check on HTTP requests
     if @_enable_csrf is true and  not @is_cli_request()
-      @security.csrf_verify()
+      @$SEC.csrf_verify()
 
     log_message('debug', "Global POST and COOKIE data sanitized")
 
@@ -413,14 +413,14 @@ class global.Exspresso_Input
 
     #  Clean UTF-8 if supported
     if UTF8_ENABLED is true
-      $str = @uni.clean_string($str)
+      $str = @$UNI.clean_string($str)
 
     #  Remove control characters
     $str = remove_invisible_characters($str)
 
     #  Should we filter the input data?
     if @_enable_xss is true
-      $str = @security.xss_clean($str)
+      $str = @$SEC.xss_clean($str)
 
     #  Standardize newlines if needed
     if @_standardize_newlines is true
@@ -445,7 +445,7 @@ class global.Exspresso_Input
 
     #  Clean UTF-8 if supported
     if UTF8_ENABLED is true
-      $str = @uni.clean_string($str)
+      $str = @$UNI.clean_string($str)
 
     return $str
 
@@ -476,7 +476,7 @@ class global.Exspresso_Input
       return false
 
     if $xss_clean is true
-      return @security.xss_clean(@headers[$index])
+      return @$SEC.xss_clean(@headers[$index])
 
     return @headers[$index]
 

@@ -81,8 +81,8 @@ class global.Exspresso_Config
   load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
 
     if in_array($file, @_is_loaded, true) then return @item($file)
-    $_module = Exspresso.router.fetch_module()
-    [$path, $file] = Modules.find($file, $_module, 'config/')
+    #$_module = Exspresso.router.fetch_module()
+    [$path, $file] = Modules.find($file, '', 'config/')
     if $path is false
       @_application_load($file, $use_sections, $fail_gracefully)
       return @item($file)

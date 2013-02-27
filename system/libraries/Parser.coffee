@@ -120,8 +120,8 @@ class global.Exspresso_Parser
       #  Send the final rendered output to the browser
       # ------------------------------------------------------
       #
-      if Exspresso.hooks._call_hook('display_override', @) is false
-        @output._display()
+      if @hooks._call_hook('display_override', @) is false
+        @output._display(@)
 
     return $template
     
@@ -192,8 +192,7 @@ class global.Exspresso_Parser
   # @return	mixed
   #
   _match_pair: ($string, $variable) ->
-    $match = preg_match("|" + preg_quote(@_l_delim) + $variable + preg_quote(@_r_delim) + "(.+?)" + preg_quote(@_l_delim) + '/' + $variable + preg_quote(@_r_delim) + "|s", $string)
-    if $match.length is 0
+    if not ($match = preg_match("|" + preg_quote(@_l_delim) + $variable + preg_quote(@_r_delim) + "(.+?)" + preg_quote(@_l_delim) + '/' + $variable + preg_quote(@_r_delim) + "|s", $string))?
       return false
 
     return $match

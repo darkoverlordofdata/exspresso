@@ -46,11 +46,6 @@
 ```
 
 
-## Loading
-
-
-    @mylib = @load.library('mylib')
-
 
 
 ## Error Handling

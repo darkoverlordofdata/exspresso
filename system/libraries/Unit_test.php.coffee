@@ -305,8 +305,7 @@ class Exspresso_Unit_test
       return
 
 
-    $match = preg_match("/\{rows\}([^]*?)\{\/rows\}/igm", @_template)
-    if not $match?
+    if not ($match = preg_match("/\\{rows\\}([^]*?)\\{\\/rows\\}/igm", @_template))?
       @_default_template()
       return 
       

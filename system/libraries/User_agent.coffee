@@ -168,8 +168,7 @@ class global.Exspresso_User_agent
 
     if is_array(@_browsers) and count(@_browsers) > 0
       for $key, $val of @_browsers
-        $match = preg_match("|" + preg_quote($key) + ".*?([0-9\\.]+)|i", @_agent)
-        if $match.length
+        if ($match = preg_match("|" + preg_quote($key) + ".*?([0-9\\.]+)|i", @_agent))?
           @_is_browser = true
           @_version = $match[1]
           @_browser = $val

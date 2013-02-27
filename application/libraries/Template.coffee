@@ -329,8 +329,9 @@ class global.Template
           #  Send the final rendered output to the browser
           # ------------------------------------------------------
           #
-          if Exspresso.hooks._call_hook('display_override', @) is false
-            @output._display()
+          #if @hooks._call_hook('display_override', @) is false
+          #  @output._display(@)
+          @next()
 
 
   #

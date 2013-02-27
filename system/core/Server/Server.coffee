@@ -324,6 +324,7 @@ class global.Exspresso_Server
       $_SERVER['HTTP_'+$key.toUpperCase().replace('-','_')] = $val
 
     $req.server = freeze($_SERVER)
+
     $next()
 
 module.exports = Exspresso_Server

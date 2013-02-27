@@ -69,6 +69,7 @@ exports.copyOwnProperties = ($dst, $src) ->
 
   defineProperties $dst, $properties
 
+
 #
 # Define Getter
 #
@@ -195,6 +196,42 @@ exports.create_mixin = ($object, $args...) ->
   # call the constructor
   $class.apply $this, $args[$pos..] if $class?
   $this
+
+class global.Exspresso_Object
+
+#
+# define a property
+#
+# @access	public
+# @param	object  propery attributes
+# @return	void
+#
+  property: ($def) ->
+    for $name, $object of $def
+      defineProperty @, $name,
+        enumerable  : if $name[0] is '_' then false else true
+        writeable   : false
+        value       : $object
+      return
+
+  #
+  # define a list of properties
+  #
+  # @access	public
+  # @param	object  propery attributes
+  # @return	void
+  #
+  properties: ($def) ->
+
+    $properties = {}
+    for $name, $object of $def
+      $properties[$name] =
+        enumerable  : if $name[0] is '_' then false else true
+        writeable   : false
+        value       : $object
+
+    defineProperties @, $properties
+
 
 
 #  ------------------------------------------------------------------------

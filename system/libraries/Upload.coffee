@@ -368,7 +368,7 @@ class Exspresso_Upload
   set_filename($path, $filename)
   {
   if @encrypt_name is true
-    mt_srand()
+    #mt_srand()
     $filename = md5(uniqid(mt_rand())) + @file_ext
     
   

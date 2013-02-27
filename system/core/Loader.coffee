@@ -763,18 +763,7 @@ class global.Exspresso_Loader
         $_return $err, $html
       else
         @controller.output.append_output $html
-        #
-        # ------------------------------------------------------
-        #  Send the final rendered output to the browser
-        # ------------------------------------------------------
-        #
-        if Exspresso.hooks._call_hook('display_override', @controller) is false
-          @controller.output._display()
-
-
-
-
-
+        @controller.next()
 
   #
   # Load class

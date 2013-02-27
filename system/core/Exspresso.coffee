@@ -40,25 +40,6 @@ define 'Exspresso', module.exports
 define 'Exspresso_VERSION', require(FCPATH + 'package.json').version
 
 #
-# ------------------------------------------------------
-#  Load the global functions
-# ------------------------------------------------------
-#
-require BASEPATH + 'core/Meta.coffee'
-require BASEPATH + 'core/Common.coffee'
-
-log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", Exspresso_VERSION
-
-#
-# ------------------------------------------------------
-#  Start the timer... tick tock tick tock...
-# ------------------------------------------------------
-#
-exports.BM = $BM = load_new('Benchmark', 'core', Exspresso)
-$BM.mark 'total_execution_time_start'
-$BM.mark 'loading_time:_base_classes_start'
-
-#
 #
 # Async job queue
 #
@@ -71,6 +52,14 @@ exports.queue = ($fn) ->
 
 #
 # ------------------------------------------------------
+#  Load the global functions
+# ------------------------------------------------------
+#
+require BASEPATH + 'core/Meta.coffee'
+require BASEPATH + 'core/Common.coffee'
+
+#
+# ------------------------------------------------------
 #  Load the framework constants
 # ------------------------------------------------------
 #
@@ -79,38 +68,36 @@ if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/consta
 else
   require APPPATH+'config/constants.coffee'
 
+log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", Exspresso_VERSION
+
+#
+# ------------------------------------------------------
+#  Start the timer... tick tock tick tock...
+# ------------------------------------------------------
+#
+$BM = exports.BM = load_new('Benchmark', 'core')
+$BM.mark 'total_execution_time_start'
+$BM.mark 'loading_time:_base_classes_start'
+
 #
 # ------------------------------------------------------
 #  Instantiate the hooks class
 # ------------------------------------------------------
 #
-exports.hooks = hooks = load_class('Hooks', 'core')
+$EXT = exports.hooks = load_class('Hooks', 'core')
 
 #
 # ------------------------------------------------------
 #  Is there a "pre_system" hook?
 # ------------------------------------------------------
 #
-hooks._call_hook 'pre_system'
+$EXT._call_hook 'pre_system'
 
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------
 #
-exports.config = load_class('Config', 'core')
-
-#
-# ------------------------------------------------------
-#  Instantiate the UTF-8 class
-# ------------------------------------------------------
-#
-# Note: Order here is rather important as the UTF-8
-# class needs to be used very early on, but it cannot
-# properly determine if UTf-8 can be supported until
-# after the Config class is instantiated.
-#
-#
-exports.uni = load_class('Utf8', 'core')
+$CFG = exports.config = load_class('Config', 'core')
 
 #
 # ------------------------------------------------------
@@ -120,22 +107,15 @@ exports.uni = load_class('Utf8', 'core')
 #   Get the 1st command line arg
 #     if it's not an option, then it's the driver name
 #
-$driver = if ~($argv[2] ? '').indexOf('-') then 'express' else $argv[2] ? 'express'
+$driver = if ~($argv[2] ? '').indexOf('-') then 'connect' else $argv[2] ? 'connect'
 
-exports.server = load_class('Server_'+$driver, 'core/Server/drivers')
+$SRV = exports.server = load_class('Server_'+$driver, 'core/Server/drivers')
 #
 # ------------------------------------------------------
 #  Instantiate the routing class and set the routing
 # ------------------------------------------------------
 #
-exports.router = load_class('Router', 'core')
-
-#
-# ------------------------------------------------------
-#  Load the Language class
-# ------------------------------------------------------
-#
-exports.lang = load_class('Lang', 'core')
+$RTR = exports.router = load_class('Router', 'core')
 
 #
 # ------------------------------------------------------
@@ -143,8 +123,6 @@ exports.lang = load_class('Lang', 'core')
 # ------------------------------------------------------
 #
 exports.load = load_class('Loader', 'core', Exspresso)
-
-# Set a mark point for benchmarking
 
 #
 # ------------------------------------------------------
@@ -155,22 +133,32 @@ exports.load = load_class('Loader', 'core', Exspresso)
 # Load the base controller class
 require BASEPATH+'core/Controller.coffee'
 
-if file_exists(APPPATH+'core/'+config_item('subclass_prefix')+'Controller.coffee')
+if file_exists(APPPATH + 'core/' + $CFG.config['subclass_prefix'] + 'Controller' + EXT)
+  requireAPPPATH + 'core/' + $CFG.config['subclass_prefix'] + 'Controller' + EXT
 
-  require APPPATH+'core/'+config_item('subclass_prefix')+'Controller.coffee'
 
-for $path, $uri of Exspresso.router.load_routes()
+#
+# ------------------------------------------------------
+# Bind each route to a contoller
+# ------------------------------------------------------
+#
+#   Invoke the controller when the request is received
+#
+#   @param string route
+#   @param string uti
+#   @return void
+#
+bind_route = ($path, $uri) ->
 
-  Exspresso.router.set_routing($uri)
+  $RTR._set_routing($uri)
 
-  # Load the local application controller
   # Note: The Router class automatically validates the controller path using the router->_validate_request().
   # If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
-  if not file_exists(APPPATH+'controllers/'+Exspresso.router.fetch_directory()+Exspresso.router.fetch_class()+EXT)
+  if not file_exists(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
 
     log_message "debug", 'Unable to load controller for %s', $uri
     log_message "debug", 'Please make sure the controller specified in your Routes.coffee file is valid.'
-    continue
+    return
 
   #
   # ------------------------------------------------------
@@ -181,30 +169,235 @@ for $path, $uri of Exspresso.router.load_routes()
   #  loader class can be called via the URI, nor can
   #  controller functions that begin with an underscore
   #
-  $class  = Exspresso.router.fetch_class()
-  $method = Exspresso.router.fetch_method()
+  $module = $RTR.fetch_module()
+  $class  = $RTR.fetch_class()
+  $method = $RTR.fetch_method()
 
   if $method[0] is '_' or Exspresso_Controller::[$method]?
-
     log_message "debug", "Controller not found: %s/%s", $class, $method
-    continue
+    return
 
   #
   # ------------------------------------------------------
-  #  Instantiate the requested controller
+  #  Load the local application controller
   # ------------------------------------------------------
   #
-  $class = require(APPPATH+'controllers/'+Exspresso.router.fetch_directory()+Exspresso.router.fetch_class()+EXT)
+  $Class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
 
-  Exspresso.router.bind $path, $class, $method
+  #
+  # Close over a bootstrap for the page and invoke the contoller method
+  #
+  #   Instantiates the controller and calls the requested method.
+  #   Any URI segments present (besides the class/function) will be passed
+  #   to the method for convenience
+  #
+  #   @param object   the server request object
+  #   @param object   the server response object
+  #   @param function the next middleware on the stack
+  #   @param array    the remaining uri arguments
+  #   @return void
+  #
+  $RTR.routes[$path] = ($req, $res, $next, $args...) =>
 
-$BM.mark 'loading_time:_base_classes_end'
+
+    # Bootstrap a controller. Load the core classes first.
+    # If we find cached output, just display that and bail.
+    # Pass the core objects to the controller constructor.
+    # Invoke the controller method.
+    try
+
+    #
+    # ------------------------------------------------------
+    #  Start the timer... tick tock tick tock...
+    # ------------------------------------------------------
+    #
+      $BM = load_new('Benchmark', 'core')
+      $BM.mark 'total_execution_time_start'
+      $BM.mark 'loading_time:_base_classes_start'
+
+      #
+      # ------------------------------------------------------
+      #  Instantiate the hooks class
+      # ------------------------------------------------------
+      #
+      $EXT = load_new('Hooks', 'core')
+
+      #
+      # ------------------------------------------------------
+      #  Is there a "pre_system" hook?
+      # ------------------------------------------------------
+      #
+      $EXT._call_hook('pre_system')
+
+      #
+      # ------------------------------------------------------
+      #  Instantiate the config class
+      # ------------------------------------------------------
+      #
+      $CFG = load_new('Config', 'core')
+
+      #
+      # ------------------------------------------------------
+      #  Instantiate the UTF-8 class
+      # ------------------------------------------------------
+      #
+      # Note: Order here is rather important as the UTF-8
+      # class needs to be used very early on, but it cannot
+      # properly determine if UTf-8 can be supported until
+      # after the Config class is instantiated.
+      #
+      #
+      $UNI = load_new('Utf8', 'core', $CFG)
+
+      #
+      # ------------------------------------------------------
+      #  Instantiate the URI class
+      # ------------------------------------------------------
+      #
+      $URI = load_new('URI', 'core', $req)
+
+      #
+      # ------------------------------------------------------
+      #  Instantiate the output class
+      # ------------------------------------------------------
+      #
+      $OUT = load_new('Output', 'core', $req, $res, $EXT, $BM, $CFG, $URI)
+
+      #
+      # ------------------------------------------------------
+      #	Is there a valid cache file?  If so, we're done...
+      # ------------------------------------------------------
+      #
+      if $EXT._call_hook('cache_override') is false
+        if $OUT._display_cache($CFG, $URI) is true
+          return
+
+      #
+      # -----------------------------------------------------
+      # Load the security class for xss and csrf support
+      # -----------------------------------------------------
+      #
+      $SEC = load_new('Security','core', $req.cookies, $req.query, $req.body, $req.server)
+
+      #
+      # ------------------------------------------------------
+      #  Load the Input class and sanitize globals
+      # ------------------------------------------------------
+      #
+      $IN = load_new('Input', 'core', $UNI, $SEC, $req.cookies, $req.query, $req.body, $req.server)
+
+      #
+      # ------------------------------------------------------
+      #  Load the Language class
+      # ------------------------------------------------------
+      #
+      $LANG = load_new('Lang', 'core', $CFG)
+
+      #  Set a mark point for benchmarking
+      $BM.mark('loading_time:_base_classes_end')
+
+
+      # ------------------------------------------------------
+      #  Is there a "pre_controller" hook?
+      # ------------------------------------------------------
+      #
+      $EXT._call_hook 'pre_controller'
+
+      #
+      # ------------------------------------------------------
+      #  Instantiate the requested controller
+      # ------------------------------------------------------
+      #
+      # Mark a start point so we can benchmark the controller
+      $BM.mark('controller_execution_time_( ' + $class + ' / ' + $method + ' )_start')
+
+      $controller = new $Class($SRV, $BM, $EXT, $CFG, $UNI, $URI, $RTR, $OUT, $SEC, $IN, $LANG, $req, $res, $module, $class, $method)
+      #
+      # ------------------------------------------------------
+      #  Is there a "post_controller_constructor" hook?
+      # ------------------------------------------------------
+      #
+      $EXT._call_hook 'post_controller_constructor', $controller
+
+    catch $err
+      return $next($err)
+
+    #
+    # Next ->
+    #
+    # This function is called by the controller when done.
+    # Send output to the browser and release resources.
+    #
+    $controller.next = ($err) ->
+
+      try
+        return $next($err) if $err
+        #  Mark a benchmark end point
+        $BM.mark('controller_execution_time_( ' + $class + ' / ' + $method + ' )_end')
+
+        #
+        # ------------------------------------------------------
+        #  Is there a "post_controller" hook?
+        # ------------------------------------------------------
+        #
+        $EXT._call_hook('post_controller')
+
+        #
+        # ------------------------------------------------------
+        #  Send the final rendered output to the browser
+        # ------------------------------------------------------
+        #
+        if $EXT._call_hook('display_override') is false
+          $OUT._display($controller)
+
+
+        #
+        # ------------------------------------------------------
+        #  Is there a "post_system" hook?
+        # ------------------------------------------------------
+        #
+        $EXT._call_hook('post_system')
+
+        #
+        # ------------------------------------------------------
+        #  Close the DB connection if one exists
+        # ------------------------------------------------------
+        #
+        if class_exists('CI_DB') and $controller.db?
+          $controller.db.close()
+
+      catch $err
+        return $next($err)
+
+    #
+    # ------------------------------------------------------
+    #  Run items in the post constructor queue
+    # ------------------------------------------------------
+    #
+    $BM.mark 'post_controller_que_start'
+    $controller.run ($err) ->
+      return $next($err) if $err
+      try
+
+        #  Call the requested method.
+        #  Any URI segments present (besides the class/function) will be passed to the method for convenience
+        $BM.mark 'post_controller_que_end'
+        $controller[$method].apply($controller, $args)
+
+      catch $err
+        $next $err
+
+
+
 #
 # ------------------------------------------------------
 #  Start me up...
 # ------------------------------------------------------
 #
-Exspresso.server.start Exspresso.router
+for $path, $uri of $RTR.load_routes()
+  bind_route $path, $uri
+
+$SRV.start $RTR
 
 # End of file Exspresso.coffee
 # Location: ./system/core/Exspresso.coffee

@@ -183,8 +183,7 @@ class global.Exspresso_Email
   #
   from: ($from, $name = '') ->
 
-    $match = preg_match('/\\<(.*)\\>/', $from)
-    if $match?
+    if ($match = preg_match('/\\<(.*)\\>/', $from))?
       $from = $match['1']
 
     if @validate
@@ -206,8 +205,7 @@ class global.Exspresso_Email
   #
   reply_to: ($replyto, $name = '') ->
 
-    $match = preg_match('/\\<(.*)\\>/', $replyto)
-    if $match?
+    if ($match = preg_match('/\\<(.*)\\>/', $replyto))?
       $replyto = $match['1']
 
     if @validate
@@ -533,8 +531,7 @@ class global.Exspresso_Email
   clean_email: ($email) ->
 
     if not is_array($email)
-      $match = preg_match('/\\<(.*)\\>/', $email)
-      if $match?
+      if ($match = preg_match('/\\<(.*)\\>/', $email))?
         return $match['1']
 
       else
@@ -543,8 +540,7 @@ class global.Exspresso_Email
     $clean_email = []
 
     for $addy in $email
-      $match = preg_match('/\<(.*)\>/', $addy)
-      if $match?
+      if ($match = preg_match('/\<(.*)\>/', $addy))?
         $clean_email.push $match['1']
 
       else
@@ -569,8 +565,7 @@ class global.Exspresso_Email
       return @word_wrap(@alt_message, '76')
 
 
-    $match = preg_match('/\\<body.*?\\>(.*)\\<\\/body\\>/mgi', @_body)
-    if $match?
+    if ($match = preg_match('/\\<body.*?\\>(.*)\\<\\/body\\>/mgi', @_body))?
       $body = $match['1']
 
     else

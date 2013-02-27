@@ -54,8 +54,6 @@ class global.Exspresso_Form_validation
   #
   constructor: ($controller, $rules = {}) ->
 
-    super $controller
-
     #  Validation rules can be stored in a config file.
     @_config_rules = $rules
     @_field_datam = {}
@@ -407,9 +405,7 @@ class global.Exspresso_Form_validation
     $next = false
     if in_array('required', $rules) is false and is_null($postdata)
       #  Before we bail out, does the rule contain a callback?
-      $match = preg_match("/(callback_\\w+)/", implode(' ', $rules))
-
-      if $match.length
+      if ($match = preg_match("/(callback_\\w+)/", implode(' ', $rules)))?
         $next = true
         $rules = '1':$match[1]
         
@@ -480,8 +476,7 @@ class global.Exspresso_Form_validation
       #  Strip the parameter (if exists) from the rule
       #  Rules can contain a parameter: max_length[5]
       $param = false
-      $match = preg_match("/(.*?)\\[(.*)\\]/", $rule)
-      if $match?
+      if ($match = preg_match("/(.*?)\\[(.*)\\]/", $rule))?
         $rule = $match[1]
         $param = $match[2]
 

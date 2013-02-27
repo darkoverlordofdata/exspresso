@@ -56,85 +56,6 @@ class global.Exspresso_Router
 
 
   #
-  # Controller binding
-  #
-  #   Invoke the controller when the request is received
-  #
-  #   @param string route
-  #   @param object $class
-  #   @param string method
-  #   @return void
-  #
-  bind: ($route, $class, $method) ->
-
-    $module = @fetch_module()
-    #
-    # Invoke the contoller method
-    #
-    #   Instantiates the controller and calls the requested method.
-    #   Any URI segments present (besides the class/function) will be passed
-    #   to the method for convenience
-    #
-    #   @param object   the server request object
-    #   @param object   the server response object
-    #   @param function the next middleware on the stack
-    #   @param array    the remaining arguments
-    #   @return void
-    #
-    @routes[$route] = ($req, $res, $next, $args...) =>
-
-      try
-
-      #
-      # ------------------------------------------------------
-      #  Start the timer... tick tock tick tock...
-      # ------------------------------------------------------
-      #
-        $BM = load_new('Benchmark', 'core', @)
-        $BM.mark 'total_execution_time_start'
-        #
-        # ------------------------------------------------------
-        #  Is there a "pre_controller" hook?
-        # ------------------------------------------------------
-        #
-        Exspresso.hooks._call_hook 'pre_controller'
-
-        #
-        # ------------------------------------------------------
-        #  Instantiate the requested controller
-        # ------------------------------------------------------
-        #
-        $BM.mark 'controller_execution_time_( '+$class.name+' / '+$method+' )_start'
-        $controller = new $class($BM, $req, $res, $module, $class.name, $method)
-
-        #
-        # ------------------------------------------------------
-        #  Is there a "post_controller_constructor" hook?
-        # ------------------------------------------------------
-        #
-        Exspresso.hooks._call_hook 'post_controller_constructor', $controller
-
-      catch $err
-        return $next($err)
-
-      $controller.run ($err) ->
-        return $next($err) if $err
-        try
-
-        #
-        # ------------------------------------------------------
-        #  Call the requested method
-        # ------------------------------------------------------
-        #
-          $controller[$method].apply($controller, $args)
-
-          # Mark a benchmark end point
-          $BM.mark 'controller_execution_time_( '+$class.name+' / '+$method+' )_end'
-
-        catch $err
-          $next $err
-
-  #
   # Set the route mapping
   #
   # This function determines what should be served based on the URI request,
@@ -143,7 +64,7 @@ class global.Exspresso_Router
   # @access	private
   # @return	void
   #
-  set_routing: ($uri) ->
+  _set_routing: ($uri) ->
 
     @_directory = ''
     @_module = ''

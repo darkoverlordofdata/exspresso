@@ -330,8 +330,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     
     #  Strip apart the condition and protect the identifiers
     # if preg_match('/([\w\.]+)([\W\s]+)(.+)/', $cond, $match)
-    $match = preg_match('/([\\w\\.]+)([\\W\\s]+)(.+)/', $cond)
-    if $match?
+    if ($match = preg_match('/([\\w\\.]+)([\\W\\s]+)(.+)/', $cond))?
       $match[1] = @_protect_identifiers($match[1])
       $match[3] = @_protect_identifiers($match[3])
       
@@ -346,7 +345,6 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
       @ar_cache_join.push $join
       @ar_cache_exists.push 'join'
       
-    
     return @
     
   

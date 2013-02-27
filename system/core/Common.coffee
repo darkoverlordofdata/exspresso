@@ -66,7 +66,7 @@ exports.is_really_writable = is_really_writable = ($file) ->
 
   #  We'll actually write a file then read it.  Bah...
   if is_dir($file)
-    $file = rtrim($file, '/') + '/' + md5(mt_rand(1, 100) + mt_rand(1, 100))
+    $file = rtrim($file, '/') + '/' + md5(''+mt_rand(1, 100) + mt_rand(1, 100))
 
     if ($fp = fopen($file, FOPEN_WRITE_CREATE)) is false
       return false
@@ -87,18 +87,70 @@ exports.is_really_writable = is_really_writable = ($file) ->
 #
 # Exspresso Object Creation
 #
-# Load the class if not already in cache.
 # Returns a new instance of the class.
 #
 # @access	public
 # @param	string	the class name being requested
 # @param	string	the directory where the class should be found
 # @param	string	the class name prefix
+# @param  object  list of params to pass to the constructor
 # @return	object
 #
-exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $controller) ->
+exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
-  if typeof $prefix isnt 'string' then [$prefix, $controller] = ['Exspresso_', $prefix]
+  if typeof $prefix isnt 'string'
+    [$prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9] = ['Exspresso_', $prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8]
+
+  #$prefix = 'Exspresso_'
+  #  Does the class exist?  If so, we're done...
+  if class_exists($prefix+$class)
+    #return create_mixin($controller, global[$prefix+$class], $controller)
+    return new global[$prefix+$class]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+
+  $name = false
+
+  #  Look for the class first in the native system/libraries folder
+  #  then in the local application/libraries folder
+  for $path in [BASEPATH, APPPATH]
+    if file_exists($path + $directory + '/' + $class + EXT)
+      $name = $prefix + $class
+
+      if not class_exists($name)
+        require $path + $directory + '/' + $class + EXT
+
+      break
+
+  #  Is the request a class extension?  If so we load it too
+  if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
+    $name = config_item('subclass_prefix') + $class
+
+    if not class_exists($name)
+      require APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT
+
+  #  Did we find the class?
+  if not class_exists($name)
+    die 'Unable to locate the specified class: ' + $class + EXT
+
+  #create_mixin($controller, global[$name], $controller)
+  return new global[$name]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+
+#
+# Exspresso Mixin Creation
+#
+# Returns a new instance of the class.
+# Create as mixin with a controller object.
+#
+# @access	public
+# @param	string	the class name being requested
+# @param	string	the directory where the class should be found
+# @param	string	the class name prefix
+# @param  object  Exspresso_Controller object
+# @return	object
+#
+exports.load_mixin = load_mixin = ($class, $directory = 'libraries', $prefix = 'Exspresso_', $controller) ->
+
+  if typeof $prefix isnt 'string'
+    [$prefix, $controller] = ['Exspresso_', $prefix]
 
   #  Does the class exist?  If so, we're done...
   if class_exists($prefix+$class)
@@ -129,7 +181,6 @@ exports.load_new = load_new = ($class, $directory = 'libraries', $prefix = 'Exsp
     die 'Unable to locate the specified class: ' + $class + EXT
 
   create_mixin($controller, global[$name], $controller)
-
 
 #
 # Exspresso Class registry

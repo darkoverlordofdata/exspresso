@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
 #  Cache_apc.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -11,25 +11,21 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
+# This file was ported from php to coffee-script using php2coffee
 #
 #
 
-
-{apc_cache_info, apc_clear_cache, apc_delete, apc_fetch, apc_store, cache_info, clean, count, defined, delete, extension_loaded, function_exists, get, get_metadata, is_array, is_supported, save, time}  = require(FCPATH + 'lib')
-
-
-if not defined('BASEPATH') then die 'No direct script access allowed'
+<% if not defined('BASEPATH') then die ('No direct script access allowed')
 #
-# Exspresso
+# CodeIgniter
 #
-# An open source application development framework for coffee-script
+# An open source application development framework for PHP 5.1.6 or newer
 #
-# @package		Exspresso
-# @author		darkoverlordofdata
-# @copyright	Copyright (c) 2006 - 2011 EllisLab, Inc.
-# @license		MIT License
-# @link		http://darkoverlordofdata.com
+# @package		CodeIgniter
+# @author		ExpressionEngine Dev Team
+# @copyright	Copyright (c) 2006 - 2012 EllisLab, Inc.
+# @license		http://codeigniter.com/user_guide/license.html
+# @link		http://codeigniter.com
 # @since		Version 2.0
 # @filesource
 #
@@ -37,16 +33,16 @@ if not defined('BASEPATH') then die 'No direct script access allowed'
 #  ------------------------------------------------------------------------
 
 #
-# Exspresso APC Caching Class
+# CodeIgniter APC Caching Class
 #
-# @package		Exspresso
+# @package		CodeIgniter
 # @subpackage	Libraries
 # @category	Core
-# @author		darkoverlordofdata
+# @author		ExpressionEngine Dev Team
 # @link
 #
 
-class Exspresso_Cache_apc extends Exspresso_Driver
+class CI_Cache_apc extends CI_Driver
   
   #
   # Get
@@ -57,12 +53,11 @@ class Exspresso_Cache_apc extends Exspresso_Driver
   # @param 	string
   # @return 	mixed		value that is stored/FALSE on failure
   #
-  get($id)
-  {
-  $data = apc_fetch($id)
-  
-  return if (is_array($data)) then $data[0] else false
-  }
+  get : ($id) ->
+    $data = apc_fetch($id)
+    
+    return if (is_array($data)) then $data[0] else false
+    
   
   #  ------------------------------------------------------------------------
   
@@ -75,10 +70,9 @@ class Exspresso_Cache_apc extends Exspresso_Driver
   #
   # @return 	boolean		true on success/false on failure
   #
-  save($id, $data, $ttl = 60)
-  {
-  return apc_store($id, [$data, time(], $ttl),$ttl)
-  }
+  save : ($id, $data, $ttl = 60) ->
+    return apc_store($id, [$data, time(], $ttl),$ttl)
+    
   
   #  ------------------------------------------------------------------------
   
@@ -88,10 +82,9 @@ class Exspresso_Cache_apc extends Exspresso_Driver
   # @param 	mixed		unique identifier of the item in the cache
   # @param 	boolean		true on success/false on failure
   #
-  delete($id)
-  {
-  return apc_delete($id)
-  }
+  delete : ($id) ->
+    return apc_delete($id)
+    
   
   #  ------------------------------------------------------------------------
   
@@ -100,10 +93,9 @@ class Exspresso_Cache_apc extends Exspresso_Driver
   #
   # @return 	boolean		false on failure/true on success
   #
-  clean()
-  {
-  return apc_clear_cache('user')
-  }
+  clean :  ->
+    return apc_clear_cache('user')
+    
   
   #  ------------------------------------------------------------------------
   
@@ -113,10 +105,9 @@ class Exspresso_Cache_apc extends Exspresso_Driver
   # @param 	string		user/filehits
   # @return 	mixed		array on success, false on failure
   #
-  cache_info($type = null)
-  {
-  return apc_cache_info($type)
-  }
+  cache_info : ($type = null) ->
+    return apc_cache_info($type)
+    
   
   #  ------------------------------------------------------------------------
   
@@ -126,22 +117,21 @@ class Exspresso_Cache_apc extends Exspresso_Driver
   # @param 	mixed		key to get cache metadata on
   # @return 	mixed		array on success/false on failure
   #
-  get_metadata($id)
-  {
-  $stored = apc_fetch($id)
-  
-  if count($stored) isnt 3
-    return false
+  get_metadata : ($id) ->
+    $stored = apc_fetch($id)
     
-  
-  [$data, $time, $ttl] = $stored
-  
-  return 
-    'expire':$time + $ttl, 
-    'mtime':$time, 
-    'data':$data
+    if count($stored) isnt 3 then 
+      return false
+      
     
-  }
+    [$data, $time, $ttl] = $stored
+    
+    return 
+      'expire':$time + $ttl, 
+      'mtime':$time, 
+      'data':$data
+      
+    
   
   #  ------------------------------------------------------------------------
   
@@ -150,23 +140,20 @@ class Exspresso_Cache_apc extends Exspresso_Driver
   #
   # Check to see if APC is available on this system, bail if it isn't.
   #
-  is_supported()
-  {
-  if not extension_loaded('apc') or  not function_exists('apc_store')
-    log_message('error', 'The APC PHP extension must be loaded to use APC Cache.')
-    return false
+  is_supported :  ->
+    if not extension_loaded('apc') or ini_get('apc.enabled') isnt "1" then 
+      log_message('error', 'The APC PHP extension must be loaded to use APC Cache.')
+      return false
+      
     
-  
-  return true
-  }
+    return true
+    
   
   #  ------------------------------------------------------------------------
   
   
   
-
-register_class 'Exspresso_Cache_apc', Exspresso_Cache_apc
-module.exports = Exspresso_Cache_apc
+module.exports = CI_Cache_apc
 #  End Class
 
 #  End of file Cache_apc.php 
