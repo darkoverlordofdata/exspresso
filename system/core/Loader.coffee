@@ -326,11 +326,9 @@ class global.Exspresso_Loader
 
     if $return is true then return DB #($params, $active_record)
 
-    $controller = @controller
-
     try # throws an error on heroku
 
-      defineProperty $controller, 'db'
+      defineProperty @controller, 'db'
         enumerable  : true
         writeable   : false
         value       : DB
@@ -340,7 +338,6 @@ class global.Exspresso_Loader
       log_message 'debug', '<--- defineProperty issue handled'
 
     @controller.db = DB
-    return
 
 
 
