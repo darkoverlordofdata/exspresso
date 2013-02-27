@@ -326,13 +326,12 @@ class global.Exspresso_Loader
 
     if $return is true then return DB #($params, $active_record)
 
-    log_message 'debug', '@controller = %s', typeof @controller
-    log_message 'debug', 'DB = %s', typeof DB
     # Load the DB class
     defineProperty @controller, 'db'
       enumerable  : true
       writeable   : false
       value       : DB
+    return
 
   #
   # Load the Utilities Class
