@@ -326,15 +326,23 @@ class global.Exspresso_Loader
 
     if $return is true then return DB #($params, $active_record)
 
+    # Load the DB class
+    try
+
+      defineProperty @controller, 'db'
+        enumerable  : true
+        writeable   : false
+        value       : DB
+      return
+
+    catch $err
+      log_message 'debug', '<--- defineProperty issue!!!'
+
     @controller.db = DB
     return
-    
-    # Load the DB class
-    defineProperty @controller, 'db'
-      enumerable  : true
-      writeable   : false
-      value       : DB
-    return
+
+
+
 
   #
   # Load the Utilities Class
