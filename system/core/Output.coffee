@@ -321,8 +321,8 @@ class global.Exspresso_Output
 
     $uri = @CFG.item('base_url') + @CFG.item('index_page') + @URI.uri_string()
 
-    $cache_path+=md5($uri)
     log_message('debug', "cache uri = %s", $uri)
+    $cache_path+=md5($uri)
     log_message('debug', "cache md5 = %s", md5($uri))
 
     if not ($fp = fs.openSync($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))

@@ -82,9 +82,10 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
 
     pg = require('pg')
     @connected = true
-    pg.connect @_connect_string(), ($err, $client) =>
+    pg.connect @_connect_string(), ($err, $client, $done) =>
 
       @client = $client
+      @done = $done
       if ($err)
         @connected = false
         console.log $err
@@ -612,7 +613,8 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @return	void
   #
   _close: ($next) ->
-    @client.end()
+    @done()
+    #@client.end()
     $next()
 
 
