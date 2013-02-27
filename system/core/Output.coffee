@@ -321,23 +321,22 @@ class global.Exspresso_Output
 
     $uri = @CFG.item('base_url') + @CFG.item('index_page') + @URI.uri_string()
 
-    log_message('debug', "cache uri = %s", $uri)
     $cache_path+=md5($uri)
-    log_message('debug', "cache md5 = %s", md5($uri))
 
-    if not ($fp = fs.openSync($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-      log_message('error', "Unable to write cache file: " + $cache_path)
-      return
+    #if not ($fp = fs.openSync($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+    #  log_message('error', "Unable to write cache file: " + $cache_path)
+    #  return
 
     $expire = time() + (@_cache_expiration * 60)
 
     $buffer = $expire + 'TS--->' + $output
-    fs.writeSync($fp, $buffer, 0, $buffer.length, null)
+    #fs.writeSync($fp, $buffer, 0, $buffer.length, null)
 
 
-    fs.closeSync($fp)
-    fs.chmodSync($cache_path, FILE_WRITE_MODE)
+    #fs.closeSync($fp)
+    #fs.chmodSync($cache_path, FILE_WRITE_MODE)
 
+    fs.writeFileSync($cache_path, $buffer)
     log_message('debug', "Cache file written: " + $cache_path)
 
 
