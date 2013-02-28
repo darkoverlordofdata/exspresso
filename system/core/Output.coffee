@@ -305,48 +305,43 @@ class global.Exspresso_Output
   # Write a Cache File
   #
   # @access	public
+  # @param  string  HTML to cache
   # @return	void
   #
   _write_cache: ($output) ->
-
-    time = -> Math.floor(Date.now()/100000)
 
     $path = @CFG.item('cache_path')
 
     $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 
+    # can we create the dir if needed?
     if not is_dir($cache_path)
       try
-        fs.mkdirSync $cache_path, 0o0755
+        fs.mkdirSync $cache_path, DIR_READ_MODE
       catch $err
-        log_message('error', "Unable to write cache path: " + $cache_path)
+        log_message('error', "Unable to mkdir cache path: " + $cache_path)
         return
-
+    # can we write to the file system?
     if not is_really_writable($cache_path)
-      log_message('error', "Unable to write cache path: " + $cache_path)
+      log_message('error', "Unable to write to cache path: " + $cache_path)
       return
 
+    # build the cache data
     $uri = @CFG.item('base_url') + @CFG.item('index_page') + @URI.uri_string()
+    $filepath = $cache_path+md5($uri)+'.json'
 
-    $cache_path+=md5($uri)
+    $expires = new Date(Date.now() + @_cache_expiration * 60000)
+    $output = $output.split('"').join('\\"').split('\n').join('\\n')
+    $buffer = "{\n\t\"uri\":\"#{$uri}\",\n\t\"expires\":\"#{$expires}\",\n\t\"html\":\"#{$output}\"\n}"
 
-    if not ($fp = fs.openSync($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-      log_message('error', "Unable to write cache file: " + $cache_path)
-      return
-
-    $expire = time() + (@_cache_expiration * 60)
-
-    $buffer = $expire + 'TS--->' + $output
-    fs.writeSync($fp, $buffer, 0, $buffer.length, null)
-
-
-    fs.closeSync($fp)
-    fs.chmodSync($cache_path, FILE_WRITE_MODE)
-
-    fs.writeFileSync($cache_path, $buffer)
-    #Exspresso.cache $cache_path, $buffer
-    log_message('debug', "Cache file written: " + $cache_path)
-
+    # queue up the cache and immediately return
+    fs.writeFile $filepath, $buffer, ($err) ->
+      if $err
+        log_message('debug', "Error writing cache file %s: %s", $filepath, $err)
+      else
+        log_message('debug', "Cache file written: " + $filepath)
+        # set a timer to clean the cache
+        setTimeout _gc_cache, ($expires.getTime() - Date.now()), $cache_path, $filepath
 
   #
   # Update/serve a cached file
@@ -356,49 +351,52 @@ class global.Exspresso_Output
   #
   _display_cache: ($CFG, $URI) ->
 
-    time = -> Math.floor(Date.now()/100000)
+    time = -> Math.floor(Date.now()/60000)
 
     $cache_path = if ($CFG.item('cache_path') is '') then APPPATH + 'cache/' else $CFG.item('cache_path')
 
     #  Build the file path.  The file name is an MD5 hash of the full URI
     $uri = $CFG.item('base_url') + $CFG.item('index_page') + $URI.uri_string()
 
-    $filepath = $cache_path + md5($uri)
+    $filepath = $cache_path+md5($uri)+'.json'
 
     if not file_exists($filepath)
       return false
 
-    #return false if not Exspresso.cache_exists($filepath)
-    #if not ($fp = fs.openSync($filepath, FOPEN_READ)) then return false
-
-    #$cache = ''
-    #if filesize($filepath) > 0
-    #  fs.readSync($fp, $cache, 0, filesize($filepath), null)
-
-    #fs.closeSync($fp)
-
-    $cache = String(fs.readFileSync($filepath))
-    #$cache = Exspresso.cache($filepath)
-    #  Strip out the embedded timestamp
-    if not ($match = preg_match("/(\\d+TS--->)/", $cache))?
-      return false
+    $first = not require.cache[$filepath]?
+    $cache = require($filepath)
+    $expires = new Date($cache.expires)
 
     #  Has the file expired? If so we'll delete it.
-    if time()>=trim(str_replace('TS--->', '', $match['1']))
-      if is_really_writable($cache_path)
-        fs.unlinkSync($filepath)
-        #Exspresso.cache_delete($filepath)
-        log_message('debug', "Cache file has expired. File deleted")
-        return false
-
+    return _gc_cache($cache_path, $filepath) unless Date.now() < $expires.getTime()
     #  Display the cache
     log_message('debug', "Cache file is current. Sending it to browser.")
     @enable_profiler true
-    @_display(null, str_replace($match['0'], '', $cache))
+    @_display(null, $cache.html)
     return true
 
+  #
+  # Clean the Cache
+  #
+  #   Deletes the cache file when it expires
+  #
+  # @param string
+  # @param string
+  # @return false
+  #
+  _gc_cache = ($cache_path, $filepath) ->
 
-# END Exspresso_Output class
+    if is_really_writable($cache_path)
+      fs.unlink $filepath, ($err) ->
+        delete require.cache[$filepath]
+        log_message('debug', "Cache file has expired. File '%s' deleted", $filepath)
+
+    return false
+
+
+
+
+    # END Exspresso_Output class
 module.exports = Exspresso_Output
 
 # End of file Output.coffee
