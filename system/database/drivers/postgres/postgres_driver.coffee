@@ -613,7 +613,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @return	void
   #
   _close: ($next) ->
-    @done()
+    #@done()
     #@client.end()
     $next()
 
