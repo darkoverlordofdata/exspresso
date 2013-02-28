@@ -315,28 +315,36 @@ class global.Exspresso_Output
 
     $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 
-    if not is_dir($cache_path) or  not is_really_writable($cache_path)
-      log_message('error', "Unable to write cache file: " + $cache_path)
+    if not is_dir($cache_path)
+      try
+        fs.mkdirSync $cache_path, 0o0755
+      catch $err
+        log_message('error', "Unable to write cache path: " + $cache_path)
+        return
+
+    if not is_really_writable($cache_path)
+      log_message('error', "Unable to write cache path: " + $cache_path)
       return
 
     $uri = @CFG.item('base_url') + @CFG.item('index_page') + @URI.uri_string()
 
     $cache_path+=md5($uri)
 
-    #if not ($fp = fs.openSync($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-    #  log_message('error', "Unable to write cache file: " + $cache_path)
-    #  return
+    if not ($fp = fs.openSync($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+      log_message('error', "Unable to write cache file: " + $cache_path)
+      return
 
     $expire = time() + (@_cache_expiration * 60)
 
     $buffer = $expire + 'TS--->' + $output
-    #fs.writeSync($fp, $buffer, 0, $buffer.length, null)
+    fs.writeSync($fp, $buffer, 0, $buffer.length, null)
 
 
-    #fs.closeSync($fp)
-    #fs.chmodSync($cache_path, FILE_WRITE_MODE)
+    fs.closeSync($fp)
+    fs.chmodSync($cache_path, FILE_WRITE_MODE)
 
     fs.writeFileSync($cache_path, $buffer)
+    #Exspresso.cache $cache_path, $buffer
     log_message('debug', "Cache file written: " + $cache_path)
 
 
@@ -360,6 +368,7 @@ class global.Exspresso_Output
     if not file_exists($filepath)
       return false
 
+    #return false if not Exspresso.cache_exists($filepath)
     #if not ($fp = fs.openSync($filepath, FOPEN_READ)) then return false
 
     #$cache = ''
@@ -369,6 +378,7 @@ class global.Exspresso_Output
     #fs.closeSync($fp)
 
     $cache = String(fs.readFileSync($filepath))
+    #$cache = Exspresso.cache($filepath)
     #  Strip out the embedded timestamp
     if not ($match = preg_match("/(\\d+TS--->)/", $cache))?
       return false
@@ -377,6 +387,7 @@ class global.Exspresso_Output
     if time()>=trim(str_replace('TS--->', '', $match['1']))
       if is_really_writable($cache_path)
         fs.unlinkSync($filepath)
+        #Exspresso.cache_delete($filepath)
         log_message('debug', "Cache file has expired. File deleted")
         return false
 

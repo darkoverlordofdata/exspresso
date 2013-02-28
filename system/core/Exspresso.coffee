@@ -39,13 +39,16 @@ define 'Exspresso', module.exports
 #
 define 'Exspresso_VERSION', require(FCPATH + 'package.json').version
 
-#
-#
-# Async job queue
-#
-# @var array
-#
-#
+_cache = {}
+exports.cache = ($key, $val) ->
+  if $val? then _cache[$key] = $val
+  else return _cache[$key]
+exports.cache_exists = ($key) ->
+  _cache[$key]?
+
+exports.cache_delete = ($key) ->
+  delete _cache[$key] if _cache[$key]?
+
 _queue = []
 exports.queue = ($fn) ->
   if $fn then _queue.push($fn) else _queue
