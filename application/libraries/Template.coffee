@@ -74,7 +74,7 @@ class global.Template
     @_script = []
     @_css = []
     @html = @load.helper('html')
-    @set_theme @_theme_name
+    @setTheme @_theme_name
 
 
   #
@@ -100,7 +100,7 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_theme: ($theme_name = 'default', $extra...) ->
+  setTheme: ($theme_name = 'default', $extra...) ->
     @_theme_name = $theme_name
     for $location in @_theme_locations
       if file_exists($location + @_theme_name)
@@ -118,7 +118,7 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_layout: ($layout) ->
+  setLayout: ($layout) ->
     @_layout = $layout
     @
 
@@ -129,7 +129,7 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_title: ($title...) ->
+  setTitle: ($title...) ->
     @_title = $title.join(' | ')
     @
 
@@ -142,7 +142,7 @@ class global.Template
   #   @param object
   #   @return	object
   #
-  set_partial: ($name, $view, $data = {}) ->
+  setPartial: ($name, $view, $data = {}) ->
     @_partials[$name] = 'view':$view, 'data':$data
     @
 
@@ -154,7 +154,7 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_breadcrumb: ($name, $uri = '') ->
+  setBreadcrumb: ($name, $uri = '') ->
     @_breadcrumbs.push 'name':$name, 'uri':$uri
     @
 
@@ -165,7 +165,7 @@ class global.Template
   #   @param string
   #   @return	object
   #
-  set_doctype: ($doctype = 'html5') ->
+  setDoctype: ($doctype = 'html5') ->
     @_doctype = $doctype
     @
 
@@ -176,7 +176,7 @@ class global.Template
   #   @param	string
   #   @return	object
   #
-  set_css:($css) ->
+  setCss:($css) ->
 
     if is_string($css)
       @_css.push $css
@@ -191,7 +191,7 @@ class global.Template
   #   @param	object
   #   @return	object
   #
-  set_script: ($script) ->
+  setScript: ($script) ->
 
     if is_string($script)
       @_script.push $script
@@ -210,7 +210,7 @@ class global.Template
   #   @param	string	newline
   #   @return	object
   #
-  set_meta: ($meta) ->
+  setMeta: ($meta) ->
 
     if is_string($meta)
       @_metadata.push $meta
@@ -219,7 +219,7 @@ class global.Template
     @
 
 
-  set_menu: ($menu) ->
+  setMenu: ($menu) ->
     @_menu = $menu
     @
 
@@ -271,7 +271,7 @@ class global.Template
     @set '$style',      $css.join("\n")
     @set '$script',     $script.join("\n")
     @set '$title',      @_title
-    @set '$menu',       @html_menu(@_menu, @uri.segment(1, ''))
+    @set '$menu',       @htmlMenu(@_menu, @uri.segment(1, ''))
     @set 'site_name',   config_item('site_name')
     @set 'site_slogan', config_item('site_slogan')
     @set $data
@@ -323,14 +323,14 @@ class global.Template
 
           return $next(null, $page) if $next?
 
-          @output.set_output $page
+          @output.setOutput $page
           #
           # ------------------------------------------------------
           #  Send the final rendered output to the browser
           # ------------------------------------------------------
           #
-          #if @hooks._call_hook('display_override', @) is false
-          #  @output._display(@)
+          #if @hooks.callHook('display_override', @) is false
+          #  @output.display(@)
           @next()
 
 
@@ -343,7 +343,7 @@ class global.Template
   #   @param string
   #   @return	void
   #
-  html_menu: ($items, $active) ->
+  htmlMenu: ($items, $active) ->
 
     $k = keys($items)[0]
     $active = '/'+$active
@@ -368,7 +368,7 @@ class global.Template
   #   @param string
   #   @return	void
   #
-  html_sidenav: ($items, $active) ->
+  htmlSidenav: ($items, $active) ->
 
     $menu = "<ul class=\"nav nav-list sidenav\">\n"
 
@@ -390,7 +390,7 @@ class global.Template
   #   @param string
   #   @return	void
   #
-  html_submenu: ($modules, $module) ->
+  htmlSubmenu: ($modules, $module) ->
 
     $active = ucfirst($module)
 

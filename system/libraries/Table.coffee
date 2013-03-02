@@ -60,7 +60,7 @@ class global.Exspresso_Table
   # @param	array
   # @return	void
   #
-  set_template : ($template) ->
+  setTemplate : ($template) ->
     if not is_array($template)
       return false
       
@@ -77,7 +77,7 @@ class global.Exspresso_Table
   # @param	mixed
   # @return	void
   #
-  set_heading :  ->
+  setHeading :  ->
     $args = func_get_args()
     @_heading = @_prep_args($args)
     
@@ -93,7 +93,7 @@ class global.Exspresso_Table
   # @param	int
   # @return	void
   #
-  make_columns : ($array = {}, $col_limit = 0) ->
+  makeColumns : ($array = {}, $col_limit = 0) ->
     if not is_array($array) or count($array) is 0
       return false
       
@@ -130,7 +130,7 @@ class global.Exspresso_Table
   # @param	mixed
   # @return	void
   #
-  set_empty : ($value) ->
+  setEmpty : ($value) ->
     @_empty_cells = $value
     
   
@@ -143,7 +143,7 @@ class global.Exspresso_Table
   # @param	mixed
   # @return	void
   #
-  add_row :  ->
+  addRow :  ->
     $args = func_get_args()
     @_rows.push @_prep_args($args)
     
@@ -187,7 +187,7 @@ class global.Exspresso_Table
   # @param	string
   # @return	void
   #
-  set_caption : ($caption) ->
+  setCaption : ($caption) ->
     @_caption = $caption
     
   

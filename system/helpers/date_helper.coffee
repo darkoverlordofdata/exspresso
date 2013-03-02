@@ -28,19 +28,14 @@
 # @since      Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Exspresso Date Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/date_helper.html
 #
+moment = require('moment')
 
-#  ------------------------------------------------------------------------
+exports.date = date = ($format, $timestamp = Date.now()) ->
+  moment($timestamp, $format)
 
 #
 # Get "now" time
@@ -52,25 +47,7 @@
 #
 if not function_exists('now')
   exports.now = now =  ->
-
-    if strtolower(Exspresso.config.item('time_reference')) is 'gmt'
-      $now = time()
-      $system_time = mktime(gmdate("H", $now), gmdate("i", $now), gmdate("s", $now), gmdate("m", $now), gmdate("d", $now), gmdate("Y", $now))
-      
-      if strlen($system_time) < 10
-        $system_time = time()
-        log_message('error', 'The Date class could not set a proper GMT timestamp so the local time() value was used.')
-        
-      
-      return $system_time
-      
-    else 
-      return time()
-      
-    
-  
-
-#  ------------------------------------------------------------------------
+    Date.now()
 
 #
 # Convert MySQL Style Datecodes
@@ -90,13 +67,12 @@ if not function_exists('now')
 # @return	integer
 #
 if not function_exists('mdate')
-  exports.mdate = mdate = ($datestr = '', $time = '') ->
+  exports.mdate = mdate = ($datestr = '', $time = now()) ->
     if $datestr is '' then return ''
-    if $time is '' then $time = now()
-    $datestr = str_replace('%\\', '', preg_replace("/([a-z]+?){1}/i", "\\\\\\1", $datestr))
-    return date($datestr, $time)
 
-##  ------------------------------------------------------------------------#
+    $datestr = $datestr.replace(/([a-z]+?){1}/ig, '\\$1').replace(/\%\\/g, '').replace(/\\/g, '')
+    date($datestr, $time)
+
 # Standard Date
 #
 # Returns a date formatted according to the submitted standard.
@@ -109,24 +85,21 @@ if not function_exists('mdate')
 if not function_exists('standard_date')
   exports.standard_date = standard_date = ($fmt = 'DATE_RFC822', $time = '') ->
     $formats =
-      'DATE_ATOM':'%Y-%m-%dT%H:%i:%s%Q',
-      'DATE_COOKIE':'%l, %d-%M-%y %H:%i:%s UTC',
-      'DATE_ISO8601':'%Y-%m-%dT%H:%i:%s%Q',
-      'DATE_RFC822':'%D, %d %M %y %H:%i:%s %O',
-      'DATE_RFC850':'%l, %d-%M-%y %H:%m:%i UTC',
-      'DATE_RFC1036':'%D, %d %M %y %H:%i:%s %O',
-      'DATE_RFC1123':'%D, %d %M %Y %H:%i:%s %O',
-      'DATE_RSS':'%D, %d %M %Y %H:%i:%s %O',
-      'DATE_W3C':'%Y-%m-%dT%H:%i:%s%Q'
-
+      DATE_ATOM     :'%Y-%m-%dT%H:%i:%s%Q'
+      DATE_COOKIE   :'%l, %d-%M-%y %H:%i:%s UTC'
+      DATE_ISO8601  :'%Y-%m-%dT%H:%i:%s%Q'
+      DATE_RFC822   :'%D, %d %M %y %H:%i:%s %O'
+      DATE_RFC850   :'%l, %d-%M-%y %H:%m:%i UTC'
+      DATE_RFC1036  :'%D, %d %M %y %H:%i:%s %O'
+      DATE_RFC1123  :'%D, %d %M %Y %H:%i:%s %O'
+      DATE_RSS      :'%D, %d %M %Y %H:%i:%s %O'
+      DATE_W3C      :'%Y-%m-%dT%H:%i:%s%Q'
 
     if not $formats[$fmt]?
       return false
 
+    mdate($formats[$fmt], $time)
 
-    return mdate($formats[$fmt], $time)
-
-##  ------------------------------------------------------------------------#
 # Timespan
 #
 # Returns a span of seconds in this format:
@@ -220,7 +193,6 @@ if not function_exists('timespan')
 
     return substr(trim($str), 0,  - 1)
 
-##  ------------------------------------------------------------------------#
 # Number of days in a month
 #
 # Takes a month/year as input and returns the number of days
@@ -250,7 +222,6 @@ if not function_exists('days_in_month')
     $days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     return $days_in_month[$month - 1]
 
-##  ------------------------------------------------------------------------#
 # Converts a local Unix timestamp to GMT
 #
 # @access	public
@@ -439,54 +410,60 @@ if not function_exists('timezones')
     #  some items appear to be in the wrong order
 
     $zones =
-      'UM12': - 12,
-      'UM11': - 11,
-      'UM10': - 10,
-      'UM95': - 9.5,
-      'UM9': - 9,
-      'UM8': - 8,
-      'UM7': - 7,
-      'UM6': - 6,
-      'UM5': - 5,
-      'UM45': - 4.5,
-      'UM4': - 4,
-      'UM35': - 3.5,
-      'UM3': - 3,
-      'UM2': - 2,
-      'UM1': - 1,
-      'UTC':0,
-      'UP1': + 1,
-      'UP2': + 2,
-      'UP3': + 3,
-      'UP35': + 3.5,
-      'UP4': + 4,
-      'UP45': + 4.5,
-      'UP5': + 5,
-      'UP55': + 5.5,
-      'UP575': + 5.75,
-      'UP6': + 6,
-      'UP65': + 6.5,
-      'UP7': + 7,
-      'UP8': + 8,
-      'UP875': + 8.75,
-      'UP9': + 9,
-      'UP95': + 9.5,
-      'UP10': + 10,
-      'UP105': + 10.5,
-      'UP11': + 11,
-      'UP115': + 11.5,
-      'UP12': + 12,
-      'UP1275': + 12.75,
-      'UP13': + 13,
-      'UP14': + 14
-
+      UM12    : - 12
+      UM11    : - 11
+      UM10    : - 10
+      UM95    : - 9.5
+      UM9     : - 9
+      UM8     : - 8
+      UM7     : - 7
+      UM6     : - 6
+      UM5     : - 5
+      UM45    : - 4.5
+      UM4     : - 4
+      UM35    : - 3.5
+      UM3     : - 3
+      UM2     : - 2
+      UM1     : - 1
+      UTC     : 0
+      UP1     : + 1
+      UP2     : + 2
+      UP3     : + 3
+      UP35    : + 3.5
+      UP4     : + 4
+      UP45    : + 4.5
+      UP5     : + 5
+      UP55    : + 5.5
+      UP575   : + 5.75
+      UP6     : + 6
+      UP65    : + 6.5
+      UP7     : + 7
+      UP8     : + 8
+      UP875   : + 8.75
+      UP9     : + 9
+      UP95    : + 9.5
+      UP10    : + 10
+      UP105   : + 10.5
+      UP11    : + 11
+      UP115   : + 11.5
+      UP12    : + 12
+      UP1275  : + 12.75
+      UP13    : + 13
+      UP14    : + 14
 
     if $tz is ''
       return $zones
 
-
     if $tz is 'GMT' then $tz = 'UTC'
     return if not $zones[$tz]?  then 0 else $zones[$tz]
 
-    #  End of file date_helper.php
-    #  Location: ./system/helpers/date_helper.php
+#  ------------------------------------------------------------------------
+#
+# Export the module
+#
+#
+for $name, $body of module.exports
+  define $name, $body
+
+#  End of file date_helper.php
+#  Location: ./system/helpers/date_helper.php

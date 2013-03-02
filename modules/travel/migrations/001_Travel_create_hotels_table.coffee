@@ -23,13 +23,13 @@ class Migration_Travel_create_hotels_table extends Exspresso_Migration
 
   up: ($next) ->
 
-    @dbforge.add_field @data
-    @dbforge.add_key 'id', true
-    @dbforge.create_table @table, $next
+    @dbforge.addField @data
+    @dbforge.addKey 'id', true
+    @dbforge.createTable @table, $next
 
   down: ($next) ->
 
-    @dbforge.drop_table @table, $next
+    @dbforge.dropTable @table, $next
 
 
   data:

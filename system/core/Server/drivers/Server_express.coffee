@@ -42,7 +42,6 @@ require BASEPATH+'core/Server/Server.coffee'
 class global.Exspresso_Server_express extends Exspresso_Server
 
   express           = require('express')        # Web development framework
-  cache             = require("connect-cache")  # Caching system for Connect
   eco               = require('eco')            # Embedded CoffeeScript templates
   fs                = require("fs")             # File system
 
@@ -127,7 +126,7 @@ class global.Exspresso_Server_express extends Exspresso_Server
     #  Is there a "post_system" hook?
     # ------------------------------------------------------
     #
-    Exspresso._call_hook 'post_system'
+    Exspresso.callHook 'post_system'
     Exspresso.BM.mark 'total_execution_time_end'
 
   #
@@ -143,7 +142,6 @@ class global.Exspresso_Server_express extends Exspresso_Server
 
     super $config
     @app.use express.logger(@_logger)
-    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if @_cache
 
     @app.set 'env', ENVIRONMENT
     @app.set 'port', @_port

@@ -45,7 +45,7 @@ class global.Exspresso_DB_mysql_result extends Exspresso_DB_result
 
     @_result_array = @_result_object = $results
     @_metadata = $info
-    @_num_rows = @num_rows()
+    @_num_rows = @numRows()
 
   #
   # Number of rows in the result set
@@ -53,7 +53,7 @@ class global.Exspresso_DB_mysql_result extends Exspresso_DB_result
   # @access	public
   # @return	integer
   #
-  num_rows :  ->
+  numRows :  ->
     @_result_array.length
 
 
@@ -65,7 +65,7 @@ class global.Exspresso_DB_mysql_result extends Exspresso_DB_result
   # @access	public
   # @return	integer
   #
-  num_fields :  ->
+  numFields :  ->
     @_metadata.length
 
   
@@ -78,7 +78,7 @@ class global.Exspresso_DB_mysql_result extends Exspresso_DB_result
   # @access	public
   # @return	array
   #
-  list_fields :  ->
+  listFields :  ->
     $field_names = []
     for $field in @_metadata
       $field_names.push $field.name
@@ -95,7 +95,7 @@ class global.Exspresso_DB_mysql_result extends Exspresso_DB_result
   # @access	public
   # @return	array
   #
-  field_data :  ->
+  fieldData :  ->
     return @_metadata
 
 
@@ -106,7 +106,7 @@ class global.Exspresso_DB_mysql_result extends Exspresso_DB_result
   #
   # @return	null
   #
-  free_result :  ->
+  freeResult :  ->
     @result_array = null
 
   

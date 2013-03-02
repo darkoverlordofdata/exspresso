@@ -75,7 +75,7 @@ class global.Modules
   #
   # Load a module file
   #
-  @load_file = ($file, $path, $type = 'other', $result = true) ->
+  @loadFile = ($file, $path, $type = 'other', $result = true) ->
 
     $file = str_replace(EXT, '', $file)
     $location = $path+$file+EXT

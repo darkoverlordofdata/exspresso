@@ -24,7 +24,9 @@
   * Include private helper classes in the same file
   * Prefix protected member names with an undersocore
   * Initialize array and object members in the constructor. Set the prototype value to null
-  * Define static members using this context
+  * Define static members using 'this' context
+  * Public properties shall be camelCase
+  * Protected or private properties shall be _snake_case
 
   Example MyBase.coffee:
 

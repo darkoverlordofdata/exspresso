@@ -78,7 +78,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	private called by the base class
   # @return	resource
   #
-  db_connect: ($next) =>
+  connect: ($next) =>
 
     pg = require('pg')
     @connected = true
@@ -101,6 +101,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @return	resource
   #
   db_pconnect:  ->
+    throw new Error('Not Supported: postgres_driver::pconnect')
 
 
   #  --------------------------------------------------------------------
@@ -114,7 +115,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	void
   #
-  reconnect: ($next) -> @db_connect $next
+  reconnect: ($next) -> @connect $next
 
 
 
@@ -141,7 +142,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @param	string
   # @return	resource
   #
-  db_set_charset: ($charset, $collation, $next) ->
+  dbSetCharset: ($charset, $collation, $next) ->
     #  @todo - add support if needed
     if $next? then $next()
     return true
@@ -196,7 +197,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_begin: ($test_mode = false) ->
+  transBegin: ($test_mode = false) ->
     if not @trans_enabled
       return true
 
@@ -211,7 +212,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
     #  even if the queries produce a successful result.
     @_trans_failure = if ($test_mode is true) then true else false
 
-    @simple_query 'BEGIN', $next #
+    @simpleQuery 'BEGIN', $next #
 
 
   #  --------------------------------------------------------------------
@@ -222,7 +223,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_commit:  ->
+  transCommit:  ->
     if not @trans_enabled
       return true
 
@@ -231,7 +232,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
     if @_trans_depth > 0
       return true
 
-    @simple_query 'COMMIT', $next
+    @simpleQuery 'COMMIT', $next
 
 
   #  --------------------------------------------------------------------
@@ -242,7 +243,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_rollback:  ->
+  transRollback:  ->
     if not @trans_enabled
       return true
 
@@ -252,7 +253,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
       return true
 
 
-    @simple_query 'ROLLBACK', $next
+    @simpleQuery 'ROLLBACK', $next
 
 
   #  --------------------------------------------------------------------
@@ -265,10 +266,10 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @param	bool	whether or not the string will be used in a LIKE condition
   # @return	string
   #
-  escape_str: ($str, $like = false) ->
+  escapeStr: ($str, $like = false) ->
     if is_array($str)
       for $key, $val of $str
-        $str[$key] = @escape_str($val, $like)
+        $str[$key] = @escapeStr($val, $like)
 
 
       return $str
@@ -294,7 +295,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	integer
   #
-  affected_rows:  ->
+  affectedRows:  ->
 
 
   #  --------------------------------------------------------------------
@@ -305,7 +306,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @access	public
   # @return	integer
   #
-  insert_id: ($next) ->
+  insertId: ($next) ->
 
     @query "SELECT LASTVAL() AS id", ($err, $insert) =>
 
@@ -326,7 +327,7 @@ class Exspresso_DB_postgre_driver extends Exspresso_DB
   # @param	string
   # @return	string
   #
-  count_all: ($table = '', $next) ->
+  countAll: ($table = '', $next) ->
     if $table is ''
       return 0
 

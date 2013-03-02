@@ -33,11 +33,6 @@
 #
 # Exspresso String Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/string_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -267,8 +262,15 @@ if not function_exists('alternator')
 if not function_exists('repeater')
   exports.repeater = repeater = ($data, $num = 1) ->
     return if $num > 0 then str_repeat($data, $num) else ''
-    
-  
+
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 
 #  End of file string_helper.php 

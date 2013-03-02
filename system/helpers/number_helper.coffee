@@ -33,11 +33,6 @@
 #
 # Exspresso Number Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/number_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -75,8 +70,15 @@ if not function_exists('byte_format')
       
     
     return number_format($num, $precision) + ' ' + $unit
-    
-  
+
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 
 #  End of file number_helper.php 

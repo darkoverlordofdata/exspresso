@@ -86,7 +86,7 @@ class global.Breadcrumb
 
       @_crumbs[$level] = $crumb
 
-    @session.set_userdata('breadcrumb', @_crumbs) # Persist the data
+    @session.setUserdata('breadcrumb', @_crumbs) # Persist the data
     @_crumbs[$level]['url'] = null # Ditch the underlying url for the current page.
 
    #

@@ -104,8 +104,8 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
       @object = $config['object']
       
     
-    if $config['xss_clean']? 
-      @xss_clean = $config['xss_clean']
+    if $config['xssClean']?
+      @xssClean = $config['xssClean']
       
     
   
@@ -271,8 +271,8 @@ class Exspresso_Xmlrpcs extends Exspresso_Xmlrpc
     #  Check to see if it is a system call
     $system_call = if (strncmp($methName, 'system', 5) is 0) then true else false
     
-    if @xss_clean is false
-      $m.xss_clean = false
+    if @xssClean is false
+      $m.xssClean = false
       
     
     # -------------------------------------

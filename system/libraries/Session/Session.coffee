@@ -153,14 +153,14 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # @param string
   # @return void
   #
-  set_userdata: ($newdata = {}, $newval = '') ->
+  setUserdata: ($newdata = {}, $newval = '') ->
 
     $data = @req.session.userdata = @req.session.userdata ? {}
 
     if typeof $newdata is 'string'
-      $newdata = array($newdata, $newval)
+      $data[$newdata] = $newval
 
-    if count($newdata) > 0
+    else
       for $key, $val of $newdata
         $data[$key] = $val
 
@@ -173,14 +173,14 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # @param mixed
   # @return void
   #
-  unset_userdata: ($newdata = {}) ->
+  unsetUserdata: ($newdata = {}) ->
 
     $data = @req.session.userdata = @req.session.userdata ? {}
 
     if typeof $newdata is 'string'
-      $newdata = array($newdata, '')
+      $data[$newdata] = ''
 
-    if count($newdata) > 0
+    else
       for $key, $val of $newdata
         delete $data[$key]
 
@@ -205,7 +205,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # @access public
   # @return mixed
   #
-  all_userdata: () ->
+  allUserdata: () ->
 
     if not @req.session.userdata? then false else @req.session.userdata
 
@@ -218,20 +218,19 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # @param	string
   # @return	void
   #
-  set_flashdata : ($newdata = {}, $args...) ->
+  setFlashdata : ($newdata = {}, $args...) ->
 
     switch $args.length
       when 0 then $newval = ''
       when 1 then $newval = $args[0]
       else $newval = format.apply(undefined, $args)
 
-    if is_string($newdata)
+    if typeof $newdata is 'string'
       $newdata = array($newdata, $newval)
 
-    if count($newdata) > 0
-      for $key, $val of $newdata
-        $flashdata_key = FLASH_KEY + FLASH_NEW + $key
-        @set_userdata($flashdata_key, $val)
+    for $key, $val of $newdata
+      $flashdata_key = FLASH_KEY + FLASH_NEW + $key
+      @setUserdata($flashdata_key, $val)
 
 
   #
@@ -241,7 +240,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # @param	string
   # @return	void
   #
-  keep_flashdata : ($key) ->
+  keepFlashdata : ($key) ->
     #  'old' flashdata gets removed.  Here we mark all
     #  flashdata as 'new' to preserve it from _flashdata_sweep()
     #  Note the function will return FALSE if the $key
@@ -250,7 +249,7 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
     $value = @userdata($old_flashdata_key)
 
     $new_flashdata_key = FLASH_KEY + FLASH_NEW + $key
-    @set_userdata($new_flashdata_key, $value)
+    @setUserdata($new_flashdata_key, $value)
 
   #
   # Fetch a specific flashdata item from the session array
@@ -272,13 +271,13 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # @return	void
   #
   _flashdata_mark :  ->
-    $userdata = @all_userdata()
+    $userdata = @allUserdata()
     for $name, $value of $userdata
       $parts = explode(FLASH_NEW, $name)
       if is_array($parts) and count($parts) is 2
         $new_name = FLASH_KEY + FLASH_OLD + $parts[1]
-        @set_userdata($new_name, $value)
-        @unset_userdata($name)
+        @setUserdata($new_name, $value)
+        @unsetUserdata($name)
 
   #
   # Removes all flashdata marked as 'old'
@@ -287,10 +286,10 @@ class global.Exspresso_Session extends Exspresso_Driver_Library
   # @return	void
   #
   _flashdata_sweep :  ->
-    $userdata = @all_userdata()
+    $userdata = @allUserdata()
     for $key, $value of $userdata
       if strpos($key, FLASH_OLD)
-        @unset_userdata($key)
+        @unsetUserdata($key)
 
   #
   # Get the "now" time

@@ -33,11 +33,6 @@
 #
 # Exspresso XML Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/xml_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -73,8 +68,15 @@ if not function_exists('xml_convert')
       
     
     return $str
-    
-  
+
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 #  ------------------------------------------------------------------------
 

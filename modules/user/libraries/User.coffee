@@ -33,13 +33,13 @@ class global.User
 
   bcrypt            = require('bcrypt')     # A bcrypt library for NodeJS
 
-  is_anonymous      : null  # returns true for anonymous user
-  is_logged_in      : null  # returns true for authenticated user
+  isAnonymous       : null  # returns true for anonymous user
+  isLoggedIn        : null  # returns true for authenticated user
   uid               : null  # returns current user database id
   name              : null  # returns current user name
   email             : null  # returns current user email
-  created_on        : null  # returns date the current user was created
-  last_login        : null  # returns last login date for current user
+  createdOn         : null  # returns date the current user was created
+  lastLogin         : null  # returns last login date for current user
   active            : null  # returns true if the current user is not blocked
   roles             : null  # returns an array of the current users roles
 
@@ -56,7 +56,7 @@ class global.User
     @queue ($next) =>
       #
       # Reload the current user
-      @user_model.load_by_id @req.session.uid, ($err, $user) =>
+      @user_model.loadById @req.session.uid, ($err, $user) =>
 
         $roles = []
         for $row in $user.roles
@@ -64,13 +64,13 @@ class global.User
 
         return $next($err) if $err
         defineProperties @,
-          is_anonymous  : {enumerable: true,   get: -> $user.uid is User_model.UID_ANONYMOUS}
-          is_logged_in  : {enumerable: true,   get: -> $user.uid isnt User_model.UID_ANONYMOUS}
+          isAnonymous   : {enumerable: true,   get: -> $user.uid is User_model.UID_ANONYMOUS}
+          isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt User_model.UID_ANONYMOUS}
           uid           : {enumerable: true,   get: -> $user.uid}
           name          : {enumerable: true,   get: -> $user.name}
           email         : {enumerable: true,   get: -> $user.email}
-          created_on    : {enumerable: true,   get: -> $user.created_on}
-          last_login    : {enumerable: true,   get: -> $user.last_login}
+          createdOn     : {enumerable: true,   get: -> $user.created_on}
+          lastLogin     : {enumerable: true,   get: -> $user.last_login}
           active        : {enumerable: true,   get: -> $user.active}
           roles         : {enumerable: true,   get: -> freeze($roles)}
         $next()
@@ -86,7 +86,7 @@ class global.User
   login: ($name, $password, $action = '/admin') ->
     #
     #
-    @user_model.load_by_name $name, ($err, $user) =>
+    @user_model.loadByName $name, ($err, $user) =>
       return if log_error('error', 'load by name: %s', $err) if show_error($err)
 
       bcrypt.compare $password, String($user.password)+String($user.salt), ($err, $ok) =>
@@ -94,12 +94,12 @@ class global.User
 
         if $ok
           @req.session.uid = $user.uid
-          @session.set_flashdata  'info', @lang.line('user_hello'), $user.name
+          @session.setFlashdata  'info', @lang.line('user_hello'), $user.name
           @redirect $action
 
         else
           @req.session.uid = User_model.UID_ANONYMOUS
-          @session.set_flashdata 'error', @lang.line('user_invalid_credentials')
+          @session.setFlashdata 'error', @lang.line('user_invalid_credentials')
           @redirect $action
 
   #
@@ -110,7 +110,7 @@ class global.User
   #
   logout: ($action = '/admin') ->
 
-    @session.set_flashdata  'info', @lang.line('user_goodbye')
+    @session.setFlashdata  'info', @lang.line('user_goodbye')
     @req.session.uid = User_model.UID_ANONYMOUS
     @redirect $action
 
@@ -124,7 +124,7 @@ class global.User
   # @param    string
   # @return 	boolean
   #
-  authorization_check: ($auth) ->
+  authorizationCheck: ($auth) ->
 
     for $role in @roles
       return true if $role.name is $auth

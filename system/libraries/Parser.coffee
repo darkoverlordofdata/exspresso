@@ -85,7 +85,7 @@ class global.Exspresso_Parser
   # @param	bool
   # @return	string
   #
-  parse_string: ($template, $data, $return = false) ->
+  parseString: ($template, $data, $return = false) ->
     @_parse($template, $data, $return)
     
   
@@ -114,14 +114,14 @@ class global.Exspresso_Parser
         $template = @_parse_single($key, ''+$val, $template)
 
     if $return is false
-      @output.append_output($template)
+      @output.appendOutput($template)
       #
       # ------------------------------------------------------
       #  Send the final rendered output to the browser
       # ------------------------------------------------------
       #
-      if @hooks._call_hook('display_override', @) is false
-        @output._display(@)
+      if @hooks.callHook('display_override', @) is false
+        @output.display(@)
 
     return $template
     
@@ -134,7 +134,7 @@ class global.Exspresso_Parser
   # @param	string
   # @return	void
   #
-  set_delimiters: ($l_delim = '{', $r_delim = '}') ->
+  setDelimiters: ($l_delim = '{', $r_delim = '}') ->
     @_l_delim = $l_delim
     @_r_delim = $r_delim
     return

@@ -28,4 +28,4 @@
         </div>
     </div>
 </div>
-<%- @pagination.create_links() %>
+<%- @pagination.createLinks() %>

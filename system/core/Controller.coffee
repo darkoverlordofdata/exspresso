@@ -115,7 +115,7 @@ class global.Exspresso_Controller extends Exspresso_Object
     @res.render $view, create_mixin(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
-      @hooks._call_hook 'post_controller', @
+      @hooks.callHook 'post_controller', @
       return show_error($err) if $err
       @res.send $html
 
@@ -166,7 +166,7 @@ class global.Exspresso_Controller extends Exspresso_Object
   # @return	void
   #
   redirect: ($url) ->
-    @hooks._call_hook 'post_controller', @
+    @hooks.callHook 'post_controller', @
     @res.redirect $url
 
 

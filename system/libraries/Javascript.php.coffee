@@ -564,7 +564,7 @@ class Exspresso_Javascript
       $str = @_open_script(@_javascript_location + $external_file)
       
     else 
-      $str = @_open_script(@config.slash_item('base_url') + @_javascript_location + $external_file)
+      $str = @_open_script(@config.slashItem('base_url') + @_javascript_location + $external_file)
       
     
     $str+=@_close_script()

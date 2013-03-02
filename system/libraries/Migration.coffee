@@ -88,7 +88,7 @@ class global.Exspresso_Migration
         return $next($err) if $err
         return $next(null) if $table_exists
 
-        @dbforge.add_field
+        @dbforge.addField
           'module' :
             'type'        : 'VARCHAR'
             'constraint'  : 40
@@ -96,7 +96,7 @@ class global.Exspresso_Migration
             'type'        : 'INT'
             'constraint'  : 3
 
-        @dbforge.create_table 'migrations', true, ($err) =>
+        @dbforge.createTable 'migrations', true, ($err) =>
 
           return $next($err) if $err
           @db.insert 'migrations', version: 0, $next
@@ -114,7 +114,7 @@ class global.Exspresso_Migration
   # @param  string
   # @return void
   #
-  set_module: ($module = '') ->
+  setModule: ($module = '') ->
 
     return if $module is '' # use the default value
 
@@ -146,7 +146,7 @@ class global.Exspresso_Migration
   #
   version: ($target_version, $next) ->
 
-    @get_version ($err, $current_version) =>
+    @getVersion ($err, $current_version) =>
       return $next($err) if $err
 
       $start = $current_version
@@ -292,7 +292,7 @@ class global.Exspresso_Migration
   #
   # @return  string  Error message returned as a string
   #
-  error_string: () ->
+  errorString: () ->
     @_error_string
 
   #
@@ -300,7 +300,7 @@ class global.Exspresso_Migration
   #
   # @return  mixed  true if already latest, false if failed, int if upgraded
   #
-  find_migrations: () ->
+  findMigrations: () ->
 
     # Load all#_*.coffee files in the migrations path
     $files = glob(@_migration_path + '*_*.coffee')
@@ -322,7 +322,7 @@ class global.Exspresso_Migration
   #
   # @return  int  Current Migration
   #
-  get_version: ($next) ->
+  getVersion: ($next) ->
 
     @db.where 'module', @_migration_module
     @db.get 'migrations', ($err, $result) ->

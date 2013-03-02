@@ -32,11 +32,6 @@
 #
 # Exspresso Email Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/email_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -64,9 +59,16 @@ if not function_exists('valid_email')
 if not function_exists('send_email')
   exports.send_email = send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
     return mail($recipient, $subject, $message)
-    
-  
 
+
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 #  End of file email_helper.php 
 #  Location: ./system/helpers/email_helper.php 

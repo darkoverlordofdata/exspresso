@@ -61,10 +61,15 @@ class global.Exspresso_Security
     'Redirect\\s+302'                     #  Redirects
     "([\\\"'])?data\\s*:[^\\\\1]*?base64[^\\\\1]*?,[^\\\\1]*?\\\\1?"
     ]
-  
+
   #
   # Constructor
   #
+  # @access	public
+  # @param object   http request cookies object
+  # @param object   http request query object
+  # @param object   http request body object
+  # @param object   http request server object
   # @return	void
   #
   constructor :  (@$_COOKIE, @$_GET, @$_POST, @$_SERVER) ->
@@ -90,18 +95,18 @@ class global.Exspresso_Security
   #
   # @return	object
   #
-  csrf_verify :  ->
+  csrfVerify :  ->
     #  If it's not a POST request we will set the CSRF cookie
     if strtoupper(@$_SERVER['REQUEST_METHOD']) isnt 'POST' 
-      return @csrf_set_cookie()
+      return @csrfSetCookie()
     
     #  Do the tokens exist in both the _POST and _COOKIE arrays?
     if not (@$_POST[@_csrf_token_name]? and @$_COOKIE[@_csrf_cookie_name]?)
-      @csrf_show_error()
+      @csrfShowError()
     
     #  Do the tokens match?
     if @$_POST[@_csrf_token_name] isnt @$_COOKIE[@_csrf_cookie_name] 
-      @csrf_show_error()
+      @csrfShowError()
       
     
     #  We kill this since we're done and we don't want to
@@ -111,7 +116,7 @@ class global.Exspresso_Security
     #  Nothing should last forever
     delete @$_COOKIE[@_csrf_cookie_name]
     @_csrf_set_hash()
-    @csrf_set_cookie()
+    @csrfSetCookie()
     
     log_message('debug', 'CSRF token verified')
     
@@ -123,7 +128,7 @@ class global.Exspresso_Security
   #
   # @return	object
   #
-  csrf_set_cookie :  ->
+  csrfSetCookie :  ->
     $expire = time() + @_csrf_expire
     $secure_cookie = if (config_item('cookie_secure') is true) 1 else 0
     
@@ -142,7 +147,7 @@ class global.Exspresso_Security
   #
   # @return	void
   #
-  csrf_show_error :  ->
+  csrfShowError :  ->
     show_error('The action you have requested is not allowed.')
     
   
@@ -153,7 +158,7 @@ class global.Exspresso_Security
   #
   # @return 	string 	self::_csrf_hash
   #
-  get_csrf_hash :  ->
+  getCsrfHash :  ->
     return @_csrf_hash
     
   
@@ -164,7 +169,7 @@ class global.Exspresso_Security
   #
   # @return 	string 	self::cstrf_token_name
   #
-  get_csrf_token_name :  ->
+  getCsrfTokenName :  ->
     return @_csrf_token_name
     
   
@@ -194,14 +199,14 @@ class global.Exspresso_Security
   # @param 	bool
   # @return	string
   #
-  xss_clean : ($str, $is_image = false) ->
+  xssClean : ($str, $is_image = false) ->
     #
     # Is the string an array?
     #
     #
     if is_array($str)
       for $key, $val of $str
-        $str[$key] = @xss_clean($val)
+        $str[$key] = @xssClean($val)
       return $str
     #
     # Remove Invisible Characters
@@ -363,22 +368,22 @@ class global.Exspresso_Security
   #
   # This function is a replacement for html_entity_decode()
   #
-  # The reason we are not using html_entity_decode() by itself is because
+  # The reason we are not using html_entityDecode() by itself is because
   # while it is not technically correct to leave out the semicolon
   # at the end of an entity most browsers will still interpret the entity
-  # correctly.  html_entity_decode() does not convert entities without
+  # correctly.  html_entityDecode() does not convert entities without
   # semicolons, so we are left with our own little solution here. Bummer.
   #
   # @param	string
   # @param	string
   # @return	string
   #
-  entity_decode : ($str, $charset = 'UTF-8') ->
+  entityDecode : ($str, $charset = 'UTF-8') ->
     if stristr($str, '&') is false 
       return $str
       
     
-    #$str = html_entity_decode($str, ENT_COMPAT, $charset)
+    #$str = html_entityDecode($str, ENT_COMPAT, $charset)
     $str = htmlspecialchars($str)
     $str = preg_replace('~&#x(0*[0-9a-f]{2,5})~i', 'chr(hexdec("$1"))', $str)
     return preg_replace('~&#([0-9]{2,4})~', 'chr($1)', $str)
@@ -391,7 +396,7 @@ class global.Exspresso_Security
   # @param 	bool
   # @return	string
   #
-  sanitize_filename : ($str, $relative_path = false) ->
+  sanitizeFilename : ($str, $relative_path = false) ->
     $bad = [
       "../" 
       "<!--" 
@@ -438,7 +443,7 @@ class global.Exspresso_Security
   #
   # Compact Exploded Words
   #
-  # Callback function for xss_clean() to remove whitespace from
+  # Callback function for xssClean() to remove whitespace from
   # things like j a v a s c r i p t
   #
   # @param	type
@@ -511,7 +516,7 @@ class global.Exspresso_Security
   #
   # Sanitize Naughty HTML
   #
-  # Callback function for xss_clean() to remove naughty HTML elements
+  # Callback function for xssClean() to remove naughty HTML elements
   #
   # @param	array
   # @return	string
@@ -530,7 +535,7 @@ class global.Exspresso_Security
   #
   # JS Link Removal
   #
-  # Callback function for xss_clean() to sanitize links
+  # Callback function for xssClean() to sanitize links
   # This limits the PCRE backtracks, making it more performance friendly
   # and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
   # PHP 5.2+ on link-heavy strings
@@ -548,7 +553,7 @@ class global.Exspresso_Security
   #
   # JS Image Removal
   #
-  # Callback function for xss_clean() to sanitize image tags
+  # Callback function for xssClean() to sanitize image tags
   # This limits the PCRE backtracks, making it more performance friendly
   # and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
   # PHP 5.2+ on image tag heavy strings
@@ -602,13 +607,13 @@ class global.Exspresso_Security
   # @return	string
   #
   _decode_entity : ($match...) =>
-    return @entity_decode($match[0], strtoupper(config_item('charset')))
+    return @entityDecode($match[0], strtoupper(config_item('charset')))
     
   
   #
   # Validate URL entities
   #
-  # Called by xss_clean()
+  # Called by xssClean()
   #
   # @param 	string
   # @return 	string
@@ -650,7 +655,7 @@ class global.Exspresso_Security
   #
   # Do Never Allowed
   #
-  # A utility function for xss_clean()
+  # A utility function for xssClean()
   #
   # @param 	string
   # @return 	string

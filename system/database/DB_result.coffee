@@ -65,11 +65,11 @@ class global.Exspresso_DB_result
   result : ($type = 'object') ->
 
     if $type is 'object'
-      return @result_object()
+      return @resultObject()
     else if $type is 'array'
-      return @result_array()
+      return @resultArray()
     else
-      return @custom_result_object($type)
+      return @customResultObject($type)
       
     
   
@@ -79,7 +79,7 @@ class global.Exspresso_DB_result
   # @param  class_name  A string that represents the type of object you want back
   # @return array of objects
   #
-  custom_result_object : ($class_name) ->
+  customResultObject : ($class_name) ->
     if @_custom_result_object[$class_name]?
       return @_custom_result_object[$class_name]
       
@@ -107,7 +107,7 @@ class global.Exspresso_DB_result
   # @access	public
   # @return	object
   #
-  result_object : () ->
+  resultObject : () ->
     return @_result_array
     
   
@@ -117,7 +117,7 @@ class global.Exspresso_DB_result
   # @access	public
   # @return	array
   #
-  result_array : () ->
+  resultArray : () ->
     return @_result_array
 
   
@@ -145,20 +145,20 @@ class global.Exspresso_DB_result
       
     
     if $type is 'object'
-      return @row_object($n)
+      return @rowObject($n)
     else if $type is 'array'
-      return @row_array($n)
+      return @rowArray($n)
     else
-      return @custom_row_object($n, $type)
+      return @customRowObject($n, $type)
 
   #
   # Assigns an item into a particular column slot
   #
   # @access	public
   # @return	object
-  set_row: ($key, $value = null) ->
+  setRow: ($key, $value = null) ->
     if not is_array(@_row_data)
-      @_row_data = @row_array(0)
+      @_row_data = @rowArray(0)
 
 
     if is_array($key)
@@ -176,8 +176,8 @@ class global.Exspresso_DB_result
   #
   # @access	public
   # @return	object
-  custom_row_object : ($n, $type) ->
-    $result = @custom_result_object($type)
+  customRowObject : ($n, $type) ->
+    $result = @customResultObject($type)
 
     if count($result) is 0
       return $result
@@ -194,7 +194,7 @@ class global.Exspresso_DB_result
   #
   # @access	public
   # @return	object
-  row_object : ($n = 0) ->
+  rowObject : ($n = 0) ->
 
     if @_result_object.length is 0
       return {}
@@ -209,7 +209,7 @@ class global.Exspresso_DB_result
   #
   # @access	public
   # @return	array
-  row_array : ($n = 0) ->
+  rowArray : ($n = 0) ->
 
     if @_result_array.length is 0
       return {}
@@ -224,7 +224,7 @@ class global.Exspresso_DB_result
   #
   # @access	public
   # @return	object
-  first_row : ($type = 'object') ->
+  firstRow : ($type = 'object') ->
 
     if @_result_array.length is 0
       return {}
@@ -236,7 +236,7 @@ class global.Exspresso_DB_result
   #
   # @access	public
   # @return	object
-  last_row : ($type = 'object') ->
+  lastRow : ($type = 'object') ->
 
     if @_result_array.length is 0
       return {}
@@ -248,7 +248,7 @@ class global.Exspresso_DB_result
   #
   # @access	public
   # @return	object
-  next_row : ($type = 'object') ->
+  nextRow : ($type = 'object') ->
 
     if @_result_array.length is 0
       return {}
@@ -265,7 +265,7 @@ class global.Exspresso_DB_result
   #
   # @access	public
   # @return	object
-  previous_row : ($type = 'object') ->
+  previousRow : ($type = 'object') ->
 
     if @_result_array.length is 0
       return {}
@@ -285,13 +285,13 @@ class global.Exspresso_DB_result
   # operational due to the unavailability of the database resource IDs with
   # cached results.
 
-  num_rows :  -> return 0
-  num_fields :  -> return 0
-  list_fields :  -> return []
-  field_data :  -> return []
-  free_result :  -> return true
-  _data_seek :  -> return true
-  _fetch_assoc :  -> return []
+  numRows       :  -> return 0
+  numFields     :  -> return 0
+  listFields    :  -> return []
+  fieldData     :  -> return []
+  freeResult    :  -> return true
+  _data_seek    :  -> return true
+  _fetch_assoc  :  -> return []
   _fetch_object :  -> return []
 
   ##  END DB_result class

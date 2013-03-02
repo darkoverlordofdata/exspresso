@@ -231,7 +231,7 @@ class global.Exspresso_Server
 
     #  Are we using a database?  If so, load the driver
     if $session.sess_use_database
-      $options['store'] = $session.load_driver($session.sess_driver).install_check()
+      $options['store'] = $session.loadDriver($session.sess_driver).installCheck()
 
     @app.use $server.session($options)
     @app.use $session.parse_request($session.cookie_prefix + $session.sess_cookie_name)

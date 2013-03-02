@@ -59,13 +59,13 @@ class global.Migration_Auth_users_schema extends Exspresso_Migration
 
   up: ($next) ->
 
-    @dbforge.add_field @data
-    @dbforge.add_key 'id', true
-    @dbforge.create_table @table, true, $next
+    @dbforge.addField @data
+    @dbforge.addKey 'id', true
+    @dbforge.createTable @table, true, $next
 
   down: ($next) ->
 
-    @dbforge.drop_table @table, $next
+    @dbforge.dropTable @table, $next
 
 
 module.exports = Migration_Auth_users_schema

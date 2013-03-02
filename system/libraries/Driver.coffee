@@ -47,7 +47,7 @@ class global.Exspresso_Driver_Library
   # @param	string
   # @return	object
   #
-  load_driver: ($driver) ->
+  loadDriver: ($driver) ->
     
     UNABLE_TO = "Unable to load the requested driver: %s"
 
@@ -65,7 +65,7 @@ class global.Exspresso_Driver_Library
       $class = require($file)
 
     else
-      for $path in Exspresso.load.get_package_paths(true)
+      for $path in Exspresso.load.getPackagePaths(true)
         if file_exists($file = $path+'libraries/'+$subdir+$class_name+EXT)
           $class = require($file)
           break

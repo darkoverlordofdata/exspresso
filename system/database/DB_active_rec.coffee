@@ -149,7 +149,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	an alias
   # @return	object
   #
-  select_max: ($select = '', $alias = '') ->
+  selectMax: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'MAX')
     
   
@@ -163,7 +163,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	an alias
   # @return	object
   #
-  select_min: ($select = '', $alias = '') ->
+  selectMin: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'MIN')
     
   
@@ -177,7 +177,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	an alias
   # @return	object
   #
-  select_avg: ($select = '', $alias = '') ->
+  selectAvg: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'AVG')
     
   
@@ -191,7 +191,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	an alias
   # @return	object
   #
-  select_sum: ($select = '', $alias = '') ->
+  selectSum: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'SUM')
     
   
@@ -374,7 +374,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	mixed
   # @return	object
   #
-  or_where: ($key, $value = null, $escape = true) ->
+  orWhere: ($key, $value = null, $escape = true) ->
     @_where($key, $value, 'OR ', $escape)
     
   
@@ -435,7 +435,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	array	The values searched on
   # @return	object
   #
-  where_in: ($key = null, $values = null) ->
+  whereIn: ($key = null, $values = null) ->
     @_where_in($key, $values)
     
   
@@ -450,7 +450,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	array	The values searched on
   # @return	object
   #
-  or_where_in: ($key = null, $values = null) ->
+  orWhereIn: ($key = null, $values = null) ->
     @_where_in($key, $values, false, 'OR ')
     
   
@@ -465,7 +465,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	array	The values searched on
   # @return	object
   #
-  where_not_in: ($key = null, $values = null) ->
+  whereNotIn: ($key = null, $values = null) ->
     @_where_in($key, $values, true)
     
   
@@ -480,7 +480,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	array	The values searched on
   # @return	object
   #
-  or_where_not_in: ($key = null, $values = null) ->
+  orWhereNotIn: ($key = null, $values = null) ->
     @_where_in($key, $values, true, 'OR ')
     
   
@@ -564,7 +564,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	mixed
   # @return	object
   #
-  or_like: ($field, $match = '', $side = 'both') ->
+  orLike: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'OR ', $side)
     
   
@@ -579,7 +579,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	mixed
   # @return	object
   #
-  or_not_like: ($field, $match = '', $side = 'both') ->
+  orNotLike: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'OR ', $side, 'NOT')
     
   
@@ -634,7 +634,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string
   # @return	object
   #
-  group_by: ($by) ->
+  groupBy: ($by) ->
     if is_string($by)
       $by = explode(',', $by)
     
@@ -675,7 +675,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string
   # @return	object
   #
-  or_having: ($key, $value = '', $escape = true) ->
+  orHaving: ($key, $value = '', $escape = true) ->
     @_having($key, $value, 'OR ', $escape)
     
   
@@ -703,7 +703,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
         $k+=' = '
       
       if $v isnt ''
-        $v = ' ' + @escape_str($v)
+        $v = ' ' + @escapeStr($v)
       
       @ar_having.push $prefix + $k + $v
       if @ar_caching is true
@@ -721,7 +721,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	direction: asc or desc
   # @return	object
   #
-  order_by: ($orderby, $direction = '') ->
+  orderBy: ($orderby, $direction = '') ->
     if strtolower($direction) is 'random'
       $orderby = ''#  Random results want or don't need a field name
       $direction = @_random_keyword
@@ -843,7 +843,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string
   # @return	string
   #
-  count_all_results: ($table = '', $next) ->
+  countAllResults: ($table = '', $next) ->
     if $table isnt ''
       @_track_aliases($table)
       @from($table)
@@ -874,7 +874,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	the offset clause
   # @return	object
   #
-  get_where: ($table = '', $where = null, $limit = null, $offset = null) ->
+  getWhere: ($table = '', $where = null, $limit = null, $offset = null) ->
     if $table isnt ''
       @from($table)
     
@@ -902,7 +902,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	array	an associative array of insert values
   # @return	object
   #
-  insert_batch : ($table = '', $set = null, $next) ->
+  insertBatch : ($table = '', $set = null, $next) ->
     if typeof $set is 'function'
       $next = $set
       $set = null
@@ -935,7 +935,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
 
     @_reset_write()
     if $next?
-      @query_list $sql, $next
+      @queryList $sql, $next
     else
       $sql
 
@@ -952,7 +952,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
 
-  set_insert_batch : ($key, $value = '', $escape = true) ->
+  setInsertBatch : ($key, $value = '', $escape = true) ->
 
     $key = @_object_to_array_batch($key)
 
@@ -1134,7 +1134,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	the where key
   # @return	object
   #
-  update_batch : ($table = '', $set = null, $index = null) ->
+  updateBatch : ($table = '', $set = null, $index = null) ->
     #  Combine any cached components with the current statements
     @_merge_cache()
 
@@ -1174,7 +1174,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
     for $i in [0..count(@ar_set)-1] by 100
       $sql.push @_update_batch(@_protect_identifiers($table, true, null, false), array_slice(@ar_set, $i, 100), @_protect_identifiers($index), @ar_where)
 
-    @query_list $sql, ($err) ->
+    @queryList $sql, ($err) ->
 
       @_reset_write()
       $next $err
@@ -1193,7 +1193,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @return	object
   #
 
-  set_update_batch : ($key, $index = '', $escape = true) ->
+  setUpdateBatch : ($key, $index = '', $escape = true) ->
     $key = @_object_to_array_batch($key)
 
     #if not is_array($key)
@@ -1241,7 +1241,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @param	string	the table to empty
   # @return	object
   #
-  empty_table: ($table = '') ->
+  emptyTable: ($table = '') ->
     if $table is ''
       if not @ar_from[0]? 
         if @db_debug
@@ -1583,7 +1583,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  start_cache:  ->
+  startCache:  ->
     @ar_caching = true
     
   
@@ -1595,7 +1595,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  stop_cache:  ->
+  stopCache:  ->
     @ar_caching = false
     
   
@@ -1607,7 +1607,7 @@ class Exspresso_DB_active_record extends Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  flush_cache:  ->
+  flushCache:  ->
     @_reset_run(
     
       'ar_cache_select':[]

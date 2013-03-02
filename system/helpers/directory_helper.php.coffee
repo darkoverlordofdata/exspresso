@@ -33,13 +33,9 @@
 #
 # Exspresso Directory Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/directory_helper.html
 #
 
+fs = require('fs')
 #  ------------------------------------------------------------------------
 
 #
@@ -55,26 +51,33 @@
 # @return	array
 #
 if not function_exists('directory_map')
-  exports.directory_map = directory_map = ($source_dir, $directory_depth = 0, $hidden = false) ->
-    if $fp = opendir($source_dir)) then $filedata = {}$new_depth = $directory_depth - 1$source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATORwhile false isnt ($file = readdir($fp))
-      #  Remove '.', '..', and hidden files [optional]
-      if not trim($file, '.') or ($hidden is false and $file[0] is '.')
-        continue
-        
-      
-      if ($directory_depth < 1 or $new_depth > 0) and is_dir($source_dir + $file)
-        $filedata[$file] = directory_map($source_dir + $file + DIRECTORY_SEPARATOR, $new_depth, $hidden)
-        
-      else 
-        $filedata.push $file
-        
-      closedir($fp)
-    return $filedata
-    }
-    
-    return false
-    
-  
+  exports.directory_map = directory_map = ($source_dir, $directory_depth = 0, $hidden = false, $filedata = {}) ->
+    if is_dir($source_dir)
+      $new_depth = $directory_depth - 1
+      $source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
+      for $file in fs.readdirSync($source_dir)
+        #  Remove '.', '..', and hidden files [optional]
+        if not trim($file, '.') or ($hidden is false and $file[0] is '.')
+          continue
+
+        if ($directory_depth < 1 or $new_depth > 0) and is_dir($source_dir + $file)
+          $filedata[$file] = directory_map($source_dir + $file + DIRECTORY_SEPARATOR, $new_depth, $hidden, $filedata)
+
+        else
+          $filedata.push $file
+
+      return $filedata
+    else
+      return false
+
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 
 #  End of file directory_helper.php 

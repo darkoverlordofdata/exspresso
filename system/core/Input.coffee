@@ -37,7 +37,7 @@ class global.Exspresso_Input
 
   os = require('os')
 
-  headers                 : null  # List of all HTTP request headers
+  _headers                : null  # List of all HTTP request headers
   _ip_address             : false # IP address of the current user
   _user_agent             : false # user agent (web browser) being used by the current user
   _server                 : null  # fabricated table to mimic PHP
@@ -47,6 +47,18 @@ class global.Exspresso_Input
                                   # when GET, POST or COOKIE data is encountered
   _enable_csrf            : false # Enables a CSRF cookie token to be set.
 
+  #
+  # Constructor
+  #
+  # @access	public
+  # @param object   Exspresso_Utf8
+  # @param object   Exspresso_Security
+  # @param object   http request cookies object
+  # @param object   http request query object
+  # @param object   http request body object
+  # @param object   http request server object
+  # @return	void
+  #
   constructor: (@$UNI, @$SEC, @$_COOKIE, @$_GET, @$_POST, @$_SERVER) ->
 
     log_message('debug', "Input Class Initialized")
@@ -57,28 +69,6 @@ class global.Exspresso_Input
     @_sanitize_globals()
 
 
-
-  #
-  # Fetch from array
-  #
-  # This is a helper function to retrieve values from global arrays
-  #
-  # @access	private
-  # @param	array
-  # @param	string
-  # @param	bool
-  # @return	string
-  #
-  _fetch_from_array : ($array, $index = '', $xss_clean = false) ->
-    if not $array[$index]?
-      return null #false
-
-    if $xss_clean is true
-      return @$SEC.xss_clean($array[$index])
-
-    return $array[$index]
-
-
   #
   # Fetch an item from the GET array
   #
@@ -87,7 +77,7 @@ class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  get : ($index = null, $xss_clean = false) ->
+  get : ($index = null, $xssClean = false) ->
 
     #  Check if a field has been provided
     if $index is null and  not empty(@$_GET)
@@ -95,10 +85,10 @@ class global.Exspresso_Input
 
       #  loop through the full _GET array
       for $key in array_keys(@$_GET)
-        $get[$key] = @_fetch_from_array(@$_GET, $key, $xss_clean)
+        $get[$key] = @_fetch_from_array(@$_GET, $key, $xssClean)
       return $get
 
-    return @_fetch_from_array(@$_GET, $index, $xss_clean)
+    return @_fetch_from_array(@$_GET, $index, $xssClean)
 
 
   #
@@ -109,7 +99,7 @@ class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  post : ($index = null, $xss_clean = false) ->
+  post : ($index = null, $xssClean = false) ->
 
     #  Check if a field has been provided
     if $index is null and  not empty(@$_POST)
@@ -117,10 +107,10 @@ class global.Exspresso_Input
 
       #  Loop through the full _POST array and return it
       for $key in array_keys(@$_POST)
-        $post[$key] = @_fetch_from_array(@$_POST, $key, $xss_clean)
+        $post[$key] = @_fetch_from_array(@$_POST, $key, $xssClean)
       return $post
 
-    return @_fetch_from_array(@$_POST, $index, $xss_clean)
+    return @_fetch_from_array(@$_POST, $index, $xssClean)
 
   #
   # Fetch an item from either the GET array or the POST
@@ -130,12 +120,12 @@ class global.Exspresso_Input
   # @param	bool	XSS cleaning
   # @return	string
   #
-  get_post : ($index = '', $xss_clean = false) ->
+  getPost : ($index = '', $xssClean = false) ->
 
     if not @$_POST[$index]?
-      @get($index, $xss_clean)
+      @get($index, $xssClean)
     else
-      @post($index, $xss_clean)
+      @post($index, $xssClean)
 
   #
   # Fetch an item from the COOKIE array
@@ -145,8 +135,8 @@ class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  cookie : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@$_COOKIE, $index, $xss_clean)
+  cookie : ($index = '', $xssClean = false) ->
+    return @_fetch_from_array(@$_COOKIE, $index, $xssClean)
 
   #
   # Set cookie
@@ -164,7 +154,7 @@ class global.Exspresso_Input
   # @param	bool	true makes the cookie secure
   # @return	void
   #
-  set_cookie : ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
+  setCookie : ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
 
     if $prefix is '' and config_item('cookie_prefix') isnt ''
       $prefix = config_item('cookie_prefix')
@@ -196,8 +186,8 @@ class global.Exspresso_Input
   # @param	bool
   # @return	string
   #
-  server : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@$_SERVER, $index, $xss_clean)
+  server : ($index = '', $xssClean = false) ->
+    return @_fetch_from_array(@$_SERVER, $index, $xssClean)
 
   #
   # Fetch the IP Address
@@ -205,7 +195,7 @@ class global.Exspresso_Input
   # @access	public
   # @return	string
   #
-  ip_address :  ->
+  ipAddress :  ->
     #return @req.ip
     if @_ip_address isnt false
       return @_ip_address
@@ -243,7 +233,7 @@ class global.Exspresso_Input
   # @access	public
   # @return	string
   #
-  user_agent:  ->
+  userAgent:  ->
     if @_user_agent isnt false
       return @_user_agent
     @_user_agent = if ( not $_SERVER['HTTP_USER_AGENT']? ) then false else $_SERVER['HTTP_USER_AGENT']
@@ -257,7 +247,7 @@ class global.Exspresso_Input
   # @param	string	ipv4 or ipv6
   # @return	bool
   #
-  valid_ip: ($ip, $which = '') ->
+  validIp: ($ip, $which = '') ->
     $which = strtolower($which)
 
     if $which isnt 'ipv6' and $which isnt 'ipv4'
@@ -272,6 +262,76 @@ class global.Exspresso_Input
 
     $func = '_valid_' + $which
     return @[$func]($ip)
+
+  # Request Headers
+  #
+  # @param	bool XSS cleaning
+  #
+  # @return array
+  requestHeaders : ($xssClean = false) ->
+
+    @_headers = @req.headers
+    return @_headers
+
+
+  # Get Request Header
+  #
+  # Returns the value of a single member of the headers class member
+  #
+  # @param 	string		array key for $this->headers
+  # @param	boolean		XSS Clean or not
+  # @return 	mixed		FALSE on failure, string on success
+  getRequestHeader : ($index, $xssClean = false) ->
+    if empty(@_headers)
+      @requestHeaders()
+
+    if not @_headers[$index]?
+      return false
+
+    if $xssClean is true
+      return @$SEC.xssClean(@_headers[$index])
+
+    return @_headers[$index]
+
+
+  # Is ajax Request?
+  #
+  # Test to see if a request contains the HTTP_X_REQUESTED_WITH header
+  #
+  # @return 	boolean
+  isAjaxRequest :  ->
+    if @server('HTTP_X_REQUESTED_WITH') is 'XMLHttpRequest' then true else false
+
+  # Is cli Request?
+  #
+  # Test to see if a request was made from the command line
+  #
+  # @return 	bool
+  isCliRequest :  -> false
+
+
+
+
+  #
+  # Fetch from array
+  #
+  # This is a helper function to retrieve values from global arrays
+  #
+  # @access	private
+  # @param	array
+  # @param	string
+  # @param	bool
+  # @return	string
+  #
+  _fetch_from_array : ($array, $index = '', $xssClean = false) ->
+    if not $array[$index]?
+      return null #false
+
+    if $xssClean is true
+      return @$SEC.xssClean($array[$index])
+
+    return $array[$index]
+
 
   #
   # Validate IPv4 Address
@@ -390,8 +450,8 @@ class global.Exspresso_Input
       @$_COOKIE[@_clean_input_keys($key)] = @_clean_input_data($val)
 
     #  CSRF Protection check on HTTP requests
-    if @_enable_csrf is true and  not @is_cli_request()
-      @$SEC.csrf_verify()
+    if @_enable_csrf is true and  not @isCliRequest()
+      @$SEC.csrfVerify()
 
     log_message('debug', "Global POST and COOKIE data sanitized")
 
@@ -413,14 +473,14 @@ class global.Exspresso_Input
 
     #  Clean UTF-8 if supported
     if UTF8_ENABLED is true
-      $str = @$UNI.clean_string($str)
+      $str = @$UNI.cleanString($str)
 
     #  Remove control characters
     $str = remove_invisible_characters($str)
 
     #  Should we filter the input data?
     if @_enable_xss is true
-      $str = @$SEC.xss_clean($str)
+      $str = @$SEC.xssClean($str)
 
     #  Standardize newlines if needed
     if @_standardize_newlines is true
@@ -445,56 +505,11 @@ class global.Exspresso_Input
 
     #  Clean UTF-8 if supported
     if UTF8_ENABLED is true
-      $str = @$UNI.clean_string($str)
+      $str = @$UNI.cleanString($str)
 
     return $str
 
 
-  # Request Headers
-  #
-  # @param	bool XSS cleaning
-  #
-  # @return array
-  request_headers : ($xss_clean = false) ->
-
-    @_headers = @req.headers
-    return @_headers
-
-
-  # Get Request Header
-  #
-  # Returns the value of a single member of the headers class member
-  #
-  # @param 	string		array key for $this->headers
-  # @param	boolean		XSS Clean or not
-  # @return 	mixed		FALSE on failure, string on success
-  get_request_header : ($index, $xss_clean = false) ->
-    if empty(@headers)
-      @request_headers()
-
-    if not @headers[$index]?
-      return false
-
-    if $xss_clean is true
-      return @$SEC.xss_clean(@headers[$index])
-
-    return @headers[$index]
-
-
-  # Is ajax Request?
-  #
-  # Test to see if a request contains the HTTP_X_REQUESTED_WITH header
-  #
-  # @return 	boolean
-  is_ajax_request :  ->
-    if @server('HTTP_X_REQUESTED_WITH') is 'XMLHttpRequest' then true else false
-
-  # Is cli Request?
-  #
-  # Test to see if a request was made from the command line
-  #
-  # @return 	bool
-  is_cli_request :  -> false
 
 
 # END Exspresso_Input class

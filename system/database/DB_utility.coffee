@@ -58,7 +58,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @access	public
   # @return	bool
   #
-  list_databases: ($next) ->
+  listDatabases: ($next) ->
     #  Is there a cached result?
     if @data_cache['db_names']?
       $next null, @data_cache['db_names']
@@ -83,15 +83,15 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @param	string
   # @return	boolean
   #
-  database_exists: ($database_name) ->
-    #  Some databases won't have access to the list_databases() function, so
+  databaseExists: ($database_name) ->
+    #  Some databases won't have access to the listDatabases() function, so
     #  this is intended to allow them to override with their own functions as
     #  defined in $driver_utility.php
     if method_exists(@, '_database_exists')
       return @_database_exists($database_name)
       
     else 
-      return if not in_array($database_name, @list_databases()) then false else true
+      return if not in_array($database_name, @listDatabases()) then false else true
       
     
   
@@ -103,7 +103,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  optimize_table: ($table_name, $next) ->
+  optimizeTable: ($table_name, $next) ->
     $sql = @_optimize_table($table_name)
     
     if is_bool($sql)
@@ -124,7 +124,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @access	public
   # @return	array
   #
-  optimize_database: ($next) ->
+  optimizeDatabase: ($next) ->
 
     $result = {}
     @db.list_tables ($table_list) =>
@@ -134,7 +134,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
         $sql = @_optimize_table($table_name)
         $sql_list.push $sql unless is_bool($sql)
 
-      @db.query_list $sql_list, ($err, $results) =>
+      @db.queryList $sql_list, ($err, $results) =>
 
         if not $err
           for $query in $results
@@ -157,7 +157,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  repair_table: ($table_name, $next) ->
+  repairTable: ($table_name, $next) ->
     $sql = @_repair_table($table_name)
     
     if is_bool($sql)
@@ -178,7 +178,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @param	string	The enclosure - double quote by default
   # @return	string
   #
-  csv_from_result: ($query, $delim = ",", $newline = "\n", $enclosure = '"') ->
+  csvFromResult: ($query, $delim = ",", $newline = "\n", $enclosure = '"') ->
     if not is_object($query) or  not method_exists($query, 'list_fields')
       show_error('You must submit a valid result object')
       
@@ -213,7 +213,7 @@ class global.Exspresso_DB_utility extends Exspresso_DB_forge
   # @param	array	Any preferences
   # @return	string
   #
-  xml_from_result: ($query, $params = {}) ->
+  xmlFromResult: ($query, $params = {}) ->
     if not is_object($query) or  not method_exists($query, 'list_fields')
       show_error('You must submit a valid result object')
       

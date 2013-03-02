@@ -33,7 +33,6 @@ require BASEPATH+'core/Server/Server.coffee'
 class global.Exspresso_Server_connect extends Exspresso_Server
 
   connect         = require("connect")            # High performance middleware framework
-  cache           = require("connect-cache")      # Caching system for Connect
   eco             = require('eco')                # Embedded CoffeeScript templates
   fs              = require("fs")                 # File system
   cookie          = require('cookie')             # cookie parsing and serialization
@@ -128,7 +127,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
 
     super $config
     @app.use connect.logger(@_logger)
-    @app.use cache({rules: [{regex: /.*/, ttl: 60000}]}) if @_cache
 
     Variables::['settings'] =
       site_name:    @_site_name
@@ -138,7 +136,6 @@ class global.Exspresso_Server_connect extends Exspresso_Server
     # Expose asset folders
     #
     @app.use connect.static(APPPATH+"assets/")
-    #@app.use connect.staticCache()
 
     #
     # Favorites icon

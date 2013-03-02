@@ -47,6 +47,7 @@ class global.Exspresso_Lang
   # Constructor
   #
   # @access  public
+  # @param object   Exspresso_Config
   #
   constructor : (@CFG) ->
     @_language = {}
@@ -79,7 +80,7 @@ class global.Exspresso_Lang
       if $lang = @_application_load($langfile, $lang, $return)
         return $lang
     else
-      if $lang = Modules.load_file($_langfile, $path, 'lang')
+      if $lang = Modules.loadFile($_langfile, $path, 'lang')
         if $return then return $lang
     @_language = array_merge(@_language, $lang)
     @_is_loaded.push $langfile + '_lang' + EXT
@@ -112,7 +113,7 @@ class global.Exspresso_Lang
 
     #  Determine where the language file is and load it
     $found = false
-    for $package_path in Exspresso.load.get_package_paths(true)
+    for $package_path in Exspresso.load.getPackagePaths(true)
       if file_exists($package_path + 'language/' + $idiom + '/' + $langfile)
         $lang = require($package_path + 'language/' + $idiom + '/' + $langfile)
         $found = true

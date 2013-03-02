@@ -33,11 +33,6 @@
 #
 # Exspresso Security Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/security_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -50,9 +45,9 @@
 # @param	bool	whether or not the content is an image file
 # @return	string
 #
-if not function_exists('xss_clean')
-  exports.xss_clean = xss_clean = ($str, $is_image = false) ->
-    return Exspresso.security.xss_clean($str, $is_image)
+if not function_exists('xssClean')
+  exports.xssClean = xssClean = ($str, $is_image = false) ->
+    return @security.xssClean($str, $is_image)
     
   
 
@@ -65,9 +60,9 @@ if not function_exists('xss_clean')
 # @param	string
 # @return	string
 #
-if not function_exists('sanitize_filename')
-  exports.sanitize_filename = sanitize_filename = ($filename) ->
-    return Exspresso.security.sanitize_filename($filename)
+if not function_exists('sanitizeFilename')
+  exports.sanitizeFilename = sanitizeFilename = ($filename) ->
+    return @security.sanitizeFilename($filename)
     
   
 
@@ -102,27 +97,14 @@ if not function_exists('do_hash')
 #
 if not function_exists('strip_image_tags')
   exports.strip_image_tags = strip_image_tags = ($str) ->
-    $str = preg_replace("#<img\s+.*?src\s*=\s*[\"'](.+?)[\"'].*?\>#", "\\1", $str)
-    $str = preg_replace("#<img\s+.*?src\s*=\s*(.+?).*?\>#", "\\1", $str)
+    $str = preg_replace("#<img\\s+.*?src\\s*=\\s*[\\\"\'](.+?)[\\\"\'].*?\>#", "$1", $str)
+    $str = preg_replace("#<img\\s+.*?src\\s*=\\s*(.+?).*?\\>#", "$1", $str)
     
     return $str
     
   
 
-#  ------------------------------------------------------------------------
 
-#
-# Convert PHP tags to entities
-#
-# @access	public
-# @param	string
-# @return	string
-#
-if not function_exists('encode_php_tags')
-  exports.encode_php_tags = encode_php_tags = ($str) ->
-    return str_replace(['<?php', '<?PHP', '<?', '?>'], ['&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'], $str)
-    
-  
 
 
 #  End of file security_helper.php 

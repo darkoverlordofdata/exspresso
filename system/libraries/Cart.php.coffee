@@ -357,7 +357,7 @@ class Exspresso_Cart
     
     #  Is our cart empty?  If so we delete it from the session
     if count(@_cart_contents)<=2
-      @session.unset_userdata('cart_contents')
+      @session.unsetUserdata('cart_contents')
       
       #  Nothing more to do... coffee time!
       return false
@@ -365,7 +365,7 @@ class Exspresso_Cart
     
     #  If we made it this far it means that our cart has data.
     #  Let's pass it to the Session class so it can be stored
-    @session.set_userdata('cart_contents':@_cart_contents)
+    @session.setUserdata('cart_contents':@_cart_contents)
     
     #  Woot!
     return true
@@ -477,7 +477,7 @@ class Exspresso_Cart
     @_cart_contents['cart_total'] = 0
     @_cart_contents['total_items'] = 0
     
-    @session.unset_userdata('cart_contents')
+    @session.unsetUserdata('cart_contents')
     
   
   

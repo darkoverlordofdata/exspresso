@@ -46,11 +46,14 @@ class global.Exspresso_Utf8
   # Determines if UTF-8 support is to be enabled
   #
   #
+  # @access  public
+  # @param object   Exspresso_Config
+  #
   constructor : ($CFG) ->
     log_message('debug', "Utf8 Class Initialized")
     
     if preg_match('/./', 'é')? and $CFG.item('charset') is 'UTF-8'
-    #  PCRE must support UTF-8
+    #  RegExp must support UTF-8
     #  Application charset must be UTF-8 then
       log_message('debug', "UTF-8 Support Enabled")
       define('UTF8_ENABLED', true)
@@ -73,7 +76,7 @@ class global.Exspresso_Utf8
   # @param	string
   # @return	string
   #
-  clean_string : ($str) ->
+  cleanString : ($str) ->
     if @_is_ascii($str) is false
       $str = utf8.decode($str)
       $str = utf8.encode(remove_invisible_characters($str, false))
@@ -93,7 +96,7 @@ class global.Exspresso_Utf8
   # @param	string
   # @return	string
   #
-  safe_ascii_for_xml : ($str) ->
+  safeAsciiForXml : ($str) ->
     return remove_invisible_characters($str, false)
     
   
@@ -109,7 +112,7 @@ class global.Exspresso_Utf8
   # @param	string	- input encoding
   # @return	string
   #
-  convert_to_utf8 : ($str, $encoding) ->
+  convertToUtf8 : ($str, $encoding) ->
     utf8.encode($str)
     
   

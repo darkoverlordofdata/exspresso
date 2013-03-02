@@ -33,11 +33,6 @@
 #
 # Exspresso Inflector Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/directory_helper.html
 #
 
 

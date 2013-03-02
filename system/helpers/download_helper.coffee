@@ -33,11 +33,6 @@
 #
 # Exspresso Download Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/download_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -56,24 +51,22 @@ if not function_exists('force_download')
   exports.force_download = force_download = ($filename = '', $data = '') ->
     if $filename is '' or $data is ''
       return false
-      
     
     #  Try to determine if the filename includes a file extension.
     #  We need it in order to set the MIME type
     if false is strpos($filename, '.')
       return false
       
-    
     #  Grab the file extension
     $x = explode('.', $filename)
     $extension = end($x)
     
     #  Load the mime types
     if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-      require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+      $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
       
     else if is_file(APPPATH + 'config/mimes' + EXT)
-      require(APPPATH + 'config/mimes' + EXT)
+      $mimes = require(APPPATH + 'config/mimes' + EXT)
       
     
     #  Set a default mime if we can't find it
@@ -86,24 +79,24 @@ if not function_exists('force_download')
     
     #  Generate the server headers
     if strpos(@$_SERVER['HTTP_USER_AGENT'], "MSIE") isnt false
-      header('Content-Type: "' + $mime + '"')
-      header('Content-Disposition: attachment; filename="' + $filename + '"')
-      header('Expires: 0')
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0')
-      header("Content-Transfer-Encoding: binary")
-      header('Pragma: public')
-      header("Content-Length: " + strlen($data))
+      @res.header('Content-Type: "' + $mime + '"')
+      @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
+      @res.header('Expires: 0')
+      @res.header('Cache-Control: must-revalidate, post-check=0, pre-check=0')
+      @res.header("Content-Transfer-Encoding: binary")
+      @res.header('Pragma: public')
+      @res.header("Content-Length: " + strlen($data))
       
     else 
-      header('Content-Type: "' + $mime + '"')
-      header('Content-Disposition: attachment; filename="' + $filename + '"')
-      header("Content-Transfer-Encoding: binary")
-      header('Expires: 0')
-      header('Pragma: no-cache')
-      header("Content-Length: " + strlen($data))
+      @res.header('Content-Type: "' + $mime + '"')
+      @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
+      @res.header("Content-Transfer-Encoding: binary")
+      @res.header('Expires: 0')
+      @res.header('Pragma: no-cache')
+      @res.header("Content-Length: " + strlen($data))
       
     
-    die $data
+    @res.send $data
     
   
 

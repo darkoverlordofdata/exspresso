@@ -48,8 +48,6 @@ class global.Exspresso_DB_Cache
   #
   #
   constructor: ($controller, @db) ->
-    super $controller
-    #  Assign the main CI object to $this->CI
     #  and load the file helper since we use it a lot
     @load.helper('file')
     
@@ -61,10 +59,10 @@ class global.Exspresso_DB_Cache
   # @param	string	the path to the cache directory
   # @return	bool
   #
-  check_path: ($path = '') ->
+  checkPath: ($path = '') ->
     if $path is ''
       if @db.cachedir is ''
-        return @db.cache_off()
+        return @db.cacheOff()
         
       
       $path = @db.cachedir
@@ -76,7 +74,7 @@ class global.Exspresso_DB_Cache
     
     if not is_dir($path) or not is_really_writable($path)
       #  If the path is wrong we'll turn off caching
-      return @db.cache_off()
+      return @db.cacheOff()
       
     
     @db.cachedir = $path
@@ -93,8 +91,8 @@ class global.Exspresso_DB_Cache
   # @return	string
   #
   read: ($sql) ->
-    if not @check_path()
-      return @db.cache_off()
+    if not @checkPath()
+      return @db.cacheOff()
       
     
     $segment_one = if (@uri.segment(1) is false) then 'default' else @uri.segment(1)
@@ -171,7 +169,7 @@ class global.Exspresso_DB_Cache
   # @access	public
   # @return	bool
   #
-  delete_all :  ->
+  deleteAll :  ->
     delete_files(@db.cachedir, true)
 
 module.exports = Exspresso_DB_Cache

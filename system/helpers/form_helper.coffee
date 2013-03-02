@@ -61,11 +61,11 @@ if not function_exists('form_open')
 
     #  If an action is not a full URL then turn it into one
     #if $action and strpos($action, '://') is false
-    #  $action = @config.site_url($action)
+    #  $action = @config.siteUrl($action)
 
 
     #  If no action is provided then set to the current url
-    $action or ($action = @config.site_url(@uri.uri_string()))
+    $action or ($action = @config.siteUrl(@uri.uriString()))
 
     $form = '<form action="' + $action + '"'
 
@@ -75,7 +75,7 @@ if not function_exists('form_open')
 
     #  CSRF
     if @config.item('csrf_protection') is true
-      $hidden[@security.get_csrf_token_name()] = @security.get_csrf_hash()
+      $hidden[@security.getCsrfTokenName()] = @security.getCsrfHash()
 
     if is_array($hidden) and count($hidden) > 0
       {format} = require('util')

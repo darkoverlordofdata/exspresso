@@ -121,7 +121,7 @@ class Exspresso_Profiler
       #  up in the order that it was defined
       if ($match = preg_match("/(.+?)_end/i", $key))?
         if @bm.marker[$match[1] + '_end']?  and @bm.marker[$match[1] + '_start']?
-          $profile[$match[1]] = @bm.elapsed_time($match[1] + '_start', $key)
+          $profile[$match[1]] = @bm.elapsedTime($match[1] + '_start', $key)
 
     #  Build a table containing the profile data.
     #  Note: At some point we should turn this into a template that can
@@ -293,11 +293,11 @@ class Exspresso_Profiler
     $output+='<dt>' + @lang.line('profiler_uri_string') + '</dt>'
     $output+="\n"
 
-    if @uri.uri_string() is ''
+    if @uri.uriString() is ''
       $output+="<dd><em>" + @lang.line('profiler_no_uri') + "</em></dd>"
 
     else
-      $output+="<dd>" + @uri.uri_string() + "</dd>"
+      $output+="<dd>" + @uri.uriString() + "</dd>"
 
     $output+="</dl>"
 
@@ -415,7 +415,7 @@ class Exspresso_Profiler
   #
   run: () ->
 
-    $elapsed = @bm.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    $elapsed = @bm.elapsedTime('total_execution_time_start', 'total_execution_time_end')
     $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
     $output = """
       <footer id="footer">

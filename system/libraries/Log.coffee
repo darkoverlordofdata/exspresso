@@ -68,7 +68,7 @@ class global.Exspresso_Log
   # @param	bool	whether the error is a native error
   # @return	bool
   ##
-  write_log: ($level = 'error', $msg) ->
+  writeLog: ($level = 'error', $msg) ->
 
 
     $level = $level.toUpperCase()

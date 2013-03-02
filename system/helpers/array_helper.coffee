@@ -33,11 +33,6 @@
 #
 # Exspresso Array Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/array_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -115,8 +110,15 @@ if not function_exists('elements')
       
     
     return $return
-    
-  
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
+
 
 #  End of file array_helper.php 
 #  Location: ./system/helpers/array_helper.php 

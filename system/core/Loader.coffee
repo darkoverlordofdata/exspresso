@@ -62,6 +62,7 @@ class global.Exspresso_Loader
   #
   # Initiailize the loader search paths
   #
+  # @param    object  Exspresso_Controller
   # @return 	nothing
   #
   constructor: ($controller)->
@@ -113,7 +114,7 @@ class global.Exspresso_Loader
   # @param 	string	class being checked for
   # @return 	mixed	class object name on the CI SuperObject or FALSE
   #
-  is_loaded: ($class) ->
+  isLoaded: ($class) ->
     if @_classes[$class]?
       return @_classes[$class]
 
@@ -149,7 +150,7 @@ class global.Exspresso_Loader
     # load library config file as params *
 
     [$path2, $file] = Modules.find($_alias, $controller.module, 'config/')
-    ($path2) and ($params = array_merge(Modules.load_file($file, $path2, 'config'), $params))
+    ($path2) and ($params = array_merge(Modules.loadFile($file, $path2, 'config'), $params))
 
     if $path is false
 
@@ -158,7 +159,7 @@ class global.Exspresso_Loader
 
     else
 
-      $Library = Modules.load_file($_library, $path)
+      $Library = Modules.loadFile($_library, $path)
       @_classes[$class] = $_alias
       defineProperty $controller, $_alias,
         enumerable  : true
@@ -217,7 +218,7 @@ class global.Exspresso_Loader
         if $connect is true then $connect = ''
         @database($connect, false, true)
 
-      $Model = Modules.load_file($_model, $path)
+      $Model = Modules.loadFile($_model, $path)
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
@@ -444,7 +445,7 @@ class global.Exspresso_Loader
 
     if ($path is false) then return
 
-    Modules.load_file($_plugin, $path)
+    Modules.loadFile($_plugin, $path)
     @_plugins[$plugin] = true
 
   #
@@ -533,7 +534,7 @@ class global.Exspresso_Loader
 
     if $path is false then return @_application_helper($helper)
 
-    @_helpers[$_helper] = Modules.load_file($_helper, $path)
+    @_helpers[$_helper] = Modules.loadFile($_helper, $path)
 
     # expose the helpers to template engine
     Exspresso.server.set_helpers @_helpers[$helper]
@@ -661,7 +662,7 @@ class global.Exspresso_Loader
   # @param	string
   # @return	void
   #
-  add_package_path: ($path) ->
+  addPackagePath: ($path) ->
 
     $path = rtrim($path, '/')+'/'
 
@@ -685,7 +686,7 @@ class global.Exspresso_Loader
   # @param	string
   # @return	void
   #
-  get_package_paths: ($include_base = false) ->
+  getPackagePaths: ($include_base = false) ->
     return if $include_base is true then @_library_paths else @_model_paths
 
 
@@ -699,7 +700,7 @@ class global.Exspresso_Loader
   # @param	type
   # @return	type
   #
-  remove_package_path: ($path = '', $remove_config_path = true) ->
+  removePackagePath: ($path = '', $remove_config_path = true) ->
     $config = @_get_component('config')
 
     if $path is ''
@@ -772,7 +773,7 @@ class global.Exspresso_Loader
       if $_return isnt null
         $_return $err, $html
       else
-        @controller.output.append_output $html
+        @controller.output.appendOutput $html
         @controller.next()
 
   #
@@ -983,7 +984,7 @@ class global.Exspresso_Loader
     #  module autoload file
     $autoload = {}
     if ($path isnt false)
-      $autoload = array_merge(Modules.load_file($file, $path, 'autoload'), $autoload)
+      $autoload = array_merge(Modules.loadFile($file, $path, 'autoload'), $autoload)
 
     #  nothing to do
     if count($autoload) is 0 then return
@@ -991,7 +992,7 @@ class global.Exspresso_Loader
     #  autoload package paths
     if $autoload['packages']?
       for $package_path in $autoload['packages']
-        @add_package_path($package_path)
+        @addPackagePath($package_path)
 
     #  autoload config
     if $autoload['config']?
@@ -1062,7 +1063,7 @@ class global.Exspresso_Loader
     #  Autoload packages
     if $autoload['packages']?
       for $package_path in $autoload['packages']
-        @add_package_path $package_path
+        @addPackagePath $package_path
 
     #  Load any custom config file
     if $autoload['config'].length > 0

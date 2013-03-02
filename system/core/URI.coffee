@@ -46,6 +46,8 @@ class global.Exspresso_URI
   # Constructor
   #
   # @access	public
+  # @param object   http request object
+  # @return	void
   #
   constructor : ($req) ->
 
@@ -120,14 +122,14 @@ class global.Exspresso_URI
   # @param	array	an array of default values
   # @return	array
   #
-  uri_to_assoc: ($n = 3, $default = {}) ->
+  uriToAssoc: ($n = 3, $default = {}) ->
     @_uri_to_assoc($n, $default, 'segment')
 
   #
   # Identical to above only it uses the re-routed segment array
   #
   #
-  ruri_to_assoc: ($n = 3, $default = {}) ->
+  ruriToAssoc: ($n = 3, $default = {}) ->
     @_uri_to_assoc($n, $default, 'rsegment')
 
   #  --------------------------------------------------------------------
@@ -198,7 +200,7 @@ class global.Exspresso_URI
   # @param	array	an associative array of key/values
   # @return	array
   #
-  assoc_to_uri : ($array) ->
+  assocToUri : ($array) ->
     $temp = {}
     for $key, $val of $array
       $temp.push $key
@@ -217,7 +219,7 @@ class global.Exspresso_URI
   # @param	string
   # @return	string
   #
-  slash_segment : ($n, $where = 'trailing') ->
+  slashSegment : ($n, $where = 'trailing') ->
     @_slash_segment($n, $where, 'segment')
 
 
@@ -231,7 +233,7 @@ class global.Exspresso_URI
   # @param	string
   # @return	string
   #
-  slash_rsegment : ($n, $where = 'trailing') ->
+  slashRsegment : ($n, $where = 'trailing') ->
     @_slash_segment($n, $where, 'rsegment')
 
   #  --------------------------------------------------------------------
@@ -266,7 +268,7 @@ class global.Exspresso_URI
   # @access	public
   # @return	array
   #
-  segment_array :  ->
+  segmentArray :  ->
     @_segments
 
 
@@ -278,7 +280,7 @@ class global.Exspresso_URI
   # @access	public
   # @return	array
   #
-  rsegment_array :  ->
+  rsegmentArray :  ->
     @_rsegments
 
 
@@ -290,7 +292,7 @@ class global.Exspresso_URI
   # @access	public
   # @return	integer
   #
-  total_segments :  ->
+  totalSegments :  ->
     count(@_segments)
 
 
@@ -302,7 +304,7 @@ class global.Exspresso_URI
   # @access	public
   # @return	integer
   #
-  total_rsegments :  ->
+  totalRsegments :  ->
     count(@_rsegments)
 
 
@@ -314,7 +316,7 @@ class global.Exspresso_URI
   # @access	public
   # @return	string
   #
-  uri_string :  ->
+  uriString :  ->
     @_uri_string
 
 
@@ -326,7 +328,7 @@ class global.Exspresso_URI
   # @access	public
   # @return	string
   #
-  ruri_string :  ->
+  ruriString :  ->
     '/' + implode('/', @rsegment_array())
 
 

@@ -72,7 +72,7 @@ class global.Exspresso_Benchmark
   # @param  integer  the number of decimal places
   # @return  mixed
   #
-  elapsed_time : ($point1 = '', $point2 = '', $decimals = 4) ->
+  elapsedTime : ($point1 = '', $point2 = '', $decimals = 4) ->
     if $point1 is ''
       return '{elapsed_time}'
 
@@ -84,12 +84,7 @@ class global.Exspresso_Benchmark
     if not @marker[$point2]?
       @marker[$point2] = new Date() # microtime()
 
-
-    #[$sm, $ss] = explode(' ', @marker[$point1])
-    #[$em, $es] = explode(' ', @marker[$point2])
-
-    #return number_format(($em + $es) - ($sm + $ss), $decimals)
-    return @marker[$point2] - @marker[$point1]
+    @marker[$point2] - @marker[$point1]
   
   #
   # Memory Usage
@@ -102,8 +97,8 @@ class global.Exspresso_Benchmark
   # @access  public
   # @return  string
   #
-  memory_usage :  ->
-    return '{memory_usage}'
+  memoryUsage :  ->
+    '{memory_usage}'
     
   
 #  END Exspresso_Benchmark class

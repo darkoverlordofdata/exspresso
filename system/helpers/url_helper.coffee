@@ -33,11 +33,6 @@
 #
 # Exspresso URL Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/url_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -54,7 +49,7 @@
 #
 if not function_exists('site_url')
   exports.site_url = site_url = ($uri = '') ->
-    return @config.site_url($uri)
+    return @config.siteUrl($uri)
     
   
 
@@ -70,7 +65,7 @@ if not function_exists('site_url')
 #
 if not function_exists('base_url')
   exports.base_url = base_url =  ->
-    return @config.slash_item('base_url')
+    return @config.slashItem('base_url')
     
   
 
@@ -88,7 +83,7 @@ if not function_exists('base_url')
 if not function_exists('current_url')
   exports.current_url = current_url =  ->
     
-    return @config.site_url(@uri.uri_string())
+    return @config.siteUrl(@uri.uriString())
     
   
 
@@ -102,9 +97,9 @@ if not function_exists('current_url')
 # @return	string
 #
 if not function_exists('uri_string')
-  exports.uri_string = uri_string =  ->
+  exports.uriString = uri_string =  ->
     
-    return @uri.uri_string()
+    return @uri.uriString()
     
   
 

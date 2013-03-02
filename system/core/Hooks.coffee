@@ -97,17 +97,17 @@ class global.Exspresso_Hooks
   # @param  object  the controller instance instance
   # @return  mixed
   #
-  _call_hook : ($which = '', $instance = null) ->
+  callHook : ($which = '', $instance = null) ->
 
     if not @enabled or  not @hooks[$which]?
       return false
 
     if @hooks[$which][0]?  and is_array(@hooks[$which][0])
       for $val in @hooks[$which]
-        @_run_hook($val, $instance)
+        @runHook($val, $instance)
 
     else
-      @_run_hook(@hooks[$which], $instance)
+      @runHook(@hooks[$which], $instance)
 
     return true
     
@@ -121,7 +121,7 @@ class global.Exspresso_Hooks
   # @param  array  the hook details
   # @return  bool
   #
-  _run_hook : ($data, $instance) ->
+  runHook : ($data, $instance) ->
     if not is_array($data)
       return false
       

@@ -33,11 +33,6 @@
 #
 # Exspresso Cookie Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/cookie_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -57,11 +52,11 @@
 # @param	string	the cookie prefix
 # @return	void
 #
-if not function_exists('set_cookie')
-  exports.set_cookie = set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
+if not function_exists('setCookie')
+  exports.setCookie = setCookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
     #  Set the config file options
 
-    @input.set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure)
+    @input.setCookie($name, $value, $expire, $domain, $path, $prefix, $secure)
     
   
 
@@ -76,7 +71,7 @@ if not function_exists('set_cookie')
 # @return	mixed
 #
 if not function_exists('get_cookie')
-  exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
+  exports.get_cookie = get_cookie = ($index = '', $xssClean = false) ->
 
     $prefix = ''
     
@@ -84,7 +79,7 @@ if not function_exists('get_cookie')
       $prefix = config_item('cookie_prefix')
       
     
-    return @input.cookie($prefix + $index, $xss_clean)
+    return @input.cookie($prefix + $index, $xssClean)
     
   
 
@@ -101,7 +96,7 @@ if not function_exists('get_cookie')
 #
 if not function_exists('delete_cookie')
   exports.delete_cookie = delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
-    set_cookie($name, '', '', $domain, $path, $prefix)
+    setCookie($name, '', '', $domain, $path, $prefix)
     
   
 

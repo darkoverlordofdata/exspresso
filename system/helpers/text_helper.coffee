@@ -21,11 +21,6 @@
 #
 #  Exspresso Text Helpers
 # 
-#  @package    Exspresso
-#  @subpackage  Helpers
-#  @category  Helpers
-#  @author    darkoverlordofdata
-#  @link    http://darkoverlordofdata.com/user_guide/helpers/text_helper.html
 #
 
 # ------------------------------------------------------------------------
@@ -436,7 +431,14 @@ if ( not function_exists('ellipsize'))
       $end = substr($str, -($max_length - strlen($beg)))
 
     return $beg+$ellipsis+$end
-  
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 
 # End of file text_helper.coffee

@@ -38,9 +38,9 @@ class global.PublicController extends Exspresso_Controller
     super($args...)
 
     @load.library 'template'
-    @template.set_theme 'default', 'prettify'
+    @template.setTheme 'default', 'prettify'
     @load.database()
-    @output.enable_profiler @server._profile
+    @output.enableProfiler @server._profile
     @output.cache 5
 
 module.exports = PublicController

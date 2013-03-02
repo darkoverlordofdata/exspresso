@@ -155,9 +155,9 @@ class Exspresso_Session_sql extends require('express').session.Store
   # @access	public
   # @return	void
   #
-  install_check: ->
+  installCheck: ->
 
-    Exspresso.user_model.install_check()
+    Exspresso.user_model.installCheck()
     @
 
   #

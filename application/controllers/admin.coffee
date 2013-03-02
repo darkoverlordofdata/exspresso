@@ -42,8 +42,8 @@ class Admin extends AdminController
   #
   index: ->
 
-    if @user.is_logged_in
-      if @user.authorization_check('admin')
+    if @user.isLoggedIn
+      if @user.authorizationCheck('admin')
         @template.view 'admin'
       else
         @template.view new Authorization_Error('No Admin Permissions')

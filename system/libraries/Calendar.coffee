@@ -213,7 +213,7 @@ class Exspresso_Calendar
   # @param	integer	the month
   # @return	string
   #
-  get_month_name : ($month) ->
+  getMonthName : ($month) ->
     if @_month_type is 'short'
       $month_names =
         '01':'cal_jan'
@@ -262,7 +262,7 @@ class Exspresso_Calendar
   # @param	string
   # @return	array
   #
-  get_day_names: ($day_type = '') ->
+  getDayNames: ($day_type = '') ->
 
     if $day_type isnt ''
       @_day_type = $day_type
@@ -293,7 +293,7 @@ class Exspresso_Calendar
   # @param	integer	the year
   # @return	array
   #
-  adjust_date : ($month, $year) ->
+  adjustDate : ($month, $year) ->
 
     $date = {}
 
@@ -323,7 +323,7 @@ class Exspresso_Calendar
   # @param	integer	the year
   # @return	integer
   #
-  get_total_days : ($month, $year) ->
+  getTotalDays : ($month, $year) ->
     $days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
     if $month < 1 or $month > 12
@@ -347,7 +347,7 @@ class Exspresso_Calendar
   # @access	public
   # @return array
   #
-  default_template :  ->
+  defaultTemplate :  ->
     'table_open':'<table border="0" cellpadding="4" cellspacing="0">'
     'heading_row_start':'<tr>'
     'heading_previous_cell':'<th><a href="{previous_url}">&lt;&lt;</a></th>'
@@ -378,8 +378,8 @@ class Exspresso_Calendar
   #
   # @access	public
   # @return	void
-  parse_template :  ->
-    @temp = @default_template()
+  parseTemplate :  ->
+    @temp = @defaultTemplate()
 
     if @_template is ''
       return

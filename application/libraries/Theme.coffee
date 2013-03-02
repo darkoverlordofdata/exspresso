@@ -60,7 +60,7 @@ class global.Theme
     log_message('debug', "Theme Class Initialized")
 
     $theme = @_name ? 'default'
-    @load_theme $theme
+    @loadTheme $theme
 
   #
   # Loads a theme manifest
@@ -69,7 +69,7 @@ class global.Theme
   #   @param	string theme name
   #   @return object
   #
-  load_theme: ($theme) ->
+  loadTheme: ($theme) ->
 
     if file_exists(APPPATH + 'themes/all/theme' + EXT)
       $config = require(APPPATH + 'themes/all/theme' + EXT)
@@ -100,19 +100,19 @@ class global.Theme
     $template._menu = {}
 
     if @_layout?
-      $template.set_layout @_layout
+      $template.setLayout @_layout
 
     if @_menu?
-      $template.set_menu @_menu
+      $template.setMenu @_menu
 
     if @_meta?
-      $template.set_meta @_meta
+      $template.setMeta @_meta
 
     if @_css? and @_css.default?
-      $template.set_css @_css.default
+      $template.setCss @_css.default
 
     if @_script? and @_script.default?
-      $template.set_script @_script.default
+      $template.setScript @_script.default
 
     if not Array.isArray($extra) then $extra = [$extra]
     if @output._enable_profiler is true
@@ -121,10 +121,10 @@ class global.Theme
 
     for $name in $extra
       if @_css[$name]?
-        $template.set_css @_css[$name]
+        $template.setCss @_css[$name]
 
       if @_script[$name]?
-        $template.set_script @_script[$name]
+        $template.setScript @_script[$name]
     @
 
   more: ($extra...) ->
@@ -135,10 +135,10 @@ class global.Theme
 
     for $name in $extra
       if @_css[$name]?
-        @template.set_css @_css[$name]
+        @template.setCss @_css[$name]
 
       if @_script[$name]?
-        @template.set_script @_script[$name]
+        @template.setScript @_script[$name]
     @
 
 module.exports = Theme

@@ -13,13 +13,14 @@
 #
 #	Travel Controller Class
 #
-moment          = require('moment')                     # Parse, manipulate, and display dates
-bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
 require APPPATH+'core/PublicController.coffee'
 
 
 class Travel extends PublicController
 
+
+  moment          = require('moment')                     # Parse, manipulate, and display dates
+  bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
   ## --------------------------------------------------------------------
 
   #
@@ -31,7 +32,7 @@ class Travel extends PublicController
   #
   login: () ->
 
-    $url = @input.get_post('url')
+    $url = @input.getPost('url')
 
     if @input.cookie('username') is ''
 
@@ -51,9 +52,9 @@ class Travel extends PublicController
 
         $customer = $customer.row()
         if $customer.password is @input.cookie('usercode')
-          @session.set_userdata 'usercode', $customer
+          @session.setUserdata 'usercode', $customer
 
-          @session.set_flashdata 'info', 'Hello '+$customer.name
+          @session.setFlashdata 'info', 'Hello '+$customer.name
           return @redirect $url
         else
           return @redirect "/travel/logout"
@@ -70,7 +71,7 @@ class Travel extends PublicController
   #
   authenticate: () ->
 
-    $url = @input.get_post('url')
+    $url = @input.getPost('url')
 
     $username = @input.post("username")
     $password = @input.post("password")
@@ -81,24 +82,23 @@ class Travel extends PublicController
     @db.get ($err, $customer) =>
 
       if $customer.num_rows is 0
-        @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
+        @session.setFlashdata 'error', 'Invalid credentials. Please try again.'
         return @redirect "/travel/login"
-        return
 
       $customer = $customer.row()
       if $password is $customer.password
 
         if $remember
-          @input.set_cookie 'username', $customer.username, new Date(Date.now()+900000)
-          @input.set_cookie 'usercode', $customer.password, new Date(Date.now()+900000)
+          @input.setCookie 'username', $customer.username, new Date(Date.now()+900000)
+          @input.setCookie 'usercode', $customer.password, new Date(Date.now()+900000)
 
         delete $customer.password
-        @session.set_userdata 'customer', $customer
+        @session.setUserdata 'customer', $customer
 
-        @session.set_flashdata  'info', 'Hello '+$customer.name
+        @session.setFlashdata  'info', 'Hello '+$customer.name
         return @redirect $url
       else
-        @session.set_flashdata 'error', 'Invalid credentials. Please try again.'
+        @session.setFlashdata 'error', 'Invalid credentials. Please try again.'
         return @redirect "/travel/login"
 
 
@@ -113,10 +113,10 @@ class Travel extends PublicController
   #
   logout: () ->
 
-    @session.set_flashdata  'info', 'Goodbye!'
-    @session.unset_userdata 'customer'
-    @input.set_cookie 'username', ''
-    @input.set_cookie 'usercode', ''
+    @session.setFlashdata  'info', 'Goodbye!'
+    @session.unsetUserdata 'customer'
+    @input.setCookie 'username', ''
+    @input.setCookie 'usercode', ''
     return @redirect "/travel"
 
 
@@ -167,7 +167,7 @@ class Travel extends PublicController
     if @input.post("submit")?
       $searchString = @input.post("searchString")
       $pageSize     = parseInt(@input.post('pageSize'),10)
-      @session.set_userdata
+      @session.setUserdata
         searchString  : $searchString
         pageSize      : $pageSize
 
@@ -175,7 +175,7 @@ class Travel extends PublicController
       $searchString = @session.userdata("searchString")
       $pageSize     = parseInt(@session.userdata('pageSize'),10)
 
-    @db.count_all 'hotel', ($err, $count) =>
+    @db.countAll 'hotel', ($err, $count) =>
 
       return @template.view($err) if $err
 
@@ -281,7 +281,7 @@ class Travel extends PublicController
   #
   confirm: ($id) ->
 
-    if @input.get_post('cancel')? then return @redirect "/travel"
+    if @input.getPost('cancel')? then return @redirect "/travel"
 
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/confirm/#{$id}"

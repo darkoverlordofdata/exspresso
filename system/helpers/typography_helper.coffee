@@ -33,11 +33,6 @@
 #
 # Exspresso Typography Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/typography_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -84,16 +79,16 @@ if not function_exists('auto_typography')
 #
 # HTML Entities Decode
 #
-# This function is a replacement for html_entity_decode()
+# This function is a replacement for html_entityDecode()
 #
 # @access	public
 # @param	string
 # @return	string
 #
-if not function_exists('entity_decode')
-  exports.entity_decode = entity_decode = ($str, $charset = 'UTF-8') ->
+if not function_exists('entityDecode')
+  exports.entityDecode = entityDecode = ($str, $charset = 'UTF-8') ->
 
-    return $SEC.entity_decode($str, $charset)
+    return $SEC.entityDecode($str, $charset)
     
   
 

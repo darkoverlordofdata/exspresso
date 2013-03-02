@@ -81,12 +81,12 @@ class global.Exspresso_Config
   load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
 
     if in_array($file, @_is_loaded, true) then return @item($file)
-    #$_module = Exspresso.router.fetch_module()
+    #$_module = Exspresso.router.getModule()
     [$path, $file] = Modules.find($file, '', 'config/')
     if $path is false
       @_application_load($file, $use_sections, $fail_gracefully)
       return @item($file)
-    if $config = Modules.load_file($file, $path, 'config')
+    if $config = Modules.loadFile($file, $path, 'config')
       #  reference to the config array
       $current_config = @config
       if $use_sections is true
@@ -194,7 +194,7 @@ class global.Exspresso_Config
   # @param	bool
   # @return	string
   #
-  slash_item : ($item) ->
+  slashItem : ($item) ->
     if not @config[$item]?
       return false
 
@@ -208,18 +208,18 @@ class global.Exspresso_Config
   # @param	string	the URI string
   # @return	string
   #
-  site_url : ($uri = '') ->
+  siteUrl : ($uri = '') ->
 
     if typeof $uri is 'string' and $uri is ''
-      return @slash_item('base_url') + @item('index_page')
+      return @slashItem('base_url') + @item('index_page')
 
     if @item('enable_query_strings') is false
       if Array.isArray($uri)
         $uri = $uri.join('/')
 
-      $index = if @item('index_page') is '' then '' else @slash_item('index_page')
+      $index = if @item('index_page') is '' then '' else @slashItem('index_page')
       $suffix = if (@item('url_suffix') is false) then '' else @item('url_suffix')
-      return @slash_item('base_url') + $index + trim($uri, '/') + $suffix
+      return @slashItem('base_url') + $index + trim($uri, '/') + $suffix
 
     else
       if typeof $uri is 'object'
@@ -232,7 +232,7 @@ class global.Exspresso_Config
 
         $uri = $str
 
-      return @slash_item('base_url') + @item('index_page') + '?' + $uri
+      return @slashItem('base_url') + @item('index_page') + '?' + $uri
 
 
 
@@ -242,10 +242,10 @@ class global.Exspresso_Config
   # @access	public
   # @return	string
   #
-  system_url :  ->
+  systemUrl :  ->
 
     $x = BASEPATH.split("/")
-    return @slash_item('base_url') + $x[$x.length-1] + '/'
+    return @slashItem('base_url') + $x[$x.length-1] + '/'
 
 
   #
@@ -256,7 +256,7 @@ class global.Exspresso_Config
   # @param	string	the config item value
   # @return	void
   #
-  set_item : ($item, $value) ->
+  setItem : ($item, $value) ->
     @config[$item] = $value
 
 
@@ -273,7 +273,7 @@ class global.Exspresso_Config
   #
   _assign_toconfig : ($items = {}) ->
     for $val, $key of $items
-      @set_item($key, $val)
+      @seItem($key, $val)
 
 
 # END Exspresso_Config class

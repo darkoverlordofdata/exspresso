@@ -622,14 +622,14 @@ class Exspresso_Jquery extends Exspresso_Javascript
   _updater : ($container = 'this', $controller, $options = '') ->
     $container = @_prep_element($container)
     
-    $controller = if (strpos('://', $controller) is false) then $controller else @config.site_url($controller)
+    $controller = if (strpos('://', $controller) is false) then $controller else @config.siteUrl($controller)
     
     #  ajaxStart and ajaxStop are better choices here... but this is a stop gap
     if @config.item('javascript_ajax_img') is ''
       $loading_notifier = "Loading..."
       
     else 
-      $loading_notifier = '<img src=\'' + @config.slash_item('base_url') + @config.item('javascript_ajax_img') + '\' alt=\'Loading\' />'
+      $loading_notifier = '<img src=\'' + @config.slashItem('base_url') + @config.item('javascript_ajax_img') + '\' alt=\'Loading\' />'
       
     
     $updater = "$($container).empty();\n"#  anything that was in... get it out

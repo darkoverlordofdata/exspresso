@@ -33,11 +33,6 @@
 #
 # Exspresso CAPTCHA Helper
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/xml_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -223,8 +218,15 @@ if not function_exists('create_captcha')
     ImageDestroy($im)
     
     return 'word':$word, 'time':$now, 'image':$img
-    
-  
+
+
+#  ------------------------------------------------------------------------
+#
+# Export helpers to the global namespace
+#
+#
+for $name, $body of module.exports
+  define $name, $body
 
 #  ------------------------------------------------------------------------
 

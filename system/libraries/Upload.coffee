@@ -33,11 +33,6 @@
 #
 # File Uploading Class
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Uploads
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/libraries/file_uploading.html
 #
 class Exspresso_Upload
   
@@ -63,7 +58,7 @@ class Exspresso_Upload
   error_msg: {}
   mimes: {}
   remove_spaces: true
-  xss_clean: false
+  xssClean: false
   temp_prefix: "temp_file_"
   client_name: ''
   
@@ -114,7 +109,7 @@ class Exspresso_Upload
     'error_msg':{}, 
     'mimes':{}, 
     'remove_spaces':true, 
-    'xss_clean':false, 
+    'xssClean':false,
     'temp_prefix':"temp_file_", 
     'client_name':''
     
@@ -282,8 +277,8 @@ class Exspresso_Upload
   # embedded within a file.  Scripts can easily
   # be disguised as images or other file types.
   #
-  if @xss_clean
-    if @do_xss_clean() is false
+  if @xssClean
+    if @do_xssClean() is false
       @set_error('upload_unable_to_write_file')
       return false
       
@@ -490,9 +485,9 @@ class Exspresso_Upload
   # @param	bool
   # @return	void
   #
-  set_xss_clean($flag = false)
+  set_xssClean($flag = false)
   {
-  @xss_clean = if ($flag is true) then true else false
+  @xssClean = if ($flag is true) then true else false
   }
   
   #
@@ -735,7 +730,7 @@ class Exspresso_Upload
   #
   # @return	void
   #
-  do_xss_clean()
+  do_xssClean()
   {
   $file = @file_temp
   
@@ -783,7 +778,7 @@ class Exspresso_Upload
     return false
     
   
-  return @security.xss_clean($data, true)
+  return @security.xssClean($data, true)
   }
   
   #

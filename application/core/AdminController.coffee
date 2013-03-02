@@ -62,7 +62,7 @@ class global.AdminController extends PublicController
       Blog         : '/admin/blog'
       Demo         : '/admin/travel'
     
-    @template.html_sidenav($admin_menu, $active)
+    @template.htmlSidenav($admin_menu, $active)
 
   #
   # Submenu
@@ -81,7 +81,7 @@ class global.AdminController extends PublicController
       Travel : '/admin/migrate/list/travel'
       User   : '/admin/migrate/list/user'
     
-    @template.html_submenu($modules, $active)
+    @template.htmlSubmenu($modules, $active)
 
 
 module.exports = AdminController

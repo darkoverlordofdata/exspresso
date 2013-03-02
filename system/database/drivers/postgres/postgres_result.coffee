@@ -48,7 +48,7 @@ class global.Exspresso_DB_postgres_result extends Exspresso_DB_result
   # @access	public
   # @return	integer
   #
-  num_rows :  ->
+  numRows :  ->
     return @_result_array.length
 
 
@@ -60,7 +60,7 @@ class global.Exspresso_DB_postgres_result extends Exspresso_DB_result
   # @access	public
   # @return	integer
   #
-  num_fields :  ->
+  numFields :  ->
 
 
   #  --------------------------------------------------------------------
@@ -73,7 +73,7 @@ class global.Exspresso_DB_postgres_result extends Exspresso_DB_result
   # @access	public
   # @return	array
   #
-  list_fields :  ->
+  listFields :  ->
     $field_names = []
     return $field_names
 
@@ -88,7 +88,7 @@ class global.Exspresso_DB_postgres_result extends Exspresso_DB_result
   # @access	public
   # @return	array
   #
-  field_data :  ->
+  fieldData :  ->
     $retval = []
     return $retval
 
@@ -100,7 +100,7 @@ class global.Exspresso_DB_postgres_result extends Exspresso_DB_result
   #
   # @return	null
   #
-  free_result :  ->
+  freeResult :  ->
     @result_array = null
 
   #  --------------------------------------------------------------------

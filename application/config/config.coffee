@@ -19,7 +19,8 @@ exports['port'] = process.env.PORT # 3000
 exports['logger'] = 'dev'
 exports['views'] = 'views'
 exports['view_ext'] = '.eco'
-exports['cache'] = false
+exports['cache_rules'] =
+  '.*': 0 # 60000
 
 #
 #|--------------------------------------------------------------------------

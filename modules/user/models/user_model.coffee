@@ -45,7 +45,7 @@ class global.User_model extends Exspresso_Model
   # @access	public
   # @return	object
   #
-  load_by_id: ($id, $next) ->
+  loadById: ($id, $next) ->
 
     @db.where 'uid', $id
     @db.get 'users', ($err, $user) =>
@@ -63,7 +63,7 @@ class global.User_model extends Exspresso_Model
   # @access	public
   # @return	object
   #
-  load_by_name: ($name, $next) ->
+  loadByName: ($name, $next) ->
 
     @db.where 'name', $name
     @db.get 'users', ($err, $user) =>
@@ -124,7 +124,7 @@ class global.User_model extends Exspresso_Model
   # @access	public
   # @return	void
   #
-  install_check: () ->
+  installCheck: () ->
 
     # Create the session table
     Exspresso.queue ($next) ->
@@ -171,22 +171,22 @@ class Migrate
   up: ($next) =>
 
     # check if the migration is needed
-    Exspresso.db.table_exists @name, ($err, $table_exists) =>
+    Exspresso.db.tableExists @name, ($err, $table_exists) =>
 
       return $next($err) if $err
       return $next(null) if $table_exists
 
       # The table doesn't exist, create it
       Exspresso.load.dbforge()
-      Exspresso.dbforge.add_field @fields
-      Exspresso.dbforge.add_key @pkey, true
-      Exspresso.dbforge.add_key $key for $key in @key
-      Exspresso.dbforge.create_table @name, ($err) =>
+      Exspresso.dbforge.addField @fields
+      Exspresso.dbforge.addKey @pkey, true
+      Exspresso.dbforge.addKey $key for $key in @key
+      Exspresso.dbforge.createTable @name, ($err) =>
 
         # populate the table
         return $next($err) if $err
         return if @data.length is 0 then $next()
-        else Exspresso.db.insert_batch @name, @data, $next
+        else Exspresso.db.insertBatch @name, @data, $next
 
 # --------------------------------------------------------------------
 

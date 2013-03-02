@@ -365,7 +365,7 @@ exports.log_message = log_message = ($level = 'error', $args...) ->
     return true
 
   _log = load_class('Log')
-  _log.write_log $level, format.apply(undefined, $args)
+  _log.writeLog $level, format.apply(undefined, $args)
   true
 
 #

@@ -44,6 +44,18 @@ class global.Exspresso_Output
   _final_output       : ''    # resultant html output
   _cache_expiration   : 0     # cache flag
 
+  #
+  # Constructor
+  #
+  # @access	public
+  # @param object   http request object
+  # @param object   http response object
+  # @param object   Exspresso_Hooks
+  # @param object   Exspresso_Benchmark
+  # @param object   Exspresso_Config
+  # @param object   Exspresso_URI
+  # @return	void
+  #
   constructor: (@req, @res, @EXP, @BM, @CFG, @URI) ->
 
     log_message('debug', "Output Class Initialized")
@@ -71,7 +83,7 @@ class global.Exspresso_Output
   # @access	public
   # @return	string
   #
-  get_output :  ->
+  getOutput :  ->
     @_final_output
 
 
@@ -84,7 +96,7 @@ class global.Exspresso_Output
   # @param	string
   # @return	void
   #
-  set_output : ($output) ->
+  setOutput : ($output) ->
     @_final_output = $output
     @
 
@@ -98,7 +110,7 @@ class global.Exspresso_Output
   # @param	string
   # @return	void
   #
-  append_output : ($output) ->
+  appendOutput : ($output) ->
     if @_final_output is ''
       @_final_output = $output
     else
@@ -118,7 +130,7 @@ class global.Exspresso_Output
   # @param	string
   # @return	void
   #
-  set_header : ($header, $replace = true) ->
+  setHeader : ($header, $replace = true) ->
     #  If zlib.output_compression is enabled it will compress the output,
     #  but it will not modify the content-length header to compensate for
     #  the reduction, causing the browser to hang waiting for more data.
@@ -138,7 +150,7 @@ class global.Exspresso_Output
   # @param	string	extension of the file we're outputting
   # @return	void
   #
-  set_content_type : ($mime_type) ->
+  setContentType : ($mime_type) ->
     if strpos($mime_type, '/') is false
       $extension = ltrim($mime_type, '.')
 
@@ -162,7 +174,7 @@ class global.Exspresso_Output
   # @param	string
   # @return	void
   #
-  set_status_header : ($code = 200, $text = '') ->
+  setStatusHeader : ($code = 200, $text = '') ->
     @res.status($code)
     @
 
@@ -173,7 +185,7 @@ class global.Exspresso_Output
   # @param	bool
   # @return	void
   #
-  enable_profiler : ($val = true) ->
+  enableProfiler : ($val = true) ->
     @_enable_profiler = if (is_bool($val)) then $val else true
     @
 
@@ -187,7 +199,7 @@ class global.Exspresso_Output
   # @param	array
   # @return	void
   #
-  set_profiler_sections : ($sections) ->
+  setProfilerSections : ($sections) ->
     for $section, $enable of $sections
       @_profiler_sections[$section] = if ($enable isnt false) then true else false
     @
@@ -219,13 +231,13 @@ class global.Exspresso_Output
   # @access	public
   # @return	mixed
   #
-  _display: ($controller = null, $output = '') ->
+  display: ($controller = null, $output = '') ->
     #
     # ------------------------------------------------------
     #  Is there a "post_controller" hook?
     # ------------------------------------------------------
     #
-    @EXP._call_hook 'post_controller', @
+    @EXP.callHook 'post_controller', @
 
     #  Set the output data
     if $output is ''
@@ -240,14 +252,12 @@ class global.Exspresso_Output
     #  Parse out the elapsed time and memory usage,
     #  then swap the pseudo-variables with the data
 
-    $elapsed = @BM.elapsed_time('total_execution_time_start', 'total_execution_time_end')
+    $elapsed = @BM.elapsedTime('total_execution_time_start', 'total_execution_time_end')
 
     if @_parse_exec_vars is true
       $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
-      $output = str_replace('{elapsed_time}', $elapsed, $output)
-      $output = str_replace('{elapsed_time}', $elapsed, $output)
-      $output = str_replace('{memory_usage}', $memory, $output)
-      $output = str_replace('{memory_usage}', $memory, $output)
+      $output = $output.replace(/{elapsed_time}/g, $elapsed)
+      $output = $output.replace(/{memory_usage}/g, $memory)
 
     #  Is compression requested?
     #if @config.item('compress_output') is true and @_zlib_oc is false
@@ -280,8 +290,9 @@ class global.Exspresso_Output
 
       #  If the output data contains closing </body> and </html> tags
       #  we will remove them and add them back after we insert the profile data
-      if ($match = preg_match("|<footer[^]*?</html>|igm", $output))?
-        $output = preg_replace("|<footer[^]*?</html>|igm", '', $output)
+      $footer = /<footer[^]*?<\/html>/mig
+      if $footer.test($output)
+        $output = $output.replace($footer, '')
         $output+=$controller.profiler.run()
         $output+='</body></html>'
 
@@ -299,6 +310,35 @@ class global.Exspresso_Output
     @_final_output = ''
     log_message('debug', "Final output sent to browser")
     log_message('debug', "Total execution time: " + $elapsed)
+
+  #
+  # Update/serve a cached file
+  #
+  # @access	public
+  # @return	void
+  #
+  displayCache: ($CFG, $URI) ->
+
+    $cache_path = if ($CFG.item('cache_path') is '') then APPPATH + 'cache/' else $CFG.item('cache_path')
+
+    #  Build the file path.  The file name is an MD5 hash of the full URI
+    $uri = $CFG.item('base_url') + $CFG.item('index_page') + $URI.uriString()
+
+    $filepath = $cache_path+md5($uri)+'.json'
+
+    if not file_exists($filepath)
+      return false
+
+    $cache = require($filepath)
+    $expires = new Date($cache.expires)
+
+    #  Has the file expired? If so we'll delete it.
+    return _gc_cache($cache_path, $filepath) unless Date.now() < $expires.getTime()
+    #  Display the cache
+    log_message('debug', "Cache file is current. Sending it to browser.")
+    @enable_profiler true
+    @_display(null, $cache.html)
+    return true
 
 
   #
@@ -321,17 +361,29 @@ class global.Exspresso_Output
       catch $err
         log_message('error', "Unable to mkdir cache path: " + $cache_path)
         return
+
     # can we write to the file system?
     if not is_really_writable($cache_path)
       log_message('error', "Unable to write to cache path: " + $cache_path)
       return
 
-    # build the cache data
-    $uri = @CFG.item('base_url') + @CFG.item('index_page') + @URI.uri_string()
-    $filepath = $cache_path+md5($uri)+'.json'
 
-    $expires = new Date(Date.now() + @_cache_expiration * 60000)
-    $output = $output.split('"').join('\\"').split('\n').join('\\n')
+    # when should this cache expire?
+    $cache_rules = @CFG.item('cache_rules')
+    $ttl = @_cache_expiration * 60000
+    $uri = @URI.uriString()
+
+    # check the uri against the rules
+    for $pattern, $ttl of $cache_rules
+      break if (new RegExp($pattern)).test($uri)
+
+    return if $ttl <= 0 # no point in caching that
+
+    # build the cache data
+    $uri = @CFG.item('base_url') + @CFG.item('index_page') + $uri
+    $filepath = $cache_path+md5($uri)+'.json'
+    $expires = new Date(Date.now() + $ttl)
+    $output = $output.replace(/\"/mg, '\\"').replace(/\n/mg, '\\n')
     $buffer = "{\n\t\"uri\":\"#{$uri}\",\n\t\"expires\":\"#{$expires}\",\n\t\"html\":\"#{$output}\"\n}"
 
     # queue up the cache and immediately return
@@ -342,38 +394,6 @@ class global.Exspresso_Output
         log_message('debug', "Cache file written: " + $filepath)
         # set a timer to clean the cache
         setTimeout _gc_cache, ($expires.getTime() - Date.now()), $cache_path, $filepath
-
-  #
-  # Update/serve a cached file
-  #
-  # @access	public
-  # @return	void
-  #
-  _display_cache: ($CFG, $URI) ->
-
-    time = -> Math.floor(Date.now()/60000)
-
-    $cache_path = if ($CFG.item('cache_path') is '') then APPPATH + 'cache/' else $CFG.item('cache_path')
-
-    #  Build the file path.  The file name is an MD5 hash of the full URI
-    $uri = $CFG.item('base_url') + $CFG.item('index_page') + $URI.uri_string()
-
-    $filepath = $cache_path+md5($uri)+'.json'
-
-    if not file_exists($filepath)
-      return false
-
-    $first = not require.cache[$filepath]?
-    $cache = require($filepath)
-    $expires = new Date($cache.expires)
-
-    #  Has the file expired? If so we'll delete it.
-    return _gc_cache($cache_path, $filepath) unless Date.now() < $expires.getTime()
-    #  Display the cache
-    log_message('debug', "Cache file is current. Sending it to browser.")
-    @enable_profiler true
-    @_display(null, $cache.html)
-    return true
 
   #
   # Clean the Cache
@@ -387,7 +407,9 @@ class global.Exspresso_Output
   _gc_cache = ($cache_path, $filepath) ->
 
     if is_really_writable($cache_path)
+      # delete from the file system
       fs.unlink $filepath, ($err) ->
+        # and from memory
         delete require.cache[$filepath]
         log_message('debug', "Cache file has expired. File '%s' deleted", $filepath)
 

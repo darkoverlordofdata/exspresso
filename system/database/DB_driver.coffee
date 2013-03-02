@@ -63,7 +63,7 @@ class Exspresso_DB_driver
   query_times     : null
   data_cache      : null
   trans_enabled   : true
-  trans_strict    : true
+  _trans_strict   : true
   _trans_depth    : 0
   _trans_status   : true    #  Used with transactions to determine if a rollback should occur
   cache_on        : false
@@ -115,7 +115,7 @@ class Exspresso_DB_driver
 
     log_message 'debug', 'Exspresso_DB_%s_driver initialize', @dbdriver
     if $next?
-      @db_connect $next
+      @connect $next
 
 
 
@@ -143,7 +143,7 @@ class Exspresso_DB_driver
   version: ($next) ->
     if false is ($sql = @_version())
       if @db_debug
-        return @display_error('db_unsupported_function')
+        return @displayError('db_unsupported_function')
 
       return false
 
@@ -170,7 +170,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	array
   #
-  query_list: ($sql, $next) ->
+  queryList: ($sql, $next) ->
 
     $results = []
     $index = 0
@@ -214,7 +214,7 @@ class Exspresso_DB_driver
     if $sql is ''
       if @db_debug
         log_message('error', 'Invalid query: ' + $sql)
-        return @display_error('db_invalid_query')
+        return @displayError('db_invalid_query')
 
       return false
 
@@ -229,7 +229,7 @@ class Exspresso_DB_driver
     #  cached query if it exists
     if @cache_on is true and stristr($sql, 'SELECT')
       if @_cache_init()
-        @load_rdriver()
+        @_load_rdriver()
         if false isnt ($cache = @cache.read($sql))
           return $cache
 
@@ -279,7 +279,7 @@ class Exspresso_DB_driver
 
         #  Log and display errors
         log_message('error', 'Query error: ' + $error_msg)
-        return @display_error([
+        return @displayError([
           'Error Number: ' + $error_no,
           $error_msg,
           $sql
@@ -306,14 +306,13 @@ class Exspresso_DB_driver
 
     #  Load and instantiate the result driver
 
-    $driver = @load_rdriver()
+    $driver = @_load_rdriver()
 
-    $RES = new $driver($results, $info)
-    $RES.conn_id = @conn_id
-    $RES.result_id = @result_id
+    $rs = new $driver($results, $info)
+    $rs.conn_id = @conn_id
+    $rs.result_id = @result_id
 
-    #  oci8 vars must be set before calling this
-    $RES.num_rows = $RES.num_rows()
+    $rs.num_rows = $rs.numRows()
 
     #  Is query caching enabled?  If so, we'll serialize the
     #  result object and save it to a cache file.
@@ -324,28 +323,28 @@ class Exspresso_DB_driver
       #  resource ID won't be any good once we've cached the
       #  result object, so we'll have to compile the data
       #  and save it)
-      $CR = new Exspresso_DB_result()
-      $CR.num_rows = $RES.num_rows
-      $CR.result_object = $RES.result_object()
-      $CR.result_array = $RES.result_array()
+      $cr = new Exspresso_DB_result()
+      $cr.num_rows = $rs.num_rows
+      $cr._result_object = $rs.result_object()
+      $cr._result_array = $rs.result_array()
 
       #  Reset these since cached objects can not utilize resource IDs.
-      $CR.conn_id = null
-      $CR.result_id = null
+      $cr.conn_id = null
+      $cr.result_id = null
 
-      @cache.write($sql, $CR)
+      @cache.write($sql, $cr)
 
-    $next $err, $RES, $info
+    $next $err, $rs, $info
 
   #  --------------------------------------------------------------------
 
   #
   # Load the result drivers
   #
-  # @access	public
+  # @access	private
   # @return	string	the name of the result class
   #
-  load_rdriver :  ->
+  _load_rdriver :  ->
     $driver = 'Exspresso_DB_' + @dbdriver + '_result'
 
     if not class_exists($driver)
@@ -370,7 +369,7 @@ class Exspresso_DB_driver
   # @param	string	the sql query
   # @return	mixed
   #
-  simple_query : ($sql, $binds, $next) ->
+  simpleQuery : ($sql, $binds, $next) ->
 
     if $next is null
       @_execute $sql, ($err, $results, $info) =>
@@ -396,7 +395,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  trans_off: ->
+  transOff: ->
     @trans_enabled = false
 
 
@@ -412,8 +411,8 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  trans_strict : ($mode = true) ->
-    @trans_strict = if is_bool($mode) then $mode else true
+  transStrict : ($mode = true) ->
+    @_trans_strict = if is_bool($mode) then $mode else true
 
 
   #  --------------------------------------------------------------------
@@ -424,7 +423,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  trans_start : ($test_mode = false, $next) ->
+  transStart : ($test_mode = false, $next) ->
     if $next is null
       $next = $test_mode
       $test_mode = false
@@ -437,7 +436,7 @@ class Exspresso_DB_driver
       @_trans_depth+=1
       return $next null
 
-    @trans_begin($test_mode, $next)
+    @transBegin($test_mode, $next)
 
 
   #  --------------------------------------------------------------------
@@ -448,7 +447,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	bool
   #
-  trans_complete: ($next) ->
+  transComplete: ($next) ->
     if not @trans_enabled
       return $next null, false
 
@@ -465,7 +464,7 @@ class Exspresso_DB_driver
         #  If we are NOT running in strict mode, we will reset
         #  the _trans_status flag so that subsequent groups of transactions
         #  will be permitted.
-        if @trans_strict is false
+        if @transStrict is false
           @_trans_status = true
 
         log_message('debug', 'DB Transaction Failure')
@@ -482,7 +481,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	bool
   #
-  trans_status: ->
+  transStatus: ->
     return @_trans_status
 
 
@@ -550,7 +549,7 @@ class Exspresso_DB_driver
   # @param	integer	The number of decimal places
   # @return	integer
   #
-  elapsed_time : ($decimals = 6) ->
+  elapsedTime : ($decimals = 6) ->
     return number_format(@benchmark, $decimals)
 
 
@@ -562,7 +561,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	integer
   #
-  total_queries: ->
+  totalQueries: ->
     return @query_count
 
 
@@ -574,7 +573,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  last_query: ->
+  lastQuery: ->
     return end(@queries)
 
 
@@ -592,8 +591,8 @@ class Exspresso_DB_driver
   #
   escape : ($str) ->
     if is_string($str)
-      $str = @escape_str($str)
-      # $str = "'" + @escape_str($str) + "'"
+      $str = @escapeStr($str)
+      # $str = "'" + @escapeStr($str) + "'"
 
     else if is_bool($str)
       $str = if ($str is false) then 0 else 1
@@ -617,8 +616,8 @@ class Exspresso_DB_driver
   # @param	string
   # @return	mixed
   #
-  escape_like_str : ($str) ->
-    return @escape_str($str, true)
+  escapeLikeStr : ($str) ->
+    return @escapeStr($str, true)
 
 
   #  --------------------------------------------------------------------
@@ -651,7 +650,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	array
   #
-  list_tables : ($constrain_by_prefix = false, $next = null) ->
+  listTables : ($constrain_by_prefix = false, $next = null) ->
 
     if $next is null
       $next = $constrain_by_prefix
@@ -664,7 +663,7 @@ class Exspresso_DB_driver
 
     if false is ($sql = @_list_tables($constrain_by_prefix))
       if @db_debug
-        return $next @display_error('db_unsupported_function')
+        return $next @displayError('db_unsupported_function')
 
       return $next false
 
@@ -673,7 +672,7 @@ class Exspresso_DB_driver
     @query $sql, ($err, $query) =>
 
       if $query.num_rows > 0
-        for $row in $query.result_array()
+        for $row in $query.resultArray()
           if $row['TABLE_NAME']?
             $retval.push $row['TABLE_NAME']
 
@@ -691,9 +690,9 @@ class Exspresso_DB_driver
   # @access	public
   # @return	boolean
   #
-  table_exists : ($table_name, $next) ->
+  tableExists : ($table_name, $next) ->
 
-    @list_tables ($err, $table_names) =>
+    @listTables ($err, $table_names) =>
 
       if $err then return $next $err
 
@@ -710,7 +709,7 @@ class Exspresso_DB_driver
   # @param	string	the table name
   # @return	array
   #
-  list_fields : ($table = '', $next) ->
+  listFields : ($table = '', $next) ->
     #  Is there a cached result?
     if @data_cache['field_names'][$table]?
       return @data_cache['field_names'][$table]
@@ -718,14 +717,14 @@ class Exspresso_DB_driver
 
     if $table is ''
       if @db_debug
-        return @display_error('db_field_param_missing')
+        return @displayError('db_field_param_missing')
 
       return false
 
 
     if false is ($sql = @_list_columns($table))
       if @db_debug
-        return @display_error('db_unsupported_function')
+        return @displayError('db_unsupported_function')
 
       return false
 
@@ -755,7 +754,7 @@ class Exspresso_DB_driver
   # @param	string
   # @return	boolean
   #
-  field_exists : ($field_name, $table_name) ->
+  fieldExists : ($field_name, $table_name) ->
     return if ( not in_array($field_name, @list_fields($table_name))) then false else true
 
 
@@ -771,7 +770,7 @@ class Exspresso_DB_driver
   field_data : ($table = '', $next) ->
     if $table is ''
       if @db_debug
-        return @display_error('db_field_param_missing')
+        return @displayError('db_field_param_missing')
 
       return false
 
@@ -874,7 +873,7 @@ class Exspresso_DB_driver
   # @param	string	the path to the cache directory
   # @return	void
   #
-  cache_set_path : ($path = '') ->
+  cacheSetPath : ($path = '') ->
     @cachedir = $path
 
 
@@ -886,7 +885,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  cache_on: ->
+  cacheOn: ->
     @cache_on = true
     return true
 
@@ -899,7 +898,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  cache_off: ->
+  cacheOff: ->
     @cache_on = false
     return false
 
@@ -913,7 +912,7 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  cache_delete : ($segment_one = '', $segment_two = '') ->
+  cacheDelete : ($segment_one = '', $segment_two = '') ->
     if not @_cache_init()
       return false
 
@@ -928,12 +927,12 @@ class Exspresso_DB_driver
   # @access	public
   # @return	void
   #
-  cache_delete_all: ->
+  cacheDeleteAll: ->
     if not @_cache_init()
       return false
 
 
-    return @cache.delete_all()
+    return @cache.deleteAll()
 
 
   #  --------------------------------------------------------------------
@@ -983,7 +982,7 @@ class Exspresso_DB_driver
   # @param	boolean	whether to localize the message
   # @return	string	sends the application/error_db.php template
   #
-  display_error : ($error = '', $swap = '', $native = false) ->
+  displayError : ($error = '', $swap = '', $native = false) ->
 
     @lang.load('db')
 

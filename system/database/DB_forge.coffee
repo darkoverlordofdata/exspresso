@@ -62,7 +62,7 @@ class global.Exspresso_DB_forge
   # @param	string	the database name
   # @return	bool
   #
-  create_database: ($db_name, $next) ->
+  createDatabase: ($db_name, $next) ->
     $sql = @_create_database($db_name)
     if is_bool($sql)
       $next $sql
@@ -77,7 +77,7 @@ class global.Exspresso_DB_forge
   # @param	string	the database name
   # @return	bool
   #
-  drop_database: ($db_name, $next) ->
+  dropDatabase: ($db_name, $next) ->
     $sql = @_drop_database($db_name)
     
     if is_bool($sql)
@@ -94,10 +94,10 @@ class global.Exspresso_DB_forge
   # @param	string	type
   # @return	void
   #
-  add_key: ($key = '', $primary = false) ->
+  addKey: ($key = '', $primary = false) ->
     if is_array($key)
       for $one in $key
-        @add_key($one, $primary)
+        @addKey($one, $primary)
 
       return
 
@@ -119,20 +119,20 @@ class global.Exspresso_DB_forge
   # @param	string	collation
   # @return	void
   #
-  add_field: ($field = '') ->
+  addField: ($field = '') ->
     if $field is ''
       show_error('Field information is required.')
       
     
     if is_string($field)
       if $field is 'id'
-        @add_field
+        @addField
           'id':
             'type':'INT', 
             'constraint':9, 
             'auto_increment':true
             
-        @add_key 'id', true
+        @addKey 'id', true
         
       else 
         if strpos($field, ' ') is false
@@ -152,7 +152,7 @@ class global.Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  create_table: ($table = '', $if_not_exists = false, $next) ->
+  createTable: ($table = '', $if_not_exists = false, $next) ->
     log_message 'debug', '>DB_forge::create_database'
     if typeof $if_not_exists is 'function'
       $next = $if_not_exists
@@ -177,7 +177,7 @@ class global.Exspresso_DB_forge
   # @param	string	the table name
   # @return	bool
   #
-  drop_table: ($table_name, $next) ->
+  dropTable: ($table_name, $next) ->
     $sql = @_drop_table(@db.dbprefix + $table_name)
     
     if is_bool($sql)
@@ -194,7 +194,7 @@ class global.Exspresso_DB_forge
   # @param	string	the new table name
   # @return	bool
   #
-  rename_table: ($table_name, $new_table_name, $next) ->
+  renameTable: ($table_name, $new_table_name, $next) ->
     if $table_name is '' or $new_table_name is ''
       $next('A table name is required for that operation.')
 
@@ -211,7 +211,7 @@ class global.Exspresso_DB_forge
   # @param	string	the column definition
   # @return	bool
   #
-  add_column: ($table = '', $field = {}, $after_field = '', $next) ->
+  addColumn: ($table = '', $field = {}, $after_field = '', $next) ->
     if $table is ''
       $next('A table name is required for that operation.')
 
@@ -223,7 +223,7 @@ class global.Exspresso_DB_forge
     #  so we cycle through
     
     for $k, $v of $field
-      @add_field array($k, $field[$k])
+      @addField array($k, $field[$k])
       
       if count(@fields) is 0
         show_error('Field information is required.')
@@ -243,7 +243,7 @@ class global.Exspresso_DB_forge
   # @param	string	the column name
   # @return	bool
   #
-  drop_column: ($table = '', $column_name = '', $next) ->
+  dropColumn: ($table = '', $column_name = '', $next) ->
     
     if $table is ''
       $next('A table name is required for that operation.')
@@ -266,7 +266,7 @@ class global.Exspresso_DB_forge
   # @param	string	the column definition
   # @return	bool
   #
-  modify_column: ($table = '', $field = {}, $next) ->
+  modifyColumn: ($table = '', $field = {}, $next) ->
     if $table is ''
       $next('A table name is required for that operation.')
 
@@ -278,7 +278,7 @@ class global.Exspresso_DB_forge
       if not $field[$k]['name']? 
         $field[$k]['name'] = $k
 
-      @add_field array($k, $field[$k])
+      @addField array($k, $field[$k])
       
       if count(@fields) is 0
         show_error('Field information is required.')

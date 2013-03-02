@@ -75,7 +75,7 @@ class global.Exspresso_Typography
   # @param	bool	whether to reduce more then two consecutive newlines to two
   # @return	string
   #
-  auto_typography : ($str, $reduce_linebreaks = false) ->
+  autoTypography : ($str, $reduce_linebreaks = false) ->
     if $str is ''
       return ''
       
@@ -243,7 +243,7 @@ class global.Exspresso_Typography
   # @return	string
   #
   exports.$table = $table ? {}
-  format_characters : ($str) ->
+  formatCharacters : ($str) ->
 
     if not $table? 
       $table = 
@@ -356,7 +356,7 @@ class global.Exspresso_Typography
   # @param	string
   # @return	string
   #
-  nl2br_except_pre : ($str) ->
+  nl2brExceptPre : ($str) ->
     $ex = explode("pre>", $str)
     $ct = $ex.length-1
     

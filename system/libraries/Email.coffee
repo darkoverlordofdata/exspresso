@@ -203,7 +203,7 @@ class global.Exspresso_Email
   # @param	string
   # @return	void
   #
-  reply_to: ($replyto, $name = '') ->
+  replyTo: ($replyto, $name = '') ->
 
     if ($match = preg_match('/\\<(.*)\\>/', $replyto))?
       $replyto = $match['1']
@@ -346,7 +346,7 @@ class global.Exspresso_Email
   # @param	string
   # @return	void
   #
-  set_alt_message: ($str = '') ->
+  setAltMessage: ($str = '') ->
 
     @alt_message = if ($str is '') then '' else $str
     return @
@@ -358,7 +358,7 @@ class global.Exspresso_Email
   # @param	string
   # @return	void
   #
-  set_mailtype: ($type = 'text') ->
+  setMailtype: ($type = 'text') ->
 
     @mailtype = if ($type is 'html') then 'html' else 'text'
     return @
@@ -370,7 +370,7 @@ class global.Exspresso_Email
   # @param	string
   # @return	void
   #
-  set_wordwrap: ($wordwrap = true) ->
+  setWordwrap: ($wordwrap = true) ->
 
     @wordwrap = if ($wordwrap is false) then false else true
     return @
@@ -382,7 +382,7 @@ class global.Exspresso_Email
   # @param	string
   # @return	void
   #
-  set_protocol: ($protocol = 'mail') ->
+  setProtocol: ($protocol = 'mail') ->
 
     @protocol = if ( not in_array($protocol, @_protocols, true)) then 'mail' else strtolower($protocol)
     return @
@@ -394,7 +394,7 @@ class global.Exspresso_Email
   # @param	integer
   # @return	void
   #
-  set_priority: ($n = 3) ->
+  setPriority: ($n = 3) ->
 
     if not is_numeric($n)
       @priority = 3
@@ -414,7 +414,7 @@ class global.Exspresso_Email
   # @param	string
   # @return	void
   #
-  set_newline: ($newline = "\n") ->
+  setNewline: ($newline = "\n") ->
 
     if $newline isnt "\n" and $newline isnt "\r\n" and $newline isnt "\r"
       @newline = "\n"
@@ -431,7 +431,7 @@ class global.Exspresso_Email
   # @param	string
   # @return	void
   #
-  set_crlf: ($crlf = "\n") ->
+  setCrlf: ($crlf = "\n") ->
 
     if $crlf isnt "\n" and $crlf isnt "\r\n" and $crlf isnt "\r"
       @crlf = "\n"

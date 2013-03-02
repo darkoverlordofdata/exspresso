@@ -84,13 +84,20 @@ $EXT = exports.hooks = load_class('Hooks', 'core')
 #  Is there a "pre_system" hook?
 # ------------------------------------------------------
 #
-$EXT._call_hook 'pre_system'
+$EXT.callHook 'pre_system'
 
 #------------------------------------------------------
 # Instantiate the config class
 #------------------------------------------------------
 #
 $CFG = exports.config = load_class('Config', 'core')
+
+#
+# ------------------------------------------------------
+#  Load the Language class
+# ------------------------------------------------------
+#
+$LANG = exports.lang = load_class('Lang', 'core', $CFG)
 
 #
 # ------------------------------------------------------
@@ -143,11 +150,11 @@ if file_exists(APPPATH + 'core/' + $CFG.config['subclass_prefix'] + 'Controller'
 #
 bind_route = ($path, $uri) ->
 
-  $RTR._set_routing($uri)
+  $RTR.setRouting($uri)
 
   # Note: The Router class automatically validates the controller path using the router->_validate_request().
   # If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
-  if not file_exists(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
+  if not file_exists(APPPATH+'controllers/'+$RTR.getDirectory()+$RTR.getClass()+EXT)
 
     log_message "debug", 'Unable to load controller for %s', $uri
     log_message "debug", 'Please make sure the controller specified in your Routes.coffee file is valid.'
@@ -162,9 +169,9 @@ bind_route = ($path, $uri) ->
   #  loader class can be called via the URI, nor can
   #  controller functions that begin with an underscore
   #
-  $module = $RTR.fetch_module()
-  $class  = $RTR.fetch_class()
-  $method = $RTR.fetch_method()
+  $module = $RTR.getModule()
+  $class  = $RTR.getClass()
+  $method = $RTR.getMethod()
 
   if $method[0] is '_' or Exspresso_Controller::[$method]?
     log_message "debug", "Controller not found: %s/%s", $class, $method
@@ -175,7 +182,7 @@ bind_route = ($path, $uri) ->
   #  Load the local application controller
   # ------------------------------------------------------
   #
-  $Class = require(APPPATH+'controllers/'+$RTR.fetch_directory()+$RTR.fetch_class()+EXT)
+  $Class = require(APPPATH+'controllers/'+$RTR.getDirectory()+$RTR.getClass()+EXT)
 
   #
   # Close over a bootstrap for the page and invoke the contoller method
@@ -220,7 +227,7 @@ bind_route = ($path, $uri) ->
       #  Is there a "pre_system" hook?
       # ------------------------------------------------------
       #
-      $EXT._call_hook('pre_system')
+      $EXT.callHook('pre_system')
 
       #
       # ------------------------------------------------------
@@ -261,8 +268,8 @@ bind_route = ($path, $uri) ->
       #	Is there a valid cache file?  If so, we're done...
       # ------------------------------------------------------
       #
-      if $EXT._call_hook('cache_override') is false
-        if $OUT._display_cache($CFG, $URI) is true
+      if $EXT.callHook('cache_override') is false
+        if $OUT.displayCache($CFG, $URI) is true
           return
 
       #
@@ -294,7 +301,7 @@ bind_route = ($path, $uri) ->
       #  Is there a "pre_controller" hook?
       # ------------------------------------------------------
       #
-      $EXT._call_hook 'pre_controller'
+      $EXT.callHook 'pre_controller'
 
       #
       # ------------------------------------------------------
@@ -310,7 +317,7 @@ bind_route = ($path, $uri) ->
       #  Is there a "post_controller_constructor" hook?
       # ------------------------------------------------------
       #
-      $EXT._call_hook 'post_controller_constructor', $controller
+      $EXT.callHook 'post_controller_constructor', $controller
 
     catch $err
       return $next($err)
@@ -333,15 +340,15 @@ bind_route = ($path, $uri) ->
         #  Is there a "post_controller" hook?
         # ------------------------------------------------------
         #
-        $EXT._call_hook('post_controller')
+        $EXT.callHook('post_controller')
 
         #
         # ------------------------------------------------------
         #  Send the final rendered output to the browser
         # ------------------------------------------------------
         #
-        if $EXT._call_hook('display_override') is false
-          $OUT._display($controller)
+        if $EXT.callHook('display_override') is false
+          $OUT.display($controller)
 
 
         #
@@ -349,7 +356,7 @@ bind_route = ($path, $uri) ->
         #  Is there a "post_system" hook?
         # ------------------------------------------------------
         #
-        $EXT._call_hook('post_system')
+        $EXT.callHook('post_system')
 
         #
         # ------------------------------------------------------
@@ -387,7 +394,7 @@ bind_route = ($path, $uri) ->
 #  Start me up...
 # ------------------------------------------------------
 #
-for $path, $uri of $RTR.load_routes()
+for $path, $uri of $RTR.loadRoutes()
   bind_route $path, $uri
 
 $SRV.start $RTR

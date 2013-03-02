@@ -94,7 +94,7 @@ class global.Exspresso_Pagination
   # @access	public
   # @return	string
   #
-  create_links :  ->
+  createLinks :  ->
     #  If our item count or per-page total is zero there is no need to continue.
     if @_total_rows is 0 or @_per_page is 0
       return ''

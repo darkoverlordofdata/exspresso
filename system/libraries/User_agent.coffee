@@ -258,7 +258,7 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	bool
   #
-  is_browser: ($key = null) ->
+  isBrowser: ($key = null) ->
 
     if not @_is_browser
       return false
@@ -276,7 +276,7 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	bool
   #
-  is_robot: ($key = null) ->
+  isRobot: ($key = null) ->
 
     if not @_is_robot
       return false
@@ -294,7 +294,7 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	bool
   #
-  is_mobile: ($key = null) ->
+  isMobile: ($key = null) ->
 
     if not @_is_mobile
       return false
@@ -313,7 +313,7 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	bool
   #
-  is_referral: () ->
+  isReferral: () ->
 
     if not @$_SERVER['HTTP_REFERER']?  or @$_SERVER['HTTP_REFERER'] is '' then false else true
 
@@ -324,7 +324,7 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	string
   #
-  agent_string: () ->
+  agentString: () ->
     @_agent
 
   #
@@ -416,7 +416,7 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	bool
   #
-  accept_lang: ($lang = 'en') ->
+  acceptLang: ($lang = 'en') ->
     in_array(strtolower($lang), @_languages(), true)
 
   
@@ -426,7 +426,7 @@ class global.Exspresso_User_agent
   # @access	public
   # @return	bool
   #
-  accept_charset: ($charset = 'utf-8') ->
+  acceptCharset: ($charset = 'utf-8') ->
     in_array(strtolower($charset), @_charsets(), true)
 
 

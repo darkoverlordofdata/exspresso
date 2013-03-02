@@ -64,7 +64,7 @@ class global.Exspresso_Router
   # @access	private
   # @return	void
   #
-  _set_routing: ($uri) ->
+  setRouting: ($uri) ->
 
     @_directory = ''
     @_module = ''
@@ -88,14 +88,14 @@ class global.Exspresso_Router
     if @_default_controller.indexOf('/') isnt -1
 
       $x = @_default_controller.split('/')
-      @set_class $x[0]
-      @set_method $x[1]
+      @setClass $x[0]
+      @setMethod $x[1]
       @_set_request $x
 
     else
 
-      @set_class @_default_controller
-      @set_method 'index'
+      @setClass @_default_controller
+      @setMethod 'index'
       @_set_request [@_default_controller, 'index']
 
     log_message 'debug', "No URI present. Default controller set."
@@ -118,12 +118,12 @@ class global.Exspresso_Router
     if $segments.length is 0
       return @_set_default_controller()
 
-    @set_class $segments[0]
+    @setClass $segments[0]
 
     if $segments[1]?
 
       # A standard method request
-      @set_method $segments[1]
+      @setMethod $segments[1]
 
     else
 
@@ -186,14 +186,14 @@ class global.Exspresso_Router
     if is_dir(APPPATH + 'controllers/' + $segments[0])
 
       # Set the directory and remove it from the segment array
-      @set_directory $segments[0]
+      @setDirectory $segments[0]
       $segments = $segments.shift()
 
       if $segments.length > 0
 
         # Does the requested controller exist in the sub-folder?
-        if not file_exists(APPPATH + 'controllers/' + @fetch_directory() + $segments[0] + EXT)
-          console.log "Unable to validate" + @fetch_directory() + $segments[0]
+        if not file_exists(APPPATH + 'controllers/' + @getDirectory() + $segments[0] + EXT)
+          console.log "Unable to validate" + @getDirectory() + $segments[0]
           return []
 
       else
@@ -203,16 +203,16 @@ class global.Exspresso_Router
 
           $x = @_default_controller.split('/')
 
-          @set_class $x[0]
-          @set_method $x[1]
+          @setClass $x[0]
+          @setMethod $x[1]
 
         else
 
-          @set_class @_default_controller
-          @set_method 'index'
+          @setClass @_default_controller
+          @setMethod 'index'
 
         # Does the default controller exist in the sub-folder?
-        if not file_exists(APPPATH + 'controllers/' + @fetch_directory() + @_default_controller + EXT)
+        if not file_exists(APPPATH + 'controllers/' + @getDirectory() + @_default_controller + EXT)
           @_directory = ''
           return []
 
@@ -224,8 +224,8 @@ class global.Exspresso_Router
 
       $x = @_404_override.split('/')
 
-      @set_class $x[0]
-      @set_method $x[1] ? 'index'
+      @setClass $x[0]
+      @setMethod $x[1] ? 'index'
 
       return $x
 
@@ -243,7 +243,7 @@ class global.Exspresso_Router
   # @access	private
   # @return	object routes
   #
-  load_routes: ->
+  loadRoutes: ->
 
     $routes = @_application_load_routes()
 
@@ -253,7 +253,7 @@ class global.Exspresso_Router
         $path = $location + $module + '/config/'
 
         if file_exists($path+'routes.coffee')
-          $routes = array_merge($routes, Modules.load_file('routes', $path, 'route'))
+          $routes = array_merge($routes, Modules.loadFile('routes', $path, 'route'))
 
     return $routes
 
@@ -355,7 +355,7 @@ class global.Exspresso_Router
   # @param	string
   # @return	void
   #
-  set_class: ($class) ->
+  setClass: ($class) ->
     @_class = $class+@config.item('controller_suffix')
   # - pre module - @_class = $class.replace('/', '').replace('.', '')
 
@@ -366,7 +366,7 @@ class global.Exspresso_Router
   # @access	public
   # @return	string
   #
-  fetch_class: ->
+  getClass: ->
     return @_class
 
 
@@ -377,7 +377,7 @@ class global.Exspresso_Router
   # @param	string
   # @return	void
   #
-  set_method: ($method) ->
+  setMethod: ($method) ->
     @_method = $method
 
 
@@ -387,8 +387,8 @@ class global.Exspresso_Router
   # @access	public
   # @return	string
   #
-  fetch_method: ->
-    if @_method is @fetch_class()
+  getMethod: ->
+    if @_method is @getClass()
       return 'index'
 
     return @_method || 'index'
@@ -400,7 +400,7 @@ class global.Exspresso_Router
   # @param	string
   # @return	void
   #
-  set_directory: ($dir) ->
+  setDirectory: ($dir) ->
     @_directory = $dir.replace('/', '').replace('.', '') + '/'
 
 
@@ -410,7 +410,7 @@ class global.Exspresso_Router
   # @access	public
   # @return	string
   #
-  fetch_directory: ->
+  getDirectory: ->
     return @_directory
 
   #
@@ -419,7 +419,7 @@ class global.Exspresso_Router
   # @access	public
   # @return	string
   #
-  fetch_module: ->
+  getModule: ->
     @_module
 
 

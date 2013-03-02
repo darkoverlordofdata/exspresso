@@ -73,7 +73,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	private called by the base class
   # @return	resource
   #
-  db_connect: ($next) =>
+  connect: ($next) =>
 
     if not @connected
       mysql = require('mysql')
@@ -103,8 +103,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	private called by the base class
   # @return	resource
   #
-  db_pconnect: ($next) ->
-    throw new Error('Not Supported: mysql_driver::_db_pconnect')
+  pconnect: ($next) ->
+    throw new Error('Not Supported: mysql_driver::pconnect')
 
   #  --------------------------------------------------------------------
 
@@ -142,8 +142,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @param	string
   # @return	resource
   #
-  db_set_charset: ($charset, $collation, $next) ->
-    @client.query("SET NAMES '" + @escape_str($charset) + "' COLLATE '" + @escape_str($collation) + "'", $next)
+  dbSetCharset: ($charset, $collation, $next) ->
+    @client.query("SET NAMES '" + @escapeStr($charset) + "' COLLATE '" + @escapeStr($collation) + "'", $next)
 
 
   #  --------------------------------------------------------------------
@@ -202,7 +202,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_begin: ($test_mode = false, $next = null) ->
+  transBegin: ($test_mode = false, $next = null) ->
     if $next is null
       $next = $test_mode
       $test_mode = false
@@ -219,8 +219,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
     #  even if the queries produce a successful result.
     @_trans_failure = if ($test_mode is true) then true else false
 
-    @simple_query 'SET AUTOCOMMIT=0', =>
-      @simple_query 'START TRANSACTION', => #  can also be BEGIN or BEGIN WORK
+    @simpleQuery 'SET AUTOCOMMIT=0', =>
+      @simpleQuery 'START TRANSACTION', => #  can also be BEGIN or BEGIN WORK
         $next null, true
 
   #  --------------------------------------------------------------------
@@ -231,7 +231,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_commit: ($next) ->
+  transCommit: ($next) ->
     if not @trans_enabled
       return $next null, true
 
@@ -239,8 +239,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
     if @_trans_depth > 0
       return $next null, true
 
-    @simple_query 'COMMIT', =>
-      @simple_query 'SET AUTOCOMMIT=1', =>
+    @simpleQuery 'COMMIT', =>
+      @simpleQuery 'SET AUTOCOMMIT=1', =>
         $next null, true
 
 
@@ -252,7 +252,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	bool
   #
-  trans_rollback: ($next) ->
+  transRollback: ($next) ->
     if not @trans_enabled
       return $next null, true
 
@@ -260,8 +260,8 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
     if @_trans_depth > 0
       return $next null, true
 
-    @simple_query 'ROLLBACK', =>
-      @simple_query 'SET AUTOCOMMIT=1', =>
+    @simpleQuery 'ROLLBACK', =>
+      @simpleQuery 'SET AUTOCOMMIT=1', =>
         $next null, true
 
 
@@ -275,10 +275,10 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @param	bool	whether or not the string will be used in a LIKE condition
   # @return	string
   #
-  escape_str: ($str, $like = false) ->
+  escapeStr: ($str, $like = false) ->
     if is_array($str)
       for $key, $val of $str
-        $str[$key] = @escape_str($val, $like)
+        $str[$key] = @escapeStr($val, $like)
 
 
       return $str
@@ -301,7 +301,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	integer
   #
-  affected_rows: ($next) ->
+  affectedRows: ($next) ->
     #@client.affected_rows($next)
 
 
@@ -313,7 +313,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @access	public
   # @return	integer
   #
-  insert_id: ($next) ->
+  insertId: ($next) ->
 
     @query "SELECT LAST_INSERT_ID() AS id;", ($err, $insert) =>
 
@@ -336,7 +336,7 @@ class Exspresso_DB_mysql_driver extends Exspresso_DB
   # @param	string
   # @return	string
   #
-  count_all: ($table = '', $next) ->
+  countAll: ($table = '', $next) ->
     if $table is ''
       return 0
 

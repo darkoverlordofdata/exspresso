@@ -35,10 +35,10 @@
         * array_helper          X
         * captcha_helper        ?
         * cookie_helper         ?
-        * date_helper           ?
-        * directory_helper      ?
-        * download_helper       ?
-        * email_helper          ?
+        * date_helper           -
+        * directory_helper      -
+        * download_helper       -
+        * email_helper          -
         * file_helper           ?
         * form_helper           X
         * inflector_helper      ?

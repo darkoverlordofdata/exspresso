@@ -33,11 +33,6 @@
 #
 # Exspresso Language Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/language_helper.html
 #
 
 #  ------------------------------------------------------------------------

@@ -81,7 +81,7 @@ class global.Exspresso_Form_validation
   # @param	string
   # @return	void
   #
-  set_rules: ($field, $label = '', $rules = '') ->
+  setRules: ($field, $label = '', $rules = '') ->
     #  No reason to set rules if we have no POST data
     if count(@$_POST) is 0
       return @
@@ -100,7 +100,7 @@ class global.Exspresso_Form_validation
         $label = if not $row['label']? then $row['field'] else $row['label']
         
         #  Here we go!
-        @set_rules($row['field'], $label, $row['rules'])
+        @setRules($row['field'], $label, $row['rules'])
         
       return @
       
@@ -158,7 +158,7 @@ class global.Exspresso_Form_validation
   # @param	string
   # @return	string
   #
-  set_message: ($lang, $val = '') ->
+  setMessage: ($lang, $val = '') ->
     if not is_array($lang)
       $lang = array($lang, $val)
 
@@ -177,7 +177,7 @@ class global.Exspresso_Form_validation
   # @param	string
   # @return	void
   #
-  set_error_delimiters: ($prefix = '<p>', $suffix = '</p>') ->
+  setErrorDelimiters: ($prefix = '<p>', $suffix = '</p>') ->
     @_error_prefix = $prefix
     @_error_suffix = $suffix
     
@@ -219,7 +219,7 @@ class global.Exspresso_Form_validation
   # @param	string
   # @return	str
   #
-  error_string: ($prefix = '', $suffix = '') ->
+  errorString: ($prefix = '', $suffix = '') ->
     #  No errrors, validation passes!
     if count(@_error_array) is 0
       return ''
@@ -1051,8 +1051,8 @@ class global.Exspresso_Form_validation
   # @param	string
   # @return	string
   #
-  xss_clean: ($str) ->
-    return @security.xss_clean($str)
+  xssClean: ($str) ->
+    return @security.xssClean($str)
     
   
   #

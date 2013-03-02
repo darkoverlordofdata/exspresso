@@ -84,7 +84,7 @@ exports['drivers'] = ['session']
 #|
 #|	exports['helper'] = ['url', 'file']
 #
-exports['helper'] = ['form', 'url', 'html', 'ckeditor']
+exports['helper'] = ['form', 'url', 'html', 'ckeditor', 'date']
 
 #
 #| -------------------------------------------------------------------

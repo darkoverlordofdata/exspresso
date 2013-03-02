@@ -33,11 +33,6 @@
 #
 # Exspresso Smiley Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/smiley_helper.html
 #
 
 #  ------------------------------------------------------------------------

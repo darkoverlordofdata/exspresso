@@ -202,7 +202,7 @@ class global.Exspresso_DB_postgres_forge extends Exspresso_DB_forge
   # Alter table query
   #
   # Generates a platform-specific query so that a table can be altered
-  # Called by add_column(), drop_column(), and column_alter(),
+  # Called by addColumn(), dropColumn(), and column_alter(),
   #
   # @access	private
   # @param	string	the ALTER type (ADD, DROP, CHANGE)
