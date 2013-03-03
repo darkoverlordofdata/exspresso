@@ -1,5 +1,5 @@
 /node_modules
-/cache
+/lib/cache
 /.idea
-/application/logs
-/application/cache
+/lib/application/logs
+/lib/application/cache

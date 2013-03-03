@@ -64,7 +64,7 @@ define 'ENVIRONMENT', process.env.ENVIRONMENT ? 'development'
 # as this file.
 #
 #
-$system_folder = 'lib/system'
+$system_folder = 'system'
 
 #
 #---------------------------------------------------------------
@@ -80,11 +80,7 @@ $system_folder = 'lib/system'
 # NO TRAILING SLASH!
 #
 #
-$application_folder = 'lib/application'
-
-$asset_folder = "lib/assets"
-
-$module_folder = "lib/modules"
+$application_folder = 'application'
 
 # --------------------------------------------------------------------
 # END OF USER CONFIGURABLE SETTINGS.  DO NOT EDIT BELOW THIS LINE
@@ -131,25 +127,6 @@ else
     exit "Your application folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
 
   define 'APPPATH', BASEPATH+$application_folder+'/'
-
-#  The path to the "assets" folder
-if is_dir($asset_folder)
-  define 'DOCPATH', realpath($asset_folder) + '/';
-else
-  if not is_dir(BASEPATH+$asset_folder+'/')
-    exit "Your asset folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
-
-  define 'DOCPATH', BASEPATH+$asset_folder+'/'
-
-
-#  The path to the "modules" folder
-if is_dir($module_folder)
-  define 'MODPATH', realpath($module_folder) + '/';
-else
-  if not is_dir(BASEPATH+$module_folder+'/')
-    exit "Your module folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
-
-  define 'MODPATH', BASEPATH+$module_folder+'/'
 
 # --------------------------------------------------------------------
 # LOAD THE BOOTSTRAP FILE
