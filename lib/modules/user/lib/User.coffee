@@ -28,6 +28,7 @@
 #
 #	  User Library
 #
+UserModel = require(MODPATH+'user/models/UserModel'+EXT)
 
 class modules.user.lib.User
 
@@ -52,7 +53,7 @@ class modules.user.lib.User
 
     log_message 'debug', "User Class Initialized"
     @load.model('user/UserModel')
-    @lang.load('user/user')
+    @l10n.load('user/user')
     @queue ($next) =>
       #
       # Reload the current user
@@ -64,8 +65,8 @@ class modules.user.lib.User
 
         return $next($err) if $err
         defineProperties @,
-          isAnonymous   : {enumerable: true,   get: -> $user.uid is modules.user.models.UserModel.UID_ANONYMOUS}
-          isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt modules.user.models.UserModel.UID_ANONYMOUS}
+          isAnonymous   : {enumerable: true,   get: -> $user.uid is UserModel.UID_ANONYMOUS}
+          isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt UserModel.UID_ANONYMOUS}
           uid           : {enumerable: true,   get: -> $user.uid}
           name          : {enumerable: true,   get: -> $user.name}
           email         : {enumerable: true,   get: -> $user.email}
@@ -94,12 +95,12 @@ class modules.user.lib.User
 
         if $ok
           @req.session.uid = $user.uid
-          @session.setFlashdata  'info', @lang.line('user_hello'), $user.name
+          @session.setFlashdata  'info', @l10n.line('user_hello'), $user.name
           @redirect $action
 
         else
-          @req.session.uid = self.UID_ANONYMOUS
-          @session.setFlashdata 'error', @lang.line('user_invalid_credentials')
+          @req.session.uid = UserModel.UID_ANONYMOUS
+          @session.setFlashdata 'error', @l10n.line('user_invalid_credentials')
           @redirect $action
 
   #
@@ -110,8 +111,8 @@ class modules.user.lib.User
   #
   logout: ($action = '/admin') ->
 
-    @session.setFlashdata  'info', @lang.line('user_goodbye')
-    @req.session.uid = self.UID_ANONYMOUS
+    @session.setFlashdata  'info', @l10n.line('user_goodbye')
+    @req.session.uid = UserModel.UID_ANONYMOUS
     @redirect $action
 
 

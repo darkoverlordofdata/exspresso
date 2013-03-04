@@ -100,7 +100,7 @@ $CFG = exports.config = load_class('Config', 'core')
 #  Load the Language class
 # ------------------------------------------------------
 #
-$LANG = exports.lang = load_class('Lang', 'core', $CFG)
+$L10N = exports.lang = load_class('L10n', 'core', $CFG)
 
 #
 # ------------------------------------------------------
@@ -290,7 +290,7 @@ bind_route = ($path, $uri) ->
       #  Load the Language class
       # ------------------------------------------------------
       #
-      $LANG = load_new('Lang', 'core', $CFG)
+      $L10N = load_new('L10n', 'core', $CFG)
 
       #  Set a mark point for benchmarking
       $BM.mark('loading_time:_base_classes_end')
@@ -310,7 +310,7 @@ bind_route = ($path, $uri) ->
       # Mark a start point so we can benchmark the controller
       $BM.mark('controller_execution_time_( ' + $class + ' / ' + $method + ' )_start')
 
-      $controller = new $Class($SRV, $BM, $EXT, $CFG, $UNI, $URI, $RTR, $OUT, $SEC, $IN, $LANG, $req, $res, $module, $class, $method)
+      $controller = new $Class($SRV, $BM, $EXT, $CFG, $UNI, $URI, $RTR, $OUT, $SEC, $IN, $L10N, $req, $res, $module, $class, $method)
       #
       # ------------------------------------------------------
       #  Is there a "post_controller_constructor" hook?

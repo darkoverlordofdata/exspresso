@@ -964,15 +964,15 @@ class system.db.Driver
   #
   displayError : ($error = '', $swap = '', $native = false) ->
 
-    @lang.load('db')
+    @l10n.load('db')
 
-    $heading = @lang.line('db_error_heading')
+    $heading = @l10n.line('db_error_heading')
 
     if $native is true
       $message = $error
 
     else
-      $message = if ( not is_array($error)) then [str_replace('%s', $swap, @lang.line($error))] else $error
+      $message = if ( not is_array($error)) then [str_replace('%s', $swap, @l10n.line($error))] else $error
 
 
     console.log $message

@@ -28,6 +28,8 @@
 #
 #   User Data Model
 #
+require BASEPATH+'core/Model'+EXT
+
 class modules.user.models.UserModel extends system.core.Model
 
   @UID_ANONYMOUS       = 1

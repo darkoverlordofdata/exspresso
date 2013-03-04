@@ -324,22 +324,23 @@ class system.core.Output
     #  Build the file path.  The file name is an MD5 hash of the full URI
     $uri = $CFG.item('base_url') + $CFG.item('index_page') + $URI.uriString()
 
-    $filepath = $cache_path+md5($uri)+'.json'
+    $filepath = $cache_path+md5($uri)
 
     if not file_exists($filepath)
       return false
 
-    $cache = require($filepath)
-    $expires = new Date($cache.expires)
+    $cache = String(fs.readFileSync($filepath))
+    $match = /^(.*)\t(.*)\t/.exec($cache)
 
+    $expires = new Date($match[2])
     #  Has the file expired? If so we'll delete it.
     return _gc_cache($cache_path, $filepath) unless Date.now() < $expires.getTime()
+
     #  Display the cache
     log_message('debug', "Cache file is current. Sending it to browser.")
-    @enable_profiler true
-    @_display(null, $cache.html)
+    @enableProfiler true
+    @display(null, $cache.replace($match[0], ''))
     return true
-
 
   #
   # Write a Cache File
@@ -381,19 +382,18 @@ class system.core.Output
 
     # build the cache data
     $uri = @CFG.item('base_url') + @CFG.item('index_page') + $uri
-    $filepath = $cache_path+md5($uri)+'.json'
+    $filepath = $cache_path+md5($uri)
     $expires = new Date(Date.now() + $ttl)
-    $output = $output.replace(/\"/mg, '\\"').replace(/\n/mg, '\\n')
-    $buffer = "{\n\t\"uri\":\"#{$uri}\",\n\t\"expires\":\"#{$expires}\",\n\t\"html\":\"#{$output}\"\n}"
 
     # queue up the cache and immediately return
-    fs.writeFile $filepath, $buffer, ($err) ->
+    fs.writeFile $filepath, "#{$uri}\t#{$expires}\t#{$output}", ($err) ->
       if $err
         log_message('debug', "Error writing cache file %s: %s", $filepath, $err)
       else
         log_message('debug', "Cache file written: " + $filepath)
         # set a timer to clean the cache
         setTimeout _gc_cache, ($expires.getTime() - Date.now()), $cache_path, $filepath
+
 
   #
   # Clean the Cache

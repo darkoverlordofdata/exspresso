@@ -60,29 +60,32 @@
 
 class system.core.Modules
 
-  @locations = config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
+  fs = require('fs')
+  self = @::
+
+  locations: config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
 
   #
   # Returns a list of modules
   #
-  @list = ->
+  list: ->
 
     $modules = []
-    for $location, $offset of Modules.locations
+    for $location, $offset of self.locations
       $modules.concat(readdirSync($location))
     $modules
 
   #
   # Load a module file
   #
-  @loadFile = ($file, $path, $type = 'other', $result = true) ->
+  load: ($file, $path, $type = EXT) ->
 
-    $file = str_replace(EXT, '', $file)
-    $location = $path+$file+EXT
-
-    $result = require($location)
-    log_message 'debug', "File loaded: %s", $location
-    return $result
+    $file = $file.replace($type, '')+$type
+    $location = $path+$file
+    if strpos("#{EXT}.json.js", $type)?
+      require($location)
+    else
+      fs.readFileSync($location)
 
   #
   # Find a file
@@ -90,7 +93,7 @@ class system.core.Modules
   # Also scans application directories for models, plugins and views.
   # Generates fatal error if file not found.
   #
-  @find = ($file, $module, $base) ->
+  find: ($file, $module, $base) ->
 
     $modules = {}
 
@@ -110,7 +113,7 @@ class system.core.Modules
       $modules[array_shift($segments)] = ltrim(implode('/', $segments)+'/','/')
 
 
-    for $location, $offset of @locations
+    for $location, $offset of self.locations
 
       for $module, $subpath of $modules
 

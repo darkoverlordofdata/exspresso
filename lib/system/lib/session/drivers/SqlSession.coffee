@@ -29,6 +29,8 @@
 #   Sql Session store driver
 #
 #
+UserModel = require(MODPATH+'user/models/UserModel'+EXT)
+
 class system.lib.session.SqlSession extends require('express').session.Store
 
   serialize       = JSON.stringify      # Generates a storable representation of a value
@@ -73,7 +75,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
         # unpack the data
         $data                   = $result.row()
         $session                = unserialize($data.user_data)
-        $session.uid            = $data.uid || modules.user.models.UserModel.UID_ANONYMOUS
+        $session.uid            = $data.uid || UserModel.UID_ANONYMOUS
         $session.ip_address     = $data.ip_address
         $session.user_agent     = $data.user_agent
         $session.last_activity  = $data.last_activity
@@ -104,7 +106,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
         # pack up the data
         $user_data = array_merge({}, $session)
         $data =
-          uid             : fetch($user_data, 'uid', modules.user.models.UserModel.UID_ANONYMOUS)
+          uid             : fetch($user_data, 'uid', UserModel.UID_ANONYMOUS)
           ip_address      : fetch($user_data, 'ip_address')
           user_agent      : substr(fetch($user_data, 'user_agent'), 0, 120)
           last_activity   : fetch($user_data, 'last_activity')

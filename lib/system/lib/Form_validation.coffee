@@ -279,7 +279,7 @@ class system.lib.FormValidation
       
     
     #  Load the language file containing error messages
-    @lang.load('form_validation')
+    @l10n.load('form_validation')
     
     #  Cycle through the rules for each field, match the
     #  corresponding @$_POST item and test for errors
@@ -423,7 +423,7 @@ class system.lib.FormValidation
         $type = if (in_array('required', $rules)) then 'required' else 'isset'
 
         if not @_error_messages[$type]?
-          if false is ($line = @lang.line($type))
+          if false is ($line = @l10n.line($type))
             $line = 'The field was not set'
             
           
@@ -525,7 +525,7 @@ class system.lib.FormValidation
       #  Did the rule test negatively?  If so, grab the error.
       if $result is false
         if not @_error_messages[$rule]?
-          if false is ($line = @lang.line($rule))
+          if false is ($line = @l10n.line($rule))
             $line = 'Unable to access an error message corresponding to your field name.'
 
         else
@@ -565,7 +565,7 @@ class system.lib.FormValidation
       $line = substr($fieldname, 5)
       
       #  Were we able to translate the field name?  If not we use $line
-      if false is ($fieldname = @lang.line($line))
+      if false is ($fieldname = @l10n.line($line))
         return $line
         
       

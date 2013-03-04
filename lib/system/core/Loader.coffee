@@ -145,12 +145,12 @@ class system.core.Loader
 
     ($_alias = strtolower($object_name)) or ($_alias = $class)
 
-    [$path, $_library] = Modules.find($library, $controller.module, 'lib/')
+    [$path, $_library] = Modules::find($library, $controller.module, 'lib/')
 
     # load library config file as params *
 
-    [$path2, $file] = Modules.find($_alias, $controller.module, 'config/')
-    ($path2) and ($params = array_merge(Modules.loadFile($file, $path2, 'config'), $params))
+    [$path2, $file] = Modules::find($_alias, $controller.module, 'config/')
+    ($path2) and ($params = array_merge(Modules::load($file, $path2), $params))
 
     if $path is false
 
@@ -159,7 +159,7 @@ class system.core.Loader
 
     else
 
-      $Library = Modules.loadFile($_library, $path)
+      $Library = Modules::load($_library, $path)
       @_classes[$class] = $_alias
       defineProperty $controller, $_alias,
         enumerable  : true
@@ -203,7 +203,7 @@ class system.core.Loader
       return $controller[$_alias]
 
     # check module
-    [$path, $_model] = Modules.find($model, @_module, 'models/')
+    [$path, $_model] = Modules::find($model, @_module, 'models/')
 
     if $path is false
 
@@ -218,7 +218,7 @@ class system.core.Loader
         if $connect is true then $connect = ''
         @database($connect, false, true)
 
-      $Model = Modules.loadFile($_model, $path)
+      $Model = Modules::load($_model, $path)
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
@@ -407,7 +407,7 @@ class system.core.Loader
     if is_array($module) then return @modules($module)
 
     $_alias = strtolower(end(explode('/', $module)))
-    @controller[$_alias] = Modules.load(array($module , $params))
+    @controller[$_alias] = Modules::load(array($module , $params))
     return @controller[$_alias]
 
 
@@ -441,11 +441,11 @@ class system.core.Loader
     if @_plugins[$plugin]?
       return
 
-    [$path, $_plugin] = Modules.find($plugin+'_pi', @_module, 'plugins/')
+    [$path, $_plugin] = Modules::find($plugin+'_pi', @_module, 'plugins/')
 
     if ($path is false) then return
 
-    Modules.loadFile($_plugin, $path)
+    Modules::load($_plugin, $path)
     @_plugins[$plugin] = true
 
   #
@@ -478,7 +478,7 @@ class system.core.Loader
   # @return	void
   #
   view: ($view, $vars = {}, $next = null) ->
-    [$path, $view] = Modules.find($view, @controller.module, 'views/')
+    [$path, $view] = Modules::find($view, @controller.module, 'views/')
     @_view_path = if $path then $path else APPPATH + config_item('views')
     @_load('', $view, $vars, $next)
 
@@ -540,11 +540,11 @@ class system.core.Loader
 
     if @_helpers[$helper]? then return
 
-    [$path, $_helper] = Modules.find($helper+'_helper', @_module, 'helpers/')
+    [$path, $_helper] = Modules::find($helper+'_helper', @_module, 'helpers/')
 
     if $path is false then return @_application_helper($helper)
 
-    @_helpers[$_helper] = Modules.loadFile($_helper, $path)
+    @_helpers[$_helper] = Modules::load($_helper, $path)
 
     # expose the helpers to template engine
     Exspresso.server.setHelpers @_helpers[$helper]
@@ -604,15 +604,15 @@ class system.core.Loader
     Exspresso.server.setHelpers @_helpers[$helper]
 
   #
-  # Load a module language file
+  # Load a module l10n file
   #
   # @access	public
   # @param	array
   # @param	string
   # @return	void
   #
-  language: ($langfile, $idiom = '', $return = false) ->
-    return @controller.lang.load($langfile, $idiom, $return)
+  language: ($langfile, $code = '', $return = false) ->
+    return @controller.l10n.load($langfile, $code, $return)
 
   #
   # Load an array of languages
@@ -990,12 +990,12 @@ class system.core.Loader
     $path = false
 
     if (@_module)
-      [$path, $file] = Modules.find('autoload', @_module, 'config/')
+      [$path, $file] = Modules::find('autoload', @_module, 'config/')
 
     #  module autoload file
     $autoload = {}
     if ($path isnt false)
-      $autoload = array_merge(Modules.loadFile($file, $path, 'autoload'), $autoload)
+      $autoload = array_merge(Modules::load($file, $path), $autoload)
 
     #  nothing to do
     if count($autoload) is 0 then return

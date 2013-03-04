@@ -52,7 +52,7 @@ class system.core.Controller extends system.core.Object
   # @param	string    method name
   # @return	void
   #
-  constructor: ($SRV, $BM, $EXT, $CFG, $UNI, $URI, $RTR, $OUT, $SEC, $IN, $LANG, $req, $res, $module, $class, $method) ->
+  constructor: ($SRV, $BM, $EXT, $CFG, $UNI, $URI, $RTR, $OUT, $SEC, $IN, $L10N, $req, $res, $module, $class, $method) ->
 
     log_message 'debug', "Controller Class Initialized"
 
@@ -95,7 +95,7 @@ class system.core.Controller extends system.core.Object
       output      : $OUT                # ExspressoOutput
       input       : $IN                 # ExspressoInput
       security    : $SEC                # ExspressoSecurity
-      lang        : $LANG               # ExspressoLang
+      l10n        : $L10N               # ExspressoLang
 
 
     @property load: load_mixin('Loader', 'core', @)

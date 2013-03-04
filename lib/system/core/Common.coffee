@@ -50,8 +50,8 @@ _error            = null  # error display object
 #
 # Metaprogramming utils
 #
-__PROTO__                 = true      # if true, set using the '__proto__' property
-_class                    = {}        # metadata cache
+__PROTO__         = true  # if true, set using the '__proto__' property
+_class            = {}    # metadata cache
 
 #
 # privately dereference some Object utility members
@@ -77,8 +77,7 @@ exports.keys              = Object.keys
 # Init Namespaces
 #
 define 'system'
-  core        :
-    server    : {}
+  core        : {}
   lib         :
     session   : {}
   db          :
@@ -148,7 +147,6 @@ exports.load_new = load_new = ($class, $directory = 'lib', $prefix = '', $0, $1,
   if typeof $prefix isnt 'string'
     [$prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9] = ['', $prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8]
 
-  #$prefix = 'Exspresso'
   #  Does the class exist?  If so, we're done...
   if system[$directory][$prefix+$class]?
     return new system[$directory][$prefix+$class]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -203,14 +201,16 @@ exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = '', $co
     return create_mixin($controller, system[$directory][$prefix+$class], $controller)
 
   $name = false
+  $root = null
 
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
   for $path in [BASEPATH, APPPATH]
+    $root = (if $path is BASEPATH then system else application)
     if file_exists($path + $directory + '/' + $class + EXT)
       $name = $prefix + $class
 
-      if not system[$directory][$name]?
+      if not $root[$directory][$name]?
         require($path + $directory + '/' + $class + EXT)
 
       break
@@ -226,7 +226,7 @@ exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = '', $co
   if not system[$directory][$name]?
     die 'Unable to locate the specified class: ' + $class + EXT
 
-  create_mixin($controller, system[$directory][$name], $controller)
+  create_mixin($controller, $root[$directory][$name], $controller)
 
 #
 # Exspresso Class registry

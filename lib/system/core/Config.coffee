@@ -82,11 +82,11 @@ class system.core.Config
 
     if in_array($file, @_is_loaded, true) then return @item($file)
     #$_module = Exspresso.router.getModule()
-    [$path, $file] = Modules.find($file, '', 'config/')
+    [$path, $file] = Modules::find($file, '', 'config/')
     if $path is false
       @_application_load($file, $use_sections, $fail_gracefully)
       return @item($file)
-    if $config = Modules.loadFile($file, $path, 'config')
+    if $config = Modules::load($file, $path)
       #  reference to the config array
       $current_config = @config
       if $use_sections is true

@@ -247,13 +247,13 @@ class system.core.Router
 
     $routes = @_application_load_routes()
 
-    for $location, $offset of Modules.locations
+    for $location, $offset of Modules::locations
       $modules = fs.readdirSync($location)
       for $module in $modules
         $path = $location + $module + '/config/'
 
         if file_exists($path+'routes.coffee')
-          $routes = array_merge($routes, Modules.loadFile('routes', $path, 'route'))
+          $routes = array_merge($routes, Modules::load('routes', $path))
 
     return $routes
 
@@ -304,7 +304,7 @@ class system.core.Router
     [$module, $directory, $controller] = array_pad($segments, 3, null)
 
     # check modules
-    for $location, $offset of Modules.locations
+    for $location, $offset of Modules::locations
 
       # module exists?
       if (is_dir($source = $location+$module+'/controllers/'))

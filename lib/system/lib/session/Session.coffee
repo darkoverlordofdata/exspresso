@@ -32,6 +32,8 @@
 #
 # Session Class
 #
+UserModel = require(MODPATH+'user/models/UserModel'+EXT)
+
 class system.lib.Session extends system.lib.DriverLibrary
 
   express     = require('express')      # Express 3.0 Framework
@@ -137,7 +139,7 @@ class system.lib.Session extends system.lib.DriverLibrary
         $req.session.session_id = urldecode($sid).split(':')[1]
 
     # set reasonable session defaults
-    $req.session.uid            = $req.session.uid || modules.user.models.UserModel.UID_ANONYMOUS
+    $req.session.uid            = $req.session.uid || UserModel.UID_ANONYMOUS
     $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
     $req.session.user_agent     = $req.headers['user-agent']
     $req.session.last_activity  = @_get_time()

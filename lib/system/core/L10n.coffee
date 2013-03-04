@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  Lang.coffee
+#  L10n.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -32,13 +32,13 @@
 #  ------------------------------------------------------------------------
 
 #
-# Language Class
+# Localization package loader
 #
 #
 
 Modules = require(BASEPATH+'core/Modules.coffee')
 
-class system.core.Lang
+class system.core.L10n
 
   _language         : null  # cache of loaded l10n strings
   _is_loaded        : null  # list of loaded l10n files
@@ -52,7 +52,7 @@ class system.core.Lang
   constructor : (@CFG) ->
     @_language = {}
     @_is_loaded = []
-    log_message 'debug', "Language Class Initialized"
+    log_message 'debug', "L10n Class Initialized"
 
   #
   # Load a module language file
@@ -70,20 +70,20 @@ class system.core.Lang
       return @_language
 
     $deft_lang = @CFG.item('language')
-    $idiom = if ($lang is '') then $deft_lang else $lang
+    $code = if ($lang is '') then $deft_lang else $lang
 
-    if in_array($langfile + '_lang' + EXT, @_is_loaded, true)
+    if in_array($langfile + '.json', @_is_loaded, true)
       return @_language
 
-    [$path, $_langfile] = Modules.find($langfile + '_lang', $module, 'language/' + $idiom + '/')
+    [$path, $_langfile] = Modules::find($langfile+'.json', $module, 'l10n/' + $code + '/')
     if $path is false
       if $lang = @_application_load($langfile, $lang, $return)
         return $lang
     else
-      if $lang = Modules.loadFile($_langfile, $path, 'lang')
+      if $lang = Modules::load($_langfile, $path, '.json')
         if $return then return $lang
     @_language = array_merge(@_language, $lang)
-    @_is_loaded.push $langfile + '_lang' + EXT
+    @_is_loaded.push $langfile + '.json'
 
     return @_language
 
@@ -92,38 +92,35 @@ class system.core.Lang
   #
   # @access  public
   # @param  mixed  the name of the language file to be loaded. Can be an array
-  # @param  string  the language (english, etc.)
+  # @param  string  ISO 639-1 code
   # @return  mixed
   #
-  _application_load: ($langfile = '', $idiom = '', $return = false) ->
-    $langfile = str_replace(EXT, '', $langfile)
+  _application_load: ($langfile = '', $code = '', $return = false) ->
 
-    $langfile = str_replace('_lang.', '', $langfile) + '_lang'
-
-    $langfile+=EXT
+    $langfile = $langfile.replace(EXT, '')+'.json'
 
     if in_array($langfile, @_is_loaded, true)
       return
 
     $config = get_config()
 
-    if $idiom is ''
-      $deft_lang = if not $config['language']? then 'english' else $config['language']
-      $idiom = if $deft_lang is '' then 'english' else $deft_lang
+    if $code is ''
+      $deft_lang = if not $config['language']? then 'en' else $config['language']
+      $code = if $deft_lang is '' then 'en' else $deft_lang
 
     #  Determine where the language file is and load it
     $found = false
     for $package_path in Exspresso.load.getPackagePaths(true)
-      if file_exists($package_path + 'language/' + $idiom + '/' + $langfile)
-        $lang = require($package_path + 'language/' + $idiom + '/' + $langfile)
+      if file_exists($package_path + 'l10n/' + $code + '/' + $langfile)
+        $lang = require($package_path + 'l10n/' + $code + '/' + $langfile)
         $found = true
         break
 
     if $found isnt true
-      show_error('Unable to load the requested language file: language/' + $idiom + '/' + $langfile)
+      show_error('Unable to load the requested language file: l10n/' + $code + '/' + $langfile)
 
     if not $lang?
-      log_message('error', 'Language file contains no data: language/' + $idiom + '/' + $langfile)
+      log_message('error', 'Language file contains no data: l10n/' + $code + '/' + $langfile)
       return
 
     if $return is true
@@ -132,7 +129,7 @@ class system.core.Lang
     @_is_loaded.push $langfile
     @_language = array_merge(@_language, $lang)
 
-    log_message('debug', 'Language file loaded: language/%s/%s', $idiom, $langfile)
+    log_message('debug', 'Language file loaded: l10n/%s/%s', $code, $langfile)
     return true
 
 
@@ -154,6 +151,6 @@ class system.core.Lang
     return $line
 
 #  END ExspressoLang Class
-module.exports = system.core.Lang
-#  End of file Lang.php 
-#  Location: ./system/core/Lang.coffee
+module.exports = system.core.L10n
+#  End of file L10n.coffee
+#  Location: ./system/core/L10n.coffee

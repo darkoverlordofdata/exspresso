@@ -20,7 +20,7 @@ exports['logger'] = 'dev'
 exports['views'] = 'views'
 exports['view_ext'] = '.eco'
 exports['cache_rules'] =
-  '.*': 0 # 60000
+  '.*': 60000
 
 #
 #|--------------------------------------------------------------------------
@@ -92,7 +92,7 @@ exports['url_suffix'] = ''
 #| than english.
 #|
 #
-exports['language'] = 'english'
+exports['language'] = 'en'
 
 #
 #|--------------------------------------------------------------------------

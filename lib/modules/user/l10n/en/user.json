@@ -1,0 +1,5 @@
+{
+  "user_hello": "Hello %s",
+  "user_goodbye": "Goodbye!",
+  "user_invalid_credentials": "Invalid credentials. Please try again."
+}

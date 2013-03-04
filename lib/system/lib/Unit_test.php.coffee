@@ -154,11 +154,11 @@ class ExspressoUnit_test
       $table = ''
       
       for $key, $val of $res
-        if $key is @lang.line('ut_result')
-          if $val is @lang.line('ut_passed')
+        if $key is @l10n.line('ut_result')
+          if $val is @l10n.line('ut_passed')
             $val = '<span style="color: #0C0;">' + $val + '</span>'
             
-          else if $val is @lang.line('ut_failed')
+          else if $val is @l10n.line('ut_failed')
             $val = '<span style="color: #C00;">' + $val + '</span>'
 
         $temp = @_template_rows
@@ -221,16 +221,16 @@ class ExspressoUnit_test
 
         if is_array($val)
           for $k, $v of $val
-            if false isnt ($line = @lang.line(strtolower('ut_' + $v)))
+            if false isnt ($line = @l10n.line(strtolower('ut_' + $v)))
               $v = $line
               
-            $temp[@lang.line('ut_' + $k)] = $v
+            $temp[@l10n.line('ut_' + $k)] = $v
 
         else 
-          if false isnt ($line = @lang.line(strtolower('ut_' + $val)))
+          if false isnt ($line = @l10n.line(strtolower('ut_' + $val)))
             $val = $line
             
-          $temp[@lang.line('ut_' + $key)] = $val
+          $temp[@l10n.line('ut_' + $key)] = $val
 
       $retval.push $temp
 
