@@ -36,7 +36,7 @@
 # Displays modaly from a bottom toolbar
 #
 #
-class ExspressoProfiler
+class system.lib.Profiler
 
   _benchmarks         : true
   _get                : true
@@ -459,10 +459,9 @@ class ExspressoProfiler
 
     return $output
 
-module.exports = ExspressoProfiler
-define 'ExspressoProfiler', ExspressoProfiler
+module.exports = system.lib.Profiler
 
 #  END ExspressoProfiler class
 
-#  End of file Profiler.php 
-#  Location: ./application/lib/ExspressoProfiler.php
+#  End of file Profiler.coffee
+#  Location: .system/lib/Profiler.coffee

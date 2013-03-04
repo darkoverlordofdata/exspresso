@@ -15,7 +15,7 @@
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Preview extends AdminController
+class Preview extends application.core.AdminController
 
   constructor: ($args...) ->
 

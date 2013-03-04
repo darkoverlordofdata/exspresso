@@ -41,7 +41,7 @@
 # @author		darkoverlordofdata
 # @link		http://darkoverlordofdata.com/user_guide/lib/calendar.html
 #
-class ExspressoCalendar
+class system.lib.Calendar
   
   _local_time         : null
   _template           : ''
@@ -396,7 +396,7 @@ class ExspressoCalendar
 
 ##  END ExspressoCalendar class
 
-module.exports = ExspressoCalendar
+module.exports = system.lib.Calendar
 
 #  End of file Calendar.php
-#  Location: ./system/lib/Calendar.php
+#  Location: .system/lib/Calendar.php

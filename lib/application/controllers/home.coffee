@@ -32,7 +32,7 @@
 #
 require APPPATH+'core/PublicController.coffee'
 
-class Home extends PublicController
+class Home extends application.core.PublicController
 
   #
   # Index

@@ -28,8 +28,6 @@
 # @since		  Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Common Functions
 #
@@ -48,6 +46,55 @@ _classes          = {}    # class cache
 _is_loaded        = {}    # class loaded flag
 _log              = null  # loging object
 _error            = null  # error display object
+
+#
+# Metaprogramming utils
+#
+__PROTO__                 = true      # if true, set using the '__proto__' property
+_class                    = {}        # metadata cache
+
+#
+# privately dereference some Object utility members
+#
+create                    = Object.create
+defineProperties          = Object.defineProperties
+defineProperty            = Object.defineProperty
+freeze                    = Object.freeze
+getOwnPropertyDescriptor  = Object.getOwnPropertyDescriptor
+getOwnPropertyNames       = Object.getOwnPropertyNames
+getPrototypeOf            = Object.getPrototypeOf
+keys                      = Object.keys
+prototype                 = Object.prototype
+#
+# publicly dereference some Object utility member
+#
+exports.defineProperties  = Object.defineProperties
+exports.defineProperty    = Object.defineProperty
+exports.freeze            = Object.freeze
+exports.keys              = Object.keys
+
+#
+# Init Namespaces
+#
+define 'system'
+  core        :
+    server    : {}
+  lib         :
+    session   : {}
+  db          :
+    mysql     : {}
+    postgres  : {}
+
+define 'modules'
+  user        :
+    lib       : {}
+    models    : {}
+
+define 'application'
+  core        : {}
+  lib         : {}
+  models      : {}
+
 
 #  ------------------------------------------------------------------------
 
@@ -96,16 +143,15 @@ exports.is_really_writable = is_really_writable = ($file) ->
 # @param  object  list of params to pass to the constructor
 # @return	object
 #
-exports.load_new = load_new = ($class, $directory = 'lib', $prefix = 'Exspresso', $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
+exports.load_new = load_new = ($class, $directory = 'lib', $prefix = '', $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
   if typeof $prefix isnt 'string'
-    [$prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9] = ['Exspresso', $prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8]
+    [$prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9] = ['', $prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8]
 
   #$prefix = 'Exspresso'
   #  Does the class exist?  If so, we're done...
-  if class_exists($prefix+$class)
-    #return create_mixin($controller, global[$prefix+$class], $controller)
-    return new global[$prefix+$class]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+  if system[$directory][$prefix+$class]?
+    return new system[$directory][$prefix+$class]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
 
   $name = false
 
@@ -115,8 +161,8 @@ exports.load_new = load_new = ($class, $directory = 'lib', $prefix = 'Exspresso'
     if file_exists($path + $directory + '/' + $class + EXT)
       $name = $prefix + $class
 
-      if not class_exists($name)
-        require $path + $directory + '/' + $class + EXT
+      if not system[$directory][$name]?
+        require($path + $directory + '/' + $class + EXT)
 
       break
 
@@ -124,15 +170,15 @@ exports.load_new = load_new = ($class, $directory = 'lib', $prefix = 'Exspresso'
   if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
     $name = config_item('subclass_prefix') + $class
 
-    if not class_exists($name)
-      require APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT
+    if not system[$directory][$name]?
+      require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
-  if not class_exists($name)
+  if not system[$directory][$name]?
     die 'Unable to locate the specified class: ' + $class + EXT
 
   #create_mixin($controller, global[$name], $controller)
-  return new global[$name]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+  return new system[$directory][$name]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
 
 #
 # Exspresso Mixin Creation
@@ -147,14 +193,14 @@ exports.load_new = load_new = ($class, $directory = 'lib', $prefix = 'Exspresso'
 # @param  object  ExspressoController object
 # @return	object
 #
-exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = 'Exspresso', $controller) ->
+exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = '', $controller) ->
 
   if typeof $prefix isnt 'string'
-    [$prefix, $controller] = ['Exspresso', $prefix]
+    [$prefix, $controller] = ['', $prefix]
 
   #  Does the class exist?  If so, we're done...
-  if class_exists($prefix+$class)
-    return create_mixin($controller, global[$prefix+$class], $controller)
+  if system[$directory][$prefix+$class]?
+    return create_mixin($controller, system[$directory][$prefix+$class], $controller)
 
   $name = false
 
@@ -164,8 +210,8 @@ exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = 'Exspre
     if file_exists($path + $directory + '/' + $class + EXT)
       $name = $prefix + $class
 
-      if not class_exists($name)
-        require $path + $directory + '/' + $class + EXT
+      if not system[$directory][$name]?
+        require($path + $directory + '/' + $class + EXT)
 
       break
 
@@ -173,14 +219,14 @@ exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = 'Exspre
   if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
     $name = config_item('subclass_prefix') + $class
 
-    if not class_exists($name)
-      require APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT
+    if not system[$directory][$name]?
+      require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
-  if not class_exists($name)
+  if not system[$directory][$name]?
     die 'Unable to locate the specified class: ' + $class + EXT
 
-  create_mixin($controller, global[$name], $controller)
+  create_mixin($controller, system[$directory][$name], $controller)
 
 #
 # Exspresso Class registry
@@ -195,44 +241,36 @@ exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = 'Exspre
 # @param	string	the class name prefix
 # @return	object
 #
-exports.load_class = load_class = ($class, $directory = 'lib', $prefix = 'Exspresso', $config = {}) ->
+exports.load_class = load_class = ($class, $directory = 'lib', $prefix = '', $config = {}) ->
 
-  if typeof $prefix isnt 'string' then [$prefix, $config] = ['Exspresso', $prefix]
-
-  $core = $class.split('_')[0] # strip subclass suffix from driver name
+  if typeof $prefix isnt 'string' then [$prefix, $config] = ['', $prefix]
 
   #  Does the class exist?  If so, we're done...
-  if _classes[$core]?
-    return _classes[$core]
+  if _classes[$class]?
+    return _classes[$class]
 
   $name = false
 
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
   for $path in [BASEPATH, APPPATH]
-    if file_exists($path + $directory + '/' + $class + EXT)
-      $name = $prefix + $class
-      if not class_exists($name)
-        require $path + $directory + '/' + $class + EXT
+    if file_exists($path + $directory + '/' + $prefix + $class + EXT)
+      $Class = require($path + $directory + '/' + $prefix + $class + EXT)
 
       break
 
   #  Is the request a class extension?  If so we load it too
   if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
-    $name = config_item('subclass_prefix') + $class
-
-    if not class_exists($name)
-      require APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT
+    $Class = require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
-  if not class_exists($name)
+  if not $Class?
     die 'Unable to locate the specified class: ' + $class + EXT
 
   #  Keep track of what we just loaded
-  is_loaded($core)
+  is_loaded($class)
 
-  _classes[$core] = new (global[$name])($config)
-  return _classes[$core]
+  _classes[$class] = new $Class($config)
 
 #
 # Is Loaded
@@ -360,10 +398,7 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
 # @return	void
 #
 exports.log_message = log_message = ($level = 'error', $args...) ->
-
-  if config_item('log_threshold') is 0
-    return true
-
+  return true if config_item('log_threshold') is 0
   _log = load_class('Log')
   _log.writeLog $level, format.apply(undefined, $args)
   true
@@ -453,6 +488,154 @@ exports.remove_invisible_characters = remove_invisible_characters = ($str, $url_
 
   $str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/g, '')  #  00-08, 11, 12, 14-31, 127
 
+
+#
+# Copy Own Properties
+#
+# Copy all properties from a source or template object
+# Getters, setters, read only, and other custom attributes
+# are safely copied
+#
+# @param	object	destination object
+# @param	object	source object
+# @return	object
+#
+exports.copyOwnProperties = ($dst, $src) ->
+  $properties = {}
+  for $key in getOwnPropertyNames($src)
+    $properties[$key] = getOwnPropertyDescriptor($src, $key)
+
+  defineProperties $dst, $properties
+
+
+#
+# Define Getter
+#
+# @access	public
+# @param	object	property definition
+# @return	object
+#
+Function::getter = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {get: $def[$name]}
+
+#
+# Define Setter
+#
+# @access	public
+# @param	object	property definition
+# @return	object
+#
+Function::setter = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {set: $def[$name]}
+
+
+#
+# Define Class Metadata
+#
+# Analyze the metadata for a class, then build and cache
+# a table of property definitions for that classs.
+#
+# @param	object	destination object
+# @param	object	source object
+# @return	object  the cached metadata
+#
+exports.defineClass = ($class) ->
+
+  $name = $class::constructor.name
+  if not _class[$name]?
+
+    $props = {}       # an array to build the object property def
+    $chain = []       # an array to list the inheritance chain
+    $proto = $class:: # starting point in the chain
+
+    # Build an inheritance list
+    until $proto is prototype
+      $chain.push $proto
+      $proto = getPrototypeOf($proto)
+
+    # Reverse list to process overrides in the correct order
+    for $proto in $chain.reverse()
+      if $proto isnt Object::
+        # Build the inherited properties table
+        for $key in getOwnPropertyNames($proto)
+          $props[$key] = getOwnPropertyDescriptor($proto, $key)
+
+    # cache the class definition
+    _class[$name] = $props
+  _class[$name]
+
+#
+# Create a Mixin
+#
+# Create a mixin object from a prototype object
+# with an optional list of classes to mixin,
+# followed by an optional list of arguments to the
+# constructor of the first class.
+#
+# If there are no classes, the list of args is a list
+# of additional objects that are simply merged into the
+# first object. These objects are expected to be literal
+# based, and only the own properties are used
+#
+#
+# @param	object	object to use as the prototype
+# @param	array   list of mixin classes, followed by construcor args
+# @return	object
+#
+exports.create_mixin = ($object, $args...) ->
+
+  $properties = {}
+  $pos = 0
+
+  # get the mixin class(es)
+  while 'function' is typeof ($mixin = $args[$pos])
+    # the 1st mixin class will also be the constructor
+    $class = $mixin if $pos is 0
+    $pos++
+    for $key, $val of defineClass($mixin)
+      $properties[$key] = $val
+
+  # no class was encountered
+  if not $class? then switch $args.length
+    when 0
+    # simple case -
+      return create($object)
+
+    when 1
+    # optimized case -
+      if __PROTO__
+        # array inherits from the object
+        $args[0].__proto__ = $object
+        return create($args[0])
+
+      else
+        for $key in getOwnPropertyNames($args[0])
+          $properties[$key] = getOwnPropertyDescriptor($args[0], $key)
+
+    else
+    # multiple arrays -
+      if __PROTO__
+        # each array inherits from the next
+        for $i in [0...$args.length]
+          $args[$i].__proto__ = $args[$i+1]
+        # last array inherits from the object
+        $args[$args.length-1].__proto__ = $object
+        return create($args[0])
+
+      else
+        for $data in $args
+          for $key in getOwnPropertyNames($data)
+            $properties[$key] = getOwnPropertyDescriptor($data, $key)
+
+  # clone the object with all properties
+  $this = create($object, $properties)
+  # call the constructor
+  $class.apply $this, $args[$pos..] if $class?
+  $this
+
+
 #  ------------------------------------------------------------------------
 #
 # Export module to the global namespace
@@ -460,6 +643,7 @@ exports.remove_invisible_characters = remove_invisible_characters = ($str, $url_
 #
 for $name, $body of module.exports
   define $name, $body
+
 
 # End of file Common.coffee
 # Location: ./system/core/Common.coffee

@@ -37,9 +37,9 @@
 #       * Session
 #       * URI
 #
-require BASEPATH+'core/Server/Server.coffee'
+require BASEPATH+'core/Server.coffee'
 
-class global.ExspressoExpressServer extends ExspressoServer
+class application.core.ExpressServer extends system.core.Server
 
   express           = require('express')        # Web development framework
   eco               = require('eco')            # Embedded CoffeeScript templates
@@ -91,7 +91,7 @@ class global.ExspressoExpressServer extends ExspressoServer
 
         console.log " "
         console.log " "
-        console.log "Exspresso v"+ExspressoVERSION
+        console.log "Exspresso v"+EXSPRESSO_VERSION
         console.log "copyright 2012 Dark Overlord of Data"
         console.log " "
         console.log "listening on port #{@_port}"
@@ -207,7 +207,7 @@ class global.ExspressoExpressServer extends ExspressoServer
 
     $next()
 
-module.exports = ExspressoExpressServer
+module.exports = application.core.ExpressServer
 
 # End of file ExpressServer.coffee
-# Location: .application/core/Server/drivers/ExpressServer.coffee
+# Location: .application/core/ExpressServer.coffee

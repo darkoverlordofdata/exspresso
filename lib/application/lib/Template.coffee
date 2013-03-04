@@ -31,7 +31,7 @@
 #
 #
 
-class global.Template
+class application.lib.Template
 
   html                : null
   theme               : null
@@ -239,14 +239,14 @@ class global.Template
     # If the $view is an Error object, show the error as content
     #
     if $view instanceof Error
-      $data = {err: new ExspressoError($view)}
+      $data = {err: new system.core.ExspressoError($view)}
       $view = 'errors'
 
     #
     # If the $data is an Error object, show the error as content
     #
     if $data instanceof Error
-      $data = {err: new ExspressoError($data)}
+      $data = {err: new system.core.ExspressoError($data)}
       $view = 'errors'
 
     #
@@ -406,7 +406,7 @@ class global.Template
 
 
 
-module.exports = Template
+module.exports = application.lib.Template
 
 # End of file Template.coffee
 # Location: .application/lib/Template.coffee

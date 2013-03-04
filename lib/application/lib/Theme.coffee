@@ -32,7 +32,7 @@
 #
 #
 #
-class global.Theme
+class application.lib.Theme
 
   _location       : ''
   _path           : ''
@@ -141,7 +141,7 @@ class global.Theme
         @template.setScript @_script[$name]
     @
 
-module.exports = Theme
+module.exports = application.lib.Theme
 
 # End of file Theme.coffee
 # Location: .application/lib/Theme.coffee

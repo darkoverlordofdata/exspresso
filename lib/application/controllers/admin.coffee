@@ -30,7 +30,7 @@
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Admin extends AdminController
+class Admin extends application.core.AdminController
 
 
   #
@@ -46,7 +46,7 @@ class Admin extends AdminController
       if @user.authorizationCheck('admin')
         @template.view 'admin'
       else
-        @template.view new Authorization_Error('No Admin Permissions')
+        @template.view new system.core.AuthorizationError('No Admin Permissions')
     else
       @template.view 'signin'
 

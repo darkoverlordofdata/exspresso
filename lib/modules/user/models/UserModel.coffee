@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| user_model.coffee
+#| UserModel.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -28,7 +28,7 @@
 #
 #   User Data Model
 #
-class global.User_model extends ExspressoModel
+class modules.user.models.UserModel extends system.core.Model
 
   @UID_ANONYMOUS       = 1
   @UID_ADMIN           = 2
@@ -146,9 +146,9 @@ class global.User_model extends ExspressoModel
       $migrate = new Migrate_user_roles()
       $migrate.up $next
 
-# END CLASS User_model
+# END CLASS UserModel
 
-module.exports = User_model
+module.exports = UserModel = modules.user.models.UserModel
 
 #  ------------------------------------------------------------------------
 
@@ -264,9 +264,9 @@ class Migrate_roles extends Migrate
   # Initial data
   #
   data  : [
-    {rid: User_model.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
-    {rid: User_model.RID_ADMIN, name:'admin', description:'Administrator'}
-    {rid: User_model.RID_MEMBER, name:'member', description:'Member'}
+    {rid: UserModel.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
+    {rid: UserModel.RID_ADMIN, name:'admin', description:'Administrator'}
+    {rid: UserModel.RID_MEMBER, name:'member', description:'Member'}
   ]
 
 # --------------------------------------------------------------------
@@ -313,9 +313,9 @@ class Migrate_users extends Migrate
   # Initial data
   #
   data  : [
-    {uid: User_model.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
-    {uid: User_model.UID_ADMIN, name: 'admin', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
-    {uid: User_model.UID_TEST, name: 'shaggy', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+    {uid: UserModel.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
+    {uid: UserModel.UID_ADMIN, name: 'admin', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+    {uid: UserModel.UID_TEST, name: 'shaggy', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
   ]
 
 # --------------------------------------------------------------------
@@ -351,13 +351,13 @@ class Migrate_user_roles extends Migrate
   # Initial data
   #
   data  : [
-    {uid: User_model.UID_ANONYMOUS, rid: User_model.RID_ANONYMOUS}
-    {uid: User_model.UID_ADMIN,     rid: User_model.RID_ADMIN}
-    {uid: User_model.UID_ADMIN,     rid: User_model.RID_ANONYMOUS}
-    {uid: User_model.UID_ADMIN,     rid: User_model.RID_MEMBER}
-    {uid: User_model.UID_TEST,      rid: User_model.RID_MEMBER}
+    {uid: UserModel.UID_ANONYMOUS, rid: UserModel.RID_ANONYMOUS}
+    {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ADMIN}
+    {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ANONYMOUS}
+    {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_MEMBER}
+    {uid: UserModel.UID_TEST,      rid: UserModel.RID_MEMBER}
   ]
 
 
-# End of file user_model.coffee
-# Location: .modules/user/models/user_model.coffee
+# End of file UserModel.coffee
+# Location: .modules/user/models/UserModel.coffee

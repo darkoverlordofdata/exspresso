@@ -35,7 +35,7 @@
 #
 # This class extends the parent result class: ExspressoDb_result
 #
-class global.ExspressoPostgresResult extends ExspressoDbResult
+class system.db.postgres.PostgresResult extends system.db.Result
 
 
   constructor: ($results) ->
@@ -143,7 +143,7 @@ class global.ExspressoPostgresResult extends ExspressoDbResult
   #
   _fetch_object :  ->
 
-module.exports = ExspressoPostgresResult
+module.exports = system.db.postgres.PostgresResult
 
 #  End of file PostgreResult.coffee
 #  Location: ./system/database/drivers/postgre/PostgreResult.coffee

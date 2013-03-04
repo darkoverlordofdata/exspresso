@@ -34,7 +34,7 @@
 # Database Utility Class
 #
 #
-class global.ExspressoDbForge
+class system.db.Forge
 
   db            : null
   fields        : []
@@ -302,7 +302,7 @@ class global.ExspressoDbForge
     @keys = []
     @primary_keys = []
 
-module.exports = ExspressoDbForge
+module.exports = system.db.Forge
 
 #  End of file Forge.coffee
 #  Location: ./system/database/Forge.coffee

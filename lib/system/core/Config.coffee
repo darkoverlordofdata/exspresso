@@ -39,9 +39,9 @@
 #
 #
 
-require BASEPATH+'core/Modules.coffee'
+Modules = require(BASEPATH+'core/Modules.coffee')
 
-class global.ExspressoConfig
+class system.core.Config
 
   _is_loaded        : null  # array list of loaded config files
   _config_paths     : null  # array list of paths to load config files at
@@ -276,8 +276,8 @@ class global.ExspressoConfig
       @seItem($key, $val)
 
 
-# END ExspressoConfig class
-module.exports = ExspressoConfig
+# END Config class
+module.exports = system.core.Config
 
 # End of file Config.coffee
 # Location: ./system/core/Config.coffee

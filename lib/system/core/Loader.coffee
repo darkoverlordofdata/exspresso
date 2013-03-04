@@ -38,10 +38,10 @@
 # Loads views and files
 #
 #
-require BASEPATH+'core/Modules.coffee'
+Modules = require(BASEPATH+'core/Modules.coffee')
 
 
-class global.ExspressoLoader
+class system.core.Loader
 
   path = require('path')
 
@@ -197,13 +197,13 @@ class global.ExspressoLoader
 
     if (is_array($model)) then return @models($model)
 
-    ($_alias = $object_name) or ($_alias = end(explode('/', $model)))
+    ($_alias = $object_name) or ($_alias = end(explode('/', $model)).toLowerCase())
 
     if in_array($_alias, @_models, true)
       return $controller[$_alias]
 
     # check module
-    [$path, $_model] = Modules.find(strtolower($model), @_module, 'models/')
+    [$path, $_model] = Modules.find($model, @_module, 'models/')
 
     if $path is false
 
@@ -212,9 +212,9 @@ class global.ExspressoLoader
 
     else
 
-      class_exists('ExspressoModel') or load_class('Model', 'core')
+      system.core.Model? or load_class('Model', 'core')
 
-      if $connect isnt false and not class_exists('ExspressoDb')
+      if $connect isnt false and not system.db.DbDriver?
         if $connect is true then $connect = ''
         @database($connect, false, true)
 
@@ -284,11 +284,11 @@ class global.ExspressoLoader
       if not file_exists($mod_path+'models/'+$path+$model+EXT)
         continue
 
-      if $db_conn isnt false and not class_exists('ExspressoDb')
+      if $db_conn isnt false and not system.db.DbDriver?
         if $db_conn is true then $db_conn = ''
         @controller.load.database $db_conn, false, true
 
-      if not class_exists('ExspressoModel')
+      if not system.core.Model?
         load_class 'Model', 'core'
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
@@ -316,7 +316,7 @@ class global.ExspressoLoader
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Do we even need to load the database class?
-    if class_exists('ExspressoDb') and $return is false and $active_record is null and @controller['db']?
+    if system.db.DbDriver? and $return is false and $active_record is null and @controller['db']?
       return false
 
     $params = $params || Exspresso.server._db
@@ -327,7 +327,7 @@ class global.ExspressoLoader
 
     if $return is true then return $db #($params, $active_record)
 
-    try # throws an error on heroku
+    try # defineProperty throws an error here on heroku...
 
       defineProperty @controller, 'db'
         enumerable  : true
@@ -352,15 +352,15 @@ class global.ExspressoLoader
   dbutil: ($params = '', $return = false) ->
 
     if $params is ''
-      if not class_exists('ExspressoDb')
+      if not system.db.DbDriver?
         @database()
       $db = @controller.db
     else
       $db = @database($params, true)
 
-    require(BASEPATH + 'database/Forge' + EXT)
-    require BASEPATH + 'database/Utility'+ EXT
-    $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
+    require(BASEPATH + 'db/Forge' + EXT)
+    require BASEPATH + 'db/Utility'+ EXT
+    $class = require(BASEPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
     # ex: ExspressoDb_sqlite_utility
 
     if $return is true then return new $class(@controller, $db)
@@ -378,14 +378,14 @@ class global.ExspressoLoader
   dbforge: ($params = '', $return = false) ->
 
     if $params is ''
-      if not class_exists('ExspressoDb')
+      if not system.db.DbDriver?
         @database()
       $db = @controller.db
     else
       $db = @database($params, true)
 
-    require(BASEPATH + 'database/Forge' + EXT)
-    $class = require(BASEPATH + 'database/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
+    require(BASEPATH + 'db/Forge' + EXT)
+    $class = require(BASEPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
 
     if $return is true then return new $class(@controller, $db)
     defineProperty @controller, 'dbforge'
@@ -651,7 +651,7 @@ class global.ExspressoLoader
 
   driver: ($library = '', $params = null, $object_name = null) ->
 
-    if not class_exists('ExspressoDriver_Library')
+    if not system.core.Driver?
       # we aren't instantiating an object here, that'll be done by the Library itself
       require BASEPATH+'lib/Driver'+EXT
 
@@ -659,7 +659,7 @@ class global.ExspressoLoader
     # We can save the loader some time since Drivers will #always# be in a subfolder,
     # and typically identically named to the library
     if $library.indexOf('/') is -1
-      $library = ucfirst($library)+'/'+$library
+      $library = $library+'/'+ucfirst($library)
 
     @library($library, $params, $object_name)
 
@@ -841,7 +841,7 @@ class global.ExspressoLoader
           return
 
         require($baseclass)
-        require($subclass)
+        $Class = require($subclass)
         @_loaded_files.push $subclass
 
         return @_init_class($class, config_item('subclass_prefix'), $params, $object_name)
@@ -870,9 +870,9 @@ class global.ExspressoLoader
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
 
-        require($filepath)
+        $Class = require($filepath)
         @_loaded_files.push $filepath
-        return @_init_class($class, '', $params, $object_name)
+        return @_init_class($class, '', $params, $object_name, $Class)
 
 
     #  END FOREACH
@@ -901,7 +901,7 @@ class global.ExspressoLoader
   # @param	string	an optional object name
   # @return	null
   #
-  _init_class : ($class, $prefix = '', $config = false, $object_name = null) ->
+  _init_class : ($class, $prefix = '', $config = false, $object_name = null, $Class) ->
 
     #  Is there an associated config file for this class?  Note: these should always be lowercase
     if $config is false
@@ -944,8 +944,8 @@ class global.ExspressoLoader
       $name = $prefix + $class
 
     #  Is the class name valid?
-    if not class_exists($name)
-      show_error("Non-existent class: %s", $class)
+    #if not class_exists($name)
+    #  show_error("Non-existent class: %s", $class)
 
 
     #  Set the variable name we will assign the class to
@@ -963,7 +963,8 @@ class global.ExspressoLoader
     #  Save the class name and object name
     @_classes[$class] = $classvar
     #  Instantiate the class
-    $Class = global[$name]
+    #$Class = global[$name]
+    #$Class = system.lib[$name]
 
     defineProperty $controller, $classvar,
       enumerable  : true
@@ -1151,7 +1152,7 @@ class global.ExspressoLoader
 
       return $filename
 
-# END ExspressoLoader class
-module.exports = ExspressoLoader
+# END Loader class
+module.exports = system.core.Loader
 # End of file Loader.coffee
 # Location: ./system/core/Loader.coffee

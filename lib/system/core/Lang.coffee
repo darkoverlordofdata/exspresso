@@ -36,9 +36,9 @@
 #
 #
 
-require BASEPATH+'core/Modules.coffee'
+Modules = require(BASEPATH+'core/Modules.coffee')
 
-class global.ExspressoLang
+class system.core.Lang
 
   _language         : null  # cache of loaded l10n strings
   _is_loaded        : null  # list of loaded l10n files
@@ -154,6 +154,6 @@ class global.ExspressoLang
     return $line
 
 #  END ExspressoLang Class
-module.exports = ExspressoLang
+module.exports = system.core.Lang
 #  End of file Lang.php 
 #  Location: ./system/core/Lang.coffee

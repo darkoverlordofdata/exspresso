@@ -38,7 +38,7 @@
 # class is being used or not.
 #
 #
-class ExspressoPostgresDriver extends ExspressoDb
+class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
   dbdriver          : 'postgres'
   port              : 5432
@@ -620,6 +620,6 @@ class ExspressoPostgresDriver extends ExspressoDb
 
 
 # End Class ExspressoPostgresDriver
-module.exports = ExspressoPostgresDriver
+module.exports = system.db.postgres.PostgresDriver
 #  End of file PostgresDriver.coffee
 #  Location: ./system/database/drivers/postgre/PostgresDriver.coffee

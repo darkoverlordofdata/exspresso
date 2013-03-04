@@ -37,7 +37,7 @@
 # access to the CI super-global.
 #
 #
-class global.ExspressoMigration
+class system.lib.Migration
 
   _migration_enabled    : false
   _migration_module     : ''
@@ -346,6 +346,6 @@ class global.ExspressoMigration
       'version': $migrations, $next
 
 #  END ExspressoMigration class
-module.exports = ExspressoMigration
+module.exports = system.lib.Migration
 # End of file Migration.coffee
-# Location: ./system/lib/Migration.coffee
+# Location: .system/lib/Migration.coffee

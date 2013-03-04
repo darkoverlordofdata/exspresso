@@ -83,7 +83,7 @@ class Variables
 
 
 
-class global.ExspressoAppjsServer extends ExspressoServer
+class application.core.AppjsServer extends system.core.Server
 
   __defineProperties = {}.defineProperties
   _driver           : 'appjs'
@@ -350,7 +350,7 @@ class global.ExspressoAppjsServer extends ExspressoServer
       $next()
 
 
-module.exports = ExspressoAppjsServer
+module.exports = application.core.AppjsServer
 
 # End of file AppjsServer.coffee
-# Location: .application/core/Server/drivers/AppjsServer.coffee
+# Location: .application/core/AppjsServer.coffee

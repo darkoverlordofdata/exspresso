@@ -34,7 +34,7 @@
 # Postgre Utility Class
 #
 #
-class global.ExspressoPostgresUtility extends ExspressoDbUtility
+class system.db.postgres.PostgresUtility extends system.db.Utility
   
   #
   # List databases
@@ -83,7 +83,7 @@ class global.ExspressoPostgresUtility extends ExspressoDbUtility
     #  Currently unsupported
     return @db.display_error('db_unsuported_feature')
     
-module.exports = ExspressoPostgresUtility
+module.exports = system.db.postgres.PostgresUtility
 
 #  End of file PostgreUtility.coffee
 #  Location: ./system/database/drivers/postgres/PostgreUtility.coffee

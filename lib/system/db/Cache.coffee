@@ -34,7 +34,7 @@
 # Database Cache Class
 #
 #
-class global.ExspressoDbCache
+class system.db.Cache
 
   unserialize = JSON.parse
   serialize   = JSON.stringify
@@ -173,7 +173,7 @@ class global.ExspressoDbCache
   deleteAll :  ->
     delete_files(@db.cachedir, true)
 
-module.exports = ExspressoDbCache
+module.exports = system.db.Cache
 
 
 #  End of file Cache.coffee

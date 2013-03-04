@@ -34,7 +34,7 @@
 # Exspresso Model Class
 #
 
-class global.ExspressoModel
+class system.core.Model
 
   #
   # Model Constructor
@@ -50,9 +50,9 @@ class global.ExspressoModel
     log_message 'debug', "Model Class Initialized"
 
 
-# END ExspressoModel class
+# END Model class
 
-module.exports = ExspressoModel
+module.exports = system.core.Model
 
 # End of file Model.coffee
 # Location: ./system/core/Model.coffee

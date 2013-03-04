@@ -36,7 +36,7 @@
 # Provides a mechanism to extend the base system without hacking.
 #
 #
-class global.ExspressoHooks
+class system.core.Hooks
   
   enabled       : false
   hooks         : null
@@ -200,7 +200,7 @@ class global.ExspressoHooks
     
 
 #  END ExspressoHooks class
-module.exports = ExspressoHooks
+module.exports = system.core.Hooks
 
 #  End of file Hooks.php 
 #  Location: ./system/core/Hooks.php 

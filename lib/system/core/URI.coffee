@@ -35,7 +35,7 @@
 #
 # Parses URIs and determines routing
 #
-class global.ExspressoURI
+class system.core.URI
 
   _uri_string       : ''    # raw uri string value
   _keyval           : null  # key-value pairs parsed from uri string
@@ -334,8 +334,8 @@ class global.ExspressoURI
 
 
 
-module.exports = ExspressoURI
+module.exports = system.core.URI
 #  END URI Class
 
 #  End of file URI.php
-#  Location: ./system/core/URI.php
+#  Location: .system/core/URI.php

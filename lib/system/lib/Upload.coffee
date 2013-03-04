@@ -34,7 +34,7 @@
 # File Uploading Class
 #
 #
-class ExspressoUpload
+class system.lib.Upload
   
   max_size: 0
   max_width: 0

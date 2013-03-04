@@ -36,7 +36,7 @@
 # Permits email to be sent using Mail, Sendmail, or SMTP.
 #
 #
-class global.ExspressoEmail
+class system.lib.ExspressoEmail
   
   useragent       : "Exspresso"
   mailpath        : "/usr/sbin/sendmail"  #  Sendmail path
@@ -679,7 +679,7 @@ class global.ExspressoEmail
 
 #  END ExspressoEmail class
 
-module.exports = ExspressoEmail
+module.exports = system.lib.Email
 
 #  End of file Email.coffee
-#  Location: ./system/lib/Email.coffee
+#  Location: .system/lib/Email.coffee

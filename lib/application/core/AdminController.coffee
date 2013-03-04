@@ -30,9 +30,8 @@
 #
 #   Base class for all publicly viewable pages
 #
-require APPPATH+'core/PublicController.coffee'
 
-class global.AdminController extends PublicController
+class application.core.AdminController extends application.core.PublicController
 
   constructor: ($args...) ->
 
@@ -84,6 +83,6 @@ class global.AdminController extends PublicController
     @template.htmlSubmenu($modules, $active)
 
 
-module.exports = AdminController
+module.exports = application.core.AdminController
 # End of file AdminController.coffee
-# Location: ./application/core/AdminController.coffee
+# Location: .application/core/AdminController.coffee

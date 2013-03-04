@@ -34,7 +34,7 @@
 # MySQL Utility Class
 #
 #
-class global.ExspressoMysqlUtility extends ExspressoDbUtility
+class system.db.mysql.MysqlUtility extends system.db.Utility
   
   #
   # List databases
@@ -188,7 +188,7 @@ class global.ExspressoMysqlUtility extends ExspressoDbUtility
 
       $next null, $output
     
-module.exports = ExspressoMysqlUtility
+module.exports = system.db.mysql.MysqlUtility
 
 #  End of file MysqlUtility.coffee
 #  Location: ./system/database/drivers/mysql/MysqlUtility.coffee

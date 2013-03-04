@@ -15,7 +15,7 @@
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Blog extends AdminController
+class Blog extends application.core.AdminController
 
   ## --------------------------------------------------------------------
 

@@ -34,7 +34,7 @@
 # Security Class
 #
 #
-class global.ExspressoSecurity
+class system.core.Security
   
   _xss_hash             : ''              # Random Hash for protecting URLs
   _csrf_hash            : ''              # Random Hash for Cross Site Request Forgery Protection Cookie
@@ -688,7 +688,7 @@ class global.ExspressoSecurity
     return @_csrf_hash
 
 
-module.exports = ExspressoSecurity
+module.exports = system.core.Security
 
-#  End of file Security.php 
-#  Location: ./system/lib/Security.php
+#  End of file Security.coffee
+#  Location: .system/core/Security.coffee

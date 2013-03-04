@@ -37,7 +37,7 @@
 # Provides support for UTF-8 environments
 #
 #
-class global.ExspressoUtf8
+class system.core.Utf8
 
   utf8 = require('utf8')
   #
@@ -136,8 +136,8 @@ class global.ExspressoUtf8
   #  --------------------------------------------------------------------
   
   
-module.exports = ExspressoUtf8
+module.exports = system.core.Utf8
 #  End Utf8 Class
 
-#  End of file Utf8.php 
-#  Location: ./system/core/Utf8.coffee
+#  End of file Utf8.coffee
+#  Location: .system/core/Utf8.coffee

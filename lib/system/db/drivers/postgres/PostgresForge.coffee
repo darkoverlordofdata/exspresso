@@ -34,7 +34,7 @@
 # Postgre Forge Class
 #
 #
-class global.ExspressoPostgresForge extends ExspressoDbForge
+class system.db.postgres.PostgresForge extends system.db.Forge
   
   #
   # Create database
@@ -257,7 +257,7 @@ class global.ExspressoPostgresForge extends ExspressoDbForge
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
     return $sql
     
-module.exports = ExspressoPostgresForge
+module.exports = system.db.postgres.PostgresForge
 
 #  End of file PostgresForge.coffee
 #  Location: ./system/database/drivers/postgres/PostgresForge.coffee

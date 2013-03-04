@@ -28,7 +28,7 @@
 # @since      Version 1.0
 #
 
-class global.ExspressoLog
+class system.lib.Log
 
   fs              = require('fs')                         # Standard POSIX file i/o
   util            = require('util')
@@ -85,7 +85,7 @@ class global.ExspressoLog
 
 
 # END Log Class
-module.exports = ExspressoLog
+module.exports = system.lib.Log
 
 # End of file Log.coffee
-# Location: ./system/lib/Log.coffee
+# Location: .system/lib/Log.coffee

@@ -37,7 +37,7 @@
 # to extend the capabilities of a class via additional driver objects
 #
 #
-class global.ExspressoDriver_Library
+class system.lib.DriverLibrary
 
   #
   # Load driver
@@ -51,10 +51,10 @@ class global.ExspressoDriver_Library
     
     UNABLE_TO = "Unable to load the requested driver: %s"
 
-    $lib_name = str_replace(['Exspresso', config_item('subclass_prefix')], '', @constructor.name)
+    $lib_name = str_replace(config_item('subclass_prefix'), '', @constructor.name)
     #$class_name = ucfirst($lib_name + '_' + $driver)
     $class_name = ucfirst($driver) + ucfirst($lib_name)
-    $subdir = $lib_name+'/drivers/'
+    $subdir = $lib_name.toLocaleLowerCase()+'/drivers/'
     $class = null
 
     #  Is this a class extension request?
@@ -76,7 +76,7 @@ class global.ExspressoDriver_Library
     @[$driver] = if $class::decorate? then new $class().decorate(@) else new $class(@)
 
       
-module.exports = ExspressoDriver_Library
+module.exports = system.lib.DriverLibrary
 #  END ExspressoDriver_Library CLASS
 
 #
@@ -86,7 +86,7 @@ module.exports = ExspressoDriver_Library
 # It handles the drivers' access to the parent library
 #
 #
-class global.ExspressoDriver
+class system.lib.Driver
 
   #
   # Decorate
@@ -114,8 +114,7 @@ class global.ExspressoDriver
             array($name,  set: ($newval) -> $parent[$name] = $newval)
     return @
 
-module.exports = ExspressoDriver
-#  END ExspressoDriver CLASS
+#  END Driver CLASS
 
 #  End of file Driver.php
-#  Location: ./system/lib/Driver.php
+#  Location: .system/lib/Driver.php

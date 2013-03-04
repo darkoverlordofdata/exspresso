@@ -34,7 +34,7 @@
 # MySQL Forge Class
 #
 #
-class global.ExspressoDb_mysql_forge extends ExspressoDb_forge
+class system.db.mysql.MysqlForge extends system.db.Forge
   
   #
   # Create database
@@ -216,7 +216,7 @@ class global.ExspressoDb_mysql_forge extends ExspressoDb_forge
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
     return $sql
     
-module.exports = ExspressoDb_mysql_forge
+module.exports = system.db.mysql.MysqlForge
 
 #  End of file mysql_forge.coffee
 #  Location: ./system/database/drivers/mysql/mysql_forge.coffee

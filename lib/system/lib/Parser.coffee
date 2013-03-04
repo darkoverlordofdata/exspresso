@@ -34,7 +34,7 @@
 # Parser Class
 #
 #
-class global.ExspressoParser
+class system.lib.Parser
   
   _l_delim        : '{'   # Left delimiter
   _r_delim        : '}'   # Right delimiter
@@ -200,8 +200,8 @@ class global.ExspressoParser
   
   
 
-module.exports = ExspressoParser
+module.exports = system.lib.Parser
 #  END Parser Class
 
 #  End of file Parser.php 
-#  Location: ./system/lib/Parser.php
+#  Location: .system/lib/Parser.php

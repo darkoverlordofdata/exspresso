@@ -39,7 +39,7 @@
 # @author		darkoverlordofdata
 # @link		http://darkoverlordofdata.com/user_guide/helpers/
 #
-class global.ExspressoTypography
+class system.lib.Typography
   
   #  Block level elements that should not be wrapped inside <p> tags
   block_elements: 'address|blockquote|div|dl|fieldset|form|h\d|hr|noscript|object|ol|p|pre|script|table|ul'
@@ -375,8 +375,8 @@ class global.ExspressoTypography
   
 
 
-module.exports = ExspressoTypography
+module.exports = system.lib.Typography
 #  END Typography Class
 
 #  End of file Typography.coffee
-#  Location: ./system/lib/Typography.coffee
+#  Location: .system/lib/Typography.coffee

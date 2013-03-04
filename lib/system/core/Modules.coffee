@@ -58,7 +58,7 @@
 # THE SOFTWARE.
 #
 
-class global.Modules
+class system.core.Modules
 
   @locations = config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
 
@@ -128,7 +128,7 @@ class global.Modules
 
     return [false, $file]
 
-module.exports = Modules
+module.exports = system.core.Modules
 
 # End of file Modules.coffee
-# Location: ./core/Modules.coffee
+# Location: .system/core/Modules.coffee

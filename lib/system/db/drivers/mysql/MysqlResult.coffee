@@ -36,7 +36,7 @@
 # This class extends the parent result class: ExspressoDb_result
 #
 
-class global.ExspressoMysqlResult extends ExspressoDbResult
+class system.db.mysql.MysqlResult extends system.db.Result
 
   _metadata = []
 
@@ -149,7 +149,7 @@ class global.ExspressoMysqlResult extends ExspressoDbResult
   #
   _fetch_object :  ->
 
-module.exports = ExspressoMysqlResult
+module.exports = system.db.mysql.MysqlResult
 
 #  End of file mysql_result.php 
 #  Location: ./system/database/drivers/mysql/mysql_result.php 

@@ -34,7 +34,7 @@
 # Pagination Class
 #
 #
-class global.ExspressoPagination
+class system.lib.Pagination
 
   ceil = Math.ceil
   floor = Math.floor
@@ -222,8 +222,8 @@ class global.ExspressoPagination
     
     return $output
     
-module.exports = ExspressoPagination
+module.exports = system.lib.Pagination
 #  END Pagination Class
 
 #  End of file Pagination.coffee
-#  Location: ./system/lib/Pagination.coffee
+#  Location: .system/lib/Pagination.coffee

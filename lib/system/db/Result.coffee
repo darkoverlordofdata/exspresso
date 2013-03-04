@@ -37,7 +37,7 @@
 # This class will not be called directly. Rather, the adapter
 # class for the specific database will extend and instantiate it.
 #
-class global.ExspressoDbResult
+class system.db.Result
   
   _result_array           : null
   _result_object          : null
@@ -294,6 +294,6 @@ class global.ExspressoDbResult
 
   ##  END DB_result class
 
-module.exports = ExspressoDbResult
+module.exports = system.db.Result
 #  End of file Result.coffee
-#  Location: ./system/database/Result.coffee
+#  Location: ./system/db/Result.coffee

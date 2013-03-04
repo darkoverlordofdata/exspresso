@@ -35,7 +35,7 @@
 #
 # @package		Exspresso
 #
-class global.ExspressoForm_validation
+class system.lib.FormValidation
 
   sprintf = require('util').format
 
@@ -1068,8 +1068,8 @@ class global.ExspressoForm_validation
   
   
 
-module.exports = ExspressoForm_validation
+module.exports = system.lib.FormValidation
 #  END Form Validation Class
 
-#  End of file Form_validation.php 
-#  Location: ./system/lib/Form_validation.php
+#  End of file FormValidation.php
+#  Location: .system/lib/FormValidation.php

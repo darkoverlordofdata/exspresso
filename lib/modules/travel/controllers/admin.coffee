@@ -15,7 +15,7 @@
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Admin extends AdminController
+class Admin extends application.core.AdminController
 
 ## --------------------------------------------------------------------
 

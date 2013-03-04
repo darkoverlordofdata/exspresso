@@ -29,7 +29,7 @@
 #   Sql Session store driver
 #
 #
-class SqlSession extends require('express').session.Store
+class system.lib.session.SqlSession extends require('express').session.Store
 
   serialize       = JSON.stringify      # Generates a storable representation of a value
   unserialize     = JSON.parse          # Creates an object from a stored representation
@@ -44,7 +44,7 @@ class SqlSession extends require('express').session.Store
   #
   constructor: (@parent) ->
 
-    Exspresso.load.model('user/user_model')
+    Exspresso.load.model('user/UserModel')
     return
 
 
@@ -73,7 +73,7 @@ class SqlSession extends require('express').session.Store
         # unpack the data
         $data                   = $result.row()
         $session                = unserialize($data.user_data)
-        $session.uid            = $data.uid || User_model.UID_ANONYMOUS
+        $session.uid            = $data.uid || modules.user.models.UserModel.UID_ANONYMOUS
         $session.ip_address     = $data.ip_address
         $session.user_agent     = $data.user_agent
         $session.last_activity  = $data.last_activity
@@ -104,7 +104,7 @@ class SqlSession extends require('express').session.Store
         # pack up the data
         $user_data = array_merge({}, $session)
         $data =
-          uid             : fetch($user_data, 'uid', User_model.UID_ANONYMOUS)
+          uid             : fetch($user_data, 'uid', modules.user.models.UserModel.UID_ANONYMOUS)
           ip_address      : fetch($user_data, 'ip_address')
           user_agent      : substr(fetch($user_data, 'user_agent'), 0, 120)
           last_activity   : fetch($user_data, 'last_activity')
@@ -157,7 +157,7 @@ class SqlSession extends require('express').session.Store
   #
   installCheck: ->
 
-    Exspresso.user_model.installCheck()
+    Exspresso.usermodel.installCheck()
     @
 
   #
@@ -179,6 +179,6 @@ class SqlSession extends require('express').session.Store
     return $val
 
 
-module.exports = SqlSession
+module.exports = system.lib.session.SqlSession
 # End of file SqlSession.coffee
 # Location: ./system/lib/Session/drivers/SqlSession.coffee

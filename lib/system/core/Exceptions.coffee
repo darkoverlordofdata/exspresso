@@ -31,7 +31,7 @@
 #
 # Error Wrapper Class
 #
-class global.ExspressoError extends Error
+class system.core.ExspressoError extends Error
 
   constructor: ($err = {}, $status = 500) ->
 
@@ -49,7 +49,7 @@ class global.ExspressoError extends Error
 #
 # Authorization Error Class
 #
-class global.Authorization_Error extends Error
+class system.core.AuthorizationError extends Error
 
   constructor: ($msg, $status = 401) ->
 
@@ -65,7 +65,7 @@ class global.Authorization_Error extends Error
 #
 # Exceptions Class
 #
-class global.ExspressoExceptions
+class system.core.Exceptions
 
   constructor: ->
 
@@ -192,7 +192,7 @@ class global.ExspressoExceptions
       if typeof $template is 'function'
         [$$template, $status_code, $next] = ['5xx', 500, $template]
 
-      $error = new ExspressoError($err)
+      $error = new system.core.ExspressoError($err)
 
       $next = $next ? ($err, $content) ->
         $res.render APPPATH+'errors/layout.eco',
@@ -231,7 +231,7 @@ class global.ExspressoExceptions
 
     $next()
 
-module.exports = ExspressoExceptions
+module.exports = system.core.Exceptions
 #  END Exceptions Class
 
 #  End of file Exceptions.php 

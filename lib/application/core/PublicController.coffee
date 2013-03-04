@@ -31,7 +31,7 @@
 #   Base class for all publicly viewable pages
 #
 
-class global.PublicController extends ExspressoController
+class application.core.PublicController extends system.core.Controller
 
   constructor: ($args...) ->
 
@@ -43,6 +43,6 @@ class global.PublicController extends ExspressoController
     @output.enableProfiler @server._profile
     @output.cache 5
 
-module.exports = PublicController
+module.exports = application.core.PublicController
 # End of file PublicController.coffee
 # Location: ./application/core/PublicController.coffee

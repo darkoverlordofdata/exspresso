@@ -28,9 +28,9 @@
 #
 #
 
-require BASEPATH+'core/Server/Server.coffee'
+require BASEPATH+'core/Server.coffee'
 
-class global.ExspressoConnectServer extends ExspressoServer
+class application.core.ConnectServer extends system.core.Server
 
   connect         = require("connect")            # High performance middleware framework
   eco             = require('eco')                # Embedded CoffeeScript templates
@@ -87,7 +87,7 @@ class global.ExspressoConnectServer extends ExspressoServer
 
       console.log " "
       console.log " "
-      console.log "Exspresso v"+ExspressoVERSION
+      console.log "Exspresso v"+EXSPRESSO_VERSION
       console.log "copyright 2012 Dark Overlord of Data"
       console.log " "
       console.log "listening on port #{@_port}"
@@ -250,7 +250,7 @@ class global.ExspressoConnectServer extends ExspressoServer
     $next()
 
 
-module.exports = ExspressoConnectServer
+module.exports = application.core.ConnectServer
 
 class Variables
 
@@ -271,4 +271,4 @@ class Variables
 
 
 # End of file ConnectServer.coffee
-# Location: .application/core/Server/drivers/ConnectServer.coffee
+# Location: .application/core/ConnectServer.coffee

@@ -30,8 +30,9 @@
 # Methods are bound with fat arrow ( => ) so that when called from
 # child objects, they will run in the Controller context.
 #
+require BASEPATH+'core/Object'+EXT
 
-class global.ExspressoController extends ExspressoObject
+class system.core.Controller extends system.core.Object
 
   #
   # Initialize Controller objects
@@ -171,7 +172,7 @@ class global.ExspressoController extends ExspressoObject
 
 
 
-# END ExspressoController class
-module.exports = ExspressoController
+# END Controller class
+module.exports = system.core.Controller
 # End of file Controller.coffee
 # Location: ./system/core/Controller.coffee

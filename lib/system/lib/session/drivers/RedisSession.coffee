@@ -29,7 +29,7 @@
 #   Redis Session store driver
 #
 #
-class RedisSession extends require('connect-redis')(require('express'))
+class system.lib.RedisSession extends require('connect-redis')(require('express'))
 
   ## --------------------------------------------------------------------
 
@@ -64,6 +64,6 @@ class RedisSession extends require('connect-redis')(require('express'))
     return
 
 
-module.exports = RedisSession
+module.exports = system.lib.RedisSession
 # End of file RedisSession.coffee
-# Location: ./system/lib/Session/drivers/RedisSession.coffee
+# Location: .system/lib/Session/drivers/RedisSession.coffee

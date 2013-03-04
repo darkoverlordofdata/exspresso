@@ -31,7 +31,7 @@
 # This is the default controller
 #
 
-class Welcome extends PublicController
+class Welcome extends application.core.PublicController
 
   #
   # Index

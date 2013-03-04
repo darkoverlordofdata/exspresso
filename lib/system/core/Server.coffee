@@ -38,7 +38,7 @@
 #       * URI
 #
 
-class global.ExspressoServer
+class system.core.Server
 
   dispatch      = require('dispatch')   # URL dispatcher for Connect
   os            = require('os')         # A few basic operating-system related utility functions
@@ -46,7 +46,7 @@ class global.ExspressoServer
   #
   # config settings
   #
-  _driver       : 'express'
+  _driver       : 'connect'
   _db           : 'mysql'
   _cache        : false
   _csrf         : false
@@ -327,7 +327,7 @@ class global.ExspressoServer
 
     $next()
 
-module.exports = ExspressoServer
+module.exports = system.core.Server
 
 # End of file Server.coffee
-# Location: ./application/core/Server.coffee
+# Location: ./system/core/Server.coffee

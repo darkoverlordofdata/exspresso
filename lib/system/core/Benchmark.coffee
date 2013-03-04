@@ -28,8 +28,6 @@
 # @since      Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Exspresso Benchmark Class
 #
@@ -37,7 +35,7 @@
 # between them.  Memory consumption can also be displayed.
 #
 #
-class global.ExspressoBenchmark
+class system.core.Benchmark
 
   constructor: ->
 
@@ -102,6 +100,6 @@ class global.ExspressoBenchmark
     
   
 #  END ExspressoBenchmark class
-module.exports = ExspressoBenchmark
+module.exports = system.core.Benchmark
 #  End of file Benchmark.php 
 #  Location: ./system/core/Benchmark.php 

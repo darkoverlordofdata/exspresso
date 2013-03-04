@@ -31,7 +31,7 @@
 #
 # Exspresso Output Class
 #
-class global.ExspressoOutput
+class system.core.Output
 
   fs = require('fs')  # file system
 
@@ -418,8 +418,8 @@ class global.ExspressoOutput
 
 
 
-    # END ExspressoOutput class
-module.exports = ExspressoOutput
+    # END Output class
+module.exports = system.core.Output
 
 # End of file Output.coffee
 # Location: ./system/core/Output.coffee

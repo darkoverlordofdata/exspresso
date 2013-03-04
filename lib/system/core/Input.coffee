@@ -33,7 +33,7 @@
 #
 # Exspresso Input Class
 #
-class global.ExspressoInput
+class system.core.Input
 
   os = require('os')
 
@@ -512,7 +512,7 @@ class global.ExspressoInput
 
 
 
-# END ExspressoInput class
-module.exports = ExspressoInput
+# END Input class
+module.exports = system.core.Input
 # End of file Input.coffee
 # Location: ./system/core/Input.coffee

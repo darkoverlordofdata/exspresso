@@ -28,17 +28,13 @@
 # @since      Version 1.0
 #
 
-ExspressoDbDriver   = require(BASEPATH + 'db/Driver') # Exspresso DB driver Base Class
-
-#  ------------------------------------------------------------------------
-
 #
 # Active Record Class
 #
 # This is the platform-independent base Active Record implementation class.
 #
 #
-class ExspressoDbActiveRecord extends ExspressoDbDriver
+class system.db.ActiveRecord extends system.db.Driver
   
   ar_select:          null
   ar_distinct:        false
@@ -1720,7 +1716,7 @@ class ExspressoDbActiveRecord extends ExspressoDbDriver
     
     @_reset_run($ar_reset_items)
     
-module.exports = ExspressoDbActiveRecord
+module.exports = system.db.ActiveRecord
 
 #  End of file ActiveRecord.coffee
-#  Location: ./system/database/ActiveRecord.coffee
+#  Location: ./system/db/ActiveRecord.coffee

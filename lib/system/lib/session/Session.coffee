@@ -32,7 +32,7 @@
 #
 # Session Class
 #
-class global.ExspressoSession extends ExspressoDriver_Library
+class system.lib.Session extends system.lib.DriverLibrary
 
   express     = require('express')      # Express 3.0 Framework
   cookie      = require('cookie')       # cookie parsing and serialization
@@ -137,7 +137,7 @@ class global.ExspressoSession extends ExspressoDriver_Library
         $req.session.session_id = urldecode($sid).split(':')[1]
 
     # set reasonable session defaults
-    $req.session.uid            = $req.session.uid || User_model.UID_ANONYMOUS
+    $req.session.uid            = $req.session.uid || modules.user.models.UserModel.UID_ANONYMOUS
     $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
     $req.session.user_agent     = $req.headers['user-agent']
     $req.session.last_activity  = @_get_time()
@@ -306,7 +306,7 @@ class global.ExspressoSession extends ExspressoDriver_Library
 
 
 #  END Session Class
-module.exports = ExspressoSession
+module.exports = system.lib.Session
 
 #  End of file Session.php
-#  Location: ./system/lib/Session.php
+#  Location: .system/lib/Session.php

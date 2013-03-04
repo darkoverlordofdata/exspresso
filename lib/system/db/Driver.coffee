@@ -36,7 +36,7 @@
 #
 #
 
-class ExspressoDbDriver
+class system.db.Driver
 
 
   url                 : ''      # Optional url. Overrides any of the following:
@@ -1145,7 +1145,7 @@ class ExspressoDbDriver
 
     return $item + $alias
 
-module.exports = ExspressoDbDriver
+module.exports = system.db.Driver
 
 # End of file Driver.coffee
 # Location: ./database/Driver.coffee

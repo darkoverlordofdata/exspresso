@@ -111,17 +111,15 @@ module.exports = ($params = '', active_record_override = null) ->
     active_record = active_record_override
 
 
-  ExspressoDbDriver = require(BASEPATH + 'db/Driver' + EXT)
-
-
+  DbDriver = require(BASEPATH + 'db/Driver' + EXT)
   if not active_record?  or active_record is true
-    ExspressoDbActiveRecord = require(BASEPATH + 'db/ActiveRecord' + EXT)
+    DbActiveRecord = require(BASEPATH + 'db/ActiveRecord' + EXT)
 
-    if not class_exists('ExspressoDb')
-      class global.ExspressoDb extends ExspressoDbActiveRecord
+    if not system.db.DbDriver?
+      class system.db.DbDriver extends DbActiveRecord
 
-  else if not class_exists('ExspressoDb')
-    class global.ExspressoDb extends ExspressoDbDriver
+  else if not system.db.DbDriver?
+    class system.db.DbDriver extends DbDriver
 
 
   if not file_exists(BASEPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)

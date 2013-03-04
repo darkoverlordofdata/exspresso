@@ -37,7 +37,7 @@
 #
 
 
-class ExspressoMysqlDriver extends ExspressoDb
+class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
   # by default, expect mysql to listen on port 3306
   dbdriver            : 'mysql'
@@ -698,6 +698,6 @@ class ExspressoMysqlDriver extends ExspressoDb
     @client.end($next)
 
 # End Class ExspressoMysqlDriver
-module.exports = ExspressoMysqlDriver
+module.exports = system.db.mysql.MysqlDriver
 #  End of file MysqlDriver.coffee
 #  Location: ./system/database/drivers/mysql/MysqlDriver.coffee

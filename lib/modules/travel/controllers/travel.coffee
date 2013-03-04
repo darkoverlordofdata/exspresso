@@ -16,7 +16,7 @@
 require APPPATH+'core/PublicController.coffee'
 
 
-class Travel extends PublicController
+class Travel extends application.core.PublicController
 
 
   moment          = require('moment')                     # Parse, manipulate, and display dates

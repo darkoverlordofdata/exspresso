@@ -34,7 +34,7 @@
 # Database Utility Class
 #
 #
-class global.ExspressoDbUtility extends ExspressoDbForge
+class system.db.Utility extends system.db.Forge
   
   db            : null
   data_cache    : {}
@@ -342,7 +342,7 @@ class global.ExspressoDbUtility extends ExspressoDbForge
       @zip.add_data($prefs['filename'], @_backup($prefs))
       return @zip.get_zip()
       
-module.exports = ExspressoDbUtility
+module.exports = system.db.Utility
 
 
 #  End of file DbUtility.coffee

@@ -29,7 +29,7 @@
 #	  User Library
 #
 
-class global.User
+class modules.user.lib.User
 
   bcrypt            = require('bcrypt')     # A bcrypt library for NodeJS
 
@@ -51,12 +51,12 @@ class global.User
   constructor: ($controller, $config = {}) ->
 
     log_message 'debug', "User Class Initialized"
-    @load.model('user/user_model')
+    @load.model('user/UserModel')
     @lang.load('user/user')
     @queue ($next) =>
       #
       # Reload the current user
-      @user_model.loadById @req.session.uid, ($err, $user) =>
+      @usermodel.loadById @req.session.uid, ($err, $user) =>
 
         $roles = []
         for $row in $user.roles
@@ -64,8 +64,8 @@ class global.User
 
         return $next($err) if $err
         defineProperties @,
-          isAnonymous   : {enumerable: true,   get: -> $user.uid is User_model.UID_ANONYMOUS}
-          isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt User_model.UID_ANONYMOUS}
+          isAnonymous   : {enumerable: true,   get: -> $user.uid is modules.user.models.UserModel.UID_ANONYMOUS}
+          isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt modules.user.models.UserModel.UID_ANONYMOUS}
           uid           : {enumerable: true,   get: -> $user.uid}
           name          : {enumerable: true,   get: -> $user.name}
           email         : {enumerable: true,   get: -> $user.email}
@@ -86,7 +86,7 @@ class global.User
   login: ($name, $password, $action = '/admin') ->
     #
     #
-    @user_model.loadByName $name, ($err, $user) =>
+    @usermodel.loadByName $name, ($err, $user) =>
       return if log_error('error', 'load by name: %s', $err) if show_error($err)
 
       bcrypt.compare $password, String($user.password)+String($user.salt), ($err, $ok) =>
@@ -98,7 +98,7 @@ class global.User
           @redirect $action
 
         else
-          @req.session.uid = User_model.UID_ANONYMOUS
+          @req.session.uid = self.UID_ANONYMOUS
           @session.setFlashdata 'error', @lang.line('user_invalid_credentials')
           @redirect $action
 
@@ -111,7 +111,7 @@ class global.User
   logout: ($action = '/admin') ->
 
     @session.setFlashdata  'info', @lang.line('user_goodbye')
-    @req.session.uid = User_model.UID_ANONYMOUS
+    @req.session.uid = self.UID_ANONYMOUS
     @redirect $action
 
 
@@ -131,7 +131,7 @@ class global.User
 
     return false
 
-module.exports = User
+module.exports = modules.user.lib.User
 
 # End of file User.coffee
 # Location: .modules/user/lib/User.coffee

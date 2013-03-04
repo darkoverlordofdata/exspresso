@@ -24,38 +24,35 @@
 # @since      Version 1.0
 #
 #
-#	the top level Exspresso controller
+#	the server level Exspresso controller
 #
 #
 #
 define 'Exspresso', module.exports
 
+#   Exspresso Version
 #
-# namespaces
-define 'application', {}
-define 'modules', {}
-define 'system', {}
+define 'EXSPRESSO_VERSION', require(FCPATH + 'package.json').version
 
+#   Get the 1st command line arg
+#     if it's not an option, then it's the driver name
 #
-#
-# Exspresso Version
-#
-# @var string
-#
-#
-define 'ExspressoVERSION', require(FCPATH + 'package.json').version
+$driver = ucfirst(if ~($argv[2] ? '').indexOf('-') then 'connect' else $argv[2] ? 'connect')
 
+#   Async queue
+#
 _queue = []
 exports.queue = ($fn) ->
   if $fn then _queue.push($fn) else _queue
 
+
+
 #
 # ------------------------------------------------------
-#  Load the global functions
+#  Load the core functions
 # ------------------------------------------------------
 #
-require BASEPATH + 'core/Meta.coffee'
-require BASEPATH + 'core/Common.coffee'
+require BASEPATH + 'core/Common'+EXT
 
 #
 # ------------------------------------------------------
@@ -67,7 +64,7 @@ if defined('ENVIRONMENT') and file_exists(APPPATH+'config/'+ENVIRONMENT+'/consta
 else
   require APPPATH+'config/constants.coffee'
 
-log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", ExspressoVERSION
+log_message "debug", "Exspresso v%s copyright 2012 Dark Overlord of Data", EXSPRESSO_VERSION
 
 #
 # ------------------------------------------------------
@@ -110,12 +107,8 @@ $LANG = exports.lang = load_class('Lang', 'core', $CFG)
 #  Instantiate the core server app
 # ------------------------------------------------------
 #
-#   Get the 1st command line arg
-#     if it's not an option, then it's the driver name
-#
-$driver = if ~($argv[2] ? '').indexOf('-') then 'connect' else $argv[2] ? 'connect'
 
-$SRV = exports.server = load_class(ucfirst($driver)+'Server', 'core/Server/drivers')
+$SRV = exports.server = load_class('Server', 'core', $driver)
 #
 # ------------------------------------------------------
 #  Instantiate the routing class and set the routing
@@ -179,7 +172,7 @@ bind_route = ($path, $uri) ->
   $class  = $RTR.getClass()
   $method = $RTR.getMethod()
 
-  if $method[0] is '_' or ExspressoController::[$method]?
+  if $method[0] is '_' or system.core.Controller::[$method]?
     log_message "debug", "Controller not found: %s/%s", $class, $method
     return
 

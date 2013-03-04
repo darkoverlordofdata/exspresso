@@ -36,7 +36,7 @@
 # Identifies the platform, browser, robot, or mobile devise of the browsing agent
 #
 #
-class global.ExspressoUser_agent
+class system.lib.UserAgent
 
   _agent          : null
   
@@ -430,8 +430,8 @@ class global.ExspressoUser_agent
     in_array(strtolower($charset), @_charsets(), true)
 
 
-module.exports = ExspressoUser_agent
+module.exports = system.lib.UserAgent
 
 
-#  End of file User_agent.php 
-#  Location: ./system/lib/User_agent.php
+#  End of file UserAgent.coffee
+#  Location: ./system/lib/Useragent.coffee

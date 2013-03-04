@@ -32,10 +32,10 @@
 #
 # Exspresso Router Class
 #
-require BASEPATH+'core/Modules.coffee'
-require BASEPATH+'core/URI.coffee'
+Modules = require(BASEPATH+'core/Modules.coffee')
+URI = require(BASEPATH+'core/URI.coffee')
 
-class global.ExspressoRouter
+class system.core.Router
 
   fs = require('fs')
 
@@ -423,9 +423,9 @@ class global.ExspressoRouter
     @_module
 
 
-# END ExspressoRouter class
+# END Router class
 
-module.exports = ExspressoRouter
+module.exports = system.core.Router
 
 # End of file Router.coffee
-# Location: ./system/core/Router.coffee
+# Location: .system/core/Router.coffee
