@@ -30,21 +30,22 @@
 # Methods are bound with fat arrow ( => ) so that when called from
 # child objects, they will run in the Controller context.
 #
-require BASEPATH+'core/Object'+EXT
 
-class system.core.Controller extends system.core.Object
+class system.core.Controller
 
   #
   # Initialize Controller objects
   #
   # @access	public
-  # @param  object    Benchmark object
   # @param  object    Server object
+  # @param  object    Benchmark object
   # @param  object    Hooks object
   # @param  object    Config object
-  # @param  object    Utf8 object
-  # @param  object    Lang object
-  # @param  object    Router object
+  # @param  object    URI object
+  # @param  object    Output object
+  # @param  object    Security object
+  # @param  object    Input object
+  # @param  object    I18n object
   # @param	object    Request object
   # @param	object    Response object
   # @param	string    module name
@@ -52,53 +53,51 @@ class system.core.Controller extends system.core.Object
   # @param	string    method name
   # @return	void
   #
-  constructor: ($SRV, $BM, $EXT, $CFG, $UNI, $URI, $RTR, $OUT, $SEC, $IN, $L10N, $req, $res, $module, $class, $method) ->
+  constructor: ($server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method) ->
 
-    log_message 'debug', "Controller Class Initialized"
+    defineProperties @,
 
-    @properties
-
-      # uri segments
-      module      : $module             # uri module name
-      class       : $class              # uri class name
-      method      : $method             # uri method name
+      # $uri segments
+      module      : {writeable: false, enumerable: true, value: $module}      # $uri module name
+      class       : {writeable: false, enumerable: true, value: $class}       # $uri class name
+      method      : {writeable: false, enumerable: true, value: $method}      # $uri method name
 
       # http objects
-      req         : $req                # http Request object
-      res         : $res                # http Response object
-      $_COOKIE    : $req.cookies        # http cookies object
-      $_FILES     : $req.files          # http download files object
-      $_GET       : $req.query          # http get object
-      $_POST      : $req.body           # http post object
-      $_SERVER    : $req.server         # http server properties
+      req         : {writeable: false, enumerable: true, value: $req}         # http Request object
+      res         : {writeable: false, enumerable: true, value: $res}         # http Response object
+      $_COOKIE    : {writeable: false, enumerable: true, value: $req.cookies} # http cookies
+      $_FILES     : {writeable: false, enumerable: true, value: $req.files}   # http dowmload files list
+      $_GET       : {writeable: false, enumerable: true, value: $req.query}   # http get values
+      $_POST      : {writeable: false, enumerable: true, value: $req.body}    # http post values
+      $_SERVER    : {writeable: false, enumerable: true, value: $req.server}  # server properties
 
       # methods
-      queue       : @queue              # accessor method for @_queue
-      run         : @run                # run the queue
-      redirect    : @redirect           # redirect url
-      render      : @render             # render view
+      queue       : {writeable: false, enumerable: true, value: @queue}       # accessor method for @_queue
+      redirect    : {writeable: false, enumerable: true, value: @redirect}    # redirect url
+      render      : {writeable: false, enumerable: true, value: @render}      # render view
+      run         : {writeable: false, enumerable: true, value: @run}         # run the queue
 
       # properties
-      _queue      : []                  # async queue
+      _queue      : {writeable: false, enumerable: false, value: []}          # async queue
 
       # Assign all the class objects that were instantiated by the
       # bootstrap file (Exspresso.coffee) to local class variables
       # so that Exspresso can run as one big super object.
+      bm          : {writeable: false, enumerable: true, value: $bench}       # system.core.Benchmark
+      config      : {writeable: false, enumerable: true, value: $config}      # system.core.Config
+      hooks       : {writeable: false, enumerable: true, value: $hooks}       # system.core.Hooks
+      input       : {writeable: false, enumerable: true, value: $input}       # system.core.Input
+      i18n        : {writeable: false, enumerable: true, value: $i18n}        # system.core.I18n
+      output      : {writeable: false, enumerable: true, value: $output}      # system.core.Output
+      security    : {writeable: false, enumerable: true, value: $security}    # system.core.Security
+      server      : {writeable: false, enumerable: true, value: $server}      # system.core.Server
+      uri         : {writeable: false, enumerable: true, value: $uri}         # system.core.URI
 
-      server      : $SRV                # ExspressoServer
-      bm          : $BM                 # ExspressoBenchmark
-      hooks       : $EXT                # ExspressoHooks
-      config      : $CFG                # ExspressoConfig
-      uni         : $UNI                # ExspressoUtf8
-      uri         : $URI                # ExspressoURI
-      router      : $RTR                # ExspressoRouter
-      output      : $OUT                # ExspressoOutput
-      input       : $IN                 # ExspressoInput
-      security    : $SEC                # ExspressoSecurity
-      l10n        : $L10N               # ExspressoLang
+      # bootstrap the loader object into the controller:
+      load        : {writeable: false, enumerable: true, value: load_core('Loader', @)}
 
+    log_message 'debug', "Controller Class Initialized"
 
-    @property load: load_mixin('Loader', 'core', @)
     @load.initialize()  # do the autoloads
 
 
@@ -143,18 +142,18 @@ class system.core.Controller extends system.core.Object
     if typeof $next isnt 'function'
       [$queue, $next] = [@_queue, $queue]
 
-    $index = 0
+    $inputdex = 0
     $iterate = ->
 
       $next (null) if $queue.length is 0
       #
       # call the function at index
       #
-      $function = $queue[$index]
+      $function = $queue[$inputdex]
       $function ($err) ->
         return $next($err) if $err
-        $index += 1
-        if $index is $queue.length then $next null
+        $inputdex += 1
+        if $inputdex is $queue.length then $next null
         else $iterate()
 
     $iterate()

@@ -42,16 +42,10 @@ chmod             = fs.chmodSync
 
 _config           = []    # [0] is reference to config array
 _config_item      = {}    # config item cache
-_classes          = {}    # class cache
+_classes          = {}    # singleton class cache
 _is_loaded        = {}    # class loaded flag
-_log              = null  # loging object
-_error            = null  # error display object
-
-#
-# Metaprogramming utils
-#
-__PROTO__         = true  # if true, set using the '__proto__' property
 _class            = {}    # metadata cache
+__PROTO__         = true  # if true, set using the '__proto__' property
 
 #
 # privately dereference some Object utility members
@@ -76,23 +70,23 @@ exports.keys              = Object.keys
 #
 # Init Namespaces
 #
-define 'system'
-  core        : {}
-  lib         :
-    session   : {}
-  db          :
-    mysql     : {}
-    postgres  : {}
+define 'system'           # ./lib/system
+  core        : {}        # ./lib/system/core
+  lib         :           # ./lib/system/lib
+    session   : {}        # ./lib/system/lib/session
+  db          :           # ./lib/system/db
+    mysql     : {}        # ./lib/system/db/mysql
+    postgres  : {}        # ./lib/system/db/postgres
 
-define 'modules'
-  user        :
-    lib       : {}
-    models    : {}
+define 'modules'          # ./lib/modules
+  user        :           # ./lib/modules/user
+    lib       : {}        # ./lib/modules/user/lib
+    models    : {}        # ./lib/modules/user/models
 
-define 'application'
-  core        : {}
-  lib         : {}
-  models      : {}
+define 'application'      # ./lib/application
+  core        : {}        # ./lib/application/core
+  lib         : {}        # ./lib/application/lib
+  models      : {}        # ./lib/application/models
 
 
 #  ------------------------------------------------------------------------
@@ -129,148 +123,49 @@ exports.is_really_writable = is_really_writable = ($file) ->
   return true
 
 
-
 #
-# Exspresso Object Creation
+# Returns a core singleton
 #
-# Returns a new instance of the class.
-#
-# @access	public
-# @param	string	the class name being requested
-# @param	string	the directory where the class should be found
-# @param	string	the class name prefix
-# @param  object  list of params to pass to the constructor
-# @return	object
-#
-exports.load_new = load_new = ($class, $directory = 'lib', $prefix = '', $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
-
-  if typeof $prefix isnt 'string'
-    [$prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9] = ['', $prefix, $0, $1, $2, $3, $4, $5, $6, $7, $8]
-
-  #  Does the class exist?  If so, we're done...
-  if system[$directory][$prefix+$class]?
-    return new system[$directory][$prefix+$class]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
-
-  $name = false
-
-  #  Look for the class first in the native system/libraries folder
-  #  then in the local application/libraries folder
-  for $path in [BASEPATH, APPPATH]
-    if file_exists($path + $directory + '/' + $class + EXT)
-      $name = $prefix + $class
-
-      if not system[$directory][$name]?
-        require($path + $directory + '/' + $class + EXT)
-
-      break
-
-  #  Is the request a class extension?  If so we load it too
-  if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
-    $name = config_item('subclass_prefix') + $class
-
-    if not system[$directory][$name]?
-      require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
-
-  #  Did we find the class?
-  if not system[$directory][$name]?
-    die 'Unable to locate the specified class: ' + $class + EXT
-
-  #create_mixin($controller, global[$name], $controller)
-  return new system[$directory][$name]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
-
-#
-# Exspresso Mixin Creation
-#
-# Returns a new instance of the class.
-# Create as mixin with a controller object.
+# Use to access the top level server objects
 #
 # @access	public
 # @param	string	the class name being requested
-# @param	string	the directory where the class should be found
 # @param	string	the class name prefix
-# @param  object  ExspressoController object
-# @return	object
+# @return	object  constructor param
 #
-exports.load_mixin = load_mixin = ($class, $directory = 'lib', $prefix = '', $controller) ->
+exports.core = core = ($class, $param) ->
 
-  if typeof $prefix isnt 'string'
-    [$prefix, $controller] = ['', $prefix]
-
-  #  Does the class exist?  If so, we're done...
-  if system[$directory][$prefix+$class]?
-    return create_mixin($controller, system[$directory][$prefix+$class], $controller)
-
-  $name = false
-  $root = null
-
-  #  Look for the class first in the native system/libraries folder
-  #  then in the local application/libraries folder
-  for $path in [BASEPATH, APPPATH]
-    $root = (if $path is BASEPATH then system else application)
-    if file_exists($path + $directory + '/' + $class + EXT)
-      $name = $prefix + $class
-
-      if not $root[$directory][$name]?
-        require($path + $directory + '/' + $class + EXT)
-
-      break
-
-  #  Is the request a class extension?  If so we load it too
-  if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
-    $name = config_item('subclass_prefix') + $class
-
-    if not system[$directory][$name]?
-      require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
-
-  #  Did we find the class?
-  if not system[$directory][$name]?
-    die 'Unable to locate the specified class: ' + $class + EXT
-
-  create_mixin($controller, $root[$directory][$name], $controller)
-
-#
-# Exspresso Class registry
-#
-# This function acts as a singleton.  If the requested class does not
-# exist it is instantiated and set to a static variable.  If it has
-# previously been instantiated the variable is returned.
-#
-# @access	public
-# @param	string	the class name being requested
-# @param	string	the directory where the class should be found
-# @param	string	the class name prefix
-# @return	object
-#
-exports.load_class = load_class = ($class, $directory = 'lib', $prefix = '', $config = {}) ->
-
-  if typeof $prefix isnt 'string' then [$prefix, $config] = ['', $prefix]
+  if typeof $class is 'string'
+    $prefix = ''
+  else
+    $prefix = $class.subclass
+    $class = $class.class
 
   #  Does the class exist?  If so, we're done...
   if _classes[$class]?
     return _classes[$class]
 
-  $name = false
-
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
   for $path in [BASEPATH, APPPATH]
-    if file_exists($path + $directory + '/' + $prefix + $class + EXT)
-      $Class = require($path + $directory + '/' + $prefix + $class + EXT)
+    if file_exists($path + 'core/' + $prefix + $class + EXT)
+      $klass = require($path + 'core/' + $prefix + $class + EXT)
 
       break
 
   #  Is the request a class extension?  If so we load it too
-  if file_exists(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
-    $Class = require(APPPATH + $directory + '/' + config_item('subclass_prefix') + $class + EXT)
+  if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
-  if not $Class?
+  if not $klass?
     die 'Unable to locate the specified class: ' + $class + EXT
 
   #  Keep track of what we just loaded
   is_loaded($class)
 
-  _classes[$class] = new $Class($config)
+  _classes[$class] = new $klass($param)
+
 
 #
 # Is Loaded
@@ -287,6 +182,111 @@ exports.is_loaded = is_loaded = ($class = '') ->
     _is_loaded[$class.toLowerCase()] = $class
 
   return _is_loaded
+
+
+#
+# Returns a new core object.
+#
+# Uesd to create core objects that will be passed
+# to the Controller object constructor.
+#
+# @access	public
+# @param	string	the class name being requested
+# @param	string	the class name prefix
+# @param  object  list of params to pass to the constructor
+# @return	object
+#
+exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
+
+  if typeof $class is 'string'
+    $prefix = ''
+  else
+    $prefix = $class.subclass
+    $class = $class.class
+
+  #  Does the class exist?  If so, we're done...
+  if system.core[$prefix+$class]?
+    return new system.core[$prefix+$class]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+
+  $name = false
+
+  #  Look for the class first in the native system/libraries folder
+  #  then in the local application/libraries folder
+  for $path in [BASEPATH, APPPATH]
+    if file_exists($path + 'core/' + $class + EXT)
+      $name = $prefix + $class
+
+      if not system.core[$name]?
+        require($path + 'core/' + $class + EXT)
+
+      break
+
+  #  Is the request a class extension?  If so we load it too
+  if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $name = config_item('subclass_prefix') + $class
+
+    if not system[$directory][$name]?
+      require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+
+  #  Did we find the class?
+  if not system.core[$name]?
+    die 'Unable to locate the specified class: ' + $class + EXT
+
+  return new system.core[$name]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+
+#
+# Loads a new core object
+#
+# Used to bootstrap the core/loader object in
+# the controller constructor.
+#
+# @access	public
+# @param	string	the class name being requested
+# @param	string	the directory where the class should be found
+# @param	string	the class name prefix
+# @param  object  ExspressoController object
+# @return	object
+#
+exports.load_core = load_core = ($class, $controller) ->
+
+  if typeof $class is 'string'
+    $prefix = ''
+  else
+    $prefix = $class.subclass
+    $class = $class.class
+
+  $klass = application.core[$prefix+$class] or system.core[$prefix+$class]
+  #  Does the class exist?  If so, we're done...
+  if $klass?
+    return create_mixin($controller, $klass, $controller)
+
+  $name = false
+  $root = null
+
+  #  Look for the class first in the native system/libraries folder
+  #  then in the local application/libraries folder
+  for $path in [BASEPATH, APPPATH]
+    $root = (if $path is BASEPATH then system else application)
+    if file_exists($path + 'core/' + $class + EXT)
+      $name = $prefix + $class
+
+      if not $root.lib[$name]?
+        $klass = require($path + 'core/' + $class + EXT)
+
+      break
+
+  #  Is the request a class extension?  If so we load it too
+  if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $name = config_item('subclass_prefix') + $class
+
+    if not system.lib[$name]?
+      $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+
+  #  Did we find the class?
+  if not $klass?
+    die 'Unable to locate the specified class: ' + $class + EXT
+
+  create_mixin($controller, $klass, $controller)
 
 
 #
@@ -366,12 +366,10 @@ exports.config_item = config_item = ($item) ->
 exports.show_error = show_error = ($args...) ->
   if not $args[0]? then return false
 
-  _error = load_class('Exceptions', 'core')
   if typeof $args[0] is 'string'
-    _error.show_error format.apply(undefined, $args), '5xx', 500
+    core('Exceptions').showError format.apply(undefined, $args), '5xx', 500
   else
-    _error.show_error $args[0], '5xx', 500
-  true
+    core('Exceptions').showError $args[0], '5xx', 500
 
 #
 # 404 Page Handler
@@ -384,9 +382,7 @@ exports.show_error = show_error = ($args...) ->
 # @return	true
 #
 exports.show_404 = show_404 = ($page = '', $log_error = true) ->
-  _error = load_class('Exceptions', 'core')
-  _error.show_404 $page, $log_error
-  true
+  core('Exceptions').show404 $page, $log_error
 
 #
 # Error Logging Interface
@@ -399,9 +395,7 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
 #
 exports.log_message = log_message = ($level = 'error', $args...) ->
   return true if config_item('log_threshold') is 0
-  _log = load_class('Log')
-  _log.writeLog $level, format.apply(undefined, $args)
-  true
+  core('Log').writeLog $level, format.apply(undefined, $args)
 
 #
 # Set HTTP Status Header

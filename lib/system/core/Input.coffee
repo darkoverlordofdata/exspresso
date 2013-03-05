@@ -37,6 +37,10 @@ class system.core.Input
 
   os = require('os')
 
+  _cookies                : null  # Request cookies
+  _query                  : null  # Request get array
+  _body                   : null  # Request post body
+  _server                 : null  # Request server properties
   _headers                : null  # List of all HTTP request headers
   _ip_address             : false # IP address of the current user
   _user_agent             : false # user agent (web browser) being used by the current user
@@ -51,15 +55,23 @@ class system.core.Input
   # Constructor
   #
   # @access	public
-  # @param object   ExspressoUtf8
-  # @param object   ExspressoSecurity
+  # @param object   core/Utf8
+  # @param object   core/Security
   # @param object   http request cookies object
   # @param object   http request query object
   # @param object   http request body object
   # @param object   http request server object
   # @return	void
   #
-  constructor: (@$UNI, @$SEC, @$_COOKIE, @$_GET, @$_POST, @$_SERVER) ->
+  constructor: ($req, $utf, $security) ->
+
+    defineProperties @,
+      _cookies: {writeable: false, value: $req.cookies}
+      _query:   {writeable: false, value: $req.query}
+      _body:    {writeable: false, value: $req.body}
+      _server:  {writeable: false, value: $req.server}
+      utf:      {writeable: false, value: $utf}
+      security: {writeable: false, value: $security}
 
     log_message('debug', "Input Class Initialized")
 
@@ -80,15 +92,15 @@ class system.core.Input
   get : ($index = null, $xss_clean = false) ->
 
     #  Check if a field has been provided
-    if $index is null and  not empty(@$_GET)
+    if $index is null and  not empty(@_query)
       $get = {}
 
       #  loop through the full _GET array
-      for $key in array_keys(@$_GET)
-        $get[$key] = @_fetch_from_array(@$_GET, $key, $xss_clean)
+      for $key in array_keys(@_query)
+        $get[$key] = @_fetch_from_array(@_query, $key, $xss_clean)
       return $get
 
-    return @_fetch_from_array(@$_GET, $index, $xss_clean)
+    return @_fetch_from_array(@_query, $index, $xss_clean)
 
 
   #
@@ -102,15 +114,15 @@ class system.core.Input
   post : ($index = null, $xss_clean = false) ->
 
     #  Check if a field has been provided
-    if $index is null and  not empty(@$_POST)
+    if $index is null and  not empty(@_body)
       $post = {}
 
       #  Loop through the full _POST array and return it
-      for $key in array_keys(@$_POST)
-        $post[$key] = @_fetch_from_array(@$_POST, $key, $xss_clean)
+      for $key in array_keys(@_body)
+        $post[$key] = @_fetch_from_array(@_body, $key, $xss_clean)
       return $post
 
-    return @_fetch_from_array(@$_POST, $index, $xss_clean)
+    return @_fetch_from_array(@_body, $index, $xss_clean)
 
   #
   # Fetch an item from either the GET array or the POST
@@ -122,7 +134,7 @@ class system.core.Input
   #
   getPost : ($index = '', $xss_clean = false) ->
 
-    if not @$_POST[$index]?
+    if not @_body[$index]?
       @get($index, $xss_clean)
     else
       @post($index, $xss_clean)
@@ -136,7 +148,7 @@ class system.core.Input
   # @return	string
   #
   cookie : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@$_COOKIE, $index, $xss_clean)
+    return @_fetch_from_array(@_cookies, $index, $xss_clean)
 
   #
   # Set cookie
@@ -187,7 +199,7 @@ class system.core.Input
   # @return	string
   #
   server : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@$_SERVER, $index, $xss_clean)
+    return @_fetch_from_array(@_server, $index, $xss_clean)
 
   #
   # Fetch the IP Address
@@ -289,7 +301,7 @@ class system.core.Input
       return false
 
     if $xss_clean is true
-      return @$SEC.xssClean(@_headers[$index])
+      return @security.xssClean(@_headers[$index])
 
     return @_headers[$index]
 
@@ -328,7 +340,7 @@ class system.core.Input
       return null #false
 
     if $xss_clean is true
-      return @$SEC.xssClean($array[$index])
+      return @security.xssClean($array[$index])
 
     return $array[$index]
 
@@ -357,7 +369,8 @@ class system.core.Input
     for $segment in $ip_segments
       #  IP segments must be digits and can not be
       #  longer than 3 digits or greater then 255
-      if $segment is '' or preg_match("/[^0-9]/", $segment)? or $segment > 255 or strlen($segment) > 3
+      #if $segment is '' or preg_match("/[^0-9]/", $segment)? or $segment > 255 or strlen($segment) > 3
+      if $segment is '' or /[^0-9]/.test($segment) or $segment > 255 or strlen($segment) > 3
         return false
 
     return true
@@ -407,7 +420,7 @@ class system.core.Input
 
         $collapsed = true
 
-      else if preg_match("/[^0-9a-f]/i", $seg)? or strlen($seg) > 4
+      else if /[^0-9a-f]/i.exec($seg)? or strlen($seg) > 4
         return false#  invalid segment
     return $collapsed or $groups is 1
 
@@ -427,31 +440,31 @@ class system.core.Input
 
     #  Is $_GET data allowed? If not we'll set the $_GET to an empty array
     if @_allow_get_array is false
-      delete @$_GET[$key] for $key, $val of @$_GET
+      delete @_query[$key] for $key, $val of @_query
 
     else
-      for $key, $val of @$_GET
-        @$_GET[@_clean_input_keys($key)] = @_clean_input_data($val)
+      for $key, $val of @_query
+        @_query[@_clean_input_keys($key)] = @_clean_input_data($val)
 
     #  Clean $_POST Data
-    for $key, $val of @$_POST
-      @$_POST[@_clean_input_keys($key)] = @_clean_input_data($val)
+    for $key, $val of @_body
+      @_body[@_clean_input_keys($key)] = @_clean_input_data($val)
 
     #  Clean $_COOKIE Data
     #  Also get rid of specially treated cookies that might be set by a server
     #  or silly application, that are of no use to a Exspressp application anyway
     #  but that when present will trip our 'Disallowed Key Characters' alarm
     #  http://www.ietf.org/rfc/rfc2109.txt
-    delete @$_COOKIE['$Version']  if @$_COOKIE['$Version']?
-    delete @$_COOKIE['$Path']     if @$_COOKIE['$Path']?
-    delete @$_COOKIE['$Domain']   if @$_COOKIE['$Domain']?
+    delete @_cookies['$Version']  if @_cookies['$Version']?
+    delete @_cookies['$Path']     if @_cookies['$Path']?
+    delete @_cookies['$Domain']   if @_cookies['$Domain']?
 
-    for $key, $val of @$_COOKIE
-      @$_COOKIE[@_clean_input_keys($key)] = @_clean_input_data($val)
+    for $key, $val of @_cookies
+      @_cookies[@_clean_input_keys($key)] = @_clean_input_data($val)
 
     #  CSRF Protection check on HTTP requests
     if @_enable_csrf is true and  not @isCliRequest()
-      @$SEC.csrfVerify()
+      @security.csrfVerify()
 
     log_message('debug', "Global POST and COOKIE data sanitized")
 
@@ -473,14 +486,14 @@ class system.core.Input
 
     #  Clean UTF-8 if supported
     if UTF8_ENABLED is true
-      $str = @$UNI.cleanString($str)
+      $str = @utf.cleanString($str)
 
     #  Remove control characters
     $str = remove_invisible_characters($str)
 
     #  Should we filter the input data?
     if @_enable_xss is true
-      $str = @$SEC.xssClean($str)
+      $str = @security.xssClean($str)
 
     #  Standardize newlines if needed
     if @_standardize_newlines is true
@@ -500,12 +513,13 @@ class system.core.Input
   # @param	string
   # @return	string
   _clean_input_keys : ($str) ->
-    if not preg_match("/^[a-z0-9:_\/-]+$/i", $str)?
+    #if not preg_match("/^[a-z0-9:_\/-]+$/i", $str)?
+    if not /^[a-z0-9:_\/-]+$/i.test($str)
       die ('Disallowed Key Characters.')
 
     #  Clean UTF-8 if supported
     if UTF8_ENABLED is true
-      $str = @$UNI.cleanString($str)
+      $str = @utf.cleanString($str)
 
     return $str
 

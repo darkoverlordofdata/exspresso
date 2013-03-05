@@ -63,8 +63,8 @@ class system.lib.Calendar
       if @['_'+$key]?
         @['_'+$key] = $val
 
-    if not in_array('calendar_lang' + EXT, @l10n.is_loaded, true)
-      @l10n.load('calendar')
+    if not in_array('calendar_lang' + EXT, @i18n.is_loaded, true)
+      @i18n.load('calendar')
 
     @_local_time = time()
 
@@ -246,10 +246,10 @@ class system.lib.Calendar
       
     $month = $month_names[$month]
     
-    if @l10n.line($month) is false
+    if @i18n.line($month) is false
       return ucfirst(str_replace('cal_', '', $month))
 
-    return @l10n.line($month)
+    return @i18n.line($month)
     
   
   #
@@ -276,7 +276,7 @@ class system.lib.Calendar
 
     $days = {}
     for $val in $day_names
-      $days.push if (@l10n.line('cal_' + $val) is false) then ucfirst($val) else @l10n.line('cal_' + $val)
+      $days.push if (@i18n.line('cal_' + $val) is false) then ucfirst($val) else @i18n.line('cal_' + $val)
     return $days
 
   # --------------------------------------------------------------------

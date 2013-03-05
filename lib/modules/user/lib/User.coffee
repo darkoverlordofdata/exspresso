@@ -53,7 +53,7 @@ class modules.user.lib.User
 
     log_message 'debug', "User Class Initialized"
     @load.model('user/UserModel')
-    @l10n.load('user/user')
+    @i18n.load('user/user')
     @queue ($next) =>
       #
       # Reload the current user
@@ -95,12 +95,12 @@ class modules.user.lib.User
 
         if $ok
           @req.session.uid = $user.uid
-          @session.setFlashdata  'info', @l10n.line('user_hello'), $user.name
+          @session.setFlashdata  'info', @i18n.line('user_hello'), $user.name
           @redirect $action
 
         else
           @req.session.uid = UserModel.UID_ANONYMOUS
-          @session.setFlashdata 'error', @l10n.line('user_invalid_credentials')
+          @session.setFlashdata 'error', @i18n.line('user_invalid_credentials')
           @redirect $action
 
   #
@@ -111,7 +111,7 @@ class modules.user.lib.User
   #
   logout: ($action = '/admin') ->
 
-    @session.setFlashdata  'info', @l10n.line('user_goodbye')
+    @session.setFlashdata  'info', @i18n.line('user_goodbye')
     @req.session.uid = UserModel.UID_ANONYMOUS
     @redirect $action
 

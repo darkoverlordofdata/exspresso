@@ -790,17 +790,17 @@ class system.lib.Upload
   set_error($msg)
   {
   $controller = Exspresso
-  @l10n.load('upload')
+  @i18n.load('upload')
   
   if is_array($msg)
     for $val in $msg
-      $msg = if (@l10n.line($val) is false) then $val else @l10n.line($val)
+      $msg = if (@i18n.line($val) is false) then $val else @i18n.line($val)
       @error_msg.push $msg
       log_message('error', $msg)
       
     
   else 
-    $msg = if (@l10n.line($msg) is false) then $msg else @l10n.line($msg)
+    $msg = if (@i18n.line($msg) is false) then $msg else @i18n.line($msg)
     @error_msg.push $msg
     log_message('error', $msg)
     

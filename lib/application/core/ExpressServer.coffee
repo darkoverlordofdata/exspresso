@@ -89,18 +89,7 @@ class application.core.ExpressServer extends system.core.Server
 
       @app.listen @_port, =>
 
-        console.log " "
-        console.log " "
-        console.log "Exspresso v"+EXSPRESSO_VERSION
-        console.log "copyright 2012 Dark Overlord of Data"
-        console.log " "
-        console.log "listening on port #{@_port}"
-        console.log " "
-
-        if ENVIRONMENT is 'development'
-          console.log "View site at http://localhost:" + @_port
-
-        log_message "debug", "listening on port #{@_port}"
+        @banner()
 
         if @_preview
           #

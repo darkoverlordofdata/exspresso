@@ -56,7 +56,15 @@ class system.core.Output
   # @param object   ExspressoURI
   # @return	void
   #
-  constructor: (@req, @res, @EXP, @BM, @CFG, @URI) ->
+  constructor: ($req, $res, $hooks, $bench, $config, $uri) ->
+
+    defineProperties @,
+      req:      {writeable: false, value: $req}
+      res:      {writeable: false, value: $res}
+      hooks:    {writeable: false, value: $hooks}
+      bench:    {writeable: false, value: $bench}
+      config:   {writeable: false, value: $config}
+      uri:      {writeable: false, value: $uri}
 
     log_message('debug', "Output Class Initialized")
 
@@ -237,7 +245,7 @@ class system.core.Output
     #  Is there a "post_controller" hook?
     # ------------------------------------------------------
     #
-    @EXP.callHook 'post_controller', @
+    @hooks.callHook 'post_controller', @
 
     #  Set the output data
     if $output is ''
@@ -252,7 +260,7 @@ class system.core.Output
     #  Parse out the elapsed time and memory usage,
     #  then swap the pseudo-variables with the data
 
-    $elapsed = @BM.elapsedTime('total_execution_time_start', 'total_execution_time_end')
+    $elapsed = @bench.elapsedTime('total_execution_time_start', 'total_execution_time_end')
 
     if @_parse_exec_vars is true
       $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
@@ -317,12 +325,12 @@ class system.core.Output
   # @access	public
   # @return	void
   #
-  displayCache: ($CFG, $URI) ->
+  displayCache: () ->
 
-    $cache_path = if ($CFG.item('cache_path') is '') then APPPATH + 'cache/' else $CFG.item('cache_path')
+    $cache_path = if (@config.item('cache_path') is '') then APPPATH + 'cache/' else @config.item('cache_path')
 
     #  Build the file path.  The file name is an MD5 hash of the full URI
-    $uri = $CFG.item('base_url') + $CFG.item('index_page') + $URI.uriString()
+    $uri = @config.item('base_url') + @config.item('index_page') + @uri.uriString()
 
     $filepath = $cache_path+md5($uri)
 
@@ -351,7 +359,7 @@ class system.core.Output
   #
   _write_cache: ($output) ->
 
-    $path = @CFG.item('cache_path')
+    $path = @config.item('cache_path')
 
     $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
 
@@ -370,9 +378,9 @@ class system.core.Output
 
 
     # when should this cache expire?
-    $cache_rules = @CFG.item('cache_rules')
+    $cache_rules = @config.item('cache_rules')
     $ttl = @_cache_expiration * 60000
-    $uri = @URI.uriString()
+    $uri = @uri.uriString()
 
     # check the uri against the rules
     for $pattern, $ttl of $cache_rules
@@ -381,7 +389,7 @@ class system.core.Output
     return if $ttl <= 0 # no point in caching that
 
     # build the cache data
-    $uri = @CFG.item('base_url') + @CFG.item('index_page') + $uri
+    $uri = @config.item('base_url') + @config.item('index_page') + $uri
     $filepath = $cache_path+md5($uri)
     $expires = new Date(Date.now() + $ttl)
 

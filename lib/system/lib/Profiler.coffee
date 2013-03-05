@@ -130,7 +130,7 @@ class system.lib.Profiler
     $output = "\n\n"
     $output+='<dl id="ex_profiler_benchmarks">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_benchmarks') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_benchmarks') + '</dt>'
     $output+="\n"
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
@@ -162,10 +162,10 @@ class system.lib.Profiler
       $output = "\n\n"
       $output+='<dl id="ex_profiler_queries">'
       $output+="\n"
-      $output+='<dt>' + @l10n.line('profiler_queries') + '</dt>'
+      $output+='<dt>' + @i18n.line('profiler_queries') + '</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
-      $output+="<tr><td><em>" + @l10n.line('profiler_no_db') + "</em></td></tr>\n"
+      $output+="<tr><td><em>" + @i18n.line('profiler_no_db') + "</em></td></tr>\n"
       $output+="</table></dd>\n"
       $output+="</dl>"
       return $output
@@ -181,12 +181,12 @@ class system.lib.Profiler
     for $db in $dbs
       $output+='<dl>'
       $output+="\n"
-      $output+='<dt>' + @l10n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @l10n.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;</dt>'
+      $output+='<dt>' + @i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @i18n.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       if count($db.queries) is 0
-        $output+="<tr><td><em>" + @l10n.line('profiler_no_queries') + "</em></td></tr>\n"
+        $output+="<tr><td><em>" + @i18n.line('profiler_no_queries') + "</em></td></tr>\n"
 
       else
         for $key, $val of $db.queries
@@ -213,11 +213,11 @@ class system.lib.Profiler
     $output = "\n\n"
     $output+='<dl id="ex_profiler_get">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_get_data') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_get_data') + '</dt>'
     $output+="\n"
 
     if count(@$_GET) is 0
-      $output+="<dd><em>" + @l10n.line('profiler_no_get') + "</em></dd>"
+      $output+="<dd><em>" + @i18n.line('profiler_no_get') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -251,11 +251,11 @@ class system.lib.Profiler
     $output = "\n\n"
     $output+='<dl id="ex_profiler_post">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_post_data') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_post_data') + '</dt>'
     $output+="\n"
 
     if count(@$_POST) is 0
-      $output+="<dd><em>" + @l10n.line('profiler_no_post') + "</em></dd>"
+      $output+="<dd><em>" + @i18n.line('profiler_no_post') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -290,11 +290,11 @@ class system.lib.Profiler
     $output = "\n\n"
     $output+='<dl id="ex_profiler_uri_string">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_uri_string') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_uri_string') + '</dt>'
     $output+="\n"
 
     if @uri.uriString() is ''
-      $output+="<dd><em>" + @l10n.line('profiler_no_uri') + "</em></dd>"
+      $output+="<dd><em>" + @i18n.line('profiler_no_uri') + "</em></dd>"
 
     else
       $output+="<dd>" + @uri.uriString() + "</dd>"
@@ -320,7 +320,7 @@ class system.lib.Profiler
     $output+="</dl>"
     $output+='<dl id="ex_profiler_controller_info">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_controller_info') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_controller_info') + '</dt>'
     $output+="\n"
 
     $output+="<dd>" + @class + "/" + @method + "</dd>"
@@ -340,14 +340,14 @@ class system.lib.Profiler
     $output = "\n\n"
     $output+='<dl id="ex_profiler_memory_usage">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_memory_usage') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_memory_usage') + '</dt>'
     $output+="\n"
 
     if function_exists('memory_get_usage') and ($usage = memory_get_usage()) isnt ''
       $output+="<dd>" + number_format($usage) + ' bytes</dd>'
 
     else
-      $output+="<dd><em>" + @l10n.line('profiler_no_memory_usage') + "</em></dd>"
+      $output+="<dd><em>" + @i18n.line('profiler_no_memory_usage') + "</em></dd>"
 
     $output+="</dl>"
 
@@ -364,7 +364,7 @@ class system.lib.Profiler
     $output = "\n\n"
     $output+='<dl id="ex_profiler_http_headers">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_headers') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_headers') + '</dt>'
     $output+="\n"
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -389,7 +389,7 @@ class system.lib.Profiler
     $output = "\n\n"
     $output+='<dl id="ex_profiler_config">'
     $output+="\n"
-    $output+='<dt>' + @l10n.line('profiler_config') + '</dt>'
+    $output+='<dt>' + @i18n.line('profiler_config') + '</dt>'
     $output+="\n"
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
@@ -450,7 +450,7 @@ class system.lib.Profiler
         $fields_displayed++
 
     if $fields_displayed is 0
-      $output+='<p>' + @l10n.line('profiler_no_profiles') + '</p>'
+      $output+='<p>' + @i18n.line('profiler_no_profiles') + '</p>'
     $output+='''            </div>
                 </div>
             </div>

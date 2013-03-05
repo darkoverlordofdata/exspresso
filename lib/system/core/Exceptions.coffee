@@ -74,7 +74,6 @@ class system.core.Exceptions
   #
   # Exception Logger
   #
-  # This function logs PHP generated error messages
   #
   # @access	private
   # @param	string	the error severity
@@ -83,7 +82,7 @@ class system.core.Exceptions
   # @param	string	the error line number
   # @return	string
   #
-  log_exception : ($severity, $message, $filepath, $line) ->
+  logException : ($severity, $message, $filepath, $line) ->
     log_message('error', 'Severity: ' + $severity + '  --> ' + $message + ' ' + $filepath + ' ' + $line, true)
 
   #
@@ -93,7 +92,7 @@ class system.core.Exceptions
   # @param	string
   # @return	string
   #
-  show_404 : ($page = '', $log_error = true) ->
+  show404 : ($page = '', $log_error = true) ->
     $message = "The page you requested was not found."
 
     #  By default we log this, but allow a dev to skip it
@@ -101,7 +100,7 @@ class system.core.Exceptions
       log_message('error', '404 Page Not Found --> ' + $page)
 
 
-    @show_error($message, '404', 404)
+    @showError($message, '404', 404)
 
   #
   # General Error Page
@@ -116,7 +115,7 @@ class system.core.Exceptions
   # @param	string	the template name
   # @return	string
   #
-  show_error : ($message, $template = '5xx', $status_code = 500) ->
+  showError : ($message, $template = '5xx', $status_code = 500) ->
     # if we're here, then Exspresso is still booting...
     console.log "Exceptions::show_error --> #{$message}"
     process.exit 1
@@ -131,7 +130,7 @@ class system.core.Exceptions
   # @param	string	the error line number
   # @return	string
   #
-  show_native_error : ($severity, $message, $filepath, $line) ->
+  showNativeError : ($severity, $message, $filepath, $line) ->
     # if we're here, then Exspresso is still booting...
     console.log "Exceptions::show_native_error --> #{$message}"
     console.log " at line #{$line},  #{$filepath}"
@@ -155,7 +154,7 @@ class system.core.Exceptions
     # @param	string
     # @return	string
     #
-    @show_404 = ($page = '', $log_error = true, $next) =>
+    @show404 = ($page = '', $log_error = true, $next) =>
 
       if typeof $log_error is 'function'
         [$log_error, $next] = [true, $log_error]
@@ -171,7 +170,7 @@ class system.core.Exceptions
       if $log_error
         log_message('error', '404 Page Not Found --> ' + $page)
 
-      @show_error $err, '404', 404, $next
+      @showError $err, '404', 404, $next
 
 
     #
@@ -187,7 +186,7 @@ class system.core.Exceptions
     # @param	string	the template name
     # @return	string
     #
-    @show_error = ($err, $template = '5xx', $status_code = 500, $next) ->
+    @showError = ($err, $template = '5xx', $status_code = 500, $next) ->
 
       if typeof $template is 'function'
         [$$template, $status_code, $next] = ['5xx', 500, $template]
@@ -201,6 +200,7 @@ class system.core.Exceptions
           site_name:  config_item('site_name')
 
       $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $next
+      return true
 
 
     #
@@ -213,7 +213,7 @@ class system.core.Exceptions
     # @param	string	the error line number
     # @return	string
     #
-    @show_native_error = ($severity, $message, $filepath, $line) ->
+    @showNativeError = ($severity, $message, $filepath, $line) ->
 
       $filepath = str_replace("\\", "/", $filepath)
 

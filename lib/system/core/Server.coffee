@@ -28,14 +28,7 @@
 #
 #	  Server Class
 #
-#   Base class for Server/drivers
-#   it exposes adapter registration points for each of these core classes:
-#
-#       * Config
-#       * Output
-#       * Input
-#       * Session
-#       * URI
+#   Base class for Servers
 #
 
 class system.core.Server
@@ -102,8 +95,6 @@ class system.core.Server
     @config get_config()
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Add view helpers
   #
@@ -111,8 +102,6 @@ class system.core.Server
   # @return	void
   #
   setHelpers: ($helpers) -> # abstract method
-
-  #  --------------------------------------------------------------------
 
   #
   # Get the driver version
@@ -124,8 +113,6 @@ class system.core.Server
     @_driver + ' v' + require(process.cwd()+'/node_modules/'+@_driver+'/package.json').version
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Add a function to the async queue
   #
@@ -134,8 +121,6 @@ class system.core.Server
   #
   queue: ($fn) ->
     if $fn then @_queue.push($fn) else @_queue
-
-  #  --------------------------------------------------------------------
 
   #
   # Run the async queue
@@ -164,8 +149,6 @@ class system.core.Server
 
     $iterate()
 
-  #  --------------------------------------------------------------------
-
   #
   # Start me up ...
   #
@@ -176,15 +159,31 @@ class system.core.Server
 
     @app.use @server()
     Exspresso.load.initialize()
-    @app.use load_class('Exceptions',  'core').exception_handler()
+    @app.use core('Exceptions').exception_handler()
     @app.use dispatch($router.routes)
     @run Exspresso.queue().concat(@queue()), ($err) ->
       $next($err)
 
 
+  #
+  # Banner
+  #
+  #   display a startup banner
+  #
+  # @access	public
+  # @param	object Exspresso.config
+  # @return	void
+  #
+  banner: ->
 
+    log_message "debug", "Listening on port #{@_port}"
+    log_message "debug", "e x s p r e s s o  v%s", EXSPRESSO_VERSION
+    log_message "debug", "copyright 2012-2013 Dark Overlord of Data"
+    log_message "debug", "%s environment started", ucfirst(ENVIRONMENT)
+    if ENVIRONMENT is 'development'
+      log_message "debug", "View at http://localhost:" + @_port
 
-  #  --------------------------------------------------------------------
+    return
 
   #
   # Config registration
@@ -203,12 +202,11 @@ class system.core.Server
     @_site_slogan = $config.site_slogan
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Sessions 
   #
-  #   called by the Session driver constructor
+  #   Callback from lib/Session constructor to
+  #   initialize session support
   #
   # @access	public
   # @param	object

@@ -72,7 +72,7 @@ class system.lib.Migration
     @_migration_path = rtrim(@_migration_path, '/')+'/'
 
     # Load migration language
-    @l10n.load('migration')
+    @i18n.load('migration')
 
     # They'll probably be using dbforge
     @load.dbforge(@_migration_db)
@@ -173,7 +173,7 @@ class system.lib.Migration
 
         # Only one migration per step is permitted
         if (count($f) > 1)
-          @_error_string = sprintf(@l10n.line('migration_multiple_version'), $i)
+          @_error_string = sprintf(@i18n.line('migration_multiple_version'), $i)
           return $next(@_error_string)
 
         # Migration step not found
@@ -185,7 +185,7 @@ class system.lib.Migration
 
           # If trying to migrate down but we're missing a step,
           # something must definitely be wrong.
-          @_error_string = sprintf(@l10n.line('migration_not_found'), $i)
+          @_error_string = sprintf(@i18n.line('migration_not_found'), $i)
           return $next(@_error_string)
 
         $file = basename($f[0])
@@ -197,17 +197,17 @@ class system.lib.Migration
 
           # Cannot repeat a migration at different steps
           if (in_array($match[1], $migrations))
-            @_error_string = sprintf(@l10n.line('migration_multiple_version'), $match[1])
+            @_error_string = sprintf(@i18n.line('migration_multiple_version'), $match[1])
             return $next(@_error_string)
 
           $class = require($f[0])
 
           if not $class::[$method]?
-            @_error_string = sprintf(@l10n.line('migration_missing_'+$method+'_method'), $class)
+            @_error_string = sprintf(@i18n.line('migration_missing_'+$method+'_method'), $class)
             return $next(@_error_string)
 
           if typeof $class::[$method] isnt 'function'
-            @_error_string = sprintf(@l10n.line('migration_missing_'+$method+'_method'), $class)
+            @_error_string = sprintf(@i18n.line('migration_missing_'+$method+'_method'), $class)
             return $next(@_error_string)
 
           $migrations.push $class
@@ -268,7 +268,7 @@ class system.lib.Migration
   #
   latest: ($next) ->
     if not ($migrations = @find_migrations())
-      @_error_string = @l10n.line('migration_none_found')
+      @_error_string = @i18n.line('migration_none_found')
       return $next(@_error_string)
 
     $last_migration = basename(end($migrations))

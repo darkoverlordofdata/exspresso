@@ -35,7 +35,12 @@
 #
 #
 class system.core.Security
-  
+
+
+  _cookies              : null            # Request cookies
+  _query                : null            # Request get array
+  _body                 : null            # Request post body
+  _server               : null            # Request server properties
   _xss_hash             : ''              # Random Hash for protecting URLs
   _csrf_hash            : ''              # Random Hash for Cross Site Request Forgery Protection Cookie
   _csrf_expire          : 7200            # Expiration time for Cross Site Request Forgery Protection Cookie
@@ -72,7 +77,15 @@ class system.core.Security
   # @param object   http request server object
   # @return	void
   #
-  constructor :  (@$_COOKIE, @$_GET, @$_POST, @$_SERVER) ->
+  constructor :  ($req, $res) ->
+
+    defineProperties @,
+      res       : {writeable: false, value: $res}
+      _cookies  : {writeable: false, value: $req.cookies}
+      _query    : {writeable: false, value: $req.query}
+      _body     : {writeable: false, value: $req.body}
+      _server   : {writeable: false, value: $req.server}
+
     #  Is CSRF protection enabled?
     if config_item('csrf_protection') is true 
       #  CSRF config
@@ -97,24 +110,24 @@ class system.core.Security
   #
   csrfVerify :  ->
     #  If it's not a POST request we will set the CSRF cookie
-    if strtoupper(@$_SERVER['REQUEST_METHOD']) isnt 'POST' 
+    if strtoupper(@_server['REQUEST_METHOD']) isnt 'POST' 
       return @csrfSetCookie()
     
     #  Do the tokens exist in both the _POST and _COOKIE arrays?
-    if not (@$_POST[@_csrf_token_name]? and @$_COOKIE[@_csrf_cookie_name]?)
+    if not (@_body[@_csrf_token_name]? and @_cookies[@_csrf_cookie_name]?)
       @csrfShowError()
     
     #  Do the tokens match?
-    if @$_POST[@_csrf_token_name] isnt @$_COOKIE[@_csrf_cookie_name] 
+    if @_body[@_csrf_token_name] isnt @_cookies[@_csrf_cookie_name] 
       @csrfShowError()
       
     
     #  We kill this since we're done and we don't want to
     #  polute the _POST array
-    delete @$_POST[@_csrf_token_name]
+    delete @_body[@_csrf_token_name]
     
     #  Nothing should last forever
-    delete @$_COOKIE[@_csrf_cookie_name]
+    delete @_cookies[@_csrf_cookie_name]
     @_csrf_set_hash()
     @csrfSetCookie()
     
@@ -132,13 +145,17 @@ class system.core.Security
     $expire = time() + @_csrf_expire
     $secure_cookie = if (config_item('cookie_secure') is true) 1 else 0
     
-    if $secure_cookie and (empty(@$_SERVER['HTTPS']) or strtolower(@$_SERVER['HTTPS']) is 'off') 
+    if $secure_cookie and (empty(@_server['HTTPS']) or strtolower(@_server['HTTPS']) is 'off') 
       return false
 
-    setcookie(@_csrf_cookie_name, @_csrf_hash, $expire, config_item('cookie_path'), config_item('cookie_domain'), $secure_cookie)
-    
+    @res.cookie @_csrf_cookie_name, @_csrf_hash,
+      expires : $expire
+      domain  : config_item('cookie_domain')
+      path    : config_item('cookie_path')
+      secure  : $secure_cookie
+
     log_message('debug', "CRSF cookie Set")
-    
+
     return @
     
   
@@ -231,8 +248,8 @@ class system.core.Security
     # these are the ones that will pose security problems.
     #
     ##
-    $str = preg_replace_callback("/[a-z]+=([\\'\\\"]).*?$1/mig", [@, '_convert_attribute'], $str)
-    $str = preg_replace_callback("/<\w+.*?(?=>|<|$)/mig", [@, '_decode_entity'], $str)
+    $str = $str.replace(/[a-z]+=([\'\"]).*?\\1/mig, @_convert_attribute)
+    $str = $str.replace(/<\w+.*?(?=>|<|$)/mig, @_decode_entity)
     # Remove Invisible Characters Again!
     $str = remove_invisible_characters($str)
     ##
@@ -257,12 +274,13 @@ class system.core.Security
 
     #
     # But it doesn't seem to pose a problem.
-    if $is_image is true       #  Images have a tendency to have the PHP short opening and
+    if $is_image is true
+      #  Images have a tendency to have the PHP short opening and
       #  closing tags every so often so we skip those and only
       #  do the long opening tags.
-      $str = preg_replace('/<\\?(php)/i', "&lt;?$1", $str)
+      $str = $str.replace(/<\\?(php)/i, "&lt;?$1")
     else
-      $str = str_replace(['<?', '?' + '>'], ['&lt;?', '?&gt;'], $str)
+      $str = str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $str)
     ##
     # Compact any exploded words
     #
@@ -290,13 +308,12 @@ class system.core.Security
       #  That way valid stuff like "dealer to" does not become "dealerto"
       $original = $str
 
-      if preg_match("/<a/i", $str)? then $str = preg_replace_callback("#<a\\s+([^>]*?)(>|$)#mig", [@, '_js_link_removal'], $str)
+      if /<a/i.test($str) then $str = $str.replace(/<a\s+([^>]*?)(>|$)/mig, @_js_link_removal)
+
+      if /<img/i.test($str) then $str = $str.replace(/<img\s+([^>]*?)(\s?\/?>|$)/mig, @_js_img_removal)
 
 
-      if preg_match("/<img/i", $str)? then $str = preg_replace_callback("#<img\\s+([^>]*?)(\\s?/?>|$)#mig", [@, '_js_img_removal'], $str)
-
-
-      if preg_match("/script/i", $str)? or preg_match("/xss/i", $str)? then $str = preg_replace("#<(/*)(script|xss)(.*?)\\>#mig", '[removed]', $str)
+      if /script/i.test($str) or /xss/i.test($str) then $str = $str.replace(/<(\/*)(script|xss)(.*?)\\>/mig, @removed)
 
       break unless $original isnt $str
     # delete $original
@@ -680,8 +697,8 @@ class system.core.Security
       #  We don't necessarily want to regenerate it with
       #  each page load since a page could contain embedded
       #  sub-pages causing this feature to fail
-      if @$_COOKIE[@_csrf_cookie_name]?  and preg_match('#^[0-9a-f]{32}$#i', @$_COOKIE[@_csrf_cookie_name])?
-        return @_csrf_hash = @$_COOKIE[@_csrf_cookie_name]
+      if @_cookies[@_csrf_cookie_name]?  and preg_match('#^[0-9a-f]{32}$#i', @_cookies[@_csrf_cookie_name])?
+        return @_csrf_hash = @_cookies[@_csrf_cookie_name]
       
       return @_csrf_hash = md5(uniqid(rand(), true))
     

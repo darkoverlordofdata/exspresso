@@ -49,10 +49,10 @@ class system.core.Utf8
   # @access  public
   # @param object   ExspressoConfig
   #
-  constructor : ($CFG) ->
+  constructor : ($config) ->
     log_message('debug', "Utf8 Class Initialized")
     
-    if preg_match('/./', 'é')? and $CFG.item('charset') is 'UTF-8'
+    if preg_match('/./', 'é')? and $config.item('charset') is 'UTF-8'
     #  RegExp must support UTF-8
     #  Application charset must be UTF-8 then
       log_message('debug', "UTF-8 Support Enabled")

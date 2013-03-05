@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  L10n.coffee
+#  I18n.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -38,10 +38,10 @@
 
 Modules = require(BASEPATH+'core/Modules.coffee')
 
-class system.core.L10n
+class system.core.I18n
 
-  _language         : null  # cache of loaded l10n strings
-  _is_loaded        : null  # list of loaded l10n files
+  _language         : null  # cache of loaded i18n strings
+  _is_loaded        : null  # list of loaded i18n files
 
   #
   # Constructor
@@ -49,10 +49,14 @@ class system.core.L10n
   # @access  public
   # @param object   ExspressoConfig
   #
-  constructor : (@CFG) ->
+  constructor : ($config) ->
+
     @_language = {}
     @_is_loaded = []
-    log_message 'debug', "L10n Class Initialized"
+    defineProperties @,
+      config:   {writeable: false, value: $config}
+
+    log_message 'debug', "I18n Class Initialized"
 
   #
   # Load a module language file
@@ -69,13 +73,13 @@ class system.core.L10n
         @load($_lang)
       return @_language
 
-    $deft_lang = @CFG.item('language')
+    $deft_lang = @config.item('language')
     $code = if ($lang is '') then $deft_lang else $lang
 
     if in_array($langfile + '.json', @_is_loaded, true)
       return @_language
 
-    [$path, $_langfile] = Modules::find($langfile+'.json', $module, 'l10n/' + $code + '/')
+    [$path, $_langfile] = Modules::find($langfile+'.json', $module, 'i18n/' + $code + '/')
     if $path is false
       if $lang = @_application_load($langfile, $lang, $return)
         return $lang
@@ -111,16 +115,16 @@ class system.core.L10n
     #  Determine where the language file is and load it
     $found = false
     for $package_path in Exspresso.load.getPackagePaths(true)
-      if file_exists($package_path + 'l10n/' + $code + '/' + $langfile)
-        $lang = require($package_path + 'l10n/' + $code + '/' + $langfile)
+      if file_exists($package_path + 'i18n/' + $code + '/' + $langfile)
+        $lang = require($package_path + 'i18n/' + $code + '/' + $langfile)
         $found = true
         break
 
     if $found isnt true
-      show_error('Unable to load the requested language file: l10n/' + $code + '/' + $langfile)
+      show_error('Unable to load the requested language file: i18n/' + $code + '/' + $langfile)
 
     if not $lang?
-      log_message('error', 'Language file contains no data: l10n/' + $code + '/' + $langfile)
+      log_message('error', 'Language file contains no data: i18n/' + $code + '/' + $langfile)
       return
 
     if $return is true
@@ -129,7 +133,7 @@ class system.core.L10n
     @_is_loaded.push $langfile
     @_language = array_merge(@_language, $lang)
 
-    log_message('debug', 'Language file loaded: l10n/%s/%s', $code, $langfile)
+    log_message('debug', 'Language file loaded: i18n/%s/%s', $code, $langfile)
     return true
 
 
@@ -151,6 +155,6 @@ class system.core.L10n
     return $line
 
 #  END ExspressoLang Class
-module.exports = system.core.L10n
-#  End of file L10n.coffee
-#  Location: ./system/core/L10n.coffee
+module.exports = system.core.I18n
+#  End of file I18n.coffee
+#  Location: ./system/core/I18n.coffee

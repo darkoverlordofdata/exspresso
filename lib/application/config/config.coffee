@@ -20,7 +20,7 @@ exports['logger'] = 'dev'
 exports['views'] = 'views'
 exports['view_ext'] = '.eco'
 exports['cache_rules'] =
-  '.*': 60000
+  '.*': 0 # 60000
 
 #
 #|--------------------------------------------------------------------------

@@ -212,7 +212,7 @@ class system.core.Loader
 
     else
 
-      system.core.Model? or load_class('Model', 'core')
+      system.core.Model? or require(BASEPATH+'core/Model'+EXT)
 
       if $connect isnt false and not system.db.DbDriver?
         if $connect is true then $connect = ''
@@ -288,8 +288,7 @@ class system.core.Loader
         if $db_conn is true then $db_conn = ''
         @controller.load.database $db_conn, false, true
 
-      if not system.core.Model?
-        load_class 'Model', 'core'
+      system.core.Model? or require(BASEPATH+'core/Model'+EXT)
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
       defineProperty @controller, $name
@@ -604,7 +603,7 @@ class system.core.Loader
     Exspresso.server.setHelpers @_helpers[$helper]
 
   #
-  # Load a module l10n file
+  # Load a module i18n file
   #
   # @access	public
   # @param	array
@@ -612,7 +611,7 @@ class system.core.Loader
   # @return	void
   #
   language: ($langfile, $code = '', $return = false) ->
-    return @controller.l10n.load($langfile, $code, $return)
+    return @controller.i18n.load($langfile, $code, $return)
 
   #
   # Load an array of languages
