@@ -209,10 +209,10 @@ if not function_exists('img')
       if $k is 'src' and strpos($v, '://') is false
 
         if $index_page is true
-          $img+=' src="' + Exspresso.config.siteUrl($v) + '"'
+          $img+=' src="' + exspresso.config.siteUrl($v) + '"'
           
         else 
-          $img+=' src="' + Exspresso.config.slashItem('base_url') + $v + '"'
+          $img+=' src="' + exspresso.config.slashItem('base_url') + $v + '"'
           
         
       else 
@@ -287,10 +287,10 @@ if not function_exists('link_tag')
       for $k, $v of $href
         if $k is 'href' and strpos($v, '://') is false
           if $index_page is true
-            $link+='href="' + Exspresso.config.siteUrl($v) + '" '
+            $link+='href="' + exspresso.config.siteUrl($v) + '" '
             
           else 
-            $link+='href="' + Exspresso.config.slashItem('base_url') + $v + '" '
+            $link+='href="' + exspresso.config.slashItem('base_url') + $v + '" '
 
         else 
           $link+="$k=\"$v\" "
@@ -304,10 +304,10 @@ if not function_exists('link_tag')
         $link+='href="' + $href + '" '
         
       else if $index_page is true
-        $link+='href="' + Exspresso.config.siteUrl($href) + '" '
+        $link+='href="' + exspresso.config.siteUrl($href) + '" '
         
       else 
-        $link+='href="' + Exspresso.config.slashItem('base_url') + $href + '" '
+        $link+='href="' + exspresso.config.slashItem('base_url') + $href + '" '
 
       $link+='rel="' + $rel + '" type="' + $type + '" '
       

@@ -431,7 +431,7 @@ class CKEditor
 
     #  Skip relative paths...
     if strpos($ckeditorPath, '..') isnt 0
-      $out+=@script("window.CKEDITOR_BASEPATH='" + $ckeditorPath + "';")
+      $out+=@script("window.CKEDITOR_SYSPATH='" + $ckeditorPath + "';")
 
     $out+="<script type=\"text/javascript\" src=\"" + $ckeditorPath + 'ckeditor.js' + $args + "\"></script>\n"
 

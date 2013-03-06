@@ -158,10 +158,10 @@ class system.core.Server
   start: ($router, $next) ->
 
     @app.use @server()
-    Exspresso.load.initialize()
+    exspresso.load.initialize()
     @app.use core('Exceptions').exception_handler()
     @app.use dispatch($router.routes)
-    @run Exspresso.queue().concat(@queue()), ($err) ->
+    @run exspresso.queue().concat(@queue()), ($err) ->
       $next($err)
 
 
@@ -171,13 +171,15 @@ class system.core.Server
   #   display a startup banner
   #
   # @access	public
-  # @param	object Exspresso.config
+  # @param	object exspresso.config
   # @return	void
   #
   banner: ->
 
+    $elapsed = core('Benchmark').elapsedTime('boot_time_start', 'boot_time_end')
+    log_message 'debug', 'Boot time: %dms', $elapsed
     log_message "debug", "Listening on port #{@_port}"
-    log_message "debug", "e x s p r e s s o  v%s", EXSPRESSO_VERSION
+    log_message "debug", "e x s p r e s s o  v%s", exspresso.version
     log_message "debug", "copyright 2012-2013 Dark Overlord of Data"
     log_message "debug", "%s environment started", ucfirst(ENVIRONMENT)
     if ENVIRONMENT is 'development'
@@ -191,7 +193,7 @@ class system.core.Server
   #   called by the core/Config class constructor
   #
   # @access	public
-  # @param	object Exspresso.config
+  # @param	object exspresso.config
   # @return	void
   #
   config: ($config) ->

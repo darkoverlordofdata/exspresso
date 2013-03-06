@@ -38,7 +38,7 @@ class system.core.ExspressoError extends Error
     $status = $err.status || $status
 
     @code     = $status
-    @desc     = set_status_header($status)
+    @desc     = get_status_text($status)
     @name     = $err.name || 'Error'
     @class    = if $status >= 500 then 'error' else 'info'
     @message  = if $status is 404 then "The page you requested was not found" else $err.message || 'Unknown error'
@@ -54,10 +54,10 @@ class system.core.AuthorizationError extends Error
   constructor: ($msg, $status = 401) ->
 
     @code     = $status
-    @desc     = set_status_header($status)
+    @desc     = get_status_text($status)
     @name     = 'Authorization Check Failed'
     @class    = 'info'
-    @message  = set_status_header($status)
+    @message  = get_status_text($status)
     @stack    = "\nAuthorization Check Failed\n#{$msg}"
 
 
@@ -100,10 +100,10 @@ class system.core.Exceptions
       log_message('error', '404 Page Not Found --> ' + $page)
 
 
-    @showError($message, '404', 404)
+    @show5xx($message, '404', 404)
 
   #
-  # General Error Page
+  # General Server Error Page
   #
   # This function takes an error message as input
   # (either as a string or an array) and displays
@@ -115,7 +115,7 @@ class system.core.Exceptions
   # @param	string	the template name
   # @return	string
   #
-  showError : ($message, $template = '5xx', $status_code = 500) ->
+  show5xx : ($message, $template = '5xx', $status_code = 500) ->
     # if we're here, then Exspresso is still booting...
     console.log "Exceptions::show_error --> #{$message}"
     process.exit 1
@@ -130,7 +130,7 @@ class system.core.Exceptions
   # @param	string	the error line number
   # @return	string
   #
-  showNativeError : ($severity, $message, $filepath, $line) ->
+  showError : ($severity, $message, $filepath, $line) ->
     # if we're here, then Exspresso is still booting...
     console.log "Exceptions::show_native_error --> #{$message}"
     console.log " at line #{$line},  #{$filepath}"
@@ -163,18 +163,18 @@ class system.core.Exceptions
         status:       404
         stack:        [
           "The page you requested was not found."
-          set_status_header(404)+': ' +$req.originalUrl
+          get_status_text(404)+': ' +$req.originalUrl
           ].join("\n")
 
       #  By default we log this, but allow a dev to skip it
       if $log_error
         log_message('error', '404 Page Not Found --> ' + $page)
 
-      @showError $err, '404', 404, $next
+      @show5xx $err, '404', 404, $next
 
 
     #
-    # General Error Page
+    # General Server Error Page
     #
     # This function takes an error message as input
     # (either as a string or an array) and displays
@@ -186,7 +186,7 @@ class system.core.Exceptions
     # @param	string	the template name
     # @return	string
     #
-    @showError = ($err, $template = '5xx', $status_code = 500, $next) ->
+    @show5xx = ($err, $template = '5xx', $status_code = 500, $next) ->
 
       if typeof $template is 'function'
         [$$template, $status_code, $next] = ['5xx', 500, $template]
@@ -213,7 +213,7 @@ class system.core.Exceptions
     # @param	string	the error line number
     # @return	string
     #
-    @showNativeError = ($severity, $message, $filepath, $line) ->
+    @showError = ($severity, $message, $filepath, $line) ->
 
       $filepath = str_replace("\\", "/", $filepath)
 
@@ -234,5 +234,5 @@ class system.core.Exceptions
 module.exports = system.core.Exceptions
 #  END Exceptions Class
 
-#  End of file Exceptions.php 
-#  Location: ./system/core/Exceptions.php 
+#  End of file Exceptions.coffee
+#  Location: .system/core/Exceptions.cofee

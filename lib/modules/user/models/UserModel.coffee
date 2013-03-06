@@ -28,7 +28,7 @@
 #
 #   User Data Model
 #
-require BASEPATH+'core/Model'+EXT
+require SYSPATH+'core/Model'+EXT
 
 class modules.user.models.UserModel extends system.core.Model
 
@@ -120,32 +120,33 @@ class modules.user.models.UserModel extends system.core.Model
   #
   # Installation check
   #
-  #   create session table if it doesn't exist
-  #   this is called by Exspresso.server.start
+  #   Create session tables if they don't exist.
+  #   This is called from Server.start as part
+  #   of the boot sequence.
   #
   # @access	public
   # @return	void
   #
   installCheck: () ->
 
-    # Create the session table
-    Exspresso.queue ($next) ->
-      $migrate = new Migrate_session()
+    # Migrate the session table
+    @queue ($next) =>
+      $migrate = new MigrateSession(@)
       $migrate.up $next
 
-    # Create the roles table
-    Exspresso.queue ($next) ->
-      $migrate = new Migrate_roles()
+    # Migrate the roles table
+    @queue ($next) =>
+      $migrate = new MigrateRoles(@)
       $migrate.up $next
 
-    # Create the users table
-    Exspresso.queue ($next) ->
-      $migrate = new Migrate_users()
+    # Migrate the users table
+    @queue ($next) =>
+      $migrate = new MigrateUsers(@)
       $migrate.up $next
 
-    # Create the user_roles table
-    Exspresso.queue ($next) ->
-      $migrate = new Migrate_user_roles()
+    # Migrate the user_roles table
+    @queue ($next) =>
+      $migrate = new MigrateUserRoles(@)
       $migrate.up $next
 
 # END CLASS UserModel
@@ -166,6 +167,15 @@ class Migrate
   key         : null    # secondary key(s)
   fields      : null    # database column definitions
   data        : null    # data rows to insert
+
+  #
+  # Set the owning controller
+  #
+  # @access public
+  # @param  object  Controller
+  #
+  constructor: (@controller) ->
+
   #
   # Apply database changes
   #
@@ -173,29 +183,29 @@ class Migrate
   up: ($next) =>
 
     # check if the migration is needed
-    Exspresso.db.tableExists @name, ($err, $table_exists) =>
+    @controller.db.tableExists @name, ($err, $table_exists) =>
 
       return $next($err) if $err
       return $next(null) if $table_exists
 
       # The table doesn't exist, create it
-      Exspresso.load.dbforge()
-      Exspresso.dbforge.addField @fields
-      Exspresso.dbforge.addKey @pkey, true
-      Exspresso.dbforge.addKey $key for $key in @key
-      Exspresso.dbforge.createTable @name, ($err) =>
+      @controller.load.dbforge()
+      @controller.dbforge.addField @fields
+      @controller.dbforge.addKey @pkey, true
+      @controller.dbforge.addKey $key for $key in @key
+      @controller.dbforge.createTable @name, ($err) =>
 
         # populate the table
         return $next($err) if $err
         return if @data.length is 0 then $next()
-        else Exspresso.db.insertBatch @name, @data, $next
+        else @controller.db.insertBatch @name, @data, $next
 
 # --------------------------------------------------------------------
 
 #
 # Migrate Session table
 #
-class Migrate_session extends Migrate
+class MigrateSession extends Migrate
 
   #
   # sessions Table
@@ -237,7 +247,7 @@ class Migrate_session extends Migrate
 #
 # Migrate roles
 #
-class Migrate_roles extends Migrate
+class MigrateRoles extends Migrate
 
   #
   # Table name
@@ -276,7 +286,7 @@ class Migrate_roles extends Migrate
 #
 # Migrate users
 #
-class Migrate_users extends Migrate
+class MigrateUsers extends Migrate
 
   #
   # Table name
@@ -325,7 +335,7 @@ class Migrate_users extends Migrate
 #
 # Migrate users x roles
 #
-class Migrate_user_roles extends Migrate
+class MigrateUserRoles extends Migrate
 
   #
   # Table name

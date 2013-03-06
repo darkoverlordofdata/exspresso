@@ -36,7 +36,7 @@
 #
 #
 
-Modules = require(BASEPATH+'core/Modules.coffee')
+Modules = require(SYSPATH+'core/Modules.coffee')
 
 class system.core.I18n
 
@@ -114,7 +114,7 @@ class system.core.I18n
 
     #  Determine where the language file is and load it
     $found = false
-    for $package_path in Exspresso.load.getPackagePaths(true)
+    for $package_path in exspresso.load.getPackagePaths(true)
       if file_exists($package_path + 'i18n/' + $code + '/' + $langfile)
         $lang = require($package_path + 'i18n/' + $code + '/' + $langfile)
         $found = true

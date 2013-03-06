@@ -30,15 +30,13 @@
 # @since		  Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Loader Class
 #
 # Loads views and files
 #
 #
-Modules = require(BASEPATH+'core/Modules.coffee')
+Modules = require(SYSPATH+'core/Modules.coffee')
 
 
 class system.core.Loader
@@ -50,7 +48,6 @@ class system.core.Loader
   _library_paths        : null  # array of paths to libraries
   _model_paths          : null  # array of paths to models
   _helper_paths         : null  # array of paths to helpers
-  _base_classes         : null  # cache of classes loaded by Exspresso
   _classes              : null  # cache of classes loaded by Loader
   _cached_vars          : null  # cache of view data variables
   _loaded_files         : null  # array list of loaded files
@@ -69,12 +66,10 @@ class system.core.Loader
 
     defineProperties @,
       controller      : {enumerable: true, writeable: false, value: $controller}
-
-
-    @_module          = $controller.module
+      
     @_view_path       = APPPATH + config_item('views')
-    @_library_paths   = [APPPATH, BASEPATH]
-    @_helper_paths    = [APPPATH, BASEPATH]
+    @_library_paths   = [APPPATH, SYSPATH]
+    @_helper_paths    = [APPPATH, SYSPATH]
     @_model_paths     = [APPPATH]
     @_varmap          =
       unit_test       : 'unit'
@@ -92,15 +87,15 @@ class system.core.Loader
   #
   initialize: () ->
 
-    @_loaded_files   = []
-    @_models         = []
-    @_cached_vars    = {}
-    @_classes        = {}
-    @_helpers        = {}
-    @_base_classes   = is_loaded()
+    defineProperties @,
+      _loaded_files   : {enumerable: true, writeable: false, value: []}
+      _models         : {enumerable: true, writeable: false, value: []}
+      _cached_vars    : {enumerable: true, writeable: false, value: {}}
+      _classes        : {enumerable: true, writeable: false, value: {}}
+      _helpers        : {enumerable: true, writeable: false, value: {}}
 
     @_autoloader()
-    return @
+    @
 
   #
   # Is Loaded
@@ -117,7 +112,6 @@ class system.core.Loader
   isLoaded: ($class) ->
     if @_classes[$class]?
       return @_classes[$class]
-
     return false
 
   #
@@ -151,7 +145,6 @@ class system.core.Loader
 
     [$path2, $file] = Modules::find($_alias, $controller.module, 'config/')
     ($path2) and ($params = array_merge(Modules::load($file, $path2), $params))
-
     if $path is false
 
       @_load_class($library, $params, $object_name)
@@ -166,7 +159,7 @@ class system.core.Loader
         writeable   : false
         value       : create_mixin($controller, $Library, $controller, $params)
 
-    return $controller[$_alias]
+    $controller[$_alias]
 
   #
   # Load an array of libraries
@@ -203,7 +196,7 @@ class system.core.Loader
       return $controller[$_alias]
 
     # check module
-    [$path, $_model] = Modules::find($model, @_module, 'models/')
+    [$path, $_model] = Modules::find($model, @controller.module, 'models/')
 
     if $path is false
 
@@ -212,7 +205,7 @@ class system.core.Loader
 
     else
 
-      system.core.Model? or require(BASEPATH+'core/Model'+EXT)
+      system.core.Model? or require(SYSPATH+'core/Model'+EXT)
 
       if $connect isnt false and not system.db.DbDriver?
         if $connect is true then $connect = ''
@@ -226,7 +219,7 @@ class system.core.Loader
 
       @_models.push $_alias
 
-    return $controller[$_alias]
+    $controller[$_alias]
 
   #
   # Load an array of models
@@ -288,7 +281,7 @@ class system.core.Loader
         if $db_conn is true then $db_conn = ''
         @controller.load.database $db_conn, false, true
 
-      system.core.Model? or require(BASEPATH+'core/Model'+EXT)
+      system.core.Model? or require(SYSPATH+'core/Model'+EXT)
 
       $Model = require($mod_path+'models/'+$path+$model+EXT)
       defineProperty @controller, $name
@@ -318,9 +311,9 @@ class system.core.Loader
     if system.db.DbDriver? and $return is false and $active_record is null and @controller['db']?
       return false
 
-    $params = $params || Exspresso.server._db
+    $params = $params || @controller.server._db
 
-    $db = require(BASEPATH+'db/factory'+EXT)($params, $active_record)
+    $db = require(SYSPATH+'db/factory'+EXT)($params, $active_record)
 
     @controller.queue ($next) -> $db.initialize $next
 
@@ -357,10 +350,9 @@ class system.core.Loader
     else
       $db = @database($params, true)
 
-    require(BASEPATH + 'db/Forge' + EXT)
-    require BASEPATH + 'db/Utility'+ EXT
-    $class = require(BASEPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
-    # ex: ExspressoDb_sqlite_utility
+    require SYSPATH + 'db/Forge' + EXT
+    require SYSPATH + 'db/Utility'+ EXT
+    $class = require(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
 
     if $return is true then return new $class(@controller, $db)
     defineProperty @controller, 'dbutil'
@@ -383,8 +375,8 @@ class system.core.Loader
     else
       $db = @database($params, true)
 
-    require(BASEPATH + 'db/Forge' + EXT)
-    $class = require(BASEPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
+    require(SYSPATH + 'db/Forge' + EXT)
+    $class = require(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
 
     if $return is true then return new $class(@controller, $db)
     defineProperty @controller, 'dbforge'
@@ -407,7 +399,7 @@ class system.core.Loader
 
     $_alias = strtolower(end(explode('/', $module)))
     @controller[$_alias] = Modules::load(array($module , $params))
-    return @controller[$_alias]
+    @controller[$_alias]
 
 
   #
@@ -435,13 +427,9 @@ class system.core.Loader
 
     if (is_array($plugin)) then return @plugins($plugin)
 
-    if not @_plugins? then @_plugins = {}
+    return if @_plugins[$plugin]?
 
-    if @_plugins[$plugin]?
-      return
-
-    [$path, $_plugin] = Modules::find($plugin+'_pi', @_module, 'plugins/')
-
+    [$path, $_plugin] = Modules::find($plugin+'_pi', @controller.module, 'plugins/')
     if ($path is false) then return
 
     Modules::load($_plugin, $path)
@@ -537,16 +525,15 @@ class system.core.Loader
 
     if is_array($helper) then return @helpers($helper)
 
-    if @_helpers[$helper]? then return
+    return if @_helpers[$helper]?
 
-    [$path, $_helper] = Modules::find($helper+'_helper', @_module, 'helpers/')
-
+    [$path, $_helper] = Modules::find($helper+'_helper', @controller.module, 'helpers/')
     if $path is false then return @_application_helper($helper)
 
     @_helpers[$_helper] = Modules::load($_helper, $path)
 
     # expose the helpers to template engine
-    Exspresso.server.setHelpers @_helpers[$helper]
+    @controller.server.setHelpers @_helpers[$helper]
 
   #
   # Load an array of helpers
@@ -580,7 +567,7 @@ class system.core.Loader
       # Is this a helper extension request?
       if file_exists($ext_helper)
 
-        $base_helper = BASEPATH+'helpers/'+$helper+EXT
+        $base_helper = SYSPATH+'helpers/'+$helper+EXT
         if not file_exists($base_helper)
           show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
@@ -600,7 +587,7 @@ class system.core.Loader
       show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
 
     # expose the helpers to template engine
-    Exspresso.server.setHelpers @_helpers[$helper]
+    @controller.server.setHelpers @_helpers[$helper]
 
   #
   # Load a module i18n file
@@ -634,7 +621,7 @@ class system.core.Loader
   #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
 
-    @controller.config.load $file, $use_sections, $fail_gracefully, @_module
+    @controller.config.load $file, $use_sections, $fail_gracefully, @controller.module
 
 
   #
@@ -652,7 +639,7 @@ class system.core.Loader
 
     if not system.core.Driver?
       # we aren't instantiating an object here, that'll be done by the Library itself
-      require BASEPATH+'lib/Driver'+EXT
+      require SYSPATH+'lib/Driver'+EXT
 
 
     # We can save the loader some time since Drivers will #always# be in a subfolder,
@@ -680,8 +667,7 @@ class system.core.Loader
     array_unshift(@_helper_paths, $path)
 
     #  Add config file path
-    $config = @_get_component('config')
-    array_unshift($config._config_paths, $path)
+    array_unshift(@controller.config.paths, $path)
     return
 
 
@@ -689,7 +675,7 @@ class system.core.Loader
   #
   # Get Package Paths
   #
-  # Return a list of all package paths, by default it will ignore BASEPATH.
+  # Return a list of all package paths, by default it will ignore SYSPATH.
   #
   # @access	public
   # @param	string
@@ -710,13 +696,12 @@ class system.core.Loader
   # @return	type
   #
   removePackagePath: ($path = '', $remove_config_path = true) ->
-    $config = @_get_component('config')
 
     if $path is ''
       $void = array_shift(@_library_paths)
       $void = array_shift(@_model_paths)
       $void = array_shift(@_helper_paths)
-      $void = array_shift($config._config_paths)
+      $void = array_shift(@controller.config.paths)
 
     else
       $path = rtrim($path, '/') + '/'
@@ -725,14 +710,14 @@ class system.core.Loader
         if ($key = array_search($path, @[$var])) isnt false
           delete @[$var][$key]
 
-      if ($key = array_search($path, $config._config_paths)) isnt false
-        delete $config._config_paths[$key]
+      if ($key = array_search($path, $config.paths)) isnt false
+        delete $config.paths[$key]
 
     #  make sure the application default paths are still in the array
-    @_library_paths = array_unique(array_merge(@_library_paths, [APPPATH, BASEPATH]))
-    @_helper_paths = array_unique(array_merge(@_helper_paths, [APPPATH, BASEPATH]))
+    @_library_paths = array_unique(array_merge(@_library_paths, [APPPATH, SYSPATH]))
+    @_helper_paths = array_unique(array_merge(@_helper_paths, [APPPATH, SYSPATH]))
     @_model_paths = array_unique(array_merge(@_model_paths, [APPPATH]))
-    $config._config_paths = array_unique(array_merge($config._config_paths, [APPPATH]))
+    $config.paths = array_unique(array_merge(@controller.config.paths, [APPPATH]))
     return
 
 
@@ -741,28 +726,26 @@ class system.core.Loader
   # Loader
   #
   # This function is used to load views and files.
-  # Variables are prefixed with _ to avoid symbol collision with
-  # variables made available to view files
   #
   # @access	private
   # @param	array
   # @return	void
   #
-  _load: ($_path = '', $_view = '', $_vars = {}, $_return = null) ->
+  _load: ($path = '', $view = '', $vars = {}, $next = null) ->
 
     #  Set the path to the requested file
-    if $_path is ''
-      $_ext = path.extname($_view)
-      $_file = if ($_ext is '') then $_view + config_item('view_ext') else $_view
-      $_path = rtrim(@_view_path, '/') + '/' + $_file
+    if $path is ''
+      $ext = path.extname($view)
+      $file = if ($ext is '') then $view + config_item('view_ext') else $view
+      $path = rtrim(@_view_path, '/') + '/' + $file
 
     else
-      $_x = explode('/', $_path)
-      $_file = end($_x)
+      $x = explode('/', $path)
+      $file = end($x)
 
 
-    if not file_exists($_path)
-      show_error('Unable to load the requested file: %s', $_file)
+    if not file_exists($path)
+      show_error('Unable to load the requested file: %s', $file)
 
     #
     # Extract and cache variables
@@ -772,15 +755,15 @@ class system.core.Loader
     # the two types and cache them so that views that are embedded within
     # other views can have access to these variables.
     #
-    if is_array($_vars)
-      @_cached_vars = array_merge(@_cached_vars, $_vars)
+    if is_array($vars)
+      @_cached_vars = array_merge(@_cached_vars, $vars)
 
 
-    @controller.render $_path, @_cached_vars, ($err, $html) =>
+    @controller.render $path, @_cached_vars, ($err, $html) =>
 
-      log_message('debug', 'File loaded: ' + $_path)
-      if $_return isnt null
-        $_return $err, $html
+      log_message('debug', 'File loaded: ' + $path)
+      if $next isnt null
+        $next $err, $html
       else
         @controller.output.appendOutput $html
         @controller.next()
@@ -819,7 +802,7 @@ class system.core.Loader
 
       #  Is this a class extension request?
       if file_exists($subclass)
-        $baseclass = BASEPATH + 'lib/' + ucfirst($class) + EXT
+        $baseclass = SYSPATH + 'lib/' + ucfirst($class) + EXT
 
         if not file_exists($baseclass)
           log_message('error', "Unable to load the requested class: %s", $class)
@@ -840,7 +823,7 @@ class system.core.Loader
           return
 
         require($baseclass)
-        $Class = require($subclass)
+        $klass = require($subclass)
         @_loaded_files.push $subclass
 
         return @_init_class($class, config_item('subclass_prefix'), $params, $object_name)
@@ -869,9 +852,9 @@ class system.core.Loader
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
 
-        $Class = require($filepath)
+        $klass = require($filepath)
         @_loaded_files.push $filepath
-        return @_init_class($class, '', $params, $object_name, $Class)
+        return @_init_class($class, '', $params, $object_name, $klass)
 
 
     #  END FOREACH
@@ -900,17 +883,16 @@ class system.core.Loader
   # @param	string	an optional object name
   # @return	null
   #
-  _init_class : ($class, $prefix = '', $config = false, $object_name = null, $Class) ->
+  _init_class : ($class, $prefix = '', $config = false, $object_name = null, $klass) ->
 
     #  Is there an associated config file for this class?  Note: these should always be lowercase
     if $config is false
       $config = {}
     #  Fetch the config paths containing any package paths
-    $config_component = @_get_component('config')
-    if Array.isArray($config_component._config_paths)
+    if Array.isArray(@controller.config.paths)
       #  Break on the first found file, thus package files
       #  are not overridden by default paths
-      for $path in $config_component._config_paths
+      for $path in @controller.config.paths
         #  We test for both uppercase and lowercase, for servers that
         #  are case-sensitive with regard to file names. Check for environment
         #  first, global next
@@ -962,13 +944,11 @@ class system.core.Loader
     #  Save the class name and object name
     @_classes[$class] = $classvar
     #  Instantiate the class
-    #$Class = global[$name]
-    #$Class = system.lib[$name]
 
     defineProperty $controller, $classvar,
       enumerable  : true
       writeable   : false
-      value       : create_mixin($controller, $Class, $controller, $config)
+      value       : create_mixin($controller, $klass, $controller, $config)
 
     $controller[$classvar]
 
@@ -988,8 +968,8 @@ class system.core.Loader
     @_application_autoloader() # application autoload first
     $path = false
 
-    if (@_module)
-      [$path, $file] = Modules::find('autoload', @_module, 'config/')
+    if (@controller.module)
+      [$path, $file] = Modules::find('autoload', @controller.module, 'config/')
 
     #  module autoload file
     $autoload = {}
@@ -1007,7 +987,7 @@ class system.core.Loader
     #  autoload config
     if $autoload['config']?
       for $config in $autoload['config']
-        @config($config)
+        @controller.config($config)
 
     #  autoload helpers, plugins, languages
     for $type in ['helper', 'plugin', 'language']
@@ -1044,7 +1024,7 @@ class system.core.Loader
     #  autoload module controllers
     if $autoload['modules']?
       for $controller in $autoload['modules']
-        ($controller isnt @_module) and @module($controller)
+        ($controller isnt @controller.module) and @module($controller)
 
     return
   #
@@ -1105,29 +1085,6 @@ class system.core.Loader
       @model $autoload['model']
 
     return
-
-  #
-  # Object to Array
-  #
-  # Takes an object as input and converts the class variables to array key/vals
-  #
-  # @access	private
-  # @param	object
-  # @return	array
-  #
-  _object_to_array : ($object) ->
-    $object
-
-
-  #
-  # Get a reference to a specific library or model
-  #
-  # @access	private
-  # @return	bool
-  #
-  _get_component : ($component) ->
-    @controller[$component]
-
 
   #
   # Prep filename

@@ -15,7 +15,7 @@
 #
 #
 
-<% if not defined('BASEPATH') then die ('No direct script access allowed')
+<% if not defined('SYSPATH') then die ('No direct script access allowed')
 #
 # CodeIgniter
 #

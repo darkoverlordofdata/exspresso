@@ -46,7 +46,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #
   constructor: (@parent) ->
 
-    Exspresso.load.model('user/UserModel')
+    exspresso.load.model('user/UserModel')
     return
 
 
@@ -60,13 +60,13 @@ class system.lib.session.SqlSession extends require('express').session.Store
   get: ($sid, $next) ->
 
     # Ensure that we have a live database connection
-    Exspresso.db.reconnect ($err) =>
+    exspresso.db.reconnect ($err) =>
 
       return $next($err) if log_message('error', 'Session::get connect %s', $err) if $err
 
       # Get the record for this session
-      Exspresso.db.where 'sid', $sid
-      Exspresso.db.get @parent.sess_table_name, ($err, $result) ->
+      exspresso.db.where 'sid', $sid
+      exspresso.db.get @parent.sess_table_name, ($err, $result) ->
 
         return $next($err) if log_message('error', 'Session::get %s %s', $sid, $err) if $err
 
@@ -93,13 +93,13 @@ class system.lib.session.SqlSession extends require('express').session.Store
   set: ($sid, $session, $next) ->
 
     # Ensure that we have a live database connection
-    Exspresso.db.reconnect ($err) =>
+    exspresso.db.reconnect ($err) =>
 
       return $next($err) if log_message('error', 'Session::set connect %s', $err) if $err
 
       # Get the record for this session
-      Exspresso.db.where 'sid', $sid
-      Exspresso.db.get @parent.sess_table_name, ($err, $result) =>
+      exspresso.db.where 'sid', $sid
+      exspresso.db.get @parent.sess_table_name, ($err, $result) =>
 
         return $next($err) if log_message('error', 'Session::set %s %s', $sid, $err) if $err
 
@@ -116,15 +116,15 @@ class system.lib.session.SqlSession extends require('express').session.Store
 
           # Add primary key data so we can insert a new record
           $data['sid'] = $sid
-          Exspresso.db.insert @parent.sess_table_name, $data, ($err) =>
+          exspresso.db.insert @parent.sess_table_name, $data, ($err) =>
             return $next($err) if log_message('error', 'Session::set insert %s', $err) if $err
             $next()
 
         else
 
           # Just update the data
-          Exspresso.db.where 'sid', $sid
-          Exspresso.db.update @parent.sess_table_name, $data, ($err) =>
+          exspresso.db.where 'sid', $sid
+          exspresso.db.update @parent.sess_table_name, $data, ($err) =>
             return $next($err) if log_message('error', 'Session::set update %s', $err) if $err
             $next()
 
@@ -138,13 +138,13 @@ class system.lib.session.SqlSession extends require('express').session.Store
   destroy: ($sid, $next) ->
 
     # Ensure that we have a live database connection
-    Exspresso.db.reconnect ($err) =>
+    exspresso.db.reconnect ($err) =>
 
       return $next($err) if log_message('error', 'Session::destroy connect %s', $err) if $err
 
       # Nuke the record for this session
-      Exspresso.db.where 'sid', $sid
-      Exspresso.db.delete @parent.sess_table_name, =>
+      exspresso.db.where 'sid', $sid
+      exspresso.db.delete @parent.sess_table_name, =>
         return $next($err) if log_message('error', 'Session::destroy delete %s', $err) if $err
         $next()
 
@@ -159,7 +159,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #
   installCheck: ->
 
-    Exspresso.usermodel.installCheck()
+    exspresso.usermodel.installCheck()
     @
 
   #

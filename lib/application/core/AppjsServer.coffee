@@ -175,7 +175,7 @@ class application.core.AppjsServer extends system.core.Server
   #   called by the core/Config class constructor
   #
   # @access	public
-  # @param	object Exspresso.config
+  # @param	object exspresso.config
   # @return	void
   #
   config: ($config) ->
@@ -196,7 +196,7 @@ class application.core.AppjsServer extends system.core.Server
   #   called by the core/Output class constructor
   #
   # @access	public
-  # @param	object Exspresso.output
+  # @param	object exspresso.output
   # @return	void
   #
   output: ($output) ->
@@ -214,7 +214,7 @@ class application.core.AppjsServer extends system.core.Server
   #   called by the core/Input class constructor
   #
   # @access	public
-  # @param	object Exspresso.input
+  # @param	object exspresso.input
   # @return	void
   #
   input: ($input) ->
@@ -232,7 +232,7 @@ class application.core.AppjsServer extends system.core.Server
   #   called by the core/URI class constructor
   #
   # @access	public
-  # @param	object Exspresso.input
+  # @param	object exspresso.input
   # @return	void
   #
   uri: ($uri) ->
@@ -248,7 +248,7 @@ class application.core.AppjsServer extends system.core.Server
   #   called by the lib/Session/Session class constructor
   #
   # @access	public
-  # @param	object Exspresso.input
+  # @param	object exspresso.input
   # @return	void
   #
   session: ($session) ->
@@ -296,7 +296,7 @@ class application.core.AppjsServer extends system.core.Server
         path:         value: $req.pathname
 
 
-      Exspresso.config.config.base_url = $req.protocol+'://'+ $req.host
+      exspresso.config.config.base_url = $req.protocol+'://'+ $req.host
 
 
       $res.writeHead = ($status, $headers) ->

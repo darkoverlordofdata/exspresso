@@ -331,8 +331,8 @@ class system.db.Driver
     $driver = 'Exspresso' + ucfirst(@dbdriver) + 'Result'
 
     if not class_exists($driver)
-      require BASEPATH + 'db/Result' + EXT
-      $driver = require(BASEPATH + 'db/drivers/' + @dbdriver + '/' + ucfirst(@dbdriver) + 'Result' + EXT)
+      require SYSPATH + 'db/Result' + EXT
+      $driver = require(SYSPATH + 'db/drivers/' + @dbdriver + '/' + ucfirst(@dbdriver) + 'Result' + EXT)
     else
       $driver = global[$driver]
 
@@ -929,7 +929,7 @@ class system.db.Driver
 
 
     if not class_exists('ExspressoDbCache')
-      if not require(BASEPATH + 'database/Cache' + EXT)
+      if not require(SYSPATH + 'database/Cache' + EXT)
         return @cache_off()
 
 

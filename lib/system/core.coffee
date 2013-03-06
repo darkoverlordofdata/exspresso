@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  Common.coffee
+#  core.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -29,8 +29,9 @@
 #
 
 #
-# Common Functions
+# the expresso core module
 #
+
 format            = require('util').format
 path              = require('path')
 fs                = require('fs')
@@ -40,12 +41,11 @@ fclose            = fs.closeSync
 unlink            = fs.unlinkSync
 chmod             = fs.chmodSync
 
-_config           = []    # [0] is reference to config array
-_config_item      = {}    # config item cache
+_config           = null  # contents of .lib/application/config/config.coffee
 _classes          = {}    # singleton class cache
-_is_loaded        = {}    # class loaded flag
-_class            = {}    # metadata cache
-__PROTO__         = true  # if true, set using the '__proto__' property
+_is_loaded        = {}    # singleton class loaded flag
+_class            = {}    # class metadata cache
+__PROTO__         = true  # if true, set mixin using the '__proto__' property
 
 #
 # privately dereference some Object utility members
@@ -67,8 +67,45 @@ exports.defineProperty    = Object.defineProperty
 exports.freeze            = Object.freeze
 exports.keys              = Object.keys
 
+
+
 #
-# Init Namespaces
+# Getter
+#
+# @access	public
+# @param	object	property definition
+# @return	object
+#
+Function::getter = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {get: $def[$name]}
+
+#
+# Setter
+#
+# @access	public
+# @param	object	property definition
+# @return	object
+#
+Function::setter = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {set: $def[$name]}
+
+#
+# Define - read only attribute
+#
+# @access	public
+# @param	object	property definition
+# @return	object
+#
+Function::define = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {writeable: false, enumerable: ($name[0] isnt '_'), value: $def[$name]}
+
+
+
+#
+# Namespaces structs
 #
 define 'system'           # ./lib/system
   core        : {}        # ./lib/system/core
@@ -88,8 +125,14 @@ define 'application'      # ./lib/application
   lib         : {}        # ./lib/application/lib
   models      : {}        # ./lib/application/models
 
+#
+# Load the framework constants
+#
+if file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
+  require APPPATH+'config/'+ENVIRONMENT+'/constants.coffee'
+else
+  require APPPATH+'config/constants.coffee'
 
-#  ------------------------------------------------------------------------
 
 #
 # Tests for file writability
@@ -130,10 +173,9 @@ exports.is_really_writable = is_really_writable = ($file) ->
 #
 # @access	public
 # @param	string	the class name being requested
-# @param	string	the class name prefix
 # @return	object  constructor param
 #
-exports.core = core = ($class, $param) ->
+exports.core = core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
   if typeof $class is 'string'
     $prefix = ''
@@ -147,10 +189,9 @@ exports.core = core = ($class, $param) ->
 
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
-  for $path in [BASEPATH, APPPATH]
+  for $path in [SYSPATH, APPPATH]
     if file_exists($path + 'core/' + $prefix + $class + EXT)
       $klass = require($path + 'core/' + $prefix + $class + EXT)
-
       break
 
   #  Is the request a class extension?  If so we load it too
@@ -163,8 +204,7 @@ exports.core = core = ($class, $param) ->
 
   #  Keep track of what we just loaded
   is_loaded($class)
-
-  _classes[$class] = new $klass($param)
+  _classes[$class] = new $klass($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
 
 
 #
@@ -180,8 +220,7 @@ exports.is_loaded = is_loaded = ($class = '') ->
 
   if $class isnt ''
     _is_loaded[$class.toLowerCase()] = $class
-
-  return _is_loaded
+  _is_loaded
 
 
 #
@@ -192,7 +231,6 @@ exports.is_loaded = is_loaded = ($class = '') ->
 #
 # @access	public
 # @param	string	the class name being requested
-# @param	string	the class name prefix
 # @param  object  list of params to pass to the constructor
 # @return	object
 #
@@ -205,34 +243,26 @@ exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) -
     $class = $class.class
 
   #  Does the class exist?  If so, we're done...
-  if system.core[$prefix+$class]?
-    return new system.core[$prefix+$class]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
-
-  $name = false
+  $klass = system.core[$prefix+$class] or application.core[$prefix+$class]
+  if $klass?
+    return new $klass($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
 
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
-  for $path in [BASEPATH, APPPATH]
-    if file_exists($path + 'core/' + $class + EXT)
-      $name = $prefix + $class
-
-      if not system.core[$name]?
-        require($path + 'core/' + $class + EXT)
-
+  for $path in [SYSPATH, APPPATH]
+    if file_exists($path + 'core/' + $prefix + $class + EXT)
+      $klass = require($path + 'core/' + $prefix + $class + EXT)
       break
 
   #  Is the request a class extension?  If so we load it too
   if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
-    $name = config_item('subclass_prefix') + $class
-
-    if not system[$directory][$name]?
-      require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
-  if not system.core[$name]?
-    die 'Unable to locate the specified class: ' + $class + EXT
+  if not $klass?
+    die 'new_core: Unable to locate the specified class ' + $class + EXT
 
-  return new system.core[$name]($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+  new $klass($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
 
 #
 # Loads a new core object
@@ -242,8 +272,6 @@ exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) -
 #
 # @access	public
 # @param	string	the class name being requested
-# @param	string	the directory where the class should be found
-# @param	string	the class name prefix
 # @param  object  ExspressoController object
 # @return	object
 #
@@ -255,36 +283,25 @@ exports.load_core = load_core = ($class, $controller) ->
     $prefix = $class.subclass
     $class = $class.class
 
-  $klass = application.core[$prefix+$class] or system.core[$prefix+$class]
+  $klass = system.core[$prefix+$class] or application.core[$prefix+$class]
   #  Does the class exist?  If so, we're done...
   if $klass?
     return create_mixin($controller, $klass, $controller)
 
-  $name = false
-  $root = null
-
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
-  for $path in [BASEPATH, APPPATH]
-    $root = (if $path is BASEPATH then system else application)
+  for $path in [SYSPATH, APPPATH]
     if file_exists($path + 'core/' + $class + EXT)
-      $name = $prefix + $class
-
-      if not $root.lib[$name]?
-        $klass = require($path + 'core/' + $class + EXT)
-
+      $klass = require($path + 'core/' + $prefix + $class + EXT)
       break
 
   #  Is the request a class extension?  If so we load it too
   if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
-    $name = config_item('subclass_prefix') + $class
-
-    if not system.lib[$name]?
-      $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
   if not $klass?
-    die 'Unable to locate the specified class: ' + $class + EXT
+    die 'load_core: Unable to locate the specified class ' + $class + EXT
 
   create_mixin($controller, $klass, $controller)
 
@@ -300,37 +317,33 @@ exports.load_core = load_core = ($class, $controller) ->
 #
 exports.get_config = get_config = ($replace = {}) ->
 
-  if _config[0]?
-    return _config[0]
+  return _config if _config?
 
   #  Fetch the config file
   $found = false
-  $config = {}
+  _config = {}
 
-  $check_locations = ['config', ENVIRONMENT + '/config' ]
-  for $file in $check_locations
+  # merge together config, overlaying with environment specific values
+  $check_locations = [APPPATH, APPPATH + ENVIRONMENT + '/' ]
 
-    $file_path = APPPATH + 'config/' + $file + EXT
+  for $location in $check_locations
+
+    $file_path = $location + 'config/config' + EXT
     if file_exists($file_path)
       $found = true
-      $config = array_merge($config, require($file_path))
-
+      _config = array_merge(_config, require($file_path))
 
   if not $found
     die 'The configuration file does not exist.'
 
-
   #  Does the $config array exist in the file?
-  if not $config?  #or  not is_array($config)
+  if not _config?
     die 'Your config file does not appear to be formatted correctly.'
 
-
   #  Are any values being dynamically replaced?
-  for $val, $key of $replace
-    if $config[$key]?
-      $config[$key] = $val
+  _config[$key] = $val for $val, $key of $replace when _config[$key]?
 
-  return _config[0] = $config
+  _config
 
 #
 # Returns the specified config item
@@ -340,23 +353,16 @@ exports.get_config = get_config = ($replace = {}) ->
 #
 exports.config_item = config_item = ($item) ->
 
-  if not _config_item[$item]?
-    $config = get_config()
+  get_config() if not _config?
+  _config[$item] || ''
 
-    if not $config[$item]?
-      return false
-
-    _config_item[$item] = $config[$item]
-
-
-  return _config_item[$item]
 
 #
 # Error Handler
 #
 # This function lets us invoke the exception class and
 # display errors using the standard error template located
-# in application/errors/errors.php
+# in application/errors/5xx.eco
 # This function will send the error page directly to the
 # browser and exit.
 #
@@ -367,9 +373,9 @@ exports.show_error = show_error = ($args...) ->
   if not $args[0]? then return false
 
   if typeof $args[0] is 'string'
-    core('Exceptions').showError format.apply(undefined, $args), '5xx', 500
+    core('Exceptions').show5xx format.apply(undefined, $args), '5xx', 500
   else
-    core('Exceptions').showError $args[0], '5xx', 500
+    core('Exceptions').show5xx $args[0], '5xx', 500
 
 #
 # 404 Page Handler
@@ -395,18 +401,18 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
 #
 exports.log_message = log_message = ($level = 'error', $args...) ->
   return true if config_item('log_threshold') is 0
-  core('Log').writeLog $level, format.apply(undefined, $args)
+  core('Log').write $level, format.apply(undefined, $args)
 
 #
-# Set HTTP Status Header
+# Get HTTP Status Text
 #
 # @access	public
 # @param	int		the status code
 # @param	string
 # @return	void
 #
-exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
-  $stati =
+exports.get_status_text = get_status_text = ($code = 200, $text = '') ->
+  $stat =
     200:'OK',
     201:'Created',
     202:'Accepted',
@@ -447,18 +453,8 @@ exports.set_status_header = set_status_header = ($code = 200, $text = '') ->
     504:'Gateway Timeout',
     505:'HTTP Version Not Supported'
 
-
-  if $code is '' or  not is_numeric($code)
-    show_error('Status codes must be numeric')
-
-
-  if $stati[$code]?  and $text is ''
-    $text = $stati[$code]
-
-
-  if $text is ''
-    show_error('No status text available.  Please check your status code number or supply your own message text.')
-
+  return '' if $code is '' or  not is_numeric($code)
+  $text = $stat[$code] if $stat[$code]?  and $text is ''
   $text
 
 #
@@ -500,30 +496,6 @@ exports.copyOwnProperties = ($dst, $src) ->
     $properties[$key] = getOwnPropertyDescriptor($src, $key)
 
   defineProperties $dst, $properties
-
-
-#
-# Define Getter
-#
-# @access	public
-# @param	object	property definition
-# @return	object
-#
-Function::getter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {get: $def[$name]}
-
-#
-# Define Setter
-#
-# @access	public
-# @param	object	property definition
-# @return	object
-#
-Function::setter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {set: $def[$name]}
-
 
 #
 # Define Class Metadata
@@ -630,14 +602,36 @@ exports.create_mixin = ($object, $args...) ->
   $this
 
 
-#  ------------------------------------------------------------------------
 #
-# Export module to the global namespace
+# Export the core module to the global namespace
 #
 #
 for $name, $body of module.exports
   define $name, $body
 
 
-# End of file Common.coffee
-# Location: ./system/core/Common.coffee
+#
+# Pre-load the system.core classes
+#
+require SYSPATH+'core/Object'+EXT
+require SYSPATH+'core/Exspresso'+EXT
+require SYSPATH+'core/Benchmark'+EXT
+require SYSPATH+'core/Config'+EXT
+require SYSPATH+'core/Controller'+EXT
+require SYSPATH+'core/Exceptions'+EXT
+require SYSPATH+'core/Hooks'+EXT
+require SYSPATH+'core/I18n'+EXT
+require SYSPATH+'core/Input'+EXT
+require SYSPATH+'core/Loader'+EXT
+require SYSPATH+'core/Log'+EXT
+require SYSPATH+'core/Model'+EXT
+require SYSPATH+'core/Modules'+EXT
+require SYSPATH+'core/Output'+EXT
+require SYSPATH+'core/Router'+EXT
+require SYSPATH+'core/Security'+EXT
+require SYSPATH+'core/Server'+EXT
+require SYSPATH+'core/URI'+EXT
+require SYSPATH+'core/Utf8'+EXT
+
+# End of file core.coffee
+# Location: ./system/core.coffee

@@ -41,7 +41,7 @@ if not function_exists('stylesheet')
 #
 if not function_exists('javascript_tag')
   exports.javascript_tag = javascript_tag = ($src = '', $type = 'text/javascript') ->
-    $src = Exspresso.config.slashItem('base_url')+$src
+    $src = exspresso.config.slashItem('base_url')+$src
     "<script src=\"#{$src}\" type=\"#{$type}\"></script>"
 
 #

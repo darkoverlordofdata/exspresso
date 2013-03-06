@@ -460,7 +460,7 @@ class ExspressoEncrypt
   sha1 : ($str) ->
     if not function_exists('sha1')
       if not function_exists('mhash')
-        require(BASEPATH + 'lib/Sha1' + EXT)
+        require(SYSPATH + 'lib/Sha1' + EXT)
         $SH = new ExspressoSHA
         return $SH.generate($str)
         

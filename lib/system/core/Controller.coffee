@@ -31,7 +31,9 @@
 # child objects, they will run in the Controller context.
 #
 
-class system.core.Controller
+require SYSPATH+'core/Object'+EXT
+
+class system.core.Controller extends system.core.Object
 
   #
   # Initialize Controller objects
@@ -72,16 +74,11 @@ class system.core.Controller
       $_SERVER    : {writeable: false, enumerable: true, value: $req.server}  # server properties
 
       # methods
-      queue       : {writeable: false, enumerable: true, value: @queue}       # accessor method for @_queue
       redirect    : {writeable: false, enumerable: true, value: @redirect}    # redirect url
       render      : {writeable: false, enumerable: true, value: @render}      # render view
-      run         : {writeable: false, enumerable: true, value: @run}         # run the queue
-
-      # properties
-      _queue      : {writeable: false, enumerable: false, value: []}          # async queue
 
       # Assign all the class objects that were instantiated by the
-      # bootstrap file (Exspresso.coffee) to local class variables
+      # bootstrap file (exspresso.coffee) to local class variables
       # so that Exspresso can run as one big super object.
       bm          : {writeable: false, enumerable: true, value: $bench}       # system.core.Benchmark
       config      : {writeable: false, enumerable: true, value: $config}      # system.core.Config
@@ -119,7 +116,7 @@ class system.core.Controller
       return show_error($err) if $err
       @res.send $html
 
-  #
+  ###
   # Async job queue for the controller
   #
   # @access	public
@@ -158,7 +155,7 @@ class system.core.Controller
 
     $iterate()
 
-  #
+  ###
   # Redirect to another url
   #
   # @access	public

@@ -37,7 +37,7 @@
 #       * Session
 #       * URI
 #
-require BASEPATH+'core/Server.coffee'
+require SYSPATH+'core/Server.coffee'
 
 class application.core.ExpressServer extends system.core.Server
 
@@ -115,8 +115,8 @@ class application.core.ExpressServer extends system.core.Server
     #  Is there a "post_system" hook?
     # ------------------------------------------------------
     #
-    Exspresso.callHook 'post_system'
-    Exspresso.BM.mark 'total_execution_time_end'
+    exspresso.callHook 'post_system'
+    exspresso.BM.mark 'total_execution_time_end'
 
   #
   # Config registration
@@ -124,7 +124,7 @@ class application.core.ExpressServer extends system.core.Server
   #   called by the Server class constructor
   #
   # @access	public
-  # @param	object Exspresso.config
+  # @param	object exspresso.config
   # @return	void
   #
   config: ($config) ->
@@ -187,7 +187,7 @@ class application.core.ExpressServer extends system.core.Server
   #
   patch: -> ($req, $res, $next) =>
 
-    Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers['host']
+    exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers['host']
 
     #$end = $res.end
     #$res.end = ($data, $encoding) ->

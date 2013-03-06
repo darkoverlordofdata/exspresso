@@ -50,13 +50,13 @@ class system.core.Output
   # @access	public
   # @param object   http request object
   # @param object   http response object
-  # @param object   ExspressoHooks
-  # @param object   ExspressoBenchmark
-  # @param object   ExspressoConfig
-  # @param object   ExspressoURI
+  # @param object   system.core.Benchmark
+  # @param object   system.core.Hooks
+  # @param object   system.core.Config
+  # @param object   system.core.URI
   # @return	void
   #
-  constructor: ($req, $res, $hooks, $bench, $config, $uri) ->
+  constructor: ($req, $res, $bench, $hooks, $config, $uri) ->
 
     defineProperties @,
       req:      {writeable: false, value: $req}
@@ -139,14 +139,6 @@ class system.core.Output
   # @return	void
   #
   setHeader : ($header, $replace = true) ->
-    #  If zlib.output_compression is enabled it will compress the output,
-    #  but it will not modify the content-length header to compensate for
-    #  the reduction, causing the browser to hang waiting for more data.
-    #  We'll just skip content-length in those cases.
-
-    if @_zlib_oc and strncasecmp($header, 'content-length', 14) is 0
-      return
-
     @_headers.push [$header, $replace]
     @
 
@@ -240,12 +232,6 @@ class system.core.Output
   # @return	mixed
   #
   display: ($controller = null, $output = '') ->
-    #
-    # ------------------------------------------------------
-    #  Is there a "post_controller" hook?
-    # ------------------------------------------------------
-    #
-    @hooks.callHook 'post_controller', @
 
     #  Set the output data
     if $output is ''
@@ -266,12 +252,6 @@ class system.core.Output
       $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
       $output = $output.replace(/{elapsed_time}/g, $elapsed)
       $output = $output.replace(/{memory_usage}/g, $memory)
-
-    #  Is compression requested?
-    #if @config.item('compress_output') is true and @_zlib_oc is false
-    #  if extension_loaded('zlib')
-    #    if @$_SERVER['HTTP_ACCEPT_ENCODING']?  and strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') isnt false
-    #      ob_start('ob_gzhandler')
 
     #  Are there any server headers to send?
     if count(@_headers) > 0
@@ -318,6 +298,7 @@ class system.core.Output
     @_final_output = ''
     log_message('debug', "Final output sent to browser")
     log_message('debug', "Total execution time: " + $elapsed)
+    return
 
   #
   # Update/serve a cached file

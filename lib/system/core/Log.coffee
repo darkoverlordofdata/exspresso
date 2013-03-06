@@ -30,18 +30,15 @@
 
 class system.core.Log
 
-  fs              = require('fs')                         # Standard POSIX file i/o
-  util            = require('util')
+  fs              = require('fs')   # Standard POSIX file i/o
 
-  _log_path       : ''
-  _threshold      : 1
-  _date_fmt       : 'Y-m-d H:i:s'
-  _enabled        : true
-  _levels:
-    ERROR         : 1
-    DEBUG         : 2
-    INFO          : 3
-    ALL           : 4
+  _enabled        : true            # Use logging?
+  _log_path       : ''              # Path to the log file
+  _threshold      : 1               # Current threshhold level
+  _levels:                          # Threshold Levels:
+    ERROR         : 1               #   log only errors
+    DEBUG         : 2               #   log errors and debug entries
+    INFO          : 3               #   log everything
 
   constructor: ->
 
@@ -49,14 +46,10 @@ class system.core.Log
 
     @_log_path = $config.log_path or APPPATH + 'logs/'
 
-    if not is_dir(@_log_path) # or not is_really_writable(@_log_path)
+    if not is_dir(@_log_path) or not is_really_writable(@_log_path)
       @_enabled = false
 
-    if not isNaN($config.log_threshold)
-      @_threshold = $config.log_threshold
-
-    if $config.log_date_format isnt ''
-      @_date_ftm = $config.log_date_format
+    @_threshold = parseInt($config.log_threshold, 10)
 
   ##
   # Write Log File
@@ -68,20 +61,25 @@ class system.core.Log
   # @param	bool	whether the error is a native error
   # @return	bool
   ##
-  writeLog: ($level = 'error', $msg) ->
+  write: ($level = 'error', $msg) ->
 
 
     $level = $level.toUpperCase()
     if not @_levels[$level]? then return false
-    if @_levels[$level] > @_threshold then return false
+    if @_levels[$level] >= @_threshold then return false
 
-    $d = new Date()
-    $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d.toISOString() + ' -->' + $msg # + "\n"
+    $d = new Date
+    $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d.toISOString() + ' -->' + $msg
     console.log $message
 
     if @_enabled
-      $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
-      fs.appendFileSync $filepath, $message
+      try
+
+        $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
+        fs.appendFileSync $filepath, $message+"\n"
+
+      catch $err
+        @_enabled = false
 
     return true
 

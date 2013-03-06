@@ -32,8 +32,8 @@
 #
 # Exspresso Router Class
 #
-Modules = require(BASEPATH+'core/Modules.coffee')
-URI = require(BASEPATH+'core/URI.coffee')
+Modules = require(SYSPATH+'core/Modules.coffee')
+URI = require(SYSPATH+'core/URI.coffee')
 
 class system.core.Router
 
@@ -50,7 +50,7 @@ class system.core.Router
 
   constructor: ->
 
-    @config = Exspresso.config
+    @config = exspresso.config
     @routes = {}
     log_message('debug', "Router Class Initialized")
 

@@ -39,13 +39,12 @@
 #
 #
 
-Modules = require(BASEPATH+'core/Modules.coffee')
+Modules = require(SYSPATH+'core/Modules.coffee')
 
 class system.core.Config
 
   _is_loaded        : null  # array list of loaded config files
-  _config_paths     : null  # array list of paths to load config files at
-  config            : null  # cache of loaded config values
+  paths             : null  # array list of paths to load config files at
 
   #
   # Constructor
@@ -59,30 +58,38 @@ class system.core.Config
   # @return  boolean  if the file was successfully loaded or not
   #
   constructor :  ->
-    $this = @
 
-    defineProperties $this,
+    $config = get_config()  # Get the core config array
+
+    defineProperties @,
       _is_loaded    : {enumerable: false, writeable: false, value: []}
-      _config_paths : {enumerable: false, writeable: false, value: [APPPATH]}
-      config        : {enumerable: true,  writeable: false, value: get_config()}
+      paths         : {enumerable: false, writeable: false, value: [APPPATH]}
+      config        : {enumerable: true,  writeable: false, value: $config}
 
     log_message('debug', "Config Class Initialized")
 
 
   #
-  # Load Module Config File
+  # Load Config File
+  #
+  #   Checks in MODPATH first. If not found, there, look the APPPATH and package folders.
   #
   # @access	public
-  # @param	string	the config file name
-  # @param   boolean  if configuration values should be loaded into their own section
-  # @param   boolean  true if errors should just return false, false if an error message should be displayed
+  # @param	string  the config file name
+  # @param  boolean if configuration values should be loaded into their own section
+  # @param  boolean true if errors should just return false, false if an error message should be displayed
   # @return	boolean	if the file was loaded correctly
   #
-  load: ($file = 'config',$use_sections = false, $fail_gracefully = false) ->
+  load: ($file = 'config', $use_sections = false, $fail_gracefully = false, $module = '') ->
+
+    if typeof $use_sections is 'string'
+      [$use_sections, $fail_gracefully, $module] = [false, false, $use_sections]
+    else if typeof $fail_gracefully is 'string'
+      [$fail_gracefully, $module] = [false, $use_sections]
 
     if in_array($file, @_is_loaded, true) then return @item($file)
-    #$_module = Exspresso.router.getModule()
-    [$path, $file] = Modules::find($file, '', 'config/')
+
+    [$path, $file] = Modules::find($file, $module, 'config/')
     if $path is false
       @_application_load($file, $use_sections, $fail_gracefully)
       return @item($file)
@@ -93,27 +100,29 @@ class system.core.Config
         if $current_config[$file]?
           $current_config[$file] = array_merge($current_config[$file], $config)
         else
-          $current_config[$file] = $config
+          $current_config[$file] = array_merge($config, {})
 
       else
-        $current_config = array_merge($current_config, $config)
+        $current_config[$key] = $val for $key, $val of $config
         @_is_loaded.push $file
         return @item($file)
 
   #
   # Load Application Config File
   #
+  #   Looks in APPPATH. If not found, then look in packages (if any)
+  #
   # @access	public
   # @param	string	the config file name
-  # @param   boolean  if configuration values should be loaded into their own section
-  # @param   boolean  true if errors should just return false, false if an error message should be displayed
+  # @param  boolean if configuration values should be loaded into their own section
+  # @param  boolean true if errors should just return false, false if an error message should be displayed
   # @return	boolean	if the file was loaded correctly
   #
   _application_load : ($file = '', $use_sections = false, $fail_gracefully = false) ->
     $file = if $file is '' then 'config' else $file.replace(EXT, '')
     $loaded = false
 
-    for $path in @_config_paths
+    for $path in @paths
 
       $config = {}
       $found = false
@@ -137,10 +146,10 @@ class system.core.Config
           @config[$file] = array_merge(@config[$file], $config)
 
         else
-          @config[$file] = $config
+          @config[$file] = array_merge($config, {})
 
       else
-        @config = array_merge(@config, $config)
+        @config[$key] = $val for $key, $val of $config
 
       @_is_loaded.push $file_path
       $loaded = true
@@ -180,7 +189,7 @@ class system.core.Config
 
       $pref = @config[$index][$item]
 
-    return $pref
+    $pref
 
 
   #
@@ -198,7 +207,7 @@ class system.core.Config
     if not @config[$item]?
       return false
 
-    return rtrim(@config[$item], '/') + '/'
+    rtrim(@config[$item], '/') + '/'
 
 
   #
@@ -219,7 +228,7 @@ class system.core.Config
 
       $index = if @item('index_page') is '' then '' else @slashItem('index_page')
       $suffix = if (@item('url_suffix') is false) then '' else @item('url_suffix')
-      return @slashItem('base_url') + $index + trim($uri, '/') + $suffix
+      @slashItem('base_url') + $index + trim($uri, '/') + $suffix
 
     else
       if typeof $uri is 'object'
@@ -232,7 +241,7 @@ class system.core.Config
 
         $uri = $str
 
-      return @slashItem('base_url') + @item('index_page') + '?' + $uri
+      @slashItem('base_url') + @item('index_page') + '?' + $uri
 
 
 
@@ -244,8 +253,8 @@ class system.core.Config
   #
   systemUrl :  ->
 
-    $x = BASEPATH.split("/")
-    return @slashItem('base_url') + $x[$x.length-1] + '/'
+    $x = SYSPATH.split("/")
+    @slashItem('base_url') + $x[$x.length-1] + '/'
 
 
   #
@@ -263,7 +272,7 @@ class system.core.Config
   #
   # Assign to Config
   #
-  # This function is called by the front controller (Exspresso.php)
+  # This function is called by the front controller (exspresso.php)
   # after the Config class is instantiated.  It permits config items
   # to be assigned or overriden by variables contained in the index.php file
   #
@@ -274,6 +283,7 @@ class system.core.Config
   _assign_toconfig : ($items = {}) ->
     for $val, $key of $items
       @seItem($key, $val)
+    return
 
 
 # END Config class

@@ -59,14 +59,14 @@ class system.lib.DriverLibrary
 
     #  Is this a class extension request?
     if file_exists($file = APPPATH+'lib/'+$subdir+config_item('subclass_prefix')+$class_name+EXT)
-      if not file_exists($baseclass = BASEPATH+'lib/'+$subdir+$class_name+EXT)
+      if not file_exists($baseclass = SYSPATH+'lib/'+$subdir+$class_name+EXT)
         log_message('error', UNABLE_TO, $class_name) if show_error(UNABLE_TO, $class_name)
 
       require $baseclass
       $class = require($file)
 
     else
-      for $path in Exspresso.load.getPackagePaths(true)
+      for $path in exspresso.load.getPackagePaths(true)
         if file_exists($file = $path+'lib/'+$subdir+$class_name+EXT)
           $class = require($file)
           break

@@ -111,9 +111,9 @@ module.exports = ($params = '', active_record_override = null) ->
     active_record = active_record_override
 
 
-  DbDriver = require(BASEPATH + 'db/Driver' + EXT)
+  DbDriver = require(SYSPATH + 'db/Driver' + EXT)
   if not active_record?  or active_record is true
-    DbActiveRecord = require(BASEPATH + 'db/ActiveRecord' + EXT)
+    DbActiveRecord = require(SYSPATH + 'db/ActiveRecord' + EXT)
 
     if not system.db.DbDriver?
       class system.db.DbDriver extends DbActiveRecord
@@ -122,10 +122,10 @@ module.exports = ($params = '', active_record_override = null) ->
     class system.db.DbDriver extends DbDriver
 
 
-  if not file_exists(BASEPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
+  if not file_exists(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
     throw new Error("Unsuported DB driver: " + $params['dbdriver'])
 
-  $driver = require(BASEPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
+  $driver = require(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
 
   #  Instantiate the DB adapter
   $db = new $driver($params)

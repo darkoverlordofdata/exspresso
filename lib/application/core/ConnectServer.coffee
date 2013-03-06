@@ -28,7 +28,7 @@
 #
 #
 
-require BASEPATH+'core/Server.coffee'
+require SYSPATH+'core/Server.coffee'
 
 class application.core.ConnectServer extends system.core.Server
 
@@ -109,7 +109,7 @@ class application.core.ConnectServer extends system.core.Server
   #   called by the core/Config class constructor
   #
   # @access	public
-  # @param	object Exspresso.config
+  # @param	object exspresso.config
   # @return	void
   #
   config: ($config) ->
@@ -164,7 +164,7 @@ class application.core.ConnectServer extends system.core.Server
       host:       value: $req.headers.host
       ip:         value: $req.connection.remoteAddress
 
-    Exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers.host
+    exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers.host
 
 
     #
