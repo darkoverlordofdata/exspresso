@@ -187,7 +187,7 @@ class application.core.ExpressServer extends system.core.Server
   #
   patch: -> ($req, $res, $next) =>
 
-    exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers['host']
+    exspresso.config.setItem('base_url', $req.protocol+'://'+ $req.headers['host'])
 
     #$end = $res.end
     #$res.end = ($data, $encoding) ->

@@ -32,9 +32,9 @@
 #
 # Session Class
 #
-UserModel = require(MODPATH+'user/models/UserModel'+EXT)
+UserModel = load_class(MODPATH+'user/models/UserModel.coffee')
 
-class system.lib.Session extends system.lib.DriverLibrary
+class system.lib.session.Session extends system.lib.DriverLibrary
 
   express     = require('express')      # Express 3.0 Framework
   cookie      = require('cookie')       # cookie parsing and serialization
@@ -308,7 +308,7 @@ class system.lib.Session extends system.lib.DriverLibrary
 
 
 #  END Session Class
-module.exports = system.lib.Session
+module.exports = system.lib.session.Session
 
-#  End of file Session.php
-#  Location: .system/lib/Session.php
+#  End of file Session.coffee
+#  Location: .system/lib/session/Session.coffee

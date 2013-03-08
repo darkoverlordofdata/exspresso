@@ -40,7 +40,7 @@ class application.core.PublicController extends system.core.Controller
     @load.library 'template'
     @template.setTheme 'default', 'prettify'
     @load.database()
-    @output.enableProfiler @server._profile
+    @output.enableProfiler exspresso.profile
     @output.cache 5
 
 module.exports = application.core.PublicController

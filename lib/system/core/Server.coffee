@@ -39,12 +39,7 @@ class system.core.Server
   #
   # config settings
   #
-  _driver       : 'connect'
-  _db           : 'mysql'
-  _cache        : false
-  _csrf         : false
-  _preview      : false
-  _profile      : false
+
   _port         : 3000
   _logger       : 'dev'
   _site_name    : 'My Site'
@@ -66,32 +61,10 @@ class system.core.Server
     #
     # get the config values
     #
-    if not empty($config)
-      for $key, $var of $config
-        @['_'+$key] = $var
+    #if not empty($config)
+    #  for $key, $var of $config
+    #    @['_'+$key] = $var
 
-    #
-    # get the command line options
-    #
-    @_profile = if ENVIRONMENT is 'development' then true else false
-    $set_db = false
-    for $arg in $argv
-      if $set_db is true
-        @_db = $arg
-        $set_db = false
-
-      switch $arg
-        when '--db'         then $set_db    = true
-        when '--cache'      then @_cache    = true
-        when '--csrf'       then @_csrf     = true
-        when '--preview'    then @_preview  = true
-        when '--profile'    then @_profile  = true
-        when '--nocache'    then @_cache    = false
-        when '--nocsrf'     then @_csrf     = false
-        when '--noprofile'  then @_profile  = false
-    #
-    # the Expresso core instance
-    #
     @config get_config()
 
 
@@ -102,52 +75,6 @@ class system.core.Server
   # @return	void
   #
   setHelpers: ($helpers) -> # abstract method
-
-  #
-  # Get the driver version
-  #
-  # @access	public
-  # @return	void
-  #
-  getVersion: () ->
-    @_driver + ' v' + require(process.cwd()+'/node_modules/'+@_driver+'/package.json').version
-
-
-  #
-  # Add a function to the async queue
-  #
-  # @access	public
-  # @return	void
-  #
-  queue: ($fn) ->
-    if $fn then @_queue.push($fn) else @_queue
-
-  #
-  # Run the async queue
-  #
-  # @access	public
-  # @return	void
-  #
-  run: ($queue, $next) ->
-
-    if typeof $next isnt 'function'
-      [$queue, $next] = [@_queue, $queue]
-
-    $index = 0
-    $iterate = ->
-
-      $next (null) if $queue.length is 0
-      #
-      # call the function at index
-      #
-      $function = $queue[$index]
-      $function ($err) ->
-        return $next($err) if $err
-        $index += 1
-        if $index is $queue.length then $next null
-        else $iterate()
-
-    $iterate()
 
   #
   # Start me up ...
@@ -161,7 +88,7 @@ class system.core.Server
     exspresso.load.initialize()
     @app.use core('Exceptions').exception_handler()
     @app.use dispatch($router.routes)
-    @run exspresso.queue().concat(@queue()), ($err) ->
+    exspresso.run ($err) ->
       $next($err)
 
 
@@ -216,7 +143,7 @@ class system.core.Server
   #
   session: ($session) ->
 
-    $server = require(@_driver) # connect | express
+    $server = require(exspresso.httpDriver)
     @app.use $server.cookieParser($session.encryption_key)
 
     # Session middleware options
@@ -235,7 +162,6 @@ class system.core.Server
 
     @app.use $server.session($options)
     @app.use $session.parseRequest($session.cookie_prefix + $session.sess_cookie_name)
-    @app.use $server.csrf() if @_csrf
     return
 
 
@@ -318,7 +244,7 @@ class system.core.Server
       SERVER_NAME           : $req.host
       SERVER_PORT           : ''+@_port
       SERVER_PROTOCOL       : strtoupper($req.protocol)+"/"+$req.httpVersion
-      SERVER_SOFTWARE       : @getVersion()+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
+      SERVER_SOFTWARE       : exspresso.version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
 
     for $key, $val of $req.headers
       $_SERVER['HTTP_'+$key.toUpperCase().replace('-','_')] = $val

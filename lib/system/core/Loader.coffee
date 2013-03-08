@@ -205,13 +205,15 @@ class system.core.Loader
 
     else
 
-      system.core.Model? or require(SYSPATH+'core/Model'+EXT)
+      system.core.Model? or load_class(SYSPATH+'core/Model.coffee')
 
       if $connect isnt false and not system.db.DbDriver?
         if $connect is true then $connect = ''
         @database($connect, false, true)
 
-      $Model = Modules::load($_model, $path)
+      #$Model = Modules::load($_model, $path)
+      $Model = load_class($path+$_model)
+
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
@@ -281,9 +283,9 @@ class system.core.Loader
         if $db_conn is true then $db_conn = ''
         @controller.load.database $db_conn, false, true
 
-      system.core.Model? or require(SYSPATH+'core/Model'+EXT)
+      system.core.Model? or load_class(SYSPATH+'core/Model.coffee')
 
-      $Model = require($mod_path+'models/'+$path+$model+EXT)
+      $Model = load_class($mod_path+'models/'+$path+$model+EXT)
       defineProperty @controller, $name
         enumerable  : true
         writeable   : false
@@ -308,16 +310,14 @@ class system.core.Loader
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Do we even need to load the database class?
-    if system.db.DbDriver? and $return is false and $active_record is null and @controller['db']?
-      return false
+    if system.db?
+      if (system.db.DbDriver? and $return is false and $active_record is null and @controller['db']?)
+        return false
 
-    $params = $params || @controller.server._db
-
-    $db = require(SYSPATH+'db/factory'+EXT)($params, $active_record)
-
+    $db = dbFactory($params || exspresso.dbDriver, $active_record)
     @controller.queue ($next) -> $db.initialize $next
 
-    if $return is true then return $db #($params, $active_record)
+    if $return is true then return $db
 
     try # defineProperty throws an error here on heroku...
 
@@ -350,9 +350,9 @@ class system.core.Loader
     else
       $db = @database($params, true)
 
-    require SYSPATH + 'db/Forge' + EXT
-    require SYSPATH + 'db/Utility'+ EXT
-    $class = require(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
+    load_class SYSPATH + 'db/Forge.coffee'
+    load_class SYSPATH + 'db/Utility.coffee'
+    $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
 
     if $return is true then return new $class(@controller, $db)
     defineProperty @controller, 'dbutil'
@@ -375,8 +375,8 @@ class system.core.Loader
     else
       $db = @database($params, true)
 
-    require(SYSPATH + 'db/Forge' + EXT)
-    $class = require(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
+    load_class SYSPATH + 'db/Forge.coffee'
+    $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
 
     if $return is true then return new $class(@controller, $db)
     defineProperty @controller, 'dbforge'
@@ -639,7 +639,7 @@ class system.core.Loader
 
     if not system.core.Driver?
       # we aren't instantiating an object here, that'll be done by the Library itself
-      require SYSPATH+'lib/Driver'+EXT
+      load_class SYSPATH+'lib/Driver.coffee'
 
 
     # We can save the loader some time since Drivers will #always# be in a subfolder,
@@ -822,8 +822,8 @@ class system.core.Loader
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
 
-        require($baseclass)
-        $klass = require($subclass)
+        load_class $baseclass
+        $klass = load_class($subclass)
         @_loaded_files.push $subclass
 
         return @_init_class($class, config_item('subclass_prefix'), $params, $object_name)
@@ -852,7 +852,7 @@ class system.core.Loader
           log_message('debug', $class + " class already loaded. Second attempt ignored.")
           return
 
-        $klass = require($filepath)
+        $klass = load_class($filepath)
         @_loaded_files.push $filepath
         return @_init_class($class, '', $params, $object_name, $klass)
 
@@ -1110,5 +1110,119 @@ class system.core.Loader
 
 # END Loader class
 module.exports = system.core.Loader
+
+#
+# Database Driver Factory
+#
+#
+dbFactory = ($params = '', active_record_override = null) ->
+  #  Load the DB config file if a DSN string wasn't passed
+  if is_string($params) and strpos($params, '://') is false
+    #  Is the config file in the environment folder?
+    if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
+      if not file_exists($file_path = APPPATH + 'config/database' + EXT)
+        show_error('The configuration file database%s does not exist.', EXT)
+
+    {db, active_group, active_record} = require($file_path)
+
+    if not db?  or count(db) is 0
+      show_error 'No database connection settings were found in the database config file.'
+
+    if $params isnt ''
+      active_group = $params
+
+    if not active_group?  or  not db[active_group]?
+      show_error 'You have specified an invalid database connection group.'
+
+    $params = db[active_group]
+
+    if db[active_group]['url']?
+
+      if ($dns = parse_url(db[active_group]['url'])) is false
+        show_error 'Invalid DB Connection String'
+
+      $params.dbdriver = $dns['scheme']
+      $params.hostname = if $dns['host']? then rawurldecode($dns['host']) else ''
+      $params.username = if $dns['user']? then rawurldecode($dns['user']) else ''
+      $params.password = if $dns['pass']? then rawurldecode($dns['pass']) else ''
+      $params.database = if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+
+
+  else if is_string($params)
+
+    # parse the URL from the DSN string
+    #  Database settings can be passed as discreet
+    #  parameters or as a data source name in the first
+    #  parameter. DSNs must have this prototype:
+    #  $dsn = 'driver://username:password@hostname/database';
+    #
+
+    if ($dns = parse_url($params)) is false
+      show_error 'Invalid DB Connection String'
+
+    $params =
+      dbdriver  : $dns['scheme']
+      hostname  : if $dns['host']? then rawurldecode($dns['host']) else ''
+      username  : if $dns['user']? then rawurldecode($dns['user']) else ''
+      password  : if $dns['pass']? then rawurldecode($dns['pass']) else ''
+      database  : if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+
+    #  were additional config items set?
+    if $dns['query']?
+      $extra = {}
+      parse_str($dns['query'], $extra)
+
+      for $key, $val of $extra
+        #  booleans please
+        if strtoupper($val) is "TRUE"
+          $val = true
+
+        else if strtoupper($val) is "FALSE"
+          $val = false
+
+        $params[$key] = $val
+
+  #  No DB specified yet?  Beat them senseless...
+  if not $params['dbdriver']?  or $params['dbdriver'] is ''
+    show_error('You have not selected a database type to connect to.')
+
+  #  Load the DB classes.  Note: Since the active record class is optional
+  #  we need to dynamically create a class that extends proper parent class
+  #  based on whether we're using the active record class or not.
+
+  if active_record_override isnt null
+    active_record = active_record_override
+
+
+  DbDriver = load_class(SYSPATH + 'db/Driver.coffee')
+  if not active_record?  or active_record is true
+    DbActiveRecord = load_class(SYSPATH + 'db/ActiveRecord.coffee')
+
+    if not system.db.DbDriver?
+      class system.db.DbDriver extends DbActiveRecord
+
+  else if not system.db.DbDriver?
+    class system.db.DbDriver extends DbDriver
+
+
+  if not file_exists(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
+    throw new Error("Unsuported DB driver: " + $params['dbdriver'])
+
+  $driver = load_class(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
+
+  #  Instantiate the DB adapter
+  $db = new $driver($params)
+
+  if $db.autoinit is true
+    $db.initialize()
+
+  if $params['stricton']?  and $params['stricton'] is true
+    $db.query('SET SESSION sql_mode="STRICT_ALL_TABLES"')
+
+
+  return $db
+
+
+
 # End of file Loader.coffee
 # Location: ./system/core/Loader.coffee

@@ -31,12 +31,19 @@
 #
 class system.core.Object
 
-
+  #
+  # Define a read-only property
+  #
+  # @access	public
+  # @param	array
+  # @return	array
+  #
   define: ($def) ->
 
     for $key, $val of $def
-      defineProperties @,
-        array($key, {writeable: false, enumerable: ($key[0] isnt '_'), value: $val})
+      defineProperty @, $key, {writeable: false, enumerable: ($key[0] isnt '_'), value: $val}
+    return
+
   #
   # Async job queue for the controller
   #
@@ -46,9 +53,7 @@ class system.core.Object
   #
   queue: ($fn) ->
 
-    if not @_queue?
-      defineProperties @,
-        _queue      : {writeable: false, enumerable: false, value: []}
+    @define _queue: [] if not @_queue?
 
     if $fn then @_queue.push($fn) else @_queue
 
@@ -60,15 +65,11 @@ class system.core.Object
   # @param	function
   # @return	void
   #
-  run: ($queue, $next) ->
+  run: ($next) ->
 
-    if not @_queue?
-      defineProperties @,
-        _queue      : {writeable: false, enumerable: false, value: []}
+    @define _queue: [] if not @_queue?
 
-    if typeof $next isnt 'function'
-      [$queue, $next] = [@_queue, $queue]
-
+    $queue = @_queue
     $inputdex = 0
     $iterate = ->
 
@@ -84,6 +85,7 @@ class system.core.Object
         else $iterate()
 
     $iterate()
+
 
 # END CLASS Object
 module.exports = system.core.Object

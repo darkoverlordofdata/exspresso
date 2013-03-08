@@ -28,7 +28,7 @@
 #
 #	  User Library
 #
-UserModel = require(MODPATH+'user/models/UserModel'+EXT)
+UserModel = load_class(MODPATH+'user/models/UserModel.coffee')
 
 class modules.user.lib.User
 

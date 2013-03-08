@@ -31,8 +31,6 @@
 # child objects, they will run in the Controller context.
 #
 
-require SYSPATH+'core/Object'+EXT
-
 class system.core.Controller extends system.core.Object
 
   #
@@ -112,50 +110,10 @@ class system.core.Controller extends system.core.Object
     @res.render $view, create_mixin(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
-      @hooks.callHook 'post_controller', @
       return show_error($err) if $err
       @res.send $html
 
-  ###
-  # Async job queue for the controller
   #
-  # @access	public
-  # @param	function
-  # @return	array
-  #
-  queue: ($fn) ->
-    if $fn then @_queue.push($fn) else @_queue
-
-  #
-  # Run the functions in the queue
-  #
-  # @access	public
-  # @param  array
-  # @param	function
-  # @return	void
-  #
-  run: ($queue, $next) ->
-
-    if typeof $next isnt 'function'
-      [$queue, $next] = [@_queue, $queue]
-
-    $inputdex = 0
-    $iterate = ->
-
-      $next (null) if $queue.length is 0
-      #
-      # call the function at index
-      #
-      $function = $queue[$inputdex]
-      $function ($err) ->
-        return $next($err) if $err
-        $inputdex += 1
-        if $inputdex is $queue.length then $next null
-        else $iterate()
-
-    $iterate()
-
-  ###
   # Redirect to another url
   #
   # @access	public
@@ -163,7 +121,6 @@ class system.core.Controller extends system.core.Object
   # @return	void
   #
   redirect: ($url) ->
-    @hooks.callHook 'post_controller', @
     @res.redirect $url
 
 

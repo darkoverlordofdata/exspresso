@@ -145,7 +145,7 @@ class system.core.Exceptions
   # @param function
   # @return	void
   #
-  exception_handler: -> ($req, $res, $next) =>
+  exceptionHandler: -> ($req, $res, $next) =>
 
     #
     # 404 Page Not Found Handler

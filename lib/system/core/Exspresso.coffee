@@ -30,31 +30,74 @@
 #
 class system.core.Exspresso extends system.core.Object
 
+  os              = require('os')                 # operating-system related utility functions
+
+  httpDriver      : 'connect'   # Connect | Express
+  dbDriver        : 'mysql'     # Mysql | Postgres
+  useCache        : false       # cache output?
+  useCsrf         : false       # scrub inputs?
+  preview         : false       # preview locally using appjs (must be installed separately)
+  profile         : false       # enable profiling?
+
   #
   #   Exspresso Version
   #     get the current version info from the npm package
   #
   @define version: require(FCPATH + 'package.json').version
 
+  #
+  #   Decode the command line options
+  #
+  parseOptions: () ->
 
-  #
-  #   Get the 1st command line arg
-  #     if it's not an option, then it's the driver name
-  #
-  @define driver: ucfirst(if ~($argv[2] ? '').indexOf('-') then 'connect' else $argv[2] ? 'connect')
+    $driver   = @httpDriver
+    $db       = @dbDriver
+    $cache    = @useCache
+    $csrf     = @useCsrf
+    $preview  = @preview
+    $profile  = @profile
+
+    $profile = if ENVIRONMENT is 'development' then true else false
+    $argv.shift() # node
+    $argv.shift() # exspresso
+    $set_db = false
+    for $arg in $argv
+      if $set_db is true
+        $db = $arg
+        $set_db = false
+        continue
+
+      switch $arg
+        when '--db'         then $set_db    = true
+        when '--cache'      then $cache    = true
+        when '--csrf'       then $csrf     = true
+        when '--preview'    then $preview  = true
+        when '--profile'    then $profile  = true
+        when '--nocache'    then $cache    = false
+        when '--nocsrf'     then $csrf     = false
+        when '--noprofile'  then $profile  = false
+        else  $driver = $arg
+
+    @define httpDriver  : $driver
+    @define dbDriver    : $db
+    @define useCache    : $cache
+    @define useCsrf     : $csrf
+    @define preview     : $preview
+    @define profile     : $profile
 
 
   #
   #   Boot exspresso
   #
-  boot: ->
+  boot: () ->
+
+    @parseOptions()
 
     log_message "debug", "Exspresso Server Boot"
 
     # Start the benchmark timer
     #
     @define bench : core('Benchmark')
-    @bench.mark 'total_execution_time_start'
     @bench.mark 'boot_time_start'
     #
     # Pre-system hook
@@ -65,7 +108,7 @@ class system.core.Exspresso extends system.core.Object
     # And the rest...
     #
     @define config : core('Config')
-    @define server : core(class: 'Server', subclass: @driver)
+    @define server : core(ucfirst(@httpDriver), @)
     @define router : core('Router')
     @define load   : core('Loader', @)
 
@@ -79,8 +122,46 @@ class system.core.Exspresso extends system.core.Object
     for $path, $uri of @router.loadRoutes()
       @bind $path, $uri
 
+    #
+    # Start the http server
+    #
     @server.start @router
 
+
+  #
+  # Ready
+  #
+  #   http server is now ready
+  #
+  # @access	public
+  # @param	number  the port number we're running on
+  # @return	void
+  #
+  ready: ($port) =>
+
+    @define port: $port
+
+    $elapsed = @bench.elapsedTime('boot_time_start', 'boot_time_end')
+    log_message 'debug', 'Boot time: %dms', $elapsed
+    log_message "debug", "Listening on port #{$port}"
+    log_message "debug", "e x s p r e s s o  v%s", @version
+    log_message "debug", "copyright 2012-2013 Dark Overlord of Data"
+    log_message "debug", "%s environment started", ucfirst(ENVIRONMENT)
+    if ENVIRONMENT is 'development'
+      log_message "debug", "View at http://localhost:" + $port
+
+
+    if @preview
+      #
+      # preview in appjs
+      #
+      {exec} = require('child_process')
+      exec "node --harmony bin/preview #{$port}", ($err, $stdout, $stderr) ->
+        console.log $stderr if $stderr?
+        console.log $stdout if $stdout?
+        process.exit()
+
+    return
 
   #
   # Bind each route to a contoller and bootstrap
@@ -235,8 +316,104 @@ class system.core.Exspresso extends system.core.Object
           $next $err
 
 
+  #
+  # Middleware: Parse the Base URL
+  #
+  #   update the base_url config entry
+  #
+  # @access	public
+  # @param object
+  # @param object
+  # @param function
+  # @return	void
+  #
+  parseBaseUrl: -> ($req, $res, $next) =>
 
-modules.exports = system.core.Exspresso
+    #
+    # Set expected request object properties
+    #
+
+    @config.setItem('base_url', $req.protocol+'://'+ $req.headers['host'])
+    $next()
+
+  #
+  # Middleware: Parse Request Properties
+  #
+  #   fabricate a table similar to $_SERVER
+  #
+  # @access	public
+  # @param object
+  # @param object
+  # @param function
+  # @return	void
+  #
+  parseProperties: -> ($req, $res, $next) =>
+
+    $_SERVER =
+      argv                  : $req.query
+      argc                  : count($req.query)
+      CONTENT_TYPE          : $req.headers['content-type']
+      DOCUMENT_ROOT         : process.cwd()
+      HTTP_ACCEPT           : $req.headers['accept']
+      HTTP_ACCEPT_CHARSET   : $req.headers['accept-charset']
+      HTTP_ACCEPT_ENCODING  : $req.headers['accept-encoding']
+      HTTP_ACCEPT_LANGUAGE  : $req.headers['accept-language']
+      HTTP_CLIENT_IP        : ($req.headers['x-forwarded-for'] || '').split(',')[0]
+      HTTP_CONNECTION       : $req.headers['connection']
+      HTTP_HOST             : $req.headers['host']
+      HTTP_REFERER          : $req.headers['referer']
+      HTTP_USER_AGENT       : $req.headers['user-agent']
+      HTTPS                 : if $req.secure then 'on' else 'off'
+      ORIG_PATH_INFO        : $req.path
+      PATH_INFO             : $req.path
+      QUERY_STRING          : if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
+      REMOTE_ADDR           : $req.connection.remoteAddress
+      REMOTE_HOST           : ''
+      REMOTE_PORT           : ''
+      REMOTE_USER           : ''
+      REQUEST_METHOD        : $req.method
+      REQUEST_TIME          : $req._startTime
+      REQUEST_URI           : $req.url
+      SERVER_ADDR           : $req.ip
+      SERVER_NAME           : $req.host
+      SERVER_PORT           : ''+@server.port
+      SERVER_PROTOCOL       : strtoupper($req.protocol)+"/"+$req.httpVersion
+      SERVER_SOFTWARE       : @version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
+
+    for $key, $val of $req.headers
+      $_SERVER['HTTP_'+$key.toUpperCase().replace('-','_')] = $val
+
+    defineProperties $req,
+      server  : {writeable: false, value: freeze($_SERVER)}
+
+    $next()
+
+  #
+  # Middleware: 5xx Error Display
+  #
+  #   general server error handler
+  #
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
+  #
+  error5xx: -> ($err, $req, $res, $next) -> show_error $err
+
+
+  #
+  # Middleware: 404 Display
+  #
+  #   page not found handler
+  #
+  #   @param object $req
+  #   @param object $res
+  #   @param function $next
+  #
+  error404: -> ($req, $res, $next) -> show_404 $req.originalUrl
+
+
+
+module.exports = system.core.Exspresso
 
 # End of file exspresso.coffee
 # Location: ./system/core/exspresso.coffee

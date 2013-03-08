@@ -28,7 +28,6 @@
 #
 #   User Data Model
 #
-require SYSPATH+'core/Model'+EXT
 
 class modules.user.models.UserModel extends system.core.Model
 

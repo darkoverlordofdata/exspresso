@@ -39,8 +39,6 @@ class application.core.ConnectServer extends system.core.Server
   sign            = require('cookie-signature')   # Sign and unsign cookies
   parseUrl        = connect.utils.parseUrl        # Parse the `req` url with memoization.
 
-  _driver         : 'connect'
-
   #
   # Set the server instance
   #
@@ -78,25 +76,26 @@ class application.core.ConnectServer extends system.core.Server
   start: ($router) ->
     super $router, =>
 
-    @_port = @_port || 3000
+      @_port = @_port || 3000
 
-    @app.use @error_5xx()
-    @app.use @error_404()
+      @app.use @error_5xx()
+      @app.use @error_404()
 
-    @app.listen @_port, =>
+      @app.listen @_port, =>
 
-      @banner()
+        @banner()
 
-      if @_preview
-        #
-        # preview in appjs
-        #
-        {exec} = require('child_process')
-        exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
-          console.log $stderr if $stderr?
-          console.log $stdout if $stdout?
-          process.exit()
+        if @_preview
+          #
+          # preview in appjs
+          #
+          {exec} = require('child_process')
+          exec "node --harmony bin/preview #{@_port}", ($err, $stdout, $stderr) ->
+            console.log $stderr if $stderr?
+            console.log $stdout if $stdout?
+            process.exit()
 
+        return
       return
     return
 
@@ -164,7 +163,7 @@ class application.core.ConnectServer extends system.core.Server
       host:       value: $req.headers.host
       ip:         value: $req.connection.remoteAddress
 
-    exspresso.config.config.base_url = $req.protocol+'://'+ $req.headers.host
+    exspresso.config.setItem('base_url', $req.protocol+'://'+ $req.headers['host'])
 
 
     #

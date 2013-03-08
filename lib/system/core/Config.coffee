@@ -266,25 +266,9 @@ class system.core.Config
   # @return	void
   #
   setItem : ($item, $value) ->
-    @config[$item] = $value
-
-
-  #
-  # Assign to Config
-  #
-  # This function is called by the front controller (exspresso.php)
-  # after the Config class is instantiated.  It permits config items
-  # to be assigned or overriden by variables contained in the index.php file
-  #
-  # @access	private
-  # @param	array
-  # @return	void
-  #
-  _assign_toconfig : ($items = {}) ->
-    for $val, $key of $items
-      @seItem($key, $val)
+    if 'string' is typeof $item then @config[$item] = $value
+    else @setItem($key, $val) for $key, $val of $items
     return
-
 
 # END Config class
 module.exports = system.core.Config

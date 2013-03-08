@@ -11,6 +11,7 @@
 #
 #+--------------------------------------------------------------------+
 #
+#
 # This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
@@ -36,10 +37,6 @@ format            = require('util').format
 path              = require('path')
 fs                = require('fs')
 
-fopen             = fs.openSync
-fclose            = fs.closeSync
-unlink            = fs.unlinkSync
-chmod             = fs.chmodSync
 
 _config           = null  # contents of .lib/application/config/config.coffee
 _classes          = {}    # singleton class cache
@@ -48,8 +45,12 @@ _class            = {}    # class metadata cache
 __PROTO__         = true  # if true, set mixin using the '__proto__' property
 
 #
-# privately dereference some Object utility members
+# privately dereference some methods
 #
+fopen                     = fs.openSync
+fclose                    = fs.closeSync
+unlink                    = fs.unlinkSync
+chmod                     = fs.chmodSync
 create                    = Object.create
 defineProperties          = Object.defineProperties
 defineProperty            = Object.defineProperty
@@ -102,30 +103,6 @@ Function::define = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {writeable: false, enumerable: ($name[0] isnt '_'), value: $def[$name]}
 
-
-
-#
-# Namespaces structs
-#
-define 'system'           # ./lib/system
-  core        : {}        # ./lib/system/core
-  lib         :           # ./lib/system/lib
-    session   : {}        # ./lib/system/lib/session
-  db          :           # ./lib/system/db
-    mysql     : {}        # ./lib/system/db/mysql
-    postgres  : {}        # ./lib/system/db/postgres
-
-define 'modules'          # ./lib/modules
-  user        :           # ./lib/modules/user
-    lib       : {}        # ./lib/modules/user/lib
-    models    : {}        # ./lib/modules/user/models
-
-define 'application'      # ./lib/application
-  core        : {}        # ./lib/application/core
-  lib         : {}        # ./lib/application/lib
-  models      : {}        # ./lib/application/models
-
-#
 # Load the framework constants
 #
 if file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
@@ -133,6 +110,47 @@ if file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
 else
   require APPPATH+'config/constants.coffee'
 
+#
+# Load Class
+#
+# Requires a class module, building a namespace
+# structure that corresponds to the file path
+#
+# @param string   full path to the class
+#
+#
+exports.load_class = load_class = ($path, $namespace = global) ->
+
+  $roots =
+    system        : SYSPATH   # system classpath:     ./lib/system
+    application   : APPPATH   # application classpath ./lib/application
+    modules       : MODPATH   # modules classpath     ./lib/modules
+
+  for $name, $classpath of $roots
+    if $path.indexOf($classpath) is 0
+      $subpath = $path.substr($classpath.length)
+      unless $namespace[$name]?
+        defineProperty $namespace, $name, {writeable: false, value: {}}
+
+
+      $segments = $subpath.split('/')
+      $class = $segments.pop().split('.')[0]
+
+      $namespace = $namespace[$name]
+      while $segments.length>0
+        $segment = $segments.shift()
+        if $segment isnt 'drivers'
+          unless $namespace[$segment]?
+            defineProperty $namespace, $segment, {writeable: false, value: {}}
+          $namespace = $namespace[$segment]
+
+      if $namespace[$class]?
+        $klass = $namespace[$class]
+      else
+        $klass = require($path)
+        defineProperty $namespace, $class, {writeable: false, value: $klass}
+      return $klass
+  return
 
 #
 # Tests for file writability
@@ -191,12 +209,12 @@ exports.core = core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
   #  then in the local application/libraries folder
   for $path in [SYSPATH, APPPATH]
     if file_exists($path + 'core/' + $prefix + $class + EXT)
-      $klass = require($path + 'core/' + $prefix + $class + EXT)
+      $klass = load_class($path + 'core/' + $prefix + $class + EXT)
       break
 
   #  Is the request a class extension?  If so we load it too
   if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
-    $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $klass = load_class(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
   if not $klass?
@@ -251,12 +269,12 @@ exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) -
   #  then in the local application/libraries folder
   for $path in [SYSPATH, APPPATH]
     if file_exists($path + 'core/' + $prefix + $class + EXT)
-      $klass = require($path + 'core/' + $prefix + $class + EXT)
+      $klass = load_class($path + 'core/' + $prefix + $class + EXT)
       break
 
   #  Is the request a class extension?  If so we load it too
   if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
-    $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $klass = load_class(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
   if not $klass?
@@ -292,12 +310,12 @@ exports.load_core = load_core = ($class, $controller) ->
   #  then in the local application/libraries folder
   for $path in [SYSPATH, APPPATH]
     if file_exists($path + 'core/' + $class + EXT)
-      $klass = require($path + 'core/' + $prefix + $class + EXT)
+      $klass = load_class($path + 'core/' + $prefix + $class + EXT)
       break
 
   #  Is the request a class extension?  If so we load it too
   if file_exists(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
-    $klass = require(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
+    $klass = load_class(APPPATH + 'core/' + config_item('subclass_prefix') + $class + EXT)
 
   #  Did we find the class?
   if not $klass?
@@ -613,25 +631,30 @@ for $name, $body of module.exports
 #
 # Pre-load the system.core classes
 #
-require SYSPATH+'core/Object'+EXT
-require SYSPATH+'core/Exspresso'+EXT
-require SYSPATH+'core/Benchmark'+EXT
-require SYSPATH+'core/Config'+EXT
-require SYSPATH+'core/Controller'+EXT
-require SYSPATH+'core/Exceptions'+EXT
-require SYSPATH+'core/Hooks'+EXT
-require SYSPATH+'core/I18n'+EXT
-require SYSPATH+'core/Input'+EXT
-require SYSPATH+'core/Loader'+EXT
-require SYSPATH+'core/Log'+EXT
-require SYSPATH+'core/Model'+EXT
-require SYSPATH+'core/Modules'+EXT
-require SYSPATH+'core/Output'+EXT
-require SYSPATH+'core/Router'+EXT
-require SYSPATH+'core/Security'+EXT
-require SYSPATH+'core/Server'+EXT
-require SYSPATH+'core/URI'+EXT
-require SYSPATH+'core/Utf8'+EXT
+load_class SYSPATH+'core/Object.coffee'
+load_class SYSPATH+'core/Exspresso.coffee'
+load_class SYSPATH+'core/Benchmark.coffee'
+load_class SYSPATH+'core/Config.coffee'
+load_class SYSPATH+'core/Controller.coffee'
+load_class SYSPATH+'core/Exceptions.coffee'
+load_class SYSPATH+'core/Hooks.coffee'
+load_class SYSPATH+'core/I18n.coffee'
+load_class SYSPATH+'core/Input.coffee'
+load_class SYSPATH+'core/Loader.coffee'
+load_class SYSPATH+'core/Log.coffee'
+load_class SYSPATH+'core/Model.coffee'
+load_class SYSPATH+'core/Modules.coffee'
+load_class SYSPATH+'core/Output.coffee'
+load_class SYSPATH+'core/Router.coffee'
+load_class SYSPATH+'core/Security.coffee'
+load_class SYSPATH+'core/Server.coffee'
+load_class SYSPATH+'core/URI.coffee'
+load_class SYSPATH+'core/Utf8.coffee'
+load_class SYSPATH+'lib/Driver.coffee'
+load_class SYSPATH+'lib/DriverLibrary.coffee'
+load_class MODPATH+'user/lib/User.coffee'
+load_class MODPATH+'user/models/UserModel.coffee'
+load_class SYSPATH+'lib/session/Session.coffee'
 
 # End of file core.coffee
 # Location: ./system/core.coffee
