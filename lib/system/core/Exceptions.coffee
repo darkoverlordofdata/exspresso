@@ -11,9 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Exspresso
 #
@@ -27,10 +24,44 @@
 #
 
 #
-# Error Wrapper Class
+# Exspresso Error Class
+#
+#   This class is used to raise a Server Error 5xx
 #
 class system.core.ExspressoError extends Error
 
+  #
+  # @property [String] The http status code
+  #
+  code: ''
+  #
+  # @property [String] The description of the http status code
+  #
+  desc: ''
+  #
+  # @property [String] A short description of the error condition, such as the class name
+  #
+  name: ''
+  #
+  # @property [String] The css class to use for formatting the error display
+  #
+  class: ''
+  #
+  # @property [String] A description of the actual error
+  #
+  message: ''
+  #
+  # @property [String] The stack of prior error messages, seperated by new line.
+  #
+  stack: ''
+
+  #
+  # Initialize the exspresso error
+  #
+  #
+  # @param  [Object]  err the native error object to wrap
+  # @param  [String]  status  http status code to associate to the error
+  #
   constructor: ($err = {}, $status = 500) ->
 
     $status = $err.status || $status
@@ -49,6 +80,38 @@ class system.core.ExspressoError extends Error
 #
 class system.core.AuthorizationError extends Error
 
+  #
+  # @property [String] The http status code
+  #
+  code: ''
+  #
+  # @property [String] The description of the http status code
+  #
+  desc: ''
+  #
+  # @property [String] A short description of the error condition, such as the class name
+  #
+  name: ''
+  #
+  # @property [String] The css class to use for formatting the error display
+  #
+  class: ''
+  #
+  # @property [String] A description of the actual error
+  #
+  message: ''
+  #
+  # @property [String] The stack of prior error messages, seperated by new line.
+  #
+  stack: ''
+
+  #
+  # Initialize the authorization error
+  #
+  #
+  # @param  [Object]  msg the error description
+  # @param  [String]  status  http status code to associate to the error
+  #
   constructor: ($msg, $status = 401) ->
 
     @code     = $status

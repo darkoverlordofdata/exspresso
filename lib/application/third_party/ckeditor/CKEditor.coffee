@@ -11,9 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
 # For licensing, see LICENSE.html or http://ckeditor.com/license

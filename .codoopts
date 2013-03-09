@@ -10,6 +10,6 @@
 -
 LICENSE
 coding standards.md
-graph.md
-objects.md
+controller graph.md
+class status.md
 todo.md

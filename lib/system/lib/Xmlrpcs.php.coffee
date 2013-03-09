@@ -11,9 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Exspresso
 #
@@ -249,7 +246,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Executes the Method
   #
-  # @access	protected
+  # @private
   # @param  [Object]    # @return [Mixed]  #
   _execute : ($m) ->
     $methName = $m.method_name

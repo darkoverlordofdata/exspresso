@@ -11,10 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
-
 # Exspresso
 #
 # An open source application development framework for coffee-script
@@ -26,6 +22,7 @@
 # @since      Version 1.0
 #
 #
+
 #
 # Exspresso Profiler Class
 #

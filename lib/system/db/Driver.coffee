@@ -11,9 +11,6 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Exspresso
 #
@@ -98,7 +95,7 @@ class system.db.Driver
   #
   # Initialize Database Settings
   #
-  # @access	protected Called by the router
+  # @private Called by the router
   # @param	callback
   # @return [Void]  #
   initialize: ($next) =>

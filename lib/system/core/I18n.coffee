@@ -11,42 +11,41 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
 # @author		  darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		MIT License
 # @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
-
-#  ------------------------------------------------------------------------
 
 #
 # Localization package loader
 #
 #
-
-Modules = require(SYSPATH+'core/Modules.coffee')
-
 class system.core.I18n
 
-  _language         : null  # cache of loaded i18n strings
-  _is_loaded        : null  # list of loaded i18n files
+
+  Modules = require(SYSPATH+'core/Modules.coffee')
+
+  #
+  # @property [Object] cache of loaded i18n strings
+  #
+  _language: null
+  #
+  # @property [Array] list of loaded i18n files
+  #
+  _is_loaded: null
 
   #
   # Constructor
   #
-  # @param  [Object]    ExspressoConfig
+  # @param  [system.core.Config]  config  The application configuratin
   #
   constructor : ($config) ->
 
@@ -60,9 +59,11 @@ class system.core.I18n
   #
   # Load a module language file
   #
-    # @param  [Mixed]  the name of the language file to be loaded. Can be an array
-  # @param  [String]  the language (english, etc.)
-  # @return [Mixed]  #
+  # @param  [String]  langfile  the name of the language file to be loaded. Can be an array
+  # @param  [String]  lang  the language ISO 639-1 code(de, en, etc.)
+  # @param  [String]  module  the module parsed from the uri
+  # @return [Object] a hash of key/values for the language
+  #
   load: ($langfile, $lang = '', $module = '', $return = false) ->
 
     if is_array($langfile)
@@ -89,11 +90,12 @@ class system.core.I18n
     return @_language
 
   #
-  # Load a language file
+  # Load an application language file
   #
-  # @param  [Mixed]  the name of the language file to be loaded. Can be an array
-  # @param  [String]  ISO 639-1 code
-  # @return [Mixed]  #
+  # @param  [String]  langfile  the name of the language file to be loaded. Can be an array
+  # @param  [String]  lang  the language ISO 639-1 code(de, en, etc.)
+  # @return [Object] a hash of key/values for the language
+  #
   _application_load: ($langfile = '', $code = '', $return = false) ->
 
     $langfile = $langfile.replace(EXT, '')+'.json'
@@ -135,7 +137,7 @@ class system.core.I18n
   #
   # Fetch a single line of text from the language array
   #
-  # @param  [String]  $line  the language line
+  # @param  [String]  line  the language line
   # @return  [String]
   #
   line : ($line = '') ->

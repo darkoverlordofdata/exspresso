@@ -11,9 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Exspresso
 #
@@ -26,8 +23,6 @@
 # @since      Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Exspresso Hooks Class
 #
@@ -35,9 +30,18 @@
 #
 #
 class system.core.Hooks
-  
+
+  #
+  # @property [Boolean] Are hooks enabled? True/False 
+  #
   enabled       : false
+  #
+  # @property [Object] Hash list of hooks to call
+  #
   hooks         : null
+  #
+  # @property [Boolean] Are hooks currently running? True/False
+  #
   in_progress   : false
   
   #
@@ -45,40 +49,29 @@ class system.core.Hooks
   #
   #
   constructor :  ->
-    @_initialize()
-    log_message('debug', "Hooks Class Initialized")
     
-  
-  #
-  # Initialize the Hooks Preferences
-  #
-  # @access  private
-  # @return [Void]  #
-  _initialize :  ->
+    log_message('debug', "Hooks Class Initialized")
 
     @hooks = {}
-
+    #
     #  If hooks are not enabled in the config file
     #  there is nothing else to do
-    
+    #
     if config_item('enable_hooks') is false
       return 
       
-    
+    #
     #  Grab the "hooks" definition file.
     #  If there are no hooks, we're done.
-    
+    #
     if is_file(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
       $hook = require(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
       
     else if is_file(APPPATH + 'config/hooks' + EXT)
       $hook = require(APPPATH + 'config/hooks' + EXT)
-      
-    
     
     if not $hook?  or  not is_array($hook)
       return 
-      
     
     @hooks = $hook
     @enabled = true
@@ -89,10 +82,10 @@ class system.core.Hooks
   #
   # Calls a particular hook
   #
-  # @access  private
-  # @param  [String]  the hook name
-  # @param  [Object]  the controller instance instance
-  # @return [Mixed]  #
+  # @param  [String]  which the hook name
+  # @param  [Object]  instance  the controller instance
+  # @return [Boolean] returns true if the hook was run, false if it was not
+  #
   callHook : ($which = '', $instance = null) ->
 
     if not @enabled or  not @hooks[$which]?
@@ -113,74 +106,62 @@ class system.core.Hooks
   #
   # Runs a particular hook
   #
-  # @access  private
-  # @param  [Array]  the hook details
-  # @return  bool
+  # @param  [Array]  data the configuration data for the hook
+  # @param  [Object]  instance  the controller instance
+  # @return [Boolean] returns true if the hook was run, false if it was not
   #
   runHook : ($data, $instance) ->
     if not is_array($data)
       return false
       
     
-    #  -----------------------------------
+    #
     #  Safety - Prevents run-away loops
-    #  -----------------------------------
-    
+    #
     #  If the script being called happens to have the same
     #  hook call within it a loop can happen
-    
+    #
     if @in_progress is true
-      return 
-      
-    
-    #  -----------------------------------
-    #  Set file path
-    #  -----------------------------------
-    
-    if not $data['filepath']?  or  not $data['filename']? 
       return false
-      
-    
+
+    #
+    #  Set file path
+    #
+    if not $data['filepath']?  or  not $data['filename']?
+      return false
+
     $filepath = APPPATH + $data['filepath'] + '/' + $data['filename']
     
     if not file_exists($filepath)
       return false
-      
-    
-    #  -----------------------------------
+
+    #
     #  Set class/function name
-    #  -----------------------------------
-    
+    #
     $class = false
     $function = false
     $params = ''
     
     if $data['class']?  and $data['class'] isnt ''
       $class = $data['class']
-      
-    
+
     if $data['function']? 
       $function = $data['function']
-      
-    
+
     if $data['params']? 
       $params = $data['params']
-      
-    
+
     if $class is false and $function is false
       return false
-      
-    
-    #  -----------------------------------
+
+    #
     #  Set the in_progress flag
-    #  -----------------------------------
-    
+    #
     @in_progress = true
     
-    #  -----------------------------------
+    #
     #  Call the requested class and/or function
-    #  -----------------------------------
-    
+    #
     if $class isnt false
       $class = require($filepath)
       $hook = new $class()
@@ -189,8 +170,7 @@ class system.core.Hooks
     else
       $function = require($filepath)[$function]
       $function($instance, $params)
-      
-    
+
     @in_progress = false
     return true
     

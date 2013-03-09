@@ -10,9 +10,6 @@
 #  it under the terms of the MIT License
 #
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Exspresso
 #

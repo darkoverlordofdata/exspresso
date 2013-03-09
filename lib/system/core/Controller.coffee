@@ -10,7 +10,6 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-
 #
 # Exspresso
 #
@@ -22,12 +21,14 @@
 # @since      Version 1.0
 #
 #
+
 #
 # Exspresso Application Controller Class
 #
 # This class object is the super class for all controllers
 #
-
+# @see controller%20graph.md.html
+#
 class system.core.Controller extends system.core.Object
 
   #
@@ -111,15 +112,15 @@ class system.core.Controller extends system.core.Object
   #
   # Initialize Controller objects
   #
-  # @param  [Object]  server Server object
-  # @param  [Object]  benchmark Benchmark object
-  # @param  [Object]  hooks Hooks object
-  # @param  [Object]  config Config object
-  # @param  [Object]  uri URI object
-  # @param  [Object]  output Output object
-  # @param  [Object]  security Security object
-  # @param  [Object]  input Input object
-  # @param  [Object]  i18n I18n object
+  # @param  [system.core.Server]  server Server object
+  # @param  [system.core.Benchmark]  benchmark Benchmark object
+  # @param  [system.core.Hooks]  hooks Hooks object
+  # @param  [system.core.Config  config Config object
+  # @param  [system.core.URI]  uri URI object
+  # @param  [system.core.Output]  output Output object
+  # @param  [system.core.Security]  security Security object
+  # @param  [system.core.Input]  input Input object
+  # @param  [system.core.I18n]  i18n I18n object
   # @param  [Object]  req Request object
   # @param  [Object]  res Response object
   # @param  [String]  module Module name

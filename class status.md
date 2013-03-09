@@ -9,7 +9,7 @@
     -----------------------------------------------------------
     * Core
         * Benchmark             X
-        * Cache                 ?
+        * Cache                 X
         * Common                X
         * Config                X
         * Controller            X
@@ -21,7 +21,7 @@
         * Model                 X
         * Output                X
         * Router                X
-        * Security              ?
+        * Security              X
         * URI                   X
         * Utf8                  X
     * Database                  mysql   postgresql
@@ -39,7 +39,7 @@
         * directory_helper      -
         * download_helper       -
         * email_helper          -
-        * file_helper           ?
+        * file_helper           X
         * form_helper           X
         * inflector_helper      ?
         * language_heler        X

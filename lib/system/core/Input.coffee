@@ -11,9 +11,6 @@
 #|
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 #
 # Exspresso
 #
@@ -35,30 +32,63 @@ class system.core.Input
 
   os = require('os')
 
-  _cookies                : null  # Request cookies
-  _query                  : null  # Request get array
-  _body                   : null  # Request post body
-  _server                 : null  # Request server properties
-  _headers                : null  # List of all HTTP request headers
-  _ip_address             : false # IP address of the current user
-  _user_agent             : false # user agent (web browser) being used by the current user
-  _server                 : null  # fabricated table to mimic PHP
-  _allow_get_array        : false # If FALSE, then $_GET will be set to an empty array
-  _standardize_newlines   : false # If TRUE, then newlines are standardized
-  _enable_xss             : false # Determines whether the XSS filter is always active
-                                  # when GET, POST or COOKIE data is encountered
-  _enable_csrf            : false # Enables a CSRF cookie token to be set.
+  #
+  # @property [Object]  The request cookies
+  #
+  _cookies: null
+  #
+  # @property [Object]  The request get array
+  #
+  _query: null
+  #
+  # @property [Object]  The request post body
+  #
+  _body: null
+  #
+  # @property [Object]  The request server properties
+  #
+  _server: null
+  #
+  # @property [Object]  The list of HTTP request headers
+  #
+  _headers: null
+  #
+  # @property [String]  The IP address of the current user
+  #
+  _ip_address: false
+  #
+  # @property [String]  The user agent (web browser) being used by the current user
+  #
+  _user_agent: false
+  #
+  # @property [Object]  A fabricated table to mimic php's $_SERVER
+  #
+  _server: null
+  #
+  # @property [Boolean] If FALSE, then $_GET will be set to an empty array
+  #
+  _allow_get_array: false
+  #
+  # @property [Boolean] If TRUE, then newlines are standardized
+  #
+  _standardize_newlines: false
+  #
+  # @property [Boolean] Determines whether the XSS filter is always active
+  #
+  _enable_xss: false
+  #
+  # @property [Boolean] Enables a CSRF cookie token to be set.
+  #
+  _enable_csrf: false
 
   #
   # Constructor
   #
-    # @param  [Object]    core/Utf8
-  # @param  [Object]    core/Security
-  # @param  [Object]    http request cookies object
-  # @param  [Object]    http request query object
-  # @param  [Object]    http request body object
-  # @param  [Object]    http request server object
-  # @return [Void]  #
+  # @param  [Object]  req http request object
+  # @param  [system.core.Utf8]  utf Encoding utility object
+  # @param  [system.code.Security]  security  Security utility object
+  # @return [Void]
+  #
   constructor: ($req, $utf, $security) ->
 
     defineProperties @,
@@ -80,8 +110,9 @@ class system.core.Input
   #
   # Fetch an item from the GET array
   #
-    # @param  [String]    # @return	[Boolean]
-  # @return	[String]
+  # @param  [String]  index key into the GET hash
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return	[String] the value found at index
   #
   get : ($index = null, $xss_clean = false) ->
 
@@ -100,8 +131,9 @@ class system.core.Input
   #
   # Fetch an item from the POST array
   #
-    # @param  [String]    # @return	[Boolean]
-  # @return	[String]
+  # @param  [String]  index key into the POST hash
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return	[String] the value found at index
   #
   post : ($index = null, $xss_clean = false) ->
 
@@ -119,9 +151,9 @@ class system.core.Input
   #
   # Fetch an item from either the GET array or the POST
   #
-    # @param  [String]  The index key
-  # @return	[Boolean]	XSS cleaning
-  # @return	[String]
+  # @param  [String]  index key into both GET/POST hash'
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return	[String] the value found at index
   #
   getPost : ($index = '', $xss_clean = false) ->
 
@@ -133,8 +165,9 @@ class system.core.Input
   #
   # Fetch an item from the COOKIE array
   #
-    # @param  [String]    # @return	[Boolean]
-  # @return	[String]
+  # @param  [String]  index key into the COOKIE hash
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return	[String] the value found at index
   #
   cookie : ($index = '', $xss_clean = false) ->
     return @_fetch_from_array(@_cookies, $index, $xss_clean)
@@ -145,13 +178,15 @@ class system.core.Input
   # Accepts six parameter, or you can submit an associative
   # array in the first parameter containing all the values.
   #
-    # @param  [Mixed]  # @param  [String]  the value of the cookie
-  # @param  [String]  the number of seconds until expiration
-  # @param  [String]  the cookie domain.  Usually:  .yourdomain.com
-  # @param  [String]  the cookie path
-  # @param  [String]  the cookie prefix
-  # @return	[Boolean]	true makes the cookie secure
-  # @return [Void]  #
+  # @param  [String]  name  the cookie name
+  # @param  [String]  value the value of the cookie
+  # @param  [String]  expires the number of seconds until expiration
+  # @param  [String]  domain  the cookie domain.  Usually:  .yourdomain.com
+  # @param  [String]  path  the cookie path
+  # @param  [String]  prefix  the cookie prefix
+  # @param	[Boolean]	secure  true makes the cookie secure
+  # @return [Void]
+  #
   setCookie : ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
 
     if $prefix is '' and config_item('cookie_prefix') isnt ''
@@ -179,8 +214,9 @@ class system.core.Input
   #
   # Fetch an item from the SERVER array
   #
-    # @param  [String]    # @return	[Boolean]
-  # @return	[String]
+  # @param  [String]  index key into the SERVER hash
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return	[String] the value found at index
   #
   server : ($index = '', $xss_clean = false) ->
     return @_fetch_from_array(@_server, $index, $xss_clean)
@@ -188,10 +224,9 @@ class system.core.Input
   #
   # Fetch the IP Address
   #
-    # @return	[String]
+  # @return	[String]  the client IP
   #
   ipAddress :  ->
-    #return @req.ip
     if @_ip_address isnt false
       return @_ip_address
 
@@ -225,7 +260,7 @@ class system.core.Input
   #
   # User Agent
   #
-    # @return	[String]
+  # @return	[String] the client user agent
   #
   userAgent:  ->
     if @_user_agent isnt false
@@ -236,8 +271,9 @@ class system.core.Input
   #
   # Validate IP Address
   #
-    # @param  [String]    # @param  [String]  ipv4 or ipv6
-  # @return	bool
+  # @param  [String]  ip  the ip string
+  # @param  [String]  which either ipv4 or ipv6
+  # @return [Boolean] True if the ip is valid
   #
   validIp: ($ip, $which = '') ->
     $which = strtolower($which)
@@ -257,9 +293,9 @@ class system.core.Input
 
   # Request Headers
   #
-  # @return	[Boolean] XSS cleaning
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return	[Object] the request header hash
   #
-  # @return array
   requestHeaders : ($xss_clean = false) ->
 
     @_headers = @req.headers
@@ -270,9 +306,10 @@ class system.core.Input
   #
   # Returns the value of a single member of the headers class member
   #
-  # @param  [String]  array key for $this->headers
-  # @return	[Boolean]ean		XSS Clean or not
-  # @return [Mixed]  FALSE on failure, string on success
+  # @param  [String]  index  array key for @headers
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return [String]  FALSE on failure, string on success
+  #
   getRequestHeader : ($index, $xss_clean = false) ->
     if empty(@_headers)
       @requestHeaders()
@@ -290,7 +327,8 @@ class system.core.Input
   #
   # Test to see if a request contains the HTTP_X_REQUESTED_WITH header
   #
-  # @return 	boolean
+  # @return [Boolean] True for AJAX requests
+  #
   isAjaxRequest :  ->
     if @server('HTTP_X_REQUESTED_WITH') is 'XMLHttpRequest' then true else false
 
@@ -298,11 +336,9 @@ class system.core.Input
   #
   # Test to see if a request was made from the command line
   #
-  # @return 	bool
+  # @return [Boolean]  False
+  #
   isCliRequest :  -> false
-
-
-
 
   #
   # Fetch from array
@@ -310,8 +346,10 @@ class system.core.Input
   # This is a helper function to retrieve values from global arrays
   #
   # @private
-  # @param  [Array]  # @param  [String]    # @return	[Boolean]
-  # @return	[String]
+  # @param  [Array] array hash to get values from
+  # @param  [String]  index key into the SERVER hash
+  # @param	[Boolean] xss_clean scrub the return value?
+  # @return	[String] the value found at index
   #
   _fetch_from_array : ($array, $index = '', $xss_clean = false) ->
     if not $array[$index]?
@@ -328,8 +366,9 @@ class system.core.Input
   #
   # Updated version suggested by Geert De Deckere
   #
-  # @access	protected
-  # @param  [String]    # @return	bool
+  # @private
+  # @param  [String]  ip  the ip string to validate
+  # @return	[Boolean] True if a valid ip
   #
   _valid_ipv4 : ($ip) ->
     $ip_segments = explode('.', $ip)
@@ -355,8 +394,9 @@ class system.core.Input
   #
   # Validate IPv6 Address
   #
-  # @access	protected
-  # @param  [String]    # @return	bool
+  # @private
+  # @param  [String]  ip  the ip string to validate
+  # @return	[Boolean] True if a valid ip
   #
   _valid_ipv6 : ($str) ->
     #  8 groups, separated by :
@@ -451,7 +491,9 @@ class system.core.Input
   # standardizes newline characters to \n
   #
   # @private
-  # @param  [String]    # @return	[String]
+  # @param  [String]  str the string to clean
+  # @return	[String] the clean value
+  #
   _clean_input_data : ($str) ->
     if is_array($str)
       $new_array = {}
@@ -486,7 +528,9 @@ class system.core.Input
   # only named with alpha-numeric text and a few other items.
   #
   # @private
-  # @param  [String]    # @return	[String]
+  # @param  [String]  str the string to clean
+  # @return	[String] the clean value
+  #
   _clean_input_keys : ($str) ->
     #if not preg_match("/^[a-z0-9:_\/-]+$/i", $str)?
     if not /^[a-z0-9:_\/-]+$/i.test($str)

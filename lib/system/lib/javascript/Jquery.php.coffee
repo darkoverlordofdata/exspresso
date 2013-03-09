@@ -11,9 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
 
 
 {__construct, config, count, defined, external, extract, get_instance, hover, implode, in_array, inline, is_array, item, load, preg_match, site_url, slash_item, str_replace, strpos, substr, vars}  = require(FCPATH + 'lib')

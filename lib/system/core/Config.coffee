@@ -11,10 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-# This file was ported from CodeIgniter to coffee-script using php2coffee
-#
-#
-
 #
 # Exspresso
 #
@@ -27,16 +23,17 @@
 # @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
+
 #
 # Exspresso Config Class
 #
 # This class contains functions that enable config files to be managed
 #
 #
-
-Modules = require(SYSPATH+'core/Modules.coffee')
-
 class system.core.Config
+
+
+  Modules = require(SYSPATH+'core/Modules.coffee')
 
   #
   # @property [Object] array list of loaded config files
