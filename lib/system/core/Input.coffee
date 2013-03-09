@@ -33,50 +33,62 @@ class system.core.Input
   os = require('os')
 
   #
+  # @private
   # @property [Object]  The request cookies
   #
   _cookies: null
   #
+  # @private
   # @property [Object]  The request get array
   #
   _query: null
   #
+  # @private
   # @property [Object]  The request post body
   #
   _body: null
   #
+  # @private
   # @property [Object]  The request server properties
   #
   _server: null
   #
+  # @private
   # @property [Object]  The list of HTTP request headers
   #
   _headers: null
   #
+  # @private
   # @property [String]  The IP address of the current user
   #
   _ip_address: false
   #
+  # @private
   # @property [String]  The user agent (web browser) being used by the current user
   #
   _user_agent: false
   #
+  # @private
   # @property [Object]  A fabricated table to mimic php's $_SERVER
   #
   _server: null
   #
+  # @private
   # @property [Boolean] If FALSE, then $_GET will be set to an empty array
   #
   _allow_get_array: false
   #
+  # @private
   # @property [Boolean] If TRUE, then newlines are standardized
   #
   _standardize_newlines: false
   #
+  # @private
   # @property [Boolean] Determines whether the XSS filter is always active
   #
   _enable_xss: false
   #
+  # @private
   # @property [Boolean] Enables a CSRF cookie token to be set.
   #
   _enable_csrf: false

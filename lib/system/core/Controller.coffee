@@ -27,7 +27,7 @@
 #
 # This class object is the super class for all controllers
 #
-# @see controller%20graph.md.html
+# @see http://coffeedoc.info/github/darkoverlordofdata/exspresso/master/ Controller Graph
 #
 class system.core.Controller extends system.core.Object
 

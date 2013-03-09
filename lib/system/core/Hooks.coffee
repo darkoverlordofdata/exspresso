@@ -34,15 +34,15 @@ class system.core.Hooks
   #
   # @property [Boolean] Are hooks enabled? True/False 
   #
-  enabled       : false
+  enabled: false
   #
   # @property [Object] Hash list of hooks to call
   #
-  hooks         : null
+  hooks: null
   #
   # @property [Boolean] Are hooks currently running? True/False
   #
-  in_progress   : false
+  in_progress: false
   
   #
   # Constructor
