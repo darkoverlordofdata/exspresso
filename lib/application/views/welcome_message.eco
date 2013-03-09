@@ -7,6 +7,6 @@
     <p>The corresponding controller for this page is found at:</p>
     <pre><code>application/controllers/welcome.coffee</code></pre>
     <p></p>
-    <p>View the exspresso <a href="/doc">documentation</a></p>
+    <p>View the exspresso <a href="http://coffeedoc.info/github/darkoverlordofdata/exspresso/master/">documentation</a></p>
     <p>Page rendered in {elapsed_time} ms</p>
 </div>

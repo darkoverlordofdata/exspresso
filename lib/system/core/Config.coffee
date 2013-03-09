@@ -14,21 +14,19 @@
 # This file was ported from CodeIgniter to coffee-script using php2coffee
 #
 #
+
 #
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
 # @author		  darkoverlordofdata
-# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @copyright	Copyright (c) 2011 Wiredesignz
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
+# @copyright	Copyright (c) 2011 Wiredesignz
+# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
-
-#  ------------------------------------------------------------------------
-
 #
 # Exspresso Config Class
 #
