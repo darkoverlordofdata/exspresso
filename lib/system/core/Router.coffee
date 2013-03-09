@@ -25,7 +25,7 @@
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
-# @link		    http://darkoverlordofdata.com
+# @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
 #  ------------------------------------------------------------------------
@@ -61,9 +61,8 @@ class system.core.Router
   # This function determines what should be served based on the URI request,
   # as well as any "routes" that have been set in the routing config file.
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   setRouting: ($uri) ->
 
     @_directory = ''
@@ -76,9 +75,8 @@ class system.core.Router
   #
   # Set the default controller
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _set_default_controller: ->
 
     if @_default_controller is false
@@ -106,11 +104,9 @@ class system.core.Router
   # This takes an array of URI segments as
   # input, and sets the current class/method
   #
-  # @access	private
-  # @param	array
-  # @param	bool
-  # @return	void
-  #
+  # @private
+  # @param  [Array]  # @return	[Boolean]
+  # @return [Void]  #
   _set_request: ($segments = []) ->
 
     $segments = @_validate_request($segments)
@@ -136,9 +132,8 @@ class system.core.Router
   # Validates the supplied segments.  Attempts to determine the path to
   # the controller.
   #
-  # @access	private
-  # @param	array
-  # @return	array
+  # @private
+  # @param  [Array]  # @return	array
   #
   _validate_request: ($segments) ->
 
@@ -167,9 +162,8 @@ class system.core.Router
   # Validates the supplied segments.  Attempts to determine the path to
   # the controller.
   #
-  # @access	private
-  # @param	array
-  # @return	array
+  # @private
+  # @param  [Array]  # @return	array
   #
   _application_validate_request: ($segments) ->
 
@@ -240,8 +234,8 @@ class system.core.Router
   # This function loads routes that may exist in
   # the module/config/routes.php file
   #
-  # @access	private
-  # @return	object routes
+  # @private
+  # @return [Object]  routes
   #
   loadRoutes: ->
 
@@ -263,8 +257,8 @@ class system.core.Router
   # This function loads routes that may exist in
   # the config/routes.php file
   #
-  # @access	private
-  # @return	object routes
+  # @private
+  # @return [Object]  routes
   #
   _application_load_routes: ->
 
@@ -286,9 +280,8 @@ class system.core.Router
   #
   # Locate the controller
   #
-  # @access	private
-  # @param	array
-  # @return	array
+  # @private
+  # @param  [Array]  # @return	array
   #
   locate: ($segments) ->
 
@@ -351,10 +344,7 @@ class system.core.Router
   #
   # Set the class name
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setClass: ($class) ->
     @_class = $class+@config.item('controller_suffix')
   # - pre module - @_class = $class.replace('/', '').replace('.', '')
@@ -363,8 +353,7 @@ class system.core.Router
   #
   # Fetch the current class
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   getClass: ->
     return @_class
@@ -373,10 +362,7 @@ class system.core.Router
   #
   #  Set the method name
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setMethod: ($method) ->
     @_method = $method
 
@@ -384,8 +370,7 @@ class system.core.Router
   #
   #  Fetch the current method
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   getMethod: ->
     if @_method is @getClass()
@@ -396,10 +381,7 @@ class system.core.Router
   #
   #  Set the directory name
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setDirectory: ($dir) ->
     @_directory = $dir.replace('/', '').replace('.', '') + '/'
 
@@ -407,8 +389,7 @@ class system.core.Router
   #
   #  Fetch the sub-directory (if any) that contains the requested controller class
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   getDirectory: ->
     return @_directory
@@ -416,8 +397,7 @@ class system.core.Router
   #
   # Fetch the current module
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   getModule: ->
     @_module

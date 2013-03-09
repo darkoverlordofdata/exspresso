@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -41,10 +39,8 @@ class system.core.Model
   #
   # Copies the ExspressoControllers public base class properties
   #
-  # @access	public
-  # @param	object	Controller Instance mixin
-  # @return	void
-  #
+    # @param  [Object]  Controller Instance mixin
+  # @return [Void]  #
   constructor: ($controller) ->
 
     log_message 'debug', "Model Class Initialized"

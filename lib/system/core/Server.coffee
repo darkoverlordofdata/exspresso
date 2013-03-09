@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -50,9 +48,7 @@ class system.core.Server
   #
   # Set server config
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   constructor: ($config, @app) ->
 
     log_message('debug', "Server Class Initialized")
@@ -71,17 +67,13 @@ class system.core.Server
   #
   # Add view helpers
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   setHelpers: ($helpers) -> # abstract method
 
   #
   # Start me up ...
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   start: ($router, $next) ->
 
     @app.use @server()
@@ -97,10 +89,8 @@ class system.core.Server
   #
   #   display a startup banner
   #
-  # @access	public
-  # @param	object exspresso.config
-  # @return	void
-  #
+    # @param  [Object]  exspresso.config
+  # @return [Void]  #
   banner: ->
 
     $elapsed = core('Benchmark').elapsedTime('boot_time_start', 'boot_time_end')
@@ -119,10 +109,8 @@ class system.core.Server
   #
   #   called by the core/Config class constructor
   #
-  # @access	public
-  # @param	object exspresso.config
-  # @return	void
-  #
+    # @param  [Object]  exspresso.config
+  # @return [Void]  #
   config: ($config) ->
 
     @_logger      = $config.logger
@@ -137,10 +125,7 @@ class system.core.Server
   #   Callback from lib/Session constructor to
   #   initialize session support
   #
-  # @access	public
-  # @param	object
-  # @return	void
-  #
+    # @param  [Object]    # @return [Void]  #
   session: ($session) ->
 
     $server = require(exspresso.httpDriver)
@@ -170,8 +155,8 @@ class system.core.Server
   #
   #   middleware error handler
   #
-  #   @param object $req
-  #   @param object $res
+  # @param  [Object]  $req
+  # @param  [Object]  $res
   #   @param function $next
   #
   error_5xx: ->
@@ -188,8 +173,8 @@ class system.core.Server
   #
   #   middleware page not found
   #
-  #   @param object $req
-  #   @param object $res
+  # @param  [Object]  $req
+  # @param  [Object]  $res
   #   @param function $next
   #
   error_404: ->
@@ -206,12 +191,7 @@ class system.core.Server
   #
   #   fabricate a table similar to $_SERVER
   #
-  # @access	public
-  # @param object
-  # @param object
-  # @param function
-  # @return	void
-  #
+    # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
   server: -> ($req, $res, $next) =>
 
 

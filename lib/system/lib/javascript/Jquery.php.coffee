@@ -30,7 +30,7 @@ if not defined('SYSPATH') then die 'No direct script access allowed'
 # @author		darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license		http://www.codeigniter.com/user_guide/license.html
-# @link		http://www.codeigniter.com
+# @see 		http://www.codeigniter.com
 # @since		Version 1.0
 # @filesource
 #
@@ -42,7 +42,7 @@ if not defined('SYSPATH') then die 'No direct script access allowed'
 # @subpackage	Libraries
 # @author		darkoverlordofdata
 # @category	Loader
-# @link		http://www.codeigniter.com/user_guide/lib/javascript.html
+# @see 		http://www.codeigniter.com/user_guide/lib/javascript.html
 #
 
 class ExspressoJquery extends ExspressoJavascript
@@ -73,10 +73,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery blur event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _blur : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'blur')
@@ -87,10 +87,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery change event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _change : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'change')
@@ -101,11 +101,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery click event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @param	boolean	whether or not to return false
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[Boolean]ean	whether or not to return false
+  # @return	[String]
   #
   _click : ($element = 'this', $js = '', $ret_false = true) ->
     if not is_array($js)
@@ -124,10 +124,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery dblclick event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _dblclick : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'dblclick')
@@ -138,10 +138,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery error event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _error : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'error')
@@ -152,10 +152,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery focus event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _focus : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'focus')
@@ -166,11 +166,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery hover event
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- Javascript code for mouse over
-  # @param	string	- Javascript code for mouse out
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - Javascript code for mouse over
+  # @param  [String]  - Javascript code for mouse out
+  # @return	[String]
   #
   _hover : ($element = 'this', $over, $out) ->
     $event = "\n\t$(" + @_prep_element($element) + ").hover(\n\t\tfunction()\n\t\t{\n\t\t\t{$over}\n\t\t}, \n\t\tfunction()\n\t\t{\n\t\t\t{$out}\n\t\t});\n"
@@ -185,10 +185,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery keydown event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _keydown : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'keydown')
@@ -199,10 +199,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery keydown event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _keyup : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'keyup')
@@ -213,10 +213,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery load event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _load : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'load')
@@ -227,10 +227,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery mousedown event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _mousedown : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'mousedown')
@@ -241,10 +241,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery mouseout event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _mouseout : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'mouseout')
@@ -255,10 +255,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery mouseover event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _mouseover : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'mouseover')
@@ -269,10 +269,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery mouseup event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _mouseup : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'mouseup')
@@ -283,10 +283,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs script directly
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _output : ($array_js = '') ->
     if not is_array($array_js)
@@ -303,10 +303,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery resize event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _resize : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'resize')
@@ -317,10 +317,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery scroll event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _scroll : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'scroll')
@@ -331,10 +331,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery unload event
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @return	[String]
   #
   _unload : ($element = 'this', $js = '') ->
     return @_add_event($element, $js, 'unload')
@@ -347,9 +347,9 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery addClass event
   #
-  # @access	private
-  # @param	string	- element
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @return	[String]
   #
   _addClass : ($element = 'this', $class = '') ->
     $element = @_prep_element($element)
@@ -362,11 +362,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery animate event
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _animate : ($element = 'this', $params = {}, $speed = '', $extra = '') ->
     $element = @_prep_element($element)
@@ -398,11 +398,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery hide event
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _fadeIn : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
@@ -422,11 +422,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery hide event
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _fadeOut : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
@@ -446,11 +446,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery hide action
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _hide : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
@@ -470,9 +470,9 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery remove class event
   #
-  # @access	private
-  # @param	string	- element
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @return	[String]
   #
   _removeClass : ($element = 'this', $class = '') ->
     $element = @_prep_element($element)
@@ -485,11 +485,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery slideUp event
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _slideUp : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
@@ -509,11 +509,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery slideDown event
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _slideDown : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
@@ -533,11 +533,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery slideToggle event
   #
-  # @access	public
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+    # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _slideToggle : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
@@ -557,9 +556,9 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery toggle event
   #
-  # @access	private
-  # @param	string	- element
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @return	[String]
   #
   _toggle : ($element = 'this') ->
     $element = @_prep_element($element)
@@ -572,9 +571,9 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery toggle class event
   #
-  # @access	private
-  # @param	string	- element
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @return	[String]
   #
   _toggleClass : ($element = 'this', $class = '') ->
     $element = @_prep_element($element)
@@ -587,11 +586,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs a jQuery show event
   #
-  # @access	private
-  # @param	string	- element
-  # @param	string	- One of 'slow', 'normal', 'fast', or time in milliseconds
-  # @param	string	- Javascript callback function
-  # @return	string
+  # @private
+  # @param  [String]  - element
+  # @param  [String]  - One of 'slow', 'normal', 'fast', or time in milliseconds
+  # @param  [String]  - Javascript callback function
+  # @return	[String]
   #
   _show : ($element = 'this', $speed = '', $next = '') ->
     $element = @_prep_element($element)
@@ -612,11 +611,11 @@ class ExspressoJquery extends ExspressoJavascript
   # An Ajax call that populates the designated DOM node with
   # returned content
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	the controller to run the call against
-  # @param	string	optional parameters
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  the controller to run the call against
+  # @param  [String]  optional parameters
+  # @return	[String]
   #
   
   _updater : ($container = 'this', $controller, $options = '') ->
@@ -652,10 +651,10 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Zebra tables
   #
-  # @access	private
-  # @param	string	table name
-  # @param	string	plugin location
-  # @return	string
+  # @private
+  # @param  [String]  table name
+  # @param  [String]  plugin location
+  # @return	[String]
   #
   _zebraTables : ($class = '', $odd = 'odd', $hover = '') ->
     $class = if ($class isnt '') then '.' + $class else ''
@@ -680,9 +679,8 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # http://www.malsup.com/jquery/corner/
   #
-  # @access	public
-  # @param	string	target
-  # @return	string
+    # @param  [String]  target
+  # @return	[String]
   #
   corner : ($element = '', $corner_style = '') ->
     #  may want to make this configurable down the road
@@ -700,9 +698,7 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Load a thickbox modal window
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   modal : ($src, $relative = false) ->
     @jquery_code_for_load.push @external($src, $relative)
     
@@ -712,9 +708,7 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Load an Effect library
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   effect : ($src, $relative = false) ->
     @jquery_code_for_load.push @external($src, $relative)
     
@@ -724,9 +718,7 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Load a plugin library
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   plugin : ($src, $relative = false) ->
     @jquery_code_for_load.push @external($src, $relative)
     
@@ -736,9 +728,7 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Load a user interface library
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   ui : ($src, $relative = false) ->
     @jquery_code_for_load.push @external($src, $relative)
     
@@ -747,9 +737,7 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Creates a jQuery sortable
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   sortable : ($element, $options = {}) ->
     
     if count($options) > 0
@@ -769,10 +757,9 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Table Sorter Plugin
   #
-  # @access	public
-  # @param	string	table name
-  # @param	string	plugin location
-  # @return	string
+    # @param  [String]  table name
+  # @param  [String]  plugin location
+  # @return	[String]
   #
   tablesorter : ($table = '', $options = '') ->
     @jquery_code_for_compile.push "\t$(" + @_prep_element($table) + ").tablesorter($options);\n"
@@ -785,11 +772,11 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Constructs the syntax for an event, and adds to into the array for compilation
   #
-  # @access	private
-  # @param	string	The element to attach the event to
-  # @param	string	The code to execute
-  # @param	string	The event to pass
-  # @return	string
+  # @private
+  # @param  [String]  The element to attach the event to
+  # @param  [String]  The code to execute
+  # @param  [String]  The event to pass
+  # @return	[String]
   #
   _add_event : ($element, $js, $event) ->
     if is_array($js)
@@ -808,8 +795,8 @@ class ExspressoJquery extends ExspressoJavascript
   # As events are specified, they are stored in an array
   # This funciton compiles them all for output on a page
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _compile : ($view_var = 'script_foot', $script_tags = true) ->
     #  External references
@@ -837,9 +824,7 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Clears the array of script events collected for output
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   _clear_compile :  ->
     @jquery_code_for_compile = {}
     
@@ -849,8 +834,8 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # A wrapper for writing document.ready()
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _document_ready : ($js) ->
     if not is_array($js)
@@ -868,9 +853,7 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Outputs the script tag that loads the jquery.js file into an HTML document
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   script : ($library_src = '', $relative = false) ->
     $library_src = @external($library_src, $relative)
@@ -885,9 +868,7 @@ class ExspressoJquery extends ExspressoJavascript
   # unless the supplied element is the Javascript 'this'
   # object, in which case no quotes are added
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   _prep_element : ($element) ->
     if $element isnt 'this'
@@ -902,9 +883,8 @@ class ExspressoJquery extends ExspressoJavascript
   #
   # Ensures the speed parameter is valid for jQuery
   #
-  # @access	private
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @return	[String]
   #
   _validate_speed : ($speed) ->
     if in_array($speed, ['slow', 'normal', 'fast'])

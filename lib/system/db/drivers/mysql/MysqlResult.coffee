@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -50,8 +48,7 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   # Number of rows in the result set
   #
-  # @access	public
-  # @return	integer
+  # @return	[Integer]
   #
   numRows :  ->
     @_result_array.length
@@ -62,8 +59,7 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   # Number of fields in the result set
   #
-  # @access	public
-  # @return	integer
+  # @return	[Integer]
   #
   numFields :  ->
     @_metadata.length
@@ -75,8 +71,7 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   # Generates an array of column names
   #
-  # @access	public
-  # @return	array
+  # @return	[Array]
   #
   listFields :  ->
     $field_names = []
@@ -92,8 +87,7 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   # Generates an array of objects containing field meta-data
   #
-  # @access	public
-  # @return	array
+  # @return	[Array]
   #
   fieldData :  ->
     return @_metadata
@@ -104,7 +98,7 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   # Free the result
   #
-  # @return	null
+  # @return	[Null]
   #
   freeResult :  ->
     @result_array = null
@@ -118,8 +112,8 @@ class system.db.mysql.MysqlResult extends system.db.Result
   # this internally before fetching results to make sure the
   # result set starts at zero
   #
-  # @access	private
-  # @return	array
+  # @private
+  # @return	[Array]
   #
   _data_seek : ($n = 0) ->
     @_current_row = $n
@@ -131,8 +125,8 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   # Returns the result set as an array
   #
-  # @access	private
-  # @return	array
+  # @private
+  # @return	[Array]
   #
   _fetch_assoc :  ->
 
@@ -144,9 +138,8 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   # Returns the result set as an object
   #
-  # @access	private
-  # @return	object
-  #
+  # @private
+  # @return [Object]  #
   _fetch_object :  ->
 
 module.exports = system.db.mysql.MysqlResult

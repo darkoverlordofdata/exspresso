@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -54,12 +52,7 @@ class system.lib.Parser
   # Parses pseudo-variables contained in the specified template view,
   # replacing them with the data in the second param
   #
-  # @access	public
-  # @param	string
-  # @param	array
-  # @param	function
-  # @return	void
-  #
+    # @param  [String]    # @param  [Array]  # @param  [Function]    # @return [Void]  #
   parse: ($template, $data, $next) ->
 
     $fn_err = $next ? show_error
@@ -79,11 +72,8 @@ class system.lib.Parser
   # Parses pseudo-variables contained in the specified string,
   # replacing them with the data in the second param
   #
-  # @access	public
-  # @param	string
-  # @param	array
-  # @param	bool
-  # @return	string
+    # @param  [String]    # @param  [Array]  # @return	[Boolean]
+  # @return	[String]
   #
   parseString: ($template, $data, $return = false) ->
     @_parse($template, $data, $return)
@@ -95,11 +85,8 @@ class system.lib.Parser
   # Parses pseudo-variables contained in the specified template,
   # replacing them with the data in the second param
   #
-  # @access	public
-  # @param	string
-  # @param	array
-  # @param	bool
-  # @return	string
+    # @param  [String]    # @param  [Array]  # @return	[Boolean]
+  # @return	[String]
   #
   _parse: ($template, $data, $return = false) ->
     if $template is ''
@@ -129,11 +116,7 @@ class system.lib.Parser
   #
   #  Set the left/right variable delimiters
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @param  [String]    # @return [Void]  #
   setDelimiters: ($l_delim = '{', $r_delim = '}') ->
     @_l_delim = $l_delim
     @_r_delim = $r_delim
@@ -143,11 +126,8 @@ class system.lib.Parser
   #
   #  Parse a single key/value
   #
-  # @access	private
-  # @param	string
-  # @param	string
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @param  [String]    # @param  [String]    # @return	[String]
   #
   _parse_single: ($key, $val, $string) ->
     return str_replace(@_l_delim + $key + @_r_delim, $val, $string)
@@ -158,11 +138,8 @@ class system.lib.Parser
   #
   # Parses tag pairs:  {some_tag} string... {/some_tag}
   #
-  # @access	private
-  # @param	string
-  # @param	array
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @param  [Array]  # @param  [String]    # @return	[String]
   #
   _parse_pair: ($variable, $data, $string) ->
     if false is ($match = @_match_pair($string, $variable))
@@ -186,11 +163,8 @@ class system.lib.Parser
   #
   #  Matches a variable pair
   #
-  # @access	private
-  # @param	string
-  # @param	string
-  # @return	mixed
-  #
+  # @private
+  # @param  [String]    # @param  [String]    # @return [Mixed]  #
   _match_pair: ($string, $variable) ->
     if not ($match = preg_match("|" + preg_quote(@_l_delim) + $variable + preg_quote(@_r_delim) + "(.+?)" + preg_quote(@_l_delim) + '/' + $variable + preg_quote(@_r_delim) + "|s", $string))?
       return false

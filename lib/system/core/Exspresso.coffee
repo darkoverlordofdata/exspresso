@@ -15,12 +15,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -133,10 +131,8 @@ class system.core.Exspresso extends system.core.Object
   #
   #   http server is now ready
   #
-  # @access	public
-  # @param	number  the port number we're running on
-  # @return	void
-  #
+    # @param  [Integer]  the port number we're running on
+  # @return [Void]  #
   ready: ($port) =>
 
     @define port: $port
@@ -168,10 +164,9 @@ class system.core.Exspresso extends system.core.Object
   #
   #   Dispatch to the controller method when the request is received
   #
-  #   @param string route
-  #   @param string uti
-  #   @return void
-  #
+  # @param  [String]  route
+  # @param  [String]  uti
+  # @return [Void]  #
   #
   bind: ($path, $uri) ->
 
@@ -210,12 +205,11 @@ class system.core.Exspresso extends system.core.Object
     #   Any URI segments present (besides the class/function) will be passed
     #   to the method for convenience
     #
-    #   @param object   the server request object
-    #   @param object   the server response object
+    # @param  [Object]  the server request object
+    # @param  [Object]  the server response object
     #   @param function the next middleware on the stack
-    #   @param array    the remaining uri arguments
-    #   @return void
-    #
+    # @param  [Array]  the remaining uri arguments
+    # @return [Void]  #
     @router.routes[$path] = ($req, $res, $next, $args...) =>
 
 
@@ -321,12 +315,7 @@ class system.core.Exspresso extends system.core.Object
   #
   #   update the base_url config entry
   #
-  # @access	public
-  # @param object
-  # @param object
-  # @param function
-  # @return	void
-  #
+    # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
   parseBaseUrl: -> ($req, $res, $next) =>
 
     #
@@ -341,12 +330,7 @@ class system.core.Exspresso extends system.core.Object
   #
   #   fabricate a table similar to $_SERVER
   #
-  # @access	public
-  # @param object
-  # @param object
-  # @param function
-  # @return	void
-  #
+    # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
   parseProperties: -> ($req, $res, $next) =>
 
     $_SERVER =
@@ -393,8 +377,8 @@ class system.core.Exspresso extends system.core.Object
   #
   #   general server error handler
   #
-  #   @param object $req
-  #   @param object $res
+  # @param  [Object]  $req
+  # @param  [Object]  $res
   #   @param function $next
   #
   error5xx: -> ($err, $req, $res, $next) -> show_error $err
@@ -405,8 +389,8 @@ class system.core.Exspresso extends system.core.Object
   #
   #   page not found handler
   #
-  #   @param object $req
-  #   @param object $res
+  # @param  [Object]  $req
+  # @param  [Object]  $res
   #   @param function $next
   #
   error404: -> ($req, $res, $next) -> show_404 $req.originalUrl

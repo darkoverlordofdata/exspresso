@@ -22,9 +22,7 @@
 #
 # Generates an HTML stylesheet declaration.
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('stylesheet')
   exports.stylesheet = stylesheet = ($content = '', $type = 'text/css') ->
@@ -35,9 +33,7 @@ if not function_exists('stylesheet')
 #
 # Generates an HTML javascript tag.
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('javascript_tag')
   exports.javascript_tag = javascript_tag = ($src = '', $type = 'text/javascript') ->
@@ -49,9 +45,7 @@ if not function_exists('javascript_tag')
 #
 # Generates an HTML javascript declaration.
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('javascript_decl')
   exports.javascript_decl = javascript_decl = ($content = '', $type = 'text/javascript') ->

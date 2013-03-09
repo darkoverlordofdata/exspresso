@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -47,8 +45,7 @@ class application.core.AdminController extends application.core.PublicController
   #
   #   @access	public
   #   @param string
-  #   @return	void
-  #
+  # @return [Void]  #
   sidenav: ($active) ->
 
     $admin_menu = 
@@ -70,8 +67,7 @@ class application.core.AdminController extends application.core.PublicController
   #
   #   @access	public
   #   @param string
-  #   @return	void
-  #
+  # @return [Void]  #
   submenu: ($active) ->
 
     $modules = 

@@ -32,8 +32,7 @@ class Admin extends application.core.AdminController
   #
   #   @access	public
   #   @param string
-  #   @return	void
-  #
+  # @return [Void]  #
   index: ($module = '') ->
 
     @migration.set_module $module

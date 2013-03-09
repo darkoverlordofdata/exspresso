@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -40,9 +38,8 @@
 #
 # Formats a numbers as bytes, based on size, and adds the appropriate suffix
 #
-# @access	public
-# @param	mixed	// will be cast as int
-# @return	string
+# @param  [Mixed]  // will be cast as int
+# @return	[String]
 #
 if not function_exists('byte_format')
   exports.byte_format = byte_format = ($num, $precision = 1) ->

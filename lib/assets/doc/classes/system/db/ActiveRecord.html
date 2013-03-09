@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Exspresso Documentation</title>
+  <link rel='stylesheet' href='../../../assets/codo.css' type='text/css'>
+  <script src='../../../assets/codo.js'></script>
+  <script src='../../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../../readme.md.html' title='Exspresso'>Exspresso</a>
+    &raquo;
+    <a href='../../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>system</span>
+    &raquo;
+    <span class='title'>db</span>
+    &raquo;
+    <span class='title'>ActiveRecord</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        system.db.ActiveRecord
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>lib&#47;system&#47;db&#47;ActiveRecord.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../../classes/system/db/Driver.html'>system.db.Driver</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Active Record Class</p><p>This is the platform-independent base Active Record implementation class.</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+                <a href='../../../classes/system/db/mysql/MysqlDriver.html'>system.db.mysql.MysqlDriver</a>,
+        <a href='../../../classes/system/db/postgres/PostgresDriver.html'>system.db.postgres.PostgresDriver</a>
+      </p>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>($params = {})
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#select-instance'>
+        - (void) <strong>select</strong>($select)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#selectMax-instance'>
+        - (Object) <strong>selectMax</strong>($select = '', $alias = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Select Max Generates a SELECT MAX(field) portion of a query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#selectMin-instance'>
+        - (Object) <strong>selectMin</strong>($select = '', $alias = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Select Min Generates a SELECT MIN(field) portion of a query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#selectAvg-instance'>
+        - (Object) <strong>selectAvg</strong>($select = '', $alias = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Select Average Generates a SELECT AVG(field) portion of a query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#selectSum-instance'>
+        - (Object) <strong>selectSum</strong>($select = '', $alias = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Select Sum Generates a SELECT SUM(field) portion of a query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_max_min_avg_sum-instance'>
+        - (Object) <strong>_max_min_avg_sum</strong>($select = '', $alias = '', $type = 'MAX')
+      </a>
+    </span>
+    <span class='desc'>
+      Processing Function for the four functions above: select_max() select_min() select_avg() select_sum()
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_create_alias_from_table-instance'>
+        - (void) <strong>_create_alias_from_table</strong>($item)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Determines the alias name based on the table
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#distinct-instance'>
+        - (Object) <strong>distinct</strong>($val = true)
+      </a>
+    </span>
+    <span class='desc'>
+      DISTINCT Sets a flag which tells the query string compiler to add DISTINCT
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#from-instance'>
+        - (Object) <strong>from</strong>($from)
+      </a>
+    </span>
+    <span class='desc'>
+      From Generates the FROM portion of the query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#join-instance'>
+        - (Object) <strong>join</strong>($table, $cond, $type = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Join Generates the JOIN portion of the query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#where-instance'>
+        - (void) <strong>where</strong>($key, $value = null, $escape = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Where Generates the WHERE portion of the query.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orWhere-instance'>
+        - (void) <strong>orWhere</strong>($key, $value = null, $escape = true)
+      </a>
+    </span>
+    <span class='desc'>
+      OR Where Generates the WHERE portion of the query.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_where-instance'>
+        - (void) <strong>_where</strong>($key, $value = null, $type = 'AND ', $escape = null)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Where Called by where() or orwhere()
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#whereIn-instance'>
+        - (Object) <strong>whereIn</strong>($key = null, $values = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Where_in Generates a WHERE field IN (&#39;item&#39;, &#39;item&#39;) SQL query joined with AND if appropriate
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orWhereIn-instance'>
+        - (Object) <strong>orWhereIn</strong>($key = null, $values = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Where_in_or Generates a WHERE field IN (&#39;item&#39;, &#39;item&#39;) SQL query joined with OR if appropriate
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#whereNotIn-instance'>
+        - (Object) <strong>whereNotIn</strong>($key = null, $values = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Where_not_in Generates a WHERE field NOT IN (&#39;item&#39;, &#39;item&#39;) SQL query joined with AND if appropriate
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orWhereNotIn-instance'>
+        - (Object) <strong>orWhereNotIn</strong>($key = null, $values = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Where_not_in_or Generates a WHERE field NOT IN (&#39;item&#39;, &#39;item&#39;) SQL query joined with OR if appropriate
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_where_in-instance'>
+        - (Boolean) <strong>_where_in</strong>($key = null, $values = null, $not = false, $type = 'AND ')
+      </a>
+    </span>
+    <span class='desc'>
+      Where_in Called by where_in, where_in_or, where_not_in, where_not_in_or
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#like-instance'>
+        - (void) <strong>like</strong>($field, $match = '', $side = 'both')
+      </a>
+    </span>
+    <span class='desc'>
+      Like Generates a %LIKE% portion of the query.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#not_like-instance'>
+        - (void) <strong>not_like</strong>($field, $match = '', $side = 'both')
+      </a>
+    </span>
+    <span class='desc'>
+      Not Like Generates a NOT LIKE portion of the query.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orLike-instance'>
+        - (void) <strong>orLike</strong>($field, $match = '', $side = 'both')
+      </a>
+    </span>
+    <span class='desc'>
+      OR Like Generates a %LIKE% portion of the query.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orNotLike-instance'>
+        - (void) <strong>orNotLike</strong>($field, $match = '', $side = 'both')
+      </a>
+    </span>
+    <span class='desc'>
+      OR Not Like Generates a NOT LIKE portion of the query.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_like-instance'>
+        - (void) <strong>_like</strong>($field, $match = '', $type = 'AND ', $side = 'both', $not = '')
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Like Called by like() or orlike()
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#groupBy-instance'>
+        - (void) <strong>groupBy</strong>($by)
+      </a>
+    </span>
+    <span class='desc'>
+      GROUP BY
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#having-instance'>
+        - (void) <strong>having</strong>($key, $value = '', $escape = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the HAVING value Separates multiple calls with AND
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orHaving-instance'>
+        - (void) <strong>orHaving</strong>($key, $value = '', $escape = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the OR HAVING value Separates multiple calls with OR
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_having-instance'>
+        - (void) <strong>_having</strong>($key, $value = '', $type = 'AND ', $escape = true)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Sets the HAVING values Called by having() or or_having()
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orderBy-instance'>
+        - (Object) <strong>orderBy</strong>($orderby, $direction = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the ORDER BY value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#limit-instance'>
+        - (Object) <strong>limit</strong>($value, $offset = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the LIMIT value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#offset-instance'>
+        - (Object) <strong>offset</strong>($offset)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the OFFSET value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#set-instance'>
+        - (Object) <strong>set</strong>($key, $value = '', $escape = true)
+      </a>
+    </span>
+    <span class='desc'>
+      The &quot;set&quot; function.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#get-instance'>
+        - (Object) <strong>get</strong>($table, $next = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Get Compiles the select statement based on the other functions called and runs the query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#countAllResults-instance'>
+        - (void) <strong>countAllResults</strong>($table = '', $next)
+      </a>
+    </span>
+    <span class='desc'>
+      &quot;Count All Results&quot; query Generates a platform-specific query string that counts all records returned by an Active Record query.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getWhere-instance'>
+        - (Object) <strong>getWhere</strong>($table = '', $where = null, $limit = null, $offset = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Get_Where Allows the where clause, limit and offset to be added directly
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#insertBatch-instance'>
+        - (Object) <strong>insertBatch</strong>($table = '', $set = null, $next)
+      </a>
+    </span>
+    <span class='desc'>
+      Insert_Batch Compiles batch insert strings and runs the queries
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setInsertBatch-instance'>
+        - (void) <strong>setInsertBatch</strong>($key, $value = '', $escape = true)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#insert-instance'>
+        - (Object) <strong>insert</strong>($table = '', $set = null, $next = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Insert Compiles an insert string and runs the query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#replace-instance'>
+        - (void) <strong>replace</strong>($table = '', $set = null)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#update-instance'>
+        - (Object) <strong>update</strong>($table = '', $set = null, $where = null, $limit = null, $next = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Update Compiles an update string and runs the query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#updateBatch-instance'>
+        - (Object) <strong>updateBatch</strong>($table = '', $set = null, $index = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Update_Batch Compiles an update string and runs the query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setUpdateBatch-instance'>
+        - (void) <strong>setUpdateBatch</strong>($key, $index = '', $escape = true)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#emptyTable-instance'>
+        - (Object) <strong>emptyTable</strong>($table = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Empty Table Compiles a delete string and runs &quot;DELETE FROM table&quot;
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#truncate-instance'>
+        - (Object) <strong>truncate</strong>($table = '', $next)
+      </a>
+    </span>
+    <span class='desc'>
+      Truncate Compiles a truncate string and runs the query If the database does not support the truncate() command This function maps to &quot;DELETE FROM table&quot;
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#delete-instance'>
+        - (Object) <strong>delete</strong>($table = '', $where = '', $limit = null, $reset_data = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Delete Compiles a delete string and runs the query
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_dbprefix-instance'>
+        - (String) <strong>_dbprefix</strong>($table = '')
+      </a>
+    </span>
+    <span class='desc'>
+      DB Prefix Prepends a database prefix if one exists in configuration
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_track_aliases-instance'>
+        - (String) <strong>_track_aliases</strong>($table)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Track Aliases Used to track SQL statements written with aliased tables.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_compile_select-instance'>
+        - (String) <strong>_compile_select</strong>($select_override = false)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Compile the SELECT statement Generates a query string based on which functions were used.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_object_to_array_batch-instance'>
+        - (void) <strong>_object_to_array_batch</strong>($object)
+      </a>
+    </span>
+    <span class='desc'>
+      Object to Array Takes an object as input and converts the class variables to array key/vals
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#startCache-instance'>
+        - (Void) <strong>startCache</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Start Cache Starts AR caching
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#stopCache-instance'>
+        - (Void) <strong>stopCache</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Stop Cache Stops AR caching
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#flushCache-instance'>
+        - (Void) <strong>flushCache</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Flush Cache Empties the AR cache
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_merge_cache-instance'>
+        - (Void) <strong>_merge_cache</strong>()
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Merge Cache When called, this function merges any cached AR arrays with locally called ones.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_reset_run-instance'>
+        - (Void) <strong>_reset_run</strong>($ar_reset_items)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Resets the active record values.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_reset_select-instance'>
+        - (Void) <strong>_reset_select</strong>()
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Resets the active record values.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_reset_write-instance'>
+        - (Void) <strong>_reset_write</strong>()
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Resets the active record &quot;write&quot; values.
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../../classes/system/db/Driver.html'>system.db.Driver</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../../classes/system/db/Driver.html#constructor-instance'>#constructor</a>,
+                <a href='../../../classes/system/db/Driver.html#initialize-instance'>#initialize</a>,
+                <a href='../../../classes/system/db/Driver.html#platform-instance'>#platform</a>,
+                <a href='../../../classes/system/db/Driver.html#version-instance'>#version</a>,
+                <a href='../../../classes/system/db/Driver.html#queryList-instance'>#queryList</a>,
+                <a href='../../../classes/system/db/Driver.html#query-instance'>#query</a>,
+                <a href='../../../classes/system/db/Driver.html#_query2-instance'>#_query2</a>,
+                <a href='../../../classes/system/db/Driver.html#_load_rdriver-instance'>#_load_rdriver</a>,
+                <a href='../../../classes/system/db/Driver.html#simpleQuery-instance'>#simpleQuery</a>,
+                <a href='../../../classes/system/db/Driver.html#_simple_query2-instance'>#_simple_query2</a>,
+                <a href='../../../classes/system/db/Driver.html#transOff-instance'>#transOff</a>,
+                <a href='../../../classes/system/db/Driver.html#transStrict-instance'>#transStrict</a>,
+                <a href='../../../classes/system/db/Driver.html#transStart-instance'>#transStart</a>,
+                <a href='../../../classes/system/db/Driver.html#transComplete-instance'>#transComplete</a>,
+                <a href='../../../classes/system/db/Driver.html#transStatus-instance'>#transStatus</a>,
+                <a href='../../../classes/system/db/Driver.html#compile_binds-instance'>#compile_binds</a>,
+                <a href='../../../classes/system/db/Driver.html#is_write_type-instance'>#is_write_type</a>,
+                <a href='../../../classes/system/db/Driver.html#elapsedTime-instance'>#elapsedTime</a>,
+                <a href='../../../classes/system/db/Driver.html#totalQueries-instance'>#totalQueries</a>,
+                <a href='../../../classes/system/db/Driver.html#lastQuery-instance'>#lastQuery</a>,
+                <a href='../../../classes/system/db/Driver.html#escape-instance'>#escape</a>,
+                <a href='../../../classes/system/db/Driver.html#escapeLikeStr-instance'>#escapeLikeStr</a>,
+                <a href='../../../classes/system/db/Driver.html#primary-instance'>#primary</a>,
+                <a href='../../../classes/system/db/Driver.html#listTables-instance'>#listTables</a>,
+                <a href='../../../classes/system/db/Driver.html#tableExists-instance'>#tableExists</a>,
+                <a href='../../../classes/system/db/Driver.html#listFields-instance'>#listFields</a>,
+                <a href='../../../classes/system/db/Driver.html#fieldExists-instance'>#fieldExists</a>,
+                <a href='../../../classes/system/db/Driver.html#field_data-instance'>#field_data</a>,
+                <a href='../../../classes/system/db/Driver.html#insert_string-instance'>#insert_string</a>,
+                <a href='../../../classes/system/db/Driver.html#update_string-instance'>#update_string</a>,
+                <a href='../../../classes/system/db/Driver.html#_has_operator-instance'>#_has_operator</a>,
+                <a href='../../../classes/system/db/Driver.html#cacheSetPath-instance'>#cacheSetPath</a>,
+                <a href='../../../classes/system/db/Driver.html#cacheOn-instance'>#cacheOn</a>,
+                <a href='../../../classes/system/db/Driver.html#cacheOff-instance'>#cacheOff</a>,
+                <a href='../../../classes/system/db/Driver.html#cacheDelete-instance'>#cacheDelete</a>,
+                <a href='../../../classes/system/db/Driver.html#cacheDeleteAll-instance'>#cacheDeleteAll</a>,
+                <a href='../../../classes/system/db/Driver.html#_cache_init-instance'>#_cache_init</a>,
+                <a href='../../../classes/system/db/Driver.html#close-instance'>#close</a>,
+                <a href='../../../classes/system/db/Driver.html#displayError-instance'>#displayError</a>,
+                <a href='../../../classes/system/db/Driver.html#protect_identifiers-instance'>#protect_identifiers</a>,
+        <a href='../../../classes/system/db/Driver.html#_protect_identifiers-instance'>#_protect_identifiers</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>($params = {})
+    </p>
+    <div class='docstring'>
+  <p>Constructor.  Accepts one parameter containing the database
+connection settings.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='select-instance'>
+      - (void) <strong>select</strong>($select)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='selectMax-instance'>
+      - (Object) <strong>selectMax</strong>($select = '', $alias = '')
+    </p>
+    <div class='docstring'>
+  <p>Select Max</p><p>Generates a SELECT MAX(field) portion of a query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>alias</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='selectMin-instance'>
+      - (Object) <strong>selectMin</strong>($select = '', $alias = '')
+    </p>
+    <div class='docstring'>
+  <p>Select Min</p><p>Generates a SELECT MIN(field) portion of a query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>alias</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='selectAvg-instance'>
+      - (Object) <strong>selectAvg</strong>($select = '', $alias = '')
+    </p>
+    <div class='docstring'>
+  <p>Select Average</p><p>Generates a SELECT AVG(field) portion of a query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>alias</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='selectSum-instance'>
+      - (Object) <strong>selectSum</strong>($select = '', $alias = '')
+    </p>
+    <div class='docstring'>
+  <p>Select Sum</p><p>Generates a SELECT SUM(field) portion of a query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>alias</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_max_min_avg_sum-instance'>
+      - (Object) <strong>_max_min_avg_sum</strong>($select = '', $alias = '', $type = 'MAX')
+    </p>
+    <div class='docstring'>
+  <p>Processing Function for the four functions above:</p><p>select_max()
+select_min()
+select_avg()
+ select_sum()</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>alias</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_create_alias_from_table-instance'>
+      - (void) <strong>_create_alias_from_table</strong>($item)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Determines the alias name based on the table</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return    [String]</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='distinct-instance'>
+      - (Object) <strong>distinct</strong>($val = true)
+    </p>
+    <div class='docstring'>
+  <p>DISTINCT</p><p>Sets a flag which tells the query string compiler to add DISTINCT</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='from-instance'>
+      - (Object) <strong>from</strong>($from)
+    </p>
+    <div class='docstring'>
+  <p>From</p><p>Generates the FROM portion of the query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>can</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>be a string or array</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='join-instance'>
+      - (Object) <strong>join</strong>($table, $cond, $type = '')
+    </p>
+    <div class='docstring'>
+  <p>Join</p><p>Generates the JOIN portion of the query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]  the join condition</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>type of join</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='where-instance'>
+      - (void) <strong>where</strong>($key, $value = null, $escape = true)
+    </p>
+    <div class='docstring'>
+  <p>Where</p><p>Generates the WHERE portion of the query. Separates
+multiple calls with AND</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orWhere-instance'>
+      - (void) <strong>orWhere</strong>($key, $value = null, $escape = true)
+    </p>
+    <div class='docstring'>
+  <p>OR Where</p><p>Generates the WHERE portion of the query. Separates
+multiple calls with OR</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_where-instance'>
+      - (void) <strong>_where</strong>($key, $value = null, $type = 'AND ', $escape = null)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Where</p><p>Called by where() or orwhere()</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @param  [String]    # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='whereIn-instance'>
+      - (Object) <strong>whereIn</strong>($key = null, $values = null)
+    </p>
+    <div class='docstring'>
+  <p>Where_in</p><p>Generates a WHERE field IN (&#39;item&#39;, &#39;item&#39;) SQL query joined with
+AND if appropriate</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field to search</span>
+    </li>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>values searched on</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orWhereIn-instance'>
+      - (Object) <strong>orWhereIn</strong>($key = null, $values = null)
+    </p>
+    <div class='docstring'>
+  <p>Where_in_or</p><p>Generates a WHERE field IN (&#39;item&#39;, &#39;item&#39;) SQL query joined with
+OR if appropriate</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field to search</span>
+    </li>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>values searched on</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='whereNotIn-instance'>
+      - (Object) <strong>whereNotIn</strong>($key = null, $values = null)
+    </p>
+    <div class='docstring'>
+  <p>Where_not_in</p><p>Generates a WHERE field NOT IN (&#39;item&#39;, &#39;item&#39;) SQL query joined
+with AND if appropriate</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field to search</span>
+    </li>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>values searched on</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orWhereNotIn-instance'>
+      - (Object) <strong>orWhereNotIn</strong>($key = null, $values = null)
+    </p>
+    <div class='docstring'>
+  <p>Where_not_in_or</p><p>Generates a WHERE field NOT IN (&#39;item&#39;, &#39;item&#39;) SQL query joined
+with OR if appropriate</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field to search</span>
+    </li>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>values searched on</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_where_in-instance'>
+      - (Boolean) <strong>_where_in</strong>($key = null, $values = null, $not = false, $type = 'AND ')
+    </p>
+    <div class='docstring'>
+  <p>Where_in</p><p>Called by where_in, where_in_or, where_not_in, where_not_in_or</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field to search</span>
+    </li>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>values searched on</span>
+    </li>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Object]  #</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Boolean</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='like-instance'>
+      - (void) <strong>like</strong>($field, $match = '', $side = 'both')
+    </p>
+    <div class='docstring'>
+  <p>Like</p><p>Generates a %LIKE% portion of the query. Separates
+multiple calls with AND</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='not_like-instance'>
+      - (void) <strong>not_like</strong>($field, $match = '', $side = 'both')
+    </p>
+    <div class='docstring'>
+  <p>Not Like</p><p>Generates a NOT LIKE portion of the query. Separates
+multiple calls with AND</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orLike-instance'>
+      - (void) <strong>orLike</strong>($field, $match = '', $side = 'both')
+    </p>
+    <div class='docstring'>
+  <p>OR Like</p><p>Generates a %LIKE% portion of the query. Separates
+multiple calls with OR</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orNotLike-instance'>
+      - (void) <strong>orNotLike</strong>($field, $match = '', $side = 'both')
+    </p>
+    <div class='docstring'>
+  <p>OR Not Like</p><p>Generates a NOT LIKE portion of the query. Separates
+multiple calls with OR</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_like-instance'>
+      - (void) <strong>_like</strong>($field, $match = '', $type = 'AND ', $side = 'both', $not = '')
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Like</p><p>Called by like() or orlike()</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Mixed]  # @param  [String]    # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='groupBy-instance'>
+      - (void) <strong>groupBy</strong>($by)
+    </p>
+    <div class='docstring'>
+  <p>GROUP BY</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='having-instance'>
+      - (void) <strong>having</strong>($key, $value = '', $escape = true)
+    </p>
+    <div class='docstring'>
+  <p>Sets the HAVING value</p><p>Separates multiple calls with AND</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]    # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orHaving-instance'>
+      - (void) <strong>orHaving</strong>($key, $value = '', $escape = true)
+    </p>
+    <div class='docstring'>
+  <p>Sets the OR HAVING value</p><p>Separates multiple calls with OR</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]    # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_having-instance'>
+      - (void) <strong>_having</strong>($key, $value = '', $type = 'AND ', $escape = true)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Sets the HAVING values</p><p>Called by having() or or_having()</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]    # @return [Object]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orderBy-instance'>
+      - (Object) <strong>orderBy</strong>($orderby, $direction = '')
+    </p>
+    <div class='docstring'>
+  <p>Sets the ORDER BY value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]  direction: asc or desc</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='limit-instance'>
+      - (Object) <strong>limit</strong>($value, $offset = '')
+    </p>
+    <div class='docstring'>
+  <p>Sets the LIMIT value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>limit value</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>offset value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='offset-instance'>
+      - (Object) <strong>offset</strong>($offset)
+    </p>
+    <div class='docstring'>
+  <p>Sets the OFFSET value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>offset value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='set-instance'>
+      - (Object) <strong>set</strong>($key, $value = '', $escape = true)
+    </p>
+    <div class='docstring'>
+  <p>The &quot;set&quot; function.  Allows key/value pairs to be set for inserting or updating</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]    # @return    [Boolean]ean</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='get-instance'>
+      - (Object) <strong>get</strong>($table, $next = null)
+    </p>
+    <div class='docstring'>
+  <p>Get</p><p>Compiles the select statement based on the other functions called
+and runs the query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>limit clause</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>offset clause</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='countAllResults-instance'>
+      - (void) <strong>countAllResults</strong>($table = '', $next)
+    </p>
+    <div class='docstring'>
+  <p>&quot;Count All Results&quot; query</p><p>Generates a platform-specific query string that counts all records
+returned by an Active Record query.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return    [String]</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getWhere-instance'>
+      - (Object) <strong>getWhere</strong>($table = '', $where = null, $limit = null, $offset = null)
+    </p>
+    <div class='docstring'>
+  <p>Get_Where</p><p>Allows the where clause, limit and offset to be added directly</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>where clause</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>limit clause</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>offset clause</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='insertBatch-instance'>
+      - (Object) <strong>insertBatch</strong>($table = '', $set = null, $next)
+    </p>
+    <div class='docstring'>
+  <p>Insert_Batch</p><p>Compiles batch insert strings and runs the queries</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table to retrieve the results from</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>associative array of insert values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setInsertBatch-instance'>
+      - (void) <strong>setInsertBatch</strong>($key, $value = '', $escape = true)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='insert-instance'>
+      - (Object) <strong>insert</strong>($table = '', $set = null, $next = null)
+    </p>
+    <div class='docstring'>
+  <p>Insert</p><p>Compiles an insert string and runs the query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table to retrieve the results from</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>associative array of insert values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='replace-instance'>
+      - (void) <strong>replace</strong>($table = '', $set = null)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='update-instance'>
+      - (Object) <strong>update</strong>($table = '', $set = null, $where = null, $limit = null, $next = null)
+    </p>
+    <div class='docstring'>
+  <p>Update</p><p>Compiles an update string and runs the query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table to retrieve the results from</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>associative array of update values</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>where clause</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='updateBatch-instance'>
+      - (Object) <strong>updateBatch</strong>($table = '', $set = null, $index = null)
+    </p>
+    <div class='docstring'>
+  <p>Update_Batch</p><p>Compiles an update string and runs the query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table to retrieve the results from</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>associative array of update values</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>where key</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setUpdateBatch-instance'>
+      - (void) <strong>setUpdateBatch</strong>($key, $index = '', $escape = true)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='emptyTable-instance'>
+      - (Object) <strong>emptyTable</strong>($table = '')
+    </p>
+    <div class='docstring'>
+  <p>Empty Table</p><p>Compiles a delete string and runs &quot;DELETE FROM table&quot;</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table to empty</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='truncate-instance'>
+      - (Object) <strong>truncate</strong>($table = '', $next)
+    </p>
+    <div class='docstring'>
+  <p>Truncate</p><p>Compiles a truncate string and runs the query
+If the database does not support the truncate() command
+This function maps to &quot;DELETE FROM table&quot;</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table to truncate</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='delete-instance'>
+      - (Object) <strong>delete</strong>($table = '', $where = '', $limit = null, $reset_data = true)
+    </p>
+    <div class='docstring'>
+  <p>Delete</p><p>Compiles a delete string and runs the query</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table(s) to delete from. String or array</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>where clause</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>limit clause</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_dbprefix-instance'>
+      - (String) <strong>_dbprefix</strong>($table = '')
+    </p>
+    <div class='docstring'>
+  <p>DB Prefix</p><p>Prepends a database prefix if one exists in configuration</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_track_aliases-instance'>
+      - (String) <strong>_track_aliases</strong>($table)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Track Aliases</p><p>Used to track SQL statements written with aliased tables.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table to inspect</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_compile_select-instance'>
+      - (String) <strong>_compile_select</strong>($select_override = false)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Compile the SELECT statement</p><p>Generates a query string based on which functions were used.
+Should not be called directly.  The get() function calls it.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_object_to_array_batch-instance'>
+      - (void) <strong>_object_to_array_batch</strong>($object)
+    </p>
+    <div class='docstring'>
+  <p>Object to Array</p><p>Takes an object as input and converts the class variables to array key/vals</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return    array</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='startCache-instance'>
+      - (Void) <strong>startCache</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Start Cache</p><p>Starts AR caching</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='stopCache-instance'>
+      - (Void) <strong>stopCache</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Stop Cache</p><p>Stops AR caching</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='flushCache-instance'>
+      - (Void) <strong>flushCache</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Flush Cache</p><p>Empties the AR cache</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_merge_cache-instance'>
+      - (Void) <strong>_merge_cache</strong>()
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Merge Cache</p><p>When called, this function merges any cached AR arrays with
+locally called ones.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_reset_run-instance'>
+      - (Void) <strong>_reset_run</strong>($ar_reset_items)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Resets the active record values.  Called by the get() function</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>An</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>array of fields to reset</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_reset_select-instance'>
+      - (Void) <strong>_reset_select</strong>()
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Resets the active record values.  Called by the get() function</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_reset_write-instance'>
+      - (Void) <strong>_reset_write</strong>()
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Resets the active record &quot;write&quot; values.</p><p>Called by the insert() update() insert_batch() update_batch() and delete() functions</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Mar 09 2013 00:21:37 GMT-0800 (PST)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.8.20).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

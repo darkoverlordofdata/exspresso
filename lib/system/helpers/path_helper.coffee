@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -40,10 +38,8 @@
 #
 # Set Realpath
 #
-# @access	public
-# @param	string
-# @param	bool	checks to see if the path exists
-# @return	string
+# @param  [String]  # @return	[Boolean]	checks to see if the path exists
+# @return	[String]
 #
 if not function_exists('set_realpath')
   exports.set_realpath = set_realpath = ($path, $check_existance = false) ->

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -37,7 +35,7 @@
 # @access		private
 # @category	Helpers
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/
+# @see 		http://darkoverlordofdata.com/user_guide/helpers/
 #
 class system.lib.Typography
   
@@ -70,10 +68,8 @@ class system.lib.Typography
   #	- Converts double dashes into em-dashes.
   #  - Converts two spaces into entities
   #
-  # @access	public
-  # @param	string
-  # @param	bool	whether to reduce more then two consecutive newlines to two
-  # @return	string
+    # @param  [String]    # @return	[Boolean]	whether to reduce more then two consecutive newlines to two
+  # @return	[String]
   #
   autoTypography : ($str, $reduce_linebreaks = false) ->
     if $str is ''
@@ -238,9 +234,7 @@ class system.lib.Typography
   # to curly entities, but it also converts em-dashes,
   # double spaces, and ampersands
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   exports.$table = $table ? {}
   formatCharacters : ($str) ->
@@ -297,9 +291,7 @@ class system.lib.Typography
   #
   # Converts newline characters into either <p> tags or <br />
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   _format_newlines : ($str) ->
     if $str is ''
@@ -341,9 +333,7 @@ class system.lib.Typography
   # and we don't want double dashes converted to emdash entities, so they are marked with {@DD}
   # likewise double spaces are converted to {@NBS} to prevent entity conversion
   #
-  # @access	public
-  # @param	array
-  # @return	string
+    # @param  [Array]  # @return	[String]
   #
   _protect_characters : ($match) ->
     return str_replace(["'", '"', '--', '  '], ['{@SQ}', '{@DQ}', '{@DD}', '{@NBS}'], $match[0])
@@ -352,9 +342,7 @@ class system.lib.Typography
   #
   # Convert newlines to HTML line breaks except within PRE tags
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   nl2brExceptPre : ($str) ->
     $ex = explode("pre>", $str)

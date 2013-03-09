@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -39,8 +37,7 @@ class Welcome extends application.core.PublicController
   # Demo welcome page
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   index: ->
 
     @template.view 'welcome_message'
@@ -52,8 +49,7 @@ class Welcome extends application.core.PublicController
   # Custom 404 error page
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   not_found: ->
 
     #@template.set_title config_item('site_name'), '404 Not Found'

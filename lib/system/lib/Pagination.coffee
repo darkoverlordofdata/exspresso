@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -73,8 +71,7 @@ class system.lib.Pagination
   #
   # Constructor
   #
-  # @access	public
-  # @param	array	initialization parameters
+    # @param  [Array]  initialization parameters
   #
   constructor: ($controller, $config = {}) ->
 
@@ -91,8 +88,7 @@ class system.lib.Pagination
   #
   # Generate the pagination links
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   createLinks :  ->
     #  If our item count or per-page total is zero there is no need to continue.

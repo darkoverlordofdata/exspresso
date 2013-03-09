@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -37,7 +35,7 @@
 # @subpackage	Helpers
 # @category	Helpers
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/form_helper.html
+# @see 		http://darkoverlordofdata.com/user_guide/helpers/form_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -47,11 +45,10 @@
 #
 # Creates the opening portion of the form.
 #
-# @access	public
-# @param	string	the URI segments of the form destination
-# @param	array	a key/value pair of attributes
-# @param	array	a key/value pair hidden data
-# @return	string
+# @param  [String]  the URI segments of the form destination
+# @param  [Array]  a key/value pair of attributes
+# @param  [Array]  a key/value pair hidden data
+# @return	[String]
 #
 if not function_exists('form_open')
   exports.form_open = form_open = ($action = '', $attributes = '', $hidden = {}) ->
@@ -92,11 +89,10 @@ if not function_exists('form_open')
 #
 # Creates the opening portion of the form, but with "multipart/form-data".
 #
-# @access	public
-# @param	string	the URI segments of the form destination
-# @param	array	a key/value pair of attributes
-# @param	array	a key/value pair hidden data
-# @return	string
+# @param  [String]  the URI segments of the form destination
+# @param  [Array]  a key/value pair of attributes
+# @param  [Array]  a key/value pair hidden data
+# @return	[String]
 #
 if not function_exists('form_open_multipart')
   exports.form_open_multipart = form_open_multipart = ($action, $attributes = {}, $hidden = {}) ->
@@ -119,10 +115,7 @@ if not function_exists('form_open_multipart')
 # Generates hidden fields.  You can pass a simple key/value string or an associative
 # array with multiple values.
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_hidden')
   exports.form_hidden = form_hidden = ($name, $value = '', $form = "\n") ->
@@ -150,11 +143,7 @@ if not function_exists('form_hidden')
 #
 # Text Input Field
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_input')
   exports.form_input = form_input = ($data = '', $value = '', $extra = '') ->
@@ -174,11 +163,7 @@ if not function_exists('form_input')
 #
 # Identical to the input function but adds the "password" type
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_password')
   exports.form_password = form_password = ($data = '', $value = '', $extra = '') ->
@@ -198,11 +183,7 @@ if not function_exists('form_password')
 #
 # Identical to the input function but adds the "file" type
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_upload')
   exports.form_upload = form_upload = ($data = '', $value = '', $extra = '') ->
@@ -220,11 +201,7 @@ if not function_exists('form_upload')
 #
 # Textarea field
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_textarea')
   exports.form_textarea = form_textarea = ($data = '', $value = '', $extra = '') ->
@@ -251,12 +228,7 @@ if not function_exists('form_textarea')
 #
 # Multi-select menu
 #
-# @access	public
-# @param	string
-# @param	array
-# @param	mixed
-# @param	string
-# @return	type
+# @param  [String]  # @param  [Array]  # @param  [Mixed]  # @param  [String]  # @return	type
 #
 if not function_exists('form_multiselect')
   exports.form_multiselect = form_multiselect = ($name = '', $options = {}, $selected = {}, $extra = '') ->
@@ -273,12 +245,7 @@ if not function_exists('form_multiselect')
 #
 # Drop-down Menu
 #
-# @access	public
-# @param	string
-# @param	array
-# @param	string
-# @param	string
-# @return	string
+# @param  [String]  # @param  [Array]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_dropdown')
   exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = {}, $extra = '') ->
@@ -327,12 +294,8 @@ if not function_exists('form_dropdown')
 #
 # Checkbox Field
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	bool
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @return	[Boolean]
+# @param  [String]  # @return	[String]
 #
 if not function_exists('form_checkbox')
   exports.form_checkbox = form_checkbox = ($data = '', $value = '', $checked = false, $extra = '') ->
@@ -365,12 +328,8 @@ if not function_exists('form_checkbox')
 #
 # Radio Button
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	bool
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @return	[Boolean]
+# @param  [String]  # @return	[String]
 #
 if not function_exists('form_radio')
   exports.form_radio = form_radio = ($data = '', $value = '', $checked = false, $extra = '') ->
@@ -388,11 +347,7 @@ if not function_exists('form_radio')
 #
 # Submit Button
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_submit')
   exports.form_submit = form_submit = ($data = '', $value = '', $extra = '') ->
@@ -410,11 +365,7 @@ if not function_exists('form_submit')
 #
 # Reset Button
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_reset')
   exports.form_reset = form_reset = ($data = '', $value = '', $extra = '') ->
@@ -432,11 +383,7 @@ if not function_exists('form_reset')
 #
 # Form Button
 #
-# @access	public
-# @param	mixed
-# @param	string
-# @param	string
-# @return	string
+# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_button')
   exports.form_button = form_button = ($data = '', $content = '', $extra = '') ->
@@ -458,11 +405,10 @@ if not function_exists('form_button')
 #
 # Form Label Tag
 #
-# @access	public
-# @param	string	The text to appear onscreen
-# @param	string	The id the label applies to
-# @param	string	Additional attributes
-# @return	string
+# @param  [String]  The text to appear onscreen
+# @param  [String]  The id the label applies to
+# @param  [String]  Additional attributes
+# @return	[String]
 #
 if not function_exists('form_label')
   exports.form_label = form_label = ($label_text = '', $id = '', $attributes = {}) ->
@@ -492,10 +438,9 @@ if not function_exists('form_label')
 # Used to produce <fieldset><legend>text</legend>.  To close fieldset
 # use form_fieldset_close()
 #
-# @access	public
-# @param	string	The legend text
-# @param	string	Additional attributes
-# @return	string
+# @param  [String]  The legend text
+# @param  [String]  Additional attributes
+# @return	[String]
 #
 if not function_exists('form_fieldset')
   exports.form_fieldset = form_fieldset = ($legend_text = '', $attributes = {}) ->
@@ -518,9 +463,7 @@ if not function_exists('form_fieldset')
 #
 # Fieldset Close Tag
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('form_fieldset_close')
   exports.form_fieldset_close = form_fieldset_close = ($extra = '') ->
@@ -533,9 +476,7 @@ if not function_exists('form_fieldset_close')
 #
 # Form Close Tag
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('form_close')
   exports.form_close = form_close = ($extra = '') ->
@@ -550,9 +491,7 @@ if not function_exists('form_close')
 #
 # Formats text so that it can be safely placed in a form field in the event it has HTML tags.
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('form_prep')
   exports.form_prep = form_prep = ($str = '', $field_name = '') ->
@@ -581,10 +520,7 @@ if not function_exists('form_prep')
 # re-populate an input field or textarea.  If Form Validation
 # is active it retrieves the info from the validation class
 #
-# @access	public
-# @param	string
-# @return	mixed
-#
+# @param  [String]  # @return [Mixed]  #
 if not function_exists('set_value')
   exports.set_value = set_value = ($field = '', $default = '') ->
     if false is ($OBJ = @_get_validation_object())
@@ -606,11 +542,8 @@ if not function_exists('set_value')
 # Let's you set the selected value of a <select> menu via data in the POST array.
 # If Form Validation is active it retrieves the info from the validation class
 #
-# @access	public
-# @param	string
-# @param	string
-# @param	bool
-# @return	string
+# @param  [String]  # @param  [String]  # @return	[Boolean]
+# @return	[String]
 #
 if not function_exists('set_select')
   exports.set_select = set_select = ($field = '', $value = '', $default = false) ->
@@ -648,11 +581,8 @@ if not function_exists('set_select')
 # Let's you set the selected value of a checkbox via the value in the POST array.
 # If Form Validation is active it retrieves the info from the validation class
 #
-# @access	public
-# @param	string
-# @param	string
-# @param	bool
-# @return	string
+# @param  [String]  # @param  [String]  # @return	[Boolean]
+# @return	[String]
 #
 if not function_exists('set_checkbox')
   exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = false) ->
@@ -689,11 +619,8 @@ if not function_exists('set_checkbox')
 # Let's you set the selected value of a radio field via info in the POST array.
 # If Form Validation is active it retrieves the info from the validation class
 #
-# @access	public
-# @param	string
-# @param	string
-# @param	bool
-# @return	string
+# @param  [String]  # @param  [String]  # @return	[Boolean]
+# @return	[String]
 #
 if not function_exists('set_radio')
   exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
@@ -730,11 +657,7 @@ if not function_exists('set_radio')
 # Returns the error for a specific form field.  This is a helper for the
 # form validation class.
 #
-# @access	public
-# @param	string
-# @param	string
-# @param	string
-# @return	string
+# @param  [String]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_error')
   exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
@@ -752,10 +675,7 @@ if not function_exists('form_error')
 # Returns all the errors associated with a form submission.  This is a helper
 # function for the form validation class.
 #
-# @access	public
-# @param	string
-# @param	string
-# @return	string
+# @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('validation_errors')
   exports.validation_errors = validation_errors = ($prefix = '', $suffix = '') ->
@@ -775,10 +695,8 @@ if not function_exists('validation_errors')
 #
 # Helper function used by some of the form helpers
 #
-# @access	private
-# @param	array
-# @param	array
-# @return	string
+# @private
+# @param  [Array]  # @param  [Array]  # @return	[String]
 #
 if not function_exists('_parse_form_attributes')
   exports._parse_form_attributes = _parse_form_attributes = ($attributes, $default) ->
@@ -810,10 +728,9 @@ if not function_exists('_parse_form_attributes')
 #
 # Helper function used by some of the form helpers
 #
-# @access	private
-# @param	mixed
-# @param	bool
-# @return	string
+# @private
+# @param  [Mixed]  # @return	[Boolean]
+# @return	[String]
 #
 if not function_exists('_attributes_to_string')
   exports._attributes_to_string = _attributes_to_string = ($attributes, $formtag = false) ->
@@ -861,9 +778,8 @@ if not function_exists('_attributes_to_string')
 # Determines what the form validation class was instantiated as, fetches
 # the object and returns it.
 #
-# @access	private
-# @return	mixed
-#
+# @private
+# @return [Mixed]  #
 if not function_exists('_get_validation_object')
   exports._get_validation_object = _get_validation_object =  ->
     
@@ -886,8 +802,8 @@ if not function_exists('_get_validation_object')
 #
 # parse extra
 #
-# @access	private
-# @return	string
+# @private
+# @return	[String]
 #
 _parse_extra = ($extra = '') ->
 

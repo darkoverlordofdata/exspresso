@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -37,7 +35,7 @@
 # @subpackage	Libraries
 # @category	Libraries
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/ftp.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/ftp.html
 #
 class ExspressoFTP
   
@@ -67,10 +65,7 @@ class ExspressoFTP
   #
   # Initialize preferences
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   initialize : ($config = {}) ->
     for $key, $val of $config
       if @$key? 
@@ -85,8 +80,7 @@ class ExspressoFTP
   #
   # FTP Connect
   #
-  # @access	public
-  # @param	array	 the connection values
+    # @param  [Array]  the connection values
   # @return	bool
   #
   connect : ($config = {}) ->
@@ -119,7 +113,7 @@ class ExspressoFTP
   #
   # FTP Login
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _login :  ->
@@ -129,7 +123,7 @@ class ExspressoFTP
   #
   # Validates the connection ID
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _is_conn :  ->
@@ -152,9 +146,7 @@ class ExspressoFTP
   # so we do it by trying to change to a particular directory.
   # Internally, this parameter is only used by the "mirror" function below.
   #
-  # @access	public
-  # @param	string
-  # @param	bool
+    # @param  [String]    # @return	[Boolean]
   # @return	bool
   #
   changedir : ($path = '', $supress_debug = false) ->
@@ -177,9 +169,7 @@ class ExspressoFTP
   #
   # Create a directory
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   mkdir : ($path = '', $permissions = null) ->
     if $path is '' or  not @_is_conn()
@@ -206,11 +196,7 @@ class ExspressoFTP
   #
   # Upload a file to the server
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @param  [String]    # @param  [String]    # @return	bool
   #
   upload : ($locpath, $rempath, $mode = 'auto', $permissions = null) ->
     if not @_is_conn()
@@ -251,11 +237,7 @@ class ExspressoFTP
   #
   # Download a file from a remote server to the local server
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @param  [String]    # @param  [String]    # @return	bool
   #
   download : ($rempath, $locpath, $mode = 'auto') ->
     if not @_is_conn()
@@ -286,10 +268,7 @@ class ExspressoFTP
   #
   # Rename (or move) a file
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @param	bool
+    # @param  [String]    # @param  [String]    # @return	[Boolean]
   # @return	bool
   #
   rename : ($old_file, $new_file, $move = false) ->
@@ -314,10 +293,7 @@ class ExspressoFTP
   #
   # Move a file
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @param  [String]    # @return	bool
   #
   move : ($old_file, $new_file) ->
     return @rename($old_file, $new_file, true)
@@ -326,9 +302,7 @@ class ExspressoFTP
   #
   # Rename (or move) a file
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   delete_file : ($filepath) ->
     if not @_is_conn()
@@ -351,9 +325,7 @@ class ExspressoFTP
   # Delete a folder and recursively delete everything (including sub-folders)
   # containted within it.
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   delete_dir : ($filepath) ->
     if not @_is_conn()
@@ -390,9 +362,8 @@ class ExspressoFTP
   #
   # Set file permissions
   #
-  # @access	public
-  # @param	string	the file path
-  # @param	string	the permissions
+    # @param  [String]  the file path
+  # @param  [String]  the permissions
   # @return	bool
   #
   chmod : ($path, $perm) ->
@@ -423,8 +394,7 @@ class ExspressoFTP
   #
   # FTP List files in the specified directory
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   list_files : ($path = '.') ->
     if not @_is_conn()
@@ -443,9 +413,8 @@ class ExspressoFTP
   # sub-folders) and creates a mirror via FTP based on it.  Whatever the directory structure
   # of the original file path will be recreated on the server.
   #
-  # @access	public
-  # @param	string	path to source with trailing slash
-  # @param	string	path to destination - include the base folder with trailing slash
+    # @param  [String]  path to source with trailing slash
+  # @param  [String]  path to destination - include the base folder with trailing slash
   # @return	bool
   #
   mirror : ($locpath, $rempath) ->
@@ -509,28 +478,24 @@ class ExspressoFTP
       }#  Attempt to open the remote file path.#  Recursively read the local directory#  --------------------------------------------------------------------#
     # Extract the file extension
     #
-    # @access	private
-    # @param	string
-    # @return	string
+    # @private
+    # @param  [String]      # @return	[String]
     ##  --------------------------------------------------------------------#
     # Set the upload type
     #
-    # @access	private
-    # @param	string
-    # @return	string
+    # @private
+    # @param  [String]      # @return	[String]
     ##  ------------------------------------------------------------------------#
     # Close the connection
     #
-    # @access	public
-    # @param	string	path to source
-    # @param	string	path to destination
+        # @param  [String]  path to source
+    # @param  [String]  path to destination
     # @return	bool
     ##  ------------------------------------------------------------------------#
     # Display error message
     #
-    # @access	private
-    # @param	string
-    # @return	bool
+    # @private
+    # @param  [String]      # @return	bool
     ##  END FTP Class#  End of file Ftp.php #  Location: ./system/lib/Ftp.php
 
 register_class 'ExspressoFTP', ExspressoFTP

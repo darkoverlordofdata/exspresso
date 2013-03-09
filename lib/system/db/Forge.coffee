@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -58,8 +56,7 @@ class system.db.Forge
   #
   # Create database
   #
-  # @access	public
-  # @param	string	the database name
+    # @param  [String]  the database name
   # @return	bool
   #
   createDatabase: ($db_name, $next) ->
@@ -73,8 +70,7 @@ class system.db.Forge
   #
   # Drop database
   #
-  # @access	public
-  # @param	string	the database name
+    # @param  [String]  the database name
   # @return	bool
   #
   dropDatabase: ($db_name, $next) ->
@@ -89,11 +85,9 @@ class system.db.Forge
   #
   # Add Key
   #
-  # @access	public
-  # @param	string	key
-  # @param	string	type
-  # @return	void
-  #
+    # @param  [String]  key
+  # @param  [String]  type
+  # @return [Void]  #
   addKey: ($key = '', $primary = false) ->
     if is_array($key)
       for $one in $key
@@ -115,10 +109,8 @@ class system.db.Forge
   #
   # Add Field
   #
-  # @access	public
-  # @param	string	collation
-  # @return	void
-  #
+    # @param  [String]  collation
+  # @return [Void]  #
   addField: ($field = '') ->
     if $field is ''
       show_error('Field information is required.')
@@ -148,8 +140,7 @@ class system.db.Forge
   #
   # Create Table
   #
-  # @access	public
-  # @param	string	the table name
+    # @param  [String]  the table name
   # @return	bool
   #
   createTable: ($table = '', $if_not_exists = false, $next) ->
@@ -173,8 +164,7 @@ class system.db.Forge
   #
   # Drop Table
   #
-  # @access	public
-  # @param	string	the table name
+    # @param  [String]  the table name
   # @return	bool
   #
   dropTable: ($table_name, $next) ->
@@ -189,9 +179,8 @@ class system.db.Forge
   #
   # Rename Table
   #
-  # @access	public
-  # @param	string	the old table name
-  # @param	string	the new table name
+    # @param  [String]  the old table name
+  # @param  [String]  the new table name
   # @return	bool
   #
   renameTable: ($table_name, $new_table_name, $next) ->
@@ -205,10 +194,9 @@ class system.db.Forge
   #
   # Column Add
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	string	the column name
-  # @param	string	the column definition
+    # @param  [String]  the table name
+  # @param  [String]  the column name
+  # @param  [String]  the column definition
   # @return	bool
   #
   addColumn: ($table = '', $field = {}, $after_field = '', $next) ->
@@ -238,9 +226,8 @@ class system.db.Forge
   #
   # Column Drop
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	string	the column name
+    # @param  [String]  the table name
+  # @param  [String]  the column name
   # @return	bool
   #
   dropColumn: ($table = '', $column_name = '', $next) ->
@@ -260,10 +247,9 @@ class system.db.Forge
   #
   # Column Modify
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	string	the column name
-  # @param	string	the column definition
+    # @param  [String]  the table name
+  # @param  [String]  the column name
+  # @param  [String]  the column definition
   # @return	bool
   #
   modifyColumn: ($table = '', $field = {}, $next) ->
@@ -294,9 +280,8 @@ class system.db.Forge
   #
   # Resets table creation vars
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _reset :  ->
     @fields = []
     @keys = []

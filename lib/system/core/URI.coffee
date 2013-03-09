@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -45,10 +43,8 @@ class system.core.URI
   #
   # Constructor
   #
-  # @access	public
-  # @param object   http request object
-  # @return	void
-  #
+    # @param  [Object]    http request object
+  # @return [Void]  #
   constructor : ($req) ->
 
     log_message('debug', "URI Class Initialized")
@@ -73,10 +69,8 @@ class system.core.URI
   #
   # This function returns the URI segment based on the number provided.
   #
-  # @access	public
-  # @param	integer
-  # @param	bool
-  # @return	string
+    # @param  [Integer]  # @return	[Boolean]
+  # @return	[String]
   #
   segment : ($n, $no_result = 0) ->
     if not @_segments[$n]? then $no_result else @_segments[$n]
@@ -91,10 +85,8 @@ class system.core.URI
   # based on the number provided.  If there is no routing this function returns the
   # same result as $this->segment()
   #
-  # @access	public
-  # @param	integer
-  # @param	bool
-  # @return	string
+    # @param  [Integer]  # @return	[Boolean]
+  # @return	[String]
   #
   rsegment : ($n, $no_result = 0) ->
     if not @_rsegments[$n]? then $no_result else @_rsegments[$n]
@@ -117,9 +109,8 @@ class system.core.URI
   #			gender => male
   #		 )
   #
-  # @access	public
-  # @param	integer	the starting segment number
-  # @param	array	an array of default values
+    # @param  [Integer]  the starting segment number
+  # @param  [Array]  an array of default values
   # @return	array
   #
   uriToAssoc: ($n = 3, $default = {}) ->
@@ -137,10 +128,10 @@ class system.core.URI
   #
   # Generate a key value pair from the URI string or Re-routed URI string
   #
-  # @access	private
-  # @param	integer	the starting segment number
-  # @param	array	an array of default values
-  # @param	string	which array we should use
+  # @private
+  # @param  [Integer]  the starting segment number
+  # @param  [Array]  an array of default values
+  # @param  [String]  which array we should use
   # @return	array
   #
   @_uri_to_assoc = ($n = 3, $default = {}, $which = 'segment') ->
@@ -196,8 +187,7 @@ class system.core.URI
   # Generate a URI string from an associative array
   #
   #
-  # @access	public
-  # @param	array	an associative array of key/values
+    # @param  [Array]  an associative array of key/values
   # @return	array
   #
   assocToUri : ($array) ->
@@ -214,10 +204,7 @@ class system.core.URI
   #
   # Fetch a URI Segment and add a trailing slash
   #
-  # @access	public
-  # @param	integer
-  # @param	string
-  # @return	string
+    # @param  [Integer]  # @param  [String]    # @return	[String]
   #
   slashSegment : ($n, $where = 'trailing') ->
     @_slash_segment($n, $where, 'segment')
@@ -228,10 +215,7 @@ class system.core.URI
   #
   # Fetch a URI Segment and add a trailing slash
   #
-  # @access	public
-  # @param	integer
-  # @param	string
-  # @return	string
+    # @param  [Integer]  # @param  [String]    # @return	[String]
   #
   slashRsegment : ($n, $where = 'trailing') ->
     @_slash_segment($n, $where, 'rsegment')
@@ -241,11 +225,8 @@ class system.core.URI
   #
   # Fetch a URI Segment and add a trailing slash - helper function
   #
-  # @access	private
-  # @param	integer
-  # @param	string
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [Integer]  # @param  [String]    # @param  [String]    # @return	[String]
   #
   @_slash_segment = ($n, $where = 'trailing', $which = 'segment') ->
     $leading = '/'
@@ -265,8 +246,7 @@ class system.core.URI
   #
   # Segment Array
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   segmentArray :  ->
     @_segments
@@ -277,8 +257,7 @@ class system.core.URI
   #
   # Routed Segment Array
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   rsegmentArray :  ->
     @_rsegments
@@ -289,8 +268,7 @@ class system.core.URI
   #
   # Total number of segments
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   totalSegments :  ->
     count(@_segments)
@@ -301,8 +279,7 @@ class system.core.URI
   #
   # Total number of routed segments
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   totalRsegments :  ->
     count(@_rsegments)
@@ -313,8 +290,7 @@ class system.core.URI
   #
   # Fetch the entire URI string
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   uriString :  ->
     @_uri_string
@@ -325,8 +301,7 @@ class system.core.URI
   #
   # Fetch the entire Re-routed URI string
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   ruriString :  ->
     '/' + implode('/', @rsegment_array())

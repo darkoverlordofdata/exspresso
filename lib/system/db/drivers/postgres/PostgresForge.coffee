@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -39,8 +37,8 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   #
   # Create database
   #
-  # @access	private
-  # @param	string	the database name
+  # @private
+  # @param  [String]  the database name
   # @return	bool
   #
   _create_database : ($name) ->
@@ -50,8 +48,8 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   #
   # Drop database
   #
-  # @access	private
-  # @param	string	the database name
+  # @private
+  # @param  [String]  the database name
   # @return	bool
   #
   _drop_database : ($name) ->
@@ -61,12 +59,12 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   #
   # Create Table
   #
-  # @access	private
-  # @param	string	the table name
-  # @param	array	the fields
-  # @param	mixed	primary key(s)
-  # @param	mixed	key(s)
-  # @param	boolean	should 'IF NOT EXISTS' be added to the SQL
+  # @private
+  # @param  [String]  the table name
+  # @param  [Array]  the fields
+  # @param  [Mixed]  primary key(s)
+  # @param  [Mixed]  key(s)
+  # @return	[Boolean]ean	should 'IF NOT EXISTS' be added to the SQL
   # @return	bool
   #
   _create_table : ($table, $fields, $primary_keys, $keys, $if_not_exists) ->
@@ -204,16 +202,15 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   # Generates a platform-specific query so that a table can be altered
   # Called by addColumn(), dropColumn(), and column_alter(),
   #
-  # @access	private
-  # @param	string	the ALTER type (ADD, DROP, CHANGE)
-  # @param	string	the column name
-  # @param	string	the table name
-  # @param	string	the column definition
-  # @param	string	the default value
-  # @param	boolean	should 'NOT NULL' be added
-  # @param	string	the field after which we should add the new field
-  # @return	object
-  #
+  # @private
+  # @param  [String]  the ALTER type (ADD, DROP, CHANGE)
+  # @param  [String]  the column name
+  # @param  [String]  the table name
+  # @param  [String]  the column definition
+  # @param  [String]  the default value
+  # @return	[Boolean]ean	should 'NOT NULL' be added
+  # @param  [String]  the field after which we should add the new field
+  # @return [Object]  #
   _alter_table : ($alter_type, $table, $column_name, $column_definition = '', $default_value = '', $null = '', $after_field = '') ->
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table) + " $alter_type " + @db._protect_identifiers($column_name)
     
@@ -248,10 +245,10 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   #
   # Generates a platform-specific query so that a table can be renamed
   #
-  # @access	private
-  # @param	string	the old table name
-  # @param	string	the new table name
-  # @return	string
+  # @private
+  # @param  [String]  the old table name
+  # @param  [String]  the new table name
+  # @return	[String]
   #
   _rename_table : ($table_name, $new_table_name) ->
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)

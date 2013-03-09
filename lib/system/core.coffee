@@ -25,7 +25,7 @@
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
-# @link		    http://darkoverlordofdata.com
+# @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
 
@@ -33,16 +33,24 @@
 # the expresso core module
 #
 
+#
+# externals
+#
 format            = require('util').format
 path              = require('path')
 fs                = require('fs')
 
 
+#
+# local variables
+#
 _config           = null  # contents of .lib/application/config/config.coffee
+_classpaths       = {}    # namespace roots
 _classes          = {}    # singleton class cache
 _is_loaded        = {}    # singleton class loaded flag
 _class            = {}    # class metadata cache
 __PROTO__         = true  # if true, set mixin using the '__proto__' property
+
 
 #
 # privately dereference some methods
@@ -73,10 +81,8 @@ exports.keys              = Object.keys
 #
 # Getter
 #
-# @access	public
-# @param	object	property definition
-# @return	object
-#
+# @param  [Object]  property definition
+# @return [Object]  #
 Function::getter = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {get: $def[$name]}
@@ -84,10 +90,8 @@ Function::getter = ($def) ->
 #
 # Setter
 #
-# @access	public
-# @param	object	property definition
-# @return	object
-#
+# @param  [Object]  property definition
+# @return [Object]  #
 Function::setter = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {set: $def[$name]}
@@ -95,10 +99,8 @@ Function::setter = ($def) ->
 #
 # Define - read only attribute
 #
-# @access	public
-# @param	object	property definition
-# @return	object
-#
+# @param  [Object]  property definition
+# @return [Object]  #
 Function::define = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {writeable: false, enumerable: ($name[0] isnt '_'), value: $def[$name]}
@@ -111,22 +113,41 @@ else
   require APPPATH+'config/constants.coffee'
 
 #
+# Set Classpath
+#
+#   Adds a namespace/classpath pair
+#   The namespace root is associated with the path.
+#   load_class will build the namespace tree from
+#   the file system and load the class into the correct
+#   branch of the tree
+#
+#
+# @param  [Object]    array of {namespace: classpath}
+#
+#
+exports.set_classpath = set_classpath = ($def) ->
+  _classpaths[$namespace] = $classpath for $namespace, $classpath of $def
+
+
+#
 # Load Class
 #
 # Requires a class module, building a namespace
-# structure that corresponds to the file path
+# structure that corresponds to the file path.
 #
-# @param string   full path to the class
+# There are 3 namespaces:
+#
+#   system        all the core system classes
+#   application   exspresso implementation classes
+#   modules       HMVC root
+#
+#
+# @param  [String]    full path to the class
 #
 #
 exports.load_class = load_class = ($path, $namespace = global) ->
 
-  $roots =
-    system        : SYSPATH   # system classpath:     ./lib/system
-    application   : APPPATH   # application classpath ./lib/application
-    modules       : MODPATH   # modules classpath     ./lib/modules
-
-  for $name, $classpath of $roots
+  for $name, $classpath of _classpaths
     if $path.indexOf($classpath) is 0
       $subpath = $path.substr($classpath.length)
       unless $namespace[$name]?
@@ -159,9 +180,8 @@ exports.load_class = load_class = ($path, $namespace = global) ->
 # the file, based on the read-only attribute.  is_writable() is also unreliable
 # on Unix servers if safe_mode is on.
 #
-# @access	private
-# @return	void
-#
+# @private
+# @return [Void]  #
 exports.is_really_writable = is_really_writable = ($file) ->
 
 
@@ -189,9 +209,8 @@ exports.is_really_writable = is_really_writable = ($file) ->
 #
 # Use to access the top level server objects
 #
-# @access	public
-# @param	string	the class name being requested
-# @return	object  constructor param
+# @param  [String]  the class name being requested
+# @return [Object]  constructor param
 #
 exports.core = core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
@@ -231,7 +250,6 @@ exports.core = core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 # Keeps track of which libraries have been loaded.  This function is
 # called by the load_class() function above
 #
-# @access	public
 # @return	array
 #
 exports.is_loaded = is_loaded = ($class = '') ->
@@ -247,11 +265,9 @@ exports.is_loaded = is_loaded = ($class = '') ->
 # Uesd to create core objects that will be passed
 # to the Controller object constructor.
 #
-# @access	public
-# @param	string	the class name being requested
-# @param  object  list of params to pass to the constructor
-# @return	object
-#
+# @param  [String]  the class name being requested
+# @param  [Object]  list of params to pass to the constructor
+# @return [Object]  #
 exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
   if typeof $class is 'string'
@@ -288,11 +304,9 @@ exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) -
 # Used to bootstrap the core/loader object in
 # the controller constructor.
 #
-# @access	public
-# @param	string	the class name being requested
-# @param  object  ExspressoController object
-# @return	object
-#
+# @param  [String]  the class name being requested
+# @param  [Object]  ExspressoController object
+# @return [Object]  #
 exports.load_core = load_core = ($class, $controller) ->
 
   if typeof $class is 'string'
@@ -330,7 +344,7 @@ exports.load_core = load_core = ($class, $controller) ->
 # This function lets us grab the config file even if the Config class
 # hasn't been instantiated yet
 #
-# @access	private
+# @private
 # @return	array
 #
 exports.get_config = get_config = ($replace = {}) ->
@@ -366,9 +380,7 @@ exports.get_config = get_config = ($replace = {}) ->
 #
 # Returns the specified config item
 #
-# @access	public
-# @return	mixed
-#
+# @return [Mixed]  #
 exports.config_item = config_item = ($item) ->
 
   get_config() if not _config?
@@ -384,7 +396,6 @@ exports.config_item = config_item = ($item) ->
 # This function will send the error page directly to the
 # browser and exit.
 #
-# @access	public
 # @return	true
 #
 exports.show_error = show_error = ($args...) ->
@@ -402,7 +413,6 @@ exports.show_error = show_error = ($args...) ->
 # However, instead of the standard error template it displays
 # 404 errors.
 #
-# @access	public
 # @return	true
 #
 exports.show_404 = show_404 = ($page = '', $log_error = true) ->
@@ -414,9 +424,7 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
 # We use this as a simple mechanism to access the logging
 # class and send messages to be logged.
 #
-# @access	public
-# @return	void
-#
+# @return [Void]  #
 exports.log_message = log_message = ($level = 'error', $args...) ->
   return true if config_item('log_threshold') is 0
   core('Log').write $level, format.apply(undefined, $args)
@@ -424,11 +432,8 @@ exports.log_message = log_message = ($level = 'error', $args...) ->
 #
 # Get HTTP Status Text
 #
-# @access	public
 # @param	int		the status code
-# @param	string
-# @return	void
-#
+# @param  [String]  # @return [Void]  #
 exports.get_status_text = get_status_text = ($code = 200, $text = '') ->
   $stat =
     200:'OK',
@@ -481,9 +486,7 @@ exports.get_status_text = get_status_text = ($code = 200, $text = '') ->
 # This prevents sandwiching null characters
 # between ascii characters, like Java\0script.
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 exports.remove_invisible_characters = remove_invisible_characters = ($str, $url_encoded = true) ->
 
@@ -504,10 +507,9 @@ exports.remove_invisible_characters = remove_invisible_characters = ($str, $url_
 # Getters, setters, read only, and other custom attributes
 # are safely copied
 #
-# @param	object	destination object
-# @param	object	source object
-# @return	object
-#
+# @param  [Object]  destination object
+# @param  [Object]  source object
+# @return [Object]  #
 exports.copyOwnProperties = ($dst, $src) ->
   $properties = {}
   for $key in getOwnPropertyNames($src)
@@ -521,9 +523,9 @@ exports.copyOwnProperties = ($dst, $src) ->
 # Analyze the metadata for a class, then build and cache
 # a table of property definitions for that classs.
 #
-# @param	object	destination object
-# @param	object	source object
-# @return	object  the cached metadata
+# @param  [Object]  destination object
+# @param  [Object]  source object
+# @return [Object]  the cached metadata
 #
 exports.defineClass = ($class) ->
 
@@ -564,10 +566,9 @@ exports.defineClass = ($class) ->
 # based, and only the own properties are used
 #
 #
-# @param	object	object to use as the prototype
-# @param	array   list of mixin classes, followed by construcor args
-# @return	object
-#
+# @param  [Object]  object to use as the prototype
+# @param  [Array]  list of mixin classes, followed by construcor args
+# @return [Object]  #
 exports.create_mixin = ($object, $args...) ->
 
   $properties = {}
@@ -627,7 +628,10 @@ exports.create_mixin = ($object, $args...) ->
 for $name, $body of module.exports
   define $name, $body
 
-
+#
+# Built-in classpaths
+#
+set_classpath config_item('classpaths')
 #
 # Pre-load the system.core classes
 #

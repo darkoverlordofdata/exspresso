@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -48,9 +46,7 @@
 #
 # this/that/theother
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('trim_slashes')
   exports.trim_slashes = trim_slashes = ($str) ->
@@ -65,9 +61,8 @@ if not function_exists('trim_slashes')
 #
 # Removes slashes contained in a string or in an array
 #
-# @access	public
-# @param	mixed	string or array
-# @return	mixed	string or array
+# @param  [Mixed]  string or array
+# @return [Mixed]  string or array
 #
 if not function_exists('strip_slashes')
   exports.strip_slashes = strip_slashes = ($str) ->
@@ -91,9 +86,7 @@ if not function_exists('strip_slashes')
 #
 # Removes single and double quotes from a string
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('strip_quotes')
   exports.strip_quotes = strip_quotes = ($str) ->
@@ -108,9 +101,7 @@ if not function_exists('strip_quotes')
 #
 # Converts single and double quotes to entities
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('quotes_to_entities')
   exports.quotes_to_entities = quotes_to_entities = ($str) ->
@@ -132,9 +123,7 @@ if not function_exists('quotes_to_entities')
 #
 # http://www.some-site.com/index.php
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('reduce_double_slashes')
   exports.reduce_double_slashes = reduce_double_slashes = ($str) ->
@@ -155,11 +144,9 @@ if not function_exists('reduce_double_slashes')
 #
 # Fred, Bill, Joe, Jimmy
 #
-# @access	public
-# @param	string
-# @param	string	the character you wish to reduce
-# @param	bool	TRUE/FALSE - whether to trim the character from the beginning/end
-# @return	string
+# @param  [String]  # @param  [String]  the character you wish to reduce
+# @return	[Boolean]	TRUE/FALSE - whether to trim the character from the beginning/end
+# @return	[String]
 #
 if not function_exists('reduce_multiples')
   exports.reduce_multiples = reduce_multiples = ($str, $character = ',', $trim = false) ->
@@ -180,10 +167,9 @@ if not function_exists('reduce_multiples')
 #
 # Useful for generating passwords or hashes.
 #
-# @access	public
-# @param	string	type of random string.  basic, alpha, alunum, numeric, nozero, unique, md5, encrypt and sha1
-# @param	integer	number of characters
-# @return	string
+# @param  [String]  type of random string.  basic, alpha, alunum, numeric, nozero, unique, md5, encrypt and sha1
+# @param  [Integer]  number of characters
+# @return	[String]
 #
 if not function_exists('random_string')
   exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
@@ -231,9 +217,8 @@ if not function_exists('random_string')
 #
 # Allows strings to be alternated.  See docs...
 #
-# @access	public
-# @param	string (as many parameters as needed)
-# @return	string
+# @param  [String]  (as many parameters as needed)
+# @return	[String]
 #
 _alternator = 0
 
@@ -254,10 +239,8 @@ if not function_exists('alternator')
 #
 # Repeater function
 #
-# @access	public
-# @param	string
-# @param	integer	number of repeats
-# @return	string
+# @param  [String]  # @param  [Integer]  number of repeats
+# @return	[String]
 #
 if not function_exists('repeater')
   exports.repeater = repeater = ($data, $num = 1) ->

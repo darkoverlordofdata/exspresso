@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -27,31 +25,106 @@
 # Exspresso Application Controller Class
 #
 # This class object is the super class for all controllers
-# Methods are bound with fat arrow ( => ) so that when called from
-# child objects, they will run in the Controller context.
 #
 
 class system.core.Controller extends system.core.Object
 
   #
+  # @property [String] module name
+  #
+  module: ''
+  #
+  # @property [String] class name
+  #
+  class: ''
+  #
+  # @property [String] method name
+  #
+  method: ''
+  #
+  # @property [Object] http request object
+  #
+  req: null
+  #
+  # @property [Object] http response object
+  #
+  res: null
+  #
+  # @property [Object] array of cookies
+  #
+  $_COOKIE: null
+  #
+  # @property [Object] array of uploaded files
+  #
+  $_FILES: null
+  #
+  # @property [Object] http GET method parameters
+  #
+  $_GET: null
+  #
+  # @property [Object] http POST method parameters
+  #
+  $_POST: null
+  #
+  # @property [Object] array of server properties for the request
+  #
+  $_SERVER: null
+  #
+  # @property [Object] benchmark object
+  #
+  bm: null
+  #
+  # @property [Object] config object
+  #
+  config: null
+  #
+  # @property [Object] hooks object
+  #
+  hooks: null
+  #
+  # @property [Object] input object
+  #
+  input: null
+  #
+  # @property [Object] i18n object
+  #
+  i18n: null
+  #
+  # @property [Object] output object
+  #
+  output: null
+  #
+  # @property [Object] security object
+  #
+  security: null
+  #
+  # @property [Object] server object
+  #
+  server: null
+  #
+  # @property [Object] uri object
+  #
+  uri: null
+
+
+  #
   # Initialize Controller objects
   #
-  # @access	public
-  # @param  object    Server object
-  # @param  object    Benchmark object
-  # @param  object    Hooks object
-  # @param  object    Config object
-  # @param  object    URI object
-  # @param  object    Output object
-  # @param  object    Security object
-  # @param  object    Input object
-  # @param  object    I18n object
-  # @param	object    Request object
-  # @param	object    Response object
-  # @param	string    module name
-  # @param	string    class name
-  # @param	string    method name
-  # @return	void
+  # @param  [Object]  server Server object
+  # @param  [Object]  benchmark Benchmark object
+  # @param  [Object]  hooks Hooks object
+  # @param  [Object]  config Config object
+  # @param  [Object]  uri URI object
+  # @param  [Object]  output Output object
+  # @param  [Object]  security Security object
+  # @param  [Object]  input Input object
+  # @param  [Object]  i18n I18n object
+  # @param  [Object]  req Request object
+  # @param  [Object]  res Response object
+  # @param  [String]  module Module name
+  # @param  [String]  class Class name
+  # @param  [String]  method Method name
+  # @return [Void]
   #
   constructor: ($server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method) ->
 
@@ -99,11 +172,10 @@ class system.core.Controller extends system.core.Object
   #
   # Render a view
   #
-  # @access	public
-  # @param	string
-  # @param	object
-  # @param	function
-  # @return	void
+  # @param  [String]  view path to the view template
+  # @param  [Object]  data hash of data to render with template
+  # @param  [Function]  next  callback
+  # @return [Void]
   #
   render: ($view, $data = {}, $next) ->
 
@@ -116,9 +188,8 @@ class system.core.Controller extends system.core.Object
   #
   # Redirect to another url
   #
-  # @access	public
-  # @param	string
-  # @return	void
+  # @param  [String]  url the url to redirect to
+  # @return [Void]
   #
   redirect: ($url) ->
     @res.redirect $url

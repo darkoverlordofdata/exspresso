@@ -24,7 +24,7 @@
 # @author		ExpressionEngine Dev Team
 # @copyright	Copyright (c) 2006 - 2012 EllisLab, Inc.
 # @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @see 		http://codeigniter.com
 # @since		Version 2.0
 # @filesource
 #
@@ -38,7 +38,7 @@
 # @subpackage	Libraries
 # @category	Core
 # @author		ExpressionEngine Dev Team
-# @link
+# @see
 #
 
 class CI_Cache_file extends CI_Driver
@@ -62,8 +62,8 @@ class CI_Cache_file extends CI_Driver
   #
   # Fetch from cache
   #
-  # @param 	mixed		unique key id
-  # @return 	mixed		data on success/false on failure
+  # @param  [Mixed]  unique key id
+  # @return [Mixed]  data on success/false on failure
   #
   get : ($id) ->
     if not file_exists(@_cache_path + $id) then 
@@ -87,7 +87,7 @@ class CI_Cache_file extends CI_Driver
   # Save into cache
   #
   # @param 	string		unique key
-  # @param 	mixed		data to store
+  # @param  [Mixed]  data to store
   # @param 	int			length of time (in seconds) the cache is valid
   #						- Default is 60 seconds
   # @return 	boolean		true on success/false on failure
@@ -112,7 +112,7 @@ class CI_Cache_file extends CI_Driver
   #
   # Delete from Cache
   #
-  # @param 	mixed		unique identifier of item in cache
+  # @param  [Mixed]  unique identifier of item in cache
   # @return 	boolean		true on success/false on failure
   #
   delete : ($id) ->
@@ -138,7 +138,7 @@ class CI_Cache_file extends CI_Driver
   # Not supported by file-based caching
   #
   # @param 	string	user/filehits
-  # @return 	mixed 	FALSE
+  # @return [Mixed]  FALSE
   #
   cache_info : ($type = null) ->
     return get_dir_file_info(@_cache_path)
@@ -149,8 +149,8 @@ class CI_Cache_file extends CI_Driver
   #
   # Get Cache Metadata
   #
-  # @param 	mixed		key to get cache metadata on
-  # @return 	mixed		FALSE on failure, array on success.
+  # @param  [Mixed]  key to get cache metadata on
+  # @return [Mixed]  FALSE on failure, array on success.
   #
   get_metadata : ($id) ->
     if not file_exists(@_cache_path + $id) then 

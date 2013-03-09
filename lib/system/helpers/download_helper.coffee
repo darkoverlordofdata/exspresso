@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -42,11 +40,9 @@
 #
 # Generates headers that force a download to happen
 #
-# @access	public
-# @param	string	filename
-# @param	mixed	the data to be downloaded
-# @return	void
-#
+# @param  [String]  filename
+# @param  [Mixed]  the data to be downloaded
+# @return [Void]  #
 if not function_exists('force_download')
   exports.force_download = force_download = ($filename = '', $data = '') ->
     if $filename is '' or $data is ''

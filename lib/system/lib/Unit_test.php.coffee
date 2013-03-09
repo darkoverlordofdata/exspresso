@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -39,7 +37,7 @@
 # @subpackage	Libraries
 # @category	UnitTesting
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/uri.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/uri.html
 #
 class ExspressoUnit_test
 
@@ -47,7 +45,7 @@ class ExspressoUnit_test
   # Helper functions to test boolean true/false
   #
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   is_true = ($test) -> if (is_bool($test) and $test is true) then true else false
@@ -82,10 +80,7 @@ class ExspressoUnit_test
   #
   # Runs the supplied tests
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   set_test_items : ($items = {}) ->
     if not empty($items) and is_array($items)
       @_test_items_visible = $items
@@ -97,11 +92,7 @@ class ExspressoUnit_test
   #
   # Runs the supplied tests
   #
-  # @access	public
-  # @param	mixed
-  # @param	mixed
-  # @param	string
-  # @return	string
+    # @param  [Mixed]  # @param  [Mixed]  # @param  [String]    # @return	[String]
   #
   run : ($test, $expected = true, $test_name = 'undefined', $notes = '') ->
     if @_active is false
@@ -138,8 +129,7 @@ class ExspressoUnit_test
   #
   # Displays a table with the test data
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   report : ($result = {}) ->
     if count($result) is 0
@@ -176,8 +166,7 @@ class ExspressoUnit_test
   #
   # Causes the evaluation to use === rather than ==
   #
-  # @access	public
-  # @param	bool
+    # @return	[Boolean]
   # @return	null
   #
   use_strict : ($state = true) ->
@@ -189,8 +178,7 @@ class ExspressoUnit_test
   #
   # Enables/disables unit testing
   #
-  # @access	public
-  # @param	bool
+    # @return	[Boolean]
   # @return	null
   #
   active : ($state = true) ->
@@ -202,8 +190,7 @@ class ExspressoUnit_test
   #
   # Returns the raw result data
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   result : ($results = {}) ->
 
@@ -242,10 +229,7 @@ class ExspressoUnit_test
   #
   # This lets us set the template to be used to display results
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   set_template : ($template) ->
     @_template = $template
     
@@ -255,7 +239,7 @@ class ExspressoUnit_test
   #
   # This lets us show file names and line numbers
   #
-  # @access	private
+  # @private
   # @return	array
   #
   _backtrace :  ->
@@ -273,8 +257,8 @@ class ExspressoUnit_test
   #
   # Get Default Template
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _default_template :  ->
     @_template = "\n" + '<table style="width:100%; font-size:small; margin:10px 0; border-collapse:collapse; border:1px solid #CCC;">'
@@ -292,9 +276,8 @@ class ExspressoUnit_test
   #
   # Harvests the data within the template {pseudo-variables}
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _parse_template :  ->
     if not is_null(@_template_rows)
       return 

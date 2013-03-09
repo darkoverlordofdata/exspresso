@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -39,7 +37,7 @@
 # @subpackage	Libraries
 # @category	Libraries
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/encryption.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/encryption.html
 #
 class ExspressoEncrypt
   
@@ -68,9 +66,7 @@ class ExspressoEncrypt
   # Returns it as MD5 in order to have an exact-length 128 bit key.
   # Mcrypt is sensitive to keys that are not the correct length
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   get_key : ($key = '') ->
     if $key is ''
@@ -92,10 +88,7 @@ class ExspressoEncrypt
   #
   # Set the encryption key
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   set_key : ($key = '') ->
     @encryption_key = $key
     
@@ -111,10 +104,9 @@ class ExspressoEncrypt
   # that is randomized with each call to this function,
   # even if the supplied message and key are the same.
   #
-  # @access	public
-  # @param	string	the string to encode
-  # @param	string	the key
-  # @return	string
+    # @param  [String]  the string to encode
+  # @param  [String]  the key
+  # @return	[String]
   #
   encode : ($string, $key = '') ->
     $key = @get_key($key)
@@ -134,10 +126,7 @@ class ExspressoEncrypt
   #
   # Reverses the above process
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   decode : ($string, $key = '') ->
     $key = @get_key($key)
@@ -170,11 +159,8 @@ class ExspressoEncrypt
   #
   # For more details, see http://darkoverlordofdata.com/user_guide/installation/upgrade_200.html#encryption
   #
-  # @access	public
-  # @param	string
-  # @param	int		(mcrypt mode constant)
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param	int		(mcrypt mode constant)
+  # @param  [String]    # @return	[String]
   #
   encode_from_legacy : ($string, $legacy_mode = MCRYPT_MODE_ECB, $key = '') ->
     if @_mcrypt_exists is false
@@ -215,10 +201,8 @@ class ExspressoEncrypt
   # Takes a plain-text string and key as input and generates an
   # encoded bit-string using XOR
   #
-  # @access	private
-  # @param	string
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @param  [String]    # @return	[String]
   #
   _xor_encode : ($string, $key) ->
     $rand = ''
@@ -243,10 +227,8 @@ class ExspressoEncrypt
   # Takes an encoded string and key as input and generates the
   # plain-text original message
   #
-  # @access	private
-  # @param	string
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @param  [String]    # @return	[String]
   #
   _xor_decode : ($string, $key) ->
     $string = @_xor_merge($string, $key)
@@ -265,10 +247,8 @@ class ExspressoEncrypt
   #
   # Takes a string and key as input and computes the difference using XOR
   #
-  # @access	private
-  # @param	string
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @param  [String]    # @return	[String]
   #
   _xor_merge : ($string, $key) ->
     $hash = @hash($key)
@@ -284,10 +264,7 @@ class ExspressoEncrypt
   #
   # Encrypt using Mcrypt
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   mcrypt_encode : ($data, $key) ->
     $init_size = mcrypt_get_iv_size(@_get_cipher(), @_get_mode())
@@ -298,10 +275,7 @@ class ExspressoEncrypt
   #
   # Decrypt using Mcrypt
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   mcrypt_decode : ($data, $key) ->
     $data = @_remove_cipher_noise($data, $key)
@@ -323,10 +297,8 @@ class ExspressoEncrypt
   #
   # Function description
   #
-  # @access	private
-  # @param	string
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @param  [String]    # @return	[String]
   #
   _add_cipher_noise : ($data, $key) ->
     $keyhash = @hash($key)
@@ -351,8 +323,7 @@ class ExspressoEncrypt
   #
   # Function description
   #
-  # @access	public
-  # @param	type
+    # @param	type
   # @return	type
   #
   _remove_cipher_noise : ($data, $key) ->
@@ -381,9 +352,8 @@ class ExspressoEncrypt
   #
   # Set the Mcrypt Cipher
   #
-  # @access	public
-  # @param	constant
-  # @return	string
+    # @param	constant
+  # @return	[String]
   #
   set_cipher : ($cipher) ->
     @_mcrypt_cipher = $cipher
@@ -392,9 +362,8 @@ class ExspressoEncrypt
   #
   # Set the Mcrypt Mode
   #
-  # @access	public
-  # @param	constant
-  # @return	string
+    # @param	constant
+  # @return	[String]
   #
   set_mode : ($mode) ->
     @_mcrypt_mode = $mode
@@ -403,8 +372,8 @@ class ExspressoEncrypt
   #
   # Get Mcrypt cipher Value
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _get_cipher :  ->
     if @_mcrypt_cipher is ''
@@ -417,8 +386,8 @@ class ExspressoEncrypt
   #
   # Get Mcrypt Mode Value
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _get_mode :  ->
     if @_mcrypt_mode is ''
@@ -431,9 +400,7 @@ class ExspressoEncrypt
   #
   # Set the Hash type
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   set_hash : ($type = 'sha1') ->
     @_hash_type = if ($type isnt 'sha1' and $type isnt 'md5') then 'sha1' else $type
@@ -442,9 +409,7 @@ class ExspressoEncrypt
   #
   # Hash encode a string
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   hash : ($str) ->
     return if (@_hash_type is 'sha1') then @sha1($str) else md5($str)
@@ -453,9 +418,7 @@ class ExspressoEncrypt
   #
   # Generate an SHA1 Hash
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   sha1 : ($str) ->
     if not function_exists('sha1')

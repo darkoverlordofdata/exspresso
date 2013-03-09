@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -112,8 +110,7 @@ class system.lib.Migration
   #     APPPATH + 'modules/' + $module + '/migrations/'
   #
   # @param  string
-  # @return void
-  #
+  # @return [Void]  #
   setModule: ($module = '') ->
 
     return if $module is '' # use the default value
@@ -142,7 +139,7 @@ class system.lib.Migration
   # choice
   #
   # @param  int  Target schema version
-  # @return  mixed  true if already latest, false if failed, int if upgraded
+  # @return [Mixed]  true if already latest, false if failed, int if upgraded
   #
   version: ($target_version, $next) ->
 
@@ -230,8 +227,7 @@ class system.lib.Migration
       #
       #   @access	private
       #   @param	function callback
-      #   @return	void
-      #
+      # @return [Void]  #
       migrate = ($next) =>
         return $next(null) if $migrations.length is 0
         #
@@ -264,7 +260,7 @@ class system.lib.Migration
   #
   # Set's the schema to the latest migration
   #
-  # @return  mixed  true if already latest, false if failed, int if upgraded
+  # @return [Mixed]  true if already latest, false if failed, int if upgraded
   #
   latest: ($next) ->
     if not ($migrations = @find_migrations())
@@ -281,7 +277,7 @@ class system.lib.Migration
   #
   # Set's the schema to the migration version set in config
   #
-  # @return  mixed  true if already current, false if failed, int if upgraded
+  # @return [Mixed]  true if already current, false if failed, int if upgraded
   #
   current: ($next) ->
     @version @_migration_version, ($err, $current_version) ->
@@ -290,7 +286,7 @@ class system.lib.Migration
   #
   # Error string
   #
-  # @return  string  Error message returned as a string
+  # @return  [String]  Error message returned as a string
   #
   errorString: () ->
     @_error_string
@@ -298,7 +294,7 @@ class system.lib.Migration
   #
   # Set's the schema to the latest migration
   #
-  # @return  mixed  true if already latest, false if failed, int if upgraded
+  # @return [Mixed]  true if already latest, false if failed, int if upgraded
   #
   findMigrations: () ->
 

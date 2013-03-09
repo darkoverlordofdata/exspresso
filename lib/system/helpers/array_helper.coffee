@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -43,11 +41,7 @@
 # Lets you determine whether an array index is set and whether it has a value.
 # If the element is empty it returns FALSE (or whatever you specify as the default value.)
 #
-# @access	public
-# @param	string
-# @param	array
-# @param	mixed
-# @return	mixed	depends on what the array contains
+# @param  [String]  # @param  [Array]  # @param  [Mixed]  # @return [Mixed]  depends on what the array contains
 #
 if not function_exists('element')
   exports.element = element = ($item, $array, $default = false) ->
@@ -64,9 +58,7 @@ if not function_exists('element')
 #
 # Random Element - Takes an array as input and returns a random element
 #
-# @access	public
-# @param	array
-# @return	mixed	depends on what the array contains
+# @param  [Array]  # @return [Mixed]  depends on what the array contains
 #
 if not function_exists('random_element')
   exports.random_element = random_element = ($array) ->
@@ -86,11 +78,7 @@ if not function_exists('random_element')
 # Returns only the array items specified.  Will return a default value if
 # it is not set.
 #
-# @access	public
-# @param	array
-# @param	array
-# @param	mixed
-# @return	mixed	depends on what the array contains
+# @param  [Array]  # @param  [Array]  # @param  [Mixed]  # @return [Mixed]  depends on what the array contains
 #
 if not function_exists('elements')
   exports.elements = elements = ($items, $array, $default = false) ->

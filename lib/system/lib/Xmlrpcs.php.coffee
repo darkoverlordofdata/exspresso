@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -36,7 +34,7 @@
 # @author		darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @license		MIT License
-# @link		http://darkoverlordofdata.com
+# @see 		http://darkoverlordofdata.com
 # @since		Version 1.0
 # @filesource
 #
@@ -58,7 +56,7 @@ if not class_exists('ExspressoXmlrpc')
 # @subpackage	Libraries
 # @category	XML-RPC
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/xmlrpc.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/xmlrpc.html
 #
 class ExspressoXmlrpcs extends ExspressoXmlrpc
 
@@ -87,10 +85,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Initialize Prefs and Serve
   #
-  # @access	public
-  # @param	mixed
-  # @return	void
-  #
+    # @param  [Mixed]  # @return [Void]  #
   initialize : ($config = {}) ->
     if $config['functions']?  and is_array($config['functions'])
       @methods = array_merge(@methods, $config['functions'])
@@ -112,9 +107,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Setting of System Methods
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   set_system_methods :  ->
     @methods = 
       'system.listMethods':
@@ -139,9 +132,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Main Server Function
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   serve :  ->
     $r = @parseRequest()
     $payload = '<?xml version="1.0" encoding="' + @xmlrpc_defencoding + '"?' + '>' + "\n"
@@ -156,13 +147,11 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Add Method to Class
   #
-  # @access	public
-  # @param	string	method name
-  # @param	string	function
-  # @param	string	signature
-  # @param	string	docstring
-  # @return	void
-  #
+    # @param  [String]  method name
+  # @param  [String]  function
+  # @param  [String]  signature
+  # @param  [String]  docstring
+  # @return [Void]  #
   add_to_map : ($methodname, $function, $sig, $doc) ->
     @methods[$methodname] = 
       'function':$function, 
@@ -174,9 +163,8 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Parse Server Request
   #
-  # @access	public
-  # @param	string	data
-  # @return	object	xmlrpc response
+    # @param  [String]  data
+  # @return [Object]  xmlrpc response
   #
   parseRequest : ($data = '') ->
     exports.$HTTP_RAW_POST_DATA
@@ -262,9 +250,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   # Executes the Method
   #
   # @access	protected
-  # @param	object
-  # @return	mixed
-  #
+  # @param  [Object]    # @return [Mixed]  #
   _execute : ($m) ->
     $methName = $m.method_name
     
@@ -358,10 +344,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Server Function:  List Methods
   #
-  # @access	public
-  # @param	mixed
-  # @return	object
-  #
+    # @param  [Mixed]  # @return [Object]  #
   listMethods : ($m) ->
     $v = new XML_RPC_Values()
     $output = {}
@@ -381,10 +364,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Server Function:  Return Signature for Method
   #
-  # @access	public
-  # @param	mixed
-  # @return	object
-  #
+    # @param  [Mixed]  # @return [Object]  #
   methodSignature : ($m) ->
     $parameters = $m.output_parameters()
     $method_name = $parameters[0]
@@ -419,10 +399,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Server Function:  Doc String for Method
   #
-  # @access	public
-  # @param	mixed
-  # @return	object
-  #
+    # @param  [Mixed]  # @return [Object]  #
   methodHelp : ($m) ->
     $parameters = $m.output_parameters()
     $method_name = $parameters[0]
@@ -440,10 +417,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   # Server Function:  Multi-call
   #
-  # @access	public
-  # @param	mixed
-  # @return	object
-  #
+    # @param  [Mixed]  # @return [Object]  #
   multicall : ($m) ->
     #  Disabled
     return new XML_RPC_Response(0, @xmlrpcerr['unknown_method'], @xmlrpcstr['unknown_method'])
@@ -479,10 +453,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   #  Multi-call Function:  Error Handling
   #
-  # @access	public
-  # @param	mixed
-  # @return	object
-  #
+    # @param  [Mixed]  # @return [Object]  #
   multicall_error : ($err) ->
     $str = if is_string($err) then @xmlrpcstr["multicall_${err}"] else $err.faultString()
     $code = if is_string($err) then @xmlrpcerr["multicall_${err}"] else $err.faultCode()
@@ -496,10 +467,7 @@ class ExspressoXmlrpcs extends ExspressoXmlrpc
   #
   #  Multi-call Function:  Processes method
   #
-  # @access	public
-  # @param	mixed
-  # @return	object
-  #
+    # @param  [Mixed]  # @return [Object]  #
   do_multicall : ($call) ->
     if $call.kindOf() isnt 'struct'
       return @multicall_error('notstruct')

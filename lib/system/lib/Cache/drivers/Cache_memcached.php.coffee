@@ -25,7 +25,7 @@
 # @author		ExpressionEngine Dev Team
 # @copyright	Copyright (c) 2006 - 2012 EllisLab, Inc.
 # @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @see 		http://codeigniter.com
 # @since		Version 2.0
 # @filesource
 #
@@ -39,7 +39,7 @@
 # @subpackage	Libraries
 # @category	Core
 # @author		ExpressionEngine Dev Team
-# @link
+# @see
 #
 
 class CI_Cache_memcached extends CI_Driver
@@ -59,8 +59,8 @@ class CI_Cache_memcached extends CI_Driver
   #
   # Fetch from cache
   #
-  # @param 	mixed		unique key id
-  # @return 	mixed		data on success/false on failure
+  # @param  [Mixed]  unique key id
+  # @return [Mixed]  data on success/false on failure
   #
   get : ($id) ->
     $data = @_memcached.get($id)
@@ -74,7 +74,7 @@ class CI_Cache_memcached extends CI_Driver
   # Save
   #
   # @param 	string		unique identifier
-  # @param 	mixed		data being cached
+  # @param  [Mixed]  data being cached
   # @param 	int			time to live
   # @return 	boolean 	true on success, false on failure
   #
@@ -94,7 +94,7 @@ class CI_Cache_memcached extends CI_Driver
   #
   # Delete from Cache
   #
-  # @param 	mixed		key to be deleted.
+  # @param  [Mixed]  key to be deleted.
   # @return 	boolean 	true on success, false on failure
   #
   delete : ($id) ->
@@ -118,7 +118,7 @@ class CI_Cache_memcached extends CI_Driver
   # Cache Info
   #
   # @param 	null		type not supported in memcached
-  # @return 	mixed 		array on success, false on failure
+  # @return [Mixed]  array on success, false on failure
   #
   cache_info : ($type = null) ->
     return @_memcached.getStats()
@@ -129,8 +129,8 @@ class CI_Cache_memcached extends CI_Driver
   #
   # Get Cache Metadata
   #
-  # @param 	mixed		key to get cache metadata on
-  # @return 	mixed		FALSE on failure, array on success.
+  # @param  [Mixed]  key to get cache metadata on
+  # @return [Mixed]  FALSE on failure, array on success.
   #
   get_metadata : ($id) ->
     $stored = @_memcached.get($id)

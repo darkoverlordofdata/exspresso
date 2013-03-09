@@ -7,12 +7,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -32,8 +30,7 @@
 # 
 #  @access  public
 #  @param  string
-#  @param  integer
-#  @param  string  the end character. Usually an ellipsis
+# @param  [Integer]  #  @param  string  the end character. Usually an ellipsis
 #  @return  string
 #
 if ( not function_exists('word_limiter'))
@@ -62,8 +59,7 @@ if ( not function_exists('word_limiter'))
 #
 #  @access  public
 #  @param  string
-#  @param  integer
-#  @param  string  the end character. Usually an ellipsis
+# @param  [Integer]  #  @param  string  the end character. Usually an ellipsis
 #  @return  string
 #
 if ( not function_exists('character_limiter'))
@@ -319,7 +315,7 @@ if ( not function_exists('convert_accented_characters'))
 #
 #  @access  public
 #  @param  string  the text string
-#  @param  integer  the number of characters to wrap at
+# @param  [Integer]  the number of characters to wrap at
 #  @return  string
 #
 if ( not function_exists('word_wrap'))
@@ -404,8 +400,8 @@ if ( not function_exists('word_wrap'))
 #  This function will strip tags from a string, split it at its max_length and ellipsize
 #
 #  @param  string    string to ellipsize
-#  @param  integer    max length of string
-#  @param  mixed    int (1|0) or float, .5, .2, etc for position to split
+# @param  [Integer]  max length of string
+# @param  [Mixed]  int (1|0) or float, .5, .2, etc for position to split
 #  @param  string    ellipsis ; Default '...'
 #  @return  string    ellipsized string
 #

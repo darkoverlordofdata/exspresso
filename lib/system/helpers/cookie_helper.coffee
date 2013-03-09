@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -43,15 +41,12 @@
 # Accepts six parameter, or you can submit an associative
 # array in the first parameter containing all the values.
 #
-# @access	public
-# @param	mixed
-# @param	string	the value of the cookie
-# @param	string	the number of seconds until expiration
-# @param	string	the cookie domain.  Usually:  .yourdomain.com
-# @param	string	the cookie path
-# @param	string	the cookie prefix
-# @return	void
-#
+# @param  [Mixed]  # @param  [String]  the value of the cookie
+# @param  [String]  the number of seconds until expiration
+# @param  [String]  the cookie domain.  Usually:  .yourdomain.com
+# @param  [String]  the cookie path
+# @param  [String]  the cookie prefix
+# @return [Void]  #
 if not function_exists('setCookie')
   exports.setCookie = setCookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
     #  Set the config file options
@@ -65,11 +60,8 @@ if not function_exists('setCookie')
 #
 # Fetch an item from the COOKIE array
 #
-# @access	public
-# @param	string
-# @param	bool
-# @return	mixed
-#
+# @param  [String]  # @return	[Boolean]
+# @return [Mixed]  #
 if not function_exists('get_cookie')
   exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
 
@@ -88,12 +80,10 @@ if not function_exists('get_cookie')
 #
 # Delete a COOKIE
 #
-# @param	mixed
-# @param	string	the cookie domain.  Usually:  .yourdomain.com
-# @param	string	the cookie path
-# @param	string	the cookie prefix
-# @return	void
-#
+# @param  [Mixed]  # @param  [String]  the cookie domain.  Usually:  .yourdomain.com
+# @param  [String]  the cookie path
+# @param  [String]  the cookie prefix
+# @return [Void]  #
 if not function_exists('delete_cookie')
   exports.delete_cookie = delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
     setCookie($name, '', '', $domain, $path, $prefix)

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -43,7 +41,7 @@
 # @subpackage	Libraries
 # @category	Encryption
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/zip.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/zip.html
 #
 class ExspressoZip
   
@@ -69,10 +67,8 @@ class ExspressoZip
   #
   # Lets you add a virtual directory into which you can place files.
   #
-  # @access	public
-  # @param	mixed	the directory name. Can be string or array
-  # @return	void
-  #
+    # @param  [Mixed]  the directory name. Can be string or array
+  # @return [Void]  #
   add_dir : ($directory) ->
     for $dir in $directory
       if not preg_match("|.+/$|", $dir)
@@ -90,7 +86,7 @@ class ExspressoZip
   #
   #	If this is a newly created file/dir, we will set the time to 'now'
   #
-  #	@param string	path to file
+  # @param  [String]  path to file
   #	@return array	filemtime/filemdate
   #
   _get_mod_time : ($dir) ->
@@ -106,10 +102,9 @@ class ExspressoZip
   #
   # Add Directory
   #
-  # @access	private
-  # @param	string	the directory name
-  # @return	void
-  #
+  # @private
+  # @param  [String]  the directory name
+  # @return [Void]  #
   _add_dir : ($dir, $file_mtime, $file_mdate) ->
     $dir = str_replace("\\", "/", $dir)
     
@@ -155,11 +150,7 @@ class ExspressoZip
   # in the filename it will be placed within a directory.  Make
   # sure you use add_dir() first to create the folder.
   #
-  # @access	public
-  # @param	mixed
-  # @param	string
-  # @return	void
-  #
+    # @param  [Mixed]  # @param  [String]    # @return [Void]  #
   add_data : ($filepath, $data = null) ->
     if is_array($filepath)
       for $path, $data of $filepath
@@ -178,11 +169,10 @@ class ExspressoZip
   #
   # Add Data to Zip
   #
-  # @access	private
-  # @param	string	the file name/path
-  # @param	string	the data to be encoded
-  # @return	void
-  #
+  # @private
+  # @param  [String]  the file name/path
+  # @param  [String]  the data to be encoded
+  # @return [Void]  #
   _add_data : ($filepath, $data, $file_mtime, $file_mdate) ->
     $filepath = str_replace("\\", "/", $filepath)
     
@@ -229,8 +219,7 @@ class ExspressoZip
   #
   # Read the contents of a file and add it to the zip
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   read_file : ($path, $preserve_filepath = false) ->
     if not file_exists($path)
@@ -259,8 +248,7 @@ class ExspressoZip
   # sub-folders) and creates a zip based on it.  Whatever directory structure
   # is in the original file path will be recreated in the zip file.
   #
-  # @access	public
-  # @param	string	path to source
+    # @param  [String]  path to source
   # @return	bool
   #
   read_dir : ($path, $preserve_filepath = true, $root_path = null) ->
@@ -333,22 +321,19 @@ class ExspressoZip
       }#  Set the original directory root for child dir's to use as relative#  --------------------------------------------------------------------#
     # Get the Zip file
     #
-    # @access	public
-    # @return	binary string
+        # @return	binary string
     ##  --------------------------------------------------------------------#
     # Write File to the specified directory
     #
     # Lets you write a file
     #
-    # @access	public
-    # @param	string	the file name
+        # @param  [String]  the file name
     # @return	bool
     ##  --------------------------------------------------------------------#
     # Download
     #
-    # @access	public
-    # @param	string	the file name
-    # @param	string	the data to be encoded
+        # @param  [String]  the file name
+    # @param  [String]  the data to be encoded
     # @return	bool
     ##  --------------------------------------------------------------------#
     # Initialize Data
@@ -356,9 +341,7 @@ class ExspressoZip
     # Lets you clear current zip data.  Useful if you need to create
     # multiple zips with different data.
     #
-    # @access	public
-    # @return	void
-    ##  End of file Zip.php #  Location: ./system/lib/Zip.php
+        # @return [Void]  ##  End of file Zip.php #  Location: ./system/lib/Zip.php
 
 register_class 'ExspressoZip', ExspressoZip
 module.exports = ExspressoZip

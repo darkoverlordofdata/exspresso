@@ -21,7 +21,7 @@
 # @author		Jason M Horwitz
 # @copyright	Copyright (c) 2012, Sekati LLC.
 # @license		http://www.opensource.org/licenses/mit-license.php
-# @link		http://sekati.com
+# @see 		http://sekati.com
 # @version		v1.1.1
 # @filesource
 #
@@ -37,12 +37,12 @@
 #
 # Get either a Gravatar URL or complete image tag for a specified email address.
 #
-# @param string 	$email The email address
-# @param string 	$s Size in pixels, defaults to 80px [ 1 - 512 ]
+# @param  [String]  	$email The email address
+# @param  [String]  	$s Size in pixels, defaults to 80px [ 1 - 512 ]
 # @param boolean 	$img True to return a complete IMG tag False for just the URL
-# @param string 	$d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
-# @param string 	$r Maximum rating (inclusive) [ g | pg | r | x ]
-# @param array 	$atts Optional, additional key/value attributes to include in the IMG tag
+# @param  [String]  	$d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+# @param  [String]  	$r Maximum rating (inclusive) [ g | pg | r | x ]
+# @param  [Array]  $atts Optional, additional key/value attributes to include in the IMG tag
 # @return 			String containing either just a URL or a complete image tag
 #
 if not function_exists('gravatar')
@@ -64,7 +64,7 @@ if not function_exists('gravatar')
 #
 # Get a Gravatar profile URL from a primary gravatar email address.
 #
-# @param string 	$email The email address
+# @param  [String]  	$email The email address
 # @return 			String containing the users gravatar profile URL.
 #
 if not function_exists('gravatar_profile')
@@ -79,10 +79,10 @@ if not function_exists('gravatar_profile')
 #
 # Get either a Gravatar QR Code URL or complete image tag from a primary gravatar email address.
 #
-# @param string 	$email The email address
-# @param string 	$s Size in pixels, defaults to 80px [ 1 - 512 ]
+# @param  [String]  	$email The email address
+# @param  [String]  	$s Size in pixels, defaults to 80px [ 1 - 512 ]
 # @param boolean 	$img True to return a complete IMG tag False for just the URL
-# @param array 	$atts Optional, additional key/value attributes to include in the IMG tag
+# @param  [Array]  $atts Optional, additional key/value attributes to include in the IMG tag
 # @return 			String containing either just a URL or a complete image tag
 #
 if not function_exists('gravatar_qr')

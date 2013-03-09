@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -67,8 +65,7 @@ class application.lib.Theme
   #
   #   @access	public
   #   @param	string theme name
-  #   @return object
-  #
+  # @return [Object]  #
   loadTheme: ($theme) ->
 
     if file_exists(APPPATH + 'themes/all/theme' + EXT)
@@ -88,9 +85,8 @@ class application.lib.Theme
   #
   #   @access	public
   #   @param	string	template
-  #   @param	array   extra theme elements
-  #   @return	object
-  #
+  # @param  [Array]  extra theme elements
+  # @return [Object]  #
   init: ($template, $extra = []) ->
 
     @template = $template

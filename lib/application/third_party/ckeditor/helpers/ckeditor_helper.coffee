@@ -22,11 +22,10 @@
 #
 # Creates the opening portion of the form.
 #
-# @access	public
-# @param	string	the URI segments of the form destination
-# @param	array	a key/value pair of attributes
-# @param	array	a key/value pair hidden data
-# @return	string
+# @param  [String]  the URI segments of the form destination
+# @param  [Array]  a key/value pair of attributes
+# @param  [Array]  a key/value pair hidden data
+# @return	[String]
 #
 if not function_exists('ckeditor')
   exports.ckeditor = ckeditor = ($name, $value = "", $config = {}, $events = {}) ->

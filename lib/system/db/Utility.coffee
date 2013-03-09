@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -55,8 +53,7 @@ class system.db.Utility extends system.db.Forge
   #
   # List databases
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   listDatabases: ($next) ->
     #  Is there a cached result?
@@ -79,9 +76,7 @@ class system.db.Utility extends system.db.Forge
   #
   # Determine if a particular database exists
   #
-  # @access	public
-  # @param	string
-  # @return	boolean
+    # @param  [String]    # @return	[Boolean]
   #
   databaseExists: ($database_name) ->
     #  Some databases won't have access to the listDatabases() function, so
@@ -99,8 +94,7 @@ class system.db.Utility extends system.db.Forge
   #
   # Optimize Table
   #
-  # @access	public
-  # @param	string	the table name
+    # @param  [String]  the table name
   # @return	bool
   #
   optimizeTable: ($table_name, $next) ->
@@ -121,8 +115,7 @@ class system.db.Utility extends system.db.Forge
   #
   # Optimize Database
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   optimizeDatabase: ($next) ->
 
@@ -153,8 +146,7 @@ class system.db.Utility extends system.db.Forge
   #
   # Repair Table
   #
-  # @access	public
-  # @param	string	the table name
+    # @param  [String]  the table name
   # @return	bool
   #
   repairTable: ($table_name, $next) ->
@@ -171,12 +163,11 @@ class system.db.Utility extends system.db.Forge
   #
   # Generate CSV from a query result object
   #
-  # @access	public
-  # @param	object	The query result object
-  # @param	string	The delimiter - comma by default
-  # @param	string	The newline character - \n by default
-  # @param	string	The enclosure - double quote by default
-  # @return	string
+    # @param  [Object]  The query result object
+  # @param  [String]  The delimiter - comma by default
+  # @param  [String]  The newline character - \n by default
+  # @param  [String]  The enclosure - double quote by default
+  # @return	[String]
   #
   csvFromResult: ($query, $delim = ",", $newline = "\n", $enclosure = '"') ->
     if not is_object($query) or  not method_exists($query, 'list_fields')
@@ -208,10 +199,9 @@ class system.db.Utility extends system.db.Forge
   #
   # Generate XML data from a query result object
   #
-  # @access	public
-  # @param	object	The query result object
-  # @param	array	Any preferences
-  # @return	string
+    # @param  [Object]  The query result object
+  # @param  [Array]  Any preferences
+  # @return	[String]
   #
   xmlFromResult: ($query, $params = {}) ->
     if not is_object($query) or  not method_exists($query, 'list_fields')
@@ -244,9 +234,7 @@ class system.db.Utility extends system.db.Forge
   #
   # Database Backup
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   backup: ($prefs = {}, $next) ->
     #  If the parameters have not been submitted as an
     #  array then we know that it is simply the table

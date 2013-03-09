@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -44,9 +42,7 @@ class system.lib.DriverLibrary
   #
   # Load's the requested driver
   #
-  # @param	string
-  # @return	object
-  #
+  # @param  [String]    # @return [Object]  #
   loadDriver: ($driver) ->
     
     UNABLE_TO = "Unable to load the requested driver: %s"

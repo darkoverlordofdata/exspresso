@@ -16,11 +16,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -34,9 +32,7 @@ class system.core.Object
   #
   # Define a read-only property
   #
-  # @access	public
-  # @param	array
-  # @return	array
+    # @param  [Array]  # @return	array
   #
   define: ($def) ->
 
@@ -47,9 +43,7 @@ class system.core.Object
   #
   # Async job queue for the controller
   #
-  # @access	public
-  # @param	function
-  # @return	array
+    # @param  [Function]    # @return	array
   #
   queue: ($fn) ->
 
@@ -60,11 +54,7 @@ class system.core.Object
   #
   # Run the functions in the queue
   #
-  # @access	public
-  # @param  array
-  # @param	function
-  # @return	void
-  #
+    # @param  [Array]  # @param  [Function]    # @return [Void]  #
   run: ($next) ->
 
     @define _queue: [] if not @_queue?

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -119,10 +117,7 @@ class system.lib.ExspressoEmail
   #
   # Initialize preferences
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   initialize: ($config = {}) ->
 
     for $key, $val of $config
@@ -146,9 +141,7 @@ class system.lib.ExspressoEmail
   #
   # Initialize the Email Data
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   clear: ($clear_attachments = false) ->
 
     @_from = ""
@@ -176,11 +169,7 @@ class system.lib.ExspressoEmail
   #
   # Set FROM
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @param  [String]    # @return [Void]  #
   from: ($from, $name = '') ->
 
     if ($match = preg_match('/\\<(.*)\\>/', $from))?
@@ -198,11 +187,7 @@ class system.lib.ExspressoEmail
   #
   # Set Reply-to
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @param  [String]    # @return [Void]  #
   replyTo: ($replyto, $name = '') ->
 
     if ($match = preg_match('/\\<(.*)\\>/', $replyto))?
@@ -223,10 +208,7 @@ class system.lib.ExspressoEmail
   #
   # Set Recipients
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   to: ($to) ->
 
     $to = @_str_to_array($to)
@@ -242,10 +224,7 @@ class system.lib.ExspressoEmail
   #
   # Set CC
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   cc: ($cc) ->
 
     $cc = @_str_to_array($cc)
@@ -262,11 +241,7 @@ class system.lib.ExspressoEmail
   #
   # Set BCC
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @param  [String]    # @return [Void]  #
   bcc: ($bcc, $limit = '') ->
 
     if $limit isnt '' and is_numeric($limit)
@@ -286,10 +261,7 @@ class system.lib.ExspressoEmail
   #
   # Set Email Subject
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   subject: ($subject) ->
 
     @_subject = $subject
@@ -298,10 +270,7 @@ class system.lib.ExspressoEmail
   #
   # Set Body
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   message: ($body) ->
 
     @_body = $body
@@ -310,10 +279,7 @@ class system.lib.ExspressoEmail
   #
   # Assign file attachments
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   attach: ($filename, $disposition = 'attachment') ->
 
     @_attach_name.push $filename
@@ -324,9 +290,8 @@ class system.lib.ExspressoEmail
   #
   # Convert a String to an Array
   #
-  # @access	private
-  # @param	string
-  # @return	array
+  # @private
+  # @param  [String]    # @return	array
   #
   _str_to_array: ($email) ->
 
@@ -342,10 +307,7 @@ class system.lib.ExspressoEmail
   #
   # Set Multipart Value
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setAltMessage: ($str = '') ->
 
     @alt_message = if ($str is '') then '' else $str
@@ -354,10 +316,7 @@ class system.lib.ExspressoEmail
   #
   # Set Mailtype
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setMailtype: ($type = 'text') ->
 
     @mailtype = if ($type is 'html') then 'html' else 'text'
@@ -366,10 +325,7 @@ class system.lib.ExspressoEmail
   #
   # Set Wordwrap
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setWordwrap: ($wordwrap = true) ->
 
     @wordwrap = if ($wordwrap is false) then false else true
@@ -378,10 +334,7 @@ class system.lib.ExspressoEmail
   #
   # Set Protocol
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setProtocol: ($protocol = 'mail') ->
 
     @protocol = if ( not in_array($protocol, @_protocols, true)) then 'mail' else strtolower($protocol)
@@ -390,10 +343,7 @@ class system.lib.ExspressoEmail
   #
   # Set Priority
   #
-  # @access	public
-  # @param	integer
-  # @return	void
-  #
+    # @param  [Integer]  # @return [Void]  #
   setPriority: ($n = 3) ->
 
     if not is_numeric($n)
@@ -410,10 +360,7 @@ class system.lib.ExspressoEmail
   #
   # Set Newline Character
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setNewline: ($newline = "\n") ->
 
     if $newline isnt "\n" and $newline isnt "\r\n" and $newline isnt "\r"
@@ -427,10 +374,7 @@ class system.lib.ExspressoEmail
   #
   # Set CRLF
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setCrlf: ($crlf = "\n") ->
 
     if $crlf isnt "\n" and $crlf isnt "\r\n" and $crlf isnt "\r"
@@ -444,9 +388,9 @@ class system.lib.ExspressoEmail
   #
   # Get Mail Protocol
   #
-  # @access	private
-  # @param	bool
-  # @return	string
+  # @private
+  # @return	[Boolean]
+  # @return	[String]
   #
   _get_protocol: ($return = true) ->
 
@@ -461,8 +405,8 @@ class system.lib.ExspressoEmail
   #
   # Get content type (text/html/attachment)
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _get_content_type: () ->
 
@@ -483,8 +427,8 @@ class system.lib.ExspressoEmail
   #
   # Mime message
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _get_mime_message: () ->
 
@@ -493,9 +437,7 @@ class system.lib.ExspressoEmail
   #
   # Validate Email Address
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   validate_email: ($email) ->
 
@@ -513,9 +455,7 @@ class system.lib.ExspressoEmail
   #
   # Email Validation
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   valid_email: ($address) ->
 
@@ -524,9 +464,7 @@ class system.lib.ExspressoEmail
   #
   # Clean Extended Email Address: Joe Smith <joe@smith.com>
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   clean_email: ($email) ->
 
@@ -556,8 +494,8 @@ class system.lib.ExspressoEmail
   # If the user hasn't specified his own alternative message
   # it creates one by stripping the HTML
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _get_alt_message: () ->
 
@@ -588,10 +526,7 @@ class system.lib.ExspressoEmail
   #
   # Word Wrap
   #
-  # @access	public
-  # @param	string
-  # @param	integer
-  # @return	string
+    # @param  [String]    # @param  [Integer]  # @return	[String]
   #
   word_wrap: ($str, $charlim = '') ->
     #  Se the character limit
@@ -659,8 +594,7 @@ class system.lib.ExspressoEmail
   #
   # Send Email
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   send: ($next) ->
 

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -40,12 +38,11 @@
 #
 # Create CAPTCHA
 #
-# @access	public
-# @param	array	array of data for the CAPTCHA
-# @param	string	path to create the image in
-# @param	string	URL to the CAPTCHA image folder
-# @param	string	server path to font
-# @return	string
+# @param  [Array]  array of data for the CAPTCHA
+# @param  [String]  path to create the image in
+# @param  [String]  URL to the CAPTCHA image folder
+# @param  [String]  server path to font
+# @return	[String]
 #
 if not function_exists('create_captcha')
   exports.create_captcha = create_captcha = ($data = '', $img_path = '', $img_url = '', $font_path = '') ->

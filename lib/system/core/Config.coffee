@@ -19,14 +19,11 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
-# @author		  darkoverlordofdata
 # @author		  darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		MIT License
-# @link		    http://darkoverlordofdata.com
+# @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
 
@@ -43,19 +40,24 @@ Modules = require(SYSPATH+'core/Modules.coffee')
 
 class system.core.Config
 
-  _is_loaded        : null  # array list of loaded config files
-  paths             : null  # array list of paths to load config files at
+  #
+  # @property [Object] array list of loaded config files
+  #
+  _is_loaded: null
+  #
+  # @property [Object] array list of paths to load config files at
+  #
+  paths: null
+  #
+  # @property [Object] config data loaded from files
+  #
+  config: null
 
   #
   # Constructor
   #
-  # Sets the $config data from the primary config.php file as a class variable
+  # Sets the config data from the primary config.coffee file as a class variable
   #
-  # @access   public
-  # @param   string	the config file name
-  # @param   boolean  if configuration values should be loaded into their own section
-  # @param   boolean  true if errors should just return false, false if an error message should be displayed
-  # @return  boolean  if the file was successfully loaded or not
   #
   constructor :  ->
 
@@ -74,11 +76,11 @@ class system.core.Config
   #
   #   Checks in MODPATH first. If not found, there, look the APPPATH and package folders.
   #
-  # @access	public
-  # @param	string  the config file name
-  # @param  boolean if configuration values should be loaded into their own section
-  # @param  boolean true if errors should just return false, false if an error message should be displayed
-  # @return	boolean	if the file was loaded correctly
+  # @param  [String]  file the config file name
+  # @param  [Boolean] use_sections if configuration values should be loaded into their own section
+  # @param  [Boolean] fail_gracefully  true if errors should just return false, false if an error message should be displayed
+  # @param  [String]  module module name from the uri
+  # @return	[Boolean]	if the file was loaded correctly
   #
   load: ($file = 'config', $use_sections = false, $fail_gracefully = false, $module = '') ->
 
@@ -112,11 +114,10 @@ class system.core.Config
   #
   #   Looks in APPPATH. If not found, then look in packages (if any)
   #
-  # @access	public
-  # @param	string	the config file name
-  # @param  boolean if configuration values should be loaded into their own section
-  # @param  boolean true if errors should just return false, false if an error message should be displayed
-  # @return	boolean	if the file was loaded correctly
+  # @param  [String]  file the config file name
+  # @param  [Boolean] use_sections if configuration values should be loaded into their own section
+  # @param  [Boolean] fail_gracefully  true if errors should just return false, false if an error message should be displayed
+  # @return	[Boolean]	if the file was loaded correctly
   #
   _application_load : ($file = '', $use_sections = false, $fail_gracefully = false) ->
     $file = if $file is '' then 'config' else $file.replace(EXT, '')
@@ -167,11 +168,9 @@ class system.core.Config
   # Fetch a config file item
   #
   #
-  # @access	public
-  # @param	string	the config item name
-  # @param	string	the index name
-  # @param	bool
-  # @return	string
+  # @param  [String]  item the config item name
+  # @param  [String]  index the index name
+  # @return	[String]  the config item, empty string if not found
   #
   item : ($item, $index = '') ->
     if $index is ''
@@ -198,10 +197,8 @@ class system.core.Config
   # The second parameter allows a slash to be added to the end of
   # the item, in the case of a path.
   #
-  # @access	public
-  # @param	string	the config item name
-  # @param	bool
-  # @return	string
+  # @param  [String]  item the config item name
+  # @return	[Mixed] returns the slashed value, false if not found
   #
   slashItem : ($item) ->
     if not @config[$item]?
@@ -213,9 +210,8 @@ class system.core.Config
   #
   # Site URL
   #
-  # @access	public
-  # @param	string	the URI string
-  # @return	string
+  # @param  [String]  uri the URI string
+  # @return	[String]
   #
   siteUrl : ($uri = '') ->
 
@@ -248,8 +244,7 @@ class system.core.Config
   #
   # System URL
   #
-  # @access	public
-  # @return	string
+  # @return	[String]
   #
   systemUrl :  ->
 
@@ -260,10 +255,9 @@ class system.core.Config
   #
   # Set a config file item
   #
-  # @access	public
-  # @param	string	the config item key
-  # @param	string	the config item value
-  # @return	void
+  # @param  [String]  item the config item key
+  # @param  [String]  value the config item value
+  # @return [Void]
   #
   setItem : ($item, $value) ->
     if 'string' is typeof $item then @config[$item] = $value

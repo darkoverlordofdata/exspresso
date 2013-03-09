@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -124,11 +122,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # that the expected session objects are available
   #
   # @access private
-  # @param object
-  # @param object
-  # @param function
-  # @return void
-  #
+  # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
   #
   parseRequest: ($cookie_name) -> ($req, $res, $next) =>
 
@@ -151,10 +145,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Add or change data in the "userdata" array
   #
   # @access public
-  # @param mixed
-  # @param string
-  # @return void
-  #
+  # @param  [Mixed]  # @param  [String]    # @return [Void]  #
   setUserdata: ($newdata = {}, $newval = '') ->
 
     $data = @req.session.userdata = @req.session.userdata ? {}
@@ -172,9 +163,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Delete a session variable from the "userdata" array
   #
   # @access public
-  # @param mixed
-  # @return void
-  #
+  # @param  [Mixed]  # @return [Void]  #
   unsetUserdata: ($newdata = {}) ->
 
     $data = @req.session.userdata = @req.session.userdata ? {}
@@ -192,8 +181,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Fetch a specific item from the session array
   #
   # @access public
-  # @param string
-  # @return string
+  # @param  [String]    # @return string
   #
   userdata: ($item) ->
 
@@ -205,8 +193,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Fetch all session data
   #
   # @access public
-  # @return mixed
-  #
+  # @return [Mixed]  #
   allUserdata: () ->
 
     if not @req.session.userdata? then false else @req.session.userdata
@@ -215,11 +202,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Add or change flashdata, only available
   # until the next request
   #
-  # @access	public
-  # @param	mixed
-  # @param	string
-  # @return	void
-  #
+    # @param  [Mixed]  # @param  [String]    # @return [Void]  #
   setFlashdata : ($newdata = {}, $args...) ->
 
     switch $args.length
@@ -238,10 +221,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   #
   # Keeps existing flashdata available to next request.
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   keepFlashdata : ($key) ->
     #  'old' flashdata gets removed.  Here we mark all
     #  flashdata as 'new' to preserve it from _flashdata_sweep()
@@ -256,9 +236,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   #
   # Fetch a specific flashdata item from the session array
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   flashdata : ($key) =>
 
@@ -269,9 +247,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Identifies flashdata as 'old' for removal
   # when _flashdata_sweep() runs.
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _flashdata_mark :  ->
     $userdata = @allUserdata()
     for $name, $value of $userdata
@@ -284,9 +261,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   #
   # Removes all flashdata marked as 'old'
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _flashdata_sweep :  ->
     $userdata = @allUserdata()
     for $key, $value of $userdata
@@ -296,8 +272,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   #
   # Get the "now" time
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _get_time :  ->
     $date = new Date()

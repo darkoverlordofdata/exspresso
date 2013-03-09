@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -42,7 +40,6 @@ exports.date = date = ($format, $timestamp = Date.now()) ->
 #
 # Returns time() or its GMT equivalent based on the config file preference
 #
-# @access	public
 # @return	integer
 #
 if not function_exists('now')
@@ -61,10 +58,7 @@ if not function_exists('now')
 # have to worry about escaping your text letters that
 # match the date codes.
 #
-# @access	public
-# @param	string
-# @param	integer
-# @return	integer
+# @param  [String]  # @param  [Integer]  # @return	integer
 #
 if not function_exists('mdate')
   exports.mdate = mdate = ($datestr = '', $time = now()) ->
@@ -77,10 +71,9 @@ if not function_exists('mdate')
 #
 # Returns a date formatted according to the submitted standard.
 #
-# @access	public
-# @param	string	the chosen format
-# @param	integer	Unix timestamp
-# @return	string
+# @param  [String]  the chosen format
+# @param  [Integer]  Unix timestamp
+# @return	[String]
 #
 if not function_exists('standard_date')
   exports.standard_date = standard_date = ($fmt = 'DATE_RFC822', $time = '') ->
@@ -105,9 +98,8 @@ if not function_exists('standard_date')
 # Returns a span of seconds in this format:
 #	10 days 14 hours 36 minutes 47 seconds
 #
-# @access	public
-# @param	integer	a number of seconds
-# @param	integer	Unix timestamp
+# @param  [Integer]  a number of seconds
+# @param  [Integer]  Unix timestamp
 # @return	integer
 #
 if not function_exists('timespan')
@@ -198,9 +190,8 @@ if not function_exists('timespan')
 # Takes a month/year as input and returns the number of days
 # for the given month/year. Takes leap years into consideration.
 #
-# @access	public
-# @param	integer a numeric month
-# @param	integer	a numeric year
+# @param  [Integer]  a numeric month
+# @param  [Integer]  a numeric year
 # @return	integer
 #
 if not function_exists('days_in_month')
@@ -224,8 +215,7 @@ if not function_exists('days_in_month')
 
 # Converts a local Unix timestamp to GMT
 #
-# @access	public
-# @param	integer Unix timestamp
+# @param  [Integer]  Unix timestamp
 # @return	integer
 #
 if not function_exists('local_to_gmt')
@@ -241,10 +231,9 @@ if not function_exists('local_to_gmt')
 # at the local value based on the timezone and DST setting
 # submitted
 #
-# @access	public
-# @param	integer Unix timestamp
-# @param	string	timezone
-# @param	bool	whether DST is active
+# @param  [Integer]  Unix timestamp
+# @param  [String]  timezone
+# @return	[Boolean]	whether DST is active
 # @return	integer
 #
 if not function_exists('gmt_to_local')
@@ -264,8 +253,7 @@ if not function_exists('gmt_to_local')
 ##  ------------------------------------------------------------------------#
 # Converts a MySQL Timestamp to Unix
 #
-# @access	public
-# @param	integer Unix timestamp
+# @param  [Integer]  Unix timestamp
 # @return	integer
 #
 if not function_exists('mysql_to_unix')
@@ -286,11 +274,10 @@ if not function_exists('mysql_to_unix')
 #
 # Formats Unix timestamp to the following prototype: 2006-08-21 11:35 PM
 #
-# @access	public
-# @param	integer Unix timestamp
-# @param	bool	whether to show seconds
-# @param	string	format: us or euro
-# @return	string
+# @param  [Integer]  Unix timestamp
+# @return	[Boolean]	whether to show seconds
+# @param  [String]  format: us or euro
+# @return	[String]
 #
 if not function_exists('unix_to_human')
   exports.unix_to_human = unix_to_human = ($time = '', $seconds = false, $fmt = 'us') ->
@@ -318,8 +305,7 @@ if not function_exists('unix_to_human')
 #
 # Reverses the above process
 #
-# @access	public
-# @param	string	format: us or euro
+# @param  [String]  format: us or euro
 # @return	integer
 #
 if not function_exists('human_to_unix')
@@ -369,11 +355,10 @@ if not function_exists('human_to_unix')
 #
 # Generates a drop-down menu of timezones.
 #
-# @access	public
-# @param	string	timezone
-# @param	string	classname
-# @param	string	menu name
-# @return	string
+# @param  [String]  timezone
+# @param  [String]  classname
+# @param  [String]  menu name
+# @return	[String]
 #
 if not function_exists('timezone_menu')
   exports.timezone_menu = timezone_menu = ($default = 'UTC', $class = "", $name = 'timezones') ->
@@ -400,9 +385,8 @@ if not function_exists('timezone_menu')
 # Returns an array of timezones.  This is a helper function
 # for various other ones in this library
 #
-# @access	public
-# @param	string	timezone
-# @return	string
+# @param  [String]  timezone
+# @return	[String]
 #
 if not function_exists('timezones')
   exports.timezones = timezones = ($tz = '') ->

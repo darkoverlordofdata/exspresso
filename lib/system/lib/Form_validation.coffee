@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -76,11 +74,7 @@ class system.lib.FormValidation
   # This function takes an array of field names and validation
   # rules as input, validates the info, and stores it
   #
-  # @access	public
-  # @param	mixed
-  # @param	string
-  # @return	void
-  #
+    # @param  [Mixed]  # @param  [String]    # @return [Void]  #
   setRules: ($field, $label = '', $rules = '') ->
     #  No reason to set rules if we have no POST data
     if count(@$_POST) is 0
@@ -153,10 +147,7 @@ class system.lib.FormValidation
   # Lets users set their own error messages on the fly.  Note:  The key
   # name has to match the  function name that it corresponds to.
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   setMessage: ($lang, $val = '') ->
     if not is_array($lang)
@@ -172,11 +163,7 @@ class system.lib.FormValidation
   #
   # Permits a prefix/suffix to be added to each error message
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @param  [String]    # @return [Void]  #
   setErrorDelimiters: ($prefix = '<p>', $suffix = '</p>') ->
     @_error_prefix = $prefix
     @_error_suffix = $suffix
@@ -189,10 +176,8 @@ class system.lib.FormValidation
   #
   # Gets the error message associated with a particular field
   #
-  # @access	public
-  # @param	string	the field name
-  # @return	void
-  #
+    # @param  [String]  the field name
+  # @return [Void]  #
   error: ($field = '', $prefix = '', $suffix = '') ->
 
     if not @_field_data[$field]? then return ''
@@ -214,10 +199,7 @@ class system.lib.FormValidation
   #
   # Returns the error messages as a string, wrapped in the error delimiters
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	str
+    # @param  [String]    # @param  [String]    # @return	str
   #
   errorString: ($prefix = '', $suffix = '') ->
     #  No errrors, validation passes!
@@ -244,8 +226,7 @@ class system.lib.FormValidation
   #
   # This function does all the work.
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   run: ($group = '') ->
     #  Do we even have any data to process?  Mm?
@@ -316,12 +297,8 @@ class system.lib.FormValidation
   #
   # Traverse a multidimensional @$_POST array index until the data is found
   #
-  # @access	private
-  # @param	array
-  # @param	array
-  # @param	integer
-  # @return	mixed
-  #
+  # @private
+  # @param  [Array]  # @param  [Array]  # @param  [Integer]  # @return [Mixed]  #
   _reduce_array: ($array, $keys, $i = 0) ->
     if is_array($array)
       if $keys[$i]? 
@@ -338,7 +315,7 @@ class system.lib.FormValidation
   #
   # Re-populate the _POST array with our finalized and processed data
   #
-  # @access	private
+  # @private
   # @return	null
   #
   _reset_post_array :  ->
@@ -382,13 +359,8 @@ class system.lib.FormValidation
   #
   # Executes the Validation routines
   #
-  # @access	private
-  # @param	array
-  # @param	array
-  # @param	mixed
-  # @param	integer
-  # @return	mixed
-  #
+  # @private
+  # @param  [Array]  # @param  [Array]  # @param  [Mixed]  # @param  [Integer]  # @return [Mixed]  #
   _execute: ($row, $rules, $postdata = null, $cycles = 0) ->
     #  If the @$_POST data is an array we will run a recursive call
     if is_array($postdata)
@@ -553,9 +525,9 @@ class system.lib.FormValidation
   #
   # Translate a field name
   #
-  # @access	private
-  # @param	string	the field name
-  # @return	string
+  # @private
+  # @param  [String]  the field name
+  # @return	[String]
   #
   _translate_fieldname: ($fieldname) ->
     #  Do we need to translate the field name?
@@ -579,11 +551,8 @@ class system.lib.FormValidation
   # Permits you to repopulate a form field with the value it was submitted
   # with, or, if that value doesn't exist, with the default
   #
-  # @access	public
-  # @param	string	the field name
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]  the field name
+  # @param  [String]    # @return [Void]  #
   set_value: ($field = '', $default = '') ->
     if not @_field_data[$field]? 
       return $default
@@ -604,10 +573,7 @@ class system.lib.FormValidation
   # Enables pull-down lists to be set to the value the user
   # selected in the event of an error
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   set_select: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
@@ -639,10 +605,7 @@ class system.lib.FormValidation
   # Enables radio buttons to be set to the value the user
   # selected in the event of an error
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   set_radio: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
@@ -672,10 +635,7 @@ class system.lib.FormValidation
   # Enables checkboxes to be set to the value the user
   # selected in the event of an error
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   set_checkbox: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
@@ -700,9 +660,7 @@ class system.lib.FormValidation
   #
   # Required
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   required: ($str) ->
     if not is_array($str)
@@ -715,9 +673,7 @@ class system.lib.FormValidation
   #
   # Performs a Regular Expression match test.
   #
-  # @access	public
-  # @param	string
-  # @param	regex
+    # @param  [String]    # @param	regex
   # @return	bool
   #
   regex_match: ($str, $regex) ->
@@ -729,9 +685,7 @@ class system.lib.FormValidation
   #
   # Match one field to another
   #
-  # @access	public
-  # @param	string
-  # @param	field
+    # @param  [String]    # @param	field
   # @return	bool
   #
   matches: ($str, $field) ->
@@ -746,9 +700,7 @@ class system.lib.FormValidation
   #
   # Minimum Length
   #
-  # @access	public
-  # @param	string
-  # @param	value
+    # @param  [String]    # @param	value
   # @return	bool
   #
   min_length: ($str, $val) ->
@@ -764,9 +716,7 @@ class system.lib.FormValidation
   #
   # Max Length
   #
-  # @access	public
-  # @param	string
-  # @param	value
+    # @param  [String]    # @param	value
   # @return	bool
   #
   max_length: ($str, $val) ->
@@ -784,9 +734,7 @@ class system.lib.FormValidation
   #
   # Exact Length
   #
-  # @access	public
-  # @param	string
-  # @param	value
+    # @param  [String]    # @param	value
   # @return	bool
   #
   exact_length: ($str, $val) ->
@@ -804,9 +752,7 @@ class system.lib.FormValidation
   #
   # Valid Email
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   valid_email: ($str) ->
     return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/i", $str)?) then false else true
@@ -815,9 +761,7 @@ class system.lib.FormValidation
   #
   # Valid Emails
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   valid_emails: ($str) ->
     if strpos($str, ',') is false
@@ -836,9 +780,7 @@ class system.lib.FormValidation
   #
   # Validate IP Address
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   valid_ip: ($ip) ->
     return @input.valid_ip($ip)
@@ -847,9 +789,7 @@ class system.lib.FormValidation
   #
   # Alpha
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   alpha: ($str) ->
     return if ( not preg_match("/^([a-z])+$/i", $str)?) then false else true
@@ -858,9 +798,7 @@ class system.lib.FormValidation
   #
   # Alpha-numeric
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   alpha_numeric: ($str) ->
     return if ( not preg_match("/^([a-z0-9])+$/i", $str)?) then false else true
@@ -869,9 +807,7 @@ class system.lib.FormValidation
   #
   # Alpha-numeric with underscores and dashes
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   alpha_dash: ($str) ->
     return if ( not preg_match("/^([-a-z0-9_-])+$/i", $str)?) then false else true
@@ -880,9 +816,7 @@ class system.lib.FormValidation
   #
   # Numeric
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   numeric: ($str) ->
     return preg_match('/^[\-+]?[0-9]*\.?[0-9]+$/', $str)
@@ -892,9 +826,7 @@ class system.lib.FormValidation
   #
   # Is Numeric
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   is_numeric: ($str) ->
     return if ( not is_numeric($str)) then false else true
@@ -903,9 +835,7 @@ class system.lib.FormValidation
   #
   # Integer
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   integer: ($str) ->
     return preg_match('/^[\\-+]?[0-9]+$/', $str)
@@ -914,9 +844,7 @@ class system.lib.FormValidation
   #
   # Decimal number
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   decimal: ($str) ->
     return preg_match('/^[\\-+]?[0-9]+\\.[0-9]+$/', $str)
@@ -925,9 +853,7 @@ class system.lib.FormValidation
   #
   # Greather than
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   greater_than: ($str, $min) ->
     if not is_numeric($str)
@@ -939,9 +865,7 @@ class system.lib.FormValidation
   #
   # Less than
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   less_than: ($str, $max) ->
     if not is_numeric($str)
@@ -953,9 +877,7 @@ class system.lib.FormValidation
   #
   # Is a Natural number  (0,1,2,3, etc.)
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   is_natural: ($str) ->
     return preg_match('/^[0-9]+$/', $str)
@@ -964,9 +886,7 @@ class system.lib.FormValidation
   #
   # Is a Natural number, but not a zero  (1,2,3, etc.)
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   is_natural_no_zero: ($str) ->
     if not preg_match('/^[0-9]+$/', $str)
@@ -986,9 +906,7 @@ class system.lib.FormValidation
   # Tests a string for characters outside of the Base64 alphabet
   # as defined by RFC 2045 http://www.faqs.org/rfcs/rfc2045
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   valid_base64: ($str) ->
     return  not preg_match('/[^a-zA-Z0-9\\/\\+=]/', $str)?
@@ -1000,9 +918,7 @@ class system.lib.FormValidation
   # This function allows HTML to be safely shown in a form.
   # Special characters are converted.
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   prep_for_form: ($data = '') ->
     if is_array($data)
@@ -1019,9 +935,7 @@ class system.lib.FormValidation
   #
   # Prep URL
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   prep_url: ($str = '') ->
     if $str is 'http://' or $str is ''
@@ -1036,9 +950,7 @@ class system.lib.FormValidation
   #
   # Strip Image Tags
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   strip_image_tags: ($str) ->
     return @input.strip_image_tags($str)
@@ -1047,9 +959,7 @@ class system.lib.FormValidation
   #
   # XSS Clean
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   xssClean: ($str) ->
     return @security.xssClean($str)
@@ -1058,9 +968,7 @@ class system.lib.FormValidation
   #
   # Convert PHP tags to entities
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   encode_php_tags: ($str) ->
     return str_replace(['<?php', '<?PHP', '<?', '?>'], ['&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'], $str)

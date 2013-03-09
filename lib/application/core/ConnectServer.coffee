@@ -42,10 +42,7 @@ class application.core.ConnectServer extends system.core.Server
   #
   # Set the server instance
   #
-  # @access	public
-  # @param object
-  # @return	void
-  #
+    # @param  [Object]    # @return [Void]  #
   constructor: ($config = {}) ->
 
     log_message('debug', "Connect Driver Initialized")
@@ -56,10 +53,7 @@ class application.core.ConnectServer extends system.core.Server
   #
   # Add view helpers
   #
-  # @access	public
-  # @param array
-  # @return	object
-  #
+    # @param  [Array]  # @return [Object]  #
   setHelpers: ($helpers) ->
     for $key, $val of $helpers
       Variables::[$key] = $val
@@ -70,9 +64,7 @@ class application.core.ConnectServer extends system.core.Server
   #
   # Start me up ...
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   start: ($router) ->
     super $router, =>
 
@@ -107,10 +99,8 @@ class application.core.ConnectServer extends system.core.Server
   #
   #   called by the core/Config class constructor
   #
-  # @access	public
-  # @param	object exspresso.config
-  # @return	void
-  #
+    # @param  [Object]  exspresso.config
+  # @return [Void]  #
   config: ($config) ->
 
     super $config
@@ -144,12 +134,7 @@ class application.core.ConnectServer extends system.core.Server
   #
   # Patch the connect server objects
   #
-  # @access	public
-  # @param object
-  # @param object
-  # @param function
-  # @return	void
-  #
+    # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
   patch: -> ($req, $res, $next) =>
 
     #
@@ -171,10 +156,7 @@ class application.core.ConnectServer extends system.core.Server
     #
     #   send response string
     #
-    # @access	public
-    # @param	string
-    # @return	void
-    #
+        # @param  [String]      # @return [Void]  #
     $res.send = ($data) ->
       $res.writeHead 200,
         'Content-Length': $data.length
@@ -187,10 +169,7 @@ class application.core.ConnectServer extends system.core.Server
     #
     #   Redirect to url
     #
-    # @access	public
-    # @param	string
-    # @return	void
-    #
+        # @param  [String]      # @return [Void]  #
     $res.redirect = ($url) ->
       $res.writeHead 302,
         'Location': $url
@@ -204,12 +183,10 @@ class application.core.ConnectServer extends system.core.Server
     #
     #   called by the controller to display a view
     #
-    # @access	public
-    # @param	string    path to view
-    # @param	object    data to render in the view
-    # @param	function  callback
-    # @return	void
-    #
+        # @param  [String]     path to view
+    # @param  [Object]     data to render in the view
+    # @param  [Function]   callback
+    # @return [Void]  #
     $res.render = ($view, $data = {}, $next) ->
 
       #
@@ -245,10 +222,7 @@ class Variables
   #
   # Provides variables to a view
   #
-  # @access	public
-  # @param array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   constructor: ($args...) ->
 
     for $data in $args

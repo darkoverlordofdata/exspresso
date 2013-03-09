@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -37,7 +35,7 @@
 # @subpackage	Helpers
 # @category	Helpers
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/helpers/html_helper.html
+# @see 		http://darkoverlordofdata.com/user_guide/helpers/html_helper.html
 #
 
 #  ------------------------------------------------------------------------
@@ -48,10 +46,7 @@
 # Generates an HTML heading tag.  First param is the data.
 # Second param is the size of the heading tag.
 #
-# @access	public
-# @param	string
-# @param	integer
-# @return	string
+# @param  [String]  # @param  [Integer]  # @return	[String]
 #
 if not function_exists('heading')
   exports.heading = heading = ($data = '', $h = '1') ->
@@ -66,10 +61,7 @@ if not function_exists('heading')
 #
 # Generates an HTML unordered list from an single or multi-dimensional array.
 #
-# @access	public
-# @param	array
-# @param	mixed
-# @return	string
+# @param  [Array]  # @param  [Mixed]  # @return	[String]
 #
 if not function_exists('ul')
   exports.ul = ul = ($list, $attributes = '') ->
@@ -84,10 +76,7 @@ if not function_exists('ul')
 #
 # Generates an HTML ordered list from an single or multi-dimensional array.
 #
-# @access	public
-# @param	array
-# @param	mixed
-# @return	string
+# @param  [Array]  # @param  [Mixed]  # @return	[String]
 #
 if not function_exists('ol')
   exports.ol = ol = ($list, $attributes = '') ->
@@ -102,12 +91,8 @@ if not function_exists('ol')
 #
 # Generates an HTML ordered list from an single or multi-dimensional array.
 #
-# @access	private
-# @param	string
-# @param	mixed
-# @param	mixed
-# @param	integer
-# @return	string
+# @private
+# @param  [String]  # @param  [Mixed]  # @param  [Mixed]  # @param  [Integer]  # @return	[String]
 #
 $_last_list_item = {}
 
@@ -170,9 +155,7 @@ if not function_exists('_list')
 #
 # Generates HTML BR tags based on number supplied
 #
-# @access	public
-# @param	integer
-# @return	string
+# @param  [Integer]  # @return	[String]
 #
 if not function_exists('br')
   exports.br = br = ($num = 1) ->
@@ -187,9 +170,7 @@ if not function_exists('br')
 #
 # Generates an <img /> element
 #
-# @access	public
-# @param	mixed
-# @return	string
+# @param  [Mixed]  # @return	[String]
 #
 if not function_exists('img')
   exports.img = img = ($src = '', $index_page = false) ->
@@ -237,9 +218,8 @@ if not function_exists('img')
 # html4-strict, html4-trans, and html4-frame.  Values are saved in the
 # doctypes config file.
 #
-# @access	public
-# @param	string	type	The doctype to be generated
-# @return	string
+# @param  [String]  type	The doctype to be generated
+# @return	[String]
 #
 $_doctypes = null # static cache for doctypes
 
@@ -269,14 +249,13 @@ if not function_exists('doctype')
 #
 # Generates link to a CSS file
 #
-# @access	public
-# @param	mixed	stylesheet hrefs or an array
-# @param	string	rel
-# @param	string	type
-# @param	string	title
-# @param	string	media
-# @param	boolean	should index_page be added to the css path
-# @return	string
+# @param  [Mixed]  stylesheet hrefs or an array
+# @param  [String]  rel
+# @param  [String]  type
+# @param  [String]  title
+# @param  [String]  media
+# @return	[Boolean]ean	should index_page be added to the css path
+# @return	[String]
 #
 if not function_exists('link_tag')
   exports.link_tag = link_tag = ($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = false) ->
@@ -332,9 +311,7 @@ if not function_exists('link_tag')
 #
 # Generates meta tags from an array of key/values
 #
-# @access	public
-# @param	array
-# @return	string
+# @param  [Array]  # @return	[String]
 #
 if not function_exists('meta')
   exports.meta = meta = ($name = '', $content = '', $type = 'name', $newline = "\n") ->
@@ -369,9 +346,7 @@ if not function_exists('meta')
 #
 # Generates non-breaking space entities based on number supplied
 #
-# @access	public
-# @param	integer
-# @return	string
+# @param  [Integer]  # @return	[String]
 #
 if not function_exists('nbs')
   exports.nbs = nbs = ($num = 1) ->

@@ -1,0 +1,15 @@
+--name       "Exspresso"
+--readme     readme.md
+--title      "Exspresso Documentation"
+--private
+--quiet
+--output-dir ./lib/assets/doc
+./lib/system
+./lib/application
+./lib/modules
+-
+LICENSE
+coding standards.md
+graph.md
+objects.md
+todo.md

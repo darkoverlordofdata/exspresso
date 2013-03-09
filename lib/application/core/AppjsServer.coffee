@@ -71,10 +71,8 @@ class Variables
   #   Add data local to this request in the constructor.
   #   Helpers are added to the prototype as they are loaded.
   #
-  # @access	public
-  # @param array of arrays to merge together for rendering
-  # @return	void
-  #
+    # @param  [Array]  of arrays to merge together for rendering
+  # @return [Void]  #
   constructor: ($args...) ->
 
     for $data in $args
@@ -100,9 +98,7 @@ class application.core.AppjsServer extends system.core.Server
   #
   # Set the server instance
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   constructor: ($config = {}) ->
 
     log_message('debug', "Server_appjs driver Class Initialized")
@@ -118,9 +114,7 @@ class application.core.AppjsServer extends system.core.Server
   #   The helpers are added to the prototype of the variable wrapper class.
   #   When the class is newed, all helpers are included via the prototype chain.
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   setHelpers: ($helpers) ->
     for $key, $val of $helpers
       Variables::[$key] = $val
@@ -131,9 +125,7 @@ class application.core.AppjsServer extends system.core.Server
   #
   # Start me up ...
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   start: ($router, $autoload = true) ->
 
     super $router, $autoload
@@ -174,10 +166,8 @@ class application.core.AppjsServer extends system.core.Server
   #
   #   called by the core/Config class constructor
   #
-  # @access	public
-  # @param	object exspresso.config
-  # @return	void
-  #
+    # @param  [Object]  exspresso.config
+  # @return [Void]  #
   config: ($config) ->
 
     super $config
@@ -195,10 +185,8 @@ class application.core.AppjsServer extends system.core.Server
   #
   #   called by the core/Output class constructor
   #
-  # @access	public
-  # @param	object exspresso.output
-  # @return	void
-  #
+    # @param  [Object]  exspresso.output
+  # @return [Void]  #
   output: ($output) ->
 
     super $output
@@ -213,10 +201,8 @@ class application.core.AppjsServer extends system.core.Server
   #
   #   called by the core/Input class constructor
   #
-  # @access	public
-  # @param	object exspresso.input
-  # @return	void
-  #
+    # @param  [Object]  exspresso.input
+  # @return [Void]  #
   input: ($input) ->
 
     super $input
@@ -231,10 +217,8 @@ class application.core.AppjsServer extends system.core.Server
   #
   #   called by the core/URI class constructor
   #
-  # @access	public
-  # @param	object exspresso.input
-  # @return	void
-  #
+    # @param  [Object]  exspresso.input
+  # @return [Void]  #
   uri: ($uri) ->
 
     super $uri
@@ -247,10 +231,8 @@ class application.core.AppjsServer extends system.core.Server
   #
   #   called by the lib/Session/Session class constructor
   #
-  # @access	public
-  # @param	object exspresso.input
-  # @return	void
-  #
+    # @param  [Object]  exspresso.input
+  # @return [Void]  #
   session: ($session) ->
 
     super $session
@@ -270,18 +252,15 @@ class application.core.AppjsServer extends system.core.Server
 
     log_message 'debug',"appjs middleware initialized"
 
-    #  --------------------------------------------------------------------
-
     #
     # Patch the appjs server objects to render templates
     #
-    # @access	private
-    # @return	void
+    # @private
+    # @return [Void]
     #
     ($req, $res, $next) =>
 
       $req.session = $req.session ? {}
-      #  --------------------------------------------------------------------
 
       #
       # Set expected request object properties
@@ -315,11 +294,10 @@ class application.core.AppjsServer extends system.core.Server
       #
       #   called by a controller to display the view
       #
-      # @access	public
-      # @param	string    path to view
-      # @param	object    data to render in the view
-      # @param	function  callback
-      # @return	void
+      # @param  [String]     path to view
+      # @param  [Object]     data to render in the view
+      # @param  [Function]   callback
+      # @return [Void]
       #
       $res.render = ($view, $data = {}, $next) ->
 

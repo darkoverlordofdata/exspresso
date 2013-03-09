@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -75,22 +73,25 @@ class system.core.Exceptions
   # Exception Logger
   #
   #
-  # @access	private
-  # @param	string	the error severity
-  # @param	string	the error string
-  # @param	string	the error filepath
-  # @param	string	the error line number
-  # @return	string
+  # @param  [String]  severity  the error severity
+  # @param  [String]  message the error string
+  # @param  [String]  filepath  the error filepath
+  # @param  [String]  line  the error line number
+  # @return	[Void]
   #
   logException : ($severity, $message, $filepath, $line) ->
     log_message('error', 'Severity: ' + $severity + '  --> ' + $message + ' ' + $filepath + ' ' + $line, true)
+    return
 
   #
   # 404 Page Not Found Handler
   #
-  # @access	private
-  # @param	string
-  # @return	string
+  #   Show the custom 404 page
+  #
+  # @param  [String]  page  the requested url
+  # @param  [String]  status_code the status/error code
+  # @param  [Function]  next  callback
+  # @return	[Boolean] true
   #
   show404 : ($page = '', $log_error = true) ->
     $message = "The page you requested was not found."
@@ -109,11 +110,11 @@ class system.core.Exceptions
   # (either as a string or an array) and displays
   # it using the specified template.
   #
-  # @access	private
-  # @param	string	the heading
-  # @param	string	the message
-  # @param	string	the template name
-  # @return	string
+  # @param  [String]  err the error object
+  # @param  [String]  template  the template name
+  # @param  [String]  status_code the status/error code
+  # @param  [Function]  next  callback
+  # @return	[Boolean] true
   #
   show5xx : ($message, $template = '5xx', $status_code = 500) ->
     # if we're here, then Exspresso is still booting...
@@ -123,12 +124,13 @@ class system.core.Exceptions
   #
   # Native error handler
   #
-  # @access	private
-  # @param	string	the error severity
-  # @param	string	the error string
-  # @param	string	the error filepath
-  # @param	string	the error line number
-  # @return	string
+  #   Displays node.js error
+  #
+  # @param  [String]  severity  the error severity
+  # @param  [String]  message the error string
+  # @param  [String]  filepath  the error filepath
+  # @param  [String]  line  the error line number
+  # @return	[Boolean] true
   #
   showError : ($severity, $message, $filepath, $line) ->
     # if we're here, then Exspresso is still booting...
@@ -139,20 +141,24 @@ class system.core.Exceptions
   #
   # Exception handler
   #
-  # @access	public
-  # @param object
-  # @param object
-  # @param function
-  # @return	void
+  #   Middleware hook to display custom exception pages
+  #
+  # @param  [Object]  req the http request object
+  # @param  [Object]  res the http response object
+  # @param  [Function]  next  callback
+  # @return [Void]
   #
   exceptionHandler: -> ($req, $res, $next) =>
 
     #
     # 404 Page Not Found Handler
     #
-    # @access	private
-    # @param	string
-    # @return	string
+    #   Show the custom 404 page
+    #
+    # @param  [String]  page  the requested url
+    # @param  [String]  status_code the status/error code
+    # @param  [Function]  next  callback
+    # @return	[Boolean] true
     #
     @show404 = ($page = '', $log_error = true, $next) =>
 
@@ -180,11 +186,11 @@ class system.core.Exceptions
     # (either as a string or an array) and displays
     # it using the specified template.
     #
-    # @access	private
-    # @param	string	the heading
-    # @param	string	the message
-    # @param	string	the template name
-    # @return	string
+    # @param  [String]  err the error object
+    # @param  [String]  template  the template name
+    # @param  [String]  status_code the status/error code
+    # @param  [Function]  next  callback
+    # @return	[Boolean] true
     #
     @show5xx = ($err, $template = '5xx', $status_code = 500, $next) ->
 
@@ -195,9 +201,9 @@ class system.core.Exceptions
 
       $next = $next ? ($err, $content) ->
         $res.render APPPATH+'errors/layout.eco',
-          title:      $error.code + ': ' + $error.desc
-          content:    $content
-          site_name:  config_item('site_name')
+          title       : $error.code + ': ' + $error.desc
+          content     : $content
+          site_name   : config_item('site_name')
 
       $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $next
       return true
@@ -206,12 +212,13 @@ class system.core.Exceptions
     #
     # Native error handler
     #
-    # @access	private
-    # @param	string	the error severity
-    # @param	string	the error string
-    # @param	string	the error filepath
-    # @param	string	the error line number
-    # @return	string
+    #   Displays node.js error
+    #
+    # @param  [String]  severity  the error severity
+    # @param  [String]  message the error string
+    # @param  [String]  filepath  the error filepath
+    # @param  [String]  line  the error line number
+    # @return	[Boolean] true
     #
     @showError = ($severity, $message, $filepath, $line) ->
 
@@ -228,6 +235,8 @@ class system.core.Exceptions
         message:  $message
         filepath: $filepath
         line:     $line
+
+      return true
 
     $next()
 

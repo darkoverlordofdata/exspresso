@@ -25,8 +25,7 @@ class Blog extends application.core.AdminController
   # list blog entries
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   index: () ->
 
     @db.from 'blog'
@@ -44,8 +43,7 @@ class Blog extends application.core.AdminController
   # display blog entry
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   show: ($id) ->
 
     @db.from 'blog'
@@ -64,8 +62,7 @@ class Blog extends application.core.AdminController
   # ckedit blog entry
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   edit: ($id) ->
 
     @db.from 'blog'
@@ -84,8 +81,7 @@ class Blog extends application.core.AdminController
   # create new blog entry
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   new: () ->
 
     @template.view 'blog_new'
@@ -98,8 +94,7 @@ class Blog extends application.core.AdminController
   # saves a blog entry
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   save: () ->
 
 

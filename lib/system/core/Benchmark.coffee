@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -37,10 +35,19 @@
 #
 class system.core.Benchmark
 
+  #
+  # @property [Object] Hash list of time markers
+  #
+  marker: null
+
+  #
+  # Initialize the marker array
+  #
   constructor: ->
 
     defineProperties @,
       marker : {enumerable: true, writeable: false, value: {}}
+
 
   #
   # Set a benchmark marker
@@ -48,9 +55,8 @@ class system.core.Benchmark
   # Multiple calls to this function can be made so that several
   # execution points can be timed
   #
-  # @access  public
-  # @param  string  $name  name of the marker
-  # @return  void
+  # @param  [String]  name  name of the marker
+  # @return [Void]
   #
   mark : ($name) ->
     @marker[$name] = new Date()
@@ -64,11 +70,10 @@ class system.core.Benchmark
   # execution time to be shown in a template. The output class will
   # swap the real value for this variable.
   #
-  # @access  public
-  # @param  string  a particular marked point
-  # @param  string  a particular marked point
-  # @param  integer  the number of decimal places
-  # @return  mixed
+  # @param  [String]  point1   a particular marked point
+  # @param  [String]  point2   a particular marked point
+  # @param  [Integer] decimals the number of decimal places
+  # @return [Mixed]
   #
   elapsedTime : ($point1 = '', $point2 = '', $decimals = 4) ->
     if $point1 is ''
@@ -92,8 +97,7 @@ class system.core.Benchmark
   # without the memory being calculated until the end.
   # The output class will swap the real value for this variable.
   #
-  # @access  public
-  # @return  string
+  # @return  [String]
   #
   memoryUsage :  ->
     '{memory_usage}'

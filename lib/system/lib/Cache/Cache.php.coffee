@@ -20,12 +20,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -50,8 +48,7 @@ class ExspressoCache extends ExspressoDriver_Library
   #
   # Constructor
   #
-  # @param array
-  #
+  # @param  [Array]  #
   constructor : ($controller, $config = {}) ->
     if not empty($config) then 
       @_initialize($config)
@@ -63,7 +60,7 @@ class ExspressoCache extends ExspressoDriver_Library
   # if not, return FALSE
   #
   # @param 	string
-  # @return 	mixed		value that is stored/FALSE on failure
+  # @return [Mixed]  value that is stored/FALSE on failure
   #
   get : ($id) ->
     @[@_adapter].get($id)
@@ -72,7 +69,7 @@ class ExspressoCache extends ExspressoDriver_Library
   # Cache Save
   #
   # @param 	string		Unique Key
-  # @param 	mixed		Data to store
+  # @param  [Mixed]  Data to store
   # @param 	int			Length of time (in seconds) to cache the data
   #
   # @return 	boolean		true on success/false on failure
@@ -84,7 +81,7 @@ class ExspressoCache extends ExspressoDriver_Library
   #
   # Delete from Cache
   #
-  # @param 	mixed		unique identifier of the item in the cache
+  # @param  [Mixed]  unique identifier of the item in the cache
   # @return 	boolean		true on success/false on failure
   #
   delete : ($id) ->
@@ -104,7 +101,7 @@ class ExspressoCache extends ExspressoDriver_Library
   # Cache Info
   #
   # @param 	string		user/filehits
-  # @return 	mixed		array on success, false on failure
+  # @return [Mixed]  array on success, false on failure
   #
   cache_info : ($type = 'user') ->
     @[@_adapter].cache_info($type)
@@ -113,8 +110,8 @@ class ExspressoCache extends ExspressoDriver_Library
   #
   # Get Cache Metadata
   #
-  # @param 	mixed		key to get cache metadata on
-  # @return 	mixed		return value from child method
+  # @param  [Mixed]  key to get cache metadata on
+  # @return [Mixed]  return value from child method
   #
   get_metadata : ($id) ->
     @[@_adapter].get_metadata($id)
@@ -125,9 +122,7 @@ class ExspressoCache extends ExspressoDriver_Library
   #
   # Initialize class properties based on the configuration array.
   #
-  # @param	array
-  # @return 	void
-  #
+  # @param  [Array]  # @return [Void]  #
   _initialize : ($config) ->
     $default_config = [
       'adapter', 
@@ -163,8 +158,7 @@ class ExspressoCache extends ExspressoDriver_Library
   # __get()
   #
   # @param 	child
-  # @return 	object
-  #
+  # @return [Object]  #
   __get : ($child) ->
     $obj = parent::__get($child)
     

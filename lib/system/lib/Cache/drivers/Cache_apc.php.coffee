@@ -25,7 +25,7 @@
 # @author		ExpressionEngine Dev Team
 # @copyright	Copyright (c) 2006 - 2012 EllisLab, Inc.
 # @license		http://codeigniter.com/user_guide/license.html
-# @link		http://codeigniter.com
+# @see 		http://codeigniter.com
 # @since		Version 2.0
 # @filesource
 #
@@ -39,7 +39,7 @@
 # @subpackage	Libraries
 # @category	Core
 # @author		ExpressionEngine Dev Team
-# @link
+# @see
 #
 
 class CI_Cache_apc extends CI_Driver
@@ -51,7 +51,7 @@ class CI_Cache_apc extends CI_Driver
   # if not, return FALSE
   #
   # @param 	string
-  # @return 	mixed		value that is stored/FALSE on failure
+  # @return [Mixed]  value that is stored/FALSE on failure
   #
   get : ($id) ->
     $data = apc_fetch($id)
@@ -65,7 +65,7 @@ class CI_Cache_apc extends CI_Driver
   # Cache Save
   #
   # @param 	string		Unique Key
-  # @param 	mixed		Data to store
+  # @param  [Mixed]  Data to store
   # @param 	int			Length of time (in seconds) to cache the data
   #
   # @return 	boolean		true on success/false on failure
@@ -79,7 +79,7 @@ class CI_Cache_apc extends CI_Driver
   #
   # Delete from Cache
   #
-  # @param 	mixed		unique identifier of the item in the cache
+  # @param  [Mixed]  unique identifier of the item in the cache
   # @param 	boolean		true on success/false on failure
   #
   delete : ($id) ->
@@ -103,7 +103,7 @@ class CI_Cache_apc extends CI_Driver
   # Cache Info
   #
   # @param 	string		user/filehits
-  # @return 	mixed		array on success, false on failure
+  # @return [Mixed]  array on success, false on failure
   #
   cache_info : ($type = null) ->
     return apc_cache_info($type)
@@ -114,8 +114,8 @@ class CI_Cache_apc extends CI_Driver
   #
   # Get Cache Metadata
   #
-  # @param 	mixed		key to get cache metadata on
-  # @return 	mixed		array on success/false on failure
+  # @param  [Mixed]  key to get cache metadata on
+  # @return [Mixed]  array on success/false on failure
   #
   get_metadata : ($id) ->
     $stored = apc_fetch($id)

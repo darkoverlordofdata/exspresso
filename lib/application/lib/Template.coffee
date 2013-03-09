@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -54,8 +52,7 @@ class application.lib.Template
   # constructor
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   constructor: ($controller, $config = {}) ->
 
     # Initialize the config preferences
@@ -81,10 +78,8 @@ class application.lib.Template
   # Set data name/value pair
   #
   #   @access	public
-  #   @param mixed
-  #   @param string
-  #   @return	object
-  #
+  # @param  [Mixed]  #   @param string
+  # @return [Object]  #
   set: ($name, $value) ->
     if is_array($name)
       @_data[$key] = $val for $key, $val of $name
@@ -98,8 +93,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param string
-  #   @return	object
-  #
+  # @return [Object]  #
   setTheme: ($theme_name = 'default', $extra...) ->
     @_theme_name = $theme_name
     for $location in @_theme_locations
@@ -116,8 +110,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param string
-  #   @return	object
-  #
+  # @return [Object]  #
   setLayout: ($layout) ->
     @_layout = $layout
     @
@@ -127,8 +120,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param string
-  #   @return	object
-  #
+  # @return [Object]  #
   setTitle: ($title...) ->
     @_title = $title.join(' | ')
     @
@@ -139,9 +131,7 @@ class application.lib.Template
   #   @access	public
   #   @param string
   #   @param string
-  #   @param object
-  #   @return	object
-  #
+  # @param  [Object]  # @return [Object]  #
   setPartial: ($name, $view, $data = {}) ->
     @_partials[$name] = 'view':$view, 'data':$data
     @
@@ -152,8 +142,7 @@ class application.lib.Template
   #   @access	public
   #   @param string
   #   @param string
-  #   @return	object
-  #
+  # @return [Object]  #
   setBreadcrumb: ($name, $uri = '') ->
     @_breadcrumbs.push 'name':$name, 'uri':$uri
     @
@@ -163,8 +152,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param string
-  #   @return	object
-  #
+  # @return [Object]  #
   setDoctype: ($doctype = 'html5') ->
     @_doctype = $doctype
     @
@@ -174,8 +162,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param	string
-  #   @return	object
-  #
+  # @return [Object]  #
   setCss:($css) ->
 
     if is_string($css)
@@ -188,9 +175,7 @@ class application.lib.Template
   # Add script
   #
   #   @access	public
-  #   @param	object
-  #   @return	object
-  #
+  # @param  [Object]  # @return [Object]  #
   setScript: ($script) ->
 
     if is_string($script)
@@ -208,8 +193,7 @@ class application.lib.Template
   #   @param	string	content
   #   @param	string	type
   #   @param	string	newline
-  #   @return	object
-  #
+  # @return [Object]  #
   setMeta: ($meta) ->
 
     if is_string($meta)
@@ -229,10 +213,9 @@ class application.lib.Template
   #
   #   @access	public
   #   @param	string	view
-  #   @param	array   data
+  # @param  [Array]  data
   #   @param	function callback
-  #   @return	void
-  #
+  # @return [Void]  #
   view: ($view = '' , $data = {}, $next) =>
 
     #
@@ -282,8 +265,7 @@ class application.lib.Template
     #
     #   @access	private
     #   @param	function callback
-    #   @return	void
-    #
+    # @return [Void]  #
     get_partials = ($next) =>
 
       return $next(null) if @_partials.length is 0
@@ -341,8 +323,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param string
-  #   @return	void
-  #
+  # @return [Void]  #
   htmlMenu: ($items, $active) ->
 
     $k = keys($items)[0]
@@ -366,8 +347,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param string
-  #   @return	void
-  #
+  # @return [Void]  #
   htmlSidenav: ($items, $active) ->
 
     $menu = "<ul class=\"nav nav-list sidenav\">\n"
@@ -388,8 +368,7 @@ class application.lib.Template
   #
   #   @access	public
   #   @param string
-  #   @return	void
-  #
+  # @return [Void]  #
   htmlSubmenu: ($modules, $module) ->
 
     $active = ucfirst($module)

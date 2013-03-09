@@ -25,7 +25,7 @@
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
-# @link		    http://darkoverlordofdata.com
+# @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
 
@@ -46,8 +46,7 @@ class system.core.Utf8
   # Determines if UTF-8 support is to be enabled
   #
   #
-  # @access  public
-  # @param object   ExspressoConfig
+  # @param  [Object]    ExspressoConfig
   #
   constructor : ($config) ->
     log_message('debug', "Utf8 Class Initialized")
@@ -72,9 +71,7 @@ class system.core.Utf8
   #
   # Ensures strings are UTF-8
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   cleanString : ($str) ->
     if @_is_ascii($str) is false
@@ -92,9 +89,7 @@ class system.core.Utf8
   # line feeds, and carriage returns, as all others can cause
   # problems in XML
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   safeAsciiForXml : ($str) ->
     return remove_invisible_characters($str, false)
@@ -107,10 +102,8 @@ class system.core.Utf8
   #
   # Attempts to convert a string to UTF-8
   #
-  # @access	public
-  # @param	string
-  # @param	string	- input encoding
-  # @return	string
+    # @param  [String]    # @param  [String]  - input encoding
+  # @return	[String]
   #
   convertToUtf8 : ($str, $encoding) ->
     utf8.encode($str)
@@ -123,9 +116,7 @@ class system.core.Utf8
   #
   # Tests if a string is standard 7-bit ASCII or not
   #
-  # @access	public
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @return	bool
   #
   _is_ascii : ($str) ->
     #not preg_match('/[^\\x00-\\x7F]/', $str)?

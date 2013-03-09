@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -70,7 +68,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Non-persistent database connection
   #
-  # @access	private called by the base class
+  # @private called by the base class
   # @return	resource
   #
   connect: ($next) =>
@@ -100,7 +98,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Persistent database connection
   #
-  # @access	private called by the base class
+  # @private called by the base class
   # @return	resource
   #
   pconnect: ($next) ->
@@ -114,9 +112,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # Keep / reestablish the db connection if no queries have been
   # sent for a length of time exceeding the server's idle timeout
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   reconnect: ($next) ->
     @client.ping($next)
 
@@ -125,7 +121,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Select the database
   #
-  # @access	private called by the base class
+  # @private called by the base class
   # @return	resource
   #
   db_select: ($next) ->
@@ -137,10 +133,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Set client character set
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	resource
+    # @param  [String]    # @param  [String]    # @return	resource
   #
   dbSetCharset: ($charset, $collation, $next) ->
     @client.query("SET NAMES '" + @escapeStr($charset) + "' COLLATE '" + @escapeStr($collation) + "'", $next)
@@ -151,8 +144,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Version number query string
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   _version: () ->
     return "SELECT version() AS ver"
@@ -163,8 +155,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Execute the query
   #
-  # @access	private called by the base class
-  # @param	string	an SQL query
+  # @private called by the base class
+  # @param  [String]  an SQL query
   # @return	resource
   #
   _execute: ($sql, $params, $next) ->
@@ -178,9 +170,9 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # If needed, each database adapter can prep the query string
   #
-  # @access	private called by execute()
-  # @param	string	an SQL query
-  # @return	string
+  # @private called by execute()
+  # @param  [String]  an SQL query
+  # @return	[String]
   #
   _prep_query: ($sql) ->
     #  "DELETE FROM TABLE" returns 0 affected rows This hack modifies
@@ -199,8 +191,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Begin Transaction
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transBegin: ($test_mode = false, $next = null) ->
     if $next is null
@@ -228,8 +219,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Commit Transaction
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transCommit: ($next) ->
     if not @_trans_enabled
@@ -249,8 +239,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Rollback Transaction
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transRollback: ($next) ->
     if not @_trans_enabled
@@ -270,10 +259,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Escape String
   #
-  # @access	public
-  # @param	string
-  # @param	bool	whether or not the string will be used in a LIKE condition
-  # @return	string
+    # @param  [String]    # @return	[Boolean]	whether or not the string will be used in a LIKE condition
+  # @return	[String]
   #
   escapeStr: ($str, $like = false) ->
     if is_array($str)
@@ -298,8 +285,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Affected Rows
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   affectedRows: ($next) ->
     #@client.affected_rows($next)
@@ -310,8 +296,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Insert ID
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   insertId: ($next) ->
 
@@ -332,9 +317,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # Generates a platform-specific query string that counts all records in
   # the specified database
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   countAll: ($table = '', $next) ->
     if $table is ''
@@ -352,9 +335,9 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query string so that the table names can be fetched
   #
-  # @access	private
-  # @param	boolean
-  # @return	string
+  # @private
+  # @return	[Boolean]ean
+  # @return	[String]
   #
   _list_tables: ($prefix_limit = false) ->
     $sql = "SHOW TABLES FROM " + @_escape_char + @database + @_escape_char
@@ -373,9 +356,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query string so that the column names can be fetched
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	string
+    # @param  [String]  the table name
+  # @return	[String]
   #
   _list_columns: ($table = '') ->
     return "SHOW COLUMNS FROM " + @_protect_identifiers($table, true, null, false)
@@ -388,10 +370,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query so that the column data can be retrieved
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	object
-  #
+    # @param  [String]  the table name
+  # @return [Object]  #
   _field_data: ($table) ->
     return "SELECT * FROM " + $table + " LIMIT 1"
 
@@ -401,8 +381,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # The error message string
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _error_message: () ->
     'sql error_message'
@@ -414,7 +394,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # The error message number
   #
-  # @access	private
+  # @private
   # @return	integer
   #
   _error_number: () ->
@@ -429,9 +409,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # This function escapes column and table names
   #
-  # @access	private
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @return	[String]
   #
   _escape_identifiers: ($item) ->
     if @_escape_char is ''
@@ -466,8 +445,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # This function implicitly groups FROM tables so there is no confusion
   # about operator precedence in harmony with SQL standards
   #
-  # @access	public
-  # @param	type
+    # @param	type
   # @return	type
   #
   _from_tables: ($tables) ->
@@ -485,11 +463,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the insert keys
-  # @param	array	the insert values
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the insert keys
+  # @param  [Array]  the insert values
+  # @return	[String]
   #
   _insert: ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ");" #SELECT LAST_INSERT_ID() AS id;"
@@ -503,11 +480,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific replace string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the insert keys
-  # @param	array	the insert values
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the insert keys
+  # @param  [Array]  the insert values
+  # @return	[String]
   #
   _replace: ($table, $keys, $values) ->
     return "REPLACE INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
@@ -520,11 +496,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the insert keys
-  # @param	array	the insert values
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the insert keys
+  # @param  [Array]  the insert values
+  # @return	[String]
   #
   _insert_batch : ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
@@ -538,13 +513,12 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific update string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the update data
-  # @param	array	the where clause
-  # @param	array	the orderby clause
-  # @param	array	the limit clause
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the update data
+  # @param  [Array]  the where clause
+  # @param  [Array]  the orderby clause
+  # @param  [Array]  the limit clause
+  # @return	[String]
   #
   _update: ($table, $values, $where, $orderby = {}, $limit = false) ->
     $valstr = []
@@ -573,11 +547,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific batch update string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the update data
-  # @param	array	the where clause
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the update data
+  # @param  [Array]  the where clause
+  # @return	[String]
   #
   _update_batch : ($table, $values, $index, $where = null) ->
     $ids = []
@@ -622,9 +595,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # If the database does not support the truncate() command
   # This function maps to "DELETE FROM table"
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	string
+    # @param  [String]  the table name
+  # @return	[String]
   #
   _truncate: ($table) ->
     return "TRUNCATE " + $table
@@ -637,11 +609,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific delete string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the where clause
-  # @param	string	the limit clause
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the where clause
+  # @param  [String]  the limit clause
+  # @return	[String]
   #
   _delete: ($table, $where = [], $like = [], $limit = false) ->
     $conditions = ''
@@ -668,11 +639,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific LIMIT clause
   #
-  # @access	public
-  # @param	string	the sql query string
-  # @param	integer	the number of rows to limit the query to
-  # @param	integer	the offset value
-  # @return	string
+    # @param  [String]  the sql query string
+  # @param  [Integer]  the number of rows to limit the query to
+  # @param  [Integer]  the offset value
+  # @return	[String]
   #
   _limit: ($sql, $limit, $offset) ->
     if $offset is 0
@@ -690,10 +660,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Close DB Connection
   #
-  # @access	public
-  # @param	resource
-  # @return	void
-  #
+    # @param	resource
+  # @return [Void]  #
   _close: ($next) ->
     @client.end($next)
 

@@ -335,7 +335,7 @@ class CKEditor
   #
   # Prints javascript code.
   #
-  # @param string $js
+  # @param  [String]  $js
   #
   script: ($js) ->
     $out = "<script type=\"text/javascript\">"
@@ -457,7 +457,7 @@ class CKEditor
   #
   # This little function provides a basic JSON support.
   #
-  # @param mixed $val
+  # @param  [Mixed]  $val
   # @return string
   #
   jsEncode: ($val) ->

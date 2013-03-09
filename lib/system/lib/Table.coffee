@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -56,10 +54,7 @@ class system.lib.Table
   #
   # Set the template
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   setTemplate : ($template) ->
     if not is_array($template)
       return false
@@ -73,10 +68,7 @@ class system.lib.Table
   #
   # Can be passed as an array or discreet params
   #
-  # @access	public
-  # @param	mixed
-  # @return	void
-  #
+    # @param  [Mixed]  # @return [Void]  #
   setHeading :  ->
     $args = func_get_args()
     @_heading = @_prep_args($args)
@@ -88,11 +80,8 @@ class system.lib.Table
   # columns.  This allows a single array with many elements to  be
   # displayed in a table that has a fixed column count.
   #
-  # @access	public
-  # @param	array
-  # @param	int
-  # @return	void
-  #
+    # @param  [Array]  # @param	int
+  # @return [Void]  #
   makeColumns : ($array = {}, $col_limit = 0) ->
     if not is_array($array) or count($array) is 0
       return false
@@ -126,10 +115,7 @@ class system.lib.Table
   #
   # Can be passed as an array or discreet params
   #
-  # @access	public
-  # @param	mixed
-  # @return	void
-  #
+    # @param  [Mixed]  # @return [Void]  #
   setEmpty : ($value) ->
     @_empty_cells = $value
     
@@ -139,10 +125,7 @@ class system.lib.Table
   #
   # Can be passed as an array or discreet params
   #
-  # @access	public
-  # @param	mixed
-  # @return	void
-  #
+    # @param  [Mixed]  # @return [Void]  #
   addRow :  ->
     $args = func_get_args()
     @_rows.push @_prep_args($args)
@@ -153,8 +136,7 @@ class system.lib.Table
   #
   # Ensures a standard associative array format for all cell data
   #
-  # @access	public
-  # @param	type
+    # @param	type
   # @return	type
   #
   _prep_args : ($args) ->
@@ -183,10 +165,7 @@ class system.lib.Table
   #
   # Add a table caption
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setCaption : ($caption) ->
     @_caption = $caption
     
@@ -194,9 +173,7 @@ class system.lib.Table
   #
   # Generate the table
   #
-  # @access	public
-  # @param	mixed
-  # @return	string
+    # @param  [Mixed]  # @return	[String]
   #
   generate : ($table_data = null) ->
     #  The table data can optionally be passed to this function
@@ -322,9 +299,7 @@ class system.lib.Table
   #
   # Clears the table arrays.  Useful if multiple tables are being generated
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   clear :  ->
     @_rows = []
     @_heading = {}
@@ -334,10 +309,7 @@ class system.lib.Table
   #
   # Set table data from a database result object
   #
-  # @access	public
-  # @param	object
-  # @return	void
-  #
+    # @param  [Object]    # @return [Void]  #
   _set_from_object : ($query) ->
     if not is_object($query)
       return false
@@ -360,10 +332,7 @@ class system.lib.Table
   #
   # Set table data from an array
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   _set_from_array : ($data, $set_heading = true) ->
     if not is_array($data) or count($data) is 0
       return false
@@ -385,9 +354,8 @@ class system.lib.Table
   #
   # Compile Template
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _compile_template :  ->
     if @_template is null
       @_template = @_default_template()
@@ -405,9 +373,8 @@ class system.lib.Table
   #
   # Default Template
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _default_template :  ->
     table_open          :'<table border="0" cellpadding="4" cellspacing="0">',
 

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -47,15 +45,13 @@ class system.core.Output
   #
   # Constructor
   #
-  # @access	public
-  # @param object   http request object
-  # @param object   http response object
-  # @param object   system.core.Benchmark
-  # @param object   system.core.Hooks
-  # @param object   system.core.Config
-  # @param object   system.core.URI
-  # @return	void
-  #
+    # @param  [Object]    http request object
+  # @param  [Object]    http response object
+  # @param  [Object]    system.core.Benchmark
+  # @param  [Object]    system.core.Hooks
+  # @param  [Object]    system.core.Config
+  # @param  [Object]    system.core.URI
+  # @return [Void]  #
   constructor: ($req, $res, $bench, $hooks, $config, $uri) ->
 
     defineProperties @,
@@ -88,8 +84,7 @@ class system.core.Output
   #
   # Returns the current output string
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   getOutput :  ->
     @_final_output
@@ -100,10 +95,7 @@ class system.core.Output
   #
   # Sets the output string
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setOutput : ($output) ->
     @_final_output = $output
     @
@@ -114,10 +106,7 @@ class system.core.Output
   #
   # Appends data onto the output string
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   appendOutput : ($output) ->
     if @_final_output is ''
       @_final_output = $output
@@ -134,10 +123,7 @@ class system.core.Output
   # Note:  If a file is cached, headers will not be sent.  We need to figure out
   # how to permit header data to be saved with the cache data...
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   setHeader : ($header, $replace = true) ->
     @_headers.push [$header, $replace]
     @
@@ -146,10 +132,8 @@ class system.core.Output
   #
   # Set Content Type Header
   #
-  # @access	public
-  # @param	string	extension of the file we're outputting
-  # @return	void
-  #
+    # @param  [String]  extension of the file we're outputting
+  # @return [Void]  #
   setContentType : ($mime_type) ->
     if strpos($mime_type, '/') is false
       $extension = ltrim($mime_type, '.')
@@ -169,11 +153,8 @@ class system.core.Output
   #
   # Set HTTP Status Header
   #
-  # @access	public
-  # @param	int		the status code
-  # @param	string
-  # @return	void
-  #
+    # @param	int		the status code
+  # @param  [String]    # @return [Void]  #
   setStatusHeader : ($code = 200, $text = '') ->
     @res.status($code)
     @
@@ -181,10 +162,8 @@ class system.core.Output
   #
   # Enable/disable Profiler
   #
-  # @access	public
-  # @param	bool
-  # @return	void
-  #
+    # @return	[Boolean]
+  # @return [Void]  #
   enableProfiler : ($val = true) ->
     @_enable_profiler = if (is_bool($val)) then $val else true
     @
@@ -195,10 +174,7 @@ class system.core.Output
   #
   # Allows override of default / config settings for Profiler section display
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   setProfilerSections : ($sections) ->
     for $section, $enable of $sections
       @_profiler_sections[$section] = if ($enable isnt false) then true else false
@@ -208,10 +184,7 @@ class system.core.Output
   #
   # Set Cache
   #
-  # @access	public
-  # @param	integer
-  # @return	void
-  #
+    # @param  [Integer]  # @return [Void]  #
   cache : ($time) ->
     @_cache_expiration = if ( not is_numeric($time)) then 0 else $time
     @
@@ -228,9 +201,7 @@ class system.core.Output
   # with any server headers and profile data.  It also stops the
   # benchmark timer so the page rendering speed and memory usage can be shown.
   #
-  # @access	public
-  # @return	mixed
-  #
+    # @return [Mixed]  #
   display: ($controller = null, $output = '') ->
 
     #  Set the output data
@@ -303,9 +274,7 @@ class system.core.Output
   #
   # Update/serve a cached file
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   displayCache: () ->
 
     $cache_path = if (@config.item('cache_path') is '') then APPPATH + 'cache/' else @config.item('cache_path')
@@ -334,10 +303,8 @@ class system.core.Output
   #
   # Write a Cache File
   #
-  # @access	public
-  # @param  string  HTML to cache
-  # @return	void
-  #
+    # @param  [String]  HTML to cache
+  # @return [Void]  #
   _write_cache: ($output) ->
 
     $path = @config.item('cache_path')
@@ -389,9 +356,7 @@ class system.core.Output
   #
   #   Deletes the cache file when it expires
   #
-  # @param string
-  # @param string
-  # @return false
+  # @param  [String]    # @param  [String]    # @return false
   #
   _gc_cache = ($cache_path, $filepath) ->
 

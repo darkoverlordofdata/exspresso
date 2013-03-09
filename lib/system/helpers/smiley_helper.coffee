@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -43,9 +41,8 @@
 # Returns the javascript required for the smiley insertion.  Optionally takes
 # an array of aliases to loosely couple the smiley array to the view.
 #
-# @access	public
-# @param	mixed	alias name or array of alias->field_id pairs
-# @param	string	field_id if alias name was passed in
+# @param  [Mixed]  alias name or array of alias->field_id pairs
+# @param  [String]  field_id if alias name was passed in
 # @return	array
 #
 if not function_exists('smiley_js')
@@ -125,8 +122,7 @@ document.selection.createRange().text = smiley;
 # Returns an array of image tag links that can be clicked to be inserted
 # into a form field.
 #
-# @access	public
-# @param	string	the URL to the folder containing the smiley images
+# @param  [String]  the URL to the folder containing the smiley images
 # @return	array
 #
 if not function_exists('get_clickable_smileys')
@@ -172,10 +168,9 @@ if not function_exists('get_clickable_smileys')
 #
 # Takes a string as input and swaps any contained smileys for the actual image
 #
-# @access	public
-# @param	string	the text to be parsed
-# @param	string	the URL to the folder containing the smiley images
-# @return	string
+# @param  [String]  the text to be parsed
+# @param  [String]  the URL to the folder containing the smiley images
+# @return	[String]
 #
 if not function_exists('parse_smileys')
   exports.parse_smileys = parse_smileys = ($str = '', $image_url = '', $smileys = null) ->
@@ -207,9 +202,8 @@ if not function_exists('parse_smileys')
 #
 # Fetches the config/smiley.php file
 #
-# @access	private
-# @return	mixed
-#
+# @private
+# @return [Mixed]  #
 if not function_exists('_get_smiley_array')
   exports._get_smiley_array = _get_smiley_array =  ->
     if defined('ENVIRONMENT') and file_exists(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
@@ -236,10 +230,9 @@ if not function_exists('_get_smiley_array')
 #
 # DEPRECATED as of version 1.7.2, use smiley_js instead
 #
-# @access	public
-# @param	string	form name
-# @param	string	field name
-# @return	string
+# @param  [String]  form name
+# @param  [String]  field name
+# @return	[String]
 #
 if not function_exists('js_insert_smiley')
   exports.js_insert_smiley = js_insert_smiley = ($form_name = '', $form_field = '') ->

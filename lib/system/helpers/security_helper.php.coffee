@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -40,10 +38,8 @@
 #
 # XSS Filtering
 #
-# @access	public
-# @param	string
-# @param	bool	whether or not the content is an image file
-# @return	string
+# @param  [String]  # @return	[Boolean]	whether or not the content is an image file
+# @return	[String]
 #
 if not function_exists('xssClean')
   exports.xssClean = xssClean = ($str, $is_image = false) ->
@@ -56,9 +52,7 @@ if not function_exists('xssClean')
 #
 # Sanitize Filename
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('sanitizeFilename')
   exports.sanitizeFilename = sanitizeFilename = ($filename) ->
@@ -71,9 +65,7 @@ if not function_exists('sanitizeFilename')
 #
 # Hash encode a string
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('do_hash')
   exports.do_hash = do_hash = ($str, $type = 'sha1') ->
@@ -91,9 +83,7 @@ if not function_exists('do_hash')
 #
 # Strip Image Tags
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('strip_image_tags')
   exports.strip_image_tags = strip_image_tags = ($str) ->

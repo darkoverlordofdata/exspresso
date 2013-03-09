@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -56,8 +54,7 @@ class system.db.Cache
   #
   # Set Cache Directory Path
   #
-  # @access	public
-  # @param	string	the path to the cache directory
+    # @param  [String]  the path to the cache directory
   # @return	bool
   #
   checkPath: ($path = '') ->
@@ -88,8 +85,7 @@ class system.db.Cache
   # The URI being requested will become the name of the cache sub-folder.
   # An MD5 hash of the SQL statement will become the cache file name
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   read: ($sql) ->
     if not @checkPath()
@@ -112,8 +108,7 @@ class system.db.Cache
   #
   # Write a query to a cache file
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   write: ($sql, $object) ->
     if not @check_path()
@@ -147,8 +142,7 @@ class system.db.Cache
   #
   # Delete cache files within a particular directory
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   delete: ($segment_one = '', $segment_two = '') ->
     if $segment_one is ''
@@ -167,8 +161,7 @@ class system.db.Cache
   #
   # Delete all existing cache files
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   deleteAll :  ->
     delete_files(@db.cachedir, true)

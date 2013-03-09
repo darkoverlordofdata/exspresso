@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -43,9 +41,7 @@
 # Create a local URL based on your basepath. Segments can be passed via the
 # first parameter either as a string or an array.
 #
-# @access	public
-# @param	string
-# @return	string
+# @param  [String]  # @return	[String]
 #
 if not function_exists('site_url')
   exports.site_url = site_url = ($uri = '') ->
@@ -60,8 +56,7 @@ if not function_exists('site_url')
 #
 # Returns the "base_url" item from your config file
 #
-# @access	public
-# @return	string
+# @return	[String]
 #
 if not function_exists('base_url')
   exports.base_url = base_url =  ->
@@ -77,8 +72,7 @@ if not function_exists('base_url')
 # Returns the full URL (including segments) of the page where this
 # function is placed
 #
-# @access	public
-# @return	string
+# @return	[String]
 #
 if not function_exists('current_url')
   exports.current_url = current_url =  ->
@@ -93,8 +87,7 @@ if not function_exists('current_url')
 #
 # Returns the URI segments.
 #
-# @access	public
-# @return	string
+# @return	[String]
 #
 if not function_exists('uri_string')
   exports.uriString = uri_string =  ->
@@ -110,8 +103,7 @@ if not function_exists('uri_string')
 #
 # Returns the "index_page" from your config file
 #
-# @access	public
-# @return	string
+# @return	[String]
 #
 if not function_exists('index_page')
   exports.index_page = index_page =  ->
@@ -127,11 +119,10 @@ if not function_exists('index_page')
 #
 # Creates an anchor based on the local URL.
 #
-# @access	public
-# @param	string	the URL
-# @param	string	the link title
-# @param	mixed	any attributes
-# @return	string
+# @param  [String]  the URL
+# @param  [String]  the link title
+# @param  [Mixed]  any attributes
+# @return	[String]
 #
 if not function_exists('anchor')
   exports.anchor = anchor = ($uri = '', $title = '', $attributes = '') ->
@@ -166,11 +157,10 @@ if not function_exists('anchor')
 # Creates an anchor based on the local URL. The link
 # opens a new window based on the attributes specified.
 #
-# @access	public
-# @param	string	the URL
-# @param	string	the link title
-# @param	mixed	any attributes
-# @return	string
+# @param  [String]  the URL
+# @param  [String]  the link title
+# @param  [Mixed]  any attributes
+# @return	[String]
 #
 if not function_exists('anchor_popup')
   exports.anchor_popup = anchor_popup = ($uri = '', $title = '', $attributes = false) ->
@@ -208,11 +198,10 @@ if not function_exists('anchor_popup')
 #
 # Mailto Link
 #
-# @access	public
-# @param	string	the email address
-# @param	string	the link title
-# @param	mixed	any attributes
-# @return	string
+# @param  [String]  the email address
+# @param  [String]  the link title
+# @param  [Mixed]  any attributes
+# @return	[String]
 #
 if not function_exists('mailto')
   exports.mailto = mailto = ($email, $title = '', $attributes = '') ->
@@ -235,11 +224,10 @@ if not function_exists('mailto')
 #
 # Create a spam-protected mailto link written in Javascript
 #
-# @access	public
-# @param	string	the email address
-# @param	string	the link title
-# @param	mixed	any attributes
-# @return	string
+# @param  [String]  the email address
+# @param  [String]  the link title
+# @param  [Mixed]  any attributes
+# @return	[String]
 #
 if not function_exists('safe_mailto')
   exports.safe_mailto = safe_mailto = ($email, $title = '', $attributes = '') ->
@@ -309,11 +297,10 @@ if not function_exists('safe_mailto')
 # URLs or emails that end in a period.  We'll strip these
 # off and add them after the link.
 #
-# @access	public
-# @param	string	the string
-# @param	string	the type: email, url, or both
-# @param	bool	whether to create pop-up links
-# @return	string
+# @param  [String]  the string
+# @param  [String]  the type: email, url, or both
+# @return	[Boolean]	whether to create pop-up links
+# @return	[String]
 #
 if not function_exists('auto_link')
   exports.auto_link = auto_link = ($str, $type = 'both', $popup = false) ->
@@ -357,9 +344,8 @@ if not function_exists('auto_link')
 #
 # Simply adds the http:// part if no scheme is included
 #
-# @access	public
-# @param	string	the URL
-# @return	string
+# @param  [String]  the URL
+# @return	[String]
 #
 if not function_exists('prep_url')
   exports.prep_url = prep_url = ($str = '') ->
@@ -386,10 +372,9 @@ if not function_exists('prep_url')
 # human-friendly URL string with either a dash
 # or an underscore as the word separator.
 #
-# @access	public
-# @param	string	the string
-# @param	string	the separator: dash, or underscore
-# @return	string
+# @param  [String]  the string
+# @param  [String]  the separator: dash, or underscore
+# @return	[String]
 #
 if not function_exists('url_title')
   exports.url_title = url_title = ($str, $separator = 'dash', $lowercase = false) ->
@@ -429,10 +414,9 @@ if not function_exists('url_title')
 #
 # Some of the functions use this
 #
-# @access	private
-# @param	array
-# @param	bool
-# @return	string
+# @private
+# @param  [Array]  # @return	[Boolean]
+# @return	[String]
 #
 if not function_exists('_parse_attributes')
   exports._parse_attributes = _parse_attributes = ($attributes, $javascript = false) ->

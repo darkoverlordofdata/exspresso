@@ -34,8 +34,7 @@ class Preview extends application.core.AdminController
   #
   #   @access	public
   #   @param string
-  #   @return	void
-  #
+  # @return [Void]  #
   index: ($module = '', $name = '') ->
 
 

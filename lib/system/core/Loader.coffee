@@ -26,7 +26,7 @@
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
-# @link		    http://darkoverlordofdata.com
+# @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
 
@@ -59,7 +59,7 @@ class system.core.Loader
   #
   # Initiailize the loader search paths
   #
-  # @param    object  ExspressoController
+  # @param  [Object]  ExspressoController
   # @return 	nothing
   #
   constructor: ($controller)->
@@ -81,10 +81,9 @@ class system.core.Loader
   # Initialize the Loader
   #
   #
-  # @param 	object  Exspresso controller instance
-  # @param  boolean call autoload?
-  # @return object
-  #
+  # @param  [Object]  Exspresso controller instance
+  # @param  [Boolean] call autoload?
+  # @return [Object]  #
   initialize: () ->
 
     defineProperties @,
@@ -106,8 +105,8 @@ class system.core.Loader
   #
   # It is mainly used in the form_helper -> _get_validation_object()
   #
-  # @param 	string	class being checked for
-  # @return 	mixed	class object name on the CI SuperObject or FALSE
+  # @param  [String]  class being checked for
+  # @return [Mixed]  class object name on the CI SuperObject or FALSE
   #
   isLoaded: ($class) ->
     if @_classes[$class]?
@@ -120,12 +119,10 @@ class system.core.Loader
   # This function lets users load and instantiate classes.
   # It is designed to be called from a user's app controllers.
   #
-  # @access	public
-  # @param	string	the name of the class
-  # @param	mixed	the optional parameters
-  # @param	string	an optional object name
-  # @return	void
-  #
+    # @param  [String]  the name of the class
+  # @param  [Mixed]  the optional parameters
+  # @param  [String]  an optional object name
+  # @return [Void]  #
   library: ($library, $params = {}, $object_name = null) ->
 
     $controller = @controller
@@ -164,10 +161,7 @@ class system.core.Loader
   #
   # Load an array of libraries
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   libraries: ($libraries) ->
     for $_library in $libraries
       @library($_library)
@@ -178,12 +172,10 @@ class system.core.Loader
   #
   # This function lets users load and instantiate models.
   #
-  # @access	public
-  # @param	string	the name of the class
-  # @param	string	name for the model
-  # @param	bool	database connection
-  # @return	void
-  #
+    # @param  [String]  the name of the class
+  # @param  [String]  name for the model
+  # @return	[Boolean]	database connection
+  # @return [Void]  #
   model: ($model, $object_name = null,$connect = false) ->
 
     $controller = @controller
@@ -226,10 +218,7 @@ class system.core.Loader
   #
   # Load an array of models
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   models: ($models) ->
     for $_model in $models
       @model($_model)
@@ -240,12 +229,10 @@ class system.core.Loader
   #
   # This function lets users load and instantiate models.
   #
-  # @access	public
-  # @param	string	the name of the class
-  # @param	string	name for the model
-  # @param	bool	database connection
-  # @return	void
-  #
+    # @param  [String]  the name of the class
+  # @param  [String]  name for the model
+  # @return	[Boolean]	database connection
+  # @return [Void]  #
   _application_model: ($model, $name = '', $db_conn = false) ->
 
     if is_array($model)
@@ -301,12 +288,10 @@ class system.core.Loader
   #
   # Database Loader
   #
-  # @access	public
-  # @param	string	the DB credentials
-  # @param	bool	whether to return the DB object
-  # @param	bool	whether to enable active record (this allows us to override the config setting)
-  # @return	object
-  #
+    # @param  [String]  the DB credentials
+  # @return	[Boolean]	whether to return the DB object
+  # @return	[Boolean]	whether to enable active record (this allows us to override the config setting)
+  # @return [Object]  #
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Do we even need to load the database class?
@@ -338,8 +323,7 @@ class system.core.Loader
   #
   # Load the Utilities Class
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #@
   dbutil: ($params = '', $return = false) ->
 
@@ -363,8 +347,7 @@ class system.core.Loader
   #
   # Load the Database Forge Class
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   dbforge: ($params = '', $return = false) ->
 
@@ -387,12 +370,10 @@ class system.core.Loader
   #
   # Load a module controller
   #
-  # @access	public
-  # @param	string	the name of the class
-  # @param	string	name for the model
-  # @param	bool	database connection
-  # @return	void
-  #
+    # @param  [String]  the name of the class
+  # @param  [String]  name for the model
+  # @return	[Boolean]	database connection
+  # @return [Void]  #
   module: ($module, $params = null)	->
 
     if is_array($module) then return @modules($module)
@@ -405,10 +386,7 @@ class system.core.Loader
   #
   # Load an array of controllers
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   modules: ($modules) ->
     for $_module in $modules
       @module($_module)
@@ -417,12 +395,10 @@ class system.core.Loader
   #
   # Load a module plugin
   #
-  # @access	public
-  # @param	string	the name of the class
-  # @param	string	name for the model
-  # @param	bool	database connection
-  # @return	void
-  #
+    # @param  [String]  the name of the class
+  # @param  [String]  name for the model
+  # @return	[Boolean]	database connection
+  # @return [Void]  #
   plugin: ($plugin)	->
 
     if (is_array($plugin)) then return @plugins($plugin)
@@ -438,10 +414,7 @@ class system.core.Loader
   #
   # Load an array of plugins
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   plugins: ($plugins) ->
     for $_plugin in $plugins
       @plugin($_plugin)
@@ -458,12 +431,8 @@ class system.core.Loader
   # some cases it's advantageous to be able to return data so that
   # a developer can process it in some way.
   #
-  # @access	public
-  # @param	string
-  # @param	array
-  # @param	bool
-  # @return	void
-  #
+    # @param  [String]    # @param  [Array]  # @return	[Boolean]
+  # @return [Void]  #
   view: ($view, $vars = {}, $next = null) ->
     [$path, $view] = Modules::find($view, @controller.module, 'views/')
     @_view_path = if $path then $path else APPPATH + config_item('views')
@@ -475,10 +444,7 @@ class system.core.Loader
   # Once variables are set they become available within
   # the controller class and its "view" files.
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   vars: ($vars = {}, $val = '') ->
     if $val isnt '' and is_string($vars)
       $vars = array($vars, $val)
@@ -493,9 +459,7 @@ class system.core.Loader
   #
   # Check if a variable is set and retrieve it.
   #
-  # @param	array
-  # @return	void
-  #
+  # @param  [Array]  # @return [Void]  #
   getVar: ($key) ->
     if isset(@_cached_vars[$key]) then @_cached_vars[$key] else null
 
@@ -504,10 +468,8 @@ class system.core.Loader
   #
   # This is a generic file loader
   #
-  # @access	public
-  # @param	string
-  # @param	bool
-  # @return	string
+    # @param  [String]    # @return	[Boolean]
+  # @return	[String]
   #
   file: ($path, $next) ->
     @_load($path, '', {}, $next)
@@ -517,9 +479,7 @@ class system.core.Loader
   #
   # This function loads the specified helper file.
   #
-  # @access	public
-  # @param	mixed
-  # @return	object module reference to the helpers
+    # @param  [Mixed]  # @return [Object]  module reference to the helpers
   #
   helper: ($helper) ->
 
@@ -538,10 +498,7 @@ class system.core.Loader
   #
   # Load an array of helpers
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   helpers: ($helpers) ->
     for $_helper in $helpers
       @helper $_helper
@@ -552,10 +509,7 @@ class system.core.Loader
   #
   # This function loads the specified helper file.
   #
-  # @access	public
-  # @param	mixed
-  # @return	void
-  #
+    # @param  [Mixed]  # @return [Void]  #
   _application_helper: ($helpers = []) ->
 
     for $helper in @_prep_filename($helpers, '_helper')
@@ -592,21 +546,14 @@ class system.core.Loader
   #
   # Load a module i18n file
   #
-  # @access	public
-  # @param	array
-  # @param	string
-  # @return	void
-  #
+    # @param  [Array]  # @param  [String]    # @return [Void]  #
   language: ($langfile, $code = '', $return = false) ->
     return @controller.i18n.load($langfile, $code, $return)
 
   #
   # Load an array of languages
   #
-  # @access	public
-  # @param	array
-  # @return	void
-  #
+    # @param  [Array]  # @return [Void]  #
   languages: ($languages) ->
     for $_language in $languages
       @language($language)
@@ -615,10 +562,7 @@ class system.core.Loader
   #
   # Loads a config file
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
 
     @controller.config.load $file, $use_sections, $fail_gracefully, @controller.module
@@ -629,11 +573,10 @@ class system.core.Loader
   #
   # Loads a driver library
   #
-  # @param	string	the name of the class
-  # @param	mixed	the optional parameters
-  # @param	string	an optional object name
-  # @return	void
-  #
+  # @param  [String]  the name of the class
+  # @param  [Mixed]  the optional parameters
+  # @param  [String]  an optional object name
+  # @return [Void]  #
 
   driver: ($library = '', $params = null, $object_name = null) ->
 
@@ -654,10 +597,7 @@ class system.core.Loader
   #
   # Prepends a parent path to the library, model, helper, and config path arrays
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   addPackagePath: ($path) ->
 
     $path = rtrim($path, '/')+'/'
@@ -677,10 +617,7 @@ class system.core.Loader
   #
   # Return a list of all package paths, by default it will ignore SYSPATH.
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   getPackagePaths: ($include_base = false) ->
     return if $include_base is true then @_library_paths else @_model_paths
 
@@ -691,8 +628,7 @@ class system.core.Loader
   # Remove a path from the library, model, and helper path arrays if it exists
   # If no path is provided, the most recently added path is removed.
   #
-  # @access	public
-  # @param	type
+    # @param	type
   # @return	type
   #
   removePackagePath: ($path = '', $remove_config_path = true) ->
@@ -727,10 +663,8 @@ class system.core.Loader
   #
   # This function is used to load views and files.
   #
-  # @access	private
-  # @param	array
-  # @return	void
-  #
+  # @private
+  # @param  [Array]  # @return [Void]  #
   _load: ($path = '', $view = '', $vars = {}, $next = null) ->
 
     #  Set the path to the requested file
@@ -773,12 +707,11 @@ class system.core.Loader
   #
   # This function loads the requested class.
   #
-  # @access	private
-  # @param	string	the item that is being loaded
-  # @param	mixed	any additional parameters
-  # @param	string	an optional object name
-  # @return	void
-  #
+  # @private
+  # @param  [String]  the item that is being loaded
+  # @param  [Mixed]  any additional parameters
+  # @param  [String]  an optional object name
+  # @return [Void]  #
   _load_class : ($class, $params = null, $object_name = null) ->
     #  Get the class name, and while we're at it trim any slashes.
     #  The directory path can be included as part of the class name,
@@ -877,10 +810,8 @@ class system.core.Loader
   #
   # Instantiates a class
   #
-  # @access	private
-  # @param	string
-  # @param	string
-  # @param	string	an optional object name
+  # @private
+  # @param  [String]    # @param  [String]    # @param  [String]  an optional object name
   # @return	null
   #
   _init_class : ($class, $prefix = '', $config = false, $object_name = null, $klass) ->
@@ -959,10 +890,8 @@ class system.core.Loader
   # The config/autoload.php file contains an array that permits sub-systems,
   # libraries, and helpers to be loaded automatically.
   #
-  # @access	private
-  # @param	array
-  # @return	void
-  #
+  # @private
+  # @param  [Array]  # @return [Void]  #
   _autoloader:  ->
 
     @_application_autoloader() # application autoload first
@@ -1033,10 +962,8 @@ class system.core.Loader
   # The config/autoload.php file contains an array that permits sub-systems,
   # libraries, and helpers to be loaded automatically.
   #
-  # @access	private
-  # @param	array
-  # @return	void
-  #
+  # @private
+  # @param  [Array]  # @return [Void]  #
   _application_autoloader :  ->
 
     $autoload = {}
@@ -1093,9 +1020,8 @@ class system.core.Loader
   # example:
   #
   #
-  # @access	private
-  # @param	mixed
-  # @return	array
+  # @private
+  # @param  [Mixed]  # @return	array
   #
   _prep_filename : ($filename, $extension) ->
 

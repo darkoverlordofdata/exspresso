@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -67,8 +65,7 @@ class system.lib.Upload
   #
   # Constructor
   #
-  # @access	public
-  #
+    #
   __construct($props = {})
   {
   if count($props) > 0
@@ -81,9 +78,7 @@ class system.lib.Upload
   #
   # Initialize preferences
   #
-  # @param	array
-  # @return	void
-  #
+  # @param  [Array]  # @return [Void]  #
   initialize($config = {})
   {
   $defaults = 
@@ -340,9 +335,7 @@ class system.lib.Upload
   #
   # Set Upload Path
   #
-  # @param	string
-  # @return	void
-  #
+  # @param  [String]    # @return [Void]  #
   set_upload_path($path)
   {
   #  Make sure it has a trailing slash
@@ -356,9 +349,7 @@ class system.lib.Upload
   # existence of a file with the same name. If found, it will append a
   # number to the end of the filename to avoid overwriting a pre-existing file.
   #
-  # @param	string
-  # @param	string
-  # @return	string
+  # @param  [String]    # @param  [String]    # @return	[String]
   #
   set_filename($path, $filename)
   {
@@ -394,9 +385,7 @@ class system.lib.Upload
   #
   # Set Maximum File Size
   #
-  # @param	integer
-  # @return	void
-  #
+  # @param  [Integer]  # @return [Void]  #
   set_max_filesize($n)
   {
   @max_size = if ($n < 0) then 0 else $n
@@ -405,9 +394,7 @@ class system.lib.Upload
   #
   # Set Maximum File Name Length
   #
-  # @param	integer
-  # @return	void
-  #
+  # @param  [Integer]  # @return [Void]  #
   set_max_filename($n)
   {
   @max_filename = if ($n < 0) then 0 else $n
@@ -416,9 +403,7 @@ class system.lib.Upload
   #
   # Set Maximum Image Width
   #
-  # @param	integer
-  # @return	void
-  #
+  # @param  [Integer]  # @return [Void]  #
   set_max_width($n)
   {
   @max_width = if ($n < 0) then 0 else $n
@@ -427,9 +412,7 @@ class system.lib.Upload
   #
   # Set Maximum Image Height
   #
-  # @param	integer
-  # @return	void
-  #
+  # @param  [Integer]  # @return [Void]  #
   set_max_height($n)
   {
   @max_height = if ($n < 0) then 0 else $n
@@ -438,9 +421,7 @@ class system.lib.Upload
   #
   # Set Allowed File Types
   #
-  # @param	string
-  # @return	void
-  #
+  # @param  [String]    # @return [Void]  #
   set_allowed_types($types)
   {
   if not is_array($types) and $types is '*'
@@ -455,9 +436,7 @@ class system.lib.Upload
   #
   # Uses GD to determine the width/height/type of image
   #
-  # @param	string
-  # @return	void
-  #
+  # @param  [String]    # @return [Void]  #
   set_image_properties($path = '')
   {
   if not @is_image()
@@ -482,9 +461,8 @@ class system.lib.Upload
   # Enables the XSS flag so that the file that was uploaded
   # will be run through the XSS filter.
   #
-  # @param	bool
-  # @return	void
-  #
+  # @return	[Boolean]
+  # @return [Void]  #
   set_xssClean($flag = false)
   {
   @xssClean = if ($flag is true) then true else false
@@ -648,8 +626,7 @@ class system.lib.Upload
   #
   # Extract the file extension
   #
-  # @param	string
-  # @return	string
+  # @param  [String]    # @return	[String]
   #
   get_extension($filename)
   {
@@ -660,8 +637,7 @@ class system.lib.Upload
   #
   # Clean the file name for security
   #
-  # @param	string
-  # @return	string
+  # @param  [String]    # @return	[String]
   #
   clean_file_name($filename)
   {
@@ -702,8 +678,7 @@ class system.lib.Upload
   #
   # Limit the File Name Length
   #
-  # @param	string
-  # @return	string
+  # @param  [String]    # @return	[String]
   #
   limit_filename_length($filename, $length)
   {
@@ -728,8 +703,7 @@ class system.lib.Upload
   # I'm not sure that it won't negatively affect certain files in unexpected ways,
   # but so far I haven't found that it causes trouble.
   #
-  # @return	void
-  #
+  # @return [Void]  #
   do_xssClean()
   {
   $file = @file_temp
@@ -784,9 +758,7 @@ class system.lib.Upload
   #
   # Set an error message
   #
-  # @param	string
-  # @return	void
-  #
+  # @param  [String]    # @return [Void]  #
   set_error($msg)
   {
   $controller = Exspresso
@@ -809,9 +781,7 @@ class system.lib.Upload
   #
   # Display the error message
   #
-  # @param	string
-  # @param	string
-  # @return	string
+  # @param  [String]    # @param  [String]    # @return	[String]
   #
   display_errors($open = '<p>',$close = '</p>')
   {
@@ -829,8 +799,7 @@ class system.lib.Upload
   # This is a list of mime types.  We use it to validate
   # the "allowed types" set by the developer
   #
-  # @param	string
-  # @return	string
+  # @param  [String]    # @return	[String]
   #
   mimes_types($mime)
   {
@@ -860,8 +829,7 @@ class system.lib.Upload
   # Prevents possible script execution from Apache's handling of files multiple extensions
   # http://httpd.apache.org/docs/1.3/mod/mod_mime.html#multipleext
   #
-  # @param	string
-  # @return	string
+  # @param  [String]    # @return	[String]
   #
   _prep_filename($filename)
   {

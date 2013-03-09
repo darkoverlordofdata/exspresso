@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -63,9 +61,9 @@ class system.lib.Log
   #
   # Generally this function will be called using the global log_message() function
   #
-  # @param	string	the error level
-  # @param	string	the error message
-  # @param	bool	whether the error is a native error
+  # @param  [String]  the error level
+  # @param  [String]  the error message
+  # @return	[Boolean]	whether the error is a native error
   # @return	bool
   ##
   writeLog: ($level = 'error', $msg) ->

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -39,7 +37,7 @@
 # @subpackage	Libraries
 # @category	Libraries
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/calendar.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/calendar.html
 #
 class system.lib.Calendar
   
@@ -73,11 +71,10 @@ class system.lib.Calendar
   #
   # Generate the calendar
   #
-  # @access	public
-  # @param	integer	the year
-  # @param	integer	the month
-  # @param	array	the data to be shown in the calendar cells
-  # @return	string
+    # @param  [Integer]  the year
+  # @param  [Integer]  the month
+  # @param  [Array]  the data to be shown in the calendar cells
+  # @return	[String]
   #
   generate : ($year = '', $month = '', $data = {}) ->
     #  Set and validate the supplied month/year
@@ -209,9 +206,8 @@ class system.lib.Calendar
   # Generates a textual month name based on the numeric
   # month provided.
   #
-  # @access	public
-  # @param	integer	the month
-  # @return	string
+    # @param  [Integer]  the month
+  # @return	[String]
   #
   getMonthName : ($month) ->
     if @_month_type is 'short'
@@ -258,9 +254,7 @@ class system.lib.Calendar
   # Returns an array of day names (Sunday, Monday, etc.) based
   # on the type.  Options: long, short, abrev
   #
-  # @access	public
-  # @param	string
-  # @return	array
+    # @param  [String]    # @return	array
   #
   getDayNames: ($day_type = '') ->
 
@@ -288,9 +282,8 @@ class system.lib.Calendar
   # For example, if you submit 13 as the month, the year will
   # increment and the month will become January.
   #
-  # @access	public
-  # @param	integer	the month
-  # @param	integer	the year
+    # @param  [Integer]  the month
+  # @param  [Integer]  the year
   # @return	array
   #
   adjustDate : ($month, $year) ->
@@ -318,9 +311,8 @@ class system.lib.Calendar
   #
   # Total days in a given month
   #
-  # @access	public
-  # @param	integer	the month
-  # @param	integer	the year
+    # @param  [Integer]  the month
+  # @param  [Integer]  the year
   # @return	integer
   #
   getTotalDays : ($month, $year) ->
@@ -344,8 +336,7 @@ class system.lib.Calendar
   #
   # This is used in the event that the user has not created their own template
   #
-  # @access	public
-  # @return array
+    # @return array
   #
   defaultTemplate :  ->
     'table_open':'<table border="0" cellpadding="4" cellspacing="0">'
@@ -376,9 +367,7 @@ class system.lib.Calendar
   # Harvests the data within the template {pseudo-variables}
   # used to display the calendar
   #
-  # @access	public
-  # @return	void
-  parseTemplate :  ->
+    # @return [Void]  parseTemplate :  ->
     @temp = @defaultTemplate()
 
     if @_template is ''

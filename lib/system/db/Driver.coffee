@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -83,8 +81,7 @@ class system.db.Driver
   # Constructor.  Accepts one parameter containing the database
   # connection settings.
   #
-  # @param array
-  #
+  # @param  [Array]  #
   constructor: ($params = {}) ->
 
     @queries = []
@@ -103,8 +100,7 @@ class system.db.Driver
   #
   # @access	protected Called by the router
   # @param	callback
-  # @return	void
-  #
+  # @return [Void]  #
   initialize: ($next) =>
 
     log_message 'debug', '%s Driver initialized', ucfirst(@dbdriver)
@@ -118,8 +114,7 @@ class system.db.Driver
   #
   # The name of the platform in use (mysql, mssql, etc...)
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   platform: ->
     return @dbdriver
@@ -131,8 +126,7 @@ class system.db.Driver
   # Database Version Number.  Returns a string containing the
   # version of the database being used
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   version: ($next) ->
     if false is ($sql = @_version())
@@ -153,8 +147,7 @@ class system.db.Driver
   #
   # Execute a list of sql statements
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   queryList: ($sql, $next) ->
 
@@ -191,11 +184,9 @@ class system.db.Driver
   # FALSE upon failure, and if the $db_debug variable is set to TRUE
   # will raise an error.
   #
-  # @access	public
-  # @param	string	An SQL query string
-  # @param	array	An array of binding data
-  # @return	mixed
-  #
+    # @param  [String]  An SQL query string
+  # @param  [Array]  An array of binding data
+  # @return [Mixed]  #
   query: ($sql, $binds, $next = null) =>
     if $sql is ''
       if @db_debug
@@ -323,8 +314,8 @@ class system.db.Driver
   #
   # Load the result drivers
   #
-  # @access	private
-  # @return	string	the name of the result class
+  # @private
+  # @return	[String]	the name of the result class
   #
   _load_rdriver :  ->
 
@@ -345,10 +336,8 @@ class system.db.Driver
   # we only use it when running transaction commands since they do
   # not require all the features of the main query() function.
   #
-  # @access	public
-  # @param	string	the sql query
-  # @return	mixed
-  #
+    # @param  [String]  the sql query
+  # @return [Mixed]  #
   simpleQuery : ($sql, $binds, $next) ->
 
     if $next is null
@@ -372,9 +361,7 @@ class system.db.Driver
   # Disable Transactions
   # This permits transactions to be disabled at run-time.
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   transOff: ->
     @_trans_enabled = false
 
@@ -388,9 +375,7 @@ class system.db.Driver
   # If strict mode is disabled, each group is treated autonomously, meaning
   # a failure of one group will not affect any others
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   transStrict : ($mode = true) ->
     @_trans_strict = if is_bool($mode) then $mode else true
 
@@ -400,9 +385,7 @@ class system.db.Driver
   #
   # Start Transaction
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   transStart : ($test_mode = false, $next) ->
     if $next is null
       $next = $test_mode
@@ -424,8 +407,7 @@ class system.db.Driver
   #
   # Complete Transaction
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transComplete: ($next) ->
     if not @_trans_enabled
@@ -458,8 +440,7 @@ class system.db.Driver
   #
   # Lets you retrieve the transaction flag to determine if it has failed
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transStatus: ->
     return @_trans_status
@@ -470,10 +451,9 @@ class system.db.Driver
   #
   # Compile Bindings
   #
-  # @access	public
-  # @param	string	the sql statement
-  # @param	array	an array of bind data
-  # @return	string
+    # @param  [String]  the sql statement
+  # @param  [Array]  an array of bind data
+  # @return	[String]
   #
   compile_binds : ($sql, $binds) ->
     if strpos($sql, @_bind_marker) is false
@@ -509,9 +489,8 @@ class system.db.Driver
   #
   # Determines if a query is a "write" type.
   #
-  # @access	public
-  # @param	string	An SQL query string
-  # @return	boolean
+    # @param  [String]  An SQL query string
+  # @return	[Boolean]
   #
   is_write_type : ($sql) ->
     if not preg_match('/^\\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\\s+/i', $sql)?
@@ -525,8 +504,7 @@ class system.db.Driver
   #
   # Calculate the aggregate query elapsed time
   #
-  # @access	public
-  # @param	integer	The number of decimal places
+    # @param  [Integer]  The number of decimal places
   # @return	integer
   #
   elapsedTime : ($decimals = 6) ->
@@ -538,8 +516,7 @@ class system.db.Driver
   #
   # Returns the total number of queries
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   totalQueries: ->
     return @_query_count
@@ -550,9 +527,7 @@ class system.db.Driver
   #
   # Returns the last query that was executed
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   lastQuery: ->
     return end(@queries)
 
@@ -565,10 +540,7 @@ class system.db.Driver
   # Escapes data based on type
   # Sets boolean and null types
   #
-  # @access	public
-  # @param	string
-  # @return	mixed
-  #
+    # @param  [String]    # @return [Mixed]  #
   escape : ($str) ->
     if is_string($str)
       $str = @escapeStr($str)
@@ -592,10 +564,7 @@ class system.db.Driver
   # Calls the individual driver for platform
   # specific escaping for LIKE conditions
   #
-  # @access	public
-  # @param	string
-  # @return	mixed
-  #
+    # @param  [String]    # @return [Mixed]  #
   escapeLikeStr : ($str) ->
     return @escapeStr($str, true)
 
@@ -608,9 +577,8 @@ class system.db.Driver
   # Retrieves the primary key.  It assumes that the row in the first
   # position is the primary key
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	string
+    # @param  [String]  the table name
+  # @return	[String]
   #
   primary : ($table = '') ->
     $fields = @list_fields($table)
@@ -627,8 +595,7 @@ class system.db.Driver
   #
   # Returns an array of table names
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   listTables : ($constrain_by_prefix = false, $next = null) ->
 
@@ -667,8 +634,7 @@ class system.db.Driver
 
   #
   # Determine if a particular table exists
-  # @access	public
-  # @return	boolean
+    # @return	[Boolean]
   #
   tableExists : ($table_name, $next) ->
 
@@ -685,8 +651,7 @@ class system.db.Driver
   #
   # Fetch MySQL Field Names
   #
-  # @access	public
-  # @param	string	the table name
+    # @param  [String]  the table name
   # @return	array
   #
   listFields : ($table = '', $next) ->
@@ -729,10 +694,7 @@ class system.db.Driver
 
   #
   # Determine if a particular field exists
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	boolean
+    # @param  [String]    # @param  [String]    # @return	[Boolean]
   #
   fieldExists : ($field_name, $table_name) ->
     return if ( not in_array($field_name, @list_fields($table_name))) then false else true
@@ -743,10 +705,8 @@ class system.db.Driver
   #
   # Returns an object with field data
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	object
-  #
+    # @param  [String]  the table name
+  # @return [Object]  #
   field_data : ($table = '', $next) ->
     if $table is ''
       if @db_debug
@@ -765,10 +725,9 @@ class system.db.Driver
   #
   # Generate an insert string
   #
-  # @access	public
-  # @param	string	the table upon which the query will be performed
-  # @param	array	an associative array data of key/values
-  # @return	string
+    # @param  [String]  the table upon which the query will be performed
+  # @param  [Array]  an associative array data of key/values
+  # @return	[String]
   #
   insert_string : ($table, $data) ->
     $fields = []
@@ -787,11 +746,10 @@ class system.db.Driver
   #
   # Generate an update string
   #
-  # @access	public
-  # @param	string	the table upon which the query will be performed
-  # @param	array	an associative array data of key/values
-  # @param	mixed	the "where" statement
-  # @return	string
+    # @param  [String]  the table upon which the query will be performed
+  # @param  [Array]  an associative array data of key/values
+  # @param  [Mixed]  the "where" statement
+  # @return	[String]
   #
   update_string : ($table, $data, $where) ->
     if $where is ''
@@ -831,9 +789,8 @@ class system.db.Driver
   #
   # Tests whether the string has an SQL operator
   #
-  # @access	private
-  # @param	string
-  # @return	bool
+  # @private
+  # @param  [String]    # @return	bool
   #
   _has_operator : ($str) ->
     $str = trim($str)
@@ -849,10 +806,8 @@ class system.db.Driver
   #
   # Set Cache Directory Path
   #
-  # @access	public
-  # @param	string	the path to the cache directory
-  # @return	void
-  #
+    # @param  [String]  the path to the cache directory
+  # @return [Void]  #
   cacheSetPath : ($path = '') ->
     @cachedir = $path
 
@@ -862,9 +817,7 @@ class system.db.Driver
   #
   # Enable Query Caching
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   cacheOn: ->
     @cache_on = true
     return true
@@ -875,9 +828,7 @@ class system.db.Driver
   #
   # Disable Query Caching
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   cacheOff: ->
     @cache_on = false
     return false
@@ -889,9 +840,7 @@ class system.db.Driver
   #
   # Delete the cache files associated with a particular URI
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   cacheDelete : ($segment_one = '', $segment_two = '') ->
     if not @_cache_init()
       return false
@@ -904,9 +853,7 @@ class system.db.Driver
   #
   # Delete All cache files
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   cacheDeleteAll: ->
     if not @_cache_init()
       return false
@@ -920,9 +867,8 @@ class system.db.Driver
   #
   # Initialize the Cache Class
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _cache_init: ->
     if is_object(@cache) and class_exists('ExspressoDbCache')
       return true
@@ -942,9 +888,7 @@ class system.db.Driver
   #
   # Close DB Connection
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   close: ($next)->
 
     @conn_id = false
@@ -956,11 +900,10 @@ class system.db.Driver
   #
   # Display an error message
   #
-  # @access	public
-  # @param	string	the error message
-  # @param	string	any "swap" values
-  # @param	boolean	whether to localize the message
-  # @return	string	sends the application/error_db.php template
+    # @param  [String]  the error message
+  # @param  [String]  any "swap" values
+  # @return	[Boolean]ean	whether to localize the message
+  # @return	[String]	sends the application/error_db.php template
   #
   displayError : ($error = '', $swap = '', $native = false) ->
 
@@ -986,9 +929,9 @@ class system.db.Driver
   #
   # This function adds backticks if appropriate based on db type
   #
-  # @access	private
-  # @param	mixed	the item to escape
-  # @return	mixed	the item with backticks
+  # @private
+  # @param  [Mixed]  the item to escape
+  # @return [Mixed]  the item with backticks
   #
   protect_identifiers : ($item, $prefix_single = false) ->
     return @_protect_identifiers($item, $prefix_single)
@@ -1016,12 +959,10 @@ class system.db.Driver
   # insert the table prefix (if it exists) in the proper position, and escape only
   # the correct identifiers.
   #
-  # @access	private
-  # @param	string
-  # @param	bool
-  # @param	mixed
-  # @param	bool
-  # @return	string
+  # @private
+  # @param  [String]    # @return	[Boolean]
+  # @param  [Mixed]  # @return	[Boolean]
+  # @return	[String]
   #
   _protect_identifiers: ($item, $prefix_single = false, $protect_identifiers = null, $field_exists = true) ->
 

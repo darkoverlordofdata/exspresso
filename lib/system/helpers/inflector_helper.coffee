@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -43,9 +41,7 @@
 #
 # Takes a plural word and makes it singular
 #
-# @access	public
-# @param	string
-# @return	str
+# @param  [String]  # @return	str
 #
 if not function_exists('singular')
   exports.singular = singular = ($str) ->
@@ -79,9 +75,7 @@ if not function_exists('singular')
 #
 # Takes a singular word and makes it plural
 #
-# @access	public
-# @param	string
-# @param	bool
+# @param  [String]  # @return	[Boolean]
 # @return	str
 #
 if not function_exists('plural')
@@ -122,9 +116,7 @@ if not function_exists('plural')
 #
 # Takes multiple words separated by spaces or underscores and camelizes them
 #
-# @access	public
-# @param	string
-# @return	str
+# @param  [String]  # @return	str
 #
 if not function_exists('camelize')
   exports.camelize = camelize = ($str) ->
@@ -141,9 +133,7 @@ if not function_exists('camelize')
 #
 # Takes multiple words separated by spaces and underscores them
 #
-# @access	public
-# @param	string
-# @return	str
+# @param  [String]  # @return	str
 #
 if not function_exists('underscore')
   exports.underscore = underscore = ($str) ->
@@ -158,9 +148,7 @@ if not function_exists('underscore')
 #
 # Takes multiple words separated by underscores and changes them to spaces
 #
-# @access	public
-# @param	string
-# @return	str
+# @param  [String]  # @return	str
 #
 if not function_exists('humanize')
   exports.humanize = humanize = ($str) ->

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -55,8 +53,7 @@ class system.core.Hooks
   # Initialize the Hooks Preferences
   #
   # @access  private
-  # @return  void
-  #
+  # @return [Void]  #
   _initialize :  ->
 
     @hooks = {}
@@ -93,10 +90,9 @@ class system.core.Hooks
   # Calls a particular hook
   #
   # @access  private
-  # @param  string  the hook name
-  # @param  object  the controller instance instance
-  # @return  mixed
-  #
+  # @param  [String]  the hook name
+  # @param  [Object]  the controller instance instance
+  # @return [Mixed]  #
   callHook : ($which = '', $instance = null) ->
 
     if not @enabled or  not @hooks[$which]?
@@ -118,7 +114,7 @@ class system.core.Hooks
   # Runs a particular hook
   #
   # @access  private
-  # @param  array  the hook details
+  # @param  [Array]  the hook details
   # @return  bool
   #
   runHook : ($data, $instance) ->

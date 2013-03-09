@@ -18,12 +18,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -147,7 +145,7 @@ class system.lib.Profiler
   #
   # Compile Queries
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_queries: () ->
 
@@ -207,7 +205,7 @@ class system.lib.Profiler
   #
   # Compile @$_GET Data
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_get: () ->
     $output = "\n\n"
@@ -245,7 +243,7 @@ class system.lib.Profiler
   #
   # Compile @$_POST Data
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_post: () ->
     $output = "\n\n"
@@ -284,7 +282,7 @@ class system.lib.Profiler
   #
   # Show query string
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_uri_string: () ->
     $output = "\n\n"
@@ -306,7 +304,7 @@ class system.lib.Profiler
   #
   # Show the controller and function that were called
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_controller_info: () ->
     $output = "\n\n"
@@ -334,7 +332,7 @@ class system.lib.Profiler
   #
   # Display total used memory
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_memory_usage: () ->
     $output = "\n\n"
@@ -358,7 +356,7 @@ class system.lib.Profiler
   #
   # Lists HTTP headers
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_http_headers: () ->
     $output = "\n\n"
@@ -383,7 +381,7 @@ class system.lib.Profiler
   #
   # Lists developer config variables
   #
-  # @return	string
+  # @return	[String]
   #
   _compile_config: () ->
     $output = "\n\n"
@@ -410,8 +408,7 @@ class system.lib.Profiler
   #
   #   Injects the results into the generated html stream
   #
-  # @param string
-  # @return	string
+  # @param  [String]    # @return	[String]
   #
   run: () ->
 

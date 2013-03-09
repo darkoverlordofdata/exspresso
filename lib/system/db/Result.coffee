@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -56,9 +54,8 @@ class system.db.Result
   #
   # Query result.  Acts as a wrapper function for the following functions.
   #
-  # @access	public
-  # @param	string	can be "object" or "array"
-  # @return	mixed	either a result object or array
+  # @param  [String]  can be "object" or "array"
+  # @return [Mixed]  either a result object or array
   #
   result : ($type = 'object') ->
 
@@ -102,8 +99,7 @@ class system.db.Result
   #
   # Query result.  "object" version.
   #
-  # @access	public
-  # @return	object
+  # @return [Object]
   #
   resultObject : () ->
     return @_result_array
@@ -112,7 +108,6 @@ class system.db.Result
   #
   # Query result.  "array" version.
   #
-  # @access	public
   # @return	array
   #
   resultArray : () ->
@@ -122,10 +117,9 @@ class system.db.Result
   #
   # Query result.  Acts as a wrapper function for the following functions.
   #
-  # @access	public
-  # @param	string
-  # @param	string	can be "object" or "array"
-  # @return	mixed	either a result object or array
+  # @param  [String]
+  # @param  [String]  can be "object" or "array"
+  # @return [Mixed]  either a result object or array
   #
   row : ($n = 0, $type = 'object') ->
     if not is_numeric($n)
@@ -152,8 +146,8 @@ class system.db.Result
   #
   # Assigns an item into a particular column slot
   #
-  # @access	public
-  # @return	object
+  # @return [Object]
+  #
   setRow: ($key, $value = null) ->
     if not is_array(@_row_data)
       @_row_data = @rowArray(0)
@@ -172,8 +166,8 @@ class system.db.Result
   #
   # Returns a single result row - custom object version
   #
-  # @access	public
-  # @return	object
+  # @return [Object]
+  #
   customRowObject : ($n, $type) ->
     $result = @customResultObject($type)
 
@@ -190,8 +184,8 @@ class system.db.Result
   #
   # Returns a single result row - object version
   #
-  # @access	public
-  # @return	object
+  # @return [Object]
+  #
   rowObject : ($n = 0) ->
 
     if @_result_object.length is 0
@@ -205,8 +199,8 @@ class system.db.Result
   #
   # Returns a single result row - array version
   #
-  # @access	public
   # @return	array
+  #
   rowArray : ($n = 0) ->
 
     if @_result_array.length is 0
@@ -220,8 +214,8 @@ class system.db.Result
   #
   # Returns the "first" row
   #
-  # @access	public
-  # @return	object
+  # @return [Object]
+  #
   firstRow : ($type = 'object') ->
 
     if @_result_array.length is 0
@@ -232,9 +226,7 @@ class system.db.Result
   #
   # Returns the "last" row
   #
-  # @access	public
-  # @return	object
-  lastRow : ($type = 'object') ->
+    # @return [Object]  lastRow : ($type = 'object') ->
 
     if @_result_array.length is 0
       return {}
@@ -244,8 +236,8 @@ class system.db.Result
   #
   # Returns the "next" row
   #
-  # @access	public
-  # @return	object
+  # @return [Object]
+  #
   nextRow : ($type = 'object') ->
 
     if @_result_array.length is 0
@@ -261,8 +253,8 @@ class system.db.Result
   #
   # Returns the "previous" row
   #
-  # @access	public
-  # @return	object
+  # @return [Object]
+  #
   previousRow : ($type = 'object') ->
 
     if @_result_array.length is 0

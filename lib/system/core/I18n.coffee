@@ -25,7 +25,7 @@
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
-# @link		    http://darkoverlordofdata.com
+# @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
 
@@ -46,8 +46,7 @@ class system.core.I18n
   #
   # Constructor
   #
-  # @access  public
-  # @param object   ExspressoConfig
+  # @param  [Object]    ExspressoConfig
   #
   constructor : ($config) ->
 
@@ -61,11 +60,9 @@ class system.core.I18n
   #
   # Load a module language file
   #
-  # @access	public
-  # @param	mixed	the name of the language file to be loaded. Can be an array
-  # @param	string	the language (english, etc.)
-  # @return	mixed
-  #
+    # @param  [Mixed]  the name of the language file to be loaded. Can be an array
+  # @param  [String]  the language (english, etc.)
+  # @return [Mixed]  #
   load: ($langfile, $lang = '', $module = '', $return = false) ->
 
     if is_array($langfile)
@@ -94,11 +91,9 @@ class system.core.I18n
   #
   # Load a language file
   #
-  # @access  public
-  # @param  mixed  the name of the language file to be loaded. Can be an array
-  # @param  string  ISO 639-1 code
-  # @return  mixed
-  #
+  # @param  [Mixed]  the name of the language file to be loaded. Can be an array
+  # @param  [String]  ISO 639-1 code
+  # @return [Mixed]  #
   _application_load: ($langfile = '', $code = '', $return = false) ->
 
     $langfile = $langfile.replace(EXT, '')+'.json'
@@ -140,9 +135,8 @@ class system.core.I18n
   #
   # Fetch a single line of text from the language array
   #
-  # @access  public
-  # @param  string  $line  the language line
-  # @return  string
+  # @param  [String]  $line  the language line
+  # @return  [String]
   #
   line : ($line = '') ->
     $line = if ($line is '' or  not @_language[$line]? ) then false else @_language[$line]

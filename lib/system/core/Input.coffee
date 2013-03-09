@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -54,15 +52,13 @@ class system.core.Input
   #
   # Constructor
   #
-  # @access	public
-  # @param object   core/Utf8
-  # @param object   core/Security
-  # @param object   http request cookies object
-  # @param object   http request query object
-  # @param object   http request body object
-  # @param object   http request server object
-  # @return	void
-  #
+    # @param  [Object]    core/Utf8
+  # @param  [Object]    core/Security
+  # @param  [Object]    http request cookies object
+  # @param  [Object]    http request query object
+  # @param  [Object]    http request body object
+  # @param  [Object]    http request server object
+  # @return [Void]  #
   constructor: ($req, $utf, $security) ->
 
     defineProperties @,
@@ -84,10 +80,8 @@ class system.core.Input
   #
   # Fetch an item from the GET array
   #
-  # @access	public
-  # @param	string
-  # @param	bool
-  # @return	string
+    # @param  [String]    # @return	[Boolean]
+  # @return	[String]
   #
   get : ($index = null, $xss_clean = false) ->
 
@@ -106,10 +100,8 @@ class system.core.Input
   #
   # Fetch an item from the POST array
   #
-  # @access	public
-  # @param	string
-  # @param	bool
-  # @return	string
+    # @param  [String]    # @return	[Boolean]
+  # @return	[String]
   #
   post : ($index = null, $xss_clean = false) ->
 
@@ -127,10 +119,9 @@ class system.core.Input
   #
   # Fetch an item from either the GET array or the POST
   #
-  # @access	public
-  # @param	string	The index key
-  # @param	bool	XSS cleaning
-  # @return	string
+    # @param  [String]  The index key
+  # @return	[Boolean]	XSS cleaning
+  # @return	[String]
   #
   getPost : ($index = '', $xss_clean = false) ->
 
@@ -142,10 +133,8 @@ class system.core.Input
   #
   # Fetch an item from the COOKIE array
   #
-  # @access	public
-  # @param	string
-  # @param	bool
-  # @return	string
+    # @param  [String]    # @return	[Boolean]
+  # @return	[String]
   #
   cookie : ($index = '', $xss_clean = false) ->
     return @_fetch_from_array(@_cookies, $index, $xss_clean)
@@ -156,16 +145,13 @@ class system.core.Input
   # Accepts six parameter, or you can submit an associative
   # array in the first parameter containing all the values.
   #
-  # @access	public
-  # @param	mixed
-  # @param	string	the value of the cookie
-  # @param	string	the number of seconds until expiration
-  # @param	string	the cookie domain.  Usually:  .yourdomain.com
-  # @param	string	the cookie path
-  # @param	string	the cookie prefix
-  # @param	bool	true makes the cookie secure
-  # @return	void
-  #
+    # @param  [Mixed]  # @param  [String]  the value of the cookie
+  # @param  [String]  the number of seconds until expiration
+  # @param  [String]  the cookie domain.  Usually:  .yourdomain.com
+  # @param  [String]  the cookie path
+  # @param  [String]  the cookie prefix
+  # @return	[Boolean]	true makes the cookie secure
+  # @return [Void]  #
   setCookie : ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
 
     if $prefix is '' and config_item('cookie_prefix') isnt ''
@@ -193,10 +179,8 @@ class system.core.Input
   #
   # Fetch an item from the SERVER array
   #
-  # @access	public
-  # @param	string
-  # @param	bool
-  # @return	string
+    # @param  [String]    # @return	[Boolean]
+  # @return	[String]
   #
   server : ($index = '', $xss_clean = false) ->
     return @_fetch_from_array(@_server, $index, $xss_clean)
@@ -204,8 +188,7 @@ class system.core.Input
   #
   # Fetch the IP Address
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   ipAddress :  ->
     #return @req.ip
@@ -242,8 +225,7 @@ class system.core.Input
   #
   # User Agent
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   userAgent:  ->
     if @_user_agent isnt false
@@ -254,9 +236,7 @@ class system.core.Input
   #
   # Validate IP Address
   #
-  # @access	public
-  # @param	string
-  # @param	string	ipv4 or ipv6
+    # @param  [String]    # @param  [String]  ipv4 or ipv6
   # @return	bool
   #
   validIp: ($ip, $which = '') ->
@@ -277,7 +257,7 @@ class system.core.Input
 
   # Request Headers
   #
-  # @param	bool XSS cleaning
+  # @return	[Boolean] XSS cleaning
   #
   # @return array
   requestHeaders : ($xss_clean = false) ->
@@ -290,9 +270,9 @@ class system.core.Input
   #
   # Returns the value of a single member of the headers class member
   #
-  # @param 	string		array key for $this->headers
-  # @param	boolean		XSS Clean or not
-  # @return 	mixed		FALSE on failure, string on success
+  # @param  [String]  array key for $this->headers
+  # @return	[Boolean]ean		XSS Clean or not
+  # @return [Mixed]  FALSE on failure, string on success
   getRequestHeader : ($index, $xss_clean = false) ->
     if empty(@_headers)
       @requestHeaders()
@@ -329,11 +309,9 @@ class system.core.Input
   #
   # This is a helper function to retrieve values from global arrays
   #
-  # @access	private
-  # @param	array
-  # @param	string
-  # @param	bool
-  # @return	string
+  # @private
+  # @param  [Array]  # @param  [String]    # @return	[Boolean]
+  # @return	[String]
   #
   _fetch_from_array : ($array, $index = '', $xss_clean = false) ->
     if not $array[$index]?
@@ -351,8 +329,7 @@ class system.core.Input
   # Updated version suggested by Geert De Deckere
   #
   # @access	protected
-  # @param	string
-  # @return	bool
+  # @param  [String]    # @return	bool
   #
   _valid_ipv4 : ($ip) ->
     $ip_segments = explode('.', $ip)
@@ -379,8 +356,7 @@ class system.core.Input
   # Validate IPv6 Address
   #
   # @access	protected
-  # @param	string
-  # @return	bool
+  # @param  [String]    # @return	bool
   #
   _valid_ipv6 : ($str) ->
     #  8 groups, separated by :
@@ -434,8 +410,9 @@ class system.core.Input
   #
   # Standardizes newline characters to \n
   #
-  # @access	private
-  # @return	void
+  # @private
+  # @return [Void]
+  #
   _sanitize_globals :  ->
 
     #  Is $_GET data allowed? If not we'll set the $_GET to an empty array
@@ -473,9 +450,8 @@ class system.core.Input
   # This is a helper function. It escapes data and
   # standardizes newline characters to \n
   #
-  # @access	private
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @return	[String]
   _clean_input_data : ($str) ->
     if is_array($str)
       $new_array = {}
@@ -509,9 +485,8 @@ class system.core.Input
   # from trying to exploit keys we make sure that keys are
   # only named with alpha-numeric text and a few other items.
   #
-  # @access	private
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @return	[String]
   _clean_input_keys : ($str) ->
     #if not preg_match("/^[a-z0-9:_\/-]+$/i", $str)?
     if not /^[a-z0-9:_\/-]+$/i.test($str)

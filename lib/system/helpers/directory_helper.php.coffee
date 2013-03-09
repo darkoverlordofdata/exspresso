@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -45,8 +43,7 @@ fs = require('fs')
 # representation of it.  Sub-folders contained with the
 # directory will be mapped as well.
 #
-# @access	public
-# @param	string	path to source
+# @param  [String]  path to source
 # @param	int		depth of directories to traverse (0 = fully recursive, 1 = current dir, etc)
 # @return	array
 #

@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -41,8 +39,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #
   # Load the user data model
   #
-  # @param  object
-  # @return 	nothing
+  # @param  [Object]  # @return 	nothing
   #
   constructor: (@parent) ->
 
@@ -53,8 +50,8 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #
   # Get the session data
   #
-  # @param string session id
-  # @param function next
+  # @param  [String]  session id
+  # @param  [Function]  next
   # @return 	nothing
   #
   get: ($sid, $next) ->
@@ -85,9 +82,9 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #
   # Set the session data
   #
-  # @param string session id
-  # @param string session data
-  # @param function next
+  # @param  [String]  session id
+  # @param  [String]  session data
+  # @param  [Function]  next
   # @return 	nothing
   #
   set: ($sid, $session, $next) ->
@@ -131,8 +128,8 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #
   # Delete the session data
   #
-  # @param string session id
-  # @param function $next
+  # @param  [String]  session id
+  # @param  [Function]  $next
   # @return 	nothing
   #
   destroy: ($sid, $next) ->
@@ -154,9 +151,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #   create user & session tables if they doesn't exist
   #   called when Session library is auto loaded during boot
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   installCheck: ->
 
     exspresso.usermodel.installCheck()
@@ -168,10 +163,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #   Retrieve an item from a table and remove it
   #   If not found, return the default value
   #
-  # @param object
-  # @param string
-  # @param string
-  # @return string
+  # @param  [Object]    # @param  [String]    # @param  [String]    # @return string
   #
   fetch = ($table, $key, $default='') ->
     if $table[$key]?

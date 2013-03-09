@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -50,9 +48,7 @@ class application.core.ExpressServer extends system.core.Server
   #
   # Set the server instance
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   constructor: ($config = {}) ->
 
     log_message('debug', "Express Driver Initialized")
@@ -63,9 +59,7 @@ class application.core.ExpressServer extends system.core.Server
   #
   # Add view helpers
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   setHelpers: ($helpers) ->
 
     @app.locals $helpers
@@ -74,9 +68,7 @@ class application.core.ExpressServer extends system.core.Server
   #
   # Start me up ...
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   start: ($router) ->
     super $router, =>
 
@@ -123,10 +115,8 @@ class application.core.ExpressServer extends system.core.Server
   #
   #   called by the Server class constructor
   #
-  # @access	public
-  # @param	object exspresso.config
-  # @return	void
-  #
+    # @param  [Object]  exspresso.config
+  # @return [Void]  #
   config: ($config) ->
 
     super $config
@@ -179,12 +169,7 @@ class application.core.ExpressServer extends system.core.Server
   #
   # Patch the express server objects
   #
-  # @access	public
-  # @param object
-  # @param object
-  # @param function
-  # @return	void
-  #
+    # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
   patch: -> ($req, $res, $next) =>
 
     exspresso.config.setItem('base_url', $req.protocol+'://'+ $req.headers['host'])

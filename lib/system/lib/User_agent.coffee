@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -63,9 +61,7 @@ class system.lib.UserAgent
   #
   # Sets the User Agent and runs the compilation routine
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   constructor: ($controller, $config = {}) ->
 
     super $controller, $config
@@ -90,7 +86,7 @@ class system.lib.UserAgent
   #
   # Compile the User Agent Data
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _load_agent_file: () ->
@@ -129,7 +125,7 @@ class system.lib.UserAgent
   #
   # Compile the User Agent Data
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _compile_data: () ->
@@ -143,9 +139,8 @@ class system.lib.UserAgent
   #
   # Set the Platform
   #
-  # @access	private
-  # @return	mixed
-  #
+  # @private
+  # @return [Mixed]  #
   _set_platform: () ->
 
     if is_array(@_platforms) and count(@_platforms) > 0
@@ -161,7 +156,7 @@ class system.lib.UserAgent
   #
   # Set the Browser
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _set_browser: () ->
@@ -180,7 +175,7 @@ class system.lib.UserAgent
   #
   # Set the Robot
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _set_robot: () ->
@@ -197,7 +192,7 @@ class system.lib.UserAgent
   #
   # Set the Mobile Device
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _set_mobile: () ->
@@ -215,9 +210,8 @@ class system.lib.UserAgent
   #
   # Set the accepted languages
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _set_languages: () ->
 
     # req.acceptedLanguages
@@ -235,9 +229,8 @@ class system.lib.UserAgent
   #
   # Set the accepted character sets
   #
-  # @access	private
-  # @return	void
-  #
+  # @private
+  # @return [Void]  #
   _set_charsets: () ->
 
     # req.acceptedCharsets
@@ -255,8 +248,7 @@ class system.lib.UserAgent
   #
   # Is Browser
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   isBrowser: ($key = null) ->
 
@@ -273,8 +265,7 @@ class system.lib.UserAgent
   #
   # Is Robot
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   isRobot: ($key = null) ->
 
@@ -291,8 +282,7 @@ class system.lib.UserAgent
   #
   # Is Mobile
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   isMobile: ($key = null) ->
 
@@ -310,8 +300,7 @@ class system.lib.UserAgent
   #
   # Is this a referral from another site?
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   isReferral: () ->
 
@@ -321,8 +310,7 @@ class system.lib.UserAgent
   #
   # Agent String
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   agentString: () ->
     @_agent
@@ -330,8 +318,7 @@ class system.lib.UserAgent
   #
   # Get Platform
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   platform: () ->
     @_platform
@@ -339,8 +326,7 @@ class system.lib.UserAgent
   #
   # Get Browser Name
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   browser: () ->
     @_browser
@@ -348,8 +334,7 @@ class system.lib.UserAgent
   #
   # Get the Browser Version
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   version: () ->
     @_version
@@ -357,8 +342,7 @@ class system.lib.UserAgent
   #
   # Get The Robot Name
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   robot: () ->
     @_robot
@@ -366,8 +350,7 @@ class system.lib.UserAgent
   #
   # Get the Mobile Device
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   mobile: () ->
     @_mobile
@@ -376,8 +359,7 @@ class system.lib.UserAgent
   #
   # Get the referrer
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   #req.headers['referer']
   referrer: () ->
@@ -387,8 +369,7 @@ class system.lib.UserAgent
   #
   # Get the accepted languages
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   languages: () ->
     if count(@_languages) is 0
@@ -400,8 +381,7 @@ class system.lib.UserAgent
   #
   # Get the accepted Character Sets
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   charsets: () ->
     if count(@_charsets) is 0
@@ -413,8 +393,7 @@ class system.lib.UserAgent
   #
   # Test for a particular language
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   acceptLang: ($lang = 'en') ->
     in_array(strtolower($lang), @_languages(), true)
@@ -423,8 +402,7 @@ class system.lib.UserAgent
   #
   # Test for a particular character set
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   acceptCharset: ($charset = 'utf-8') ->
     in_array(strtolower($charset), @_charsets(), true)

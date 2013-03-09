@@ -24,7 +24,7 @@
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @license		MIT License
-# @link		    http://darkoverlordofdata.com
+# @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
 
@@ -70,13 +70,11 @@ class system.core.Security
   #
   # Constructor
   #
-  # @access	public
-  # @param object   http request cookies object
-  # @param object   http request query object
-  # @param object   http request body object
-  # @param object   http request server object
-  # @return	void
-  #
+    # @param  [Object]    http request cookies object
+  # @param  [Object]    http request query object
+  # @param  [Object]    http request body object
+  # @param  [Object]    http request server object
+  # @return [Void]  #
   constructor :  ($req, $res) ->
 
     defineProperties @,
@@ -106,8 +104,7 @@ class system.core.Security
   #
   # Verify Cross Site Request Forgery Protection
   #
-  # @return	object
-  #
+  # @return [Object]  #
   csrfVerify :  ->
     #  If it's not a POST request we will set the CSRF cookie
     if strtoupper(@_server['REQUEST_METHOD']) isnt 'POST' 
@@ -139,8 +136,7 @@ class system.core.Security
   #
   # Set Cross Site Request Forgery Protection Cookie
   #
-  # @return	object
-  #
+  # @return [Object]  #
   csrfSetCookie :  ->
     $expire = time() + @_csrf_expire
     $secure_cookie = if (config_item('cookie_secure') is true) 1 else 0
@@ -162,8 +158,7 @@ class system.core.Security
   #
   # Show CSRF Error
   #
-  # @return	void
-  #
+  # @return [Void]  #
   csrfShowError :  ->
     show_error('The action you have requested is not allowed.')
     
@@ -212,9 +207,9 @@ class system.core.Security
   # harvested from examining vulnerabilities in other programs:
   # http://ha.ckers.org/xss.html
   #
-  # @param	mixed	string or array
+  # @param  [Mixed]  string or array
   # @param 	bool
-  # @return	string
+  # @return	[String]
   #
   xssClean : ($str, $is_image = false) ->
     #
@@ -371,7 +366,7 @@ class system.core.Security
   #
   # Random Hash for protecting URLs
   #
-  # @return	string
+  # @return	[String]
   #
   xss_hash :  ->
     if @_xss_hash is '' 
@@ -391,9 +386,7 @@ class system.core.Security
   # correctly.  html_entityDecode() does not convert entities without
   # semicolons, so we are left with our own little solution here. Bummer.
   #
-  # @param	string
-  # @param	string
-  # @return	string
+  # @param  [String]    # @param  [String]    # @return	[String]
   #
   entityDecode : ($str, $charset = 'UTF-8') ->
     if stristr($str, '&') is false 
@@ -409,9 +402,8 @@ class system.core.Security
   #
   # Filename Security
   #
-  # @param	string
-  # @param 	bool
-  # @return	string
+  # @param  [String]    # @param 	bool
+  # @return	[String]
   #
   sanitizeFilename : ($str, $relative_path = false) ->
     $bad = [
@@ -481,7 +473,7 @@ class system.core.Security
   #		For example, everything between the pipes:
   #		<a |style="document.write('hello'); alert('world');"| class="link">
   #
-  # @param string $str The string to check
+  # @param  [String]  $str The string to check
   # @param boolean $is_image TRUE if this is an image
   # @return string The string with the evil attributes removed
   #
@@ -535,8 +527,7 @@ class system.core.Security
   #
   # Callback function for xssClean() to remove naughty HTML elements
   #
-  # @param	array
-  # @return	string
+  # @param  [Array]  # @return	[String]
   #
   _sanitize_naughty_html : ($matches...) =>
     #  encode opening brace
@@ -557,8 +548,7 @@ class system.core.Security
   # and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
   # PHP 5.2+ on link-heavy strings
   #
-  # @param	array
-  # @return	string
+  # @param  [Array]  # @return	[String]
   #
   _js_link_removal : ($match...) =>
     return str_replace($match[1], preg_replace('#href=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|data\\s*:)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
@@ -575,8 +565,7 @@ class system.core.Security
   # and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
   # PHP 5.2+ on image tag heavy strings
   #
-  # @param	array
-  # @return	string
+  # @param  [Array]  # @return	[String]
   #
   _js_img_removal : ($match...) =>
     return str_replace($match[1], preg_replace('#src=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|base64\\s*,)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
@@ -590,8 +579,7 @@ class system.core.Security
   #
   # Used as a callback for XSS Clean
   #
-  # @param	array
-  # @return	string
+  # @param  [Array]  # @return	[String]
   #
   _convert_attribute : ($match...) =>
     return str_replace(['>', '<', '\\'], ['&gt;', '&lt;', '\\\\'], $match[0])
@@ -602,8 +590,7 @@ class system.core.Security
   #
   # Filters tag attributes for consistency and safety
   #
-  # @param	string
-  # @return	string
+  # @param  [String]    # @return	[String]
   #
   _filter_attributes : ($str) ->
     $out = ''
@@ -620,8 +607,7 @@ class system.core.Security
   #
   # Used as a callback for XSS Clean
   #
-  # @param	array
-  # @return	string
+  # @param  [Array]  # @return	[String]
   #
   _decode_entity : ($match...) =>
     return @entityDecode($match[0], strtoupper(config_item('charset')))
@@ -632,8 +618,7 @@ class system.core.Security
   #
   # Called by xssClean()
   #
-  # @param 	string
-  # @return 	string
+  # @param  [String]  # @return 	string
   #
   _validate_entities : ($str) ->
     #
@@ -674,8 +659,7 @@ class system.core.Security
   #
   # A utility function for xssClean()
   #
-  # @param 	string
-  # @return 	string
+  # @param  [String]  # @return 	string
   #
   _do_never_allowed : ($str) ->
     $str = str_replace(array_keys(@_never_allowed_str), @_never_allowed_str, $str)
@@ -689,7 +673,7 @@ class system.core.Security
   #
   # Set Cross Site Request Forgery Protection Cookie
   #
-  # @return	string
+  # @return	[String]
   #
   _csrf_set_hash :  ->
     if @_csrf_hash is '' 

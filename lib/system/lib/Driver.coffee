@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -43,9 +41,7 @@ class system.lib.Driver
   #
   # Decorates the child with the parent driver lib's methods and properties
   #
-  # @param	object
-  # @return	void
-  #
+  # @param  [Object]    # @return [Void]  #
   decorate: ($parent) ->
 
     # Decorate the driver with forwarders to the

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -37,7 +35,7 @@
 # @subpackage	Libraries
 # @category	Shopping Cart
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/cart.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/cart.html
 #
 class ExspressoCart
   
@@ -86,9 +84,7 @@ class ExspressoCart
   #
   # Insert items into the cart and save it to the session table
   #
-  # @access	public
-  # @param	array
-  # @return	bool
+    # @param  [Array]  # @return	bool
   #
   insert : ($items = {}) ->
     #  Was any cart data passed? No? Bah...
@@ -130,9 +126,8 @@ class ExspressoCart
   #
   # Insert
   #
-  # @access	private
-  # @param	array
-  # @return	bool
+  # @private
+  # @param  [Array]  # @return	bool
   #
   _insert : ($items = {}) ->
     #  Was any cart data passed? No? Bah...
@@ -242,10 +237,7 @@ class ExspressoCart
   # changes to the quantity before checkout. That array must contain the
   # product ID and quantity for each item.
   #
-  # @access	public
-  # @param	array
-  # @param	string
-  # @return	bool
+    # @param  [Array]  # @param  [String]    # @return	bool
   #
   update : ($items = {}) ->
     #  Was any cart data passed?
@@ -290,9 +282,8 @@ class ExspressoCart
   # changes to the quantity before checkout. That array must contain the
   # product ID and quantity for each item.
   #
-  # @access	private
-  # @param	array
-  # @return	bool
+  # @private
+  # @param  [Array]  # @return	bool
   #
   _update : ($items = {}) ->
     #  Without these array indexes there is nothing we can do
@@ -329,7 +320,7 @@ class ExspressoCart
   #
   # Save the cart array to the session DB
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _save_cart :  ->
@@ -374,8 +365,7 @@ class ExspressoCart
   #
   # Cart Total
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   total :  ->
     return @_cart_contents['cart_total']
@@ -386,8 +376,7 @@ class ExspressoCart
   #
   # Returns the total item count
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   total_items :  ->
     return @_cart_contents['total_items']
@@ -398,8 +387,7 @@ class ExspressoCart
   #
   # Returns the entire cart array
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   contents :  ->
     $cart = @_cart_contents
@@ -417,8 +405,7 @@ class ExspressoCart
   # Returns TRUE if the rowid passed to this function correlates to an item
   # that has options associated with it.
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   has_options : ($rowid = '') ->
     if not @_cart_contents[$rowid]['options']?  or count(@_cart_contents[$rowid]['options']) is 0
@@ -433,8 +420,7 @@ class ExspressoCart
   #
   # Returns the an array of options, for a particular product row ID
   #
-  # @access	public
-  # @return	array
+    # @return	array
   #
   product_options : ($rowid = '') ->
     if not @_cart_contents[$rowid]['options']? 
@@ -449,8 +435,7 @@ class ExspressoCart
   #
   # Returns the supplied number with commas and a decimal point.
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   format_number : ($n = '') ->
     if $n is ''
@@ -468,8 +453,7 @@ class ExspressoCart
   #
   # Empties the cart and kills the session
   #
-  # @access	public
-  # @return	null
+    # @return	null
   #
   destroy :  ->
     delete @_cart_contents

@@ -27,8 +27,7 @@ class Travel extends application.core.PublicController
   # Customer Login
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   #
   login: () ->
 
@@ -66,8 +65,7 @@ class Travel extends application.core.PublicController
   # Authenticate Customer credentials
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   #
   authenticate: () ->
 
@@ -108,8 +106,7 @@ class Travel extends application.core.PublicController
   # Customer Logout
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   #
   logout: () ->
 
@@ -126,8 +123,7 @@ class Travel extends application.core.PublicController
   # Search for hotels
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   #
   search: () ->
 
@@ -157,8 +153,7 @@ class Travel extends application.core.PublicController
   # Display hotel search results
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   hotels: ($start = 0) ->
 
     base_url = @load.helper('url').base_url
@@ -206,8 +201,7 @@ class Travel extends application.core.PublicController
   #
   #   @access	public
   #   @param string   The hotel record id#
-  #   @return	void
-  #
+  # @return [Void]  #
   hotel: ($id) ->
 
     @db.from 'hotel'
@@ -226,8 +220,7 @@ class Travel extends application.core.PublicController
   # Book the room
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   booking: ($id) ->
 
     if @input.post('cancel')? then return @redirect "/travel"
@@ -277,8 +270,7 @@ class Travel extends application.core.PublicController
   # Confirm the booking
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   confirm: ($id) ->
 
     if @input.getPost('cancel')? then return @redirect "/travel"
@@ -331,8 +323,7 @@ class Travel extends application.core.PublicController
   # Book/Revise/Cancel
   #
   #   @access	public
-  #   @return	void
-  #
+  # @return [Void]  #
   book: ($id) ->
 
     if not @session.userdata('customer')

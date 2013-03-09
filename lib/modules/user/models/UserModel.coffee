@@ -15,11 +15,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
@@ -43,9 +41,7 @@ class modules.user.models.UserModel extends system.core.Model
   #
   #   load user by uid
   #
-  # @access	public
-  # @return	object
-  #
+    # @return [Object]  #
   loadById: ($id, $next) ->
 
     @db.where 'uid', $id
@@ -61,9 +57,7 @@ class modules.user.models.UserModel extends system.core.Model
   #
   #   load user by name
   #
-  # @access	public
-  # @return	object
-  #
+    # @return [Object]  #
   loadByName: ($name, $next) ->
 
     @db.where 'name', $name
@@ -77,9 +71,7 @@ class modules.user.models.UserModel extends system.core.Model
   #
   # Load roles for a user
   #
-  # @access	public
-  # @return	object
-  #
+    # @return [Object]  #
   load_roles: ($uid, $next) ->
 
     @db.select 'roles.rid, name, description'
@@ -94,25 +86,19 @@ class modules.user.models.UserModel extends system.core.Model
   #
   # Add role to user
   #
-  # @access	public
-  # @return	object
-  #
+    # @return [Object]  #
   add_role: ($uid, $role, $next) ->
 
     #
     # Remove role from user
     #
-    # @access	public
-    # @return	object
-    #
+        # @return [Object]  #
   remove_role: ($uid, $role, $next) ->
 
   #
   # Delete a user
   #
-  # @access	public
-  # @return	object
-  #
+    # @return [Object]  #
   delete: ($uid, $next) ->
 
 
@@ -123,9 +109,7 @@ class modules.user.models.UserModel extends system.core.Model
   #   This is called from Server.start as part
   #   of the boot sequence.
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   installCheck: () ->
 
     # Migrate the session table
@@ -171,7 +155,7 @@ class Migrate
   # Set the owning controller
   #
   # @access public
-  # @param  object  Controller
+  # @param  [Object]  Controller
   #
   constructor: (@controller) ->
 

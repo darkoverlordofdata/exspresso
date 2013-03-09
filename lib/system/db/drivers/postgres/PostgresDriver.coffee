@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -61,8 +59,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Connection String
   #
-  # @access	private
-  # @return	string  postgres://username:password@hostname:port/database
+  # @private
+  # @return	[String]  postgres://username:password@hostname:port/database
   #
   _connect_string:  ->
 
@@ -75,7 +73,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Non-persistent database connection
   #
-  # @access	private called by the base class
+  # @private called by the base class
   # @return	resource
   #
   connect: ($next) =>
@@ -97,7 +95,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Persistent database connection
   #
-  # @access	private called by the base class
+  # @private called by the base class
   # @return	resource
   #
   db_pconnect:  ->
@@ -112,9 +110,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # Keep / reestablish the db connection if no queries have been
   # sent for a length of time exceeding the server's idle timeout
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   reconnect: ($next) -> @connect $next
 
 
@@ -124,7 +120,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Select the database
   #
-  # @access	private called by the base class
+  # @private called by the base class
   # @return	resource
   #
   db_select:  ->
@@ -137,10 +133,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Set client character set
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	resource
+    # @param  [String]    # @param  [String]    # @return	resource
   #
   dbSetCharset: ($charset, $collation, $next) ->
     #  @todo - add support if needed
@@ -153,8 +146,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Version number query string
   #
-  # @access	public
-  # @return	string
+    # @return	[String]
   #
   _version:  ->
     return "SELECT version() AS ver"
@@ -165,8 +157,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Execute the query
   #
-  # @access	private called by the base class
-  # @param	string	an SQL query
+  # @private called by the base class
+  # @param  [String]  an SQL query
   # @return	resource
   #
   _execute: ($sql, $params, $next) ->
@@ -181,9 +173,9 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # If needed, each database adapter can prep the query string
   #
-  # @access	private called by execute()
-  # @param	string	an SQL query
-  # @return	string
+  # @private called by execute()
+  # @param  [String]  an SQL query
+  # @return	[String]
   #
   _prep_query: ($sql) ->
     return $sql
@@ -194,8 +186,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Begin Transaction
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transBegin: ($test_mode = false) ->
     if not @_trans_enabled
@@ -220,8 +211,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Commit Transaction
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transCommit:  ->
     if not @_trans_enabled
@@ -240,8 +230,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Rollback Transaction
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   transRollback:  ->
     if not @_trans_enabled
@@ -261,10 +250,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Escape String
   #
-  # @access	public
-  # @param	string
-  # @param	bool	whether or not the string will be used in a LIKE condition
-  # @return	string
+    # @param  [String]    # @return	[Boolean]	whether or not the string will be used in a LIKE condition
+  # @return	[String]
   #
   escapeStr: ($str, $like = false) ->
     if is_array($str)
@@ -292,8 +279,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Affected Rows
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   affectedRows:  ->
 
@@ -303,8 +289,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Insert ID
   #
-  # @access	public
-  # @return	integer
+    # @return	integer
   #
   insertId: ($next) ->
 
@@ -323,9 +308,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # Generates a platform-specific query string that counts all records in
   # the specified database
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   countAll: ($table = '', $next) ->
     if $table is ''
@@ -345,9 +328,9 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query string so that the table names can be fetched
   #
-  # @access	private
-  # @param	boolean
-  # @return	string
+  # @private
+  # @return	[Boolean]ean
+  # @return	[String]
   #
   _list_tables: ($prefix_limit = false) ->
     $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
@@ -366,9 +349,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query string so that the column names can be fetched
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	string
+    # @param  [String]  the table name
+  # @return	[String]
   #
   _list_columns: ($table = '') ->
     return "SELECT column_name FROM information_schema.columns WHERE table_name ='" + $table + "'"
@@ -381,10 +363,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query so that the column data can be retrieved
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	object
-  #
+    # @param  [String]  the table name
+  # @return [Object]  #
   _field_data: ($table) ->
     return "SELECT * FROM " + $table + " LIMIT 1"
 
@@ -394,8 +374,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # The error message string
   #
-  # @access	private
-  # @return	string
+  # @private
+  # @return	[String]
   #
   _error_message:  ->
 
@@ -405,7 +385,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # The error message number
   #
-  # @access	private
+  # @private
   # @return	integer
   #
   _error_number:  ->
@@ -419,9 +399,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # This function escapes column and table names
   #
-  # @access	private
-  # @param	string
-  # @return	string
+  # @private
+  # @param  [String]    # @return	[String]
   #
   _escape_identifiers: ($item) ->
     if @_escape_char is ''
@@ -456,8 +435,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # This function implicitly groups FROM tables so there is no confusion
   # about operator precedence in harmony with SQL standards
   #
-  # @access	public
-  # @param	type
+    # @param	type
   # @return	type
   #
   _from_tables: ($tables) ->
@@ -475,11 +453,10 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the insert keys
-  # @param	array	the insert values
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the insert keys
+  # @param  [Array]  the insert values
+  # @return	[String]
   #
   _insert: ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ");" #SELECT LASTVAL() AS id;"
@@ -491,11 +468,10 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the insert keys
-  # @param	array	the insert values
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the insert keys
+  # @param  [Array]  the insert values
+  # @return	[String]
   #
   _insert_batch: ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
@@ -507,13 +483,12 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific update string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the update data
-  # @param	array	the where clause
-  # @param	array	the orderby clause
-  # @param	array	the limit clause
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the update data
+  # @param  [Array]  the where clause
+  # @param  [Array]  the orderby clause
+  # @param  [Array]  the limit clause
+  # @return	[String]
   #
   _update: ($table, $values, $where, $orderby = {}, $limit = false) ->
     $valstr = []
@@ -543,9 +518,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # If the database does not support the truncate() command
   # This function maps to "DELETE FROM table"
   #
-  # @access	public
-  # @param	string	the table name
-  # @return	string
+    # @param  [String]  the table name
+  # @return	[String]
   #
   _truncate: ($table) ->
     return "TRUNCATE " + $table
@@ -558,11 +532,10 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific delete string from the supplied data
   #
-  # @access	public
-  # @param	string	the table name
-  # @param	array	the where clause
-  # @param	string	the limit clause
-  # @return	string
+    # @param  [String]  the table name
+  # @param  [Array]  the where clause
+  # @param  [String]  the limit clause
+  # @return	[String]
   #
   _delete: ($table, $where = {}, $like = {}, $limit = false) ->
     $conditions = ''
@@ -588,11 +561,10 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific LIMIT clause
   #
-  # @access	public
-  # @param	string	the sql query string
-  # @param	integer	the number of rows to limit the query to
-  # @param	integer	the offset value
-  # @return	string
+    # @param  [String]  the sql query string
+  # @param  [Integer]  the number of rows to limit the query to
+  # @param  [Integer]  the offset value
+  # @return	[String]
   #
   _limit: ($sql, $limit, $offset) ->
     $sql+="LIMIT " + $limit
@@ -609,10 +581,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Close DB Connection
   #
-  # @access	public
-  # @param	resource
-  # @return	void
-  #
+    # @param	resource
+  # @return [Void]  #
   _close: ($next) ->
     #@done()
     #@client.end()

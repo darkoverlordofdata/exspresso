@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -42,10 +40,9 @@
 #
 # Fetches a language variable and optionally outputs a form label
 #
-# @access	public
-# @param	string	the language line
-# @param	string	the id of the form element
-# @return	string
+# @param  [String]  the language line
+# @param  [String]  the id of the form element
+# @return	[String]
 #
 if not function_exists('lang')
   exports.lang = lang = ($line, $id = '') ->

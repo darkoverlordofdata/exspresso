@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -39,7 +37,7 @@
 # @subpackage	Libraries
 # @category	Trackbacks
 # @author		darkoverlordofdata
-# @link		http://darkoverlordofdata.com/user_guide/lib/trackback.html
+# @see 		http://darkoverlordofdata.com/user_guide/lib/trackback.html
 #
 class ExspressoTrackback
   
@@ -53,8 +51,7 @@ class ExspressoTrackback
   #
   # Constructor
   #
-  # @access	public
-  #
+    #
   __construct()
   {
   log_message('debug', "Trackback Class Initialized")
@@ -63,9 +60,7 @@ class ExspressoTrackback
   #
   # Send Trackback
   #
-  # @access	public
-  # @param	array
-  # @return	bool
+    # @param  [Array]  # @return	bool
   #
   send : ($tb_data) ->
     if not is_array($tb_data)
@@ -131,8 +126,7 @@ class ExspressoTrackback
   # If the data is valid it is set to the $this->data array
   # so that it can be inserted into a database.
   #
-  # @access	public
-  # @return	bool
+    # @return	bool
   #
   receive :  ->
     for $val in ['url', 'title', 'blog_name', 'excerpt']
@@ -166,10 +160,7 @@ class ExspressoTrackback
   # sends the "incomplete information" error, as that's
   # the most common one.
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   send_error : ($message = 'Incomplete Information') ->
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?" + ">\n<response>\n<error>1</error>\n<message>" + $message + "</message>\n</response>"
     die()
@@ -181,9 +172,7 @@ class ExspressoTrackback
   # This should be called when a trackback has been
   # successfully received and inserted.
   #
-  # @access	public
-  # @return	void
-  #
+    # @return [Void]  #
   send_success :  ->
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?" + ">\n<response>\n<error>0</error>\n</response>"
     die()
@@ -192,9 +181,7 @@ class ExspressoTrackback
   #
   # Fetch a particular item
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   data : ($item) ->
     return if ( not @data[$item]? ) then '' else @data[$item]
@@ -206,10 +193,7 @@ class ExspressoTrackback
   # Opens a socket connection and passes the data to
   # the server.  Returns TRUE on success, FALSE on failure
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	bool
+    # @param  [String]    # @param  [String]    # @return	bool
   #
   process : ($url, $data) ->
     $target = parse_url($url)
@@ -262,9 +246,7 @@ class ExspressoTrackback
   # It takes a string of URLs (separated by comma or
   # space) and puts each URL into an array
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   extract_urls : ($urls) ->
     #  Remove the pesky white space and replace with a comma.
@@ -294,9 +276,7 @@ class ExspressoTrackback
   #
   # Simply adds "http://" if missing
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   validate_url : ($url) ->
     $url = trim($url)
@@ -309,9 +289,7 @@ class ExspressoTrackback
   #
   # Find the Trackback URL's ID
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   get_id : ($url) ->
     $tb_id = ""
@@ -349,9 +327,7 @@ class ExspressoTrackback
   #
   # Convert Reserved XML characters to Entities
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   convert_xml : ($str) ->
     $temp = '__TEMP_AMPERSANDS__'
@@ -374,11 +350,7 @@ class ExspressoTrackback
   #
   # Limits the string based on the character count. Will preserve complete words.
   #
-  # @access	public
-  # @param	string
-  # @param	integer
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [Integer]  # @param  [String]    # @return	[String]
   #
   limit_characters : ($str, $n = 500, $end_char = '&#8230;') ->
     if strlen($str) < $n
@@ -406,9 +378,7 @@ class ExspressoTrackback
   # Converts Hight ascii text and MS Word special chars
   # to character entities
   #
-  # @access	public
-  # @param	string
-  # @return	string
+    # @param  [String]    # @return	[String]
   #
   convert_ascii : ($str) ->
     $count = 1
@@ -445,10 +415,7 @@ class ExspressoTrackback
   #
   # Set error message
   #
-  # @access	public
-  # @param	string
-  # @return	void
-  #
+    # @param  [String]    # @return [Void]  #
   set_error : ($msg) ->
     log_message('error', $msg)
     @error_msg.push $msg
@@ -457,10 +424,7 @@ class ExspressoTrackback
   #
   # Show error messages
   #
-  # @access	public
-  # @param	string
-  # @param	string
-  # @return	string
+    # @param  [String]    # @param  [String]    # @return	[String]
   #
   display_errors : ($open = '<p>', $close = '</p>') ->
     $str = ''

@@ -19,12 +19,10 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package    Exspresso
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
+# @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 
@@ -39,7 +37,7 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   #
   # List databases
   #
-  # @access	private
+  # @private
   # @return	bool
   #
   _list_databases :  ->
@@ -51,10 +49,9 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   #
   # Is table optimization supported in Postgre?
   #
-  # @access	private
-  # @param	string	the table name
-  # @return	object
-  #
+  # @private
+  # @param  [String]  the table name
+  # @return [Object]  #
   _optimize_table : ($table) ->
     return false
     
@@ -64,10 +61,9 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   #
   # Are table repairs supported in Postgre?
   #
-  # @access	private
-  # @param	string	the table name
-  # @return	object
-  #
+  # @private
+  # @param  [String]  the table name
+  # @return [Object]  #
   _repair_table : ($table) ->
     return false
     
@@ -75,10 +71,9 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   #
   # Postgre Export
   #
-  # @access	private
-  # @param	array	Preferences
-  # @return	mixed
-  #
+  # @private
+  # @param  [Array]  Preferences
+  # @return [Mixed]  #
   _backup : ($params = {}) ->
     #  Currently unsupported
     return @db.display_error('db_unsuported_feature')
