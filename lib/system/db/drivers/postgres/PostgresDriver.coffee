@@ -527,7 +527,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _close: ($next) ->
     #@done()
     #@client.end()
-    $next()
+    $next() if $next?
 
 
 # End Class ExspressoPostgresDriver

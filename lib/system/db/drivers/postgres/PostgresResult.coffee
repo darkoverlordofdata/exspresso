@@ -35,7 +35,7 @@ class system.db.postgres.PostgresResult extends system.db.Result
 
   constructor: ($results) ->
     @_result_array = @_result_object = $results.rows
-    @_num_rows = @num_rows()
+    @_num_rows = @numRows()
 
   #
   # Number of rows in the result set
