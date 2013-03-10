@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Exspresso Documentation</title>
+  <link rel='stylesheet' href='../../../assets/codo.css' type='text/css'>
+  <script src='../../../assets/codo.js'></script>
+  <script src='../../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../../readme.md.html' title='Exspresso'>Exspresso</a>
+    &raquo;
+    <a href='../../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>system</span>
+    &raquo;
+    <span class='title'>core</span>
+    &raquo;
+    <span class='title'>Config</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        system.core.Config
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>lib&#47;system&#47;core&#47;Config.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Exspresso Config Class</p><p>This class contains functions that enable config files to be managed</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Property Summary</h2>
+      <dl class='properties'>
+        <dt id='_is_loaded-property'>
+          <span class='signature'>
+            (Object) <strong>_is_loaded</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>array list of loaded config files</p>
+        </dd>
+        <dt id='paths-property'>
+          <span class='signature'>
+            (Object) <strong>paths</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>array list of paths to load config files at</p>
+        </dd>
+        <dt id='config-property'>
+          <span class='signature'>
+            (Object) <strong>config</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>config data loaded from files</p>
+        </dd>
+      </dl>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>()
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor Sets the config data from the primary config.coffee file as a class variable
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#load-instance'>
+        - (Boolean) <strong>load</strong>($file = 'config', $use_sections = false, $fail_gracefully = false, $module = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Load Config File Checks in MODPATH first.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_application_load-instance'>
+        - (Boolean) <strong>_application_load</strong>($file = '', $use_sections = false, $fail_gracefully = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Load Application Config File Looks in APPPATH.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#item-instance'>
+        - (String) <strong>item</strong>($item, $index = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Fetch a config file item
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#slashItem-instance'>
+        - (Mixed) <strong>slashItem</strong>($item)
+      </a>
+    </span>
+    <span class='desc'>
+      Fetch a config file item - adds slash after item The second parameter allows a slash to be added to the end of the item, in the case of a path.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#siteUrl-instance'>
+        - (String) <strong>siteUrl</strong>($uri = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Site URL
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#systemUrl-instance'>
+        - (String) <strong>systemUrl</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      System URL
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setItem-instance'>
+        - (Void) <strong>setItem</strong>($item, $value)
+      </a>
+    </span>
+    <span class='desc'>
+      Set a config file item
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Constructor</p><p>Sets the config data from the primary config.coffee file as a class variable</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='load-instance'>
+      - (Boolean) <strong>load</strong>($file = 'config', $use_sections = false, $fail_gracefully = false, $module = '')
+    </p>
+    <div class='docstring'>
+  <p>Load Config File</p><p>Checks in MODPATH first. If not found, there, look the APPPATH and package folders.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>file</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config file name</span>
+    </li>
+    <li>
+      <span class='name'>use_sections</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>if configuration values should be loaded into their own section</span>
+    </li>
+    <li>
+      <span class='name'>fail_gracefully</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>true if errors should just return false, false if an error message should be displayed</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>module name from the uri</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>if the file was loaded correctly</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_application_load-instance'>
+      - (Boolean) <strong>_application_load</strong>($file = '', $use_sections = false, $fail_gracefully = false)
+    </p>
+    <div class='docstring'>
+  <p>Load Application Config File</p><p>Looks in APPPATH. If not found, then look in packages (if any)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>file</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config file name</span>
+    </li>
+    <li>
+      <span class='name'>use_sections</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>if configuration values should be loaded into their own section</span>
+    </li>
+    <li>
+      <span class='name'>fail_gracefully</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>true if errors should just return false, false if an error message should be displayed</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>if the file was loaded correctly</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='item-instance'>
+      - (String) <strong>item</strong>($item, $index = '')
+    </p>
+    <div class='docstring'>
+  <p>Fetch a config file item</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>item</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config item name</span>
+    </li>
+    <li>
+      <span class='name'>index</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the index name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the config item, empty string if not found</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='slashItem-instance'>
+      - (Mixed) <strong>slashItem</strong>($item)
+    </p>
+    <div class='docstring'>
+  <p>Fetch a config file item - adds slash after item</p><p>The second parameter allows a slash to be added to the end of
+the item, in the case of a path.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>item</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config item name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Mixed</tt>)
+      &mdash;
+      <span class='desc'>returns the slashed value, false if not found</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='siteUrl-instance'>
+      - (String) <strong>siteUrl</strong>($uri = '')
+    </p>
+    <div class='docstring'>
+  <p>Site URL</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>uri</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the URI string</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='systemUrl-instance'>
+      - (String) <strong>systemUrl</strong>()
+    </p>
+    <div class='docstring'>
+  <p>System URL</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setItem-instance'>
+      - (Void) <strong>setItem</strong>($item, $value)
+    </p>
+    <div class='docstring'>
+  <p>Set a config file item</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>item</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config item key</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config item value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.8.20).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

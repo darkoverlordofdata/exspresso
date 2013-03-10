@@ -92,6 +92,7 @@ class system.core.I18n
   #
   # Load an application language file
   #
+  # @private
   # @param  [String]  langfile  the name of the language file to be loaded. Can be an array
   # @param  [String]  lang  the language ISO 639-1 code(de, en, etc.)
   # @return [Object] a hash of key/values for the language

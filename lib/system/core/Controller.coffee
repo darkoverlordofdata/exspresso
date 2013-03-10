@@ -130,41 +130,40 @@ class system.core.Controller extends system.core.Object
   #
   constructor: ($server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method) ->
 
-    defineProperties @,
-
+    @define
       # $uri segments
-      module      : {writeable: false, enumerable: true, value: $module}      # $uri module name
-      class       : {writeable: false, enumerable: true, value: $class}       # $uri class name
-      method      : {writeable: false, enumerable: true, value: $method}      # $uri method name
+      module      : $module      # $uri module name
+      class       : $class       # $uri class name
+      method      : $method      # $uri method name
 
       # http objects
-      req         : {writeable: false, enumerable: true, value: $req}         # http Request object
-      res         : {writeable: false, enumerable: true, value: $res}         # http Response object
-      $_COOKIE    : {writeable: false, enumerable: true, value: $req.cookies} # http cookies
-      $_FILES     : {writeable: false, enumerable: true, value: $req.files}   # http dowmload files list
-      $_GET       : {writeable: false, enumerable: true, value: $req.query}   # http get values
-      $_POST      : {writeable: false, enumerable: true, value: $req.body}    # http post values
-      $_SERVER    : {writeable: false, enumerable: true, value: $req.server}  # server properties
+      req         : $req         # http Request object
+      res         : $res         # http Response object
+      $_COOKIE    : $req.cookies # http cookies
+      $_FILES     : $req.files   # http dowmload files list
+      $_GET       : $req.query   # http get values
+      $_POST      : $req.body    # http post values
+      $_SERVER    : $req.server  # server properties
 
       # methods
-      redirect    : {writeable: false, enumerable: true, value: @redirect}    # redirect url
-      render      : {writeable: false, enumerable: true, value: @render}      # render view
+      redirect    : @redirect    # redirect url
+      render      : @render      # render view
 
       # Assign all the class objects that were instantiated by the
       # bootstrap file (exspresso.coffee) to local class variables
       # so that Exspresso can run as one big super object.
-      bm          : {writeable: false, enumerable: true, value: $bench}       # system.core.Benchmark
-      config      : {writeable: false, enumerable: true, value: $config}      # system.core.Config
-      hooks       : {writeable: false, enumerable: true, value: $hooks}       # system.core.Hooks
-      input       : {writeable: false, enumerable: true, value: $input}       # system.core.Input
-      i18n        : {writeable: false, enumerable: true, value: $i18n}        # system.core.I18n
-      output      : {writeable: false, enumerable: true, value: $output}      # system.core.Output
-      security    : {writeable: false, enumerable: true, value: $security}    # system.core.Security
-      server      : {writeable: false, enumerable: true, value: $server}      # system.core.Server
-      uri         : {writeable: false, enumerable: true, value: $uri}         # system.core.URI
+      bm          : $bench       # system.core.Benchmark
+      config      : $config      # system.core.Config
+      hooks       : $hooks       # system.core.Hooks
+      input       : $input       # system.core.Input
+      i18n        : $i18n        # system.core.I18n
+      output      : $output      # system.core.Output
+      security    : $security    # system.core.Security
+      server      : $server      # system.core.Server
+      uri         : $uri         # system.core.URI
 
       # bootstrap the loader object into the controller:
-      load        : {writeable: false, enumerable: true, value: load_core('Loader', @)}
+      load: load_core('Loader', @)
 
     log_message 'debug', "Controller Class Initialized"
 

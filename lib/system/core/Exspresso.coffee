@@ -24,18 +24,42 @@
 #
 
 #
-#   e x s p r e s s o
+# e x s p r e s s o
+#
+#   Top level controller for exspresso
 #
 class system.core.Exspresso extends system.core.Object
 
-  os              = require('os')                 # operating-system related utility functions
+  os = require('os')  # operating-system related utility functions
 
-  httpDriver      : 'connect'   # Connect | Express
-  dbDriver        : 'mysql'     # Mysql | Postgres
-  useCache        : false       # cache output?
-  useCsrf         : false       # scrub inputs?
-  preview         : false       # preview locally using appjs (must be installed separately)
-  profile         : false       # enable profiling?
+  #
+  # @property [String] http driver: connect | express
+  #
+  httpDriver: 'connect'
+  #
+  # @property [String] db driver: mysql | postgres
+  #
+  dbDriver: 'mysql'
+  #
+  # @property [Boolean] cache output?
+  #
+  useCache: false
+  #
+  # @property [Boolean] scrub inputs?
+  #
+  useCsrf: false
+  #
+  # @property [Boolean] preview locally using appjs (must be installed separately)
+  #
+  preview: false
+  #
+  # @property [Boolean] enable profiling?
+  #
+  profile: false
+  #
+  # @property [String] exspresso version
+  #
+  version: ''
 
   #
   #   Exspresso Version
@@ -44,7 +68,18 @@ class system.core.Exspresso extends system.core.Object
   @define version: require(FCPATH + 'package.json').version
 
   #
-  #   Decode the command line options
+  # Parse the command line options: <br />
+  # <br />
+  #  --cache      enable cacheing <br />
+  #  --csrf       enable xss checks <br />
+  #  --preview    preview using appjs <br />
+  #  --profile    enable profiling <br />
+  #  --nocache    disable cacheing <br />
+  #  --nocsrf     disable xss checks <br />
+  #  --noprofile  disable profiling <br />
+  #  --db <mysql|postgres> set database driver <br />
+  #
+  # @return [Void]
   #
   parseOptions: () ->
 
@@ -86,6 +121,9 @@ class system.core.Exspresso extends system.core.Object
 
   #
   #   Boot exspresso
+  #
+  #
+  # @return [Void]
   #
   boot: () ->
 
@@ -131,8 +169,9 @@ class system.core.Exspresso extends system.core.Object
   #
   #   http server is now ready
   #
-    # @param  [Integer]  the port number we're running on
-  # @return [Void]  #
+  # @param  [Integer] port  the port number we're running on
+  # @return [Void]
+  #
   ready: ($port) =>
 
     @define port: $port
@@ -164,9 +203,9 @@ class system.core.Exspresso extends system.core.Object
   #
   #   Dispatch to the controller method when the request is received
   #
-  # @param  [String]  route
-  # @param  [String]  uti
-  # @return [Void]  #
+  # @param  [String]  route regexp that matches a request url
+  # @param  [String]  uri corresponding controller uri specifier
+  # @return [Void]
   #
   bind: ($path, $uri) ->
 
@@ -185,6 +224,7 @@ class system.core.Exspresso extends system.core.Object
     #  loader class can be called via the URI, nor can
     #  controller functions that begin with an underscore
     #
+
     $module = @router.getModule()
     $class  = @router.getClass()
     $method = @router.getMethod()
@@ -207,9 +247,10 @@ class system.core.Exspresso extends system.core.Object
     #
     # @param  [Object]  the server request object
     # @param  [Object]  the server response object
-    #   @param function the next middleware on the stack
+    # @param  [Function] the next middleware on the stack
     # @param  [Array]  the remaining uri arguments
-    # @return [Void]  #
+    # @return [Void]
+    #
     @router.routes[$path] = ($req, $res, $next, $args...) =>
 
 
@@ -219,8 +260,8 @@ class system.core.Exspresso extends system.core.Object
       # and then dispatch to the controller method.
       try
 
-      #
-      #  Start the benchmark timer
+        #
+        #  Start the benchmark timer
         $bench = new_core('Benchmark')
         $bench.mark 'total_execution_time_start'
         $bench.mark 'loading_time:_base_classes_start'
@@ -315,7 +356,11 @@ class system.core.Exspresso extends system.core.Object
   #
   #   update the base_url config entry
   #
-    # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
+  # @param  [Object]  req the http request object
+  # @param  [Object]  res the http response object
+  # @param  [Function]  next  next middleware on stack
+  # @return [Void]
+  #
   parseBaseUrl: -> ($req, $res, $next) =>
 
     #
@@ -330,7 +375,11 @@ class system.core.Exspresso extends system.core.Object
   #
   #   fabricate a table similar to $_SERVER
   #
-    # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
+  # @param  [Object]  req the http request object
+  # @param  [Object]  res the http response object
+  # @param  [Function]  next  next middleware on stack
+  # @return [Void]
+  #
   parseProperties: -> ($req, $res, $next) =>
 
     $_SERVER =
@@ -377,9 +426,11 @@ class system.core.Exspresso extends system.core.Object
   #
   #   general server error handler
   #
-  # @param  [Object]  $req
-  # @param  [Object]  $res
-  #   @param function $next
+  # @param  [Object]  err the error object
+  # @param  [Object]  req the http request object
+  # @param  [Object]  res the http response object
+  # @param  [Function]  next  next middleware on stack
+  # @return [Void]
   #
   error5xx: -> ($err, $req, $res, $next) -> show_error $err
 
@@ -389,9 +440,10 @@ class system.core.Exspresso extends system.core.Object
   #
   #   page not found handler
   #
-  # @param  [Object]  $req
-  # @param  [Object]  $res
-  #   @param function $next
+  # @param  [Object]  req the http request object
+  # @param  [Object]  res the http response object
+  # @param  [Function]  next  next middleware on stack
+  # @return [Void]
   #
   error404: -> ($req, $res, $next) -> show_404 $req.originalUrl
 

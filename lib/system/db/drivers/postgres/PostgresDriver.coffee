@@ -65,8 +65,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return trim($connect_string)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Non-persistent database connection
   #
@@ -87,8 +85,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
       else
         $next $err, $client
 
-  #  --------------------------------------------------------------------
-
   #
   # Persistent database connection
   #
@@ -98,8 +94,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   db_pconnect:  ->
     throw new Error('Not Supported: postgres_driver::pconnect')
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Reconnect
@@ -112,8 +106,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Select the database
   #
@@ -124,8 +116,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     #  Not needed for Postgre so we'll return TRUE
     return true
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Set client character set
@@ -138,8 +128,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return true
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Version number query string
   #
@@ -148,8 +136,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _version:  ->
     return "SELECT version() AS ver"
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Execute the query
@@ -163,8 +149,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     @client.query $sql, $params, $next
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Prep the query
   #
@@ -177,8 +161,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _prep_query: ($sql) ->
     return $sql
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Begin Transaction
@@ -203,8 +185,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     @simpleQuery 'BEGIN', $next #
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Commit Transaction
   #
@@ -221,8 +201,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
     @simpleQuery 'COMMIT', $next
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Rollback Transaction
@@ -241,8 +219,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
     @simpleQuery 'ROLLBACK', $next
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Escape String
@@ -271,8 +247,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return $str
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Affected Rows
   #
@@ -280,8 +254,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   affectedRows:  ->
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Insert ID
@@ -296,8 +268,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
         $next $err
       else
         $next null, $insert.row().id
-
-  #  --------------------------------------------------------------------
 
   #
   # "Count All" query
@@ -318,8 +288,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
       else $next null, $query.row().numrows
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Show table query
   #
@@ -339,8 +307,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return $sql
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Show column query
   #
@@ -353,8 +319,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return "SELECT column_name FROM information_schema.columns WHERE table_name ='" + $table + "'"
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Field data query
   #
@@ -366,8 +330,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return "SELECT * FROM " + $table + " LIMIT 1"
 
 
-  #  --------------------------------------------------------------------
-
   #
   # The error message string
   #
@@ -376,8 +338,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   _error_message:  ->
 
-
-  #  --------------------------------------------------------------------
 
   #
   # The error message number
@@ -388,8 +348,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _error_number:  ->
     return ''
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Escape the SQL Identifiers
@@ -424,8 +382,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # From Tables
   #
@@ -443,8 +399,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return implode(', ', $tables)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Insert statement
   #
@@ -458,8 +412,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _insert: ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ");" #SELECT LASTVAL() AS id;"
 
-  #  --------------------------------------------------------------------
-
   #
   # Insert statement
   #
@@ -472,8 +424,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   _insert_batch: ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
-
-  #  --------------------------------------------------------------------
 
   #
   # Update statement
@@ -506,8 +456,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     return $sql
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Truncate statement
   #
@@ -521,8 +469,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _truncate: ($table) ->
     return "TRUNCATE " + $table
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Delete statement
@@ -572,8 +518,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
     return $sql
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Close DB Connection

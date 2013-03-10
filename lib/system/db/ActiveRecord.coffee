@@ -62,8 +62,6 @@ class system.db.ActiveRecord extends system.db.Driver
   ar_cache_orderby:   null
   ar_cache_set:       null
 
-  #  --------------------------------------------------------------------
-
   #
   # Constructor.  Accepts one parameter containing the database
   # connection settings.
@@ -785,8 +783,6 @@ class system.db.ActiveRecord extends system.db.Driver
     @_reset_select()
     return $result
 
-  #  --------------------------------------------------------------------
-
   #
   # Insert_Batch
   #
@@ -832,8 +828,6 @@ class system.db.ActiveRecord extends system.db.Driver
     else
       $sql
 
-
-  #  --------------------------------------------------------------------
 
   #
   # The "set_insert_batch" function.  Allows key/value pairs to be set for batch inserts
@@ -1006,8 +1000,6 @@ class system.db.ActiveRecord extends system.db.Driver
     @_reset_write()
     @query($sql, $next)
 
-  #  --------------------------------------------------------------------
-
   #
   # Update_Batch
   #
@@ -1063,8 +1055,6 @@ class system.db.ActiveRecord extends system.db.Driver
       $next $err
 
 
-
-  #  --------------------------------------------------------------------
 
   #
   # The "set_update_batch" function.  Allows key/value pairs to be set for batch updating
@@ -1413,8 +1403,6 @@ class system.db.ActiveRecord extends system.db.Driver
 
     return $sql
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Object to Array

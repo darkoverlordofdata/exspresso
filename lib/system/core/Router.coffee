@@ -16,26 +16,27 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
 # @author		  darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright	Copyright (c) 2011 Wiredesignz
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		MIT License
 # @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
-#  ------------------------------------------------------------------------
+
 #
 # Exspresso Router Class
 #
-Modules = require(SYSPATH+'core/Modules.coffee')
-URI = require(SYSPATH+'core/URI.coffee')
 
 class system.core.Router
 
   fs = require('fs')
+  Modules = require(SYSPATH+'core/Modules.coffee')
+  URI = require(SYSPATH+'core/URI.coffee')
 
+  #
+  # @property [Object] Hash of bindings for each route
+  #
   routes                  : null        # route dispatch bindings
 
   _default_controller     : false       # matches route '/'
@@ -45,6 +46,9 @@ class system.core.Router
   _class                  : ''          # parsed class
   _method                 : ''          # parsed method
 
+  #
+  # Initialize the router hash
+  #
   constructor: ->
 
     @config = exspresso.config
@@ -58,8 +62,9 @@ class system.core.Router
   # This function determines what should be served based on the URI request,
   # as well as any "routes" that have been set in the routing config file.
   #
-  # @private
-  # @return [Void]  #
+  # @param [String] uri the uri to parse
+  # @return [Void]
+  #
   setRouting: ($uri) ->
 
     @_directory = ''
@@ -73,7 +78,8 @@ class system.core.Router
   # Set the default controller
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _set_default_controller: ->
 
     if @_default_controller is false
@@ -102,8 +108,10 @@ class system.core.Router
   # input, and sets the current class/method
   #
   # @private
-  # @param  [Array]  # @return	[Boolean]
-  # @return [Void]  #
+  # @param  [Array]
+  # @return	[Boolean]
+  # @return [Void]
+  #
   _set_request: ($segments = []) ->
 
     $segments = @_validate_request($segments)
@@ -130,7 +138,8 @@ class system.core.Router
   # the controller.
   #
   # @private
-  # @param  [Array]  # @return	array
+  # @param  [Array]
+  # @return	array
   #
   _validate_request: ($segments) ->
 
@@ -160,7 +169,8 @@ class system.core.Router
   # the controller.
   #
   # @private
-  # @param  [Array]  # @return	array
+  # @param  [Array]
+  # @return	array
   #
   _application_validate_request: ($segments) ->
 
@@ -231,8 +241,7 @@ class system.core.Router
   # This function loads routes that may exist in
   # the module/config/routes.php file
   #
-  # @private
-  # @return [Object]  routes
+  # @return [Object] a hash of all the allowed routing
   #
   loadRoutes: ->
 
@@ -277,8 +286,8 @@ class system.core.Router
   #
   # Locate the controller
   #
-  # @private
-  # @param  [Array]  # @return	array
+  # @param  [Array] segments  array of uri segments
+  # @return [Array] uri segments that specify the controller
   #
   locate: ($segments) ->
 
@@ -341,7 +350,9 @@ class system.core.Router
   #
   # Set the class name
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]  class the class name
+  # @return [Void]
+  #
   setClass: ($class) ->
     @_class = $class+@config.item('controller_suffix')
   # - pre module - @_class = $class.replace('/', '').replace('.', '')
@@ -350,7 +361,7 @@ class system.core.Router
   #
   # Fetch the current class
   #
-    # @return	[String]
+  # @return	[String] the class name
   #
   getClass: ->
     return @_class
@@ -359,7 +370,9 @@ class system.core.Router
   #
   #  Set the method name
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]  method  the method name
+  # @return [Void]
+  #
   setMethod: ($method) ->
     @_method = $method
 
@@ -367,7 +380,7 @@ class system.core.Router
   #
   #  Fetch the current method
   #
-    # @return	[String]
+  # @return	[String] the method name
   #
   getMethod: ->
     if @_method is @getClass()
@@ -378,7 +391,9 @@ class system.core.Router
   #
   #  Set the directory name
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String] dir  the directory name
+  # @return [Void]
+  #
   setDirectory: ($dir) ->
     @_directory = $dir.replace('/', '').replace('.', '') + '/'
 
@@ -386,7 +401,7 @@ class system.core.Router
   #
   #  Fetch the sub-directory (if any) that contains the requested controller class
   #
-    # @return	[String]
+  # @return	[String] the directory
   #
   getDirectory: ->
     return @_directory
@@ -394,7 +409,7 @@ class system.core.Router
   #
   # Fetch the current module
   #
-    # @return	[String]
+  # @return	[String] the module
   #
   getModule: ->
     @_module

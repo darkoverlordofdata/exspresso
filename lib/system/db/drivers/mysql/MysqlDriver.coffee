@@ -90,8 +90,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
       else
         $next $err, @client
 
-  #  --------------------------------------------------------------------
-
   #
   # Persistent database connection
   #
@@ -100,8 +98,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   pconnect: ($next) ->
     throw new Error('Not Supported: mysql_driver::pconnect')
-
-  #  --------------------------------------------------------------------
 
   #
   # Reconnect
@@ -113,8 +109,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   reconnect: ($next) ->
     @client.ping($next)
 
-  #  --------------------------------------------------------------------
-
   #
   # Select the database
   #
@@ -125,8 +119,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     @client.useDatabase(@database, $next)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Set client character set
   #
@@ -136,8 +128,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     @client.query("SET NAMES '" + @escapeStr($charset) + "' COLLATE '" + @escapeStr($collation) + "'", $next)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Version number query string
   #
@@ -146,8 +136,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _version: () ->
     return "SELECT version() AS ver"
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Execute the query
@@ -159,8 +147,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _execute: ($sql, $params, $next) ->
     $sql = @_prep_query($sql)
     @client.query $sql, $params, $next
-
-  #  --------------------------------------------------------------------
 
   #
   # Prep the query
@@ -182,8 +168,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
     return $sql
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Begin Transaction
@@ -211,8 +195,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
       @simpleQuery 'START TRANSACTION', => #  can also be BEGIN or BEGIN WORK
         $next null, true
 
-  #  --------------------------------------------------------------------
-
   #
   # Commit Transaction
   #
@@ -231,8 +213,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
         $next null, true
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Rollback Transaction
   #
@@ -250,8 +230,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
       @simpleQuery 'SET AUTOCOMMIT=1', =>
         $next null, true
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Escape String
@@ -277,8 +255,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return $str
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Affected Rows
   #
@@ -287,8 +263,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   affectedRows: ($next) ->
     #@client.affected_rows($next)
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Insert ID
@@ -306,8 +280,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
 
 
-  #  --------------------------------------------------------------------
-
   #
   # "Count All" query
   #
@@ -324,8 +296,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
       if $err then $next $err
       else $next null, $query.row().numrows
-
-  #  --------------------------------------------------------------------
 
   #
   # List table query
@@ -346,8 +316,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return $sql
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Show column query
   #
@@ -360,8 +328,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return "SHOW COLUMNS FROM " + @_protect_identifiers($table, true, null, false)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Field data query
   #
@@ -372,8 +338,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _field_data: ($table) ->
     return "SELECT * FROM " + $table + " LIMIT 1"
 
-
-  #  --------------------------------------------------------------------
 
   #
   # The error message string
@@ -386,8 +350,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     #@client.error()
 
 
-  #  --------------------------------------------------------------------
-
   #
   # The error message number
   #
@@ -398,8 +360,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     'sql error_number'
     #@client.errno()
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Escape the SQL Identifiers
@@ -434,8 +394,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # From Tables
   #
@@ -453,8 +411,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return '(' + implode(', ', $tables) + ')'
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Insert statement
   #
@@ -468,8 +424,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _insert: ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ");" #SELECT LAST_INSERT_ID() AS id;"
 
-
-  #  --------------------------------------------------------------------
 
 
   #
@@ -486,8 +440,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return "REPLACE INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Insert_batch statement
   #
@@ -501,8 +453,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _insert_batch : ($table, $keys, $values) ->
     return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
 
-
-  #  --------------------------------------------------------------------
 
 
   #
@@ -535,8 +485,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
     return $sql
 
-
-  #  --------------------------------------------------------------------
 
 
   #
@@ -582,8 +530,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return $sql
 
 
-  #  --------------------------------------------------------------------
-
 
   #
   # Truncate statement
@@ -598,8 +544,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _truncate: ($table) ->
     return "TRUNCATE " + $table
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Delete statement
@@ -629,8 +573,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     return "DELETE FROM " + $table + $conditions + $limit
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Limit string
   #
@@ -651,8 +593,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
     return $sql + "LIMIT " + $offset + $limit
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Close DB Connection

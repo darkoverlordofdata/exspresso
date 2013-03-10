@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Exspresso Documentation</title>
+  <link rel='stylesheet' href='../../../assets/codo.css' type='text/css'>
+  <script src='../../../assets/codo.js'></script>
+  <script src='../../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../../readme.md.html' title='Exspresso'>Exspresso</a>
+    &raquo;
+    <a href='../../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>system</span>
+    &raquo;
+    <span class='title'>core</span>
+    &raquo;
+    <span class='title'>Controller</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        system.core.Controller
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>lib&#47;system&#47;core&#47;Controller.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../../classes/system/core/Object.html'>system.core.Object</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Exspresso Application Controller Class</p><p>This class object is the super class for all controllers</p>
+</div>
+<div class='tags'>
+  <h3>See also:</h3>
+  <ul class='see'>
+    <li>
+      <a href='http://coffeedoc.info/github/darkoverlordofdata/exspresso/master/'>Controller Graph</a>
+    </li>
+  </ul>
+</div>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+        <a href='../../../classes/application/core/PublicController.html'>application.core.PublicController</a>
+      </p>
+      <h2>Property Summary</h2>
+      <dl class='properties'>
+        <dt id='module-property'>
+          <span class='signature'>
+            (String) <strong>module</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>module name</p>
+        </dd>
+        <dt id='class-property'>
+          <span class='signature'>
+            (String) <strong>class</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>class name</p>
+        </dd>
+        <dt id='method-property'>
+          <span class='signature'>
+            (String) <strong>method</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>method name</p>
+        </dd>
+        <dt id='req-property'>
+          <span class='signature'>
+            (Object) <strong>req</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>http request object</p>
+        </dd>
+        <dt id='res-property'>
+          <span class='signature'>
+            (Object) <strong>res</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>http response object</p>
+        </dd>
+        <dt id='$_COOKIE-property'>
+          <span class='signature'>
+            (Object) <strong>$_COOKIE</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>array of cookies</p>
+        </dd>
+        <dt id='$_FILES-property'>
+          <span class='signature'>
+            (Object) <strong>$_FILES</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>array of uploaded files</p>
+        </dd>
+        <dt id='$_GET-property'>
+          <span class='signature'>
+            (Object) <strong>$_GET</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>http GET method parameters</p>
+        </dd>
+        <dt id='$_POST-property'>
+          <span class='signature'>
+            (Object) <strong>$_POST</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>http POST method parameters</p>
+        </dd>
+        <dt id='$_SERVER-property'>
+          <span class='signature'>
+            (Object) <strong>$_SERVER</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>array of server properties for the request</p>
+        </dd>
+        <dt id='bm-property'>
+          <span class='signature'>
+            (Object) <strong>bm</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>benchmark object</p>
+        </dd>
+        <dt id='config-property'>
+          <span class='signature'>
+            (Object) <strong>config</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>config object</p>
+        </dd>
+        <dt id='hooks-property'>
+          <span class='signature'>
+            (Object) <strong>hooks</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>hooks object</p>
+        </dd>
+        <dt id='input-property'>
+          <span class='signature'>
+            (Object) <strong>input</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>input object</p>
+        </dd>
+        <dt id='i18n-property'>
+          <span class='signature'>
+            (Object) <strong>i18n</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>i18n object</p>
+        </dd>
+        <dt id='output-property'>
+          <span class='signature'>
+            (Object) <strong>output</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>output object</p>
+        </dd>
+        <dt id='security-property'>
+          <span class='signature'>
+            (Object) <strong>security</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>security object</p>
+        </dd>
+        <dt id='server-property'>
+          <span class='signature'>
+            (Object) <strong>server</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>server object</p>
+        </dd>
+        <dt id='uri-property'>
+          <span class='signature'>
+            (Object) <strong>uri</strong>
+          </span>
+        </dt>
+        <dd class='desc'>
+          <p>uri object</p>
+        </dd>
+      </dl>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (Void) <strong>constructor</strong>($server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Initialize Controller objects @param [system.core.Config config Config object
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#render-instance'>
+        - (Void) <strong>render</strong>($view, $data = {}, $next)
+      </a>
+    </span>
+    <span class='desc'>
+      Render a view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#redirect-instance'>
+        - (Void) <strong>redirect</strong>($url)
+      </a>
+    </span>
+    <span class='desc'>
+      Redirect to another url
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../../classes/system/core/Object.html'>system.core.Object</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../../classes/system/core/Object.html#define-instance'>#define</a>,
+                <a href='../../../classes/system/core/Object.html#queue-instance'>#queue</a>,
+        <a href='../../../classes/system/core/Object.html#run-instance'>#run</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (Void) <strong>constructor</strong>($server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method)
+    </p>
+    <div class='docstring'>
+  <p>Initialize Controller objects</p><p>@param  [system.core.Config  config Config object</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>server</span>
+      <span class='type'>
+        (<tt>system.core.Server</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Server object</span>
+    </li>
+    <li>
+      <span class='name'>benchmark</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/Benchmark.html'>system.core.Benchmark</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Benchmark object</span>
+    </li>
+    <li>
+      <span class='name'>hooks</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/Hooks.html'>system.core.Hooks</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Hooks object</span>
+    </li>
+    <li>
+      <span class='name'>uri</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/URI.html'>system.core.URI</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>URI object</span>
+    </li>
+    <li>
+      <span class='name'>output</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/Output.html'>system.core.Output</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Output object</span>
+    </li>
+    <li>
+      <span class='name'>security</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/Security.html'>system.core.Security</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Security object</span>
+    </li>
+    <li>
+      <span class='name'>input</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/Input.html'>system.core.Input</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Input object</span>
+    </li>
+    <li>
+      <span class='name'>i18n</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/I18n.html'>system.core.I18n</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>I18n object</span>
+    </li>
+    <li>
+      <span class='name'>req</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Request object</span>
+    </li>
+    <li>
+      <span class='name'>res</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Response object</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Module name</span>
+    </li>
+    <li>
+      <span class='name'>class</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Class name</span>
+    </li>
+    <li>
+      <span class='name'>method</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Method name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='render-instance'>
+      - (Void) <strong>render</strong>($view, $data = {}, $next)
+    </p>
+    <div class='docstring'>
+  <p>Render a view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>path to the view template</span>
+    </li>
+    <li>
+      <span class='name'>data</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>hash of data to render with template</span>
+    </li>
+    <li>
+      <span class='name'>next</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>callback</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='redirect-instance'>
+      - (Void) <strong>redirect</strong>($url)
+    </p>
+    <div class='docstring'>
+  <p>Redirect to another url</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>url</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the url to redirect to</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.8.20).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

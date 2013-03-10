@@ -107,8 +107,6 @@ class system.db.Utility extends system.db.Forge
       $next current($err, $res)
     
   
-  #  --------------------------------------------------------------------
-
   #
   # Optimize Database
   #

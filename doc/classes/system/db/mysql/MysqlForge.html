@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Exspresso Documentation</title>
+  <link rel='stylesheet' href='../../../../assets/codo.css' type='text/css'>
+  <script src='../../../../assets/codo.js'></script>
+  <script src='../../../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../../../readme.md.html' title='Exspresso'>Exspresso</a>
+    &raquo;
+    <a href='../../../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>system</span>
+    &raquo;
+    <span class='title'>db</span>
+    &raquo;
+    <span class='title'>mysql</span>
+    &raquo;
+    <span class='title'>MysqlForge</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        system.db.mysql.MysqlForge
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>lib&#47;system&#47;db&#47;drivers&#47;mysql&#47;MysqlForge.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../../../classes/system/db/Forge.html'>system.db.Forge</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>MySQL Forge Class</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#_create_database-instance'>
+        - (?) <strong>_create_database</strong>($name)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Create database
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drop_database-instance'>
+        - (?) <strong>_drop_database</strong>($name)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Drop database
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_process_fields-instance'>
+        - (String) <strong>_process_fields</strong>($fields)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Process Fields
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_create_table-instance'>
+        - (?) <strong>_create_table</strong>($table, $fields, $primary_keys, $keys, $if_not_exists)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Create Table
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drop_table-instance'>
+        - (String) <strong>_drop_table</strong>($table)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Drop Table
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_alter_table-instance'>
+        - (Object) <strong>_alter_table</strong>($alter_type, $table, $fields, $after_field = '')
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Alter table query Generates a platform-specific query so that a table can be altered Called by addColumn(), dropColumn(), and column_alter(),
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_rename_table-instance'>
+        - (String) <strong>_rename_table</strong>($table_name, $new_table_name)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Rename a table Generates a platform-specific query so that a table can be renamed
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../../../classes/system/db/Forge.html'>system.db.Forge</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../../../classes/system/db/Forge.html#constructor-instance'>#constructor</a>,
+                <a href='../../../../classes/system/db/Forge.html#createDatabase-instance'>#createDatabase</a>,
+                <a href='../../../../classes/system/db/Forge.html#dropDatabase-instance'>#dropDatabase</a>,
+                <a href='../../../../classes/system/db/Forge.html#addKey-instance'>#addKey</a>,
+                <a href='../../../../classes/system/db/Forge.html#addField-instance'>#addField</a>,
+                <a href='../../../../classes/system/db/Forge.html#createTable-instance'>#createTable</a>,
+                <a href='../../../../classes/system/db/Forge.html#dropTable-instance'>#dropTable</a>,
+                <a href='../../../../classes/system/db/Forge.html#renameTable-instance'>#renameTable</a>,
+                <a href='../../../../classes/system/db/Forge.html#addColumn-instance'>#addColumn</a>,
+                <a href='../../../../classes/system/db/Forge.html#dropColumn-instance'>#dropColumn</a>,
+                <a href='../../../../classes/system/db/Forge.html#modifyColumn-instance'>#modifyColumn</a>,
+        <a href='../../../../classes/system/db/Forge.html#_reset-instance'>#_reset</a>
+      </p>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='_create_database-instance'>
+      - (?) <strong>_create_database</strong>($name)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Create database</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>database name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>?</tt>)
+      &mdash;
+      <span class='desc'>bool</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drop_database-instance'>
+      - (?) <strong>_drop_database</strong>($name)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Drop database</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>database name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>?</tt>)
+      &mdash;
+      <span class='desc'>bool</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_process_fields-instance'>
+      - (String) <strong>_process_fields</strong>($fields)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Process Fields</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>fields</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_create_table-instance'>
+      - (?) <strong>_create_table</strong>($table, $fields, $primary_keys, $keys, $if_not_exists)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Create Table</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>table name</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>fields</span>
+    </li>
+    <li>
+      <span class='name'>primary</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>key(s)</span>
+    </li>
+    <li>
+      <span class='name'>key(s)</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>?</tt>)
+      &mdash;
+      <span class='desc'>bool</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drop_table-instance'>
+      - (String) <strong>_drop_table</strong>($table)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Drop Table</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_alter_table-instance'>
+      - (Object) <strong>_alter_table</strong>($alter_type, $table, $fields, $after_field = '')
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Alter table query</p><p>Generates a platform-specific query so that a table can be altered
+Called by addColumn(), dropColumn(), and column_alter(),</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>ALTER type (ADD, DROP, CHANGE)</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>column name</span>
+    </li>
+    <li>
+      <span class='name'>fields</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>field after which we should add the new field</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_rename_table-instance'>
+      - (String) <strong>_rename_table</strong>($table_name, $new_table_name)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Rename a table</p><p>Generates a platform-specific query so that a table can be renamed</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>old table name</span>
+    </li>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>new table name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.8.20).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

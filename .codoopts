@@ -1,9 +1,8 @@
 --name       "Exspresso"
 --readme     readme.md
 --title      "Exspresso Documentation"
---private
 --quiet
---output-dir ./lib/assets/doc
+--output-dir ./doc
 ./lib/system
 ./lib/application
 ./lib/modules

@@ -48,8 +48,6 @@ class system.lib.RedisSession extends require('connect-redis')(require('express'
       port: $dns.port
       pass: $dns.password
 
-  #  --------------------------------------------------------------------
-
   #
   # Session Database setup
   #

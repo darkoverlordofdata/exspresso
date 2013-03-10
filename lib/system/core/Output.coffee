@@ -42,13 +42,13 @@ class system.core.Output
   #
   # Constructor
   #
-    # @param  [Object]    http request object
-  # @param  [Object]    http response object
-  # @param  [Object]    system.core.Benchmark
-  # @param  [Object]    system.core.Hooks
-  # @param  [Object]    system.core.Config
-  # @param  [Object]    system.core.URI
-  # @return [Void]  #
+  # @param  [Object]  req http request object
+  # @param  [Object]  res http response object
+  # @param  [system.core.Benchmark]  bench Benchmark
+  # @param  [system.core.Hooks]  hooks Hooks
+  # @param  [system.core.Config]  config  Config
+  # @param  [system.core.URI]  uri URI
+  #
   constructor: ($req, $res, $bench, $hooks, $config, $uri) ->
 
     defineProperties @,
@@ -81,7 +81,7 @@ class system.core.Output
   #
   # Returns the current output string
   #
-    # @return	[String]
+  # @return	[String] the html output
   #
   getOutput :  ->
     @_final_output
@@ -92,7 +92,9 @@ class system.core.Output
   #
   # Sets the output string
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]  output  HTML output string
+  # @return [Void]
+  #
   setOutput : ($output) ->
     @_final_output = $output
     @
@@ -103,7 +105,9 @@ class system.core.Output
   #
   # Appends data onto the output string
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]  output  HTML output string
+  # @return [Void]
+  #
   appendOutput : ($output) ->
     if @_final_output is ''
       @_final_output = $output
@@ -120,7 +124,10 @@ class system.core.Output
   # Note:  If a file is cached, headers will not be sent.  We need to figure out
   # how to permit header data to be saved with the cache data...
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]  header  header string
+  # @param  [Boolean] replace replace exising header
+  # @return [Void]
+  #
   setHeader : ($header, $replace = true) ->
     @_headers.push [$header, $replace]
     @
@@ -129,8 +136,9 @@ class system.core.Output
   #
   # Set Content Type Header
   #
-    # @param  [String]  extension of the file we're outputting
-  # @return [Void]  #
+  # @param  [String]  mime_type mime extension of the file we're outputting
+  # @return [Void]
+  #
   setContentType : ($mime_type) ->
     if strpos($mime_type, '/') is false
       $extension = ltrim($mime_type, '.')
@@ -150,17 +158,20 @@ class system.core.Output
   #
   # Set HTTP Status Header
   #
-    # @param	int		the status code
-  # @param  [String]    # @return [Void]  #
+  # @param	[Integer]		the http status code
+  # @param  [String]  text  alternate status text (optional)
+  # @return [Void]
+  #
   setStatusHeader : ($code = 200, $text = '') ->
     @res.status($code)
     @
 
   #
-  # Enable/disable Profiler
+  # Enable/Disable Profiler
   #
-    # @return	[Boolean]
-  # @return [Void]  #
+  # @return	[Boolean] val True/False enabled?
+  # @return [Void]
+  #
   enableProfiler : ($val = true) ->
     @_enable_profiler = if (is_bool($val)) then $val else true
     @
@@ -171,7 +182,9 @@ class system.core.Output
   #
   # Allows override of default / config settings for Profiler section display
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Object]  sections  hash of profile sections
+  # @return [Void]
+  #
   setProfilerSections : ($sections) ->
     for $section, $enable of $sections
       @_profiler_sections[$section] = if ($enable isnt false) then true else false
@@ -181,7 +194,9 @@ class system.core.Output
   #
   # Set Cache
   #
-    # @param  [Integer]  # @return [Void]  #
+  # @param  [Integer] time  the cache expiration time
+  # @return [Void]
+  #
   cache : ($time) ->
     @_cache_expiration = if ( not is_numeric($time)) then 0 else $time
     @
@@ -198,7 +213,10 @@ class system.core.Output
   # with any server headers and profile data.  It also stops the
   # benchmark timer so the page rendering speed and memory usage can be shown.
   #
-    # @return [Mixed]  #
+  # @param	[Object]  controller  the exspresso controller
+  # @param  [String]  output  the html string to display
+  # @return [Void]
+  #
   display: ($controller = null, $output = '') ->
 
     #  Set the output data
@@ -271,7 +289,8 @@ class system.core.Output
   #
   # Update/serve a cached file
   #
-    # @return [Void]  #
+  # @return [Void]
+  #
   displayCache: () ->
 
     $cache_path = if (@config.item('cache_path') is '') then APPPATH + 'cache/' else @config.item('cache_path')
@@ -300,8 +319,10 @@ class system.core.Output
   #
   # Write a Cache File
   #
-    # @param  [String]  HTML to cache
-  # @return [Void]  #
+  # @private
+  # @param  [String]  output  HTML to cache
+  # @return [Void]
+  #
   _write_cache: ($output) ->
 
     $path = @config.item('cache_path')
@@ -353,7 +374,10 @@ class system.core.Output
   #
   #   Deletes the cache file when it expires
   #
-  # @param  [String]    # @param  [String]    # @return false
+  # @private
+  # @param  [String]
+  # @param  [String]
+  # @return [Boolean] false
   #
   _gc_cache = ($cache_path, $filepath) ->
 

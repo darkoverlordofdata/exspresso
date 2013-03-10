@@ -36,8 +36,9 @@ class system.core.Model
   #
   # Copies the ExspressoControllers public base class properties
   #
-    # @param  [Object]  Controller Instance mixin
-  # @return [Void]  #
+  # @param  [core.system.Object]  Controller Instance mixin
+  # @return [Void]
+  #
   constructor: ($controller) ->
 
     log_message 'debug', "Model Class Initialized"

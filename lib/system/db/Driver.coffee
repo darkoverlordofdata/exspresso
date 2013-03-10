@@ -106,8 +106,6 @@ class system.db.Driver
 
 
 
-  #  --------------------------------------------------------------------
-
   #
   # The name of the platform in use (mysql, mssql, etc...)
   #
@@ -116,8 +114,6 @@ class system.db.Driver
   platform: ->
     return @dbdriver
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Database Version Number.  Returns a string containing the
@@ -138,8 +134,6 @@ class system.db.Driver
       if $err then throw new Error($err)
 
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Execute a list of sql statements
@@ -169,8 +163,6 @@ class system.db.Driver
     $iterate()
 
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Execute the query
@@ -352,8 +344,6 @@ class system.db.Driver
     $next $err, $results, $info
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Disable Transactions
   # This permits transactions to be disabled at run-time.
@@ -362,8 +352,6 @@ class system.db.Driver
   transOff: ->
     @_trans_enabled = false
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Enable/disable Transaction Strict Mode
@@ -376,8 +364,6 @@ class system.db.Driver
   transStrict : ($mode = true) ->
     @_trans_strict = if is_bool($mode) then $mode else true
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Start Transaction
@@ -398,8 +384,6 @@ class system.db.Driver
 
     @transBegin($test_mode, $next)
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Complete Transaction
@@ -432,8 +416,6 @@ class system.db.Driver
     @trans_commit($next)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Lets you retrieve the transaction flag to determine if it has failed
   #
@@ -442,8 +424,6 @@ class system.db.Driver
   transStatus: ->
     return @_trans_status
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Compile Bindings
@@ -481,8 +461,6 @@ class system.db.Driver
     return $result
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Determines if a query is a "write" type.
   #
@@ -496,8 +474,6 @@ class system.db.Driver
     return true
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Calculate the aggregate query elapsed time
   #
@@ -508,8 +484,6 @@ class system.db.Driver
     return number_format(@_benchmark, $decimals)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Returns the total number of queries
   #
@@ -519,8 +493,6 @@ class system.db.Driver
     return @_query_count
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Returns the last query that was executed
   #
@@ -528,8 +500,6 @@ class system.db.Driver
   lastQuery: ->
     return end(@queries)
 
-
-  #  --------------------------------------------------------------------
 
   #
   # "Smart" Escape String
@@ -553,8 +523,6 @@ class system.db.Driver
     return $str
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Escape LIKE String
   #
@@ -565,8 +533,6 @@ class system.db.Driver
   escapeLikeStr : ($str) ->
     return @escapeStr($str, true)
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Primary
@@ -586,8 +552,6 @@ class system.db.Driver
 
     return $fields[0]
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Returns an array of table names
@@ -627,8 +591,6 @@ class system.db.Driver
       $next $err, @_data_cache['table_names']
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Determine if a particular table exists
     # @return	[Boolean]
@@ -642,8 +604,6 @@ class system.db.Driver
       $table_exists = if ( not in_array(@_protect_identifiers($table_name, true, false, false), $table_names)) then false else true
       $next null, $table_exists
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Fetch MySQL Field Names
@@ -687,8 +647,6 @@ class system.db.Driver
       $next $err, @_data_cache['field_names'][$table]
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Determine if a particular field exists
     # @param  [String]    # @param  [String]    # @return	[Boolean]
@@ -696,8 +654,6 @@ class system.db.Driver
   fieldExists : ($field_name, $table_name) ->
     return if ( not in_array($field_name, @list_fields($table_name))) then false else true
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Returns an object with field data
@@ -717,8 +673,6 @@ class system.db.Driver
       $next $err, $results
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Generate an insert string
   #
@@ -737,8 +691,6 @@ class system.db.Driver
 
     return @_insert(@_protect_identifiers($table, true, null, false), $fields, $values)
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Generate an update string
@@ -781,8 +733,6 @@ class system.db.Driver
     return @_update(@_protect_identifiers($table, true, null, false), $fields, $dest)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Tests whether the string has an SQL operator
   #
@@ -798,8 +748,6 @@ class system.db.Driver
     return true
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Set Cache Directory Path
   #
@@ -808,8 +756,6 @@ class system.db.Driver
   cacheSetPath : ($path = '') ->
     @cachedir = $path
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Enable Query Caching
@@ -820,8 +766,6 @@ class system.db.Driver
     return true
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Disable Query Caching
   #
@@ -831,8 +775,6 @@ class system.db.Driver
     return false
 
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Delete the cache files associated with a particular URI
@@ -845,8 +787,6 @@ class system.db.Driver
     return @cache.delete($segment_one, $segment_two)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Delete All cache files
   #
@@ -858,8 +798,6 @@ class system.db.Driver
 
     return @cache.deleteAll()
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Initialize the Cache Class
@@ -892,8 +830,6 @@ class system.db.Driver
     @_close($next)
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Display an error message
   #
@@ -919,8 +855,6 @@ class system.db.Driver
     #show_error $message
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Protect Identifiers
   #
@@ -933,8 +867,6 @@ class system.db.Driver
   protect_identifiers : ($item, $prefix_single = false) ->
     return @_protect_identifiers($item, $prefix_single)
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Protect Identifiers

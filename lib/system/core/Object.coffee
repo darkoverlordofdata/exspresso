@@ -32,7 +32,8 @@ class system.core.Object
   #
   # Define a read-only property
   #
-    # @param  [Array]  # @return	array
+  # @param  [Object]  def hash list of property definitions
+  # @return	[Void]
   #
   define: ($def) ->
 
@@ -43,7 +44,8 @@ class system.core.Object
   #
   # Async job queue for the controller
   #
-    # @param  [Function]    # @return	array
+  # @param  [Function]  fn  Function to push onto the queue
+  # @return	[Void]
   #
   queue: ($fn) ->
 
@@ -54,7 +56,9 @@ class system.core.Object
   #
   # Run the functions in the queue
   #
-    # @param  [Array]  # @param  [Function]    # @return [Void]  #
+  # @param  [Function]  next  async callback
+  # @return [Void]
+  #
   run: ($next) ->
 
     @define _queue: [] if not @_queue?

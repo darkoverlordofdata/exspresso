@@ -56,6 +56,11 @@
 # THE SOFTWARE.
 #
 
+#
+# Modules class
+#
+#   Discovers the HMVC module paths
+#
 class system.core.Modules
 
   fs = require('fs')
@@ -66,6 +71,8 @@ class system.core.Modules
   #
   # Returns a list of modules
   #
+  # @return [Array] the modules found
+  #
   list: ->
 
     $modules = []
@@ -75,6 +82,11 @@ class system.core.Modules
 
   #
   # Load a module file
+  #
+  # @param  [String]  file  the file to load
+  # @param  [String]  path  the path to check
+  # @param  [String]  type  the file type
+  # @return  [Mixed] the file content
   #
   load: ($file, $path, $type = EXT) ->
 
@@ -90,6 +102,11 @@ class system.core.Modules
   # Scans for files located within modules directories.
   # Also scans application directories for models, plugins and views.
   # Generates fatal error if file not found.
+  #
+  # @param  [String]  file  the file to load
+  # @param  [String]  module  the module to check
+  # @param  [String]  base  the path base
+  # @return  [Array] [filename, path]
   #
   find: ($file, $module, $base) ->
 

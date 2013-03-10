@@ -30,15 +30,13 @@
 #
 # Loader Class
 #
-# Loads views and files
+# Loads claees, views and other files
 #
 #
-Modules = require(SYSPATH+'core/Modules.coffee')
-
-
 class system.core.Loader
 
   path = require('path')
+  Modules = require(SYSPATH+'core/Modules.coffee')
 
   _module               : ''    # uri module
   _view_path            : ''    # path to view modules (*.eco)
@@ -56,8 +54,7 @@ class system.core.Loader
   #
   # Initiailize the loader search paths
   #
-  # @param  [Object]  ExspressoController
-  # @return 	nothing
+  # @param  [system.core.Object]  controller  the parent controller object
   #
   constructor: ($controller)->
 
@@ -75,12 +72,10 @@ class system.core.Loader
     log_message 'debug', "Loader Class Initialized"
 
   #
-  # Initialize the Loader
+  # Perform the autoloads
   #
+  # @return [Void]
   #
-  # @param  [Object]  Exspresso controller instance
-  # @param  [Boolean] call autoload?
-  # @return [Object]  #
   initialize: () ->
 
     defineProperties @,
@@ -100,10 +95,10 @@ class system.core.Loader
   # This function returns the object name if the class tested for is loaded,
   # and returns FALSE if it isn't.
   #
-  # It is mainly used in the form_helper -> _get_validation_object()
+  # It is mainly used in the form_helper _get_validation_object()
   #
-  # @param  [String]  class being checked for
-  # @return [Mixed]  class object name on the CI SuperObject or FALSE
+  # @param  [String]  class class name being checked for
+  # @return [String]  the loaded class object name or FALSE
   #
   isLoaded: ($class) ->
     if @_classes[$class]?
@@ -116,10 +111,11 @@ class system.core.Loader
   # This function lets users load and instantiate classes.
   # It is designed to be called from a user's app controllers.
   #
-    # @param  [String]  the name of the class
-  # @param  [Mixed]  the optional parameters
+  # @param  [String]  library the name of the class to load
+  # @param  [Object]  params  the optional parameters as a hash
   # @param  [String]  an optional object name
-  # @return [Void]  #
+  # @return [Object] the instantiated class
+  #
   library: ($library, $params = {}, $object_name = null) ->
 
     $controller = @controller
@@ -158,7 +154,9 @@ class system.core.Loader
   #
   # Load an array of libraries
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Array] libraries list of class names to load
+  # @return [Void]
+  #
   libraries: ($libraries) ->
     for $_library in $libraries
       @library($_library)
@@ -169,11 +167,12 @@ class system.core.Loader
   #
   # This function lets users load and instantiate models.
   #
-    # @param  [String]  the name of the class
-  # @param  [String]  name for the model
-  # @return	[Boolean]	database connection
-  # @return [Void]  #
-  model: ($model, $object_name = null,$connect = false) ->
+  # @param  [String]  model  the name of the model class to load
+  # @param  [String]  object_name  name for the model
+  # @return	[Boolean] connect make a database connection?
+  # @return [Object] the instantiated class
+  #
+  model: ($model, $object_name = null, $connect = false) ->
 
     $controller = @controller
 
@@ -215,7 +214,9 @@ class system.core.Loader
   #
   # Load an array of models
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Array] libraries list of model names to load
+  # @return [Void]
+  #
   models: ($models) ->
     for $_model in $models
       @model($_model)
@@ -224,12 +225,14 @@ class system.core.Loader
   #
   # Model Loader
   #
-  # This function lets users load and instantiate models.
+  # If the requested model was not in a module, look in the application path
   #
-    # @param  [String]  the name of the class
-  # @param  [String]  name for the model
-  # @return	[Boolean]	database connection
-  # @return [Void]  #
+  # @private
+  # @param  [String]  model  the name of the model class to load
+  # @param  [String]  object_name  name for the model
+  # @return	[Boolean] connect make a database connection?
+  # @return [Object] the instantiated class
+  #
   _application_model: ($model, $name = '', $db_conn = false) ->
 
     if is_array($model)
@@ -285,10 +288,11 @@ class system.core.Loader
   #
   # Database Loader
   #
-    # @param  [String]  the DB credentials
-  # @return	[Boolean]	whether to return the DB object
-  # @return	[Boolean]	whether to enable active record (this allows us to override the config setting)
-  # @return [Object]  #
+  # @param  [String]  params  either a resource url specifier or simple the driver name
+  # @return	[Boolean]	return  whether to return the DB object
+  # @return	[Boolean]	active_record whether to enable active record (this allows us to override the config setting)
+  # @return [system.db.Driver]  the connected database driver
+  #
   database: ($params = '', $return = false, $active_record = null) ->
 
     # Do we even need to load the database class?
@@ -296,7 +300,7 @@ class system.core.Loader
       if (system.db.DbDriver? and $return is false and $active_record is null and @controller['db']?)
         return false
 
-    $db = dbFactory($params || exspresso.dbDriver, $active_record)
+    $db = @_db_factory($params || exspresso.dbDriver, $active_record)
     @controller.queue ($next) -> $db.initialize $next
 
     if $return is true then return $db
@@ -318,10 +322,12 @@ class system.core.Loader
 
 
   #
-  # Load the Utilities Class
+  # Load the DB Utilities Class
   #
-    # @return	[String]
-  #@
+  # @param  [String]  params  either a resource url specifier or simple the driver name
+  # @return	[Boolean]	return  whether to return the DB object
+  # @return [system.db.Utility]  the connected database utility driver
+  #
   dbutil: ($params = '', $return = false) ->
 
     if $params is ''
@@ -344,7 +350,9 @@ class system.core.Loader
   #
   # Load the Database Forge Class
   #
-    # @return	[String]
+  # @param  [String]  params  either a resource url specifier or simple the driver name
+  # @return	[Boolean]	return  whether to return the DB object
+  # @return [system.db.Forge]  the connected database forge driver
   #
   dbforge: ($params = '', $return = false) ->
 
@@ -365,37 +373,13 @@ class system.core.Loader
       value       : new $class(@controller, $db)
 
   #
-  # Load a module controller
-  #
-    # @param  [String]  the name of the class
-  # @param  [String]  name for the model
-  # @return	[Boolean]	database connection
-  # @return [Void]  #
-  module: ($module, $params = null)	->
-
-    if is_array($module) then return @modules($module)
-
-    $_alias = strtolower(end(explode('/', $module)))
-    @controller[$_alias] = Modules::load(array($module , $params))
-    @controller[$_alias]
-
-
-  #
-  # Load an array of controllers
-  #
-    # @param  [Array]  # @return [Void]  #
-  modules: ($modules) ->
-    for $_module in $modules
-      @module($_module)
-    return
-
-  #
   # Load a module plugin
   #
-    # @param  [String]  the name of the class
+  # @param  [String]  the name of the class
   # @param  [String]  name for the model
   # @return	[Boolean]	database connection
-  # @return [Void]  #
+  # @return [Void]
+  #
   plugin: ($plugin)	->
 
     if (is_array($plugin)) then return @plugins($plugin)
@@ -411,7 +395,9 @@ class system.core.Loader
   #
   # Load an array of plugins
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Array]
+  # @return [Void]
+  #
   plugins: ($plugins) ->
     for $_plugin in $plugins
       @plugin($_plugin)
@@ -428,8 +414,11 @@ class system.core.Loader
   # some cases it's advantageous to be able to return data so that
   # a developer can process it in some way.
   #
-    # @param  [String]    # @param  [Array]  # @return	[Boolean]
-  # @return [Void]  #
+  # @param  [String]  view  the view tamplate to use
+  # @param  [Array] vars  hash of variables to render in the template
+  # @param	[Function]  next  the async callback
+  # @return [Void]
+  #
   view: ($view, $vars = {}, $next = null) ->
     [$path, $view] = Modules::find($view, @controller.module, 'views/')
     @_view_path = if $path then $path else APPPATH + config_item('views')
@@ -441,7 +430,10 @@ class system.core.Loader
   # Once variables are set they become available within
   # the controller class and its "view" files.
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [String]  vars  the variable name
+  # @param  [String]  val the variable value
+  # @return [Void]
+  #
   vars: ($vars = {}, $val = '') ->
     if $val isnt '' and is_string($vars)
       $vars = array($vars, $val)
@@ -456,17 +448,20 @@ class system.core.Loader
   #
   # Check if a variable is set and retrieve it.
   #
-  # @param  [Array]  # @return [Void]  #
-  getVar: ($key) ->
-    if isset(@_cached_vars[$key]) then @_cached_vars[$key] else null
+  # @param  [String]  var the variable name
+  # @return [Mixed] the variable value
+  #
+  getVar: ($var) ->
+    if isset(@_cached_vars[$var]) then @_cached_vars[$var] else null
 
   #
   # Load File
   #
   # This is a generic file loader
   #
-    # @param  [String]    # @return	[Boolean]
-  # @return	[String]
+  # @param  [String]  path  the path to the file
+  # @param	[Function]  next  async callback
+  # @return	[Void]
   #
   file: ($path, $next) ->
     @_load($path, '', {}, $next)
@@ -476,7 +471,8 @@ class system.core.Loader
   #
   # This function loads the specified helper file.
   #
-    # @param  [Mixed]  # @return [Object]  module reference to the helpers
+  # @param  [String]  helper  helper name to load
+  # @return [Object]  module reference to the helpers
   #
   helper: ($helper) ->
 
@@ -495,7 +491,9 @@ class system.core.Loader
   #
   # Load an array of helpers
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Array] helpers an array of helper names to load
+  # @return [Void]
+  #
   helpers: ($helpers) ->
     for $_helper in $helpers
       @helper $_helper
@@ -506,7 +504,10 @@ class system.core.Loader
   #
   # This function loads the specified helper file.
   #
-    # @param  [Mixed]  # @return [Void]  #
+  # @private
+  # @param  [Array] helpers an array of helper names to load
+  # @return [Void]
+  #
   _application_helper: ($helpers = []) ->
 
     for $helper in @_prep_filename($helpers, '_helper')
@@ -541,16 +542,21 @@ class system.core.Loader
     @controller.server.setHelpers @_helpers[$helper]
 
   #
-  # Load a module i18n file
+  # Load a module localization file
   #
-    # @param  [Array]  # @param  [String]    # @return [Void]  #
+  # @param  [String]  langfile  the filename to load
+  # @param  [String]  code  the iso code for the desired language
+  # @return [Object]  hash table of loaded language keys
+  #
   language: ($langfile, $code = '', $return = false) ->
     return @controller.i18n.load($langfile, $code, $return)
 
   #
   # Load an array of languages
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Array] languages an array of language file names to load
+  # @return [Void]
+  #
   languages: ($languages) ->
     for $_language in $languages
       @language($language)
@@ -559,7 +565,11 @@ class system.core.Loader
   #
   # Loads a config file
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]  file  the config file to load
+  # @param  [Boolean] use_sections  the use_sections flag
+  # @param  [Boolean] fail_gracefully the fail_gracefully flag
+  # @return [Void]
+  #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
 
     @controller.config.load $file, $use_sections, $fail_gracefully, @controller.module
@@ -570,11 +580,11 @@ class system.core.Loader
   #
   # Loads a driver library
   #
-  # @param  [String]  the name of the class
-  # @param  [Mixed]  the optional parameters
-  # @param  [String]  an optional object name
-  # @return [Void]  #
-
+  # @param  [String]  library the name of the driver to load
+  # @param  [Object]  params  the optional parameters
+  # @param  [String]  object_name an optional object name
+  # @return [Object] the loaded object
+  #
   driver: ($library = '', $params = null, $object_name = null) ->
 
     if not system.core.Driver?
@@ -594,7 +604,9 @@ class system.core.Loader
   #
   # Prepends a parent path to the library, model, helper, and config path arrays
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]  path  the path to add
+  # @return [Void]
+  #
   addPackagePath: ($path) ->
 
     $path = rtrim($path, '/')+'/'
@@ -614,7 +626,9 @@ class system.core.Loader
   #
   # Return a list of all package paths, by default it will ignore SYSPATH.
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [Boolean] include_base  True will include system classes
+  # @return [Array] an array of path strings
+  #
   getPackagePaths: ($include_base = false) ->
     return if $include_base is true then @_library_paths else @_model_paths
 
@@ -625,8 +639,9 @@ class system.core.Loader
   # Remove a path from the library, model, and helper path arrays if it exists
   # If no path is provided, the most recently added path is removed.
   #
-    # @param	type
-  # @return	type
+  # @param  [String]  path  the path to remove
+  # @param  [Boolean] remove_config_path
+  # @return [Void]
   #
   removePackagePath: ($path = '', $remove_config_path = true) ->
 
@@ -661,7 +676,9 @@ class system.core.Loader
   # This function is used to load views and files.
   #
   # @private
-  # @param  [Array]  # @return [Void]  #
+  # @param  [Array]
+  # @return [Void]
+  #
   _load: ($path = '', $view = '', $vars = {}, $next = null) ->
 
     #  Set the path to the requested file
@@ -708,7 +725,8 @@ class system.core.Loader
   # @param  [String]  the item that is being loaded
   # @param  [Mixed]  any additional parameters
   # @param  [String]  an optional object name
-  # @return [Void]  #
+  # @return [Void]
+  #
   _load_class : ($class, $params = null, $object_name = null) ->
     #  Get the class name, and while we're at it trim any slashes.
     #  The directory path can be included as part of the class name,
@@ -808,7 +826,9 @@ class system.core.Loader
   # Instantiates a class
   #
   # @private
-  # @param  [String]    # @param  [String]    # @param  [String]  an optional object name
+  # @param  [String]
+  # @param  [String]
+  # @param  [String]  an optional object name
   # @return	null
   #
   _init_class : ($class, $prefix = '', $config = false, $object_name = null, $klass) ->
@@ -888,7 +908,9 @@ class system.core.Loader
   # libraries, and helpers to be loaded automatically.
   #
   # @private
-  # @param  [Array]  # @return [Void]  #
+  # @param  [Array]
+  # @return [Void]
+  #
   _autoloader:  ->
 
     @_application_autoloader() # application autoload first
@@ -960,7 +982,9 @@ class system.core.Loader
   # libraries, and helpers to be loaded automatically.
   #
   # @private
-  # @param  [Array]  # @return [Void]  #
+  # @param  [Array]
+  # @return [Void]
+  #
   _application_autoloader :  ->
 
     $autoload = {}
@@ -1018,7 +1042,8 @@ class system.core.Loader
   #
   #
   # @private
-  # @param  [Mixed]  # @return	array
+  # @param  [Mixed]
+  # @return	array
   #
   _prep_filename : ($filename, $extension) ->
 
@@ -1031,120 +1056,120 @@ class system.core.Loader
 
       return $filename
 
-# END Loader class
-module.exports = system.core.Loader
+  #
+  # Database Driver Factory
+  #
+  #
+  _db_factory: ($params = '', active_record_override = null) ->
+    #  Load the DB config file if a DSN string wasn't passed
+    if is_string($params) and strpos($params, '://') is false
+      #  Is the config file in the environment folder?
+      if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
+        if not file_exists($file_path = APPPATH + 'config/database' + EXT)
+          show_error('The configuration file database%s does not exist.', EXT)
 
-#
-# Database Driver Factory
-#
-#
-dbFactory = ($params = '', active_record_override = null) ->
-  #  Load the DB config file if a DSN string wasn't passed
-  if is_string($params) and strpos($params, '://') is false
-    #  Is the config file in the environment folder?
-    if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
-      if not file_exists($file_path = APPPATH + 'config/database' + EXT)
-        show_error('The configuration file database%s does not exist.', EXT)
+      {db, active_group, active_record} = require($file_path)
 
-    {db, active_group, active_record} = require($file_path)
+      if not db?  or count(db) is 0
+        show_error 'No database connection settings were found in the database config file.'
 
-    if not db?  or count(db) is 0
-      show_error 'No database connection settings were found in the database config file.'
+      if $params isnt ''
+        active_group = $params
 
-    if $params isnt ''
-      active_group = $params
+      if not active_group?  or  not db[active_group]?
+        show_error 'You have specified an invalid database connection group.'
 
-    if not active_group?  or  not db[active_group]?
-      show_error 'You have specified an invalid database connection group.'
+      $params = db[active_group]
 
-    $params = db[active_group]
+      if db[active_group]['url']?
 
-    if db[active_group]['url']?
+        if ($dns = parse_url(db[active_group]['url'])) is false
+          show_error 'Invalid DB Connection String'
 
-      if ($dns = parse_url(db[active_group]['url'])) is false
+        $params.dbdriver = $dns['scheme']
+        $params.hostname = if $dns['host']? then rawurldecode($dns['host']) else ''
+        $params.username = if $dns['user']? then rawurldecode($dns['user']) else ''
+        $params.password = if $dns['pass']? then rawurldecode($dns['pass']) else ''
+        $params.database = if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+
+
+    else if is_string($params)
+
+      # parse the URL from the DSN string
+      #  Database settings can be passed as discreet
+      #  parameters or as a data source name in the first
+      #  parameter. DSNs must have this prototype:
+      #  $dsn = 'driver://username:password@hostname/database';
+      #
+
+      if ($dns = parse_url($params)) is false
         show_error 'Invalid DB Connection String'
 
-      $params.dbdriver = $dns['scheme']
-      $params.hostname = if $dns['host']? then rawurldecode($dns['host']) else ''
-      $params.username = if $dns['user']? then rawurldecode($dns['user']) else ''
-      $params.password = if $dns['pass']? then rawurldecode($dns['pass']) else ''
-      $params.database = if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+      $params =
+        dbdriver  : $dns['scheme']
+        hostname  : if $dns['host']? then rawurldecode($dns['host']) else ''
+        username  : if $dns['user']? then rawurldecode($dns['user']) else ''
+        password  : if $dns['pass']? then rawurldecode($dns['pass']) else ''
+        database  : if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+
+      #  were additional config items set?
+      if $dns['query']?
+        $extra = {}
+        parse_str($dns['query'], $extra)
+
+        for $key, $val of $extra
+          #  booleans please
+          if strtoupper($val) is "TRUE"
+            $val = true
+
+          else if strtoupper($val) is "FALSE"
+            $val = false
+
+          $params[$key] = $val
+
+    #  No DB specified yet?  Beat them senseless...
+    if not $params['dbdriver']?  or $params['dbdriver'] is ''
+      show_error('You have not selected a database type to connect to.')
+
+    #  Load the DB classes.  Note: Since the active record class is optional
+    #  we need to dynamically create a class that extends proper parent class
+    #  based on whether we're using the active record class or not.
+
+    if active_record_override isnt null
+      active_record = active_record_override
 
 
-  else if is_string($params)
+    DbDriver = load_class(SYSPATH + 'db/Driver.coffee')
+    if not active_record?  or active_record is true
+      DbActiveRecord = load_class(SYSPATH + 'db/ActiveRecord.coffee')
 
-    # parse the URL from the DSN string
-    #  Database settings can be passed as discreet
-    #  parameters or as a data source name in the first
-    #  parameter. DSNs must have this prototype:
-    #  $dsn = 'driver://username:password@hostname/database';
-    #
+      if not system.db.DbDriver?
+        class system.db.DbDriver extends DbActiveRecord
 
-    if ($dns = parse_url($params)) is false
-      show_error 'Invalid DB Connection String'
-
-    $params =
-      dbdriver  : $dns['scheme']
-      hostname  : if $dns['host']? then rawurldecode($dns['host']) else ''
-      username  : if $dns['user']? then rawurldecode($dns['user']) else ''
-      password  : if $dns['pass']? then rawurldecode($dns['pass']) else ''
-      database  : if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
-
-    #  were additional config items set?
-    if $dns['query']?
-      $extra = {}
-      parse_str($dns['query'], $extra)
-
-      for $key, $val of $extra
-        #  booleans please
-        if strtoupper($val) is "TRUE"
-          $val = true
-
-        else if strtoupper($val) is "FALSE"
-          $val = false
-
-        $params[$key] = $val
-
-  #  No DB specified yet?  Beat them senseless...
-  if not $params['dbdriver']?  or $params['dbdriver'] is ''
-    show_error('You have not selected a database type to connect to.')
-
-  #  Load the DB classes.  Note: Since the active record class is optional
-  #  we need to dynamically create a class that extends proper parent class
-  #  based on whether we're using the active record class or not.
-
-  if active_record_override isnt null
-    active_record = active_record_override
+    else if not system.db.DbDriver?
+      class system.db.DbDriver extends DbDriver
 
 
-  DbDriver = load_class(SYSPATH + 'db/Driver.coffee')
-  if not active_record?  or active_record is true
-    DbActiveRecord = load_class(SYSPATH + 'db/ActiveRecord.coffee')
+    if not file_exists(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
+      throw new Error("Unsuported DB driver: " + $params['dbdriver'])
 
-    if not system.db.DbDriver?
-      class system.db.DbDriver extends DbActiveRecord
+    $driver = load_class(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
 
-  else if not system.db.DbDriver?
-    class system.db.DbDriver extends DbDriver
+    #  Instantiate the DB adapter
+    $db = new $driver($params)
 
+    if $db.autoinit is true
+      $db.initialize()
 
-  if not file_exists(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
-    throw new Error("Unsuported DB driver: " + $params['dbdriver'])
-
-  $driver = load_class(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
-
-  #  Instantiate the DB adapter
-  $db = new $driver($params)
-
-  if $db.autoinit is true
-    $db.initialize()
-
-  if $params['stricton']?  and $params['stricton'] is true
-    $db.query('SET SESSION sql_mode="STRICT_ALL_TABLES"')
+    if $params['stricton']?  and $params['stricton'] is true
+      $db.query('SET SESSION sql_mode="STRICT_ALL_TABLES"')
 
 
-  return $db
+    return $db
 
+
+# END Loader class
+module.exports = system.core.Loader
 
 
 # End of file Loader.coffee

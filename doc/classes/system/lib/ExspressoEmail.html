@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Exspresso Documentation</title>
+  <link rel='stylesheet' href='../../../assets/codo.css' type='text/css'>
+  <script src='../../../assets/codo.js'></script>
+  <script src='../../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../../readme.md.html' title='Exspresso'>Exspresso</a>
+    &raquo;
+    <a href='../../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>system</span>
+    &raquo;
+    <span class='title'>lib</span>
+    &raquo;
+    <span class='title'>ExspressoEmail</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        system.lib.ExspressoEmail
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>lib&#47;system&#47;lib&#47;Email.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Exspresso Email Class</p><p>Permits email to be sent using Mail, Sendmail, or SMTP.</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Constant Summary</h2>
+      <dl class='constants'>
+        <dt id='_IP-constant'>
+          _IP
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>false</code></pre>
+        </dd>
+      </dl>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>($controller, $config = {})
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor - Sets Email Preferences The constructor can be passed an array of config values
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#initialize-instance'>
+        - (void) <strong>initialize</strong>($config = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Initialize preferences
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (Void) <strong>clear</strong>($clear_attachments = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Initialize the Email Data
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#from-instance'>
+        - (void) <strong>from</strong>($from, $name = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Set FROM
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#replyTo-instance'>
+        - (void) <strong>replyTo</strong>($replyto, $name = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Set Reply-to
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#to-instance'>
+        - (void) <strong>to</strong>($to)
+      </a>
+    </span>
+    <span class='desc'>
+      Set Recipients
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#cc-instance'>
+        - (void) <strong>cc</strong>($cc)
+      </a>
+    </span>
+    <span class='desc'>
+      Set CC
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bcc-instance'>
+        - (void) <strong>bcc</strong>($bcc, $limit = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Set BCC
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#subject-instance'>
+        - (void) <strong>subject</strong>($subject)
+      </a>
+    </span>
+    <span class='desc'>
+      Set Email Subject
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#message-instance'>
+        - (void) <strong>message</strong>($body)
+      </a>
+    </span>
+    <span class='desc'>
+      Set Body
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#attach-instance'>
+        - (void) <strong>attach</strong>($filename, $disposition = 'attachment')
+      </a>
+    </span>
+    <span class='desc'>
+      Assign file attachments
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_str_to_array-instance'>
+        - (void) <strong>_str_to_array</strong>($email)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Convert a String to an Array
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setAltMessage-instance'>
+        - (void) <strong>setAltMessage</strong>($str = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Set Multipart Value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setMailtype-instance'>
+        - (void) <strong>setMailtype</strong>($type = 'text')
+      </a>
+    </span>
+    <span class='desc'>
+      Set Mailtype
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setWordwrap-instance'>
+        - (void) <strong>setWordwrap</strong>($wordwrap = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Set Wordwrap
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setProtocol-instance'>
+        - (void) <strong>setProtocol</strong>($protocol = 'mail')
+      </a>
+    </span>
+    <span class='desc'>
+      Set Protocol
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setPriority-instance'>
+        - (void) <strong>setPriority</strong>($n = 3)
+      </a>
+    </span>
+    <span class='desc'>
+      Set Priority
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setNewline-instance'>
+        - (void) <strong>setNewline</strong>($newline = "\n")
+      </a>
+    </span>
+    <span class='desc'>
+      Set Newline Character
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setCrlf-instance'>
+        - (void) <strong>setCrlf</strong>($crlf = "\n")
+      </a>
+    </span>
+    <span class='desc'>
+      Set CRLF
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_get_protocol-instance'>
+        - (String) <strong>_get_protocol</strong>($return = true)
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Get Mail Protocol
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_get_content_type-instance'>
+        - (String) <strong>_get_content_type</strong>()
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Get content type (text/html/attachment)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_get_mime_message-instance'>
+        - (String) <strong>_get_mime_message</strong>()
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Mime message
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#validate_email-instance'>
+        - (void) <strong>validate_email</strong>($email)
+      </a>
+    </span>
+    <span class='desc'>
+      Validate Email Address
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#valid_email-instance'>
+        - (void) <strong>valid_email</strong>($address)
+      </a>
+    </span>
+    <span class='desc'>
+      Email Validation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clean_email-instance'>
+        - (void) <strong>clean_email</strong>($email)
+      </a>
+    </span>
+    <span class='desc'>
+      Clean Extended Email Address: Joe Smith <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#x6a;&#111;&#x65;&#x40;&#115;&#109;&#105;&#116;&#x68;&#46;&#x63;&#111;&#x6d;">&#x6a;&#111;&#x65;&#x40;&#115;&#109;&#105;&#116;&#x68;&#46;&#x63;&#111;&#x6d;</a>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_get_alt_message-instance'>
+        - (String) <strong>_get_alt_message</strong>()
+      </a>
+    </span>
+    <span class='note private title'>Private</span>
+    <span class='desc'>
+      Build alternative plain text message This public function provides the raw message for use in plain-text headers of HTML-formatted emails.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#word_wrap-instance'>
+        - (void) <strong>word_wrap</strong>($str, $charlim = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Word Wrap
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#send-instance'>
+        - (?) <strong>send</strong>($next)
+      </a>
+    </span>
+    <span class='desc'>
+      Send Email
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>($controller, $config = {})
+    </p>
+    <div class='docstring'>
+  <p>Constructor - Sets Email Preferences</p><p>The constructor can be passed an array of config values</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='initialize-instance'>
+      - (void) <strong>initialize</strong>($config = {})
+    </p>
+    <div class='docstring'>
+  <p>Initialize preferences</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (Void) <strong>clear</strong>($clear_attachments = false)
+    </p>
+    <div class='docstring'>
+  <p>Initialize the Email Data</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Void</tt>)
+      &mdash;
+      <span class='desc'>#</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='from-instance'>
+      - (void) <strong>from</strong>($from, $name = '')
+    </p>
+    <div class='docstring'>
+  <p>Set FROM</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]    # @return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='replyTo-instance'>
+      - (void) <strong>replyTo</strong>($replyto, $name = '')
+    </p>
+    <div class='docstring'>
+  <p>Set Reply-to</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]    # @return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='to-instance'>
+      - (void) <strong>to</strong>($to)
+    </p>
+    <div class='docstring'>
+  <p>Set Recipients</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='cc-instance'>
+      - (void) <strong>cc</strong>($cc)
+    </p>
+    <div class='docstring'>
+  <p>Set CC</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bcc-instance'>
+      - (void) <strong>bcc</strong>($bcc, $limit = '')
+    </p>
+    <div class='docstring'>
+  <p>Set BCC</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [String]    # @return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='subject-instance'>
+      - (void) <strong>subject</strong>($subject)
+    </p>
+    <div class='docstring'>
+  <p>Set Email Subject</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='message-instance'>
+      - (void) <strong>message</strong>($body)
+    </p>
+    <div class='docstring'>
+  <p>Set Body</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='attach-instance'>
+      - (void) <strong>attach</strong>($filename, $disposition = 'attachment')
+    </p>
+    <div class='docstring'>
+  <p>Assign file attachments</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_str_to_array-instance'>
+      - (void) <strong>_str_to_array</strong>($email)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Convert a String to an Array</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return    array</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setAltMessage-instance'>
+      - (void) <strong>setAltMessage</strong>($str = '')
+    </p>
+    <div class='docstring'>
+  <p>Set Multipart Value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setMailtype-instance'>
+      - (void) <strong>setMailtype</strong>($type = 'text')
+    </p>
+    <div class='docstring'>
+  <p>Set Mailtype</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setWordwrap-instance'>
+      - (void) <strong>setWordwrap</strong>($wordwrap = true)
+    </p>
+    <div class='docstring'>
+  <p>Set Wordwrap</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setProtocol-instance'>
+      - (void) <strong>setProtocol</strong>($protocol = 'mail')
+    </p>
+    <div class='docstring'>
+  <p>Set Protocol</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setPriority-instance'>
+      - (void) <strong>setPriority</strong>($n = 3)
+    </p>
+    <div class='docstring'>
+  <p>Set Priority</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setNewline-instance'>
+      - (void) <strong>setNewline</strong>($newline = "\n")
+    </p>
+    <div class='docstring'>
+  <p>Set Newline Character</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setCrlf-instance'>
+      - (void) <strong>setCrlf</strong>($crlf = "\n")
+    </p>
+    <div class='docstring'>
+  <p>Set CRLF</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return [Void]  #</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_get_protocol-instance'>
+      - (String) <strong>_get_protocol</strong>($return = true)
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Get Mail Protocol</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_get_content_type-instance'>
+      - (String) <strong>_get_content_type</strong>()
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Get content type (text/html/attachment)</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_get_mime_message-instance'>
+      - (String) <strong>_get_mime_message</strong>()
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Mime message</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='validate_email-instance'>
+      - (void) <strong>validate_email</strong>($email)
+    </p>
+    <div class='docstring'>
+  <p>Validate Email Address</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return    bool</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='valid_email-instance'>
+      - (void) <strong>valid_email</strong>($address)
+    </p>
+    <div class='docstring'>
+  <p>Email Validation</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return    bool</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='clean_email-instance'>
+      - (void) <strong>clean_email</strong>($email)
+    </p>
+    <div class='docstring'>
+  <p>Clean Extended Email Address: Joe Smith <a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#x6a;&#111;&#101;&#x40;&#115;&#x6d;&#x69;&#x74;&#104;&#46;&#99;&#x6f;&#109;">&#x6a;&#111;&#101;&#x40;&#115;&#x6d;&#x69;&#x74;&#104;&#46;&#99;&#x6f;&#109;</a></p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@return    [String]</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_get_alt_message-instance'>
+      - (String) <strong>_get_alt_message</strong>()
+      (private)
+    </p>
+    <div class='docstring'>
+  <p>Build alternative plain text message</p><p>This public function provides the raw message for use
+in plain-text headers of HTML-formatted emails.
+If the user hasn&#39;t specified his own alternative message
+it creates one by stripping the HTML</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>String</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='word_wrap-instance'>
+      - (void) <strong>word_wrap</strong>($str, $charlim = '')
+    </p>
+    <div class='docstring'>
+  <p>Word Wrap</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>#</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>@param  [Integer]  # @return    [String]</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='send-instance'>
+      - (?) <strong>send</strong>($next)
+    </p>
+    <div class='docstring'>
+  <p>Send Email</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>?</tt>)
+      &mdash;
+      <span class='desc'>bool</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.8.20).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

@@ -35,10 +35,8 @@ class system.core.Config
 
   Modules = require(SYSPATH+'core/Modules.coffee')
 
-  #
-  # @property [Object] array list of loaded config files
-  #
-  _is_loaded: null
+  _is_loaded: null  #  array list of loaded config files
+
   #
   # @property [Object] array list of paths to load config files at
   #

@@ -46,8 +46,6 @@ class system.db.postgres.PostgresResult extends system.db.Result
     return @_result_array.length
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Number of fields in the result set
   #
@@ -55,8 +53,6 @@ class system.db.postgres.PostgresResult extends system.db.Result
   #
   numFields :  ->
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Fetch Field Names
@@ -70,8 +66,6 @@ class system.db.postgres.PostgresResult extends system.db.Result
     return $field_names
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Field data
   #
@@ -84,8 +78,6 @@ class system.db.postgres.PostgresResult extends system.db.Result
     return $retval
 
 
-  #  --------------------------------------------------------------------
-
   #
   # Free the result
   #
@@ -93,8 +85,6 @@ class system.db.postgres.PostgresResult extends system.db.Result
   #
   freeResult :  ->
     @result_array = null
-
-  #  --------------------------------------------------------------------
 
   #
   # Data Seek
@@ -109,8 +99,6 @@ class system.db.postgres.PostgresResult extends system.db.Result
   _data_seek : ($n = 0) ->
     @_current_row = $n
 
-  #  --------------------------------------------------------------------
-
   #
   # Result - associative array
   #
@@ -121,8 +109,6 @@ class system.db.postgres.PostgresResult extends system.db.Result
   #
   _fetch_assoc :  ->
 
-
-  #  --------------------------------------------------------------------
 
   #
   # Result - object

@@ -29,8 +29,6 @@
 # @since		  Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Utf8 Class
 #
@@ -45,8 +43,7 @@ class system.core.Utf8
   #
   # Determines if UTF-8 support is to be enabled
   #
-  #
-  # @param  [Object]    ExspressoConfig
+  # @param  [system.core.Config]  config  The application configuratin
   #
   constructor : ($config) ->
     log_message('debug', "Utf8 Class Initialized")
@@ -64,14 +61,13 @@ class system.core.Utf8
       
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Clean UTF-8 strings
   #
   # Ensures strings are UTF-8
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]  str string to clean
+  # @return	[String] cleaned string
   #
   cleanString : ($str) ->
     if @_is_ascii($str) is false
@@ -80,8 +76,6 @@ class system.core.Utf8
     return $str
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Remove ASCII control characters
   #
@@ -89,34 +83,34 @@ class system.core.Utf8
   # line feeds, and carriage returns, as all others can cause
   # problems in XML
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]  str string to clean
+  # @return	[String] cleaned string
   #
   safeAsciiForXml : ($str) ->
     return remove_invisible_characters($str, false)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Convert to UTF-8
   #
   # Attempts to convert a string to UTF-8
   #
-    # @param  [String]    # @param  [String]  - input encoding
-  # @return	[String]
+  # @param  [String]  str string to convert
+  # @param  [String]  encoding  encoding to use
+  # @return	[String] converted string
   #
   convertToUtf8 : ($str, $encoding) ->
     utf8.encode($str)
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Is ASCII?
   #
   # Tests if a string is standard 7-bit ASCII or not
   #
-    # @param  [String]    # @return	bool
+  # @private
+  # @param  [String]
+  # @return	bool
   #
   _is_ascii : ($str) ->
     #not preg_match('/[^\\x00-\\x7F]/', $str)?
@@ -124,9 +118,7 @@ class system.core.Utf8
 
     
   
-  #  --------------------------------------------------------------------
-  
-  
+
 module.exports = system.core.Utf8
 #  End Utf8 Class
 

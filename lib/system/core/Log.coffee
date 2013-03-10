@@ -35,6 +35,9 @@ class system.core.Log
     DEBUG         : 2               #   log errors and debug entries
     INFO          : 3               #   log everything
 
+  #
+  # Load configuration
+  #
   constructor: ->
 
     $config = get_config()
@@ -46,16 +49,15 @@ class system.core.Log
 
     @_threshold = parseInt($config.log_threshold, 10)
 
-  ##
+  #
   # Write Log File
   #
   # Generally this function will be called using the global log_message() function
   #
-  # @param  [String]  the error level
-  # @param  [String]  the error message
-  # @return	[Boolean]	whether the error is a native error
-  # @return	bool
-  ##
+  # @param  [String]  level the error level
+  # @param  [String]  msg the error message
+  # @return	[Boolean] always returns true
+  #
   write: ($level = 'error', $msg) ->
 
 

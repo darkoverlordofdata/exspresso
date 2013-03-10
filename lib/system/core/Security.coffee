@@ -67,11 +67,9 @@ class system.core.Security
   #
   # Constructor
   #
-    # @param  [Object]    http request cookies object
-  # @param  [Object]    http request query object
-  # @param  [Object]    http request body object
-  # @param  [Object]    http request server object
-  # @return [Void]  #
+  # @param  [Object]  req http request object
+  # @param  [Object]  res http response object
+  #
   constructor :  ($req, $res) ->
 
     defineProperties @,
@@ -101,7 +99,8 @@ class system.core.Security
   #
   # Verify Cross Site Request Forgery Protection
   #
-  # @return [Object]  #
+  # @return [Void]
+  #
   csrfVerify :  ->
     #  If it's not a POST request we will set the CSRF cookie
     if strtoupper(@_server['REQUEST_METHOD']) isnt 'POST' 
@@ -133,7 +132,8 @@ class system.core.Security
   #
   # Set Cross Site Request Forgery Protection Cookie
   #
-  # @return [Object]  #
+  # @return [Void]
+  #
   csrfSetCookie :  ->
     $expire = time() + @_csrf_expire
     $secure_cookie = if (config_item('cookie_secure') is true) 1 else 0
@@ -155,7 +155,10 @@ class system.core.Security
   #
   # Show CSRF Error
   #
-  # @return [Void]  #
+  #   display's 'The action you have requested is not allowed.'
+  #
+  # @return [Void]
+  #
   csrfShowError :  ->
     show_error('The action you have requested is not allowed.')
     
@@ -163,9 +166,7 @@ class system.core.Security
   #
   # Get CSRF Hash
   #
-  # Getter Method
-  #
-  # @return 	string 	self::_csrf_hash
+  # @return 	[String] the csrf hash value used
   #
   getCsrfHash :  ->
     return @_csrf_hash
@@ -174,9 +175,7 @@ class system.core.Security
   #
   # Get CSRF Token Name
   #
-  # Getter Method
-  #
-  # @return 	string 	self::cstrf_token_name
+  # @return 	[String] the csrf token name used
   #
   getCsrfTokenName :  ->
     return @_csrf_token_name
@@ -204,9 +203,9 @@ class system.core.Security
   # harvested from examining vulnerabilities in other programs:
   # http://ha.ckers.org/xss.html
   #
-  # @param  [Mixed]  string or array
-  # @param 	bool
-  # @return	[String]
+  # @param  [String]  str string to clean
+  # @param 	[Boolean] is_image  is it an image?
+  # @return	[String] cleaned string
   #
   xssClean : ($str, $is_image = false) ->
     #
@@ -360,10 +359,11 @@ class system.core.Security
     return $str
     
   time = -> Math.floor(Date.now()/100000)
+
   #
   # Random Hash for protecting URLs
   #
-  # @return	[String]
+  # @return	[String] gets the xss hash
   #
   xss_hash :  ->
     if @_xss_hash is '' 
@@ -383,7 +383,9 @@ class system.core.Security
   # correctly.  html_entityDecode() does not convert entities without
   # semicolons, so we are left with our own little solution here. Bummer.
   #
-  # @param  [String]    # @param  [String]    # @return	[String]
+  # @param  [String]  str string to be decoded
+  # @param  [String]  charset optional encoding (default UTF-8)
+  # @return	[String] the decoded string value
   #
   entityDecode : ($str, $charset = 'UTF-8') ->
     if stristr($str, '&') is false 
@@ -399,8 +401,11 @@ class system.core.Security
   #
   # Filename Security
   #
-  # @param  [String]    # @param 	bool
-  # @return	[String]
+  # Cleans a filepath string, removing invisible and invalid characters
+  #
+  # @param  [String]  str a file name
+  # @param 	[Boolean] relative_path is a realative path (default false)
+  # @return	[String] clean string
   #
   sanitizeFilename : ($str, $relative_path = false) ->
     $bad = [
@@ -452,6 +457,7 @@ class system.core.Security
   # Callback function for xssClean() to remove whitespace from
   # things like j a v a s c r i p t
   #
+  # @private
   # @param	type
   # @return	type
   #
@@ -470,6 +476,7 @@ class system.core.Security
   #		For example, everything between the pipes:
   #		<a |style="document.write('hello'); alert('world');"| class="link">
   #
+  # @private
   # @param  [String]  $str The string to check
   # @param boolean $is_image TRUE if this is an image
   # @return string The string with the evil attributes removed
@@ -524,7 +531,9 @@ class system.core.Security
   #
   # Callback function for xssClean() to remove naughty HTML elements
   #
-  # @param  [Array]  # @return	[String]
+  # @private
+  # @param  [Array]
+  # @return	[String]
   #
   _sanitize_naughty_html : ($matches...) =>
     #  encode opening brace
@@ -545,7 +554,9 @@ class system.core.Security
   # and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
   # PHP 5.2+ on link-heavy strings
   #
-  # @param  [Array]  # @return	[String]
+  # @private
+  # @param  [Array]
+  # @return	[String]
   #
   _js_link_removal : ($match...) =>
     return str_replace($match[1], preg_replace('#href=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|data\\s*:)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
@@ -558,11 +569,10 @@ class system.core.Security
   # JS Image Removal
   #
   # Callback function for xssClean() to sanitize image tags
-  # This limits the PCRE backtracks, making it more performance friendly
-  # and prevents PREG_BACKTRACK_LIMIT_ERROR from being triggered in
-  # PHP 5.2+ on image tag heavy strings
   #
-  # @param  [Array]  # @return	[String]
+  # @private
+  # @param  [Array]
+  # @return	[String]
   #
   _js_img_removal : ($match...) =>
     return str_replace($match[1], preg_replace('#src=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|base64\\s*,)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
@@ -576,7 +586,9 @@ class system.core.Security
   #
   # Used as a callback for XSS Clean
   #
-  # @param  [Array]  # @return	[String]
+  # @private
+  # @param  [Array]
+  # @return	[String]
   #
   _convert_attribute : ($match...) =>
     return str_replace(['>', '<', '\\'], ['&gt;', '&lt;', '\\\\'], $match[0])
@@ -587,7 +599,9 @@ class system.core.Security
   #
   # Filters tag attributes for consistency and safety
   #
-  # @param  [String]    # @return	[String]
+  # @private
+  # @param  [String]
+  # @return	[String]
   #
   _filter_attributes : ($str) ->
     $out = ''
@@ -604,7 +618,9 @@ class system.core.Security
   #
   # Used as a callback for XSS Clean
   #
-  # @param  [Array]  # @return	[String]
+  # @private
+  # @param  [Array]
+  # @return	[String]
   #
   _decode_entity : ($match...) =>
     return @entityDecode($match[0], strtoupper(config_item('charset')))
@@ -615,7 +631,9 @@ class system.core.Security
   #
   # Called by xssClean()
   #
-  # @param  [String]  # @return 	string
+  # @private
+  # @param  [String]
+  # @return 	string
   #
   _validate_entities : ($str) ->
     #
@@ -656,7 +674,9 @@ class system.core.Security
   #
   # A utility function for xssClean()
   #
-  # @param  [String]  # @return 	string
+  # @private
+  # @param  [String]
+  # @return 	string
   #
   _do_never_allowed : ($str) ->
     $str = str_replace(array_keys(@_never_allowed_str), @_never_allowed_str, $str)
@@ -670,6 +690,7 @@ class system.core.Security
   #
   # Set Cross Site Request Forgery Protection Cookie
   #
+  # @private
   # @return	[String]
   #
   _csrf_set_hash :  ->
