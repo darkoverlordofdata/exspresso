@@ -19,15 +19,13 @@ require APPPATH+'core/PublicController.coffee'
 class Travel extends application.core.PublicController
 
 
-  moment          = require('moment')                     # Parse, manipulate, and display dates
-  bcrypt          = require('bcrypt')                     # A bcrypt library for NodeJS.
-  ## --------------------------------------------------------------------
+  moment = require('moment')  # Parse, manipulate, and display dates
+  bcrypt = require('bcrypt')  # A bcrypt library for NodeJS.
 
   #
   # Customer Login
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
   #
   login: () ->
 
@@ -59,13 +57,10 @@ class Travel extends application.core.PublicController
           return @redirect "/travel/logout"
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Authenticate Customer credentials
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
   #
   authenticate: () ->
 
@@ -100,13 +95,10 @@ class Travel extends application.core.PublicController
         return @redirect "/travel/login"
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Customer Logout
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
   #
   logout: () ->
 
@@ -117,13 +109,10 @@ class Travel extends application.core.PublicController
     return @redirect "/travel"
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Search for hotels
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
   #
   search: () ->
 
@@ -147,13 +136,11 @@ class Travel extends application.core.PublicController
       }
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Display hotel search results
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
+  #
   hotels: ($start = 0) ->
 
     base_url = @load.helper('url').base_url
@@ -189,19 +176,16 @@ class Travel extends application.core.PublicController
           hotels:       $hotels.result()
           searchString: $searchString
           pageSize:     $pageSize
-          pagination:   @pagination
         }
 
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Display a hotel
   #
-  #   @access	public
-  #   @param string   The hotel record id#
-  # @return [Void]  #
+  # @param string   The hotel record id#
+  # @return [Void]
+  #
   hotel: ($id) ->
 
     @db.from 'hotel'
@@ -214,13 +198,11 @@ class Travel extends application.core.PublicController
       }
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Book the room
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
+  #
   booking: ($id) ->
 
     if @input.post('cancel')? then return @redirect "/travel"
@@ -264,13 +246,11 @@ class Travel extends application.core.PublicController
 
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Confirm the booking
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
+  #
   confirm: ($id) ->
 
     if @input.getPost('cancel')? then return @redirect "/travel"
@@ -317,13 +297,11 @@ class Travel extends application.core.PublicController
             booking:  $booking
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Book/Revise/Cancel
   #
-  #   @access	public
-  # @return [Void]  #
+  # @return [Void]
+  #
   book: ($id) ->
 
     if not @session.userdata('customer')

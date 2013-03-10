@@ -29,8 +29,6 @@
 #
 class system.lib.RedisSession extends require('connect-redis')(require('express'))
 
-  ## --------------------------------------------------------------------
-
   #
   # Constructor
   #

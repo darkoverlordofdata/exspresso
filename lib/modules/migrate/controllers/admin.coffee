@@ -25,8 +25,6 @@ class Admin extends application.core.AdminController
       migration_db      : 'mysql'
       migration_enabled :  true
 
-  ## --------------------------------------------------------------------
-
   #
   # List migrations
   #

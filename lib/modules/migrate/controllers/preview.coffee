@@ -25,8 +25,6 @@ class Preview extends application.core.AdminController
       migration_db      : 'mysql'
       migration_enabled :  true
 
-  ## --------------------------------------------------------------------
-
   #
   # Preview
   #

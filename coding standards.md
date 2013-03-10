@@ -83,7 +83,6 @@ module.exports = application.lib.MyBase
       hotels:       $hotels.result()
       searchString: $searchString
       pageSize:     $pageSize
-      pagination:   @pagination
     }
 ```
 

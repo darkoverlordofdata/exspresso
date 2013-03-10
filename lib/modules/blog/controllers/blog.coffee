@@ -17,8 +17,6 @@ require APPPATH+'core/AdminController.coffee'
 
 class Blog extends application.core.AdminController
 
-  ## --------------------------------------------------------------------
-
   #
   # Index
   #
@@ -34,8 +32,6 @@ class Blog extends application.core.AdminController
       @template.view 'blog_list', $err ||
         entries: $blog.result()
 
-
-  ## --------------------------------------------------------------------
 
   #
   # Show
@@ -54,8 +50,6 @@ class Blog extends application.core.AdminController
         blog: $blog.row()
 
 
-  ## --------------------------------------------------------------------
-
   #
   # Edit
   #
@@ -73,8 +67,6 @@ class Blog extends application.core.AdminController
         blog: $blog.row()
 
 
-  ## --------------------------------------------------------------------
-
   #
   # New
   #
@@ -85,8 +77,6 @@ class Blog extends application.core.AdminController
   new: () ->
 
     @template.view 'blog_new'
-
-  ## --------------------------------------------------------------------
 
   #
   # Save
