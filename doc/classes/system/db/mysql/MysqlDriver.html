@@ -130,46 +130,12 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#connect-instance'>
-        - (?) <strong>connect</strong>($next)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Non-persistent database connection
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#pconnect-instance'>
-        - (?) <strong>pconnect</strong>($next)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Persistent database connection
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#reconnect-instance'>
         - (Void) <strong>reconnect</strong>($next)
       </a>
     </span>
     <span class='desc'>
       Reconnect Keep / reestablish the db connection if no queries have been sent for a length of time exceeding the server&#39;s idle timeout
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#db_select-instance'>
-        - (?) <strong>db_select</strong>($next)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Select the database
     </span>
   </li>
   <li>
@@ -190,28 +156,6 @@
     </span>
     <span class='desc'>
       Version number query string
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_execute-instance'>
-        - (?) <strong>_execute</strong>($sql, $params, $next)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Execute the query
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_prep_query-instance'>
-        - (String) <strong>_prep_query</strong>($sql)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Prep the query If needed, each database adapter can prep the query string
     </span>
   </li>
   <li>
@@ -286,17 +230,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_list_tables-instance'>
-        - (String) <strong>_list_tables</strong>($prefix_limit = false)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      List table query Generates a platform-specific query string so that the table names can be fetched
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#_list_columns-instance'>
         - (String) <strong>_list_columns</strong>($table = '')
       </a>
@@ -313,39 +246,6 @@
     </span>
     <span class='desc'>
       Field data query Generates a platform-specific query so that the column data can be retrieved
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_error_message-instance'>
-        - (String) <strong>_error_message</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      The error message string
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_error_number-instance'>
-        - (?) <strong>_error_number</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      The error message number
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_escape_identifiers-instance'>
-        - (void) <strong>_escape_identifiers</strong>($item)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Escape the SQL Identifiers This function escapes column and table names
     </span>
   </li>
   <li>
@@ -464,13 +364,11 @@
                 <a href='../../../../classes/system/db/ActiveRecord.html#selectAvg-instance'>#selectAvg</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#selectSum-instance'>#selectSum</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#_max_min_avg_sum-instance'>#_max_min_avg_sum</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_create_alias_from_table-instance'>#_create_alias_from_table</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#distinct-instance'>#distinct</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#from-instance'>#from</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#join-instance'>#join</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#where-instance'>#where</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#orWhere-instance'>#orWhere</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_where-instance'>#_where</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#whereIn-instance'>#whereIn</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#orWhereIn-instance'>#orWhereIn</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#whereNotIn-instance'>#whereNotIn</a>,
@@ -480,11 +378,9 @@
                 <a href='../../../../classes/system/db/ActiveRecord.html#not_like-instance'>#not_like</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#orLike-instance'>#orLike</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#orNotLike-instance'>#orNotLike</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_like-instance'>#_like</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#groupBy-instance'>#groupBy</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#having-instance'>#having</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#orHaving-instance'>#orHaving</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_having-instance'>#_having</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#orderBy-instance'>#orderBy</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#limit-instance'>#limit</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#offset-instance'>#offset</a>,
@@ -503,16 +399,10 @@
                 <a href='../../../../classes/system/db/ActiveRecord.html#truncate-instance'>#truncate</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#delete-instance'>#delete</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#_dbprefix-instance'>#_dbprefix</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_track_aliases-instance'>#_track_aliases</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_compile_select-instance'>#_compile_select</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#_object_to_array_batch-instance'>#_object_to_array_batch</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#startCache-instance'>#startCache</a>,
                 <a href='../../../../classes/system/db/ActiveRecord.html#stopCache-instance'>#stopCache</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#flushCache-instance'>#flushCache</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_merge_cache-instance'>#_merge_cache</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_reset_run-instance'>#_reset_run</a>,
-                <a href='../../../../classes/system/db/ActiveRecord.html#_reset_select-instance'>#_reset_select</a>,
-        <a href='../../../../classes/system/db/ActiveRecord.html#_reset_write-instance'>#_reset_write</a>
+        <a href='../../../../classes/system/db/ActiveRecord.html#flushCache-instance'>#flushCache</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -520,13 +410,11 @@
       </h3>
       <p class='inherited'>
                 <a href='../../../../classes/system/db/Driver.html#constructor-instance'>#constructor</a>,
-                <a href='../../../../classes/system/db/Driver.html#initialize-instance'>#initialize</a>,
                 <a href='../../../../classes/system/db/Driver.html#platform-instance'>#platform</a>,
                 <a href='../../../../classes/system/db/Driver.html#version-instance'>#version</a>,
                 <a href='../../../../classes/system/db/Driver.html#queryList-instance'>#queryList</a>,
                 <a href='../../../../classes/system/db/Driver.html#query-instance'>#query</a>,
                 <a href='../../../../classes/system/db/Driver.html#_query2-instance'>#_query2</a>,
-                <a href='../../../../classes/system/db/Driver.html#_load_rdriver-instance'>#_load_rdriver</a>,
                 <a href='../../../../classes/system/db/Driver.html#simpleQuery-instance'>#simpleQuery</a>,
                 <a href='../../../../classes/system/db/Driver.html#_simple_query2-instance'>#_simple_query2</a>,
                 <a href='../../../../classes/system/db/Driver.html#transOff-instance'>#transOff</a>,
@@ -549,61 +437,16 @@
                 <a href='../../../../classes/system/db/Driver.html#field_data-instance'>#field_data</a>,
                 <a href='../../../../classes/system/db/Driver.html#insert_string-instance'>#insert_string</a>,
                 <a href='../../../../classes/system/db/Driver.html#update_string-instance'>#update_string</a>,
-                <a href='../../../../classes/system/db/Driver.html#_has_operator-instance'>#_has_operator</a>,
                 <a href='../../../../classes/system/db/Driver.html#cacheSetPath-instance'>#cacheSetPath</a>,
                 <a href='../../../../classes/system/db/Driver.html#cacheOn-instance'>#cacheOn</a>,
                 <a href='../../../../classes/system/db/Driver.html#cacheOff-instance'>#cacheOff</a>,
                 <a href='../../../../classes/system/db/Driver.html#cacheDelete-instance'>#cacheDelete</a>,
                 <a href='../../../../classes/system/db/Driver.html#cacheDeleteAll-instance'>#cacheDeleteAll</a>,
-                <a href='../../../../classes/system/db/Driver.html#_cache_init-instance'>#_cache_init</a>,
                 <a href='../../../../classes/system/db/Driver.html#close-instance'>#close</a>,
-                <a href='../../../../classes/system/db/Driver.html#displayError-instance'>#displayError</a>,
-                <a href='../../../../classes/system/db/Driver.html#protect_identifiers-instance'>#protect_identifiers</a>,
-        <a href='../../../../classes/system/db/Driver.html#_protect_identifiers-instance'>#_protect_identifiers</a>
+        <a href='../../../../classes/system/db/Driver.html#displayError-instance'>#displayError</a>
       </p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='connect-instance'>
-      - (?) <strong>connect</strong>($next)
-      (bound)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Non-persistent database connection</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>resource</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='pconnect-instance'>
-      - (?) <strong>pconnect</strong>($next)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Persistent database connection</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>resource</span>
-    </li>
-  </ul>
-</div>
-  </div>
   <div class='method_details'>
     <p class='signature' id='reconnect-instance'>
       - (Void) <strong>reconnect</strong>($next)
@@ -620,26 +463,6 @@ sent for a length of time exceeding the server&#39;s idle timeout</p>
       (<tt>Void</tt>)
       &mdash;
       <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='db_select-instance'>
-      - (?) <strong>db_select</strong>($next)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Select the database</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>resource</span>
     </li>
   </ul>
 </div>
@@ -673,64 +496,6 @@ sent for a length of time exceeding the server&#39;s idle timeout</p>
   <p>Version number query string</p>
 </div>
 <div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_execute-instance'>
-      - (?) <strong>_execute</strong>($sql, $params, $next)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Execute the query</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>an</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>SQL query</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>resource</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_prep_query-instance'>
-      - (String) <strong>_prep_query</strong>($sql)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Prep the query</p><p>If needed, each database adapter can prep the query string</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>an</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>SQL query</span>
-    </li>
-  </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
@@ -882,22 +647,6 @@ the specified database</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_list_tables-instance'>
-      - (String) <strong>_list_tables</strong>($prefix_limit = false)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>List table query</p><p>Generates a platform-specific query string so that the table names can be fetched</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='_list_columns-instance'>
       - (String) <strong>_list_columns</strong>($table = '')
     </p>
@@ -949,64 +698,6 @@ the specified database</p>
       (<tt>Object</tt>)
       &mdash;
       <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_error_message-instance'>
-      - (String) <strong>_error_message</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>The error message string</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_error_number-instance'>
-      - (?) <strong>_error_number</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>The error message number</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>integer</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_escape_identifiers-instance'>
-      - (void) <strong>_escape_identifiers</strong>($item)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Escape the SQL Identifiers</p><p>This function escapes column and table names</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@return    [String]</span>
     </li>
   </ul>
 </div>
@@ -1392,7 +1083,7 @@ This function maps to &quot;DELETE FROM table&quot;</p>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

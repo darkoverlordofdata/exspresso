@@ -122,12 +122,11 @@
 <li>right align colons</li>
 <li>prefer unquoted key values</li>
 </ul>
-<pre><code>
-    options =
-      expires : expire_on
-      domain  : &#39;&#39;
-      path    : &#39;/&#39;
-      secure  : true</code></pre>
+<pre><code class="lang-CoffeeScript">options =
+  expires : expire_on
+  domain  : &#39;&#39;
+  path    : &#39;/&#39;
+  secure  : true</code></pre>
 <h2>Classes</h2>
 <ul>
 <li>1 public class per file</li>
@@ -140,51 +139,47 @@
 <li>Public properties shall be camelCase</li>
 <li><p>Protected or private properties shall be _snake_case</p><p>Example MyBase.coffee:</p></li>
 </ul>
-<pre><code>
-    class global.MyBase
+<pre><code class="lang-CoffeeScript">class global.MyBase
 
-      @DEFAULT      = 0
-      @READY        = 1
+  @DEFAULT      = 0
+  @READY        = 1
 
-      _headers      : null
-      cookie_path   : &#39;/&#39;
+  _headers      : null
+  cookie_path   : &#39;/&#39;
 
-      constructor: () -&gt;
-        @_headers = []
+  constructor: () -&gt;
+    @_headers = []
 
 
-    module.exports = MyBase</code></pre>
+module.exports = MyBase</code></pre>
 <h2>Error Handling</h2>
 <ul>
 <li>In middleware, call the server next handler</li>
 </ul>
-<pre><code>
-    (req, res, next) -&gt;
-      try
-        ...
-        next()
-      catch err
-        next err</code></pre>
+<pre><code class="lang-CoffeeScript">(req, res, next) -&gt;
+  try
+    ...
+    next()
+  catch err
+    next err</code></pre>
 <ul>
 <li>Use show_error to send error display to the browser</li>
 <li>Use log_message to record the message for support</li>
 <li>Use &#39;return if&#39; style</li>
 </ul>
-<pre><code>
-    return log_message(&#39;error&#39;, &#39;My message: %s&#39;, err) if show_error(err)</code></pre>
+<pre><code class="lang-CoffeeScript">return log_message(&#39;error&#39;, &#39;My message: %s&#39;, err) if show_error(err)</code></pre>
 <ul>
 <li>Use a short circuit evaluation to pass either error or result to template.view</li>
 </ul>
-<pre><code>
-    @db.get ($err, $data) =&gt;
+<pre><code class="lang-CoffeeScript">@db.get ($err, $data) =&gt;
 
-      @template.view &quot;myview&quot;, $err || $data</code></pre>
+  @template.view &quot;myview&quot;, $err || $data</code></pre>
 
       </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

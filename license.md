@@ -1,4 +1,4 @@
-(The MIT License)
+# MIT License
 
 Copyright (c) 2012 - 2013 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
 

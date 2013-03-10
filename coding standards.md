@@ -6,13 +6,12 @@
   * right align colons
   * prefer unquoted key values
 
-```
-
-    options =
-      expires : expire_on
-      domain  : ''
-      path    : '/'
-      secure  : true
+```CoffeeScript
+options =
+  expires : expire_on
+  domain  : ''
+  path    : '/'
+  secure  : true
 ```
 
 
@@ -30,21 +29,20 @@
 
   Example MyBase.coffee:
 
-```
+```CoffeeScript
+class global.MyBase
 
-    class global.MyBase
+  @DEFAULT      = 0
+  @READY        = 1
 
-      @DEFAULT      = 0
-      @READY        = 1
+  _headers      : null
+  cookie_path   : '/'
 
-      _headers      : null
-      cookie_path   : '/'
-
-      constructor: () ->
-        @_headers = []
+  constructor: () ->
+    @_headers = []
 
 
-    module.exports = MyBase
+module.exports = MyBase
 ```
 
 
@@ -54,14 +52,13 @@
 
   * In middleware, call the server next handler
 
-```
-
-    (req, res, next) ->
-      try
-        ...
-        next()
-      catch err
-        next err
+```CoffeeScript
+(req, res, next) ->
+  try
+    ...
+    next()
+  catch err
+    next err
 ```
 
   * Use show_error to send error display to the browser
@@ -69,19 +66,17 @@
   * Use 'return if' style
 
 
-```
-
-    return log_message('error', 'My message: %s', err) if show_error(err)
+```CoffeeScript
+return log_message('error', 'My message: %s', err) if show_error(err)
 ```
 
   * Use a short circuit evaluation to pass either error or result to template.view
 
 
-```
+```CoffeeScript
+@db.get ($err, $data) =>
 
-    @db.get ($err, $data) =>
-
-      @template.view "myview", $err || $data
+  @template.view "myview", $err || $data
 ```
 
 

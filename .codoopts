@@ -7,7 +7,7 @@
 ./lib/application
 ./lib/modules
 -
-LICENSE
+license.md
 coding standards.md
 controller graph.md
 class status.md

@@ -317,12 +317,13 @@ class system.lib.Migration
   #
   getVersion: ($next) ->
 
+    @db.from 'migrations'
     @db.where 'module', @_migration_module
-    @db.get 'migrations', ($err, $result) ->
+    @db.get ($err, $result) ->
 
       return $next($err) if $err
       $row = $result.row()
-      $next null, if $row then $row.version else 0
+      $next null, (if $row? then $row.version else 0)
 
 
 
@@ -335,7 +336,7 @@ class system.lib.Migration
   _update_version: ($migrations, $next) ->
 
     @db.where 'module', @_migration_module
-    @db.update 'migrations'
+    @db.update 'migrations',
       'version': $migrations, $next
 
 #  END ExspressoMigration class

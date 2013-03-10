@@ -68,7 +68,8 @@ class system.core.Exspresso extends system.core.Object
   @define version: require(FCPATH + 'package.json').version
 
   #
-  # Parse the command line options: <br />
+  # Parse the command line options.
+  #
   # <br />
   #  --cache      enable cacheing <br />
   #  --csrf       enable xss checks <br />

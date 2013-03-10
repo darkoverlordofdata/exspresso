@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Exspresso Documentation</title>
+  <link rel='stylesheet' href='../../../assets/codo.css' type='text/css'>
+  <script src='../../../assets/codo.js'></script>
+  <script src='../../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../../readme.md.html' title='Exspresso'>Exspresso</a>
+    &raquo;
+    <a href='../../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>system</span>
+    &raquo;
+    <span class='title'>core</span>
+    &raquo;
+    <span class='title'>Loader</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        system.core.Loader
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>lib&#47;system&#47;core&#47;Loader.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Loader Class</p><p>Loads claees, views and other files</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>($controller)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Initiailize the loader search paths
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#initialize-instance'>
+        - (Void) <strong>initialize</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Perform the autoloads
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#isLoaded-instance'>
+        - (String) <strong>isLoaded</strong>($class)
+      </a>
+    </span>
+    <span class='desc'>
+      Is Loaded A utility function to test if a class is in the self::$_classes array.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#library-instance'>
+        - (Object) <strong>library</strong>($library, $params = {}, $object_name = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Module Class Loader This function lets users load and instantiate classes.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#libraries-instance'>
+        - (Void) <strong>libraries</strong>($libraries)
+      </a>
+    </span>
+    <span class='desc'>
+      Load an array of libraries
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#model-instance'>
+        - (Object) <strong>model</strong>($model, $object_name = null, $connect = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Module Model Loader This function lets users load and instantiate models.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#models-instance'>
+        - (Void) <strong>models</strong>($models)
+      </a>
+    </span>
+    <span class='desc'>
+      Load an array of models
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#database-instance'>
+        - (system.db.Driver) <strong>database</strong>($params = '', $return = false, $active_record = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Database Loader
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#dbutil-instance'>
+        - (system.db.Utility) <strong>dbutil</strong>($params = '', $return = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Load the DB Utilities Class
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#dbforge-instance'>
+        - (system.db.Forge) <strong>dbforge</strong>($params = '', $return = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Load the Database Forge Class
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#plugin-instance'>
+        - (Void) <strong>plugin</strong>($plugin)
+      </a>
+    </span>
+    <span class='desc'>
+      Load a module plugin
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#plugins-instance'>
+        - (Void) <strong>plugins</strong>($plugins)
+      </a>
+    </span>
+    <span class='desc'>
+      Load an array of plugins @param [Array]
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#view-instance'>
+        - (Void) <strong>view</strong>($view, $vars = {}, $next = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Load View This function is used to load a &quot;view&quot; file.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#vars-instance'>
+        - (Void) <strong>vars</strong>($vars = {}, $val = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Set Variables Once variables are set they become available within the controller class and its &quot;view&quot; files.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getVar-instance'>
+        - (Mixed) <strong>getVar</strong>($var)
+      </a>
+    </span>
+    <span class='desc'>
+      Get Variable Check if a variable is set and retrieve it.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#file-instance'>
+        - (Void) <strong>file</strong>($path, $next)
+      </a>
+    </span>
+    <span class='desc'>
+      Load File This is a generic file loader
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#helper-instance'>
+        - (Object) <strong>helper</strong>($helper)
+      </a>
+    </span>
+    <span class='desc'>
+      Load a module helper This function loads the specified helper file.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#helpers-instance'>
+        - (Void) <strong>helpers</strong>($helpers)
+      </a>
+    </span>
+    <span class='desc'>
+      Load an array of helpers
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#language-instance'>
+        - (Object) <strong>language</strong>($langfile, $code = '', $return = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Load a module localization file
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#languages-instance'>
+        - (Void) <strong>languages</strong>($languages)
+      </a>
+    </span>
+    <span class='desc'>
+      Load an array of languages
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#config-instance'>
+        - (Void) <strong>config</strong>($file = '', $use_sections = false, $fail_gracefully = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Loads a config file
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#driver-instance'>
+        - (Object) <strong>driver</strong>($library = '', $params = null, $object_name = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Driver Loads a driver library
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addPackagePath-instance'>
+        - (Void) <strong>addPackagePath</strong>($path)
+      </a>
+    </span>
+    <span class='desc'>
+      Add Package Path Prepends a parent path to the library, model, helper, and config path arrays
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getPackagePaths-instance'>
+        - (Array) <strong>getPackagePaths</strong>($include_base = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Get Package Paths Return a list of all package paths, by default it will ignore SYSPATH.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#removePackagePath-instance'>
+        - (Void) <strong>removePackagePath</strong>($path = '', $remove_config_path = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Remove Package Path Remove a path from the library, model, and helper path arrays if it exists If no path is provided, the most recently added path is removed.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_db_factory-instance'>
+        - (void) <strong>_db_factory</strong>($params = '', active_record_override = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Database Driver Factory
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>($controller)
+    </p>
+    <div class='docstring'>
+  <p>Initiailize the loader search paths</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>controller</span>
+      <span class='type'>
+        (<tt><a href='../../../classes/system/core/Object.html'>system.core.Object</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the parent controller object</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='initialize-instance'>
+      - (Void) <strong>initialize</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Perform the autoloads</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='isLoaded-instance'>
+      - (String) <strong>isLoaded</strong>($class)
+    </p>
+    <div class='docstring'>
+  <p>Is Loaded</p><p>A utility function to test if a class is in the self::$_classes array.
+This function returns the object name if the class tested for is loaded,
+and returns FALSE if it isn&#39;t.</p><p>It is mainly used in the form_helper _get_validation_object()</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>class</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>class name being checked for</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the loaded class object name or FALSE</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='library-instance'>
+      - (Object) <strong>library</strong>($library, $params = {}, $object_name = null)
+    </p>
+    <div class='docstring'>
+  <p>Module Class Loader</p><p>This function lets users load and instantiate classes.
+It is designed to be called from a user&#39;s app controllers.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>library</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the class to load</span>
+    </li>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the optional parameters as a hash</span>
+    </li>
+    <li>
+      <span class='name'>an</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>optional object name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the instantiated class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='libraries-instance'>
+      - (Void) <strong>libraries</strong>($libraries)
+    </p>
+    <div class='docstring'>
+  <p>Load an array of libraries</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>libraries</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>list of class names to load</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='model-instance'>
+      - (Object) <strong>model</strong>($model, $object_name = null, $connect = false)
+    </p>
+    <div class='docstring'>
+  <p>Module Model Loader</p><p>This function lets users load and instantiate models.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the model class to load</span>
+    </li>
+    <li>
+      <span class='name'>object_name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>name for the model</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the instantiated class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='models-instance'>
+      - (Void) <strong>models</strong>($models)
+    </p>
+    <div class='docstring'>
+  <p>Load an array of models</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>libraries</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>list of model names to load</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='database-instance'>
+      - (system.db.Driver) <strong>database</strong>($params = '', $return = false, $active_record = null)
+    </p>
+    <div class='docstring'>
+  <p>Database Loader</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>either a resource url specifier or simple the driver name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../../classes/system/db/Driver.html'>system.db.Driver</a></tt>)
+      &mdash;
+      <span class='desc'>the connected database driver</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='dbutil-instance'>
+      - (system.db.Utility) <strong>dbutil</strong>($params = '', $return = false)
+    </p>
+    <div class='docstring'>
+  <p>Load the DB Utilities Class</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>either a resource url specifier or simple the driver name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../../classes/system/db/Utility.html'>system.db.Utility</a></tt>)
+      &mdash;
+      <span class='desc'>the connected database utility driver</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='dbforge-instance'>
+      - (system.db.Forge) <strong>dbforge</strong>($params = '', $return = false)
+    </p>
+    <div class='docstring'>
+  <p>Load the Database Forge Class</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>either a resource url specifier or simple the driver name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../../classes/system/db/Forge.html'>system.db.Forge</a></tt>)
+      &mdash;
+      <span class='desc'>the connected database forge driver</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='plugin-instance'>
+      - (Void) <strong>plugin</strong>($plugin)
+    </p>
+    <div class='docstring'>
+  <p>Load a module plugin</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>name of the class</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>for the model</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='plugins-instance'>
+      - (Void) <strong>plugins</strong>($plugins)
+    </p>
+    <div class='docstring'>
+  <p>Load an array of plugins</p><p>@param  [Array]</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='view-instance'>
+      - (Void) <strong>view</strong>($view, $vars = {}, $next = null)
+    </p>
+    <div class='docstring'>
+  <p>Load View</p><p>This function is used to load a &quot;view&quot; file.  It has three parameters:</p><ol>
+<li>The name of the &quot;view&quot; file to be included.</li>
+<li>An associative array of data to be extracted for use in the view.</li>
+<li>TRUE/FALSE - whether to return the data or load it.  In
+some cases it&#39;s advantageous to be able to return data so that
+a developer can process it in some way.</li>
+</ol>
+
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the view tamplate to use</span>
+    </li>
+    <li>
+      <span class='name'>vars</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>hash of variables to render in the template</span>
+    </li>
+    <li>
+      <span class='name'>next</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the async callback</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='vars-instance'>
+      - (Void) <strong>vars</strong>($vars = {}, $val = '')
+    </p>
+    <div class='docstring'>
+  <p>Set Variables</p><p>Once variables are set they become available within
+the controller class and its &quot;view&quot; files.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>vars</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the variable name</span>
+    </li>
+    <li>
+      <span class='name'>val</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the variable value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getVar-instance'>
+      - (Mixed) <strong>getVar</strong>($var)
+    </p>
+    <div class='docstring'>
+  <p>Get Variable</p><p>Check if a variable is set and retrieve it.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>var</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the variable name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Mixed</tt>)
+      &mdash;
+      <span class='desc'>the variable value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='file-instance'>
+      - (Void) <strong>file</strong>($path, $next)
+    </p>
+    <div class='docstring'>
+  <p>Load File</p><p>This is a generic file loader</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>path</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the path to the file</span>
+    </li>
+    <li>
+      <span class='name'>next</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>async callback</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='helper-instance'>
+      - (Object) <strong>helper</strong>($helper)
+    </p>
+    <div class='docstring'>
+  <p>Load a module helper</p><p>This function loads the specified helper file.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>helper</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>helper name to load</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>module reference to the helpers</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='helpers-instance'>
+      - (Void) <strong>helpers</strong>($helpers)
+    </p>
+    <div class='docstring'>
+  <p>Load an array of helpers</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>helpers</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an array of helper names to load</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='language-instance'>
+      - (Object) <strong>language</strong>($langfile, $code = '', $return = false)
+    </p>
+    <div class='docstring'>
+  <p>Load a module localization file</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>langfile</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the filename to load</span>
+    </li>
+    <li>
+      <span class='name'>code</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the iso code for the desired language</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>hash table of loaded language keys</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='languages-instance'>
+      - (Void) <strong>languages</strong>($languages)
+    </p>
+    <div class='docstring'>
+  <p>Load an array of languages</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>languages</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an array of language file names to load</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='config-instance'>
+      - (Void) <strong>config</strong>($file = '', $use_sections = false, $fail_gracefully = false)
+    </p>
+    <div class='docstring'>
+  <p>Loads a config file</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>file</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config file to load</span>
+    </li>
+    <li>
+      <span class='name'>use_sections</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the use_sections flag</span>
+    </li>
+    <li>
+      <span class='name'>fail_gracefully</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the fail_gracefully flag</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='driver-instance'>
+      - (Object) <strong>driver</strong>($library = '', $params = null, $object_name = null)
+    </p>
+    <div class='docstring'>
+  <p>Driver</p><p>Loads a driver library</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>library</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the driver to load</span>
+    </li>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the optional parameters</span>
+    </li>
+    <li>
+      <span class='name'>object_name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an optional object name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the loaded object</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addPackagePath-instance'>
+      - (Void) <strong>addPackagePath</strong>($path)
+    </p>
+    <div class='docstring'>
+  <p>Add Package Path</p><p>Prepends a parent path to the library, model, helper, and config path arrays</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>path</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the path to add</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getPackagePaths-instance'>
+      - (Array) <strong>getPackagePaths</strong>($include_base = false)
+    </p>
+    <div class='docstring'>
+  <p>Get Package Paths</p><p>Return a list of all package paths, by default it will ignore SYSPATH.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>include_base</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>True will include system classes</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'>an array of path strings</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='removePackagePath-instance'>
+      - (Void) <strong>removePackagePath</strong>($path = '', $remove_config_path = true)
+    </p>
+    <div class='docstring'>
+  <p>Remove Package Path</p><p>Remove a path from the library, model, and helper path arrays if it exists
+If no path is provided, the most recently added path is removed.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>path</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the path to remove</span>
+    </li>
+    <li>
+      <span class='name'>remove_config_path</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_db_factory-instance'>
+      - (void) <strong>_db_factory</strong>($params = '', active_record_override = null)
+    </p>
+    <div class='docstring'>
+  <p>Database Driver Factory</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.8.20).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

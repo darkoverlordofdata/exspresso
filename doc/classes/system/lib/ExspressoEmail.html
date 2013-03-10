@@ -251,17 +251,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_str_to_array-instance'>
-        - (void) <strong>_str_to_array</strong>($email)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Convert a String to an Array
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#setAltMessage-instance'>
         - (void) <strong>setAltMessage</strong>($str = '')
       </a>
@@ -332,39 +321,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_get_protocol-instance'>
-        - (String) <strong>_get_protocol</strong>($return = true)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Get Mail Protocol
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_get_content_type-instance'>
-        - (String) <strong>_get_content_type</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Get content type (text/html/attachment)
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_get_mime_message-instance'>
-        - (String) <strong>_get_mime_message</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Mime message
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#validate_email-instance'>
         - (void) <strong>validate_email</strong>($email)
       </a>
@@ -390,18 +346,7 @@
       </a>
     </span>
     <span class='desc'>
-      Clean Extended Email Address: Joe Smith <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#x6a;&#111;&#x65;&#x40;&#115;&#109;&#105;&#116;&#x68;&#46;&#x63;&#111;&#x6d;">&#x6a;&#111;&#x65;&#x40;&#115;&#109;&#105;&#116;&#x68;&#46;&#x63;&#111;&#x6d;</a>
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_get_alt_message-instance'>
-        - (String) <strong>_get_alt_message</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Build alternative plain text message This public function provides the raw message for use in plain-text headers of HTML-formatted emails.
+      Clean Extended Email Address: Joe Smith <a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#x6a;&#111;&#101;&#64;&#115;&#109;&#x69;&#x74;&#104;&#x2e;&#99;&#x6f;&#109;">&#x6a;&#111;&#101;&#64;&#115;&#109;&#x69;&#x74;&#104;&#x2e;&#99;&#x6f;&#109;</a>
     </span>
   </li>
   <li>
@@ -649,28 +594,6 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_str_to_array-instance'>
-      - (void) <strong>_str_to_array</strong>($email)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Convert a String to an Array</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@return    array</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='setAltMessage-instance'>
       - (void) <strong>setAltMessage</strong>($str = '')
     </p>
@@ -818,54 +741,6 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_get_protocol-instance'>
-      - (String) <strong>_get_protocol</strong>($return = true)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Get Mail Protocol</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_get_content_type-instance'>
-      - (String) <strong>_get_content_type</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Get content type (text/html/attachment)</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_get_mime_message-instance'>
-      - (String) <strong>_get_mime_message</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Mime message</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='validate_email-instance'>
       - (void) <strong>validate_email</strong>($email)
     </p>
@@ -912,7 +787,7 @@
       - (void) <strong>clean_email</strong>($email)
     </p>
     <div class='docstring'>
-  <p>Clean Extended Email Address: Joe Smith <a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#x6a;&#111;&#101;&#x40;&#115;&#x6d;&#x69;&#x74;&#104;&#46;&#99;&#x6f;&#109;">&#x6a;&#111;&#101;&#x40;&#115;&#x6d;&#x69;&#x74;&#104;&#46;&#99;&#x6f;&#109;</a></p>
+  <p>Clean Extended Email Address: Joe Smith <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#x6f;&#x3a;&#106;&#111;&#101;&#64;&#115;&#x6d;&#x69;&#116;&#104;&#x2e;&#x63;&#x6f;&#109;">&#106;&#111;&#101;&#64;&#115;&#x6d;&#x69;&#116;&#104;&#x2e;&#x63;&#x6f;&#109;</a></p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -925,25 +800,6 @@
       &mdash;
       <span class='desc'>@return    [String]</span>
     </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_get_alt_message-instance'>
-      - (String) <strong>_get_alt_message</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Build alternative plain text message</p><p>This public function provides the raw message for use
-in plain-text headers of HTML-formatted emails.
-If the user hasn&#39;t specified his own alternative message
-it creates one by stripping the HTML</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
   </ul>
 </div>
   </div>
@@ -991,7 +847,7 @@ it creates one by stripping the HTML</p>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

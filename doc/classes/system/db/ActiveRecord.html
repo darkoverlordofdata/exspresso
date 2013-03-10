@@ -210,17 +210,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_create_alias_from_table-instance'>
-        - (void) <strong>_create_alias_from_table</strong>($item)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Determines the alias name based on the table
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#distinct-instance'>
         - (Object) <strong>distinct</strong>($val = true)
       </a>
@@ -267,17 +256,6 @@
     </span>
     <span class='desc'>
       OR Where Generates the WHERE portion of the query.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_where-instance'>
-        - (void) <strong>_where</strong>($key, $value = null, $type = 'AND ', $escape = null)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Where Called by where() or orwhere()
     </span>
   </li>
   <li>
@@ -372,17 +350,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_like-instance'>
-        - (void) <strong>_like</strong>($field, $match = '', $type = 'AND ', $side = 'both', $not = '')
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Like Called by like() or orlike()
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#groupBy-instance'>
         - (void) <strong>groupBy</strong>($by)
       </a>
@@ -409,17 +376,6 @@
     </span>
     <span class='desc'>
       Sets the OR HAVING value Separates multiple calls with OR
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_having-instance'>
-        - (void) <strong>_having</strong>($key, $value = '', $type = 'AND ', $escape = true)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Sets the HAVING values Called by having() or or_having()
     </span>
   </li>
   <li>
@@ -604,28 +560,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_track_aliases-instance'>
-        - (String) <strong>_track_aliases</strong>($table)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Track Aliases Used to track SQL statements written with aliased tables.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_compile_select-instance'>
-        - (String) <strong>_compile_select</strong>($select_override = false)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Compile the SELECT statement Generates a query string based on which functions were used.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#_object_to_array_batch-instance'>
         - (void) <strong>_object_to_array_batch</strong>($object)
       </a>
@@ -664,50 +598,6 @@
       Flush Cache Empties the AR cache
     </span>
   </li>
-  <li>
-    <span class='signature'>
-      <a href='#_merge_cache-instance'>
-        - (Void) <strong>_merge_cache</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Merge Cache When called, this function merges any cached AR arrays with locally called ones.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_reset_run-instance'>
-        - (Void) <strong>_reset_run</strong>($ar_reset_items)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Resets the active record values.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_reset_select-instance'>
-        - (Void) <strong>_reset_select</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Resets the active record values.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_reset_write-instance'>
-        - (Void) <strong>_reset_write</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Resets the active record &quot;write&quot; values.
-    </span>
-  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
@@ -718,13 +608,11 @@
       </h3>
       <p class='inherited'>
                 <a href='../../../classes/system/db/Driver.html#constructor-instance'>#constructor</a>,
-                <a href='../../../classes/system/db/Driver.html#initialize-instance'>#initialize</a>,
                 <a href='../../../classes/system/db/Driver.html#platform-instance'>#platform</a>,
                 <a href='../../../classes/system/db/Driver.html#version-instance'>#version</a>,
                 <a href='../../../classes/system/db/Driver.html#queryList-instance'>#queryList</a>,
                 <a href='../../../classes/system/db/Driver.html#query-instance'>#query</a>,
                 <a href='../../../classes/system/db/Driver.html#_query2-instance'>#_query2</a>,
-                <a href='../../../classes/system/db/Driver.html#_load_rdriver-instance'>#_load_rdriver</a>,
                 <a href='../../../classes/system/db/Driver.html#simpleQuery-instance'>#simpleQuery</a>,
                 <a href='../../../classes/system/db/Driver.html#_simple_query2-instance'>#_simple_query2</a>,
                 <a href='../../../classes/system/db/Driver.html#transOff-instance'>#transOff</a>,
@@ -747,17 +635,13 @@
                 <a href='../../../classes/system/db/Driver.html#field_data-instance'>#field_data</a>,
                 <a href='../../../classes/system/db/Driver.html#insert_string-instance'>#insert_string</a>,
                 <a href='../../../classes/system/db/Driver.html#update_string-instance'>#update_string</a>,
-                <a href='../../../classes/system/db/Driver.html#_has_operator-instance'>#_has_operator</a>,
                 <a href='../../../classes/system/db/Driver.html#cacheSetPath-instance'>#cacheSetPath</a>,
                 <a href='../../../classes/system/db/Driver.html#cacheOn-instance'>#cacheOn</a>,
                 <a href='../../../classes/system/db/Driver.html#cacheOff-instance'>#cacheOff</a>,
                 <a href='../../../classes/system/db/Driver.html#cacheDelete-instance'>#cacheDelete</a>,
                 <a href='../../../classes/system/db/Driver.html#cacheDeleteAll-instance'>#cacheDeleteAll</a>,
-                <a href='../../../classes/system/db/Driver.html#_cache_init-instance'>#_cache_init</a>,
                 <a href='../../../classes/system/db/Driver.html#close-instance'>#close</a>,
-                <a href='../../../classes/system/db/Driver.html#displayError-instance'>#displayError</a>,
-                <a href='../../../classes/system/db/Driver.html#protect_identifiers-instance'>#protect_identifiers</a>,
-        <a href='../../../classes/system/db/Driver.html#_protect_identifiers-instance'>#_protect_identifiers</a>
+        <a href='../../../classes/system/db/Driver.html#displayError-instance'>#displayError</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -985,28 +869,6 @@ select_avg()
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_create_alias_from_table-instance'>
-      - (void) <strong>_create_alias_from_table</strong>($item)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Determines the alias name based on the table</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@return    [String]</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='distinct-instance'>
       - (Object) <strong>distinct</strong>($val = true)
     </p>
@@ -1133,28 +995,6 @@ multiple calls with OR</p>
       </span>
       &mdash;
       <span class='desc'>@param  [Mixed]  # @return [Object]  #</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_where-instance'>
-      - (void) <strong>_where</strong>($key, $value = null, $type = 'AND ', $escape = null)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Where</p><p>Called by where() or orwhere()</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>Mixed</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@param  [Mixed]  # @param  [String]    # @return [Object]  #</span>
     </li>
   </ul>
 </div>
@@ -1446,28 +1286,6 @@ multiple calls with OR</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_like-instance'>
-      - (void) <strong>_like</strong>($field, $match = '', $type = 'AND ', $side = 'both', $not = '')
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Like</p><p>Called by like() or orlike()</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>Mixed</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@param  [Mixed]  # @param  [String]    # @return [Object]  #</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='groupBy-instance'>
       - (void) <strong>groupBy</strong>($by)
     </p>
@@ -1515,28 +1333,6 @@ multiple calls with OR</p>
     </p>
     <div class='docstring'>
   <p>Sets the OR HAVING value</p><p>Separates multiple calls with OR</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@param  [String]    # @return [Object]  #</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_having-instance'>
-      - (void) <strong>_having</strong>($key, $value = '', $type = 'AND ', $escape = true)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Sets the HAVING values</p><p>Called by having() or or_having()</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -2119,50 +1915,6 @@ This function maps to &quot;DELETE FROM table&quot;</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_track_aliases-instance'>
-      - (String) <strong>_track_aliases</strong>($table)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Track Aliases</p><p>Used to track SQL statements written with aliased tables.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>The</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>table to inspect</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_compile_select-instance'>
-      - (String) <strong>_compile_select</strong>($select_override = false)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Compile the SELECT statement</p><p>Generates a query string based on which functions were used.
-Should not be called directly.  The get() function calls it.</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='_object_to_array_batch-instance'>
       - (void) <strong>_object_to_array_batch</strong>($object)
     </p>
@@ -2240,103 +1992,11 @@ Should not be called directly.  The get() function calls it.</p>
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='_merge_cache-instance'>
-      - (Void) <strong>_merge_cache</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Merge Cache</p><p>When called, this function merges any cached AR arrays with
-locally called ones.</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Void</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_reset_run-instance'>
-      - (Void) <strong>_reset_run</strong>($ar_reset_items)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Resets the active record values.  Called by the get() function</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>An</span>
-      <span class='type'>
-        (<tt>Array</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>array of fields to reset</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Void</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_reset_select-instance'>
-      - (Void) <strong>_reset_select</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Resets the active record values.  Called by the get() function</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Void</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_reset_write-instance'>
-      - (Void) <strong>_reset_write</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Resets the active record &quot;write&quot; values.</p><p>Called by the insert() update() insert_batch() update_batch() and delete() functions</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Void</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

@@ -78,8 +78,9 @@ exports.keys              = Object.keys
 #
 # Getter
 #
-# @param  [Object]  property definition
-# @return [Object]  #
+# @param  def [Object]  property definition
+# @return [Void]
+#
 Function::getter = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {get: $def[$name]}
@@ -87,8 +88,9 @@ Function::getter = ($def) ->
 #
 # Setter
 #
-# @param  [Object]  property definition
-# @return [Object]  #
+# @param  def [Object]  property definition
+# @return [Void]
+#
 Function::setter = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {set: $def[$name]}
@@ -96,8 +98,9 @@ Function::setter = ($def) ->
 #
 # Define - read only attribute
 #
-# @param  [Object]  property definition
-# @return [Object]  #
+# @param  def [Object]  property definition
+# @return [Void]
+#
 Function::define = ($def) ->
   $name = keys($def)[0]
   defineProperty @::, $name, {writeable: false, enumerable: ($name[0] isnt '_'), value: $def[$name]}
@@ -120,9 +123,9 @@ else
 #
 #
 # @param  [Object]    array of {namespace: classpath}
+# @return [Void]
 #
-#
-exports.set_classpath = set_classpath = ($def) ->
+exports.set_classpath = ($def) ->
   _classpaths[$namespace] = $classpath for $namespace, $classpath of $def
 
 
@@ -134,15 +137,18 @@ exports.set_classpath = set_classpath = ($def) ->
 #
 # There are 3 namespaces:
 #
-#   system        all the core system classes
-#   application   exspresso implementation classes
-#   modules       HMVC root
+# <dl>
+#   <dt>system</dt>        <dd>all the core system classes</dd>
+#   <dt>application</dt>   <dd>exspresso implementation classes</dd>
+#   <dt>modules</dt>       <dd>HMVC root</dd>
+# </dl>
+#
+# @param  [String]  path  full path to the class
+# @param  [Object]  namespace the namespace to load into
+# @return [Object] the class object
 #
 #
-# @param  [String]    full path to the class
-#
-#
-exports.load_class = load_class = ($path, $namespace = global) ->
+exports.load_class = ($path, $namespace = global) ->
 
   for $name, $classpath of _classpaths
     if $path.indexOf($classpath) is 0
@@ -177,9 +183,10 @@ exports.load_class = load_class = ($path, $namespace = global) ->
 # the file, based on the read-only attribute.  is_writable() is also unreliable
 # on Unix servers if safe_mode is on.
 #
-# @private
-# @return [Void]  #
-exports.is_really_writable = is_really_writable = ($file) ->
+# @param [String] file  file name to test
+# @return [Boolean] true if file is writeable
+#
+exports.is_really_writable = ($file) ->
 
 
   #  We'll actually write a file then read it.  Bah...
@@ -206,10 +213,20 @@ exports.is_really_writable = is_really_writable = ($file) ->
 #
 # Use to access the top level server objects
 #
-# @param  [String]  the class name being requested
-# @return [Object]  constructor param
+# @param  [String]  class the class name being requested
+# @param  [Mixed] p0  param 0
+# @param  [Mixed] p1  param 1
+# @param  [Mixed] p2  param 2
+# @param  [Mixed] p3  param 3
+# @param  [Mixed] p4  param 4
+# @param  [Mixed] p5  param 5
+# @param  [Mixed] p6  param 6
+# @param  [Mixed] p7  param 7
+# @param  [Mixed] p8  param 8
+# @param  [Mixed] p9  param 9
+# @returns [Object] the singleton
 #
-exports.core = core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
+exports.core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
   if typeof $class is 'string'
     $prefix = ''
@@ -247,9 +264,10 @@ exports.core = core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 # Keeps track of which libraries have been loaded.  This function is
 # called by the load_class() function above
 #
-# @return	array
+# @param [String] class the name of the class
+# @return	[Boolean] true if the class is loaded
 #
-exports.is_loaded = is_loaded = ($class = '') ->
+exports.is_loaded = ($class = '') ->
 
   if $class isnt ''
     _is_loaded[$class.toLowerCase()] = $class
@@ -262,10 +280,20 @@ exports.is_loaded = is_loaded = ($class = '') ->
 # Uesd to create core objects that will be passed
 # to the Controller object constructor.
 #
-# @param  [String]  the class name being requested
-# @param  [Object]  list of params to pass to the constructor
-# @return [Object]  #
-exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
+# @param  [String]  class the class name being requested
+# @param  [Mixed] p0  param 0
+# @param  [Mixed] p1  param 1
+# @param  [Mixed] p2  param 2
+# @param  [Mixed] p3  param 3
+# @param  [Mixed] p4  param 4
+# @param  [Mixed] p5  param 5
+# @param  [Mixed] p6  param 6
+# @param  [Mixed] p7  param 7
+# @param  [Mixed] p8  param 8
+# @param  [Mixed] p9  param 9
+# @returns [Object] the new object
+#
+exports.new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
   if typeof $class is 'string'
     $prefix = ''
@@ -301,10 +329,11 @@ exports.new_core = new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) -
 # Used to bootstrap the core/loader object in
 # the controller constructor.
 #
-# @param  [String]  the class name being requested
-# @param  [Object]  ExspressoController object
-# @return [Object]  #
-exports.load_core = load_core = ($class, $controller) ->
+# @param  [String]  class the class name being requested
+# @param  [system.core.Object]  controller  the controller to load into
+# @return [Object] the new core object
+#
+exports.load_core = ($class, $controller) ->
 
   if typeof $class is 'string'
     $prefix = ''
@@ -341,10 +370,10 @@ exports.load_core = load_core = ($class, $controller) ->
 # This function lets us grab the config file even if the Config class
 # hasn't been instantiated yet
 #
-# @private
-# @return	array
+# @param  [Object]  replace hash of replacement key/value pairs
+# @return	[Object] the config hash
 #
-exports.get_config = get_config = ($replace = {}) ->
+exports.get_config = ($replace = {}) ->
 
   return _config if _config?
 
@@ -377,8 +406,10 @@ exports.get_config = get_config = ($replace = {}) ->
 #
 # Returns the specified config item
 #
-# @return [Mixed]  #
-exports.config_item = config_item = ($item) ->
+# @param  [String]  item  the config value name
+# @return [Mixed] the config item value
+#
+exports.config_item = ($item) ->
 
   get_config() if not _config?
   _config[$item] || ''
@@ -393,9 +424,10 @@ exports.config_item = config_item = ($item) ->
 # This function will send the error page directly to the
 # browser and exit.
 #
-# @return	true
+# @param  [Array] args  the argment array
+# @return	[Boolean] true
 #
-exports.show_error = show_error = ($args...) ->
+exports.show_error = ($args...) ->
   if not $args[0]? then return false
 
   if typeof $args[0] is 'string'
@@ -410,9 +442,11 @@ exports.show_error = show_error = ($args...) ->
 # However, instead of the standard error template it displays
 # 404 errors.
 #
-# @return	true
+# @param  [Array] args  the argment array
+# @param  [Boolean] log_error write to log
+# @return	[Boolean] true
 #
-exports.show_404 = show_404 = ($page = '', $log_error = true) ->
+exports.show_404 = ($page = '', $log_error = true) ->
   core('Exceptions').show404 $page, $log_error
 
 #
@@ -421,17 +455,22 @@ exports.show_404 = show_404 = ($page = '', $log_error = true) ->
 # We use this as a simple mechanism to access the logging
 # class and send messages to be logged.
 #
-# @return [Void]  #
-exports.log_message = log_message = ($level = 'error', $args...) ->
+# @param [String] level the logging level: error | debug | info
+# @param [Array]  args  the remaining args match the sprintf signature
+# @return [Boolean] true
+#
+exports.log_message = ($level = 'error', $args...) ->
   return true if config_item('log_threshold') is 0
   core('Log').write $level, format.apply(undefined, $args)
 
 #
 # Get HTTP Status Text
 #
-# @param	int		the status code
-# @param  [String]  # @return [Void]  #
-exports.get_status_text = get_status_text = ($code = 200, $text = '') ->
+# @param	[Integer] code		the status code
+# @param  [String]  text  alternate status text
+# @return [String] the status text
+#
+exports.get_status_text = ($code = 200, $text = '') ->
   $stat =
     200:'OK',
     201:'Created',
@@ -483,9 +522,11 @@ exports.get_status_text = get_status_text = ($code = 200, $text = '') ->
 # This prevents sandwiching null characters
 # between ascii characters, like Java\0script.
 #
-# @param  [String]  # @return	[String]
+# @param  [String]  str the string to clean
+# @param  [Boolean] url_encoded true to relace url encoded non-printables
+# @return	[String] the clean string
 #
-exports.remove_invisible_characters = remove_invisible_characters = ($str, $url_encoded = true) ->
+exports.remove_invisible_characters = ($str, $url_encoded = true) ->
 
   #  every control character except newline (dec 10)
   #  carriage return (dec 13), and horizontal tab (dec 09)
@@ -504,9 +545,10 @@ exports.remove_invisible_characters = remove_invisible_characters = ($str, $url_
 # Getters, setters, read only, and other custom attributes
 # are safely copied
 #
-# @param  [Object]  destination object
-# @param  [Object]  source object
-# @return [Object]  #
+# @param  [Object]  dst the destination object
+# @param  [Object]  src the source object
+# @return [Object] the destination object
+#
 exports.copyOwnProperties = ($dst, $src) ->
   $properties = {}
   for $key in getOwnPropertyNames($src)
@@ -520,8 +562,7 @@ exports.copyOwnProperties = ($dst, $src) ->
 # Analyze the metadata for a class, then build and cache
 # a table of property definitions for that classs.
 #
-# @param  [Object]  destination object
-# @param  [Object]  source object
+# @param  [Object]  class a class constructor function
 # @return [Object]  the cached metadata
 #
 exports.defineClass = ($class) ->
@@ -563,9 +604,10 @@ exports.defineClass = ($class) ->
 # based, and only the own properties are used
 #
 #
-# @param  [Object]  object to use as the prototype
-# @param  [Array]  list of mixin classes, followed by construcor args
-# @return [Object]  #
+# @param  [Object]  object  object to use as the prototype
+# @param  [Array] args  list of mixin classes, followed by construcor args
+# @return [Object] the fabricated mixin
+#
 exports.create_mixin = ($object, $args...) ->
 
   $properties = {}

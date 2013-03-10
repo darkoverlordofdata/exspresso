@@ -144,6 +144,7 @@ class system.core.Loader
 
       $Library = Modules::load($_library, $path)
       @_classes[$class] = $_alias
+
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
@@ -273,7 +274,7 @@ class system.core.Loader
       system.core.Model? or load_class(SYSPATH+'core/Model.coffee')
 
       $Model = load_class($mod_path+'models/'+$path+$model+EXT)
-      defineProperty @controller, $name
+      defineProperty @controller, $name,
         enumerable  : true
         writeable   : false
         value       : create_mixin($controller, $Model, $controller)
@@ -301,16 +302,17 @@ class system.core.Loader
         return false
 
     $db = @_db_factory($params || exspresso.dbDriver, $active_record)
-    @controller.queue ($next) -> $db.initialize $next
+    @controller.queue ($next) ->
+      $db.initialize $next
 
-    if $return is true then return $db
+    return $db if $return is true
 
-    try # defineProperty throws an error here on heroku...
-
-      defineProperty @controller, 'db'
+    try
+      defineProperty @controller, 'db',
         enumerable  : true
         writeable   : false
         value       : $db
+
       return
 
     catch $err
@@ -342,7 +344,7 @@ class system.core.Loader
     $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
 
     if $return is true then return new $class(@controller, $db)
-    defineProperty @controller, 'dbutil'
+    defineProperty @controller, 'dbutil',
       enumerable  : true
       writeable   : false
       value       : new $class(@controller, $db)
@@ -367,7 +369,7 @@ class system.core.Loader
     $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
 
     if $return is true then return new $class(@controller, $db)
-    defineProperty @controller, 'dbforge'
+    defineProperty @controller, 'dbforge',
       enumerable  : true
       writeable   : false
       value       : new $class(@controller, $db)

@@ -143,67 +143,12 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_set_default_controller-instance'>
-        - (Void) <strong>_set_default_controller</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Set the default controller
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_set_request-instance'>
-        - (Void) <strong>_set_request</strong>($segments = [])
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Set the Route This takes an array of URI segments as input, and sets the current class/method @param [Array]
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_validate_request-instance'>
-        - (?) <strong>_validate_request</strong>($segments)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Validates the supplied segments.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_application_validate_request-instance'>
-        - (?) <strong>_application_validate_request</strong>($segments)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Validates the supplied segments.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#loadRoutes-instance'>
         - (Object) <strong>loadRoutes</strong>()
       </a>
     </span>
     <span class='desc'>
       Load Routes This function loads routes that may exist in the module/config/routes.php file
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_application_load_routes-instance'>
-        - (Object) <strong>_application_load_routes</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Load Routes This function loads routes that may exist in the config/routes.php file
     </span>
   </li>
   <li>
@@ -330,81 +275,6 @@ as well as any &quot;routes&quot; that have been set in the routing config file.
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_set_default_controller-instance'>
-      - (Void) <strong>_set_default_controller</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Set the default controller</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>Void</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_set_request-instance'>
-      - (Void) <strong>_set_request</strong>($segments = [])
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Set the Route</p><p>This takes an array of URI segments as
-input, and sets the current class/method</p><p>@param  [Array]</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>Void</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_validate_request-instance'>
-      - (?) <strong>_validate_request</strong>($segments)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Validates the supplied segments.  Attempts to determine the path to
-the controller.</p><p>@param  [Array]</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>array</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_application_validate_request-instance'>
-      - (?) <strong>_application_validate_request</strong>($segments)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Validates the supplied segments.  Attempts to determine the path to
-the controller.</p><p>@param  [Array]</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>array</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='loadRoutes-instance'>
       - (Object) <strong>loadRoutes</strong>()
     </p>
@@ -420,27 +290,6 @@ the module/config/routes.php file</p>
       (<tt>Object</tt>)
       &mdash;
       <span class='desc'>a hash of all the allowed routing</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_application_load_routes-instance'>
-      - (Object) <strong>_application_load_routes</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p> Load Routes</p><p>This function loads routes that may exist in
-the config/routes.php file</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>routes</span>
     </li>
   </ul>
 </div>
@@ -633,7 +482,7 @@ the config/routes.php file</p>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

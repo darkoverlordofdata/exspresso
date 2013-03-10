@@ -132,53 +132,6 @@
 </div>
 <div class='tags'>
 </div>
-      <h2>Instance Method Summary</h2>
-      <ul class='summary'>
-  <li>
-    <span class='signature'>
-      <a href='#_list_databases-instance'>
-        - (?) <strong>_list_databases</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      List databases
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_optimize_table-instance'>
-        - (Object) <strong>_optimize_table</strong>($table)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Optimize table query Generates a platform-specific query so that a table can be optimized
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_repair_table-instance'>
-        - (Object) <strong>_repair_table</strong>($table)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Repair table query Generates a platform-specific query so that a table can be repaired
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_backup-instance'>
-        - (Mixed) <strong>_backup</strong>($params = {}, $next)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      -------------------------------------------------------------------- MySQL Export
-    </span>
-  </li>
-</ul>
       <h2>
         <small>Inherited Method Summary</small>
       </h2>
@@ -212,127 +165,12 @@
                 <a href='../../../../classes/system/db/Forge.html#renameTable-instance'>#renameTable</a>,
                 <a href='../../../../classes/system/db/Forge.html#addColumn-instance'>#addColumn</a>,
                 <a href='../../../../classes/system/db/Forge.html#dropColumn-instance'>#dropColumn</a>,
-                <a href='../../../../classes/system/db/Forge.html#modifyColumn-instance'>#modifyColumn</a>,
-        <a href='../../../../classes/system/db/Forge.html#_reset-instance'>#_reset</a>
+        <a href='../../../../classes/system/db/Forge.html#modifyColumn-instance'>#modifyColumn</a>
       </p>
-      <h2>Instance Method Details</h2>
-      <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='_list_databases-instance'>
-      - (?) <strong>_list_databases</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>List databases</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>?</tt>)
-      &mdash;
-      <span class='desc'>bool</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_optimize_table-instance'>
-      - (Object) <strong>_optimize_table</strong>($table)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Optimize table query</p><p>Generates a platform-specific query so that a table can be optimized</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>the</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>table name</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_repair_table-instance'>
-      - (Object) <strong>_repair_table</strong>($table)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Repair table query</p><p>Generates a platform-specific query so that a table can be repaired</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>the</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>table name</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_backup-instance'>
-      - (Mixed) <strong>_backup</strong>($params = {}, $next)
-      (private)
-    </p>
-    <div class='docstring'>
-  <hr><p>MySQL Export</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>Preferences</span>
-      <span class='type'>
-        (<tt>Array</tt>)
-      </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Mixed</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-</div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

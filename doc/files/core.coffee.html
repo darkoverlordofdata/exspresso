@@ -119,7 +119,7 @@
   <li>
     <span class='signature'>
       <a href='#Function.prototype.getter-file'>
-        ? (Object) <strong>Function.prototype.getter</strong>($def)
+        ? (Void) <strong>Function.prototype.getter</strong>($def)
       </a>
     </span>
     <span class='desc'>
@@ -129,7 +129,7 @@
   <li>
     <span class='signature'>
       <a href='#Function.prototype.setter-file'>
-        ? (Object) <strong>Function.prototype.setter</strong>($def)
+        ? (Void) <strong>Function.prototype.setter</strong>($def)
       </a>
     </span>
     <span class='desc'>
@@ -139,11 +139,151 @@
   <li>
     <span class='signature'>
       <a href='#Function.prototype.define-file'>
-        ? (Object) <strong>Function.prototype.define</strong>($def)
+        ? (Void) <strong>Function.prototype.define</strong>($def)
       </a>
     </span>
     <span class='desc'>
       Define - read only attribute
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#set_classpath-class'>
+        + (Void) <strong>set_classpath</strong>($def)
+      </a>
+    </span>
+    <span class='desc'>
+      Set Classpath Adds a namespace/classpath pair The namespace root is associated with the path.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#load_class-class'>
+        + (Object) <strong>load_class</strong>($path, $namespace = global)
+      </a>
+    </span>
+    <span class='desc'>
+      Load Class Requires a class module, building a namespace structure that corresponds to the file path.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#is_really_writable-class'>
+        + (Boolean) <strong>is_really_writable</strong>($file)
+      </a>
+    </span>
+    <span class='desc'>
+      Tests for file writability is_writable() returns TRUE on Windows servers when you really can&#39;t write to the file, based on the read-only attribute.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#core-class'>
+        + (void) <strong>core</strong>($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns a core singleton Use to access the top level server objects @returns [Object] the singleton
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#is_loaded-class'>
+        + (Boolean) <strong>is_loaded</strong>($class = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Is Loaded Keeps track of which libraries have been loaded.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#new_core-class'>
+        + (void) <strong>new_core</strong>($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns a new core object.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#load_core-class'>
+        + (Object) <strong>load_core</strong>($class, $controller)
+      </a>
+    </span>
+    <span class='desc'>
+      Loads a new core object Used to bootstrap the core/loader object in the controller constructor.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#get_config-class'>
+        + (Object) <strong>get_config</strong>($replace = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Loads the main config.coffee file This function lets us grab the config file even if the Config class hasn&#39;t been instantiated yet
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#config_item-class'>
+        + (Mixed) <strong>config_item</strong>($item)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the specified config item
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#show_error-class'>
+        + (Boolean) <strong>show_error</strong>($args...)
+      </a>
+    </span>
+    <span class='desc'>
+      Error Handler This function lets us invoke the exception class and display errors using the standard error template located in application/errors/5xx.eco This function will send the error page directly to the browser and exit.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#show_404-class'>
+        + (Boolean) <strong>show_404</strong>($page = '', $log_error = true)
+      </a>
+    </span>
+    <span class='desc'>
+      404 Page Handler This function is similar to the show_error() function above However, instead of the standard error template it displays 404 errors.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#log_message-class'>
+        + (Boolean) <strong>log_message</strong>($level = 'error', $args...)
+      </a>
+    </span>
+    <span class='desc'>
+      Error Logging Interface We use this as a simple mechanism to access the logging class and send messages to be logged.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#get_status_text-class'>
+        + (String) <strong>get_status_text</strong>($code = 200, $text = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Get HTTP Status Text
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#remove_invisible_characters-class'>
+        + (String) <strong>remove_invisible_characters</strong>($str, $url_encoded = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Remove Invisible Characters This prevents sandwiching null characters between ascii characters, like Java\0script.
     </span>
   </li>
   <li>
@@ -181,7 +321,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='Function.prototype.getter-file'>
-      ? (Object) <strong>Function.prototype.getter</strong>($def)
+      ? (Void) <strong>Function.prototype.getter</strong>($def)
     </p>
     <div class='docstring'>
   <p>Getter</p>
@@ -190,28 +330,24 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>property</span>
+      <span class='name'>def</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>definition</span>
+      <span class='desc'>property definition</span>
     </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
+      <span class='type'></span><tt>Void</tt></li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='Function.prototype.setter-file'>
-      ? (Object) <strong>Function.prototype.setter</strong>($def)
+      ? (Void) <strong>Function.prototype.setter</strong>($def)
     </p>
     <div class='docstring'>
   <p>Setter</p>
@@ -220,28 +356,24 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>property</span>
+      <span class='name'>def</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>definition</span>
+      <span class='desc'>property definition</span>
     </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
+      <span class='type'></span><tt>Void</tt></li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='Function.prototype.define-file'>
-      ? (Object) <strong>Function.prototype.define</strong>($def)
+      ? (Void) <strong>Function.prototype.define</strong>($def)
     </p>
     <div class='docstring'>
   <p>Define - read only attribute</p>
@@ -250,12 +382,79 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>property</span>
+      <span class='name'>def</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>definition</span>
+      <span class='desc'>property definition</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='set_classpath-class'>
+      + (Void) <strong>set_classpath</strong>($def)
+    </p>
+    <div class='docstring'>
+  <p>Set Classpath
+ Adds a namespace/classpath pair The namespace root is associated with the path. load_class will build the namespace tree from the file system and load the class into the correct branch of the tree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>array</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>of {namespace: classpath}</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>Void</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='load_class-class'>
+      + (Object) <strong>load_class</strong>($path, $namespace = global)
+    </p>
+    <div class='docstring'>
+  <p>Load Class</p><p>Requires a class module, building a namespace
+structure that corresponds to the file path.</p><p>There are 3 namespaces:</p><dl> <dt>system</dt>        <dd>all the core system classes</dd> <dt>application</dt>   <dd>exspresso implementation classes</dd> <dt>modules</dt>       <dd>HMVC root</dd>
+</dl>
+
+
+
+
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>path</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>full path to the class</span>
+    </li>
+    <li>
+      <span class='name'>namespace</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the namespace to load into</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -264,7 +463,563 @@
       <span class='type'></span>
       (<tt>Object</tt>)
       &mdash;
-      <span class='desc'>#</span>
+      <span class='desc'>the class object</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='is_really_writable-class'>
+      + (Boolean) <strong>is_really_writable</strong>($file)
+    </p>
+    <div class='docstring'>
+  <p>Tests for file writability</p><p>is_writable() returns TRUE on Windows servers when you really can&#39;t write to
+the file, based on the read-only attribute.  is_writable() is also unreliable
+on Unix servers if safe_mode is on.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>file</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>file name to test</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if file is writeable</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='core-class'>
+      + (void) <strong>core</strong>($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+    </p>
+    <div class='docstring'>
+  <p>Returns a core singleton</p><p>Use to access the top level server objects</p><p>@returns [Object] the singleton</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>class</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the class name being requested</span>
+    </li>
+    <li>
+      <span class='name'>p0</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 0</span>
+    </li>
+    <li>
+      <span class='name'>p1</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 1</span>
+    </li>
+    <li>
+      <span class='name'>p2</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 2</span>
+    </li>
+    <li>
+      <span class='name'>p3</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 3</span>
+    </li>
+    <li>
+      <span class='name'>p4</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 4</span>
+    </li>
+    <li>
+      <span class='name'>p5</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 5</span>
+    </li>
+    <li>
+      <span class='name'>p6</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 6</span>
+    </li>
+    <li>
+      <span class='name'>p7</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 7</span>
+    </li>
+    <li>
+      <span class='name'>p8</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 8</span>
+    </li>
+    <li>
+      <span class='name'>p9</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 9</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='is_loaded-class'>
+      + (Boolean) <strong>is_loaded</strong>($class = '')
+    </p>
+    <div class='docstring'>
+  <p>Is Loaded</p><p>Keeps track of which libraries have been loaded.  This function is
+called by the load_class() function above</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>class</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the class</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if the class is loaded</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='new_core-class'>
+      + (void) <strong>new_core</strong>($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+    </p>
+    <div class='docstring'>
+  <p>Returns a new core object.</p><p>Uesd to create core objects that will be passed
+to the Controller object constructor.</p><p>@returns [Object] the new object</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>class</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the class name being requested</span>
+    </li>
+    <li>
+      <span class='name'>p0</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 0</span>
+    </li>
+    <li>
+      <span class='name'>p1</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 1</span>
+    </li>
+    <li>
+      <span class='name'>p2</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 2</span>
+    </li>
+    <li>
+      <span class='name'>p3</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 3</span>
+    </li>
+    <li>
+      <span class='name'>p4</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 4</span>
+    </li>
+    <li>
+      <span class='name'>p5</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 5</span>
+    </li>
+    <li>
+      <span class='name'>p6</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 6</span>
+    </li>
+    <li>
+      <span class='name'>p7</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 7</span>
+    </li>
+    <li>
+      <span class='name'>p8</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 8</span>
+    </li>
+    <li>
+      <span class='name'>p9</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>param 9</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='load_core-class'>
+      + (Object) <strong>load_core</strong>($class, $controller)
+    </p>
+    <div class='docstring'>
+  <p>Loads a new core object</p><p>Used to bootstrap the core/loader object in
+the controller constructor.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>class</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the class name being requested</span>
+    </li>
+    <li>
+      <span class='name'>controller</span>
+      <span class='type'>
+        (<tt><a href='../classes/system/core/Object.html'>system.core.Object</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the controller to load into</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the new core object</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='get_config-class'>
+      + (Object) <strong>get_config</strong>($replace = {})
+    </p>
+    <div class='docstring'>
+  <p>Loads the main config.coffee file</p><p>This function lets us grab the config file even if the Config class
+hasn&#39;t been instantiated yet</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>replace</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>hash of replacement key/value pairs</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the config hash</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='config_item-class'>
+      + (Mixed) <strong>config_item</strong>($item)
+    </p>
+    <div class='docstring'>
+  <p>Returns the specified config item</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>item</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the config value name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Mixed</tt>)
+      &mdash;
+      <span class='desc'>the config item value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='show_error-class'>
+      + (Boolean) <strong>show_error</strong>($args...)
+    </p>
+    <div class='docstring'>
+  <p>Error Handler</p><p>This function lets us invoke the exception class and
+display errors using the standard error template located
+in application/errors/5xx.eco
+This function will send the error page directly to the
+browser and exit.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>args</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the argment array</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='show_404-class'>
+      + (Boolean) <strong>show_404</strong>($page = '', $log_error = true)
+    </p>
+    <div class='docstring'>
+  <p>404 Page Handler</p><p>This function is similar to the show_error() function above
+However, instead of the standard error template it displays
+404 errors.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>args</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the argment array</span>
+    </li>
+    <li>
+      <span class='name'>log_error</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>write to log</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='log_message-class'>
+      + (Boolean) <strong>log_message</strong>($level = 'error', $args...)
+    </p>
+    <div class='docstring'>
+  <p>Error Logging Interface</p><p>We use this as a simple mechanism to access the logging
+class and send messages to be logged.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>level</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the logging level: error | debug | info</span>
+    </li>
+    <li>
+      <span class='name'>args</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the remaining args match the sprintf signature</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='get_status_text-class'>
+      + (String) <strong>get_status_text</strong>($code = 200, $text = '')
+    </p>
+    <div class='docstring'>
+  <p>Get HTTP Status Text</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>code		the</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>status code</span>
+    </li>
+    <li>
+      <span class='name'>text</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>alternate status text</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the status text</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='remove_invisible_characters-class'>
+      + (String) <strong>remove_invisible_characters</strong>($str, $url_encoded = true)
+    </p>
+    <div class='docstring'>
+  <p>Remove Invisible Characters</p><p>This prevents sandwiching null characters
+between ascii characters, like Java\0script.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>str</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the string to clean</span>
+    </li>
+    <li>
+      <span class='name'>url_encoded</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>true to relace url encoded non-printables</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the clean string</span>
     </li>
   </ul>
 </div>
@@ -282,20 +1037,20 @@ are safely copied</p>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>destination</span>
+      <span class='name'>dst</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>object</span>
+      <span class='desc'>the destination object</span>
     </li>
     <li>
-      <span class='name'>source</span>
+      <span class='name'>src</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>object</span>
+      <span class='desc'>the source object</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -304,7 +1059,7 @@ are safely copied</p>
       <span class='type'></span>
       (<tt>Object</tt>)
       &mdash;
-      <span class='desc'>#</span>
+      <span class='desc'>the destination object</span>
     </li>
   </ul>
 </div>
@@ -321,20 +1076,12 @@ a table of property definitions for that classs.</p>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>destination</span>
+      <span class='name'>class</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>object</span>
-    </li>
-    <li>
-      <span class='name'>source</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>object</span>
+      <span class='desc'>a class constructor function</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -370,15 +1117,15 @@ based, and only the own properties are used</p>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>to use as the prototype</span>
+      <span class='desc'>object to use as the prototype</span>
     </li>
     <li>
-      <span class='name'>list</span>
+      <span class='name'>args</span>
       <span class='type'>
         (<tt>Array</tt>)
       </span>
       &mdash;
-      <span class='desc'>of mixin classes, followed by construcor args</span>
+      <span class='desc'>list of mixin classes, followed by construcor args</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -387,7 +1134,7 @@ based, and only the own properties are used</p>
       <span class='type'></span>
       (<tt>Object</tt>)
       &mdash;
-      <span class='desc'>#</span>
+      <span class='desc'>the fabricated mixin</span>
     </li>
   </ul>
 </div>
@@ -396,7 +1143,7 @@ based, and only the own properties are used</p>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

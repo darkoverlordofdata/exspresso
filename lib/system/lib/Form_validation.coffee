@@ -223,7 +223,7 @@ class system.lib.FormValidation
   #
   # This function does all the work.
   #
-    # @return	bool
+  # @return	bool
   #
   run: ($group = '') ->
     #  Do we even have any data to process?  Mm?
@@ -236,7 +236,7 @@ class system.lib.FormValidation
     if count(@_field_data) is 0
       #  No validation rules?  We're done...
       if count(@_config_rules) is 0
-        return false`
+        return false
         
       
       #  Is there a validation rule for the particular URI being accessed?

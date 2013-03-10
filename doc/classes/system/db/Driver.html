@@ -137,18 +137,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#initialize-instance'>
-        - (Void) <strong>initialize</strong>($next)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Initialize Database Settings @param callback
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#platform-instance'>
         - (String) <strong>platform</strong>()
       </a>
@@ -197,17 +185,6 @@
     <span class='bound note title'>Bound</span>
     <span class='desc'>
       
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_load_rdriver-instance'>
-        - (String) <strong>_load_rdriver</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Load the result drivers
     </span>
   </li>
   <li>
@@ -433,17 +410,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_has_operator-instance'>
-        - (void) <strong>_has_operator</strong>($str)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Tests whether the string has an SQL operator
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#cacheSetPath-instance'>
         - (Void) <strong>cacheSetPath</strong>($path = '')
       </a>
@@ -494,17 +460,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_cache_init-instance'>
-        - (Void) <strong>_cache_init</strong>()
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Initialize the Cache Class
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#close-instance'>
         - (Void) <strong>close</strong>($next)
       </a>
@@ -521,28 +476,6 @@
     </span>
     <span class='desc'>
       Display an error message
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#protect_identifiers-instance'>
-        - (Mixed) <strong>protect_identifiers</strong>($item, $prefix_single = false)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Protect Identifiers This function adds backticks if appropriate based on db type
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_protect_identifiers-instance'>
-        - (String) <strong>_protect_identifiers</strong>($item, $prefix_single = false, $protect_identifiers = null, $field_exists = true)
-      </a>
-    </span>
-    <span class='note private title'>Private</span>
-    <span class='desc'>
-      Protect Identifiers This function is used extensively by the Active Record class, and by a couple functions in this class.
     </span>
   </li>
 </ul>
@@ -571,27 +504,6 @@ connection settings.</p>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='initialize-instance'>
-      - (Void) <strong>initialize</strong>($next)
-      (bound)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Initialize Database Settings</p><p>@param    callback</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Void</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
   <div class='method_details'>
     <p class='signature' id='platform-instance'>
       - (String) <strong>platform</strong>()
@@ -691,26 +603,6 @@ will raise an error.</p>
       (bound)
     </p>
     <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_load_rdriver-instance'>
-      - (String) <strong>_load_rdriver</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Load the result drivers</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>String</tt>)
-      &mdash;
-      <span class='desc'>the name of the result class</span>
-    </li>
-  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -1245,28 +1137,6 @@ position is the primary key</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_has_operator-instance'>
-      - (void) <strong>_has_operator</strong>($str)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Tests whether the string has an SQL operator</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@return    bool</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='cacheSetPath-instance'>
       - (Void) <strong>cacheSetPath</strong>($path = '')
     </p>
@@ -1373,26 +1243,6 @@ position is the primary key</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_cache_init-instance'>
-      - (Void) <strong>_cache_init</strong>()
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Initialize the Cache Class</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Void</tt>)
-      &mdash;
-      <span class='desc'>#</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='close-instance'>
       - (Void) <strong>close</strong>($next)
     </p>
@@ -1449,84 +1299,11 @@ position is the primary key</p>
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='protect_identifiers-instance'>
-      - (Mixed) <strong>protect_identifiers</strong>($item, $prefix_single = false)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Protect Identifiers</p><p>This function adds backticks if appropriate based on db type</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>the</span>
-      <span class='type'>
-        (<tt>Mixed</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>item to escape</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Mixed</tt>)
-      &mdash;
-      <span class='desc'>the item with backticks</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_protect_identifiers-instance'>
-      - (String) <strong>_protect_identifiers</strong>($item, $prefix_single = false, $protect_identifiers = null, $field_exists = true)
-      (private)
-    </p>
-    <div class='docstring'>
-  <p>Protect Identifiers</p><p>This function is used extensively by the Active Record class, and by
-a couple functions in this class.
-It takes a column or table name (optionally with an alias) and inserts
-the table prefix onto it.  Some logic is necessary in order to deal with
-column names that include the path.  Consider a query like this:</p><p>SELECT * FROM hostname.database.table.column AS c FROM hostname.database.table</p><p>Or a query with aliasing:</p><p>SELECT m.member_id, m.member_name FROM members AS m</p><p>Since the column name can include up to four segments (host, DB, table, column)
-or also have an alias prefix, we need to do a bit of work to figure this out and
-insert the table prefix (if it exists) in the proper position, and escape only
-the correct identifiers.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@return    [Boolean]</span>
-    </li>
-    <li>
-      <span class='name'>#</span>
-      <span class='type'>
-        (<tt>Mixed</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>@return    [Boolean]</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>String</tt></li>
-  </ul>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 18:11:42 GMT-0800 (PST)
+  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

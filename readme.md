@@ -22,31 +22,36 @@
 
 ### Install
 
-<code>$ npm install exspresso</code>
+```bash
+$ npm install exspresso
+```
+
 
 ### Run on localhost
 
-  <code>$ npm start</code><br />
-  and point your browser to http://localhost:5000
+```bash
+$ npm start
+```
+and point your browser to http://localhost:5000
 
-    usage:
+```bash
+Usage: node exspresso <connect|express> [--option]
 
-    node [--harmony] index <appjs|connect|express> <mvc|hmvc> [--option]
+Options:
+ --cache
+ --csrf
+ --preview
+ --profile
+ --nocache
+ --nocsrf
+ --noprofile
+ --db <mysql|postgres>
+```
 
-     options:
-     --cache
-     --csrf
-     --preview
-     --profile
-     --nocache
-     --nocsrf
-     --noprofile
-     --db <mysql|postgres>
-
-    examples:
-     node --harmony index appjs
-     node index connect
-     node index express
+examples:
+ node --harmony index appjs
+ node index connect
+ node index express
 
 
 
