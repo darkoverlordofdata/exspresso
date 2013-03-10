@@ -93,7 +93,8 @@ if is_dir($asset_folder)
   define 'DOCPATH', realpath($asset_folder) + '/'
 else
   if not is_dir(SYSPATH+$asset_folder+'/')
-    exit "Your asset folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
+    #exit "Your asset folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
+    define 'DOCPATH', false
 
   define 'DOCPATH', SYSPATH+$asset_folder+'/'
 

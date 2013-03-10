@@ -36,8 +36,9 @@ class application.core.Connect
   #
   # Set the server instance
   #
-    # @param  [Object]
-  # @return [Void]  #
+  # @param  [Object]
+  # @return [Void]
+  #
   constructor: ($controller) ->
 
     $driver = require(@driver)
@@ -56,7 +57,7 @@ class application.core.Connect
     # Expose asset folders
     #
     @app.use $driver.static(APPPATH+"assets/")
-    @app.use $driver.static(DOCPATH)
+    @app.use $driver.static(DOCPATH) unless DOCPATH is false
 
     #
     # Favorites icon
