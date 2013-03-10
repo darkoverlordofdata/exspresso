@@ -19,7 +19,7 @@ options =
 
   * 1 public class per file
   * The public class is the exported class
-  * Public classes may be defined global
+  * Public classes may be defined in a namespace
   * Include private helper classes in the same file
   * Prefix protected member names with an undersocore
   * Initialize array and object members in the constructor. Set the prototype value to null
@@ -30,7 +30,7 @@ options =
   Example MyBase.coffee:
 
 ```CoffeeScript
-class global.MyBase
+class application.lib.MyBase
 
   @DEFAULT      = 0
   @READY        = 1
@@ -42,7 +42,7 @@ class global.MyBase
     @_headers = []
 
 
-module.exports = MyBase
+module.exports = application.lib.MyBase
 ```
 
 
@@ -50,33 +50,41 @@ module.exports = MyBase
 
 ## Error Handling
 
-  * In middleware, call the server next handler
+  * From middleware, call the next handler
 
 ```CoffeeScript
-(req, res, next) ->
-  try
-    ...
-    next()
-  catch err
-    next err
+  (req, res, next) ->
+    try
+      ...
+      next()
+    catch err
+      next err
 ```
 
-  * Use show_error to send error display to the browser
+  * Use show_error or show_404 to send error display to the browser
   * Use log_message to record the message for support
-  * Use 'return if' style
+  * Chain calls in a 'return if' style
 
 
 ```CoffeeScript
-return log_message('error', 'My message: %s', err) if show_error(err)
+  return log_message('error', 'My message: %s', err) if show_error(err)
 ```
 
   * Use a short circuit evaluation to pass either error or result to template.view
 
 
 ```CoffeeScript
-@db.get ($err, $data) =>
+  @db.from 'hotel'
+  @db.like 'name', "%#{$searchString}%"
+  @db.limit $pageSize, $start
+  @db.get ($err, $hotels) =>
 
-  @template.view "myview", $err || $data
+    @template.view "travel/hotels", $err || {
+      hotels:       $hotels.result()
+      searchString: $searchString
+      pageSize:     $pageSize
+      pagination:   @pagination
+    }
 ```
 
 
