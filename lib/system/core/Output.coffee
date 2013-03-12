@@ -29,6 +29,7 @@
 class system.core.Output
 
   fs = require('fs')  # file system
+  is_dir = ($path) -> fs.existsSync($path) and fs.statSync($path).isDirectory()
 
   _parse_exec_vars    : true  # parse profiler vars {elapsed_time} and {memory_usage}
   _enable_profiler    : false # create profiler outout?
@@ -63,13 +64,13 @@ class system.core.Output
 
     @_final_output = ''
     @_cache_expiration = 0
-    @_headers = {}
+    @_headers = []
     @_mime_types = {}
     @_profiler_sections = {}
 
     #  Get mime types for later
-    if file_exists(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-      $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+    if fs.existsSync(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
+      $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
 
     else
       $mimes = require(APPPATH + 'config/mimes' + EXT)
@@ -140,15 +141,16 @@ class system.core.Output
   # @return [Void]
   #
   setContentType : ($mime_type) ->
-    if strpos($mime_type, '/') is false
-      $extension = ltrim($mime_type, '.')
+    if $mime_type.indexOf('/') is -1
+      $extension = $mime_type.replace(/^[\.]/g, '') # ltrim
 
       #  Is this extension supported?
       if @_mime_types[$extension]?
         $mime_type = @_mime_types[$extension]
 
-        if is_array($mime_type)
-          $mime_type = current($mime_type)
+        if typeof $mime_type is 'object'
+          if Object.keys($mime_type).length > 0
+            $mime_type = Object.keys($mime_type)[0]
 
     $header = 'Content-Type: ' + $mime_type
     @_headers.push [$header, true]
@@ -173,7 +175,7 @@ class system.core.Output
   # @return [Void]
   #
   enableProfiler : ($val = true) ->
-    @_enable_profiler = if (is_bool($val)) then $val else true
+    @_enable_profiler = if 'boolean' is typeof $val then $val else true
     @
 
 
@@ -198,7 +200,7 @@ class system.core.Output
   # @return [Void]
   #
   cache : ($time) ->
-    @_cache_expiration = if ( not is_numeric($time)) then 0 else $time
+    @_cache_expiration = if 'numeric' is typeof $time then 0 else $time
     @
 
 
@@ -226,7 +228,7 @@ class system.core.Output
     #  Do we need to write a cache file?  Only if the controller does not have its
     #  own _output() method and we are not dealing with a cache file, which we
     #  can determine by the existence of the $controller object above
-    if @_cache_expiration > 0 and $controller? is true and not method_exists(@, '_output')
+    if @_cache_expiration > 0 and $controller? is true and not $controller._output?
       @_write_cache($output)
 
     #  Parse out the elapsed time and memory usage,
@@ -235,12 +237,13 @@ class system.core.Output
     $elapsed = @bench.elapsedTime('total_execution_time_start', 'total_execution_time_end')
 
     if @_parse_exec_vars is true
-      $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
+      $memory = Math.round((process.memoryUsage().heapUsed / 1048576) * 100) / 100
       $output = $output.replace(/{elapsed_time}/g, $elapsed)
       $output = $output.replace(/{memory_usage}/g, $memory)
+      # * 1048576 = 1MB
 
     #  Are there any server headers to send?
-    if count(@_headers) > 0
+    if @_headers.length > 0
       for $header in @_headers
         @res.header($header[0], $header[1])
 
@@ -248,7 +251,10 @@ class system.core.Output
     # If not we know we are dealing with a cache file so we'll
     # simply echo out the data and exit.
     if not $controller?
-      @res.send $output
+      @res.writeHead 200,
+        'Content-Length'  : $output.length
+        'Content-Type'    : 'text/html; charset=utf-8'
+      @res.end $output
       log_message('debug', "Final output sent to browser")
       log_message('debug', "Total execution time: " + $elapsed)
       return true
@@ -259,7 +265,7 @@ class system.core.Output
     if @_enable_profiler is true
       $controller.load.library('profiler')
 
-      if not empty(@_profiler_sections)
+      if Object.keys(@_profiler_sections).length > 0
         $controller.profiler.set_sections(@_profiler_sections)
 
       #  If the output data contains closing </body> and </html> tags
@@ -275,11 +281,14 @@ class system.core.Output
 
     #  Does the controller contain a function named _output()?
     #  If so send the output there.  Otherwise, echo it.
-    if method_exists($controller, '_output')
+    if $controller._output?
       $controller._output($output)
 
     else
-      @res.send $output #  Send it to the browser!
+      @res.writeHead 200,
+        'Content-Length'  : $output.length
+        'Content-Type'    : 'text/html; charset=utf-8'
+      @res.end $output
 
     @_final_output = ''
     log_message('debug', "Final output sent to browser")

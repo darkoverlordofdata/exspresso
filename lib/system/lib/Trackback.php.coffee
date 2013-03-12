@@ -127,24 +127,24 @@ class ExspressoTrackback
   #
   receive :  ->
     for $val in ['url', 'title', 'blog_name', 'excerpt']
-      if not @$_POST[$val]?  or @$_POST[$val] is ''
+      if not @req.body[$val]?  or @req.body[$val] is ''
         @set_error('The following required POST variable is missing: ' + $val)
         return false
         
       
-      @data['charset'] = if ( not @$_POST['charset']? ) then 'auto' else strtoupper(trim(@$_POST['charset']))
+      @data['charset'] = if ( not @req.body['charset']? ) then 'auto' else strtoupper(trim(@req.body['charset']))
       
       if $val isnt 'url' and function_exists('mb_convert_encoding')
-        @$_POST[$val] = mb_convert_encoding(@$_POST[$val], @charset, @data['charset'])
+        @req.body[$val] = mb_convert_encoding(@req.body[$val], @charset, @data['charset'])
         
       
-      @$_POST[$val] = if ($val isnt 'url') then @convert_xml(strip_tags(@$_POST[$val])) else strip_tags(@$_POST[$val])
+      @req.body[$val] = if ($val isnt 'url') then @convert_xml(strip_tags(@req.body[$val])) else strip_tags(@req.body[$val])
       
       if $val is 'excerpt'
-        @$_POST['excerpt'] = @limit_characters(@$_POST['excerpt'])
+        @req.body['excerpt'] = @limit_characters(@req.body['excerpt'])
         
       
-      @data[$val] = @$_POST[$val]
+      @data[$val] = @req.body[$val]
       
     
     return true

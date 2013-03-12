@@ -31,6 +31,7 @@
 #
 class system.core.Hooks
 
+  fs = require('fs')
   #
   # @property [Boolean] Are hooks enabled? True/False 
   #
@@ -64,13 +65,13 @@ class system.core.Hooks
     #  Grab the "hooks" definition file.
     #  If there are no hooks, we're done.
     #
-    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
-      $hook = require(APPPATH + 'config/' + ENVIRONMENT + '/hooks' + EXT)
+    if fs.existsSync(APPPATH + 'config/' + ENVIRONMENT + '/hooks.coffee')
+      $hook = require(APPPATH + 'config/' + ENVIRONMENT + '/hooks.coffee')
       
-    else if is_file(APPPATH + 'config/hooks' + EXT)
-      $hook = require(APPPATH + 'config/hooks' + EXT)
+    else if fs.existsSync(APPPATH + 'config/hooks.coffee')
+      $hook = require(APPPATH + 'config/hooks.coffee')
     
-    if not $hook?  or  not is_array($hook)
+    if not $hook?  or  typeof $hook isnt 'object'
       return 
     
     @hooks = $hook
@@ -88,10 +89,10 @@ class system.core.Hooks
   #
   callHook : ($which = '', $instance = null) ->
 
-    if not @enabled or  not @hooks[$which]?
+    if not @enabled or not @hooks[$which]?
       return false
 
-    if @hooks[$which][0]?  and is_array(@hooks[$which][0])
+    if @hooks[$which][0]?  and typeof @hooks[$which][0] is 'object'
       for $val in @hooks[$which]
         @runHook($val, $instance)
 
@@ -111,7 +112,7 @@ class system.core.Hooks
   # @return [Boolean] returns true if the hook was run, false if it was not
   #
   runHook : ($data, $instance) ->
-    if not is_array($data)
+    if typeof $data isnt 'object'
       return false
       
     

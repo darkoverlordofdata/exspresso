@@ -113,7 +113,7 @@ else
 #
 # Load the core api module
 #
-require SYSPATH+'core'+EXT
+require SYSPATH+'core.coffee'
 
 #
 #   Create the main controller

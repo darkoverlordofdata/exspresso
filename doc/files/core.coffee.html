@@ -118,32 +118,22 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#Function.prototype.getter-file'>
-        ? (Void) <strong>Function.prototype.getter</strong>($def)
+      <a href='#magic-class'>
+        + (Object) <strong>magic</strong>($proto, $args...)
       </a>
     </span>
     <span class='desc'>
-      Getter
+      Magic Returns a new mixin from prototype.
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#Function.prototype.setter-file'>
-        ? (Void) <strong>Function.prototype.setter</strong>($def)
+      <a href='#metadata-file'>
+        ? (Object) <strong>metadata</strong>($class)
       </a>
     </span>
     <span class='desc'>
-      Setter
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#Function.prototype.define-file'>
-        ? (Void) <strong>Function.prototype.define</strong>($def)
-      </a>
-    </span>
-    <span class='desc'>
-      Define - read only attribute
+      Get Class Metadata Analyze the metadata for a class, then build and cache a table of property definitions for that classs.
     </span>
   </li>
   <li>
@@ -296,104 +286,82 @@
       Copy Own Properties Copy all properties from a source or template object Getters, setters, read only, and other custom attributes are safely copied
     </span>
   </li>
-  <li>
-    <span class='signature'>
-      <a href='#defineClass-class'>
-        + (Object) <strong>defineClass</strong>($class)
-      </a>
-    </span>
-    <span class='desc'>
-      Define Class Metadata Analyze the metadata for a class, then build and cache a table of property definitions for that classs.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#create_mixin-class'>
-        + (Object) <strong>create_mixin</strong>($object, $args...)
-      </a>
-    </span>
-    <span class='desc'>
-      Create a Mixin Create a mixin object from a prototype object with an optional list of classes to mixin, followed by an optional list of arguments to the constructor of the first class.
-    </span>
-  </li>
 </ul>
       <h2>Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='Function.prototype.getter-file'>
-      ? (Void) <strong>Function.prototype.getter</strong>($def)
+    <p class='signature' id='magic-class'>
+      + (Object) <strong>magic</strong>($proto, $args...)
     </p>
     <div class='docstring'>
-  <p>Getter</p>
+  <p>Magic</p><p>Returns a new mixin from prototype.
+Args can be</p><p> 1)  A list of classes followed by an optional list
+      of constructor parameters.</p><pre><code>  This is used to create a super-controller, where
+  the controller&#39;s properties and methods are available
+  to all objects loaded by the controller.</code></pre><p> 2)  A list of objects to use as prototypes.</p><pre><code>  This is used to merge the super-controller with data
+  making the controller&#39;s properties and methods
+  available to the view.</code></pre>
+
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>def</span>
+      <span class='name'>proto</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>property definition</span>
+      <span class='desc'>the prototype of the new object</span>
+    </li>
+    <li>
+      <span class='name'>args</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>list of mixin classes, followed by construcor args</span>
     </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
-      <span class='type'></span><tt>Void</tt></li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the fabricated mixin</span>
+    </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='Function.prototype.setter-file'>
-      ? (Void) <strong>Function.prototype.setter</strong>($def)
+    <p class='signature' id='metadata-file'>
+      ? (Object) <strong>metadata</strong>($class)
     </p>
     <div class='docstring'>
-  <p>Setter</p>
+  <p>Get Class Metadata</p><p>Analyze the metadata for a class, then build and cache
+a table of property definitions for that classs.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>def</span>
+      <span class='name'>class</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>property definition</span>
+      <span class='desc'>a class constructor function</span>
     </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
-      <span class='type'></span><tt>Void</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='Function.prototype.define-file'>
-      ? (Void) <strong>Function.prototype.define</strong>($def)
-    </p>
-    <div class='docstring'>
-  <p>Define - read only attribute</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>def</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
+      <span class='type'></span>
+      (<tt>Object</tt>)
       &mdash;
-      <span class='desc'>property definition</span>
+      <span class='desc'>the cached metadata</span>
     </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>Void</tt></li>
   </ul>
 </div>
   </div>
@@ -1064,86 +1032,11 @@ are safely copied</p>
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='defineClass-class'>
-      + (Object) <strong>defineClass</strong>($class)
-    </p>
-    <div class='docstring'>
-  <p>Define Class Metadata</p><p>Analyze the metadata for a class, then build and cache
-a table of property definitions for that classs.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>class</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>a class constructor function</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>the cached metadata</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='create_mixin-class'>
-      + (Object) <strong>create_mixin</strong>($object, $args...)
-    </p>
-    <div class='docstring'>
-  <p>Create a Mixin</p><p>Create a mixin object from a prototype object
-with an optional list of classes to mixin,
-followed by an optional list of arguments to the
-constructor of the first class.</p><p>If there are no classes, the list of args is a list
-of additional objects that are simply merged into the
-first object. These objects are expected to be literal
-based, and only the own properties are used</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>object</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>object to use as the prototype</span>
-    </li>
-    <li>
-      <span class='name'>args</span>
-      <span class='type'>
-        (<tt>Array</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>list of mixin classes, followed by construcor args</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>the fabricated mixin</span>
-    </li>
-  </ul>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
+  Mon Mar 11 2013 09:34:37 GMT-0700 (PDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

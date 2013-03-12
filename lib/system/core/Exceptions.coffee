@@ -285,13 +285,11 @@ class system.core.Exceptions
     #
     @showError = ($severity, $message, $filepath, $line) ->
 
-      $filepath = str_replace("\\", "/", $filepath)
-
+      $filepath = $filepath.replace(/\\/g, "/")
       #  For safety reasons we do not show the full file path
-      if false isnt strpos($filepath, '/')
-        $x = explode('/', $filepath)
-        $filepath = $x[count($x) - 2] + '/' + end($x)
-
+      if $filepath.indexOf('/') isnt -1
+        $x = $filepath.split('/')
+        $filepath = $x[$x.length - 2] + '/' + $x[$x.length - 1]
 
       $res.render 'errors/native',
         severity: $severity

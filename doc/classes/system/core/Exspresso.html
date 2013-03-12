@@ -126,21 +126,13 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>e x s p r e s s o
+  <p>e x s p r e s s o<br />
  Top level controller for exspresso</p>
 </div>
 <div class='tags'>
 </div>
       <h2>Property Summary</h2>
       <dl class='properties'>
-        <dt id='httpDriver-property'>
-          <span class='signature'>
-            (String) <strong>httpDriver</strong>
-          </span>
-        </dt>
-        <dd class='desc'>
-          <p>http driver: connect | express</p>
-        </dd>
         <dt id='dbDriver-property'>
           <span class='signature'>
             (String) <strong>dbDriver</strong>
@@ -231,46 +223,6 @@
     </span>
     <span class='desc'>
       Bind each route to a contoller and bootstrap Dispatch to the controller method when the request is received
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#parseBaseUrl-instance'>
-        - (Void) <strong>parseBaseUrl</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Middleware: Parse the Base URL update the base_url config entry
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#parseProperties-instance'>
-        - (Void) <strong>parseProperties</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Middleware: Parse Request Properties fabricate a table similar to $_SERVER
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#error5xx-instance'>
-        - (Void) <strong>error5xx</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Middleware: 5xx Error Display general server error handler
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#error404-instance'>
-        - (Void) <strong>error404</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Middleware: 404 Display page not found handler
     </span>
   </li>
 </ul>
@@ -387,187 +339,11 @@
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='parseBaseUrl-instance'>
-      - (Void) <strong>parseBaseUrl</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Middleware: Parse the Base URL</p><p>update the base_url config entry</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>req</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http request object</span>
-    </li>
-    <li>
-      <span class='name'>res</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http response object</span>
-    </li>
-    <li>
-      <span class='name'>next</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>next middleware on stack</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>Void</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='parseProperties-instance'>
-      - (Void) <strong>parseProperties</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Middleware: Parse Request Properties</p><p>fabricate a table similar to $_SERVER</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>req</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http request object</span>
-    </li>
-    <li>
-      <span class='name'>res</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http response object</span>
-    </li>
-    <li>
-      <span class='name'>next</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>next middleware on stack</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>Void</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='error5xx-instance'>
-      - (Void) <strong>error5xx</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Middleware: 5xx Error Display</p><p>general server error handler</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>err</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the error object</span>
-    </li>
-    <li>
-      <span class='name'>req</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http request object</span>
-    </li>
-    <li>
-      <span class='name'>res</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http response object</span>
-    </li>
-    <li>
-      <span class='name'>next</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>next middleware on stack</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>Void</tt></li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='error404-instance'>
-      - (Void) <strong>error404</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Middleware: 404 Display</p><p>page not found handler</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>req</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http request object</span>
-    </li>
-    <li>
-      <span class='name'>res</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the http response object</span>
-    </li>
-    <li>
-      <span class='name'>next</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>next middleware on stack</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span><tt>Void</tt></li>
-  </ul>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
+  Mon Mar 11 2013 09:34:37 GMT-0700 (PDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

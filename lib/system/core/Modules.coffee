@@ -64,6 +64,7 @@
 class system.core.Modules
 
   fs = require('fs')
+  is_file = ($path) -> fs.existsSync($path) and fs.statSync($path).isFile()
   self = @::
 
   locations: config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
@@ -92,7 +93,7 @@ class system.core.Modules
 
     $file = $file.replace($type, '')+$type
     $location = $path+$file
-    if strpos("#{EXT}.json.js", $type)?
+    if "#{EXT}.json.js".indexOf($type) isnt -1
       require($location)
     else
       fs.readFileSync($location)
@@ -112,21 +113,21 @@ class system.core.Modules
 
     $modules = {}
 
-    $segments = explode('/', $file)
+    $segments = $file.split('/')
 
     $file = $segments.pop()
 
     if $base is 'views/'
-      $file_ext = if strpos($file, '.') then $file else $file+config_item('view_ext')
+      $file_ext = if $file.indexOf('.') is -1 then $file+config_item('view_ext') else $file
     else
-      $file_ext = if strpos($file, '.') then $file else $file+EXT
+      $file_ext = if $file.indexOf('.') is -1 then $file+EXT else $file
 
-    $path = ltrim(implode('/', $segments)+'/', '/')
+
+    $path = $segments.join('/').replace(/^[\/]/g, '')+'/'
     if $module then $modules[$module] = $path else $modules = {}
 
     if $segments?
-      $modules[array_shift($segments)] = ltrim(implode('/', $segments)+'/','/')
-
+      $modules[$segments.shift()] = $segments.join('/').replace(/^[\/]/g, '')+'/'
 
     for $location, $offset of self.locations
 

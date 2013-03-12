@@ -71,7 +71,7 @@ if not function_exists('force_download')
       
     
     #  Generate the server headers
-    if strpos(@$_SERVER['HTTP_USER_AGENT'], "MSIE") isnt false
+    if strpos(@req,server['HTTP_USER_AGENT'], "MSIE") isnt false
       @res.header('Content-Type: "' + $mime + '"')
       @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
       @res.header('Expires: 0')
@@ -87,10 +87,13 @@ if not function_exists('force_download')
       @res.header('Expires: 0')
       @res.header('Pragma: no-cache')
       @res.header("Content-Length: " + strlen($data))
-      
-    
-    @res.send $data
-    
+
+
+    @res.writeHead 200,
+                   'Content-Length'  : $data.length
+                   'Content-Type'    : 'text/html; charset=utf-8'
+    @res.end $data
+
   
 
 

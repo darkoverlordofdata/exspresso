@@ -33,6 +33,7 @@
 class system.core.Config
 
 
+  fs = require('fs')
   Modules = require(SYSPATH+'core/Modules.coffee')
 
   _is_loaded: null  #  array list of loaded config files
@@ -82,25 +83,22 @@ class system.core.Config
     else if typeof $fail_gracefully is 'string'
       [$fail_gracefully, $module] = [false, $use_sections]
 
-    if in_array($file, @_is_loaded, true) then return @item($file)
+    #if in_array($file, @_is_loaded, true) then return @item($file)
+    return @item($file) unless @_is_loaded.indexOf($file) is -1
 
     [$path, $file] = Modules::find($file, $module, 'config/')
     if $path is false
       @_application_load($file, $use_sections, $fail_gracefully)
       return @item($file)
     if $config = Modules::load($file, $path)
-      #  reference to the config array
-      $current_config = @config
       if $use_sections is true
-        if $current_config[$file]?
-          $current_config[$file] = array_merge($current_config[$file], $config)
-        else
-          $current_config[$file] = array_merge($config, {})
+        @config[$file] = {} unless @config[$file]?
+        @config[$file][$key] = $val for $key, $val of $config
 
       else
-        $current_config[$key] = $val for $key, $val of $config
-        @_is_loaded.push $file
-        return @item($file)
+        @config[$key] = $val for $key, $val of $config
+      @_is_loaded.push $file
+      return @item($file)
 
   #
   # Load Application Config File
@@ -125,7 +123,7 @@ class system.core.Config
 
         $file_path = $path + 'config/' + $location + EXT
 
-        if file_exists($file_path)
+        if fs.existsSync($file_path)
           $found = true
           $config = array_merge($config, require($file_path))
 
@@ -136,11 +134,8 @@ class system.core.Config
         show_error('Your %s file does not appear to contain a valid configuration array.', $file_path)
 
       if $use_sections is true
-        if @config[$file]?
-          @config[$file] = array_merge(@config[$file], $config)
-
-        else
-          @config[$file] = array_merge($config, {})
+        @config[$file] = {} unless @config[$file]?
+        @config[$file][$key] = $val for $key, $val of $config
 
       else
         @config[$key] = $val for $key, $val of $config

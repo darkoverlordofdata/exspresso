@@ -315,7 +315,7 @@
       </a>
     </span>
     <span class='desc'>
-      Render a view
+      Render a view Use magic to make the controller context the superclass of the data hash, allowing loaded libraries to be referenced in a view: &lt;%- @pagination.createLinks() %&gt;
     </span>
   </li>
   <li>
@@ -473,7 +473,9 @@
       - (Void) <strong>render</strong>($view, $data = {}, $next)
     </p>
     <div class='docstring'>
-  <p>Render a view</p>
+  <p>Render a view</p><p>Use magic to make the controller context the
+superclass of the data hash, allowing loaded
+libraries to be referenced in a view:</p><p>&lt;%- @pagination.createLinks() %&gt;</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -540,7 +542,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
+  Mon Mar 11 2013 09:34:37 GMT-0700 (PDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

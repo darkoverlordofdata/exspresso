@@ -22,14 +22,13 @@
 #
 #
 
-#  ------------------------------------------------------------------------
 #
 #   Sql Session store driver
 #
 #
-UserModel = require(MODPATH+'user/models/UserModel'+EXT)
-
 class system.lib.session.SqlSession extends require('express').session.Store
+
+  UserModel = require(MODPATH+'user/models/UserModel.coffee')
 
   serialize       = JSON.stringify      # Generates a storable representation of a value
   unserialize     = JSON.parse          # Creates an object from a stored representation

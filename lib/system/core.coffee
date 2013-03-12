@@ -17,11 +17,9 @@
 #
 # An open source application development framework for coffee-script
 #
-# @package		Exspresso
-# @author		  darkoverlordofdata
+# @author     darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
-# @license		MIT License
 # @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
@@ -73,44 +71,127 @@ exports.defineProperty    = Object.defineProperty
 exports.freeze            = Object.freeze
 exports.keys              = Object.keys
 
-
-
 #
-# Getter
-#
-# @param  def [Object]  property definition
-# @return [Void]
-#
-Function::getter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {get: $def[$name]}
-
-#
-# Setter
-#
-# @param  def [Object]  property definition
-# @return [Void]
-#
-Function::setter = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {set: $def[$name]}
-
-#
-# Define - read only attribute
-#
-# @param  def [Object]  property definition
-# @return [Void]
-#
-Function::define = ($def) ->
-  $name = keys($def)[0]
-  defineProperty @::, $name, {writeable: false, enumerable: ($name[0] isnt '_'), value: $def[$name]}
-
 # Load the framework constants
 #
 if file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
   require APPPATH+'config/'+ENVIRONMENT+'/constants.coffee'
 else
   require APPPATH+'config/constants.coffee'
+
+#
+# Magic
+#
+# Returns a new mixin from prototype.
+# Args can be
+#
+#
+#   1)  A list of classes followed by an optional list
+#       of constructor parameters.
+#
+#       This is used to create a super-controller, where
+#       the controller's properties and methods are available
+#       to all objects loaded by the controller.
+#
+#
+#   2)  A list of objects to use as prototypes.
+#
+#       This is used to merge the super-controller with data
+#       making the controller's properties and methods
+#       available to the view.
+#
+#
+#
+# @param  [Object]  proto  the prototype of the new object
+# @param  [Array] args  list of mixin classes, followed by construcor args
+# @return [Object] the fabricated mixin
+#
+exports.magic = ($proto, $args...) ->
+
+  $properties = {}
+  $pos = 0
+
+  # get the mixin class(es)
+  while 'function' is typeof ($mixin = $args[$pos])
+    # the 1st mixin class will also be the constructor
+    $class = $mixin if $pos is 0
+    $pos++
+    for $key, $val of metadata($mixin)
+      $properties[$key] = $val
+
+  # no class was encountered
+  if not $class? then switch $args.length
+    when 0
+    # simple case -
+      return create($proto)
+
+    when 1
+    # optimized case -
+      if __PROTO__
+        # array inherits from the object
+        $args[0].__proto__ = $proto
+        return create($args[0])
+
+      else
+        for $key in getOwnPropertyNames($args[0])
+          $properties[$key] = getOwnPropertyDescriptor($args[0], $key)
+
+    else
+    # multiple arrays -
+      if __PROTO__
+        # each array inherits from the next
+        for $i in [0...$args.length]
+          $args[$i].__proto__ = $args[$i+1]
+        # last array inherits from the object
+        $args[$args.length-1].__proto__ = $proto
+        return create($args[0])
+
+      else
+        for $data in $args
+          for $key in getOwnPropertyNames($data)
+            $properties[$key] = getOwnPropertyDescriptor($data, $key)
+
+  # clone the object with all properties
+  $this = create($proto, $properties)
+  # call the constructor
+  $class.apply $this, $args[$pos..] if $class?
+  $this
+
+#
+# Get Class Metadata
+#
+# Analyze the metadata for a class, then build and cache
+# a table of property definitions for that classs.
+#
+# @param  [Object]  class a class constructor function
+# @return [Object]  the cached metadata
+#
+metadata = ($class) ->
+
+  $name = $class::constructor.name
+  if not _class[$name]?
+
+    $props = {}       # an array to build the object property def
+    $chain = []       # an array to list the inheritance chain
+    $proto = $class:: # starting point in the chain
+
+    # Build an inheritance list
+    until $proto is prototype
+      $chain.push $proto
+      $proto = getPrototypeOf($proto)
+
+    # Reverse list to process overrides in the correct order
+    for $proto in $chain.reverse()
+      if $proto isnt Object::
+        # Build the inherited properties table
+        for $key in getOwnPropertyNames($proto)
+          $props[$key] = getOwnPropertyDescriptor($proto, $key)
+
+    # cache the class definition
+    _class[$name] = $props
+  _class[$name]
+
+
 
 #
 # Set Classpath
@@ -265,7 +346,7 @@ exports.core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 # called by the load_class() function above
 #
 # @param [String] class the name of the class
-# @return	[Boolean] true if the class is loaded
+# @return [Boolean] true if the class is loaded
 #
 exports.is_loaded = ($class = '') ->
 
@@ -344,7 +425,7 @@ exports.load_core = ($class, $controller) ->
   $klass = system.core[$prefix+$class] or application.core[$prefix+$class]
   #  Does the class exist?  If so, we're done...
   if $klass?
-    return create_mixin($controller, $klass, $controller)
+    return magic($controller, $klass, $controller)
 
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
@@ -361,7 +442,7 @@ exports.load_core = ($class, $controller) ->
   if not $klass?
     die 'load_core: Unable to locate the specified class ' + $class + EXT
 
-  create_mixin($controller, $klass, $controller)
+  magic($controller, $klass, $controller)
 
 
 #
@@ -371,7 +452,7 @@ exports.load_core = ($class, $controller) ->
 # hasn't been instantiated yet
 #
 # @param  [Object]  replace hash of replacement key/value pairs
-# @return	[Object] the config hash
+# @return [Object] the config hash
 #
 exports.get_config = ($replace = {}) ->
 
@@ -425,10 +506,10 @@ exports.config_item = ($item) ->
 # browser and exit.
 #
 # @param  [Array] args  the argment array
-# @return	[Boolean] true
+# @return [Boolean] true
 #
 exports.show_error = ($args...) ->
-  if not $args[0]? then return false
+  return false unless $args[0]?
 
   if typeof $args[0] is 'string'
     core('Exceptions').show5xx format.apply(undefined, $args), '5xx', 500
@@ -444,7 +525,7 @@ exports.show_error = ($args...) ->
 #
 # @param  [Array] args  the argment array
 # @param  [Boolean] log_error write to log
-# @return	[Boolean] true
+# @return [Boolean] true
 #
 exports.show_404 = ($page = '', $log_error = true) ->
   core('Exceptions').show404 $page, $log_error
@@ -466,7 +547,7 @@ exports.log_message = ($level = 'error', $args...) ->
 #
 # Get HTTP Status Text
 #
-# @param	[Integer] code		the status code
+# @param  [Integer] code		the status code
 # @param  [String]  text  alternate status text
 # @return [String] the status text
 #
@@ -524,7 +605,7 @@ exports.get_status_text = ($code = 200, $text = '') ->
 #
 # @param  [String]  str the string to clean
 # @param  [Boolean] url_encoded true to relace url encoded non-printables
-# @return	[String] the clean string
+# @return [String] the clean string
 #
 exports.remove_invisible_characters = ($str, $url_encoded = true) ->
 
@@ -557,110 +638,6 @@ exports.copyOwnProperties = ($dst, $src) ->
   defineProperties $dst, $properties
 
 #
-# Define Class Metadata
-#
-# Analyze the metadata for a class, then build and cache
-# a table of property definitions for that classs.
-#
-# @param  [Object]  class a class constructor function
-# @return [Object]  the cached metadata
-#
-exports.defineClass = ($class) ->
-
-  $name = $class::constructor.name
-  if not _class[$name]?
-
-    $props = {}       # an array to build the object property def
-    $chain = []       # an array to list the inheritance chain
-    $proto = $class:: # starting point in the chain
-
-    # Build an inheritance list
-    until $proto is prototype
-      $chain.push $proto
-      $proto = getPrototypeOf($proto)
-
-    # Reverse list to process overrides in the correct order
-    for $proto in $chain.reverse()
-      if $proto isnt Object::
-        # Build the inherited properties table
-        for $key in getOwnPropertyNames($proto)
-          $props[$key] = getOwnPropertyDescriptor($proto, $key)
-
-    # cache the class definition
-    _class[$name] = $props
-  _class[$name]
-
-#
-# Create a Mixin
-#
-# Create a mixin object from a prototype object
-# with an optional list of classes to mixin,
-# followed by an optional list of arguments to the
-# constructor of the first class.
-#
-# If there are no classes, the list of args is a list
-# of additional objects that are simply merged into the
-# first object. These objects are expected to be literal
-# based, and only the own properties are used
-#
-#
-# @param  [Object]  object  object to use as the prototype
-# @param  [Array] args  list of mixin classes, followed by construcor args
-# @return [Object] the fabricated mixin
-#
-exports.create_mixin = ($object, $args...) ->
-
-  $properties = {}
-  $pos = 0
-
-  # get the mixin class(es)
-  while 'function' is typeof ($mixin = $args[$pos])
-    # the 1st mixin class will also be the constructor
-    $class = $mixin if $pos is 0
-    $pos++
-    for $key, $val of defineClass($mixin)
-      $properties[$key] = $val
-
-  # no class was encountered
-  if not $class? then switch $args.length
-    when 0
-    # simple case -
-      return create($object)
-
-    when 1
-    # optimized case -
-      if __PROTO__
-        # array inherits from the object
-        $args[0].__proto__ = $object
-        return create($args[0])
-
-      else
-        for $key in getOwnPropertyNames($args[0])
-          $properties[$key] = getOwnPropertyDescriptor($args[0], $key)
-
-    else
-    # multiple arrays -
-      if __PROTO__
-        # each array inherits from the next
-        for $i in [0...$args.length]
-          $args[$i].__proto__ = $args[$i+1]
-        # last array inherits from the object
-        $args[$args.length-1].__proto__ = $object
-        return create($args[0])
-
-      else
-        for $data in $args
-          for $key in getOwnPropertyNames($data)
-            $properties[$key] = getOwnPropertyDescriptor($data, $key)
-
-  # clone the object with all properties
-  $this = create($object, $properties)
-  # call the constructor
-  $class.apply $this, $args[$pos..] if $class?
-  $this
-
-
-#
 # Export the core module to the global namespace
 #
 #
@@ -678,6 +655,7 @@ load_class SYSPATH+'core/Object.coffee'
 load_class SYSPATH+'core/Exspresso.coffee'
 load_class SYSPATH+'core/Benchmark.coffee'
 load_class SYSPATH+'core/Config.coffee'
+load_class SYSPATH+'core/Connect.coffee'
 load_class SYSPATH+'core/Controller.coffee'
 load_class SYSPATH+'core/Exceptions.coffee'
 load_class SYSPATH+'core/Hooks.coffee'
@@ -697,6 +675,7 @@ load_class SYSPATH+'lib/DriverLibrary.coffee'
 load_class MODPATH+'user/lib/User.coffee'
 load_class MODPATH+'user/models/UserModel.coffee'
 load_class SYSPATH+'lib/session/Session.coffee'
+load_class APPPATH+'core/PublicController.coffee'
 
 # End of file core.coffee
 # Location: ./system/core.coffee

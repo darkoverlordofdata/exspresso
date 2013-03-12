@@ -148,7 +148,7 @@ class system.core.Loader
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : create_mixin($controller, $Library, $controller, $params)
+        value       : magic($controller, $Library, $controller, $params)
 
     $controller[$_alias]
 
@@ -206,7 +206,7 @@ class system.core.Loader
       defineProperty $controller, $_alias,
         enumerable  : true
         writeable   : false
-        value       : create_mixin($controller, $Model, $controller)
+        value       : magic($controller, $Model, $controller)
 
       @_models.push $_alias
 
@@ -277,7 +277,7 @@ class system.core.Loader
       defineProperty @controller, $name,
         enumerable  : true
         writeable   : false
-        value       : create_mixin($controller, $Model, $controller)
+        value       : magic($controller, $Model, $controller)
 
       @_models.push $name
       return
@@ -898,7 +898,7 @@ class system.core.Loader
     defineProperty $controller, $classvar,
       enumerable  : true
       writeable   : false
-      value       : create_mixin($controller, $klass, $controller, $config)
+      value       : magic($controller, $klass, $controller, $config)
 
     $controller[$classvar]
 

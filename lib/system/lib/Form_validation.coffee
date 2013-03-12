@@ -74,7 +74,7 @@ class system.lib.FormValidation
     # @param  [Mixed]  # @param  [String]    # @return [Void]  #
   setRules: ($field, $label = '', $rules = '') ->
     #  No reason to set rules if we have no POST data
-    if count(@$_POST) is 0
+    if count(@req.body) is 0
       return @
 
     $indexes = []
@@ -227,7 +227,7 @@ class system.lib.FormValidation
   #
   run: ($group = '') ->
     #  Do we even have any data to process?  Mm?
-    if count(@$_POST) is 0
+    if count(@req.body) is 0
       return false
       
     
@@ -260,17 +260,17 @@ class system.lib.FormValidation
     @i18n.load('form_validation')
     
     #  Cycle through the rules for each field, match the
-    #  corresponding @$_POST item and test for errors
+    #  corresponding @req.body item and test for errors
     for $field, $row of @_field_data
-      #  Fetch the data from the corresponding @$_POST array and cache it in the _field_data array.
+      #  Fetch the data from the corresponding @req.body array and cache it in the _field_data array.
       #  Depending on whether the field name is an array or a string will determine where we get it from.
       
       if $row['is_array'] is true
-        @_field_data[$field]['postdata'] = @_reduce_array(@$_POST, $row['keys'])
+        @_field_data[$field]['postdata'] = @_reduce_array(@req.body, $row['keys'])
         
       else 
-        if @$_POST[$field]?  and @$_POST[$field] isnt ""
-          @_field_data[$field]['postdata'] = @$_POST[$field]
+        if @req.body[$field]?  and @req.body[$field] isnt ""
+          @_field_data[$field]['postdata'] = @req.body[$field]
 
       @_execute($row, explode('|', $row['rules']), @_field_data[$field]['postdata'])
 
@@ -292,7 +292,7 @@ class system.lib.FormValidation
     
   
   #
-  # Traverse a multidimensional @$_POST array index until the data is found
+  # Traverse a multidimensional @req.body array index until the data is found
   #
   # @private
   # @param  [Array]  # @param  [Array]  # @param  [Integer]  # @return [Mixed]  #
@@ -319,13 +319,13 @@ class system.lib.FormValidation
     for $field, $row of @_field_data
       if not is_null($row['postdata'])
         if $row['is_array'] is false
-          if @$_POST[$row['field']]?
-            @$_POST[$row['field']] = @prep_for_form($row['postdata'])
+          if @req.body[$row['field']]?
+            @req.body[$row['field']] = @prep_for_form($row['postdata'])
             
           
         else 
           #  start with a reference
-          $post_ref = @$_POST
+          $post_ref = @req.body
           
           #  before we assign values, make a reference to the right POST key
           if count($row['keys']) is 1
@@ -359,7 +359,7 @@ class system.lib.FormValidation
   # @private
   # @param  [Array]  # @param  [Array]  # @param  [Mixed]  # @param  [Integer]  # @return [Mixed]  #
   _execute: ($row, $rules, $postdata = null, $cycles = 0) ->
-    #  If the @$_POST data is an array we will run a recursive call
+    #  If the @req.body data is an array we will run a recursive call
     if is_array($postdata)
       for $key, $val of $postdata
         @_execute($row, $rules, $val, $cycles)
@@ -686,10 +686,10 @@ class system.lib.FormValidation
   # @return	bool
   #
   matches: ($str, $field) ->
-    if not @$_POST[$field]?
+    if not @req.body[$field]?
       return false
 
-    $field = @$_POST[$field]
+    $field = @req.body[$field]
     
     return if ($str isnt $field) then false else true
     

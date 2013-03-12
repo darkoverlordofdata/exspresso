@@ -30,6 +30,7 @@
 #
 class system.core.I18n
 
+  fs = require('fs')
 
   Modules = require(SYSPATH+'core/Modules.coffee')
 
@@ -74,8 +75,7 @@ class system.core.I18n
     $deft_lang = @config.item('language')
     $code = if ($lang is '') then $deft_lang else $lang
 
-    if in_array($langfile + '.json', @_is_loaded, true)
-      return @_language
+    return @_language unless @_is_loaded.indexOf($langfile + '.json') is -1
 
     [$path, $_langfile] = Modules::find($langfile+'.json', $module, 'i18n/' + $code + '/')
     if $path is false
@@ -84,8 +84,9 @@ class system.core.I18n
     else
       if $lang = Modules::load($_langfile, $path, '.json')
         if $return then return $lang
-    @_language = array_merge(@_language, $lang)
+
     @_is_loaded.push $langfile + '.json'
+    @_language[$key] = $val for $key, $val of $lang
 
     return @_language
 
@@ -101,19 +102,16 @@ class system.core.I18n
 
     $langfile = $langfile.replace(EXT, '')+'.json'
 
-    if in_array($langfile, @_is_loaded, true)
-      return
-
-    $config = get_config()
+    return unless @_is_loaded.indexOf($langfile) is -1
 
     if $code is ''
-      $deft_lang = if not $config['language']? then 'en' else $config['language']
+      $deft_lang = if not @config.item('language')? then 'en' else @config.item('language')
       $code = if $deft_lang is '' then 'en' else $deft_lang
 
     #  Determine where the language file is and load it
     $found = false
     for $package_path in exspresso.load.getPackagePaths(true)
-      if file_exists($package_path + 'i18n/' + $code + '/' + $langfile)
+      if fs.existsSync($package_path + 'i18n/' + $code + '/' + $langfile)
         $lang = require($package_path + 'i18n/' + $code + '/' + $langfile)
         $found = true
         break
@@ -129,7 +127,7 @@ class system.core.I18n
       return $lang
 
     @_is_loaded.push $langfile
-    @_language = array_merge(@_language, $lang)
+    @_language[$key] = $val for $key, $val of $lang
 
     log_message('debug', 'Language file loaded: i18n/%s/%s', $code, $langfile)
     return true

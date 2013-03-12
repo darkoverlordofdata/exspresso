@@ -252,9 +252,9 @@ if not function_exists('form_dropdown')
     
     #  If no selected state was submitted we will attempt to set it automatically
     if count($selected) is 0
-      #  If the form name appears in the @$_POST array we have a winner!
-      if @$_POST[$name]?
-        $selected = @$_POST[$name]
+      #  If the form name appears in the @req.body array we have a winner!
+      if @req.body[$name]?
+        $selected = @req.body[$name]
 
       
     
@@ -522,10 +522,10 @@ if not function_exists('set_value')
   exports.set_value = set_value = ($field = '', $default = '') ->
     if false is ($OBJ = @_get_validation_object())
       
-      if not @$_POST[$field]
+      if not @req.body[$field]
         return $default
 
-      return form_prep(@$_POST[$field], $field)
+      return form_prep(@req.body[$field], $field)
 
     return form_prep($OBJ.set_value($field, $default), $field)
     
@@ -548,13 +548,13 @@ if not function_exists('set_select')
 
     
     if $OBJ is false
-      if not @$_POST[$field]
-        if count(@$_POST) is 0 and $default is true
+      if not @req.body[$field]
+        if count(@req.body) is 0 and $default is true
           return ' selected="selected"'
           
         return ''
 
-      $field = @$_POST[$field]
+      $field = @req.body[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -586,13 +586,13 @@ if not function_exists('set_checkbox')
     $OBJ = @_get_validation_object()
 
     if $OBJ is false
-      if not @$_POST[$field]
-        if count(@$_POST) is 0 and $default is true
+      if not @req.body[$field]
+        if count(@req.body) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
 
-      $field = @$_POST[$field]
+      $field = @req.body[$field]
       
       if is_array($field)
         if not in_array($value, $field)
@@ -624,13 +624,13 @@ if not function_exists('set_radio')
     $OBJ = @_get_validation_object()
 
     if $OBJ is false
-      if not @$_POST[$field]
-        if count(@$_POST) is 0 and $default is true
+      if not @req.body[$field]
+        if count(@req.body) is 0 and $default is true
           return ' checked="checked"'
           
         return ''
 
-      $field = @$_POST[$field]
+      $field = @req.body[$field]
       
       if is_array($field)
         if not in_array($value, $field)

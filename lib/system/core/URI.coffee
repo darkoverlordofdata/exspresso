@@ -48,8 +48,7 @@ class system.core.URI
     $this = @
 
     defineProperties $this,
-      #_uri_string   : {enumerable: false, writeable: false, value: $this.req.path}
-      _uri_string   : {enumerable: false, writeable: false, value: $req.path}
+      _uri_string   : {enumerable: false, writeable: false, value: $req.url}
 
     defineProperties $this,
       _keyval       : {enumerable: false, writeable: false, value: {}}

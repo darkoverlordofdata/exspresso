@@ -34,6 +34,8 @@ class system.core.Router
   Modules = require(SYSPATH+'core/Modules.coffee')
   URI = require(SYSPATH+'core/URI.coffee')
 
+  is_dir = ($path) -> fs.existsSync($path) and fs.statSync($path).isDirectory()
+  is_file = ($path) -> fs.existsSync($path) and fs.statSync($path).isFile()
   #
   # @property [Object] Hash of bindings for each route
   #
@@ -49,9 +51,9 @@ class system.core.Router
   #
   # Initialize the router hash
   #
-  constructor: ->
+  constructor: ($controller) ->
 
-    @config = exspresso.config
+    @config = $controller.config
     @routes = {}
     log_message('debug', "Router Class Initialized")
 
@@ -179,7 +181,7 @@ class system.core.Router
 
 
     # Does the requested controller exist in the root folder?
-    if file_exists(APPPATH + 'controllers/' + $segments[0] + EXT)
+    if fs.existsSync(APPPATH + 'controllers/' + $segments[0] + EXT)
       return $segments
 
 
@@ -193,7 +195,7 @@ class system.core.Router
       if $segments.length > 0
 
         # Does the requested controller exist in the sub-folder?
-        if not file_exists(APPPATH + 'controllers/' + @getDirectory() + $segments[0] + EXT)
+        if not fs.existsSync(APPPATH + 'controllers/' + @getDirectory() + $segments[0] + EXT)
           console.log "Unable to validate" + @getDirectory() + $segments[0]
           return []
 
@@ -213,7 +215,7 @@ class system.core.Router
           @setMethod 'index'
 
         # Does the default controller exist in the sub-folder?
-        if not file_exists(APPPATH + 'controllers/' + @getDirectory() + @_default_controller + EXT)
+        if not fs.existsSync(APPPATH + 'controllers/' + @getDirectory() + @_default_controller + EXT)
           @_directory = ''
           return []
 
@@ -252,8 +254,9 @@ class system.core.Router
       for $module in $modules
         $path = $location + $module + '/config/'
 
-        if file_exists($path+'routes.coffee')
-          $routes = array_merge($routes, Modules::load('routes', $path))
+        if fs.existsSync($path+'routes.coffee')
+          for $key, $val of Modules::load('routes', $path)
+            $routes[$key] = $val
 
     return $routes
 
@@ -295,12 +298,10 @@ class system.core.Router
     @_directory = ''
     $ext = @config.item('controller_suffix')+EXT
 
-    # use module route if available
-    #if $segments[0]? and $routes = Modules.parse_routes($segments[0], implode('/', $segments))
-    #$segments = $routes
-
     # get the segments array elements
-    [$module, $directory, $controller] = array_pad($segments, 3, null)
+    if $segments.length < 3
+      $segments = $segments.concat([null, null, null].slice(0, 3-$segments.length))
+    [$module, $directory, $controller] = $segments
 
     # check modules
     for $location, $offset of Modules::locations
@@ -355,7 +356,6 @@ class system.core.Router
   #
   setClass: ($class) ->
     @_class = $class+@config.item('controller_suffix')
-  # - pre module - @_class = $class.replace('/', '').replace('.', '')
 
 
   #

@@ -57,22 +57,22 @@ class system.lib.Profiler
   ]
 
   _server_headers: [
-    'CONTENT_TYPE'
-    'DOCUMENT_ROOT'
-    'HTTP_ACCEPT'
-    'HTTP_ACCEPT_CHARSET'
-    'HTTP_ACCEPT_ENCODING'
-    'HTTP_ACCEPT_LANGUAGE'
-    'HTTP_CLIENT_IP'
-    'HTTP_CONNECTION'
-    'HTTP_HOST'
-    'HTTP_REFERER'
-    'HTTP_USER_AGENT'
-    'HTTP_X_CLIENT_IP'
-    'HTTP_X_CLUSTER_CLIENT_IP'
-    'HTTP_X_FORWARDED_FOR'
-    'PATH_INFO'
-    'QUERY_STRING'
+    #    'CONTENT_TYPE'
+    #    'DOCUMENT_ROOT'
+    #    'HTTP_ACCEPT'
+    #    'HTTP_ACCEPT_CHARSET'
+    #    'HTTP_ACCEPT_ENCODING'
+    #    'HTTP_ACCEPT_LANGUAGE'
+    #    'HTTP_CLIENT_IP'
+    #    'HTTP_CONNECTION'
+    #    'HTTP_HOST'
+    #    'HTTP_REFERER'
+    #    'HTTP_USER_AGENT'
+    #    'HTTP_X_CLIENT_IP'
+    #    'HTTP_X_CLUSTER_CLIENT_IP'
+    #    'HTTP_X_FORWARDED_FOR'
+    #    'PATH_INFO'
+    #    'QUERY_STRING'
     'REMOTE_ADDR'
     'REMOTE_HOST'
     'REQUEST_METHOD'
@@ -201,7 +201,7 @@ class system.lib.Profiler
     return $output
 
   #
-  # Compile @$_GET Data
+  # Compile GET method data parsed in req.query
   #
   # @return	[String]
   #
@@ -212,17 +212,17 @@ class system.lib.Profiler
     $output+='<dt>' + @i18n.line('profiler_get_data') + '</dt>'
     $output+="\n"
 
-    if count(@$_GET) is 0
+    if count(@req.query) is 0
       $output+="<dd><em>" + @i18n.line('profiler_no_get') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-      for $key, $val of @$_GET
+      for $key, $val of @req.query
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
-        $output+="<tr><td>&#36;_GET[" + $key + "] </td><td>"
+        $output+="<tr><td>req.query[" + $key + "] </td><td>"
         if is_array($val)
           $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
@@ -239,7 +239,7 @@ class system.lib.Profiler
     return $output
 
   #
-  # Compile @$_POST Data
+  # Compile POST method data parsed in req.body
   #
   # @return	[String]
   #
@@ -250,18 +250,18 @@ class system.lib.Profiler
     $output+='<dt>' + @i18n.line('profiler_post_data') + '</dt>'
     $output+="\n"
 
-    if count(@$_POST) is 0
+    if count(@req.body) is 0
       $output+="<dd><em>" + @i18n.line('profiler_no_post') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-      for $key, $val of @$_POST
+      for $key, $val of @req.body
         if not is_numeric($key)
           $key = "'" + $key + "'"
 
 
-        $output+="<tr><td>&#36;_POST[" + $key + "] </td><td>"
+        $output+="<tr><td>req.body[" + $key + "] </td><td>"
         if is_array($val)
           $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
@@ -357,6 +357,11 @@ class system.lib.Profiler
   # @return	[String]
   #
   _compile_http_headers: () ->
+
+
+    os = require('os')
+    protocol = ($secure) -> if $secure then 'https' else 'http'
+
     $output = "\n\n"
     $output+='<dl id="ex_profiler_http_headers">'
     $output+="\n"
@@ -365,9 +370,18 @@ class system.lib.Profiler
 
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-    for $header in @_server_headers
-      $val = if (@$_SERVER[$header]? ) then @$_SERVER[$header] else ''
-      $output+="<tr><td>" + $header + "</td><td>" + $val + "</td></tr>\n"
+    for $key, $val of @req.headers
+      $output+="<tr><td>" + $key + "</td><td>" + $val + "</td></tr>\n"
+
+    $output+="<tr><td>remote&nbsp;address </td><td>" + @req.connection.remoteAddress + "</td></tr>\n"
+    $output+="<tr><td>request&nbsp;method</td><td>" + @req.method + "</td></tr>\n"
+    $output+="<tr><td>request&nbsp;start</td><td>" + @req._startTime + "</td></tr>\n"
+    $output+="<tr><td>request&nbsp;uri</td><td>" + @req.url.split('?')[0] + "</td></tr>\n"
+    $output+="<tr><td>host&nbsp;name</td><td>" + @req.headers.host + "</td></tr>\n"
+    $output+="<tr><td>port</td><td>" + @server.port + "</td></tr>\n"
+    $output+="<tr><td>protocol</td><td>" + strtoupper(protocol(@req.connection.encrypted))+"/"+@req.httpVersion + "</td></tr>\n"
+    $output+="<tr><td></td><td>" + @server.version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version + "</td></tr>\n"
+
 
     $output+="</table></dd>\n"
     $output+="</dl>"

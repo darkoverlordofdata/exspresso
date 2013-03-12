@@ -23,6 +23,17 @@
 #
 #
 
+#
+# Define - read only attribute
+#
+# @param  def [Object]  property definition
+# @return [Void]
+#
+Function::define = ($def) ->
+  $name = keys($def)[0]
+  defineProperty @::, $name, {writeable: false, enumerable: ($name[0] isnt '_'), value: $def[$name]}
+
+
 #  ------------------------------------------------------------------------
 #
 #	Class Object
@@ -64,18 +75,18 @@ class system.core.Object
     @define _queue: [] if not @_queue?
 
     $queue = @_queue
-    $inputdex = 0
+    $index = 0
     $iterate = ->
 
       $next (null) if $queue.length is 0
       #
       # call the function at index
       #
-      $function = $queue[$inputdex]
+      $function = $queue[$index]
       $function ($err) ->
         return $next($err) if $err
-        $inputdex += 1
-        if $inputdex is $queue.length then $next null
+        $index += 1
+        if $index is $queue.length then $next null
         else $iterate()
 
     $iterate()

@@ -131,7 +131,7 @@
 <ul>
 <li>1 public class per file</li>
 <li>The public class is the exported class</li>
-<li>Public classes may be defined global</li>
+<li>Public classes may be defined in a namespace</li>
 <li>Include private helper classes in the same file</li>
 <li>Prefix protected member names with an undersocore</li>
 <li>Initialize array and object members in the constructor. Set the prototype value to null</li>
@@ -139,7 +139,7 @@
 <li>Public properties shall be camelCase</li>
 <li><p>Protected or private properties shall be _snake_case</p><p>Example MyBase.coffee:</p></li>
 </ul>
-<pre><code class="lang-CoffeeScript">class global.MyBase
+<pre><code class="lang-CoffeeScript">class application.lib.MyBase
 
   @DEFAULT      = 0
   @READY        = 1
@@ -151,35 +151,42 @@
     @_headers = []
 
 
-module.exports = MyBase</code></pre>
+module.exports = application.lib.MyBase</code></pre>
 <h2>Error Handling</h2>
 <ul>
-<li>In middleware, call the server next handler</li>
+<li>From middleware, call the next handler</li>
 </ul>
-<pre><code class="lang-CoffeeScript">(req, res, next) -&gt;
-  try
-    ...
-    next()
-  catch err
-    next err</code></pre>
+<pre><code class="lang-CoffeeScript">  (req, res, next) -&gt;
+    try
+      ...
+      next()
+    catch err
+      next err</code></pre>
 <ul>
-<li>Use show_error to send error display to the browser</li>
+<li>Use show_error or show_404 to send error display to the browser</li>
 <li>Use log_message to record the message for support</li>
-<li>Use &#39;return if&#39; style</li>
+<li>Chain calls in a &#39;return if&#39; style</li>
 </ul>
-<pre><code class="lang-CoffeeScript">return log_message(&#39;error&#39;, &#39;My message: %s&#39;, err) if show_error(err)</code></pre>
+<pre><code class="lang-CoffeeScript">  return log_message(&#39;error&#39;, &#39;My message: %s&#39;, err) if show_error(err)</code></pre>
 <ul>
 <li>Use a short circuit evaluation to pass either error or result to template.view</li>
 </ul>
-<pre><code class="lang-CoffeeScript">@db.get ($err, $data) =&gt;
+<pre><code class="lang-CoffeeScript">  @db.from &#39;hotel&#39;
+  @db.like &#39;name&#39;, &quot;%#{$searchString}%&quot;
+  @db.limit $pageSize, $start
+  @db.get ($err, $hotels) =&gt;
 
-  @template.view &quot;myview&quot;, $err || $data</code></pre>
+    @template.view &quot;travel/hotels&quot;, $err || {
+      hotels:       $hotels.result()
+      searchString: $searchString
+      pageSize:     $pageSize
+    }</code></pre>
 
       </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Mar 09 2013 21:22:01 GMT-0800 (PST)
+  Mon Mar 11 2013 09:34:37 GMT-0700 (PDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

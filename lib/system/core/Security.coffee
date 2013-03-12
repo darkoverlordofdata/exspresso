@@ -34,10 +34,6 @@
 class system.core.Security
 
 
-  _cookies              : null            # Request cookies
-  _query                : null            # Request get array
-  _body                 : null            # Request post body
-  _server               : null            # Request server properties
   _xss_hash             : ''              # Random Hash for protecting URLs
   _csrf_hash            : ''              # Random Hash for Cross Site Request Forgery Protection Cookie
   _csrf_expire          : 7200            # Expiration time for Cross Site Request Forgery Protection Cookie
@@ -73,11 +69,8 @@ class system.core.Security
   constructor :  ($req, $res) ->
 
     defineProperties @,
+      req       : {writeable: false, value: $req}
       res       : {writeable: false, value: $res}
-      _cookies  : {writeable: false, value: $req.cookies}
-      _query    : {writeable: false, value: $req.query}
-      _body     : {writeable: false, value: $req.body}
-      _server   : {writeable: false, value: $req.server}
 
     #  Is CSRF protection enabled?
     if config_item('csrf_protection') is true 
@@ -103,24 +96,24 @@ class system.core.Security
   #
   csrfVerify :  ->
     #  If it's not a POST request we will set the CSRF cookie
-    if strtoupper(@_server['REQUEST_METHOD']) isnt 'POST' 
+    if strtoupper(req.method) isnt 'POST'
       return @csrfSetCookie()
     
     #  Do the tokens exist in both the _POST and _COOKIE arrays?
-    if not (@_body[@_csrf_token_name]? and @_cookies[@_csrf_cookie_name]?)
+    if not (@req.body[@_csrf_token_name]? and @req.cookies[@_csrf_cookie_name]?)
       @csrfShowError()
     
     #  Do the tokens match?
-    if @_body[@_csrf_token_name] isnt @_cookies[@_csrf_cookie_name] 
+    if @req.body[@_csrf_token_name] isnt @req.cookies[@_csrf_cookie_name] 
       @csrfShowError()
       
     
     #  We kill this since we're done and we don't want to
     #  polute the _POST array
-    delete @_body[@_csrf_token_name]
+    delete @req.body[@_csrf_token_name]
     
     #  Nothing should last forever
-    delete @_cookies[@_csrf_cookie_name]
+    delete @req.cookies[@_csrf_cookie_name]
     @_csrf_set_hash()
     @csrfSetCookie()
     
@@ -138,7 +131,7 @@ class system.core.Security
     $expire = time() + @_csrf_expire
     $secure_cookie = if (config_item('cookie_secure') is true) 1 else 0
     
-    if $secure_cookie and (empty(@_server['HTTPS']) or strtolower(@_server['HTTPS']) is 'off') 
+    if $secure_cookie and (not $req.connection.encrypted)
       return false
 
     @res.cookie @_csrf_cookie_name, @_csrf_hash,
@@ -699,8 +692,8 @@ class system.core.Security
       #  We don't necessarily want to regenerate it with
       #  each page load since a page could contain embedded
       #  sub-pages causing this feature to fail
-      if @_cookies[@_csrf_cookie_name]?  and preg_match('#^[0-9a-f]{32}$#i', @_cookies[@_csrf_cookie_name])?
-        return @_csrf_hash = @_cookies[@_csrf_cookie_name]
+      if @req.cookies[@_csrf_cookie_name]?  and preg_match('#^[0-9a-f]{32}$#i', @req.cookies[@_csrf_cookie_name])?
+        return @_csrf_hash = @req.cookies[@_csrf_cookie_name]
       
       return @_csrf_hash = md5(uniqid(rand(), true))
     

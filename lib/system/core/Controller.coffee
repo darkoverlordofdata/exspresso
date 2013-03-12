@@ -52,26 +52,6 @@ class system.core.Controller extends system.core.Object
   #
   res: null
   #
-  # @property [Object] array of cookies
-  #
-  $_COOKIE: null
-  #
-  # @property [Object] array of uploaded files
-  #
-  $_FILES: null
-  #
-  # @property [Object] http GET method parameters
-  #
-  $_GET: null
-  #
-  # @property [Object] http POST method parameters
-  #
-  $_POST: null
-  #
-  # @property [Object] array of server properties for the request
-  #
-  $_SERVER: null
-  #
   # @property [Object] benchmark object
   #
   bm: null
@@ -131,24 +111,6 @@ class system.core.Controller extends system.core.Object
   constructor: ($server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method) ->
 
     @define
-      # $uri segments
-      module      : $module      # $uri module name
-      class       : $class       # $uri class name
-      method      : $method      # $uri method name
-
-      # http objects
-      req         : $req         # http Request object
-      res         : $res         # http Response object
-      $_COOKIE    : $req.cookies # http cookies
-      $_FILES     : $req.files   # http dowmload files list
-      $_GET       : $req.query   # http get values
-      $_POST      : $req.body    # http post values
-      $_SERVER    : $req.server  # server properties
-
-      # methods
-      redirect    : @redirect    # redirect url
-      render      : @render      # render view
-
       # Assign all the class objects that were instantiated by the
       # bootstrap file (exspresso.coffee) to local class variables
       # so that Exspresso can run as one big super object.
@@ -162,6 +124,19 @@ class system.core.Controller extends system.core.Object
       server      : $server      # system.core.Server
       uri         : $uri         # system.core.URI
 
+      # http objects
+      req         : $req         # http Request object
+      res         : $res         # http Response object
+
+      # $uri segments
+      module      : $module      # $uri module name
+      class       : $class       # $uri class name
+      method      : $method      # $uri method name
+
+      # methods
+      redirect    : @redirect    # redirect url
+      render      : @render      # render view
+
       # bootstrap the loader object into the controller:
       load: load_core('Loader', @)
 
@@ -173,6 +148,16 @@ class system.core.Controller extends system.core.Object
   #
   # Render a view
   #
+  #
+  # Use magic to make the controller context the
+  # superclass of the data hash, allowing loaded
+  # libraries to be referenced in a view:
+  #
+  # @example
+  #
+  #   <%- @pagination.createLinks() %>
+  #
+  #
   # @param  [String]  view path to the view template
   # @param  [Object]  data hash of data to render with template
   # @param  [Function]  next  callback
@@ -180,11 +165,14 @@ class system.core.Controller extends system.core.Object
   #
   render: ($view, $data = {}, $next) ->
 
-    @res.render $view, create_mixin(@, $data), ($err, $html) =>
+    @res.render $view, magic(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
       return show_error($err) if $err
-      @res.send $html
+      @res.writeHead 200,
+        'Content-Length'  : $html.length
+        'Content-Type'    : 'text/html; charset=utf-8'
+      @res.end $html
 
   #
   # Redirect to another url
@@ -193,7 +181,10 @@ class system.core.Controller extends system.core.Object
   # @return [Void]
   #
   redirect: ($url) ->
-    @res.redirect $url
+
+    @res.writeHead 302,
+      'Location': $url
+    @res.end null
 
 
 

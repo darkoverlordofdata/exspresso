@@ -30,12 +30,6 @@
 #
 class system.core.Exspresso extends system.core.Object
 
-  os = require('os')  # operating-system related utility functions
-
-  #
-  # @property [String] http driver: connect | express
-  #
-  httpDriver: 'connect'
   #
   # @property [String] db driver: mysql | postgres
   #
@@ -84,7 +78,6 @@ class system.core.Exspresso extends system.core.Object
   #
   parseOptions: () ->
 
-    $driver   = @httpDriver
     $db       = @dbDriver
     $cache    = @useCache
     $csrf     = @useCsrf
@@ -110,9 +103,7 @@ class system.core.Exspresso extends system.core.Object
         when '--nocache'    then $cache    = false
         when '--nocsrf'     then $csrf     = false
         when '--noprofile'  then $profile  = false
-        else  $driver = $arg
 
-    @define httpDriver  : $driver
     @define dbDriver    : $db
     @define useCache    : $cache
     @define useCsrf     : $csrf
@@ -145,8 +136,8 @@ class system.core.Exspresso extends system.core.Object
     # And the rest...
     #
     @define config : core('Config')
-    @define server : core(ucfirst(@httpDriver), @)
-    @define router : core('Router')
+    @define server : core('Connect', @)
+    @define router : core('Router', @)
     @define load   : core('Loader', @)
 
     #
@@ -273,7 +264,8 @@ class system.core.Exspresso extends system.core.Object
         $hooks = new_core('Hooks')
         $hooks.callHook 'pre_system'
 
-        $config = new_core('Config')
+        #$config = new_core('Config')
+        $config = core('Config')
         $uri = new_core('URI', $req)
         $output = new_core('Output', $req, $res, $bench, $hooks, $config, $uri)
 
@@ -350,103 +342,6 @@ class system.core.Exspresso extends system.core.Object
 
         catch $err
           $next $err
-
-
-  #
-  # Middleware: Parse the Base URL
-  #
-  #   update the base_url config entry
-  #
-  # @param  [Object]  req the http request object
-  # @param  [Object]  res the http response object
-  # @param  [Function]  next  next middleware on stack
-  # @return [Void]
-  #
-  parseBaseUrl: -> ($req, $res, $next) =>
-
-    #
-    # Set expected request object properties
-    #
-
-    @config.setItem('base_url', $req.protocol+'://'+ $req.headers['host'])
-    $next()
-
-  #
-  # Middleware: Parse Request Properties
-  #
-  #   fabricate a table similar to $_SERVER
-  #
-  # @param  [Object]  req the http request object
-  # @param  [Object]  res the http response object
-  # @param  [Function]  next  next middleware on stack
-  # @return [Void]
-  #
-  parseProperties: -> ($req, $res, $next) =>
-
-    $_SERVER =
-      argv                  : $req.query
-      argc                  : count($req.query)
-      CONTENT_TYPE          : $req.headers['content-type']
-      DOCUMENT_ROOT         : process.cwd()
-      HTTP_ACCEPT           : $req.headers['accept']
-      HTTP_ACCEPT_CHARSET   : $req.headers['accept-charset']
-      HTTP_ACCEPT_ENCODING  : $req.headers['accept-encoding']
-      HTTP_ACCEPT_LANGUAGE  : $req.headers['accept-language']
-      HTTP_CLIENT_IP        : ($req.headers['x-forwarded-for'] || '').split(',')[0]
-      HTTP_CONNECTION       : $req.headers['connection']
-      HTTP_HOST             : $req.headers['host']
-      HTTP_REFERER          : $req.headers['referer']
-      HTTP_USER_AGENT       : $req.headers['user-agent']
-      HTTPS                 : if $req.secure then 'on' else 'off'
-      ORIG_PATH_INFO        : $req.path
-      PATH_INFO             : $req.path
-      QUERY_STRING          : if $req.url.split('?')[1]? then $req.url.split('?')[1] else ''
-      REMOTE_ADDR           : $req.connection.remoteAddress
-      REMOTE_HOST           : ''
-      REMOTE_PORT           : ''
-      REMOTE_USER           : ''
-      REQUEST_METHOD        : $req.method
-      REQUEST_TIME          : $req._startTime
-      REQUEST_URI           : $req.url
-      SERVER_ADDR           : $req.ip
-      SERVER_NAME           : $req.host
-      SERVER_PORT           : ''+@server.port
-      SERVER_PROTOCOL       : strtoupper($req.protocol)+"/"+$req.httpVersion
-      SERVER_SOFTWARE       : @version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version
-
-    for $key, $val of $req.headers
-      $_SERVER['HTTP_'+$key.toUpperCase().replace('-','_')] = $val
-
-    defineProperties $req,
-      server  : {writeable: false, value: freeze($_SERVER)}
-
-    $next()
-
-  #
-  # Middleware: 5xx Error Display
-  #
-  #   general server error handler
-  #
-  # @param  [Object]  err the error object
-  # @param  [Object]  req the http request object
-  # @param  [Object]  res the http response object
-  # @param  [Function]  next  next middleware on stack
-  # @return [Void]
-  #
-  error5xx: -> ($err, $req, $res, $next) -> show_error $err
-
-
-  #
-  # Middleware: 404 Display
-  #
-  #   page not found handler
-  #
-  # @param  [Object]  req the http request object
-  # @param  [Object]  res the http response object
-  # @param  [Function]  next  next middleware on stack
-  # @return [Void]
-  #
-  error404: -> ($req, $res, $next) -> show_404 $req.originalUrl
 
 
 

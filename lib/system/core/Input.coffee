@@ -32,14 +32,9 @@ class system.core.Input
 
   os = require('os')
 
-  _cookies              : null    # The request cookies
-  _query                : null    # The request get array
-  _body                 : null    # The request post body
-  _server               : null    # The request server properties
   _headers              : null    # The list of HTTP request headers
   _ip_address           : false   # The IP address of the current user
   _user_agent           : false   # The user agent (web browser) being used by the current user
-  _server               : null    # A fabricated table to mimic php's $_SERVER
   _allow_get_array      : false   # If FALSE, then $_GET will be set to an empty array
   _standardize_newlines : false   # If TRUE, then newlines are standardized
   _enable_xss           : false   # Determines whether the XSS filter is always active
@@ -56,10 +51,7 @@ class system.core.Input
   constructor: ($req, $utf, $security) ->
 
     defineProperties @,
-      _cookies: {writeable: false, value: $req.cookies}
-      _query:   {writeable: false, value: $req.query}
-      _body:    {writeable: false, value: $req.body}
-      _server:  {writeable: false, value: $req.server}
+      req:      {writeable: false, value: $req}
       utf:      {writeable: false, value: $utf}
       security: {writeable: false, value: $security}
 
@@ -81,15 +73,15 @@ class system.core.Input
   get : ($index = null, $xss_clean = false) ->
 
     #  Check if a field has been provided
-    if $index is null and  not empty(@_query)
+    if $index is null and  not empty(@req.query)
       $get = {}
 
       #  loop through the full _GET array
-      for $key in array_keys(@_query)
-        $get[$key] = @_fetch_from_array(@_query, $key, $xss_clean)
+      for $key in array_keys(@req.query)
+        $get[$key] = @_fetch_from_array(@req.query, $key, $xss_clean)
       return $get
 
-    return @_fetch_from_array(@_query, $index, $xss_clean)
+    return @_fetch_from_array(@req.query, $index, $xss_clean)
 
 
   #
@@ -102,15 +94,15 @@ class system.core.Input
   post : ($index = null, $xss_clean = false) ->
 
     #  Check if a field has been provided
-    if $index is null and  not empty(@_body)
+    if $index is null and Object.keys(@req.body).length>0
       $post = {}
 
-      #  Loop through the full _POST array and return it
-      for $key in array_keys(@_body)
-        $post[$key] = @_fetch_from_array(@_body, $key, $xss_clean)
+      #  Loop through the full POST array and return it
+      for $key, $val of @req.body
+        $post[$key] = @_fetch_from_array(@req.body, $key, $xss_clean)
       return $post
 
-    return @_fetch_from_array(@_body, $index, $xss_clean)
+    return @_fetch_from_array(@req.body, $index, $xss_clean)
 
   #
   # Fetch an item from either the GET array or the POST
@@ -121,7 +113,7 @@ class system.core.Input
   #
   getPost : ($index = '', $xss_clean = false) ->
 
-    if not @_body[$index]?
+    if not @req.body[$index]?
       @get($index, $xss_clean)
     else
       @post($index, $xss_clean)
@@ -134,7 +126,7 @@ class system.core.Input
   # @return	[String] the value found at index
   #
   cookie : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@_cookies, $index, $xss_clean)
+    return @_fetch_from_array(@req.cookies, $index, $xss_clean)
 
   #
   # Set cookie
@@ -163,27 +155,16 @@ class system.core.Input
     if $secure is false and config_item('cookie_secure') isnt false
       $secure = config_item('cookie_secure')
 
-    if not is_numeric($expire)
-      $expire = time() - 86500
-
+    $expire = if typeof $expire is 'number'
+      if ($expire > 0) then time() + $expire else 0
     else
-      $expire = if ($expire > 0) then time() + $expire else 0
+      time() - 86500
 
     @res.cookie $prefix+$name, $value,
       expires : $expire
       domain  : $domain
       path    : $path
       secure  : $secure
-
-  #
-  # Fetch an item from the SERVER array
-  #
-  # @param  [String]  index key into the SERVER hash
-  # @param	[Boolean] xss_clean scrub the return value?
-  # @return	[String] the value found at index
-  #
-  server : ($index = '', $xss_clean = false) ->
-    return @_fetch_from_array(@_server, $index, $xss_clean)
 
   #
   # Fetch the IP Address
@@ -195,25 +176,23 @@ class system.core.Input
       return @_ip_address
 
     $proxy_ips = config_item('proxy_ips')
-    if not empty($proxy_ips)
-      $proxy_ips = explode(',', str_replace(' ', '', $proxy_ips))
-      for $header in ['HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP']
-        if ($spoof = @server($header)) isnt false
+    if $proxy_ips isnt ''
+      $proxy_ips = $proxy_ips.replace(/\ /g,'').split(',')
+      for $header in ['x-forwarded-for', 'client-ip', 'x-client-ip', 'x-cluster-client-ip']
+        if ($spoof = @req.headers[$header])?
           #  Some proxies typically list the whole chain of IP
           #  addresses through which the client has reached us.
           #  e.g. client_ip, proxy_ip1, proxy_ip2, etc.
-          if strpos($spoof, ',') isnt false
-            $spoof = explode(',', $spoof, 2)
-            $spoof = $spoof[0]
+          if $spoof.indexOf(',') isnt -1
+            $spoof = $spoof.split(',')[0]
           if not @valid_ip($spoof)
             $spoof = false
-
           else
             break
-      @_ip_address = if ($spoof isnt false and in_array($_SERVER['REMOTE_ADDR'], $proxy_ips, true)) then $spoof else $_SERVER['REMOTE_ADDR']
+      @_ip_address = if ($spoof isnt false and $proxy_ips.indexOf(@req.connection.remoteAddress) isnt -1) then $spoof else @req.connection.remoteAddress
 
     else
-      @_ip_address = $_SERVER['REMOTE_ADDR']
+      @_ip_address = @req.connection.remoteAddress
 
     if not @valid_ip(@_ip_address)
       @_ip_address = '0.0.0.0'
@@ -229,7 +208,7 @@ class system.core.Input
   userAgent:  ->
     if @_user_agent isnt false
       return @_user_agent
-    @_user_agent = if ( not $_SERVER['HTTP_USER_AGENT']? ) then false else $_SERVER['HTTP_USER_AGENT']
+    @_user_agent = if ( not @req.headers['user-agent']? ) then false else @req.headers['user-agent']
     return @_user_agent
 
   #
@@ -240,13 +219,13 @@ class system.core.Input
   # @return [Boolean] True if the ip is valid
   #
   validIp: ($ip, $which = '') ->
-    $which = strtolower($which)
+    $which = $which.toLowerCase()
 
     if $which isnt 'ipv6' and $which isnt 'ipv4'
-      if strpos($ip, ':') isnt false
+      if $ip.indexOf(':') isnt -1
         $which = 'ipv6'
 
-      else if strpos($ip, '.') isnt false
+      else if $ip.indexOf('.') isnt -1
         $which = 'ipv4'
 
       else
@@ -275,8 +254,8 @@ class system.core.Input
   # @return [String]  FALSE on failure, string on success
   #
   getRequestHeader : ($index, $xss_clean = false) ->
-    if empty(@_headers)
-      @requestHeaders()
+
+    @requestHeaders() if Object.keys(@_headers).length is 0
 
     if not @_headers[$index]?
       return false
@@ -294,7 +273,7 @@ class system.core.Input
   # @return [Boolean] True for AJAX requests
   #
   isAjaxRequest :  ->
-    if @server('HTTP_X_REQUESTED_WITH') is 'XMLHttpRequest' then true else false
+    if @req.headers['x-requested-with'] is 'XMLHttpRequest' then true else false
 
   # Is cli Request?
   #
@@ -335,24 +314,20 @@ class system.core.Input
   # @return	[Boolean] True if a valid ip
   #
   _valid_ipv4 : ($ip) ->
-    $ip_segments = explode('.', $ip)
+    $ip_segments = $ip.split('.')
 
     #  Always 4 segments needed
-    if count($ip_segments) isnt 4
-      return false
+    return false unless Object.keys($ip_segments).length is 4
 
     #  IP can not start with 0
-    if $ip_segments[0][0] is '0'
-      return false
+    return false if $ip_segments[0][0] is '0'
 
     #  Check each segment
     for $segment in $ip_segments
       #  IP segments must be digits and can not be
       #  longer than 3 digits or greater then 255
-      #if $segment is '' or preg_match("/[^0-9]/", $segment)? or $segment > 255 or strlen($segment) > 3
-      if $segment is '' or /[^0-9]/.test($segment) or $segment > 255 or strlen($segment) > 3
+      if $segment is '' or /[^0-9]/.test($segment) or $segment > 255 or $segment.length > 3
         return false
-
     return true
 
   #
@@ -370,28 +345,27 @@ class system.core.Input
     $groups = 8
     $collapsed = false
 
-    $chunks = array_filter(preg_split('/(:{1,2})/', $str, null, PREG_SPLIT_DELIM_CAPTURE))
+    $chunks = $item for $item in $str.split(/(:{1,2})/) when $item?
 
     #  Rule out easy nonsense
-    if current($chunks) is ':' or end($chunks) is ':'
-      return false
+    return false if $chunks[0] is ':' or $chunks[$chunks.length-1] is ':'
 
     #  PHP supports IPv4-mapped IPv6 addresses, so we'll expect those as well
-    if strpos(end($chunks), '.') isnt false
-      $ipv4 = array_pop($chunks)
+    if $chunks[$chunks.length-1].indexOf('.') isnt -1
+      $ipv4 = $chunks.pop()
 
       if not @_valid_ipv4($ipv4)
         return false
 
       $groups--
 
-    while $seg = array_pop($chunks)
+    while ($seg = $chunks.pop())?
 
       if $seg[0] is ':'
         if --$groups is 0
           return false#  too many groups
 
-      if strlen($seg) > 2
+      if $seg.length > 2
         return false#  long separator
 
       if $seg is '::'
@@ -400,7 +374,7 @@ class system.core.Input
 
         $collapsed = true
 
-      else if /[^0-9a-f]/i.exec($seg)? or strlen($seg) > 4
+      else if /[^0-9a-f]/i.exec($seg)? or $seg.length > 4
         return false#  invalid segment
     return $collapsed or $groups is 1
 
@@ -419,29 +393,29 @@ class system.core.Input
   #
   _sanitize_globals :  ->
 
-    #  Is $_GET data allowed? If not we'll set the $_GET to an empty array
+    #  Is GET data allowed? If not we'll set the GET to an empty array
     if @_allow_get_array is false
-      delete @_query[$key] for $key, $val of @_query
+      delete @req.query[$key] for $key, $val of @req.query
 
     else
-      for $key, $val of @_query
-        @_query[@_clean_input_keys($key)] = @_clean_input_data($val)
+      for $key, $val of @req.query
+        @req.query[@_clean_input_keys($key)] = @_clean_input_data($val)
 
-    #  Clean $_POST Data
-    for $key, $val of @_body
-      @_body[@_clean_input_keys($key)] = @_clean_input_data($val)
+    #  Clean POST Data
+    for $key, $val of @req.body
+      @req.body[@_clean_input_keys($key)] = @_clean_input_data($val)
 
     #  Clean $_COOKIE Data
     #  Also get rid of specially treated cookies that might be set by a server
     #  or silly application, that are of no use to a Exspressp application anyway
     #  but that when present will trip our 'Disallowed Key Characters' alarm
     #  http://www.ietf.org/rfc/rfc2109.txt
-    delete @_cookies['$Version']  if @_cookies['$Version']?
-    delete @_cookies['$Path']     if @_cookies['$Path']?
-    delete @_cookies['$Domain']   if @_cookies['$Domain']?
+    delete @req.cookies['$Version']  if @req.cookies['$Version']?
+    delete @req.cookies['$Path']     if @req.cookies['$Path']?
+    delete @req.cookies['$Domain']   if @req.cookies['$Domain']?
 
-    for $key, $val of @_cookies
-      @_cookies[@_clean_input_keys($key)] = @_clean_input_data($val)
+    for $key, $val of @req.cookies
+      @req.cookies[@_clean_input_keys($key)] = @_clean_input_data($val)
 
     #  CSRF Protection check on HTTP requests
     if @_enable_csrf is true and  not @isCliRequest()
@@ -459,7 +433,7 @@ class system.core.Input
   # @return	[String] the clean value
   #
   _clean_input_data : ($str) ->
-    if is_array($str)
+    if typeof $str is 'object'
       $new_array = {}
       for $key, $val of $str
         $new_array[@_clean_input_keys($key)] = @_clean_input_data($val)
@@ -479,8 +453,8 @@ class system.core.Input
 
     #  Standardize newlines if needed
     if @_standardize_newlines is true
-      if strpos($str, "\r") isnt false
-        $str = str_replace(["\r\n", "\r", "\r\n\n"], os.EOL, $str)
+      if $str.indeoxOf('\r') isnt -1
+        $str = $str.replace($re, os.EOL) for $re in [/\r\n/mg, /\r/mg, /\r\n\n/mg]
 
     return $str
 
@@ -496,9 +470,8 @@ class system.core.Input
   # @return	[String] the clean value
   #
   _clean_input_keys : ($str) ->
-    #if not preg_match("/^[a-z0-9:_\/-]+$/i", $str)?
     if not /^[a-z0-9:_\/-]+$/i.test($str)
-      die ('Disallowed Key Characters.')
+      return show_error('Disallowed Key Characters.')
 
     #  Clean UTF-8 if supported
     if UTF8_ENABLED is true

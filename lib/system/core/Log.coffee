@@ -27,6 +27,9 @@ class system.core.Log
 
   fs              = require('fs')   # Standard POSIX file i/o
 
+  is_dir = ($path) -> fs.existsSync($path) and fs.statSync($path).isDirectory()
+
+
   _enabled        : true            # Use logging?
   _log_path       : ''              # Path to the log file
   _threshold      : 1               # Current threshhold level

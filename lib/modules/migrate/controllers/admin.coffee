@@ -41,7 +41,7 @@ class Admin extends application.core.AdminController
         menu      : @submenu($module || 'Core')
         module    : if $module then $module+'/' else ''
         path      : @migration._migration_path
-        files     : glob(@migration._migration_path+'*'+EXT)
+        files     : glob(@migration._migration_path+'*.coffee')
         version   : $version
       }
 

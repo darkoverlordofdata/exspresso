@@ -286,13 +286,13 @@ if ( not function_exists('convert_accented_characters'))
 
   exports.convert_accented_characters = convert_accented_characters = ($str) ->
 
-    if (defined('ENVIRONMENT') AND is_file(APPPATH+'config/'+ENVIRONMENT+'/foreign_chars'+EXT))
+    if (defined('ENVIRONMENT') AND is_file(APPPATH+'config/'+ENVIRONMENT+'/foreign_chars.coffee'))
 
-      $foreign_characters = require(APPPATH+'config/'+ENVIRONMENT+'/foreign_chars'+EXT)
+      $foreign_characters = require(APPPATH+'config/'+ENVIRONMENT+'/foreign_chars.coffee')
 
-    else if (is_file(APPPATH+'config/foreign_chars'+EXT))
+    else if (is_file(APPPATH+'config/foreign_chars.coffee'))
 
-      $foreign_characters = require(APPPATH+'config/foreign_chars'+EXT)
+      $foreign_characters = require(APPPATH+'config/foreign_chars.coffee')
 
     if not $foreign_characters?
       return $str

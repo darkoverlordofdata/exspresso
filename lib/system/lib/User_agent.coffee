@@ -58,7 +58,7 @@ class system.lib.UserAgent
   #
   # Sets the User Agent and runs the compilation routine
   #
-    # @return [Void]  #
+  # @return [Void]  #
   constructor: ($controller, $config = {}) ->
 
     super $controller, $config
@@ -71,8 +71,8 @@ class system.lib.UserAgent
     @_mobiles = {}
     @_robots = {}
 
-    if @$_SERVER['HTTP_USER_AGENT']?
-      @_agent = trim(@$_SERVER['HTTP_USER_AGENT'])
+    if @req.headers['user-agent']
+      @_agent = trim(@req.headers['user-agent'])
 
     if not is_null(@_agent)
       if @_load_agent_file()
@@ -87,11 +87,11 @@ class system.lib.UserAgent
   # @return	bool
   #
   _load_agent_file: () ->
-    if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/user_agents' + EXT)
-      $config = require(APPPATH + 'config/' + ENVIRONMENT + '/user_agents' + EXT)
+    if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/user_agents.coffee')
+      $config = require(APPPATH + 'config/' + ENVIRONMENT + '/user_agents.coffee')
 
-    else if is_file(APPPATH + 'config/user_agents' + EXT)
-      $config = require(APPPATH + 'config/user_agents' + EXT)
+    else if is_file(APPPATH + 'config/user_agents.coffee')
+      $config = require(APPPATH + 'config/user_agents.coffee')
 
     else
       return false
@@ -211,9 +211,9 @@ class system.lib.UserAgent
   # @return [Void]  #
   _set_languages: () ->
 
-    # req.acceptedLanguages
-    if (count(@_languages) is 0) and @$_SERVER['HTTP_ACCEPT_LANGUAGE']?  and @$_SERVER['HTTP_ACCEPT_LANGUAGE'] isnt ''
-      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim(@$_SERVER['HTTP_ACCEPT_LANGUAGE'])))
+  # req.acceptedLanguages
+    if (count(@_languages) is 0) and @req.headers['accept-language']?  and @req.headers['accept-language'] isnt ''
+      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim(@req.headers['accept-language'])))
 
       @_languages = explode(',', $languages)
 
@@ -230,9 +230,9 @@ class system.lib.UserAgent
   # @return [Void]  #
   _set_charsets: () ->
 
-    # req.acceptedCharsets
-    if (count(@_charsets) is 0) and @$_SERVER['HTTP_ACCEPT_CHARSET']?  and @$_SERVER['HTTP_ACCEPT_CHARSET'] isnt ''
-      $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim(@$_SERVER['HTTP_ACCEPT_CHARSET'])))
+  # req.acceptedCharsets
+    if (count(@_charsets) is 0) and @req.headers['accept-charset']?  and @req.headers['accept-charset'] isnt ''
+      $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim(@req.headers['accept-charset'])))
 
       @_charsets = explode(',', $charsets)
 
@@ -245,69 +245,69 @@ class system.lib.UserAgent
   #
   # Is Browser
   #
-    # @return	bool
+  # @return	bool
   #
   isBrowser: ($key = null) ->
 
     if not @_is_browser
       return false
 
-    #  No need to be specific, it's a browser
+  #  No need to be specific, it's a browser
     if $key is null
       return true
 
-    #  Check for a specific browser
+  #  Check for a specific browser
     array_key_exists($key, @_browsers) and @_browser is @_browsers[$key]
 
   #
   # Is Robot
   #
-    # @return	bool
+  # @return	bool
   #
   isRobot: ($key = null) ->
 
     if not @_is_robot
       return false
 
-    #  No need to be specific, it's a robot
+  #  No need to be specific, it's a robot
     if $key is null
       return true
 
-    #  Check for a specific robot
+  #  Check for a specific robot
     array_key_exists($key, @_robots) and @_robot is @_robots[$key]
 
   #
   # Is Mobile
   #
-    # @return	bool
+  # @return	bool
   #
   isMobile: ($key = null) ->
 
     if not @_is_mobile
       return false
 
-    #  No need to be specific, it's a mobile
+  #  No need to be specific, it's a mobile
     if $key is null
       return true
 
-    #  Check for a specific robot
+  #  Check for a specific robot
     array_key_exists($key, @_mobiles) and @_mobile is @_mobiles[$key]
 
 
   #
   # Is this a referral from another site?
   #
-    # @return	bool
+  # @return	bool
   #
   isReferral: () ->
 
-    if not @$_SERVER['HTTP_REFERER']?  or @$_SERVER['HTTP_REFERER'] is '' then false else true
+    if not @req.headers['referer']?  or @req.headers['referer'] is '' then false else true
 
 
   #
   # Agent String
   #
-    # @return	[String]
+  # @return	[String]
   #
   agentString: () ->
     @_agent
@@ -315,7 +315,7 @@ class system.lib.UserAgent
   #
   # Get Platform
   #
-    # @return	[String]
+  # @return	[String]
   #
   platform: () ->
     @_platform
@@ -323,7 +323,7 @@ class system.lib.UserAgent
   #
   # Get Browser Name
   #
-    # @return	[String]
+  # @return	[String]
   #
   browser: () ->
     @_browser
@@ -331,7 +331,7 @@ class system.lib.UserAgent
   #
   # Get the Browser Version
   #
-    # @return	[String]
+  # @return	[String]
   #
   version: () ->
     @_version
@@ -339,7 +339,7 @@ class system.lib.UserAgent
   #
   # Get The Robot Name
   #
-    # @return	[String]
+  # @return	[String]
   #
   robot: () ->
     @_robot
@@ -347,7 +347,7 @@ class system.lib.UserAgent
   #
   # Get the Mobile Device
   #
-    # @return	[String]
+  # @return	[String]
   #
   mobile: () ->
     @_mobile
@@ -356,17 +356,17 @@ class system.lib.UserAgent
   #
   # Get the referrer
   #
-    # @return	bool
+  # @return	bool
   #
   #req.headers['referer']
   referrer: () ->
-    if ( not @$_SERVER['HTTP_REFERER']?  or @$_SERVER['HTTP_REFERER'] is '') then '' else trim(@$_SERVER['HTTP_REFERER'])
+    if ( not @req.headers['referer']?  or @req.headers['referer'] is '') then '' else trim(@req.headers['referer'])
 
   
   #
   # Get the accepted languages
   #
-    # @return	array
+  # @return	array
   #
   languages: () ->
     if count(@_languages) is 0
@@ -378,7 +378,7 @@ class system.lib.UserAgent
   #
   # Get the accepted Character Sets
   #
-    # @return	array
+  # @return	array
   #
   charsets: () ->
     if count(@_charsets) is 0
@@ -390,7 +390,7 @@ class system.lib.UserAgent
   #
   # Test for a particular language
   #
-    # @return	bool
+  # @return	bool
   #
   acceptLang: ($lang = 'en') ->
     in_array(strtolower($lang), @_languages(), true)
@@ -399,7 +399,7 @@ class system.lib.UserAgent
   #
   # Test for a particular character set
   #
-    # @return	bool
+  # @return	bool
   #
   acceptCharset: ($charset = 'utf-8') ->
     in_array(strtolower($charset), @_charsets(), true)
