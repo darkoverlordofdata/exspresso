@@ -50,9 +50,6 @@ class system.db.mysql.MysqlResult extends system.db.Result
   numRows :  ->
     @_result_array.length
 
-
-  
-
   #
   # Number of fields in the result set
   #
@@ -60,8 +57,6 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   numFields :  ->
     @_metadata.length
-
-  
 
   #
   # Fetch Field Names
@@ -76,9 +71,6 @@ class system.db.mysql.MysqlResult extends system.db.Result
       $field_names.push $field.name
     return $field_names
 
-
-  
-
   #
   # Field data
   #
@@ -89,9 +81,6 @@ class system.db.mysql.MysqlResult extends system.db.Result
   fieldData :  ->
     return @_metadata
 
-
-  
-
   #
   # Free the result
   #
@@ -99,8 +88,6 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   freeResult :  ->
     @result_array = null
-
-  
 
   #
   # Data Seek
@@ -115,8 +102,6 @@ class system.db.mysql.MysqlResult extends system.db.Result
   _data_seek : ($n = 0) ->
     @_current_row = $n
 
-  
-
   #
   # Result - associative array
   #
@@ -126,9 +111,6 @@ class system.db.mysql.MysqlResult extends system.db.Result
   # @return	[Array]
   #
   _fetch_assoc :  ->
-
-
-  
 
   #
   # Result - object

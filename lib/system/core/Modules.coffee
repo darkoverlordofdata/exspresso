@@ -64,7 +64,7 @@
 class system.core.Modules
 
   fs = require('fs')
-  is_file = ($path) -> fs.existsSync($path) and fs.statSync($path).isFile()
+  {is_file} = require(SYSPATH+'core.coffee')
   self = @::
 
   locations: config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')

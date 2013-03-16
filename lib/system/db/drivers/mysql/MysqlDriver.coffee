@@ -88,7 +88,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
         @connected = false
         console.log $err
       else
-        $next $err, @client
+        $next($err, @client)
 
   #
   # Persistent database connection
@@ -105,7 +105,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # Keep / reestablish the db connection if no queries have been
   # sent for a length of time exceeding the server's idle timeout
   #
-    # @return [Void]  #
+  # @return [Void]  #
   reconnect: ($next) ->
     @client.ping($next)
 
@@ -122,7 +122,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Set client character set
   #
-    # @param  [String]    # @param  [String]    # @return	resource
+  # @param  [String]  # @param  [String]  # @return	resource
   #
   dbSetCharset: ($charset, $collation, $next) ->
     @client.query("SET NAMES '" + @escapeStr($charset) + "' COLLATE '" + @escapeStr($collation) + "'", $next)
@@ -131,10 +131,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Version number query string
   #
-    # @return	[String]
+  # @return	[String]
   #
   _version: () ->
-    return "SELECT version() AS ver"
+    "SELECT version() AS ver"
 
 
   #
@@ -161,18 +161,15 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     #  "DELETE FROM TABLE" returns 0 affected rows This hack modifies
     #  the query so that it returns the number of affected rows
     if @delete_hack is true
-      if preg_match('/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/i', $sql)?
-        $sql = preg_replace("/^\\s*DELETE\\s+FROM\\s+(\\S+)\\s*$/", "DELETE FROM $1 WHERE 1=1", $sql)
-
-
-
+      if /^\s*DELETE\s+FROM\s+(\S+)\s*$/i.test($sql)
+        $sql = $sql.replace(/^\s*DELETE\s+FROM\s+(\S+)\s*$/, "DELETE FROM $1 WHERE 1=1")
     return $sql
 
 
   #
   # Begin Transaction
   #
-    # @return	bool
+  # @return	bool
   #
   transBegin: ($test_mode = false, $next = null) ->
     if $next is null
@@ -180,11 +177,11 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
       $test_mode = false
 
     if not @_trans_enabled
-      return $next null, true
+      return $next(null, true)
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
-      return $next null, true
+      return $next(null, true)
 
     #  Reset the transaction failure flag.
     #  If the $test_mode flag is set to TRUE transactions will be rolled back
@@ -193,72 +190,68 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
     @simpleQuery 'SET AUTOCOMMIT=0', =>
       @simpleQuery 'START TRANSACTION', => #  can also be BEGIN or BEGIN WORK
-        $next null, true
+        $next(null, true)
 
   #
   # Commit Transaction
   #
-    # @return	bool
+  # @return	bool
   #
   transCommit: ($next) ->
     if not @_trans_enabled
-      return $next null, true
+      return $next(null, true)
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
-      return $next null, true
+      return $next(null, true)
 
     @simpleQuery 'COMMIT', =>
       @simpleQuery 'SET AUTOCOMMIT=1', =>
-        $next null, true
+        $next(null, true)
 
 
   #
   # Rollback Transaction
   #
-    # @return	bool
+  # @return	bool
   #
   transRollback: ($next) ->
     if not @_trans_enabled
-      return $next null, true
+      return $next(null, true)
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
-      return $next null, true
+      return $next(null, true)
 
     @simpleQuery 'ROLLBACK', =>
       @simpleQuery 'SET AUTOCOMMIT=1', =>
-        $next null, true
+        $next(null, true)
 
 
   #
   # Escape String
   #
-    # @param  [String]    # @return	[Boolean]	whether or not the string will be used in a LIKE condition
+  # @param  [String]
+  # @param	[Boolean]	whether or not the string will be used in a LIKE condition
   # @return	[String]
   #
   escapeStr: ($str, $like = false) ->
-    if is_array($str)
+    if not 'string' is typeof($str)
       for $key, $val of $str
         $str[$key] = @escapeStr($val, $like)
-
-
       return $str
 
     $str = @client.escape($str)
-
-
     #  escape LIKE condition wildcards
     if $like is true
-      $str = str_replace(['%', '_'], ['\\%', '\\_'], $str)
-
-    return $str
+      $str = $str.replace(/\%/g, '\\%').replace(/\_/g, '\\_')
+    $str
 
 
   #
   # Affected Rows
   #
-    # @return	integer
+  # @return	integer
   #
   affectedRows: ($next) ->
     #@client.affected_rows($next)
@@ -267,18 +260,13 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Insert ID
   #
-    # @return	integer
+  # @return	integer
   #
   insertId: ($next) ->
 
     @query "SELECT LAST_INSERT_ID() AS id;", ($err, $insert) =>
-
-      if $err
-        $next $err
-      else
-        $next null, $insert.row().id
-
-
+      return($next $err) if $err
+      $next(null, $insert.row().id)
 
   #
   # "Count All" query
@@ -286,7 +274,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # Generates a platform-specific query string that counts all records in
   # the specified database
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]  # @return	[String]
   #
   countAll: ($table = '', $next) ->
     if $table is ''
@@ -294,8 +282,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
     @query @_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false), ($err, $query)->
 
-      if $err then $next $err
-      else $next null, $query.row().numrows
+      return $next($err) if $err
+      $next(null, $query.row().numrows)
 
   #
   # List table query
@@ -311,8 +299,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
     if $prefix_limit isnt false and @dbprefix isnt ''
       $sql+=" LIKE '" + @escape_like_str(@dbprefix) + "%'"
-
-
     return $sql
 
 
@@ -321,11 +307,11 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query string so that the column names can be fetched
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	[String]
   #
   _list_columns: ($table = '') ->
-    return "SHOW COLUMNS FROM " + @_protect_identifiers($table, true, null, false)
+    "SHOW COLUMNS FROM " + @_protect_identifiers($table, true, null, false)
 
 
   #
@@ -333,10 +319,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query so that the column data can be retrieved
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return [Object]  #
   _field_data: ($table) ->
-    return "SELECT * FROM " + $table + " LIMIT 1"
+    "SELECT * FROM " + $table + " LIMIT 1"
 
 
   #
@@ -367,31 +353,27 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # This function escapes column and table names
   #
   # @private
-  # @param  [String]    # @return	[String]
+  # @param  [String]  # @return	[String]
   #
   _escape_identifiers: ($item) ->
     if @_escape_char is ''
       return $item
 
-
     for $id in @_reserved_identifiers
-      if strpos($item, '.' + $id) isnt false
-        $str = @_escape_char + str_replace('.', @_escape_char + '.', $item)
+      if $item.indexOf('.' + $id) isnt -1
+        $str = @_escape_char + $item.replace('.', @_escape_char + '.')
 
         #  remove duplicates if the user already included the escape
-        return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
+        return $str.replace(RegExp('[' + @_escape_char + ']+', 'g'), @_escape_char)
 
-
-
-    if strpos($item, '.') isnt false
-      $str = @_escape_char + str_replace('.', @_escape_char + '.' + @_escape_char, $item) + @_escape_char
+    if $item.indexOf('.') isnt -1
+      $str = @_escape_char + $item.replace('.', @_escape_char + '.' + @_escape_char) + @_escape_char
 
     else
       $str = @_escape_char + $item + @_escape_char
 
-
     #  remove duplicates if the user already included the escape
-    return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
+    $str.replace(RegExp('[' + @_escape_char + ']+', 'g'), @_escape_char)
 
 
   #
@@ -400,15 +382,12 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # This function implicitly groups FROM tables so there is no confusion
   # about operator precedence in harmony with SQL standards
   #
-    # @param	type
+  # @param	type
   # @return	type
   #
   _from_tables: ($tables) ->
-    if not is_array($tables)
-      $tables = [$tables]
-
-
-    return '(' + implode(', ', $tables) + ')'
+    $tables = [$tables] if 'string' is typeof($tables)
+    '(' + $tables.join(', ') + ')'
 
 
   #
@@ -416,13 +395,13 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the insert keys
   # @param  [Array]  the insert values
   # @return	[String]
   #
   _insert: ($table, $keys, $values) ->
-    return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ");" #SELECT LAST_INSERT_ID() AS id;"
+    "INSERT INTO " + $table + " (" + $keys.join(', ') + ") VALUES (" + $values.join(', ') + ");" #SELECT LAST_INSERT_ID() AS id;"
 
 
 
@@ -431,13 +410,13 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific replace string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the insert keys
   # @param  [Array]  the insert values
   # @return	[String]
   #
   _replace: ($table, $keys, $values) ->
-    return "REPLACE INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ")"
+    "REPLACE INTO " + $table + " (" + $keys.join(', ') + ") VALUES (" + $values.join(', ') + ")"
 
 
   #
@@ -445,13 +424,13 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the insert keys
   # @param  [Array]  the insert values
   # @return	[String]
   #
   _insert_batch : ($table, $keys, $values) ->
-    return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
+    "INSERT INTO " + $table + " (" + $keys.join(', ') + ") VALUES " + $values.join(', ')
 
 
 
@@ -460,7 +439,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific update string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the update data
   # @param  [Array]  the where clause
   # @param  [Array]  the orderby clause
@@ -472,14 +451,13 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     for $key, $val of $values
       $valstr.push $key + ' = ' + $val
 
+    $limit = if not $limit then '' else ' LIMIT ' + $limit
 
-    $limit = if ( not $limit) then '' else ' LIMIT ' + $limit
+    $orderby = if $orderby.length>0 then ' ORDER BY ' + $orderby.join(", ") else ''
 
-    $orderby = if (count($orderby)>=1) then ' ORDER BY ' + implode(", ", $orderby) else ''
+    $sql = "UPDATE " + $table + " SET " + $valstr.join(', ')
 
-    $sql = "UPDATE " + $table + " SET " + implode(', ', $valstr)
-
-    $sql+= if ($where isnt '' and count($where)>=1) then " WHERE " + implode(" ", $where) else ''
+    $sql+= if $where isnt '' and $where.length>0 then " WHERE " + $where.join(" ") else ''
 
     $sql+=$orderby + $limit
 
@@ -492,24 +470,20 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific batch update string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the update data
   # @param  [Array]  the where clause
   # @return	[String]
   #
   _update_batch : ($table, $values, $index, $where = null) ->
     $ids = []
-    $where = if ($where isnt '' and count($where)>=1) then implode(" ", $where) + ' AND ' else ''
+    $where = if $where isnt '' and $where.length>0 then $where.join(" ") + ' AND ' else ''
 
     for $key, $val of $values
       $ids.push $val[$index]
-
       for $field in array_keys($val)
         if $field isnt $index
           $final[$field].push 'WHEN ' + $index + ' = ' + $val[$index] + ' THEN ' + $val[$field]
-
-
-
 
     $sql = "UPDATE " + $table + " SET "
     $cases = ''
@@ -518,16 +492,10 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
       $cases+=$k + ' = CASE ' + "\n"
       for $row in $v
         $cases+=$row + "\n"
-
-
       $cases+='ELSE ' + $k + ' END, '
-
-
     $sql+=substr($cases, 0,  - 2)
 
-    $sql+=' WHERE ' + $where + $index + ' IN (' + implode(',', $ids) + ')'
-
-    return $sql
+    $sql+=' WHERE ' + $where + $index + ' IN (' + $ids.join(',') + ')'
 
 
 
@@ -538,11 +506,11 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # If the database does not support the truncate() command
   # This function maps to "DELETE FROM table"
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	[String]
   #
   _truncate: ($table) ->
-    return "TRUNCATE " + $table
+    "TRUNCATE " + $table
 
 
   #
@@ -550,7 +518,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific delete string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the where clause
   # @param  [String]  the limit clause
   # @return	[String]
@@ -558,19 +526,18 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _delete: ($table, $where = [], $like = [], $limit = false) ->
     $conditions = ''
 
-    if count($where) > 0 or count($like) > 0
+    if $where.length > 0 or $like.length > 0
       $conditions = "\nWHERE "
-      $conditions+=implode("\n", $where)
+      $conditions+=$where.join("\n")
 
-      if count($where) > 0 and count($like) > 0
+      if $where.length > 0 and $like.length > 0
         $conditions+=" AND "
 
-      $conditions+=implode("\n", $like)
-
+      $conditions+=$like.join("\n")
 
     $limit = if ( not $limit) then '' else ' LIMIT ' + $limit
 
-    return "DELETE FROM " + $table + $conditions + $limit
+    "DELETE FROM " + $table + $conditions + $limit
 
 
   #
@@ -578,7 +545,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific LIMIT clause
   #
-    # @param  [String]  the sql query string
+  # @param  [String]  the sql query string
   # @param  [Integer]  the number of rows to limit the query to
   # @param  [Integer]  the offset value
   # @return	[String]
@@ -590,14 +557,13 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     else
       $offset+=", "
 
-
-    return $sql + "LIMIT " + $offset + $limit
+    $sql + "LIMIT " + $offset + $limit
 
 
   #
   # Close DB Connection
   #
-    # @param	resource
+  # @param	resource
   # @return [Void]  #
   _close: ($next) ->
     @client.end($next)

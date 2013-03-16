@@ -49,7 +49,6 @@ class system.core.Utf8
     log_message('debug', "Utf8 Class Initialized")
     
     if /./.test('é') and $config.item('charset') is 'UTF-8'
-    #if preg_match('/./', 'é')? and $config.item('charset') is 'UTF-8'
     #  RegExp must support UTF-8
     #  Application charset must be UTF-8 then
       log_message('debug', "UTF-8 Support Enabled")
@@ -114,7 +113,6 @@ class system.core.Utf8
   # @return	bool
   #
   _is_ascii : ($str) ->
-    #not preg_match('/[^\\x00-\\x7F]/', $str)?
     not /[^\x00-\x7F]/.test($str)
 
     

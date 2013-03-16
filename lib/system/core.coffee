@@ -25,7 +25,7 @@
 #
 
 #
-# the expresso core module
+# the expresso core api
 #
 
 #
@@ -34,6 +34,13 @@
 format            = require('util').format
 path              = require('path')
 fs                = require('fs')
+url               = require('url')
+crypto            = require('crypto')
+formatnumber      = require('format-number')
+querystring       = require('querystring')
+sprintf           = require('sprintf').sprintf
+glob              = require('glob').sync
+
 
 
 #
@@ -63,21 +70,67 @@ getOwnPropertyNames       = Object.getOwnPropertyNames
 getPrototypeOf            = Object.getPrototypeOf
 keys                      = Object.keys
 prototype                 = Object.prototype
+
+
+#
+# Initialize the API
+#
+# Analyze the metadata for a class, then build and cache
+# a table of property definitions for that classs.
+#
+# @param  [Object]  class a class constructor function
+# @return [Object]  the cached metadata
+#
+module.exports = ->
+  #
+  # Load the framework constants
+  #
+  if file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
+    require APPPATH+'config/'+ENVIRONMENT+'/constants.coffee'
+  else
+    require APPPATH+'config/constants.coffee'
+
+  #
+  # Built-in classpaths
+  #
+  set_classpath config_item('classpaths')
+  #
+  # Pre-load the system.core classes
+  #
+  load_class SYSPATH+'core/Object.coffee'
+  load_class SYSPATH+'core/Exspresso.coffee'
+  load_class SYSPATH+'core/Benchmark.coffee'
+  load_class SYSPATH+'core/Config.coffee'
+  load_class SYSPATH+'core/Connect.coffee'
+  load_class SYSPATH+'core/Controller.coffee'
+  load_class SYSPATH+'core/Exceptions.coffee'
+  load_class SYSPATH+'core/Hooks.coffee'
+  load_class SYSPATH+'core/I18n.coffee'
+  load_class SYSPATH+'core/Input.coffee'
+  load_class SYSPATH+'core/Loader.coffee'
+  load_class SYSPATH+'core/Log.coffee'
+  load_class SYSPATH+'core/Model.coffee'
+  load_class SYSPATH+'core/Modules.coffee'
+  load_class SYSPATH+'core/Output.coffee'
+  load_class SYSPATH+'core/Router.coffee'
+  load_class SYSPATH+'core/Security.coffee'
+  load_class SYSPATH+'core/URI.coffee'
+  load_class SYSPATH+'core/Utf8.coffee'
+  load_class SYSPATH+'lib/Driver.coffee'
+  load_class SYSPATH+'lib/DriverLibrary.coffee'
+  load_class MODPATH+'user/lib/User.coffee'
+  load_class MODPATH+'user/models/UserModel.coffee'
+  load_class SYSPATH+'lib/session/Session.coffee'
+  load_class APPPATH+'core/PublicController.coffee'
+
+
 #
 # publicly dereference some Object utility member
 #
-exports.defineProperties  = Object.defineProperties
-exports.defineProperty    = Object.defineProperty
-exports.freeze            = Object.freeze
-exports.keys              = Object.keys
-
-#
-# Load the framework constants
-#
-if file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
-  require APPPATH+'config/'+ENVIRONMENT+'/constants.coffee'
-else
-  require APPPATH+'config/constants.coffee'
+module.exports.defineProperties  = Object.defineProperties
+module.exports.defineProperty    = Object.defineProperty
+module.exports.freeze            = Object.freeze
+module.exports.keys              = Object.keys
 
 #
 # Magic
@@ -106,7 +159,7 @@ else
 # @param  [Array] args  list of mixin classes, followed by construcor args
 # @return [Object] the fabricated mixin
 #
-exports.magic = ($proto, $args...) ->
+module.exports.magic = ($proto, $args...) ->
 
   $properties = {}
   $pos = 0
@@ -206,7 +259,7 @@ metadata = ($class) ->
 # @param  [Object]    array of {namespace: classpath}
 # @return [Void]
 #
-exports.set_classpath = ($def) ->
+module.exports.set_classpath = ($def) ->
   _classpaths[$namespace] = $classpath for $namespace, $classpath of $def
 
 
@@ -229,7 +282,7 @@ exports.set_classpath = ($def) ->
 # @return [Object] the class object
 #
 #
-exports.load_class = ($path, $namespace = global) ->
+module.exports.load_class = ($path, $namespace = global) ->
 
   for $name, $classpath of _classpaths
     if $path.indexOf($classpath) is 0
@@ -267,7 +320,7 @@ exports.load_class = ($path, $namespace = global) ->
 # @param [String] file  file name to test
 # @return [Boolean] true if file is writeable
 #
-exports.is_really_writable = ($file) ->
+module.exports.is_really_writable = ($file) ->
 
 
   #  We'll actually write a file then read it.  Bah...
@@ -307,7 +360,7 @@ exports.is_really_writable = ($file) ->
 # @param  [Mixed] p9  param 9
 # @returns [Object] the singleton
 #
-exports.core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
+module.exports.core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
   if typeof $class is 'string'
     $prefix = ''
@@ -348,7 +401,7 @@ exports.core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 # @param [String] class the name of the class
 # @return [Boolean] true if the class is loaded
 #
-exports.is_loaded = ($class = '') ->
+module.exports.is_loaded = ($class = '') ->
 
   if $class isnt ''
     _is_loaded[$class.toLowerCase()] = $class
@@ -374,7 +427,7 @@ exports.is_loaded = ($class = '') ->
 # @param  [Mixed] p9  param 9
 # @returns [Object] the new object
 #
-exports.new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
+module.exports.new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 
   if typeof $class is 'string'
     $prefix = ''
@@ -414,7 +467,7 @@ exports.new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
 # @param  [system.core.Object]  controller  the controller to load into
 # @return [Object] the new core object
 #
-exports.load_core = ($class, $controller) ->
+module.exports.load_core = ($class, $controller) ->
 
   if typeof $class is 'string'
     $prefix = ''
@@ -454,7 +507,7 @@ exports.load_core = ($class, $controller) ->
 # @param  [Object]  replace hash of replacement key/value pairs
 # @return [Object] the config hash
 #
-exports.get_config = ($replace = {}) ->
+module.exports.get_config = ($replace = {}) ->
 
   return _config if _config?
 
@@ -470,7 +523,7 @@ exports.get_config = ($replace = {}) ->
     $file_path = $location + 'config/config' + EXT
     if file_exists($file_path)
       $found = true
-      _config = array_merge(_config, require($file_path))
+      _config[$key] = $val for $key, $val of require($file_path)
 
   if not $found
     die 'The configuration file does not exist.'
@@ -480,7 +533,7 @@ exports.get_config = ($replace = {}) ->
     die 'Your config file does not appear to be formatted correctly.'
 
   #  Are any values being dynamically replaced?
-  _config[$key] = $val for $val, $key of $replace when _config[$key]?
+  _config[$key] = $val for $key, $val of $replace when _config[$key]?
 
   _config
 
@@ -490,7 +543,7 @@ exports.get_config = ($replace = {}) ->
 # @param  [String]  item  the config value name
 # @return [Mixed] the config item value
 #
-exports.config_item = ($item) ->
+module.exports.config_item = ($item) ->
 
   get_config() if not _config?
   _config[$item] || ''
@@ -508,7 +561,7 @@ exports.config_item = ($item) ->
 # @param  [Array] args  the argment array
 # @return [Boolean] true
 #
-exports.show_error = ($args...) ->
+module.exports.show_error = ($args...) ->
   return false unless $args[0]?
 
   if typeof $args[0] is 'string'
@@ -527,7 +580,7 @@ exports.show_error = ($args...) ->
 # @param  [Boolean] log_error write to log
 # @return [Boolean] true
 #
-exports.show_404 = ($page = '', $log_error = true) ->
+module.exports.show_404 = ($page = '', $log_error = true) ->
   core('Exceptions').show404 $page, $log_error
 
 #
@@ -540,7 +593,7 @@ exports.show_404 = ($page = '', $log_error = true) ->
 # @param [Array]  args  the remaining args match the sprintf signature
 # @return [Boolean] true
 #
-exports.log_message = ($level = 'error', $args...) ->
+module.exports.log_message = ($level = 'error', $args...) ->
   return true if config_item('log_threshold') is 0
   core('Log').write $level, format.apply(undefined, $args)
 
@@ -551,7 +604,7 @@ exports.log_message = ($level = 'error', $args...) ->
 # @param  [String]  text  alternate status text
 # @return [String] the status text
 #
-exports.get_status_text = ($code = 200, $text = '') ->
+module.exports.get_status_text = ($code = 200, $text = '') ->
   $stat =
     200:'OK',
     201:'Created',
@@ -607,7 +660,7 @@ exports.get_status_text = ($code = 200, $text = '') ->
 # @param  [Boolean] url_encoded true to relace url encoded non-printables
 # @return [String] the clean string
 #
-exports.remove_invisible_characters = ($str, $url_encoded = true) ->
+module.exports.remove_invisible_characters = ($str, $url_encoded = true) ->
 
   #  every control character except newline (dec 10)
   #  carriage return (dec 13), and horizontal tab (dec 09)
@@ -630,52 +683,231 @@ exports.remove_invisible_characters = ($str, $url_encoded = true) ->
 # @param  [Object]  src the source object
 # @return [Object] the destination object
 #
-exports.copyOwnProperties = ($dst, $src) ->
+module.exports.copyOwnProperties = ($dst, $src) ->
   $properties = {}
   for $key in getOwnPropertyNames($src)
     $properties[$key] = getOwnPropertyDescriptor($src, $key)
 
   defineProperties $dst, $properties
 
-#
-# Export the core module to the global namespace
-#
-#
-for $name, $body of module.exports
-  define $name, $body
+module.exports.function_exists = function_exists = ($funcname) -> typeof global[$funcname] is 'function'
+module.exports.dirname = ($str) -> path.dirname
+module.exports.sprintf = require('sprintf').sprintf
+module.exports.glob = require('glob').sync
+module.exports.rawurldecode = querystring.unescape
+module.exports.file_exists = fs.existsSync || path.existsSync
+module.exports.basename = require('path').basename
+module.exports.is_dir = ($path) -> fs.existsSync($path) and fs.statSync($path).isDirectory()
+module.exports.is_file = ($path) -> fs.existsSync($path) and fs.statSync($path).isFile()
+module.exports.realpath = ($path) -> if fs.existsSync($path) then fs.realpathSync($path) else false
+module.exports.time = -> Math.floor(Date.now()/1000)
 
+# htmlspecialchars
 #
-# Built-in classpaths
+# Convert special characters to html entities
 #
-set_classpath config_item('classpaths')
+# @param  [String]  str the string to convert
+# @return [String] converted string
 #
-# Pre-load the system.core classes
+module.exports.htmlspecialchars = ($str) ->
+
+  (''+$str)
+    .replace(/\&/g, "&amp;")
+    .replace(/\'/g, "&#39;")
+    .replace(/\"/g, "&quot;")
+    .replace(/\</g, "&lt;")
+    .replace(/\>/g, "&gt;")
+
+# wordwrap
 #
-load_class SYSPATH+'core/Object.coffee'
-load_class SYSPATH+'core/Exspresso.coffee'
-load_class SYSPATH+'core/Benchmark.coffee'
-load_class SYSPATH+'core/Config.coffee'
-load_class SYSPATH+'core/Connect.coffee'
-load_class SYSPATH+'core/Controller.coffee'
-load_class SYSPATH+'core/Exceptions.coffee'
-load_class SYSPATH+'core/Hooks.coffee'
-load_class SYSPATH+'core/I18n.coffee'
-load_class SYSPATH+'core/Input.coffee'
-load_class SYSPATH+'core/Loader.coffee'
-load_class SYSPATH+'core/Log.coffee'
-load_class SYSPATH+'core/Model.coffee'
-load_class SYSPATH+'core/Modules.coffee'
-load_class SYSPATH+'core/Output.coffee'
-load_class SYSPATH+'core/Router.coffee'
-load_class SYSPATH+'core/Security.coffee'
-load_class SYSPATH+'core/URI.coffee'
-load_class SYSPATH+'core/Utf8.coffee'
-load_class SYSPATH+'lib/Driver.coffee'
-load_class SYSPATH+'lib/DriverLibrary.coffee'
-load_class MODPATH+'user/lib/User.coffee'
-load_class MODPATH+'user/models/UserModel.coffee'
-load_class SYSPATH+'lib/session/Session.coffee'
-load_class APPPATH+'core/PublicController.coffee'
+# Wraps a string to fixed number of characters
+#
+# @param  [String]  str the string to convert
+# @param  [Integer] width character wrap count
+# @param  [String]  break char used to break line
+# @param  [Boolean] cut if true, cut words at or before limit
+# @return [String] converted string
+#
+# @see http://james.padolsey.com/javascript/wordwrap-for-javascript/
+#
+module.exports.wordwrap = ($string, $width=75, $break=os.EOL, $cut=false) ->
+
+  return $string unless $string.length>0
+  $re = '.{1,' + $width + '}(\\s|$)' + if $cut then '|.{' + $width + '}|.+$' else '|\\S+?(\\s|$)'
+  $string.match(RegExp($re, 'g') ).join($break);
+
+
+# define
+#
+# define a readonly property
+#
+# @param  [String]  name  name of the property
+# @param  [String]  value property value
+# @param  [String]  scope where to define the property
+# @return [Mixed]
+#
+module.exports.define = ($name, $value, $scope = global) ->
+  Object.defineProperty($scope, $name, {writeable: false, value: $value})
+  $value
+
+module.exports.number_format = ($number, $decimals = 0, $dec_point = '.', $thousands_sep = ',') ->
+
+  $format = formatnumber(seperator: $thousands_sep, decimal: $dec_point, padRight: $decimals, truncate: $decimals)
+  $format($number)
+
+module.exports.die = ($message) ->
+  console.log $message
+  process.exit 1
+module.exports.exit = ($message) ->
+  console.log $message
+  process.exit 0
+
+
+# md5
+#
+# returns an md5 hash of a string
+#
+# @param  [String]  str  string to hash
+# @return [String] the md5 hash value
+#
+module.exports.md5 = ($str, $output='hex') ->
+  crypto.createHash('md5').update($str).digest($output)
+
+module.exports.sha1 = ($str, $output='hex') ->
+  crypto.createHash('sha1').update($str).digest($output)
+
+# preg_quote
+#
+# escape the regexp control chars in the string
+#
+# @param  [String]  str  string to escape
+# @return [String] the escaped string
+#
+module.exports.preg_quote = ($str) ->
+  $str.replace(/([\.\\\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:\-])/gm, '\\$1')
+
+
+# uniqid
+#
+# returns a unique string id
+#
+# @param  [String]  prefix  prefix to prepend to the string
+# @return [String] the unique id
+#
+module.exports.uniqid = ($prefix) ->
+  $prefix + (new Date().getTime()).toString(16)+(Math.floor(Math.random() * 256)).toString(16) + (Math.random() * 10).toFixed(8).toString()
+
+
+# ucfirst
+#
+# returns a string with the first char capitalized
+#
+# @param  [String]  prefix  prefix to prepend to the string
+# @return [String] the unique id
+#
+module.exports.ucfirst = ($str) ->
+  $str.charAt(0).toUpperCase() + $str.substr(1)
+
+# ucwords
+#
+# returns a string with the first char of each word capitalized
+#
+# @param  [String]  prefix  prefix to prepend to the string
+# @return [String] the unique id
+#
+module.exports.ucwords = ($str) ->
+  ''+$str.replace /^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, ($1) -> $1.toUpperCase()
+
+
+# rand
+#
+# returns a random number between min and max
+#
+# @param  [Integer]  min  low range value
+# @param  [Integer]  max  hi range value
+# @return [Integer] the random number
+#
+module.exports.rand = ($min = 0, $max = 2147483647) ->
+  Math.floor(Math.random() * $max) - $min
+
+
+# array
+#
+# returns an array with 1 key/value pair
+#
+# @param  [String]  key the hash key
+# @param  [Mixed] value the value
+# @return [String] a new object with 1 key/value pair
+#
+module.exports.array = ($key, $value) ->
+  $array = {}
+  $array[$key] = $value
+  $array
+
+# parse_url
+#
+# parse an url and return it's elements
+#
+# @param  [String]  url the url to parse
+# @return [Object] a new hash with the parse elements
+#
+module.exports.parse_url = ($url) ->
+
+  $p = url.parse($url)
+  if $p.auth?
+    [$username, $password] = $p.auth.split(':')
+  else
+    [$username, $password] = ['','']
+
+  return {
+  scheme:     $p.protocol.split(':')[0]
+  host:       $p.hostname
+  port:       $p.port
+  user:       $username
+  pass:       $password
+  path:       $p.pathname
+  query:      $p.query
+  fragment:   $p.hash
+  }
+
+# stripslashes
+#
+# parse an url and return it's elements
+#
+# @param  [String]  url the url to parse
+# @return [Object] a new hash with the parse elements
+#
+module.exports.stripslashes = stripslashes = ($str) ->
+  return ($str + '').replace /\\(.?)/g, ($s, $p) ->
+    switch $p
+      when '\\' then '\\'
+      when '0'  then '\u0000'
+      when ''   then ''
+      else $p
+
+
+
+module.exports.is_array = ($var) ->
+  if typeof $var is 'object'
+    if $var is null then false else true
+  else
+    false
+
+module.exports.rtrim = ($str, $chars = ' ') ->
+
+  if $chars is ' ' then $str.replace(/[\s]+$/g, '')
+  else $str.replace(new RegExp("[" + $chars + "]+$", "g"), "")
+
+module.exports.ltrim = ($str, $chars = ' ') ->
+
+  if $chars is ' ' then $str.replace(/^[\s]+/g, '')
+  else $str.replace(new RegExp("^[" + $chars + "]+", "g"), "")
+
+module.exports.trim = ($str, $chars = ' ') ->
+
+  if $chars is ' ' then $str.replace(/^[\s]+/g, '').replace(/[\s]+$/g, '')
+  else ltrim(rtrim($str, $chars), $chars)
+
 
 # End of file core.coffee
 # Location: ./system/core.coffee

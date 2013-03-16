@@ -48,6 +48,7 @@ class system.db.ActiveRecord extends system.db.Driver
   ar_wherein:         null
   ar_aliased_tables:  null
   ar_store_array:     null
+  ar_record:          null
   
   #  Active Record Caching variables
   ar_caching:         false
@@ -82,6 +83,7 @@ class system.db.ActiveRecord extends system.db.Driver
     @ar_wherein =         []
     @ar_aliased_tables =  []
     @ar_store_array =     []
+    @ar_rec =          {}
     @ar_cache_exists =    []
     @ar_cache_select =    []
     @ar_cache_from =      []
@@ -98,29 +100,24 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Generates the SELECT portion of the query
   #
-    # @param  [String]    # @return [Object]  #
-  #select: ($select = '*', $escape = null) ->
-    #  Set the global value if this was sepecified
-    #if is_bool($escape)
-      #@_protect_identifiers_default = $escape
-      
+  # @param  [String]
+  # @return [Object]
+  #
   select: ($select) ->
 
-    if is_string($select)
-      $select = explode(',', $select)
-      
+    if 'string' is typeof($select)
+      $select = $select.split(',')
+
     for $val in $select
       $val = trim($val)
-      
+
       if $val isnt ''
         @ar_select.push $val
-        
+
         if @ar_caching is true
           @ar_cache_select.push $val
           @ar_cache_exists.push 'select'
-          
-        
-      
+
     return @
     
   
@@ -129,7 +126,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Generates a SELECT MAX(field) portion of a query
   #
-    # @param  [String]  the field
+  # @param  [String]  the field
   # @param  [String]  an alias
   # @return [Object]  #
   selectMax: ($select = '', $alias = '') ->
@@ -141,7 +138,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Generates a SELECT MIN(field) portion of a query
   #
-    # @param  [String]  the field
+  # @param  [String]  the field
   # @param  [String]  an alias
   # @return [Object]  #
   selectMin: ($select = '', $alias = '') ->
@@ -153,7 +150,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Generates a SELECT AVG(field) portion of a query
   #
-    # @param  [String]  the field
+  # @param  [String]  the field
   # @param  [String]  an alias
   # @return [Object]  #
   selectAvg: ($select = '', $alias = '') ->
@@ -165,7 +162,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Generates a SELECT SUM(field) portion of a query
   #
-    # @param  [String]  the field
+  # @param  [String]  the field
   # @param  [String]  an alias
   # @return [Object]  #
   selectSum: ($select = '', $alias = '') ->
@@ -180,33 +177,33 @@ class system.db.ActiveRecord extends system.db.Driver
   #	select_avg()
   #  select_sum()
   #
-    # @param  [String]  the field
+  # @param  [String]  the field
   # @param  [String]  an alias
   # @return [Object]  #
   _max_min_avg_sum: ($select = '', $alias = '', $type = 'MAX') ->
-    if not is_string($select) or $select is ''
-      @display_error('db_invalid_query')
-      
-    
-    $type = strtoupper($type)
-    
-    if not in_array($type, ['MAX', 'MIN', 'AVG', 'SUM'])
+    if not 'string' is typeof($select) or $select is ''
+      @displayError('db_invalid_query')
+
+
+    $type = $type.toUpperCase()
+
+    if ['MAX', 'MIN', 'AVG', 'SUM'].indexOf($type) is -1
       show_error('Invalid function type: %s', $type)
-      
-    
+
+
     if $alias is ''
       $alias = @_create_alias_from_table(trim($select))
-      
-    
+
+
     $sql = $type + '(' + @_protect_identifiers(trim($select)) + ') AS ' + $alias
-    
+
     @ar_select.push $sql
-    
+
     if @ar_caching is true
       @ar_cache_select.push $sql
       @ar_cache_exists.push 'select'
-      
-    
+
+
     return @
     
   
@@ -214,13 +211,10 @@ class system.db.ActiveRecord extends system.db.Driver
   # Determines the alias name based on the table
   #
   # @private
-  # @param  [String]    # @return	[String]
+  # @param  [String]  # @return	[String]
   #
   _create_alias_from_table: ($item) ->
-    if strpos($item, '.') isnt false
-      return end(explode('.', $item))
-      
-    
+    return $item.split('.').pop() unless $item.indexOf('.') is -1
     return $item
     
   
@@ -229,99 +223,96 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Sets a flag which tells the query string compiler to add DISTINCT
   #
-    # @return	[Boolean]
+  # @return	[Boolean]
   # @return [Object]  #
   distinct: ($val = true) ->
-    @ar_distinct = if (is_bool($val)) then $val else true
+    @ar_distinct = if 'boolean' is typeof($val) then $val else true
     return @
-    
-  
+
   #
   # From
   #
   # Generates the FROM portion of the query
   #
-    # @param  [Mixed]  can be a string or array
+  # @param  [Mixed]  can be a string or array
   # @return [Object]  #
   from: ($from) ->
-    if is_string($from) then $from = [$from]
+    if 'string' is typeof($from) then $from = [$from]
     for $val in $from
-      if strpos($val, ',') isnt false
-        for $v in explode(',', $val)
+      if $val.indexOf(',') isnt -1
+        for $v in $val.split(',')
           $v = trim($v)
           @_track_aliases($v)
-          
+
           @ar_from.push @_protect_identifiers($v, true, null, false)
-          
+
           if @ar_caching is true
             @ar_cache_from.push @_protect_identifiers($v, true, null, false)
             @ar_cache_exists.push 'from'
 
-      else 
+      else
         $val = trim($val)
-        
+
         #  Extract any aliases that might exist.  We use this information
         #  in the _protect_identifiers to know whether to add a table prefix
         @_track_aliases($val)
-        
+
         @ar_from.push @_protect_identifiers($val, true, null, false)
-        
+
         if @ar_caching is true
           @ar_cache_from.push @_protect_identifiers($val, true, null, false)
           @ar_cache_exists.push 'from'
 
     return @
-    
-  
+
   #
   # Join
   #
   # Generates the JOIN portion of the query
   #
-    # @param  [String]    # @param  [String]  the join condition
+  # @param  [String]  # @param  [String]  the join condition
   # @param  [String]  the type of join
   # @return [Object]  #
   join: ($table, $cond, $type = '') ->
     if $type isnt ''
-      $type = strtoupper(trim($type))
-      
-      if not in_array($type, ['LEFT', 'RIGHT', 'OUTER', 'INNER', 'LEFT OUTER', 'RIGHT OUTER'])
+      $type = trim($type).toUpperCase()
+
+      if ['LEFT', 'RIGHT', 'OUTER', 'INNER', 'LEFT OUTER', 'RIGHT OUTER'].indexOf($type) is -1
         $type = ''
-        
-      else 
+
+      else
         $type+=' '
-    
+
     #  Extract any aliases that might exist.  We use this information
     #  in the _protect_identifiers to know whether to add a table prefix
     @_track_aliases($table)
-    
+
     #  Strip apart the condition and protect the identifiers
     # if preg_match('/([\w\.]+)([\W\s]+)(.+)/', $cond, $match)
-    if ($match = preg_match('/([\\w\\.]+)([\\W\\s]+)(.+)/', $cond))?
+    if ($match = $cond.match(/([\w\.]+)([\W\s]+)(.+)/))
       $match[1] = @_protect_identifiers($match[1])
       $match[3] = @_protect_identifiers($match[3])
-      
+
       $cond = $match[1] + $match[2] + $match[3]
-      
-    
+
+
     #  Assemble the JOIN statement
     $join = $type + 'JOIN ' + @_protect_identifiers($table, true, null, false) + ' ON ' + $cond
-    
+
     @ar_join.push $join
     if @ar_caching is true
       @ar_cache_join.push $join
       @ar_cache_exists.push 'join'
-      
+
     return @
-    
-  
+
   #
   # Where
   #
   # Generates the WHERE portion of the query. Separates
   # multiple calls with AND
   #
-    # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   where: ($key, $value = null, $escape = true) ->
     @_where($key, $value, 'AND ', $escape)
     
@@ -332,7 +323,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates the WHERE portion of the query. Separates
   # multiple calls with OR
   #
-    # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   orWhere: ($key, $value = null, $escape = true) ->
     @_where($key, $value, 'OR ', $escape)
     
@@ -343,49 +334,48 @@ class system.db.ActiveRecord extends system.db.Driver
   # Called by where() or orwhere()
   #
   # @private
-  # @param  [Mixed]  # @param  [Mixed]  # @param  [String]    # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @param  [String]  # @return [Object]  #
   _where: ($key, $value = null, $type = 'AND ', $escape = null) ->
-    if not is_array($key)
+    if 'string' is typeof($key)
       $key = array($key, $value)
 
     #  If the escape value was not set will will base it on the global setting
-    if not is_bool($escape)
+    if 'boolean' isnt typeof($escape)
       $escape = @_protect_identifiers_default
 
     for $k, $v of $key
-      $prefix = if (count(@ar_where) is 0 and count(@ar_cache_where) is 0) then '' else $type
-      
-      if is_null($v) and  not @_has_operator($k)
+      $prefix = if (@ar_where.length is 0 and @ar_cache_where.length is 0) then '' else $type
+
+      if $v is null and not @_has_operator($k)
         #  value appears not to have been set, assign the test to IS NULL
         $k+=' IS NULL'
-      
-      if not is_null($v)
+
+      if $v isnt null
         if $escape is true
           $k = @_protect_identifiers($k, false, $escape)
           $v = ' ' + @escape($v)
-        
+
         if not @_has_operator($k)
           $k+=' ='
-        
-      else 
+
+      else
         $k = @_protect_identifiers($k, false, $escape)
-      
+
       @ar_where.push $prefix + $k + $v
-      
+
       if @ar_caching is true
         @ar_cache_where.push $prefix + $k + $v
         @ar_cache_exists.push 'where'
 
     return @
-    
-  
+
   #
   # Where_in
   #
   # Generates a WHERE field IN ('item', 'item') SQL query joined with
   # AND if appropriate
   #
-    # @param  [String]  The field to search
+  # @param  [String]  The field to search
   # @param  [Array]  The values searched on
   # @return [Object]  #
   whereIn: ($key = null, $values = null) ->
@@ -398,7 +388,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a WHERE field IN ('item', 'item') SQL query joined with
   # OR if appropriate
   #
-    # @param  [String]  The field to search
+  # @param  [String]  The field to search
   # @param  [Array]  The values searched on
   # @return [Object]  #
   orWhereIn: ($key = null, $values = null) ->
@@ -411,7 +401,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a WHERE field NOT IN ('item', 'item') SQL query joined
   # with AND if appropriate
   #
-    # @param  [String]  The field to search
+  # @param  [String]  The field to search
   # @param  [Array]  The values searched on
   # @return [Object]  #
   whereNotIn: ($key = null, $values = null) ->
@@ -424,7 +414,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a WHERE field NOT IN ('item', 'item') SQL query joined
   # with OR if appropriate
   #
-    # @param  [String]  The field to search
+  # @param  [String]  The field to search
   # @param  [Array]  The values searched on
   # @return [Object]  #
   orWhereNotIn: ($key = null, $values = null) ->
@@ -436,44 +426,44 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Called by where_in, where_in_or, where_not_in, where_not_in_or
   #
-    # @param  [String]  The field to search
+  # @param  [String]  The field to search
   # @param  [Array]  The values searched on
   # @return	[Boolean]ean	If the statement would be IN or NOT IN
-  # @param  [String]    # @return [Object]  #
+  # @param  [String]  # @return [Object]  #
   _where_in: ($key = null, $values = null, $not = false, $type = 'AND ') ->
     if $key is null or $values is null
-      return 
-    
-    if not is_array($values)
+      return
+
+    if not Array.isArray($values)
       $values = [$values]
-    
+
     $not = if ($not) then ' NOT' else ''
-    
+
     for $value in $values
       @ar_wherein.push @escape($value)
-    
-    $prefix = if (count(@ar_where) is 0) then '' else $type
-    
-    $where_in = $prefix + @_protect_identifiers($key) + $not + " IN (" + implode(", ", @ar_wherein) + ") "
-    
+
+    $prefix = if @ar_where.length is 0 then '' else $type
+
+    $where_in = $prefix + @_protect_identifiers($key) + $not + " IN (" + @ar_wherein.join(", ") + ") "
+
     @ar_where.push $where_in
     if @ar_caching is true
       @ar_cache_where.push $where_in
       @ar_cache_exists.push 'where'
-      
-    
+
+
     #  reset the array for multiple calls
     @ar_wherein = []
     return @
-    
-  
+
+
   #
   # Like
   #
   # Generates a %LIKE% portion of the query. Separates
   # multiple calls with AND
   #
-    # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   like: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'AND ', $side)
     
@@ -484,7 +474,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a NOT LIKE portion of the query. Separates
   # multiple calls with AND
   #
-    # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   not_like: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'AND ', $side, 'NOT')
     
@@ -495,7 +485,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a %LIKE% portion of the query. Separates
   # multiple calls with OR
   #
-    # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   orLike: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'OR ', $side)
     
@@ -506,7 +496,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a NOT LIKE portion of the query. Separates
   # multiple calls with OR
   #
-    # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   orNotLike: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'OR ', $side, 'NOT')
     
@@ -517,54 +507,54 @@ class system.db.ActiveRecord extends system.db.Driver
   # Called by like() or orlike()
   #
   # @private
-  # @param  [Mixed]  # @param  [Mixed]  # @param  [String]    # @return [Object]  #
+  # @param  [Mixed]  # @param  [Mixed]  # @param  [String]  # @return [Object]  #
   _like: ($field, $match = '', $type = 'AND ', $side = 'both', $not = '') ->
-    if not is_array($field)
+    if 'string' is typeof($field)
       $field = array($field, $match)
-    
+
     for $k, $v of $field
       $k = @_protect_identifiers($k)
-      
-      $prefix = if (count(@ar_like) is 0) then '' else $type
-      
+
+      $prefix = if @ar_like.length is 0 then '' else $type
+
       #$v = @escape_like_str($v)
-      
+
       if $side is 'before'
         $like_statement = $prefix + " #{$k} #{$not} LIKE '#{$v}'"
-        
+
       else if $side is 'after'
         $like_statement = $prefix + " #{$k} #{$not} LIKE '#{$v}%'"
-        
-      else 
+
+      else
         $like_statement = $prefix + " #{$k} #{$not} LIKE '%#{$v}%'"
-        
-      
+
+
       #  some platforms require an escape sequence definition for LIKE wildcards
       if @_like_escape_str isnt ''
         $like_statement = $like_statement + sprintf(@_like_escape_str, @_like_escape_chr)
-      
+
       @ar_like.push $like_statement
       if @ar_caching is true
         @ar_cache_like.push $like_statement
         @ar_cache_exists.push 'like'
 
     return @
-    
+
   
   #
   # GROUP BY
   #
-    # @param  [String]    # @return [Object]  #
+  # @param  [String]  # @return [Object]  #
   groupBy: ($by) ->
-    if is_string($by)
-      $by = explode(',', $by)
-    
+    if 'string' is typeof($by)
+      $by = $by.split(',')
+
     for $val in $by
       $val = trim($val)
-      
+
       if $val isnt ''
         @ar_groupby.push @_protect_identifiers($val)
-        
+
         if @ar_caching is true
           @ar_cache_groupby.push @_protect_identifiers($val)
           @ar_cache_exists.push 'groupby'
@@ -577,7 +567,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Separates multiple calls with AND
   #
-    # @param  [String]    # @param  [String]    # @return [Object]  #
+  # @param  [String]  # @param  [String]  # @return [Object]  #
   having: ($key, $value = '', $escape = true) ->
     @_having($key, $value, 'AND ', $escape)
     
@@ -587,7 +577,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Separates multiple calls with OR
   #
-    # @param  [String]    # @param  [String]    # @return [Object]  #
+  # @param  [String]  # @param  [String]  # @return [Object]  #
   orHaving: ($key, $value = '', $escape = true) ->
     @_having($key, $value, 'OR ', $escape)
     
@@ -598,72 +588,74 @@ class system.db.ActiveRecord extends system.db.Driver
   # Called by having() or or_having()
   #
   # @private
-  # @param  [String]    # @param  [String]    # @return [Object]  #
+  # @param  [String]  # @param  [String]  # @return [Object]  #
   _having: ($key, $value = '', $type = 'AND ', $escape = true) ->
-    if not is_array($key)
-      $key = $key:$value
-    
+    if 'string' is typeof($key)
+      $key = array($key, $value)
+
     for $k, $v of $key
-      $prefix = if (count(@ar_having) is 0) then '' else $type
-      
+      $prefix = if (@ar_having.length is 0) then '' else $type
+
       if $escape is true
         $k = @_protect_identifiers($k)
-      
+
       if not @_has_operator($k)
         $k+=' = '
-      
+
       if $v isnt ''
         $v = ' ' + @escapeStr($v)
-      
+
       @ar_having.push $prefix + $k + $v
       if @ar_caching is true
         @ar_cache_having.push $prefix + $k + $v
         @ar_cache_exists.push 'having'
-    
+
     return @
-    
-  
+
+
+
   #
   # Sets the ORDER BY value
   #
-    # @param  [String]    # @param  [String]  direction: asc or desc
+  # @param  [String]  # @param  [String]  direction: asc or desc
   # @return [Object]  #
   orderBy: ($orderby, $direction = '') ->
-    if strtolower($direction) is 'random'
+    if $direction.toLowerCase() is 'random'
       $orderby = ''#  Random results want or don't need a field name
       $direction = @_random_keyword
-      
+
     else if trim($direction) isnt ''
-      $direction = if (in_array(strtoupper(trim($direction)), ['ASC', 'DESC'], true)) then ' ' + $direction else ' ASC'
-    
-    if strpos($orderby, ',') isnt false
+      $direction = if ['ASC', 'DESC'].indexOf(trim($direction.toUpperCase())) isnt -1 then ' ' + $direction else ' ASC'
+
+    if $orderby.indexOf(',') isnt -1
       $temp = []
-      for $part in explode(',', $orderby)
+      for $part in $orderby.split(',')
         $part = trim($part)
-        if not in_array($part, @ar_aliased_tables)
+        if @ar_aliased_tables.indexOf($part) is -1
           $part = @_protect_identifiers(trim($part))
-          
+
         $temp.push $part
-      
-      $orderby = implode(', ', $temp)
-      
+
+      $orderby = $temp.join(', ')
+
     else if $direction isnt @_random_keyword
       $orderby = @_protect_identifiers($orderby)
-    
+
     $orderby_statement = $orderby + $direction
-    
+
     @ar_orderby.push $orderby_statement
     if @ar_caching is true
       @ar_cache_orderby.push $orderby_statement
       @ar_cache_exists.push 'orderby'
-    
+
     return @
-    
-  
+
+
+
   #
   # Sets the LIMIT value
   #
-    # @param  [Integer]  the limit value
+  # @param  [Integer]  the limit value
   # @param  [Integer]  the offset value
   # @return [Object]  #
   limit: ($value, $offset = '') ->
@@ -678,7 +670,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Sets the OFFSET value
   #
-    # @param  [Integer]  the offset value
+  # @param  [Integer]  the offset value
   # @return [Object]  #
   offset: ($offset) ->
     @ar_offset = $offset
@@ -688,30 +680,29 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # The "set" function.  Allows key/value pairs to be set for inserting or updating
   #
-    # @param  [Mixed]  # @param  [String]    # @return	[Boolean]ean
+  # @param  [Mixed]  # @param  [String]  # @return	[Boolean]ean
   # @return [Object]  #
   set: ($key, $value = '', $escape = true) ->
 
-    if not is_array($key)
+    if 'string' is typeof($key)
       $key = array($key, $value)
-    
+
     for $k, $v of $key
       if $escape is false
-        @ar_set[@_protect_identifiers($k)] = $v
-        
-      else 
-        @ar_set[@_protect_identifiers($k, false, true)] = @escape($v)
-    
+        @ar_rec[@_protect_identifiers($k)] = $v
+
+      else
+        @ar_rec[@_protect_identifiers($k, false, true)] = @escape($v)
+
     return @
-    
-  
+
   #
   # Get
   #
   # Compiles the select statement based on the other functions called
   # and runs the query
   #
-    # @param  [String]  the table
+  # @param  [String]  the table
   # @param  [String]  the limit clause
   # @param  [String]  the offset clause
   # @return [Object]  #
@@ -736,7 +727,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a platform-specific query string that counts all records
   # returned by an Active Record query.
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]  # @return	[String]
   #
   countAllResults: ($table = '', $next) ->
     if $table isnt ''
@@ -763,22 +754,22 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Allows the where clause, limit and offset to be added directly
   #
-    # @param  [String]  the where clause
+  # @param  [String]  the where clause
   # @param  [String]  the limit clause
   # @param  [String]  the offset clause
   # @return [Object]  #
   getWhere: ($table = '', $where = null, $limit = null, $offset = null) ->
     if $table isnt ''
       @from($table)
-    
-    if not is_null($where)
+
+    if $where isnt null
       @where($where)
-    
-    if not is_null($limit)
+
+    if $limit isnt null
       @limit($limit, $offset)
-    
+
     $sql = @_compile_select()
-    
+
     $result = @query($sql)
     @_reset_select()
     return $result
@@ -788,7 +779,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Compiles batch insert strings and runs the queries
   #
-    # @param  [String]  the table to retrieve the results from
+  # @param  [String]  the table to retrieve the results from
   # @param  [Array]  an associative array of insert values
   # @return [Object]  #
   insertBatch : ($table = '', $set = null, $next) ->
@@ -799,17 +790,17 @@ class system.db.ActiveRecord extends system.db.Driver
     if not is_null($set)
       @set_insert_batch($set)
 
-    if count(@ar_set) is 0
+    if @ar_set.length is 0
       if @db_debug
         # No valid data array.  Folds in cases where keys and values did not match up
-        return @display_error('db_must_use_set')
+        return @displayError('db_must_use_set')
 
       return false
 
     if $table is ''
       if not @ar_from[0]?
         if @db_debug
-          return @display_error('db_must_set_table')
+          return @displayError('db_must_set_table')
 
         return false
 
@@ -817,9 +808,9 @@ class system.db.ActiveRecord extends system.db.Driver
 
     #  Batch this baby
     $sql = []
-    for $i in [0..count(@ar_set)-1] by 100
+    for $i in [0..@ar_set.length-1] by 100
 
-      $str = @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, array_slice(@ar_set, $i, 100))
+      $str = @_insert_batch(@_protect_identifiers($table, true, null, false), @ar_keys, @ar_set.slice($i, 100))
       $sql.push $str
 
     @_reset_write()
@@ -832,7 +823,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # The "set_insert_batch" function.  Allows key/value pairs to be set for batch inserts
   #
-    # @param  [Mixed]  # @param  [String]    # @return	[Boolean]ean
+  # @param  [Mixed]  # @param  [String]  # @return	[Boolean]ean
   # @return [Object]  #
 
   setInsertBatch : ($key, $value = '', $escape = true) ->
@@ -842,28 +833,21 @@ class system.db.ActiveRecord extends system.db.Driver
     if not Array.isArray($key)
       $key = [array($key, $value)]
 
-    $keys = array_keys(current($key))
-    sort($keys)
+    $keys = Object.keys($key[0]).sort()
+    $ckeys = $keys.join()
 
     for $row in $key
 
-      if count(array_diff($keys, array_keys($row))) > 0 or count(array_diff(array_keys($row), $keys)) > 0
+      # field names need to be the same
+      if $ckeys isnt Object.keys($row).sort().join()
         #  batch function above returns an error on an empty array
         @ar_set.push {}
         return
 
-      ksort($row)#  puts $row in the same order as our keys
+      $list = if $escape then $list = @escape($row[$k]) for $k in $keys
+      else $list = $row[$k] for $k in $keys
 
-      if $escape is false
-        @ar_set.push '(' + implode(',', $row) + ')'
-
-      else
-        $clean = []
-
-        for $k, $value of $row
-          $clean.push @escape($value)
-
-        @ar_set.push '(' + implode(',', $clean) + ')'
+      @ar_set.push '(' + $list.join(',') + ')'
 
     for $k in $keys
       @ar_keys.push @_protect_identifiers($k)
@@ -877,7 +861,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Compiles an insert string and runs the query
   #
-    # @param  [String]  the table to retrieve the results from
+  # @param  [String]  the table to retrieve the results from
   # @param  [Array]  an associative array of insert values
   # @return [Object]  #
   insert: ($table = '', $set = null, $next = null) ->
@@ -886,10 +870,10 @@ class system.db.ActiveRecord extends system.db.Driver
       $next = $set
       $set = null
 
-    if not is_null($set)
+    if $set isnt null
       @set($set)
-    
-    if count(@ar_set) is 0
+
+    if Object.keys(@ar_rec).length is 0
       if @db_debug
         return @display_error('db_must_use_set')
         
@@ -904,17 +888,17 @@ class system.db.ActiveRecord extends system.db.Driver
       
       $table = @ar_from[0]
       
-    $sql = @_insert(@_protect_identifiers($table, true, null, false), array_keys(@ar_set), array_values(@ar_set))
-    
+    $sql = @_insert(@_protect_identifiers($table, true, null, false), Object.keys(@ar_rec).sort(), @ar_rec[$k] for $k in Object.keys(@ar_rec).sort())
+
     @_reset_write()
     return @query($sql, $next)
   
   replace: ($table = '', $set = null) ->
-    if not is_null($set)
+    if $set isnt null
       @set($set)
-      
-    
-    if count(@ar_set) is 0
+
+
+    if Object.keys(@ar_rec).length is 0
       if @db_debug
         return @display_error('db_must_use_set')
         
@@ -932,9 +916,8 @@ class system.db.ActiveRecord extends system.db.Driver
       $table = @ar_from[0]
       
     
-    $sql = @_replace(@_protect_identifiers($table, true, null, false), array_keys(@ar_set), array_values(@ar_set))
+    $sql = @_replace(@_protect_identifiers($table, true, null, false), Object.keys(@ar_rec).sort(), @ar_rec[$k] for $k in Object.keys(@ar_rec).sort())
 
-    log_message 'debug', 'SQL: %s', $sql
     @_reset_write()
     return @query($sql, $next)
     
@@ -944,7 +927,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Compiles an update string and runs the query
   #
-    # @param  [String]  the table to retrieve the results from
+  # @param  [String]  the table to retrieve the results from
   # @param  [Array]  an associative array of update values
   # @param  [Mixed]  the where clause
   # @return [Object]  #
@@ -965,11 +948,11 @@ class system.db.ActiveRecord extends system.db.Driver
     #  Combine any cached components with the current statements
     @_merge_cache()
     
-    if not is_null($set)
+    if $set isnt null
       @set($set)
-      
-    
-    if count(@ar_set) is 0
+
+
+    if Object.keys(@ar_rec).length is 0
       if @db_debug
         return @display_error('db_must_use_set')
         
@@ -995,7 +978,7 @@ class system.db.ActiveRecord extends system.db.Driver
       @limit($limit)
       
     
-    $sql = @_update(@_protect_identifiers($table, true, null, false), @ar_set, @ar_where, @ar_orderby, @ar_limit)
+    $sql = @_update(@_protect_identifiers($table, true, null, false), @ar_rec, @ar_where, @ar_orderby, @ar_limit)
 
     @_reset_write()
     @query($sql, $next)
@@ -1005,7 +988,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Compiles an update string and runs the query
   #
-    # @param  [String]  the table to retrieve the results from
+  # @param  [String]  the table to retrieve the results from
   # @param  [Array]  an associative array of update values
   # @param  [String]  the where key
   # @return [Object]  #
@@ -1013,23 +996,17 @@ class system.db.ActiveRecord extends system.db.Driver
     #  Combine any cached components with the current statements
     @_merge_cache()
 
-    if is_null($index)
+    if $index is null
       if @db_debug
         return @display_error('db_myst_use_index')
-
-
       return false
 
-
-    if not is_null($set)
+    if $set isnt null
       @set_update_batch($set, $index)
 
-
-    if count(@ar_set) is 0
+    if @ar_set.length is 0
       if @db_debug
         return @display_error('db_must_use_set')
-
-
       return false
 
 
@@ -1046,8 +1023,8 @@ class system.db.ActiveRecord extends system.db.Driver
 
     #  Batch this baby
     $sql = []
-    for $i in [0..count(@ar_set)-1] by 100
-      $sql.push @_update_batch(@_protect_identifiers($table, true, null, false), array_slice(@ar_set, $i, 100), @_protect_identifiers($index), @ar_where)
+    for $i in [0..@ar_set.length-1] by 100
+      $sql.push @_update_batch(@_protect_identifiers($table, true, null, false), @ar_set.slice($i, 100), @_protect_identifiers($index), @ar_where)
 
     @queryList $sql, ($err) ->
 
@@ -1059,15 +1036,11 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # The "set_update_batch" function.  Allows key/value pairs to be set for batch updating
   #
-    # @param  [Array]  # @param  [String]    # @return	[Boolean]ean
+  # @param  [Array]  # @param  [String]  # @return	[Boolean]ean
   # @return [Object]  #
 
   setUpdateBatch : ($key, $index = '', $escape = true) ->
     $key = @_object_to_array_batch($key)
-
-    #if not is_array($key)
-      #  @todo error
-
 
     for $k, $v of $key
       $index_set = false
@@ -1077,24 +1050,14 @@ class system.db.ActiveRecord extends system.db.Driver
         if $k2 is $index
           $index_set = true
 
-        else
-          $not.push $k + '-' + $v
-
-
         if $escape is false
           $clean[@_protect_identifiers($k2)] = $v2
-
         else
           $clean[@_protect_identifiers($k2)] = @escape($v2)
 
-
-
       if $index_set is false
         return @display_error('db_batch_missing_index')
-
-
       @ar_set.push $clean
-
 
     return @
 
@@ -1106,7 +1069,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Compiles a delete string and runs "DELETE FROM table"
   #
-    # @param  [String]  the table to empty
+  # @param  [String]  the table to empty
   # @return [Object]  #
   emptyTable: ($table = '') ->
     if $table is ''
@@ -1137,7 +1100,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # If the database does not support the truncate() command
   # This function maps to "DELETE FROM table"
   #
-    # @param  [String]  the table to truncate
+  # @param  [String]  the table to truncate
   # @return [Object]  #
   truncate: ($table = '', $next) ->
     if typeof table is 'function'
@@ -1170,7 +1133,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Compiles a delete string and runs the query
   #
-    # @param  [Mixed]  the table(s) to delete from. String or array
+  # @param  [Mixed]  the table(s) to delete from. String or array
   # @param  [Mixed]  the where clause
   # @param  [Mixed]  the limit clause
   # @return	[Boolean]ean
@@ -1199,7 +1162,7 @@ class system.db.ActiveRecord extends system.db.Driver
       
       $table = @ar_from[0]
       
-    else if is_array($table)
+    else if Array.isArray($table)
       for $single_table in $table
         @['delete']($single_table, $where, $limit, false)
 
@@ -1215,7 +1178,7 @@ class system.db.ActiveRecord extends system.db.Driver
     if $limit isnt null
       @limit($limit)
 
-    if count(@ar_where) is 0 and count(@ar_wherein) is 0 and count(@ar_like) is 0
+    if @ar_where.length is 0 and @ar_wherein.length is 0 and @ar_like.length is 0
       if @db_debug
         return @display_error('db_del_must_use_where')
       return false
@@ -1233,7 +1196,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Prepends a database prefix if one exists in configuration
   #
-    # @param  [String]  the table
+  # @param  [String]  the table
   # @return	[String]
   #
   _dbprefix: ($table = '') ->
@@ -1254,33 +1217,31 @@ class system.db.ActiveRecord extends system.db.Driver
   # @return	[String]
   #
   _track_aliases: ($table) ->
-    if is_array($table)
+    if Array.isArray($table)
       for $t in $table
         @_track_aliases($t)
-        
-      return 
-      
-    
+
+      return
+
+
     #  Does the string contain a comma?  If so, we need to separate
     #  the string into discreet statements
-    if strpos($table, ',') isnt false
-      return @_track_aliases(explode(',', $table))
-      
-    
+    if $table.indexOf(',') isnt -1
+      return @_track_aliases($table.split(','))
+
+
     #  if a table alias is used we can recognize it by a space
-    if strpos($table, " ") isnt false
+    if $table.indexOf(' ') isnt -1
       #  if the alias is written with the AS keyword, remove it
-      $table = preg_replace('/ AS /i', ' ', $table)
-      
+      $table = $table.replace(/\ AS /i, ' ')
+
       #  Grab the alias
-      $table = trim(strrchr($table, " "))
-      
+      $table = trim($table.substr($table.indexOf(' ')))
+
       #  Store the alias, if it doesn't already exist
-      if not in_array($table, @ar_aliased_tables)
+      if @ar_aliased_tables.indexOf($table) is -1
         @ar_aliased_tables.push $table
-        
-      
-    
+
   
   #
   # Compile the SELECT statement
@@ -1294,21 +1255,21 @@ class system.db.ActiveRecord extends system.db.Driver
   _compile_select: ($select_override = false) ->
     #  Combine any cached components with the current statements
     @_merge_cache()
-    
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "select" portion of the query
-    
+
     if $select_override isnt false
       $sql = $select_override
-      
-    else 
-      $sql = if ( not @ar_distinct) then 'SELECT ' else 'SELECT DISTINCT '
 
-      if count(@ar_select) is 0
+    else
+      $sql = if not @ar_distinct then 'SELECT ' else 'SELECT DISTINCT '
+
+      if @ar_select.length is 0
         $sql+='*'
-        
-      else 
+
+      else
         #  Cycle through the "select" portion of the query and prep each column name.
         #  The reason we protect identifiers here rather then in the select() function
         #  is because until the user calls the from() function we don't know if there are aliases
@@ -1316,110 +1277,111 @@ class system.db.ActiveRecord extends system.db.Driver
         for $key, $val of @ar_select
           @ar_select[$key] = @_protect_identifiers($val)
 
-        $sql+=implode(', ', @ar_select)
+        $sql+=@ar_select.join(', ')
 
     #  ----------------------------------------------------------------
-    
+
     #  Write the "FROM" portion of the query
-    
-    if count(@ar_from) > 0
+
+    if @ar_from.length > 0
       $sql+="\nFROM "
-      
+
       $sql+=@_from_tables(@ar_from)
-      
-    
+
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "JOIN" portion of the query
-    
-    if count(@ar_join) > 0
+
+    if @ar_join.length > 0
       $sql+="\n"
-      
-      $sql+=implode("\n", @ar_join)
-      
-    
+
+      $sql+=@ar_join.join("\n")
+
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "WHERE" portion of the query
-    
-    if count(@ar_where) > 0 or count(@ar_like) > 0
+
+    if @ar_where.length > 0 or @ar_like.length > 0
       $sql+="\n"
-      
+
       $sql+="WHERE "
-      
-    
-    $sql+=implode("\n", @ar_where)
-    
+
+
+    $sql+=@ar_where.join("\n")
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "LIKE" portion of the query
-    
-    if count(@ar_like) > 0
-      if count(@ar_where) > 0
+
+    if @ar_like.length > 0
+      if @ar_where.length > 0
         $sql+="\nAND "
-        
-      $sql+=implode("\n", @ar_like)
-      
-    
+
+      $sql+=@ar_like.join("\n")
+
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "GROUP BY" portion of the query
-    
-    if count(@ar_groupby) > 0
+
+    if @ar_groupby.length > 0
       $sql+="\nGROUP BY "
-      
-      $sql+=implode(', ', @ar_groupby)
-      
-    
+
+      $sql+=@ar_groupby.join(', ')
+
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "HAVING" portion of the query
-    
-    if count(@ar_having) > 0
+
+    if @ar_having.length > 0
       $sql+="\nHAVING "
-      $sql+=implode("\n", @ar_having)
-      
-    
+      $sql+=@ar_having.join("\n")
+
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "ORDER BY" portion of the query
-    
-    if count(@ar_orderby) > 0
+
+    if @ar_orderby.length > 0
       $sql+="\nORDER BY "
-      $sql+=implode(', ', @ar_orderby)
-      
+      $sql+=@ar_orderby.join(', ')
+
       if @ar_order isnt false
         $sql+= if (@ar_order is 'desc') then ' DESC' else ' ASC'
-        
-      
-    
+
+
+
     #  ----------------------------------------------------------------
-    
+
     #  Write the "LIMIT" portion of the query
-    
-    if is_numeric(@ar_limit)
+
+    if 'number' is typeof(@ar_limit)
       $sql+="\n"
       $sql = @_limit($sql, @ar_limit, @ar_offset)
 
     return $sql
-
 
   #
   # Object to Array
   #
   # Takes an object as input and converts the class variables to array key/vals
   #
-    # @param  [Object]    # @return	array
+  # @param  [Object]  # @return	array
   #
   _object_to_array_batch: ($object) ->
     if Array.isArray($object)
       return $object
-    if not is_object($object)
-      return $object
+    return $object if 'string' is typeof($object)
 
     $array = []
-    $out = get_object_vars($object)
-    $fields = array_keys($out)
+    $out = {}
+    for $key, $val of $object
+      if $key.substr(0,1) isnt '_' and typeof $object[$key] isnt 'function'
+        $out[$key] = $val
+    $fields = Object.keys($out)
 
     for $val in $fields
       #  There are some built in keys we need to ignore for this conversion
@@ -1438,7 +1400,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Starts AR caching
   #
-    # @return [Void]  #
+  # @return [Void]  #
   startCache:  ->
     @ar_caching = true
     
@@ -1448,7 +1410,7 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Stops AR caching
   #
-    # @return [Void]  #
+  # @return [Void]  #
   stopCache:  ->
     @ar_caching = false
     
@@ -1458,10 +1420,9 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Empties the AR cache
   #
-    # @return [Void]  #
+  # @return [Void]  #
   flushCache:  ->
-    @_reset_run(
-    
+    @_reset_run
       'ar_cache_select':[]
       'ar_cache_from':[]
       'ar_cache_join':[]
@@ -1472,9 +1433,7 @@ class system.db.ActiveRecord extends system.db.Driver
       'ar_cache_orderby':[]
       'ar_cache_set':[]
       'ar_cache_exists':[]
-      
-    )
-    
+
   
   #
   # Merge Cache
@@ -1485,28 +1444,31 @@ class system.db.ActiveRecord extends system.db.Driver
   # @private
   # @return [Void]  #
   _merge_cache:  ->
-    if count(@ar_cache_exists) is 0
-      return 
-      
-    
+    if @ar_cache_exists.length is 0
+      return
+
     for $val in @ar_cache_exists
       $ar_variable = 'ar_' + $val
       $ar_cache_var = 'ar_cache_' + $val
-      
-      if count(@[$ar_cache_var]) is 0
+
+      if @[$ar_cache_var].length is 0
         continue
-        
-      
-      @[$ar_variable] = array_unique(array_merge(@[$ar_cache_var], @[$ar_variable]))
-      
-    
+
+      $tmp = []
+      $unique = {}
+      for $value, $index in [].concat($item for $item in @[$ar_cache_var], $item for $item in @[$ar_variable])
+        if not $unique[$value]?
+          $unique[$value] = true
+          $tmp.push $value
+
+      @[$ar_variable] = $tmp
+
     #  If we are "protecting identifiers" we need to examine the "from"
     #  portion of the query to determine if there are any aliases
-    if @_protect_identifiers_default is true and count(@ar_cache_from) > 0
+    if @_protect_identifiers_default is true and @ar_cache_from.length > 0
       @_track_aliases(@ar_from)
-      
-    
-  
+
+
   #
   # Resets the active record values.  Called by the get() function
   #
@@ -1515,12 +1477,9 @@ class system.db.ActiveRecord extends system.db.Driver
   # @return [Void]  #
   _reset_run: ($ar_reset_items) ->
     for $item, $default_value of $ar_reset_items
-      if not in_array($item, @ar_store_array)
+      if @ar_store_array.indexOf($item) is -1
         @[$item] = $default_value
-        
-      
-    
-  
+
   #
   # Resets the active record values.  Called by the get() function
   #
@@ -1542,8 +1501,7 @@ class system.db.ActiveRecord extends system.db.Driver
       'ar_limit':false
       'ar_offset':false
       'ar_order':false
-      
-    
+
     @_reset_run($ar_reset_items)
     
   
@@ -1562,10 +1520,10 @@ class system.db.ActiveRecord extends system.db.Driver
       'ar_like':[]
       'ar_orderby':[]
       'ar_keys':[]
+      'ar_rec':{}
       'ar_limit':false
       'ar_order':false
-      
-    
+
     @_reset_run($ar_reset_items)
     
 module.exports = system.db.ActiveRecord

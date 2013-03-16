@@ -27,14 +27,13 @@
 #
 # Session Class
 #
-UserModel = load_class(MODPATH+'user/models/UserModel.coffee')
-
 class system.lib.session.Session extends system.lib.DriverLibrary
+
+  UserModel = load_class(MODPATH+'user/models/UserModel.coffee')
 
   express     = require('express')      # Express 3.0 Framework
   cookie      = require('cookie')       # cookie parsing and serialization
   format      = require('util').format  # sprintf style formated string
-  urldecode   = decodeURIComponent      # Decodes any %## encoding in the given string
 
   FLASH_KEY               = 'flash'     # flash data key prefix
   FLASH_NEW               = ':new:'     # flash data key new flag
@@ -125,9 +124,10 @@ class system.lib.session.Session extends system.lib.DriverLibrary
 
     # parse the session id
     if $req.headers.cookie?
-      if ($match = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie))?
+      if ($match = $req.headers.cookie.match(RegExp($cookie_name+"=([^ ,;]*)")))?
+      #if ($match = preg_match("/#{$cookie_name}=([^ ,;]*)/", $req.headers.cookie))?
         $sid = $match[1].split('.')[0]
-        $req.session.session_id = urldecode($sid).split(':')[1]
+        $req.session.session_id = decodeURIComponent($sid).split(':')[1]
 
     # set reasonable session defaults
     $req.session.uid            = $req.session.uid || UserModel.UID_ANONYMOUS
@@ -249,8 +249,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   _flashdata_mark :  ->
     $userdata = @allUserdata()
     for $name, $value of $userdata
-      $parts = explode(FLASH_NEW, $name)
-      if is_array($parts) and count($parts) is 2
+      $pars = $name.split(FLASH_NEW)
+      if 'object' is typeof($parts) and Object.keys($parts).length is 2
         $new_name = FLASH_KEY + FLASH_OLD + $parts[1]
         @setUserdata($new_name, $value)
         @unsetUserdata($name)
@@ -263,8 +263,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   _flashdata_sweep :  ->
     $userdata = @allUserdata()
     for $key, $value of $userdata
-      if strpos($key, FLASH_OLD)
-        @unsetUserdata($key)
+      @unsetUserdata($key) unless $key.indexOf(FLASH_OLD) is -1
+
 
   #
   # Get the "now" time

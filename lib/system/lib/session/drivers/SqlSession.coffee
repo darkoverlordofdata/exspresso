@@ -100,7 +100,8 @@ class system.lib.session.SqlSession extends require('express').session.Store
         return $next($err) if log_message('error', 'Session::set %s %s', $sid, $err) if $err
 
         # pack up the data
-        $user_data = array_merge({}, $session)
+        $user_data = {}
+        $user_data[$key] = $val for $key, $val of $session
         $data =
           uid             : fetch($user_data, 'uid', UserModel.UID_ANONYMOUS)
           ip_address      : fetch($user_data, 'ip_address')

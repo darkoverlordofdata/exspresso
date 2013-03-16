@@ -37,7 +37,9 @@
 # @see 		http://darkoverlordofdata.com/user_guide/lib/calendar.html
 #
 class system.lib.Calendar
-  
+
+  {ucfirst} = require(SYSPATH+'core.coffee')
+
   _local_time         : null
   _template           : ''
   _start_day          : 'sunday'
@@ -58,8 +60,8 @@ class system.lib.Calendar
       if @['_'+$key]?
         @['_'+$key] = $val
 
-    if not in_array('calendar_lang' + EXT, @i18n.is_loaded, true)
-      @i18n.load('calendar')
+    #if not in_array('calendar_lang.coffee', @i18n.is_loaded, true)
+    @i18n.load('calendar')
 
     @_local_time = time()
 
@@ -118,8 +120,8 @@ class system.lib.Calendar
     #  "previous" month link
     if @_show_next_prev is true
       #  Add a trailing slash to the  URL if needed
-      @_next_prev_url = preg_replace("/(.+?)\/*$/", "\\1/", @_next_prev_url)
-      
+      @_next_prev_url = @_next_prev_url.replace(/(.+?)\/*$/, "$1/")
+
       $adjusted_date = @adjust_date($month - 1, $year)
       $out+=str_replace('{previous_url}', @_next_prev_url + $adjusted_date['year'] + '/' + $adjusted_date['month'], @temp['heading_previous_cell'])
       $out+="\n"
@@ -128,8 +130,8 @@ class system.lib.Calendar
     #  Heading containing the month/year
     $colspan = if (@_show_next_prev is true) then 5 else 7
     
-    @temp['heading_title_cell'] = str_replace('{colspan}', $colspan, @temp['heading_title_cell'])
-    @temp['heading_title_cell'] = str_replace('{heading}', @get_month_name($month) + "&nbsp;" + $year, @temp['heading_title_cell'])
+    @temp['heading_title_cell'] = @temp['heading_title_cell'].replace('{colspan}', $colspan)
+    @temp['heading_title_cell'] = @temp['heading_title_cell'].replace('{heading}', @get_month_name($month) + "&nbsp;" + $year)
     
     $out+=@temp['heading_title_cell']
     $out+="\n"
@@ -137,7 +139,7 @@ class system.lib.Calendar
     #  "next" month link
     if @_show_next_prev is true
       $adjusted_date = @adjust_date($month + 1, $year)
-      $out+=str_replace('{next_url}', @_next_prev_url + $adjusted_date['year'] + '/' + $adjusted_date['month'], @temp['heading_next_cell'])
+      $out+=@temp['heading_next_cell'].replace('{next_url}', @_next_prev_url + $adjusted_date['year'] + '/' + $adjusted_date['month'])
       
     
     $out+="\n"
@@ -152,7 +154,7 @@ class system.lib.Calendar
     $day_names = @get_day_names()
     
     for $i in [0...7]
-      $out+=str_replace('{week_day}', $day_names[($start_day + $i) % 7], @temp['week_day_cell'])
+      $out+=@temp['week_day_cell'].replace('{week_day}', $day_names[($start_day + $i) % 7])
 
     $out+="\n"
     $out+=@temp['week_row_end']
@@ -172,12 +174,12 @@ class system.lib.Calendar
           if $data[$day]?
             #  Cells with content
             $temp = if ($is_current_month is true and $day is $cur_day) then @temp['cal_cell_content_today'] else @temp['cal_cell_content']
-            $out+=str_replace('{day}', $day, str_replace('{content}', $data[$day], $temp))
+            $out+=$temp.replace('{content}', $data[$day]).replace('{day}', $day)
 
           else
             #  Cells with no content
             $temp = if ($is_current_month is true and $day is $cur_day) then @temp['cal_cell_no_content_today'] else @temp['cal_cell_no_content']
-            $out+=str_replace('{day}', $day, $temp)
+            $out+=$temp.replace('{day}', $day)
 
 
         else
@@ -373,12 +375,14 @@ class system.lib.Calendar
     $today = ['cal_cell_start_today', 'cal_cell_content_today', 'cal_cell_no_content_today', 'cal_cell_end_today']
 
     for $val in ['table_open', 'table_close', 'heading_row_start', 'heading_previous_cell', 'heading_title_cell', 'heading_next_cell', 'heading_row_end', 'week_row_start', 'week_day_cell', 'week_row_end', 'cal_row_start', 'cal_cell_start', 'cal_cell_content', 'cal_cell_no_content', 'cal_cell_blank', 'cal_cell_end', 'cal_row_end', 'cal_cell_start_today', 'cal_cell_content_today', 'cal_cell_no_content_today', 'cal_cell_end_today']
-      if preg_match("/\\{" + $val + "\\}(.*?)\\{\\/" + $val + "\\}/mgi", @_template, $match)?
-        @temp[$val] = $match['1']
+
+      if ($match = RegExp("\\{" + $val + "\\}(.*?)\\{\\/" + $val + "\\}", "mgi").match(@_template))?
+      #if preg_match("/\\{" + $val + "\\}(.*?)\\{\\/" + $val + "\\}/mgi", @_template, $match)?
+        @temp[$val] = $match[1]
 
       else
-        if in_array($val, $today, true)
-          @temp[$val] = @temp[str_replace('_today', '', $val)]
+        if $today.indexOf($val) isnt -1
+          @temp[$val] = @temp[$val.replace('_today', '')]
 
 ##  END ExspressoCalendar class
 

@@ -27,8 +27,7 @@ class system.core.Log
 
   fs              = require('fs')   # Standard POSIX file i/o
 
-  is_dir = ($path) -> fs.existsSync($path) and fs.statSync($path).isDirectory()
-
+  {is_dir} = require(SYSPATH+'core.coffee')
 
   _enabled        : true            # Use logging?
   _log_path       : ''              # Path to the log file

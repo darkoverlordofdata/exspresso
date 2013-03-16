@@ -50,7 +50,7 @@ class system.db.Utility extends system.db.Forge
   #
   # List databases
   #
-    # @return	bool
+  # @return	bool
   #
   listDatabases: ($next) ->
     #  Is there a cached result?
@@ -73,17 +73,18 @@ class system.db.Utility extends system.db.Forge
   #
   # Determine if a particular database exists
   #
-    # @param  [String]    # @return	[Boolean]
+  # @param  [String]
+  # @return	[Boolean]
   #
   databaseExists: ($database_name) ->
     #  Some databases won't have access to the listDatabases() function, so
     #  this is intended to allow them to override with their own functions as
     #  defined in $driver_utility.php
-    if method_exists(@, '_database_exists')
+    if @_database_exists?
       return @_database_exists($database_name)
       
     else 
-      return if not in_array($database_name, @listDatabases()) then false else true
+      return if @listDatabases().indexOf($database_name) is -1 then false else true
       
     
   
@@ -91,26 +92,26 @@ class system.db.Utility extends system.db.Forge
   #
   # Optimize Table
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	bool
   #
   optimizeTable: ($table_name, $next) ->
     $sql = @_optimize_table($table_name)
     
-    if is_bool($sql)
+    if 'boolean' is typeof($sql)
       $next('db_must_use_set')
 
     @db.query $sql, ($err, $query) ->
 
       $res = $query.result_array() unless $err
 
-      $next current($err, $res)
+      $next $err, $res
     
   
   #
   # Optimize Database
   #
-    # @return	array
+  # @return	array
   #
   optimizeDatabase: ($next) ->
 
@@ -129,8 +130,8 @@ class system.db.Utility extends system.db.Forge
 
             #  Build the result array...
             $res = $query.result_array()
-            $res = current($res)
-            $key = str_replace(@db.database + '.', '', current($res))
+            $res = $res[0]
+            $key = $res.replace(@db.database + '.', '')
             $keys = array_keys($res)
             delete $res[$keys[0]]
             $result[$key] = $res
@@ -141,13 +142,13 @@ class system.db.Utility extends system.db.Forge
   #
   # Repair Table
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	bool
   #
   repairTable: ($table_name, $next) ->
     $sql = @_repair_table($table_name)
     
-    if is_bool($sql)
+    if 'boolean' is typeof($sql)
       $next $sql, []
 
     @db.query $sql, ($err, $query) ->
@@ -158,14 +159,14 @@ class system.db.Utility extends system.db.Forge
   #
   # Generate CSV from a query result object
   #
-    # @param  [Object]  The query result object
+  # @param  [Object]  The query result object
   # @param  [String]  The delimiter - comma by default
   # @param  [String]  The newline character - \n by default
   # @param  [String]  The enclosure - double quote by default
   # @return	[String]
   #
   csvFromResult: ($query, $delim = ",", $newline = "\n", $enclosure = '"') ->
-    if not is_object($query) or  not method_exists($query, 'list_fields')
+    if not 'object' is typeof($query) or  not $query.list_fields?
       show_error('You must submit a valid result object')
       
     
@@ -173,18 +174,17 @@ class system.db.Utility extends system.db.Forge
     
     #  First generate the headings from the table column names
     for $name in $query.list_fields()
-      $out+=$enclosure + str_replace($enclosure, $enclosure + $enclosure, $name) + $enclosure + $delim
-      
-    
-    $out = rtrim($out)
+      $out+=$enclosure + $name.replace($enclosure, $enclosure + $enclosure) + $enclosure + $delim
+
+    $out = $out.replace(/[\s]+$/g, '')
     $out+=$newline
     
     #  Next blast through the result array and build out the rows
     for $row in $query.result_array()
       for $item in $row
-        $out+=$enclosure + str_replace($enclosure, $enclosure + $enclosure, $item) + $enclosure + $delim
+        $out+=$enclosure + $item.replace($enclosure, $enclosure + $enclosure) + $enclosure + $delim
         
-      $out = rtrim($out)
+      $out = $out.replace(/[\s]+$/g, '')
       $out+=$newline
       
     
@@ -194,12 +194,12 @@ class system.db.Utility extends system.db.Forge
   #
   # Generate XML data from a query result object
   #
-    # @param  [Object]  The query result object
+  # @param  [Object]  The query result object
   # @param  [Array]  Any preferences
   # @return	[String]
   #
   xmlFromResult: ($query, $params = {}) ->
-    if not is_object($query) or  not method_exists($query, 'list_fields')
+    if not 'object' is typeof($query) or  not $query.list_fields?
       show_error('You must submit a valid result object')
       
     
@@ -229,12 +229,13 @@ class system.db.Utility extends system.db.Forge
   #
   # Database Backup
   #
-    # @return [Void]  #
+  # @return [Void]
+  #
   backup: ($prefs = {}, $next) ->
     #  If the parameters have not been submitted as an
     #  array then we know that it is simply the table
     #  name, which is a valid short cut.
-    if is_string($prefs)
+    if 'string' is typeof($prefs)
       $prefs = {tables: $prefs}
       
     
@@ -255,10 +256,10 @@ class system.db.Utility extends system.db.Forge
     
     #  Are we backing up a complete database or individual tables?
     #  If no table names were submitted we'll fetch the entire table list
-    if count($prefs['tables']) is 0
+    if $prefs['tables'].length is 0
       @db.list_tables ($err, $result) =>
-        if $err then $next $err
-        if count($result) is 0 then $next 'no tables to backup'
+        return $next $errif $err
+        $next 'no tables to backup' if $result.length is 0
         $prefs['tables'] = $result
         @backup $prefs, $next
       return
@@ -267,7 +268,7 @@ class system.db.Utility extends system.db.Forge
     #  ------------------------------------------------------
     
     #  Validate the format
-    if not in_array($prefs['format'], ['gzip', 'zip', 'txt'], true)
+    if ['gzip', 'zip', 'txt'].indexOf($prefs['format']) is -1
       $prefs['format'] = 'txt'
       
     
@@ -287,7 +288,7 @@ class system.db.Utility extends system.db.Forge
     
     #  Set the filename if not provided - Only needed with Zip files
     if $prefs['filename'] is '' and $prefs['format'] is 'zip'
-      $prefs['filename'] = if (count($prefs['tables']) is 1) then $prefs['tables'] else @db.database
+      $prefs['filename'] = if $prefs['tables'].length is 1 then $prefs['tables'] else @db.database
       $prefs['filename']+='_' + date('Y-m-d_H-i', time())
       
     
@@ -310,12 +311,12 @@ class system.db.Utility extends system.db.Forge
     #  Was a Zip file requested?
     if $prefs['format'] is 'zip'
       #  If they included the .zip file extension we'll remove it
-      if preg_match("|.+?\\.zip$|", $prefs['filename'])?
+      if /.+?\.zip$/.test($prefs['filename'])
         $prefs['filename'] = str_replace('.zip', '', $prefs['filename'])
         
       
       #  Tack on the ".sql" file extension if needed
-      if not preg_match("|.+?\\.sql$|", $prefs['filename'])?
+      if not /.+?\.sql$/.test($prefs['filename'])
         $prefs['filename']+='.sql'
         
       

@@ -35,8 +35,13 @@
 #
 class system.core.Loader
 
+  querystring = require('querystring')
   path = require('path')
+  fs = require('fs')
   Modules = require(SYSPATH+'core/Modules.coffee')
+
+  {ucfirst, array, parse_str, parse_url} = require(SYSPATH+'core.coffee')
+
 
   _module               : ''    # uri module
   _view_path            : ''    # path to view modules (*.eco)
@@ -120,21 +125,22 @@ class system.core.Loader
 
     $controller = @controller
 
-    if is_array($library) then return @libraries($library)
+    if typeof $library is 'object' then return @libraries($library)
 
-    $class = strtolower(end(explode('/', $library)))
+    $class = $library.split('/').pop().toLowerCase()
 
     if @_classes[$class]? and ($_alias = @_classes[$class])
       return $controller[$_alias]
 
-    ($_alias = strtolower($object_name)) or ($_alias = $class)
+    ($_alias = $object_name?.toLowerCase()) or ($_alias = $class)
 
     [$path, $_library] = Modules::find($library, $controller.module, 'lib/')
 
     # load library config file as params *
 
     [$path2, $file] = Modules::find($_alias, $controller.module, 'config/')
-    ($path2) and ($params = array_merge(Modules::load($file, $path2), $params))
+    if $path2 then $params[$key] = $val for $key, $val of Modules::load($file, $path2)
+
     if $path is false
 
       @_load_class($library, $params, $object_name)
@@ -177,12 +183,11 @@ class system.core.Loader
 
     $controller = @controller
 
-    if (is_array($model)) then return @models($model)
+    if typeof $model is 'object' then return @models($model)
 
-    ($_alias = $object_name) or ($_alias = end(explode('/', $model)).toLowerCase())
+    ($_alias = $object_name) or ($_alias = $model.split('/').pop().toLowerCase())
 
-    if in_array($_alias, @_models, true)
-      return $controller[$_alias]
+    return $controller[$_alias] unless @_models.indexOf($_alias) is -1
 
     # check module
     [$path, $_model] = Modules::find($model, @controller.module, 'models/')
@@ -236,35 +241,33 @@ class system.core.Loader
   #
   _application_model: ($model, $name = '', $db_conn = false) ->
 
-    if is_array($model)
-      for $babe in $model
-        @model $babe
+    if 'object' is typeof $model
+      @model $item for $item in $model
       return
 
-    if $model is '' then return
+    return if $model is ''
 
     $path = ''
 
     # Is the model in a sub-folder? If so, parse out the filename and path.
-    $last_slash = strrpos($model, '/')
+    $last_slash = $model.lastIndexOf('/')
     if $last_slash isnt false
       #  The path is in front of the last slash
-      $path = substr($model, 0, $last_slash + 1)
+      $path = $model.substr(0, $last_slash + 1)
 
       #  And the model name behind it
-      $model = substr($model, $last_slash + 1)
+      $model = $model.substr($last_slash + 1)
 
-    if $name is '' then $name = $model
+    $name = $model if $name is ''
 
-    if in_array($name, @_models, true)
-      return
+    return unless @_models.indexOf($name) is -1
 
     if @controller[$name]?
       show_error 'The model name you are loading is the name of a resource that is already being used: %s', $name
 
 
     for $mod_path in @_model_paths
-      if not file_exists($mod_path+'models/'+$path+$model+EXT)
+      if not fs.existsSync($mod_path+'models/'+$path+$model+EXT)
         continue
 
       if $db_conn isnt false and not system.db.DbDriver?
@@ -341,7 +344,7 @@ class system.core.Loader
 
     load_class SYSPATH + 'db/Forge.coffee'
     load_class SYSPATH + 'db/Utility.coffee'
-    $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility' + EXT)
+    $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Utility.coffee')
 
     if $return is true then return new $class(@controller, $db)
     defineProperty @controller, 'dbutil',
@@ -366,7 +369,7 @@ class system.core.Loader
       $db = @database($params, true)
 
     load_class SYSPATH + 'db/Forge.coffee'
-    $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge' + EXT)
+    $class = load_class(SYSPATH + 'db/drivers/' + $db.dbdriver + '/' + ucfirst($db.dbdriver) + 'Forge.coffee')
 
     if $return is true then return new $class(@controller, $db)
     defineProperty @controller, 'dbforge',
@@ -384,12 +387,12 @@ class system.core.Loader
   #
   plugin: ($plugin)	->
 
-    if (is_array($plugin)) then return @plugins($plugin)
+    return @plugins($plugin) if 'object' is typeof $plugin
 
     return if @_plugins[$plugin]?
 
     [$path, $_plugin] = Modules::find($plugin+'_pi', @controller.module, 'plugins/')
-    if ($path is false) then return
+    return unless $path
 
     Modules::load($_plugin, $path)
     @_plugins[$plugin] = true
@@ -401,8 +404,7 @@ class system.core.Loader
   # @return [Void]
   #
   plugins: ($plugins) ->
-    for $_plugin in $plugins
-      @plugin($_plugin)
+    @plugin($_plugin) for $_plugin in $plugins
     return
 
   #
@@ -437,10 +439,9 @@ class system.core.Loader
   # @return [Void]
   #
   vars: ($vars = {}, $val = '') ->
-    if $val isnt '' and is_string($vars)
-      $vars = array($vars, $val)
+    $vars = array($vars, $val) if typeof $val is 'string' and $val isnt ''
 
-    if is_array($vars) and count($vars) > 0
+    if 'object' is typeof $vars and Object.keys($vars).length > 0
       for $key, $val of $vars
         @_cached_vars[$key] = $val
     return
@@ -454,7 +455,7 @@ class system.core.Loader
   # @return [Mixed] the variable value
   #
   getVar: ($var) ->
-    if isset(@_cached_vars[$var]) then @_cached_vars[$var] else null
+    if @_cached_vars[$var]? then @_cached_vars[$var] else null
 
   #
   # Load File
@@ -478,12 +479,12 @@ class system.core.Loader
   #
   helper: ($helper) ->
 
-    if is_array($helper) then return @helpers($helper)
+    return @helpers($helper) if 'object' is typeof($helper)
 
     return if @_helpers[$helper]?
 
     [$path, $_helper] = Modules::find($helper+'_helper', @controller.module, 'helpers/')
-    if $path is false then return @_application_helper($helper)
+    return @_application_helper($helper) unless $path
 
     @_helpers[$_helper] = Modules::load($_helper, $path)
 
@@ -519,19 +520,19 @@ class system.core.Loader
       $ext_helper = APPPATH+'helpers/'+config_item('subclass_prefix')+'_'+$helper+EXT
 
       # Is this a helper extension request?
-      if file_exists($ext_helper)
+      if fs.existsSync($ext_helper)
 
         $base_helper = SYSPATH+'helpers/'+$helper+EXT
-        if not file_exists($base_helper)
-          show_error 'Unable to load the requested file: helpers/%s', $helper+EXT
+        if not fs.existsSync($base_helper)
+          show_error 'Unable to load the requested base file: helpers/%s', $helper+EXT
 
-        @_helpers[$helper] = array_merge(require($base_helper), require($ext_helper))
-        log_message 'debug', 'Helper loaded: '+$helper
+        @_helpers[$helper] = require($base_helper)
+        @_helpers[$helper][$key] = $val for $key, $val of require($ext_helper)
         continue
 
       # Try to load the helper
       for $path in @_helper_paths
-        if file_exists($path+'helpers/'+$helper+EXT)
+        if fs.existsSync($path+'helpers/'+$helper+EXT)
           @_helpers[$helper] = require($path+'helpers/'+$helper+EXT)
           log_message 'debug', 'Helper loaded: '+$helper
           break
@@ -551,7 +552,7 @@ class system.core.Loader
   # @return [Object]  hash table of loaded language keys
   #
   language: ($langfile, $code = '', $return = false) ->
-    return @controller.i18n.load($langfile, $code, $return)
+    @controller.i18n.load($langfile, $code, $return)
 
   #
   # Load an array of languages
@@ -560,8 +561,7 @@ class system.core.Loader
   # @return [Void]
   #
   languages: ($languages) ->
-    for $_language in $languages
-      @language($language)
+    @language($language) for $_language in $languages
     return
 
   #
@@ -573,8 +573,7 @@ class system.core.Loader
   # @return [Void]
   #
   config: ($file = '', $use_sections = false, $fail_gracefully = false) ->
-
-    @controller.config.load $file, $use_sections, $fail_gracefully, @controller.module
+    @controller.config.load($file, $use_sections, $fail_gracefully, @controller.module)
 
 
   #
@@ -596,8 +595,7 @@ class system.core.Loader
 
     # We can save the loader some time since Drivers will #always# be in a subfolder,
     # and typically identically named to the library
-    if $library.indexOf('/') is -1
-      $library = $library+'/'+ucfirst($library)
+    $library = $library+'/'+ucfirst($library) if $library.indexOf('/') is -1
 
     @library($library, $params, $object_name)
 
@@ -611,14 +609,14 @@ class system.core.Loader
   #
   addPackagePath: ($path) ->
 
-    $path = rtrim($path, '/')+'/'
+    $path = $path.replace(/[\/]+$/g, '')+'/' # rtrim /
 
-    array_unshift(@_library_paths, $path)
-    array_unshift(@_model_paths, $path)
-    array_unshift(@_helper_paths, $path)
+    @_library_paths.unshift $path if @_library_paths.indexOf($path) is -1
+    @_model_paths.unshift $path if @_model_paths.indexOf($path) is -1
+    @_helper_paths.unshift $path  if @_helper_paths.indexOf($path) is -1
 
     #  Add config file path
-    array_unshift(@controller.config.paths, $path)
+    @controller.config.paths.unshift $path if @controller.config.paths.indexOf($path) is -1
     return
 
 
@@ -648,26 +646,33 @@ class system.core.Loader
   removePackagePath: ($path = '', $remove_config_path = true) ->
 
     if $path is ''
-      $void = array_shift(@_library_paths)
-      $void = array_shift(@_model_paths)
-      $void = array_shift(@_helper_paths)
-      $void = array_shift(@controller.config.paths)
+      @_library_paths.shift()
+      @_model_paths.shift()
+      @_helper_paths.shift()
+      @controller.config.paths.shift()
 
     else
-      $path = rtrim($path, '/') + '/'
+      $path = $path.replace(/[\/]+$/g, '')+'/' # rtrim /
 
       for $var in ['_library_paths', '_model_paths', '_helper_paths']
-        if ($key = array_search($path, @[$var])) isnt false
-          delete @[$var][$key]
+        for $key, $val of @[$var]
+          if $val is $path
+            delete @[$var][$key]
+            break
 
-      if ($key = array_search($path, $config.paths)) isnt false
-        delete $config.paths[$key]
+      for $key, $val of $config.paths
+        if $val is $path
+          delete $config.paths[$key]
+          break
 
     #  make sure the application default paths are still in the array
-    @_library_paths = array_unique(array_merge(@_library_paths, [APPPATH, SYSPATH]))
-    @_helper_paths = array_unique(array_merge(@_helper_paths, [APPPATH, SYSPATH]))
-    @_model_paths = array_unique(array_merge(@_model_paths, [APPPATH]))
-    $config.paths = array_unique(array_merge(@controller.config.paths, [APPPATH]))
+    @_library_paths.unshift APPPATH if @_library_paths.indexOf(APPPATH) is -1
+    @_library_paths.unshift SYSPATH if @_library_paths.indexOf(SYSPATH) is -1
+    @_helper_paths.unshift APPPATH if @_library_paths.indexOf(APPPATH) is -1
+    @_helper_paths.unshift SYSPATH if @_library_paths.indexOf(SYSPATH) is -1
+    @_model_paths.unshift APPPATH if @_library_paths.indexOf(APPPATH) is -1
+    @controller.config.paths.unshift APPPATH if @_library_paths.indexOf(APPPATH) is -1
+
     return
 
 
@@ -687,14 +692,12 @@ class system.core.Loader
     if $path is ''
       $ext = path.extname($view)
       $file = if ($ext is '') then $view + config_item('view_ext') else $view
-      $path = rtrim(@_view_path, '/') + '/' + $file
+      $path = @_view_path.replace(/[\/]+$/g, '')+'/'+$file # rtrim /
 
     else
-      $x = explode('/', $path)
-      $file = end($x)
+      $file = $path.split('/').pop()
 
-
-    if not file_exists($path)
+    if not fs.existsSync($path)
       show_error('Unable to load the requested file: %s', $file)
 
     #
@@ -733,38 +736,38 @@ class system.core.Loader
     #  Get the class name, and while we're at it trim any slashes.
     #  The directory path can be included as part of the class name,
     #  but we don't want a leading slash
-    $class = str_replace(EXT, '', trim($class, '/'))
+    $class = $class.replace(/^[\/]+/g, '').replace(EXT, '')
 
     #  Was the path included with the class name?
     #  We look for a slash to determine this
     $subdir = ''
-    if ($last_slash = strrpos($class, '/')) isnt false
+    if ($last_slash = $class.lastIndexOf('/')) isnt -1
       #  Extract the path
-      $subdir = substr($class, 0, $last_slash + 1)
+      $subdir = $class.substr(0, $last_slash + 1)
 
       #  Get the filename from the path
-      $class = substr($class, $last_slash + 1)
+      $class = $class.substr($last_slash + 1)
 
 
     #  We'll test for both lowercase and capitalized versions of the file name
-    for $class in [ucfirst($class), strtolower($class)]
+    for $class in [ucfirst($class), $class.toLowerCase()]
       $subclass = APPPATH + 'lib/' + $subdir + config_item('subclass_prefix') + $class + EXT
 
       #  Is this a class extension request?
-      if file_exists($subclass)
+      if fs.existsSync($subclass)
         $baseclass = SYSPATH + 'lib/' + ucfirst($class) + EXT
 
-        if not file_exists($baseclass)
+        if not fs.existsSync($baseclass)
           log_message('error', "Unable to load the requested class: %s", $class)
           show_error("Unable to load the requested class: %s", $class)
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if in_array($subclass, @_loaded_files)
+        if @_loaded_files.indexOf($subclass) isnt -1
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
-          if not is_null($object_name)
+          if $object_name?
             if not @controller[$object_name]?
               return @_init_class($class, config_item('subclass_prefix'), $params, $object_name)
 
@@ -785,16 +788,16 @@ class system.core.Loader
         $filepath = $path + 'lib/' + $subdir + $class + EXT
 
         #  Does the file exist?  No?  Bummer...
-        if not file_exists($filepath)
+        if not fs.existsSync($filepath)
           continue
 
 
         #  Safety:  Was the class already loaded by a previous call?
-        if in_array($filepath, @_loaded_files)
+        if @_loaded_files.indexOf($filepath) isnt -1
           #  Before we deem this to be a duplicate request, let's see
           #  if a custom object name is being supplied.  If so, we'll
           #  return a new instance of the object
-          if not is_null($object_name)
+          if $object_name?
             if not @controller[$object_name]?
               return @_init_class($class, '', $params, $object_name)
 
@@ -811,7 +814,7 @@ class system.core.Loader
 
     #  One last attempt.  Maybe the library is in a subdirectory, but it wasn't specified?
     if $subdir is ''
-      $path = strtolower($class) + '/' + $class
+      $path = $class.toLowerCase() + '/' + $class
       return @_load_class($path, $params)
 
 
@@ -847,37 +850,19 @@ class system.core.Loader
         #  are case-sensitive with regard to file names. Check for environment
         #  first, global next
 
-        if file_exists($path + 'config/' + $class.toLowerCase() + EXT)
-          $config = array_merge(require($path + 'config/' + $class.toLowerCase() + EXT), $config)
+        if fs.existsSync($path + 'config/' + $class.toLowerCase() + EXT)
+          $config[$key] = $val for $key, $val of require($path + 'config/' + $class.toLowerCase() + EXT)
 
-        else if file_exists($path + 'config/' + ucfirst($class.toLowerCase()) + EXT)
-          $config = array_merge(require($path + 'config/' + ucfirst($class.toLowerCase()) + EXT), $config)
+        else if fs.existsSync($path + 'config/' + ucfirst($class.toLowerCase()) + EXT)
+          $config[$key] = $val for $key, $val of require($path + 'config/' + ucfirst($class.toLowerCase()) + EXT)
 
-        if file_exists($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT)
-          $config = array_merge(require($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT), $config)
+        if fs.existsSync($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT)
+          $config[$key] = $val for $key, $val of require($path + 'config/' + ENVIRONMENT + '/' + $class.toLowerCase() + EXT)
           break
 
-        else if file_exists($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT)
-          $config = array_merge(require($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT), $config)
+        else if fs.existsSync($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT)
+          $config[$key] = $val for $key, $val of require($path + 'config/' + ENVIRONMENT + '/' + ucfirst($class.toLowerCase()) + EXT)
           break
-
-    if $prefix is ''
-      if class_exists('Exspresso' + $class)
-        $name = 'Exspresso' + $class
-
-      else if class_exists(config_item('subclass_prefix') + $class)
-        $name = config_item('subclass_prefix') + $class
-
-      else
-        $name = $class
-
-    else
-      $name = $prefix + $class
-
-    #  Is the class name valid?
-    #if not class_exists($name)
-    #  show_error("Non-existent class: %s", $class)
-
 
     #  Set the variable name we will assign the class to
     #  Was a custom class name supplied?  If so we'll use it
@@ -924,10 +909,10 @@ class system.core.Loader
     #  module autoload file
     $autoload = {}
     if ($path isnt false)
-      $autoload = array_merge(Modules::load($file, $path), $autoload)
+      $autoload[$key] = $val for $key, $val of Modules::load($file, $path)
 
     #  nothing to do
-    if count($autoload) is 0 then return
+    return if Object.keys($autoload).length is 0
 
     #  autoload package paths
     if $autoload['packages']?
@@ -954,7 +939,8 @@ class system.core.Loader
           $db['active_record'] = true
 
         @database($db['params'], false, $db['active_record'])
-        $autoload['libraries'] = array_diff($autoload['libraries'], ['database'])
+        #$autoload['libraries'] = array_diff($autoload['libraries'], ['database'])
+        $autoload['libraries'] = $item for $item in $autoload['libraries'] when $item isnt 'database'
 
       #  autoload libraries
       for $library in $autoload['libraries']
@@ -969,7 +955,7 @@ class system.core.Loader
     #  autoload models
     if $autoload['model']?
       for $model, $alias of $autoload['model']
-        if is_numeric($model) then @model($alias) else @model($model, $alias)
+        if 'number' is typeof($model) then @model($alias) else @model($model, $alias)
 
     #  autoload module controllers
     if $autoload['modules']?
@@ -991,12 +977,13 @@ class system.core.Loader
 
     $autoload = {}
     $found = false
-    if file_exists(APPPATH + 'config/autoload' + EXT)
+    if fs.existsSync(APPPATH + 'config/autoload.coffee')
       $found = true
-      $autoload = array_merge($autoload, require(APPPATH + 'config/autoload' + EXT))
-    if file_exists(APPPATH + 'config/' + ENVIRONMENT + '/autoload' + EXT)
+      $autoload[$key] = $val for $key, $val of require(APPPATH + 'config/autoload.coffee')
+
+    if fs.existsSync(APPPATH + 'config/' + ENVIRONMENT + '/autoload.coffee')
       $found = true
-      $autoload = array_merge($autoload, require(APPPATH + 'config/' + ENVIRONMENT + '/autoload' + EXT))
+      $autoload[$key] = $val for $key, $val of require(APPPATH + 'config/' + ENVIRONMENT + '/autoload.coffee')
 
     return unless $found
 
@@ -1006,9 +993,9 @@ class system.core.Loader
         @addPackagePath $package_path
 
     #  Load any custom config file
-    if $autoload['config'].length > 0
-      for $val, $key in as
-        @controller.config.load $val
+    if $autoload['config']?
+      for $config in $autoload['config']
+        @controller.config($config)
 
     #  Autoload helpers and languages
     for $type in ['helper', 'language']
@@ -1064,15 +1051,16 @@ class system.core.Loader
   #
   _db_factory: ($params = '', active_record_override = null) ->
     #  Load the DB config file if a DSN string wasn't passed
-    if is_string($params) and strpos($params, '://') is false
-      #  Is the config file in the environment folder?
-      if not file_exists($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database' + EXT)
-        if not file_exists($file_path = APPPATH + 'config/database' + EXT)
-          show_error('The configuration file database%s does not exist.', EXT)
+    if 'string' is typeof($params)
+      if $params.indexOf('://') is -1
+        #  Is the config file in the environment folder?
+        if not fs.existsSync($file_path = APPPATH + 'config/' + ENVIRONMENT + '/database.coffee')
+          if not fs.existsSync($file_path = APPPATH + 'config/database.coffee')
+            show_error('The configuration file database.coffee does not exist.')
 
       {db, active_group, active_record} = require($file_path)
 
-      if not db?  or count(db) is 0
+      if not db?  or Object.keys(db).length is 0
         show_error 'No database connection settings were found in the database config file.'
 
       if $params isnt ''
@@ -1116,15 +1104,15 @@ class system.core.Loader
 
       #  were additional config items set?
       if $dns['query']?
-        $extra = {}
-        parse_str($dns['query'], $extra)
+
+        $extra = querystring.parse($dns['query'])
 
         for $key, $val of $extra
           #  booleans please
-          if strtoupper($val) is "TRUE"
+          if $val.toUpperCase() is "TRUE"
             $val = true
 
-          else if strtoupper($val) is "FALSE"
+          else if $val.toUpperCase() is "FALSE"
             $val = false
 
           $params[$key] = $val
@@ -1152,10 +1140,10 @@ class system.core.Loader
       class system.db.DbDriver extends DbDriver
 
 
-    if not file_exists(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
+    if not fs.existsSync(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver.coffee')
       throw new Error("Unsuported DB driver: " + $params['dbdriver'])
 
-    $driver = load_class(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver' + EXT)
+    $driver = load_class(SYSPATH + 'db/drivers/' + $params['dbdriver'] + '/' + ucfirst($params['dbdriver']) + 'Driver.coffee')
 
     #  Instantiate the DB adapter
     $db = new $driver($params)

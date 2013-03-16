@@ -109,7 +109,7 @@ class system.db.Driver
   #
   # The name of the platform in use (mysql, mssql, etc...)
   #
-    # @return	[String]
+  # @return	[String]
   #
   platform: ->
     return @dbdriver
@@ -119,7 +119,7 @@ class system.db.Driver
   # Database Version Number.  Returns a string containing the
   # version of the database being used
   #
-    # @return	[String]
+  # @return	[String]
   #
   version: ($next) ->
     if false is ($sql = @_version())
@@ -138,7 +138,7 @@ class system.db.Driver
   #
   # Execute a list of sql statements
   #
-    # @return	array
+  # @return	array
   #
   queryList: ($sql, $next) ->
 
@@ -173,7 +173,7 @@ class system.db.Driver
   # FALSE upon failure, and if the $db_debug variable is set to TRUE
   # will raise an error.
   #
-    # @param  [String]  An SQL query string
+  # @param  [String]  An SQL query string
   # @param  [Array]  An array of binding data
   # @return [Mixed]  #
   query: ($sql, $binds, $next = null) =>
@@ -184,16 +184,15 @@ class system.db.Driver
 
       return false
 
-
     #  Verify table prefix and replace if necessary
     if (@dbprefix isnt '' and @swap_pre isnt '') and (@dbprefix isnt @swap_pre)
-      $sql = preg_replace("/(\\W)" + @swap_pre + "(\\S+?)/", "$1" + @dbprefix + "$2", $sql)
+      $sql = $sql.replace(RegExp("(\\W)" + @swap_pre + "(\\S+?)", 'mig'), "$1" + @dbprefix + "$2")
 
 
     #  Is query caching enabled?  If the query is a "read type"
     #  we will load the caching class and return the previously
     #  cached query if it exists
-    if @cache_on is true and stristr($sql, 'SELECT')
+    if @cache_on is true and $sql.search(new RegExp('SELECT', 'i')) isnt -1
       if @_cache_init()
         @_load_rdriver()
         if false isnt ($cache = @_cache.read($sql))
@@ -206,7 +205,7 @@ class system.db.Driver
     #if @db_debug then log_message 'debug', 'SQL>\n%s', $sql
 
     #  Start the Query Timer
-    $time_start = (new Date()).getTime()
+    $time_start = Date.now()
 
     if $next?
       @_execute $sql, $binds, ($err, $results, $info) =>
@@ -220,7 +219,7 @@ class system.db.Driver
 
   _query2: ($err, $results, $info, $time_start, $sql, $next) =>
 
-    $time_end = (new Date()).getTime()
+    $time_end = Date.now()
 
     if $err
       return $next($err)
@@ -287,7 +286,7 @@ class system.db.Driver
       #  resource ID won't be any good once we've cached the
       #  result object, so we'll have to compile the data
       #  and save it)
-      $cr = new ExspressoDbResult()
+      $cr = new system.db.Result()
       $cr.num_rows = $rs.num_rows
       $cr._result_object = $rs.result_object()
       $cr._result_array = $rs.result_array()
@@ -308,14 +307,8 @@ class system.db.Driver
   #
   _load_rdriver :  ->
 
-    $driver = 'Exspresso' + ucfirst(@dbdriver) + 'Result'
-
-    if not class_exists($driver)
-      require SYSPATH + 'db/Result' + EXT
-      $driver = require(SYSPATH + 'db/drivers/' + @dbdriver + '/' + ucfirst(@dbdriver) + 'Result' + EXT)
-    else
-      $driver = global[$driver]
-
+    require SYSPATH + 'db/Result' + EXT
+    $driver = require(SYSPATH + 'db/drivers/' + @dbdriver + '/' + ucfirst(@dbdriver) + 'Result' + EXT)
     return $driver
 
 
@@ -325,7 +318,7 @@ class system.db.Driver
   # we only use it when running transaction commands since they do
   # not require all the features of the main query() function.
   #
-    # @param  [String]  the sql query
+  # @param  [String]  the sql query
   # @return [Mixed]  #
   simpleQuery : ($sql, $binds, $next) ->
 
@@ -348,7 +341,7 @@ class system.db.Driver
   # Disable Transactions
   # This permits transactions to be disabled at run-time.
   #
-    # @return [Void]  #
+  # @return [Void]  #
   transOff: ->
     @_trans_enabled = false
 
@@ -360,7 +353,7 @@ class system.db.Driver
   # If strict mode is disabled, each group is treated autonomously, meaning
   # a failure of one group will not affect any others
   #
-    # @return [Void]  #
+  # @return [Void]  #
   transStrict : ($mode = true) ->
     @_trans_strict = if is_bool($mode) then $mode else true
 
@@ -368,7 +361,7 @@ class system.db.Driver
   #
   # Start Transaction
   #
-    # @return [Void]  #
+  # @return [Void]  #
   transStart : ($test_mode = false, $next) ->
     if $next is null
       $next = $test_mode
@@ -388,7 +381,7 @@ class system.db.Driver
   #
   # Complete Transaction
   #
-    # @return	bool
+  # @return	bool
   #
   transComplete: ($next) ->
     if not @_trans_enabled
@@ -419,7 +412,7 @@ class system.db.Driver
   #
   # Lets you retrieve the transaction flag to determine if it has failed
   #
-    # @return	bool
+  # @return	bool
   #
   transStatus: ->
     return @_trans_status
@@ -428,26 +421,22 @@ class system.db.Driver
   #
   # Compile Bindings
   #
-    # @param  [String]  the sql statement
+  # @param  [String]  the sql statement
   # @param  [Array]  an array of bind data
   # @return	[String]
   #
   compile_binds : ($sql, $binds) ->
-    if strpos($sql, @_bind_marker) is false
-      return $sql
+    return $sql if $sql.indexOf(@_bind_marker) is -1
 
-
-    if not is_array($binds)
-      $binds = [$binds]
-
+    $binds = [$binds] if not Array.isArray($binds)
 
     #  Get the sql segments around the bind markers
-    $segments = explode(@_bind_marker, $sql)
+    $segments = $sql.split(@_bind_marker)
 
     #  The count of bind should be 1 less then the count of segments
     #  If there are more bind arguments trim it down
-    if count($binds)>=count($segments)
-      $binds = array_slice($binds, 0, count($segments) - 1)
+    if $binds.length>=$segments.length
+      $binds = $binds.slice(0, count($segments) - 1)
 
 
     #  Construct the binded query
@@ -464,11 +453,11 @@ class system.db.Driver
   #
   # Determines if a query is a "write" type.
   #
-    # @param  [String]  An SQL query string
+  # @param  [String]  An SQL query string
   # @return	[Boolean]
   #
   is_write_type : ($sql) ->
-    if not preg_match('/^\\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\\s+/i', $sql)?
+    if not /^\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\s+/i.test($sql)
       return false
 
     return true
@@ -477,7 +466,7 @@ class system.db.Driver
   #
   # Calculate the aggregate query elapsed time
   #
-    # @param  [Integer]  The number of decimal places
+  # @param  [Integer]  The number of decimal places
   # @return	integer
   #
   elapsedTime : ($decimals = 6) ->
@@ -487,7 +476,7 @@ class system.db.Driver
   #
   # Returns the total number of queries
   #
-    # @return	integer
+  # @return	integer
   #
   totalQueries: ->
     return @_query_count
@@ -496,7 +485,7 @@ class system.db.Driver
   #
   # Returns the last query that was executed
   #
-    # @return [Void]  #
+  # @return [Void]  #
   lastQuery: ->
     return end(@queries)
 
@@ -507,13 +496,13 @@ class system.db.Driver
   # Escapes data based on type
   # Sets boolean and null types
   #
-    # @param  [String]    # @return [Mixed]  #
+  # @param  [String]  # @return [Mixed]  #
   escape : ($str) ->
-    if is_string($str)
+    if 'string' is typeof($str)
       $str = @escapeStr($str)
       # $str = "'" + @escapeStr($str) + "'"
 
-    else if is_bool($str)
+    else if 'boolean' is typeof($str)
       $str = if ($str is false) then 0 else 1
 
     else if is_null($str)
@@ -529,7 +518,7 @@ class system.db.Driver
   # Calls the individual driver for platform
   # specific escaping for LIKE conditions
   #
-    # @param  [String]    # @return [Mixed]  #
+  # @param  [String]  # @return [Mixed]  #
   escapeLikeStr : ($str) ->
     return @escapeStr($str, true)
 
@@ -540,13 +529,13 @@ class system.db.Driver
   # Retrieves the primary key.  It assumes that the row in the first
   # position is the primary key
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	[String]
   #
   primary : ($table = '') ->
     $fields = @list_fields($table)
 
-    if not is_array($fields)
+    if not Array.isArray($fields)
       return false
 
 
@@ -556,7 +545,7 @@ class system.db.Driver
   #
   # Returns an array of table names
   #
-    # @return	array
+  # @return	array
   #
   listTables : ($constrain_by_prefix = false, $next = null) ->
 
@@ -585,7 +574,7 @@ class system.db.Driver
             $retval.push $row['TABLE_NAME']
 
           else
-            $retval.push current($row)
+            $retval.push $row[Object.keys($row)[0]]
 
       @_data_cache['table_names'] = $retval
       $next $err, @_data_cache['table_names']
@@ -593,7 +582,7 @@ class system.db.Driver
 
   #
   # Determine if a particular table exists
-    # @return	[Boolean]
+  # @return	[Boolean]
   #
   tableExists : ($table_name, $next) ->
 
@@ -601,14 +590,14 @@ class system.db.Driver
 
       if $err then return $next $err
 
-      $table_exists = if ( not in_array(@_protect_identifiers($table_name, true, false, false), $table_names)) then false else true
+      $table_exists = if $table_names.indexOf(@_protect_identifiers($table_name, true, false, false)) is -1 then false else true
       $next null, $table_exists
 
 
   #
   # Fetch MySQL Field Names
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	array
   #
   listFields : ($table = '', $next) ->
@@ -649,16 +638,16 @@ class system.db.Driver
 
   #
   # Determine if a particular field exists
-    # @param  [String]    # @param  [String]    # @return	[Boolean]
+  # @param  [String]  # @param  [String]  # @return	[Boolean]
   #
   fieldExists : ($field_name, $table_name) ->
-    return if ( not in_array($field_name, @list_fields($table_name))) then false else true
+    if @list_fields($table_name).indexOf($field_name) is -1 then false else true
 
 
   #
   # Returns an object with field data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return [Object]  #
   field_data : ($table = '', $next) ->
     if $table is ''
@@ -676,7 +665,7 @@ class system.db.Driver
   #
   # Generate an insert string
   #
-    # @param  [String]  the table upon which the query will be performed
+  # @param  [String]  the table upon which the query will be performed
   # @param  [Array]  an associative array data of key/values
   # @return	[String]
   #
@@ -695,7 +684,7 @@ class system.db.Driver
   #
   # Generate an update string
   #
-    # @param  [String]  the table upon which the query will be performed
+  # @param  [String]  the table upon which the query will be performed
   # @param  [Array]  an associative array data of key/values
   # @param  [Mixed]  the "where" statement
   # @return	[String]
@@ -710,13 +699,13 @@ class system.db.Driver
       $fields[@_protect_identifiers($key)] = @escape($val)
 
 
-    if not is_array($where)
+    if 'string' is typeof($where)
       $dest = [$where]
 
     else
       $dest = []
       for $key, $val of $where
-        $prefix = if (count($dest) is 0) then '' else ' AND '
+        $prefix = if $dest.length is 0 then '' else ' AND '
 
         if $val isnt ''
           if not @_has_operator($key)
@@ -737,11 +726,11 @@ class system.db.Driver
   # Tests whether the string has an SQL operator
   #
   # @private
-  # @param  [String]    # @return	bool
+  # @param  [String]  # @return	bool
   #
   _has_operator : ($str) ->
     $str = trim($str)
-    if not preg_match("/(\\s|<|>|!|=|is null|is not null)/i", $str)?
+    if not /(\\s|<|>|!|=|is null|is not null)/i.test($str)
       return false
 
 
@@ -751,7 +740,7 @@ class system.db.Driver
   #
   # Set Cache Directory Path
   #
-    # @param  [String]  the path to the cache directory
+  # @param  [String]  the path to the cache directory
   # @return [Void]  #
   cacheSetPath : ($path = '') ->
     @cachedir = $path
@@ -760,7 +749,7 @@ class system.db.Driver
   #
   # Enable Query Caching
   #
-    # @return [Void]  #
+  # @return [Void]  #
   cacheOn: ->
     @cache_on = true
     return true
@@ -769,7 +758,7 @@ class system.db.Driver
   #
   # Disable Query Caching
   #
-    # @return [Void]  #
+  # @return [Void]  #
   cacheOff: ->
     @cache_on = false
     return false
@@ -779,7 +768,7 @@ class system.db.Driver
   #
   # Delete the cache files associated with a particular URI
   #
-    # @return [Void]  #
+  # @return [Void]  #
   cacheDelete : ($segment_one = '', $segment_two = '') ->
     if not @_cache_init()
       return false
@@ -790,7 +779,7 @@ class system.db.Driver
   #
   # Delete All cache files
   #
-    # @return [Void]  #
+  # @return [Void]  #
   cacheDeleteAll: ->
     if not @_cache_init()
       return false
@@ -805,17 +794,8 @@ class system.db.Driver
   # @private
   # @return [Void]  #
   _cache_init: ->
-    if is_object(@cache) and class_exists('ExspressoDbCache')
-      return true
-
-
-    if not class_exists('ExspressoDbCache')
-      if not require(SYSPATH + 'database/Cache' + EXT)
-        return @cache_off()
-
-
-
-    @cache = new ExspressoDbCache(@)#  pass db object to support multiple db connections and returned db objects
+    require(SYSPATH + 'db/Cache' + EXT)
+    @cache = new system.db.Cache(@)#  pass db object to support multiple db connections and returned db objects
     return true
 
   # --------------------------------------------------------------------
@@ -823,7 +803,7 @@ class system.db.Driver
   #
   # Close DB Connection
   #
-    # @return [Void]  #
+  # @return [Void]  #
   close: ($next)->
 
     @conn_id = false
@@ -833,12 +813,15 @@ class system.db.Driver
   #
   # Display an error message
   #
-    # @param  [String]  the error message
+  # @param  [String]  the error message
   # @param  [String]  any "swap" values
   # @return	[Boolean]ean	whether to localize the message
   # @return	[String]	sends the application/error_db.php template
   #
   displayError : ($error = '', $swap = '', $native = false) ->
+
+    console.log 'ERROR '+$error
+    return
 
     @i18n.load('db')
 
@@ -848,7 +831,7 @@ class system.db.Driver
       $message = $error
 
     else
-      $message = if ( not is_array($error)) then [str_replace('%s', $swap, @i18n.line($error))] else $error
+      $message = if 'string' is typeof($error) then [str_replace('%s', $swap, @i18n.line($error))] else $error
 
 
     console.log $message
@@ -865,7 +848,7 @@ class system.db.Driver
   # @return [Mixed]  the item with backticks
   #
   protect_identifiers : ($item, $prefix_single = false) ->
-    return @_protect_identifiers($item, $prefix_single)
+    @_protect_identifiers($item, $prefix_single)
 
 
   #
@@ -889,19 +872,17 @@ class system.db.Driver
   # the correct identifiers.
   #
   # @private
-  # @param  [String]    # @return	[Boolean]
+  # @param  [String]  # @return	[Boolean]
   # @param  [Mixed]  # @return	[Boolean]
   # @return	[String]
   #
   _protect_identifiers: ($item, $prefix_single = false, $protect_identifiers = null, $field_exists = true) ->
 
-
-    if not is_bool($protect_identifiers)
+    if not 'boolean' is typeof($protect_identifiers)
       $protect_identifiers = @_protect_identifiers_default
 
-
-    if is_array($item)
-      $escaped_array = {}
+    if Array.isArray($item)
+      $escaped_array = []
 
       for $k, $v of $item
         $escaped_array[@_protect_identifiers($k)] = @_protect_identifiers($v)
@@ -910,42 +891,41 @@ class system.db.Driver
       return $escaped_array
 
     #  Convert tabs or multiple spaces into single spaces
-    $item = preg_replace('/[\\t ]+/', ' ', $item)
+    $item = $item.replace(/[\t ]+/g, ' ')
 
     #  If the item has an alias declaration we remove it and set it aside.
     #  Basically we remove everything to the right of the first space
     $alias = ''
-    if strpos($item, ' ') isnt false
-      $alias = strstr($item, " ")
-      $item = substr($item, 0,  - strlen($alias))
-
+    if ($pos = $item.indexOf(' ')) isnt -1
+      $alias = $item.substr($pos)
+      $item = $item.substr(0, $pos)
 
     #  This is basically a bug fix for queries that use MAX, MIN, etc.
     #  If a parenthesis is found we know that we do not need to
     #  escape the data or add a prefix.  There's probably a more graceful
     #  way to deal with this, but I'm not thinking of it -- Rick
-    if strpos($item, '(') isnt false
+    if $item.indexOf('(') isnt -1
       return $item + $alias
 
 
     #  Break the string apart if it contains periods, then insert the table prefix
     #  in the correct location, assuming the period doesn't indicate that we're dealing
     #  with an alias. While we're at it, we will escape the components
-    if strpos($item, '.') isnt false
-      $parts = explode('.', $item)
+    if $item.indexOf('.') isnt -1
+      $parts = $item.split('.')
 
       #  Does the first segment of the exploded item match
       #  one of the aliases previously identified?  If so,
       #  we have nothing more to do other than escape the item
-      if in_array($parts[0], @ar_aliased_tables)
+      if @ar_aliased_tables.indexOf($parts[0]) isnt -1
         if $protect_identifiers is true
           for $key, $val of $parts
-            if not in_array($val, @_reserved_identifiers)
+            if @_reserved_identifiers.indexOf($val) is -1
               $parts[$key] = @_escape_identifiers($val)
 
 
 
-          $item = implode('.', $parts)
+          $item = $parts.join('.')
 
         return $item + $alias
 
@@ -976,17 +956,17 @@ class system.db.Driver
 
 
         #  Verify table prefix and replace if necessary
-        if @swap_pre isnt '' and strncmp($parts[$i], @swap_pre, strlen(@swap_pre)) is 0
-          $parts[$i] = preg_replace("/^" + @swap_pre + "(\\S+?)/", @dbprefix + "$1", $parts[$i])
+        if @swap_pre isnt '' and $parts[$i].substr(0,@swap_pre.length) is @swap_pre
+          $parts[$i] = $parts[$i].replace(RegExp("^" + @swap_pre + "(\\S+?)"), @dbprefix + "$1")
 
 
         #  We only add the table prefix if it does not already exist
-        if substr($parts[$i], 0, strlen(@dbprefix)) isnt @dbprefix
+        if $parts[$i].substr(0, strlen(@dbprefix)) isnt @dbprefix
           $parts[$i] = @dbprefix + $parts[$i]
 
 
         #  Put the parts back together
-        $item = implode('.', $parts)
+        $item = $parts.join('.')
 
 
       if $protect_identifiers is true
@@ -999,17 +979,17 @@ class system.db.Driver
     #  Is there a table prefix?  If not, no need to insert it
     if @dbprefix isnt ''
       #  Verify table prefix and replace if necessary
-      if @swap_pre isnt '' and strncmp($item, @swap_pre, strlen(@swap_pre)) is 0
-        $item = preg_replace("/^" + @swap_pre + "(\\S+?)/", @dbprefix + "$1", $item)
+      if @swap_pre isnt '' and $item.substr(0, @swap_pre.length) is @swap_pre
+        $item = $item.replace(RegExp("^" + @swap_pre + "(\\S+?)"), @dbprefix + "$1")
 
 
       #  Do we prefix an item with no segments?
-      if $prefix_single is true and substr($item, 0, strlen(@dbprefix)) isnt @dbprefix
+      if $prefix_single is true and $item.substr(0, strlen(@dbprefix)) isnt @dbprefix
         $item = @dbprefix + $item
 
 
 
-    if $protect_identifiers is true and  not in_array($item, @_reserved_identifiers)
+    if $protect_identifiers is true and @_reserved_identifiers.indexOf($item) is -1
       $item = @_escape_identifiers($item)
 
 

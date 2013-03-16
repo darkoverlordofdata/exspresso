@@ -39,7 +39,7 @@ class system.db.mysql.MysqlForge extends system.db.Forge
   # @return	bool
   #
   _create_database : ($name) ->
-    return "CREATE DATABASE " + $name
+    "CREATE DATABASE " + $name
     
   
   #
@@ -50,7 +50,7 @@ class system.db.mysql.MysqlForge extends system.db.Forge
   # @return	bool
   #
   _drop_database : ($name) ->
-    return "DROP DATABASE " + $name
+    "DROP DATABASE " + $name
     
   
   #
@@ -68,44 +68,46 @@ class system.db.mysql.MysqlForge extends system.db.Forge
       #  Numeric field names aren't allowed in databases, so if the key is
       #  numeric, we know it was assigned by PHP and the developer manually
       #  entered the field information, so we'll simply add it to the list
-      if is_numeric($field)
+      if 'number' is typeof($field)
         $sql+="\n\t#{$attributes}"
         
       else
-        $attributes = array_change_key_case($attributes, CASE_UPPER)
+        $tmp = {}
+        $tmp[$key.toUpperCase()] = $val for $key, $val of $attributes
+        $attributes = $tmp
 
         $sql+="\n\t" + @db._protect_identifiers($field)
         
-        if array_key_exists('NAME', $attributes)
+        if $attributes['NAME']?
           $sql+=' ' + @db._protect_identifiers($attributes['NAME']) + ' '
           
         
-        if array_key_exists('TYPE', $attributes)
+        if $attributes['TYPE']?
           $sql+=' ' + $attributes['TYPE']
           
-          if array_key_exists('CONSTRAINT', $attributes)
+          if $attributes['CONSTRAINT']?
             switch $attributes['TYPE']
               when 'decimal','float','numeric'
-                $sql+='(' + implode(',', $attributes['CONSTRAINT']) + ')'
+                $sql+='(' + $attributes['CONSTRAINT'].join(',') + ')'
               when 'enum','set'
-                $sql+='("' + implode('","', $attributes['CONSTRAINT']) + '")'
+                $sql+='("' + $attributes['CONSTRAINT'].join('","') + '")'
               else
                 $sql+='(' + $attributes['CONSTRAINT'] + ')'
                 
-        if array_key_exists('UNSIGNED', $attributes) and $attributes['UNSIGNED'] is true
+        if $attributes['UNSIGNED']? and $attributes['UNSIGNED'] is true
           $sql+=' UNSIGNED'
           
-        if array_key_exists('DEFAULT', $attributes)
+        if $attributes['DEFAULT']?
           $sql+=' DEFAULT \'' + $attributes['DEFAULT'] + '\''
 
-        if array_key_exists('NULL', $attributes)
+        if $attributes['NULL']?
           $sql+=if ($attributes['NULL'] is true) then ' NULL' else ' NOT NULL'
           
-        if array_key_exists('AUTO_INCREMENT', $attributes) and $attributes['AUTO_INCREMENT'] is true
+        if $attributes['AUTO_INCREMENT']? and $attributes['AUTO_INCREMENT'] is true
           $sql+=' AUTO_INCREMENT'
 
       #  don't add a comma on the end of the last field
-      if ++$current_field_count < count($fields)
+      if ++$current_field_count < keys($fields).length
         $sql+=','
 
     return $sql
@@ -124,38 +126,35 @@ class system.db.mysql.MysqlForge extends system.db.Forge
   #
   _create_table : ($table, $fields, $primary_keys, $keys, $if_not_exists) ->
     $sql = 'CREATE TABLE '
-    
-    if $if_not_exists is true
-      $sql+='IF NOT EXISTS '
+
+    $sql+='IF NOT EXISTS ' if $if_not_exists is true
 
     $sql+=@db._escape_identifiers($table) + " ("
     
     $sql+=@_process_fields($fields)
 
-    log_message 'debug', '_create_table 1 $primary_keys %j', $primary_keys
+    if $primary_keys.length > 0
 
-    if count($primary_keys) > 0
-      $key_name = @db._protect_identifiers(implode('_', $primary_keys))
+      $key_name = @db._protect_identifiers($primary_keys.join('_'))
       $primary_keys = @db._protect_identifiers($primary_keys)
-      $sql+=",\n\tPRIMARY KEY " + $key_name + " (" + implode(', ', $primary_keys) + ")"
+      console.log $primary_keys
+      $sql+=",\n\tPRIMARY KEY " + $key_name + " (" + $primary_keys.join(', ') + ")"
 
-    if is_array($keys) and count($keys) > 0
+    if Array.isArray($keys) and $keys.length > 0
+
       for $key in $keys
-        if is_array($key)
-          $key_name = @db._protect_identifiers(implode('_', $key))
+        if Array.isArray($key)
+          $key_name = @db._protect_identifiers($key.join('_'))
           $key = @db._protect_identifiers($key)
 
         else
           $key_name = @db._protect_identifiers($key)
           $key = [$key_name]
 
-        $sql+=",\n\tKEY #{$key_name} (" + implode(', ', $key) + ")"
+        $sql+=",\n\tKEY #{$key_name} (" + $key.join(', ') + ")"
 
     $sql+="\n) DEFAULT CHARACTER SET #{@db.char_set} COLLATE #{@db.dbcollat};"
-    log_message 'debug', '_create_table 2 $primary_keys %j', $primary_keys
 
-    return $sql
-    
   
   #
   # Drop Table
@@ -164,7 +163,7 @@ class system.db.mysql.MysqlForge extends system.db.Forge
   # @return	[String]
   #
   _drop_table : ($table) ->
-    return "DROP TABLE IF EXISTS " + @db._escape_identifiers($table)
+    "DROP TABLE IF EXISTS " + @db._escape_identifiers($table)
     
   
   #
@@ -185,14 +184,12 @@ class system.db.mysql.MysqlForge extends system.db.Forge
     #  DROP has everything it needs now.
     if $alter_type is 'DROP'
       return $sql + @db._protect_identifiers($fields)
-      
-    
+
     $sql+=@_process_fields($fields)
     
     if $after_field isnt ''
       $sql+=' AFTER ' + @db._protect_identifiers($after_field)
-      
-    
+
     return $sql
     
   
@@ -208,8 +205,7 @@ class system.db.mysql.MysqlForge extends system.db.Forge
   #
   _rename_table : ($table_name, $new_table_name) ->
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
-    return $sql
-    
+
 module.exports = system.db.mysql.MysqlForge
 
 #  End of file mysql_forge.coffee

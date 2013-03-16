@@ -27,7 +27,10 @@
     "eco": "*",
     "emailjs": "*",
     "marked": "*",
+    "format-number": "",
     "moment": "*",
+    "sprintf": "*",
+    "glob": "*",
     "utf8": "*"
   },
   "scripts": {

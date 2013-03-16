@@ -33,24 +33,25 @@
 #
 class system.core.Security
 
+  {md5, preg_quote, uniqid} = require(SYSPATH+'core.coffee')
 
   _xss_hash             : ''              # Random Hash for protecting URLs
   _csrf_hash            : ''              # Random Hash for Cross Site Request Forgery Protection Cookie
   _csrf_expire          : 7200            # Expiration time for Cross Site Request Forgery Protection Cookie
   _csrf_token_name      : 'ex_csrf_token' # Token name for Cross Site Request Forgery Protection Cookie
   _csrf_cookie_name     : 'ex_csrf_token' # Cookie name for Cross Site Request Forgery Protection Cookie
-  _never_allowed_str    :                 # List of never allowed strings
-    'document.cookie'   : '[removed]'
-    'document.write'    : '[removed]'
-    '.parentNode'       : '[removed]'
-    '.innerHTML'        : '[removed]'
-    'window.location'   : '[removed]'
-    '-moz-binding'      : '[removed]'
-    '<!--'              : '&lt;!--'
-    '-->'               : '--&gt;'
-    '<![CDATA['         : '&lt;![CDATA['
-    '<comment>'         : '&lt;comment&gt;'
-    
+  _never_allowed_str    : [                 # List of never allowed strings
+    [/document.cookie/gm    , '[removed]']
+    [/document.write/gm     , '[removed]']
+    [/\.parentNode/gm       , '[removed]']
+    [/\.innerHTML/gm        , '[removed]']
+    [/window\.location/gm   , '[removed]']
+    [/-moz-binding/gm       , '[removed]']
+    [/<!--/gm               , '&lt;!--']
+    [/-->/gm                , '--&gt;']
+    [/<!\[CDATA\[/gm        , '&lt;![CDATA[']
+    [/<comment>/gm          , '&lt;comment&gt;']
+  ]
   
   _never_allowed_regex : [                # List of never allowed regex replacement
     'javascript\\s*:'                     #  javascript
@@ -88,7 +89,7 @@ class system.core.Security
     
     log_message('debug', "Security Class Initialized")
     
-  
+
   #
   # Verify Cross Site Request Forgery Protection
   #
@@ -96,20 +97,19 @@ class system.core.Security
   #
   csrfVerify :  ->
     #  If it's not a POST request we will set the CSRF cookie
-    if strtoupper(req.method) isnt 'POST'
+    if @req.method.toUpperCase() isnt 'POST'
       return @csrfSetCookie()
     
-    #  Do the tokens exist in both the _POST and _COOKIE arrays?
+    #  Do the tokens exist in both the POST and COOKIE arrays?
     if not (@req.body[@_csrf_token_name]? and @req.cookies[@_csrf_cookie_name]?)
       @csrfShowError()
     
     #  Do the tokens match?
     if @req.body[@_csrf_token_name] isnt @req.cookies[@_csrf_cookie_name] 
       @csrfShowError()
-      
-    
+
     #  We kill this since we're done and we don't want to
-    #  polute the _POST array
+    #  polute the POST array
     delete @req.body[@_csrf_token_name]
     
     #  Nothing should last forever
@@ -239,12 +239,8 @@ class system.core.Security
     ##
     # Convert all tabs to spaces
     #
-    # This prevents strings like this: ja	vascript
-    # NOTE: we deal with spaces between characters later.
-    # NOTE: preg_replace was found to be amazingly slow here on
-    # large blocks of data, so we use str_replace.
-    ##
-    if strpos($str, "\t") isnt false then $str = str_replace("\t", ' ', $str)
+    #
+    if $str.indexOf('\t') isnt -1 then $str = $str.replace(/\t/mg, ' ')
 
     # Capture converted string for later comparison
     $converted_string = $str
@@ -264,7 +260,7 @@ class system.core.Security
       #  do the long opening tags.
       $str = $str.replace(/<\\?(php)/i, "&lt;?$1")
     else
-      $str = str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $str)
+      $str = $str.replace(/<?/mg, '&lt;?').replace(/?>/mg, '?&gt;')
     ##
     # Compact any exploded words
     #
@@ -278,14 +274,12 @@ class system.core.Security
     for $word in $words
       $temp = ''
 
-      $wordlen = strlen($word)
+      $wordlen = $word.length
       for $i in [0...$wordlen]
         $temp+=substr($word, $i, 1) + "\\s*"
-      $str = preg_replace_callback('#(' + substr($temp, 0,  - 3) + ')(\\W)#im', [@, '_compact_exploded_words'], $str)
+
+      $str = $str.replace(RegExp('(' + substr($temp, 0,  - 3) + ')(\\W)', 'im'), @_compact_exploded_words)
     # Remove disallowed Javascript in links or img tags
-    # We used to do some version comparisons and use of stripos for PHP5,
-    # but it is dog slow compared to these simplified non-capturing
-    # preg_match(), especially if the pattern exists in the string
     #
     while true
       #  We only want to do this when it is followed by a non-word character
@@ -314,8 +308,8 @@ class system.core.Security
     # Becomes: &lt;blink&gt;
     #
     $naughty = 'alert|applet|audio|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|isindex|layer|link|meta|object|plaintext|style|script|textarea|title|video|xml|xss'
-    $str = preg_replace_callback('#<(/*\\s*)(' + $naughty + ')([^><]*)([><]*)#img', [@, '_sanitize_naughty_html'], $str)
-    
+
+    $str = $str.replace(RegExp('<(/*\\s*)(' + $naughty + ')([^><]*)([><]*)', 'img'), @_sanitize_naughty_html)
     #
     # Sanitize naughty scripting elements
     #
@@ -328,7 +322,8 @@ class system.core.Security
     # For example:	eval('some code')
     # Becomes:		eval&#40;'some code'&#41;
     #
-    $str = preg_replace('#(alert|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\\s*)\\((.*?)\\)#mig', "$1$2&#40;$3&#41;", $str)
+    $re = RegExp('(alert|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\\s*)\\((.*?)\\)', 'mig')
+    $str = $str.replace($re, "$1$2&#40;$3&#41;")
 
     #  Final clean up
     #  This adds a bit of extra precaution in case
@@ -361,7 +356,10 @@ class system.core.Security
   xss_hash :  ->
     if @_xss_hash is '' 
       # mt_srand()
-      @_xss_hash = md5(''+time() + mt_rand(0, 1999999999))
+
+      Math.floor(Math.random() * 1999999999)
+
+      @_xss_hash = md5(''+time() + (Math.floor(Math.random() * 1999999999)))
 
     return @_xss_hash
 
@@ -381,15 +379,13 @@ class system.core.Security
   # @return	[String] the decoded string value
   #
   entityDecode : ($str, $charset = 'UTF-8') ->
-    if stristr($str, '&') is false 
-      return $str
-      
-    
-    #$str = html_entityDecode($str, ENT_COMPAT, $charset)
+
+    return $str if $str.indexOf('&') is -1
+
     $str = htmlspecialchars($str)
-    $str = preg_replace('~&#x(0*[0-9a-f]{2,5})~i', 'chr(hexdec("$1"))', $str)
-    return preg_replace('~&#([0-9]{2,4})~', 'chr($1)', $str)
-    
+    $str = $str.replace(/&#x(0*[0-9a-f]{2,5})/ig, ($0, $1) -> String.fromCharCode(parseInt($1, 16)))
+    $str = $str.replace(/&#([0-9]{2,4})/g, ($0, $1) -> String.fromCharCode(parseInt($1, 10)))
+
   
   #
   # Filename Security
@@ -401,7 +397,7 @@ class system.core.Security
   # @return	[String] clean string
   #
   sanitizeFilename : ($str, $relative_path = false) ->
-    $bad = [
+    $ruin = [
       "../" 
       "<!--" 
       "-->" 
@@ -436,12 +432,16 @@ class system.core.Security
       ]
     
     if not $relative_path 
-      $bad.push './'
-      $bad.push '/'
+      $ruin.push './'
+      $ruin.push '/'
       
     
     $str = remove_invisible_characters($str, false)
-    return stripslashes(str_replace($bad, '', $str))
+
+    for $bad in $ruin # Long Player
+      $str = $str.replace($bad, '')
+
+    return stripslashes($str)
     
   
   #
@@ -454,9 +454,10 @@ class system.core.Security
   # @param	type
   # @return	type
   #
-  _compact_exploded_words : ($matches...) ->
-    return preg_replace('/\\s+/gm', '', $matches[1]) + $matches[2]
-    
+  _compact_exploded_words : ($0, $1, $2) ->
+
+    $1.replace(/\\s+/gm, '')+$2
+
   
   #
   # Remove Evil HTML Attributes (like evenhandlers and style)
@@ -477,39 +478,33 @@ class system.core.Security
   _remove_evil_attributes : ($str, $is_image) ->
 
     #  All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
-    $evil_attributes = ['on\\w*', 'style', 'xmlns', 'formaction']
+    #
+    # Adobe Photoshop puts XML metadata into JFIF images,
+    # including namespacing, so we have to allow this for images.
+    #
+    $evil_attributes = if $is_image then ['on\\w*', 'style', 'formaction']
+    else ['on\\w*', 'style', 'xmlns', 'formaction']
     
-    if $is_image is true
-      #
-      # Adobe Photoshop puts XML metadata into JFIF images,
-      # including namespacing, so we have to allow this for images.
-      #
-      delete $evil_attributes[array_search('xmlns', $evil_attributes)]
-      
-    
+
     while true
       $count = 0
       $attribs = []
       
       #  find occurrences of illegal attribute strings without quotes
-      $matches = preg_match_all('/(' + implode('|', $evil_attributes) + ')\\s*=\\s*([^\\s>]*)/img', $str, $matches, PREG_SET_ORDER)
-
-      if $matches?
-        for $attr in $matches
-          $attribs.push preg_quote($attr[0], '/')
+      $re = RegExp('(' + $evil_attributes.join('|') + ')\\s*=\\s*([^\\s>]*)', 'img')
+      while ($match = $re.exec($str)) isnt null
+        $attribs.push preg_quote($match)
 
       #  find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
-      $matches = preg_match_all("/(" + implode('|', $evil_attributes) + ")\\s*=\\s*(\\x22|\\x27)([^\\\\2]*?)(\\\\2)/img", $str, $matches, PREG_SET_ORDER)
-
-      if $matches?
-        for $attr in $matches
-          $attribs.push preg_quote($attr[0], '/')
+      $re = RegExp("(" + $evil_attributes.join('|') + ")\\s*=\\s*(\\x22|\\x27)([^\\\\2]*?)(\\\\2)", "img")
+      while ($match = $re.exec($str)) isnt null
+        $attribs.push preg_quote($match)
 
       #  replace illegal attribute strings that are inside an html tag
 
-      if count($attribs) > 0
+      if $attribs.length > 0
         #$str = preg_replace("/<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\\s><])([><]*)/i", '<$1 $3$5$6$7', $str,  - 1, $count)
-        $re = new RegExp("<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\\s><])([><]*)", 'i')
+        $re = RegExp("<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + $attribs.join('|') + ")(.*?)([\\s><])([><]*)", 'igm')
         $count = $re.match($str).length
         $str = $str.replace($re, '<$1 $3$5$6$7')
         counsole.log $re
@@ -528,16 +523,13 @@ class system.core.Security
   # @param  [Array]
   # @return	[String]
   #
-  _sanitize_naughty_html : ($matches...) =>
+  _sanitize_naughty_html : ($0, $1, $2, $3, $4) =>
     #  encode opening brace
-    $str = '&lt;' + $matches[1] + $matches[2] + $matches[3]
+    $str = '&lt;' + $1 + $2 + $3
     
     #  encode captured opening or closing brace to prevent recursive vectors
-    $str+=str_replace(['>', '<'], ['&gt;', '&lt;'], 
-    $matches[4])
-    
-    return $str
-    
+    $str += $4(/>/gm, '&gt;').replace(/</gm, '&lt;')
+
   
   #
   # JS Link Removal
@@ -551,12 +543,12 @@ class system.core.Security
   # @param  [Array]
   # @return	[String]
   #
-  _js_link_removal : ($match...) =>
-    return str_replace($match[1], preg_replace('#href=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|data\\s*:)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
-    ), 
-    $match[0]
-    )
-    
+  _js_link_removal : ($0, $1) =>
+
+    $re = RegExp('href=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|data\\s*:)', 'mig')
+
+    $0.replace($1, @_filter_attributes($1.replace(/[<>]/mg, '')).replace($re, ''))
+
   
   #
   # JS Image Removal
@@ -567,13 +559,13 @@ class system.core.Security
   # @param  [Array]
   # @return	[String]
   #
-  _js_img_removal : ($match...) =>
-    return str_replace($match[1], preg_replace('#src=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|base64\\s*,)#mig', '', @_filter_attributes(str_replace(['<', '>'], '', $match[1]))
-    ), 
-    $match[0]
-    )
-    
-  
+  _js_img_removal : ($0, $1) =>
+
+    $re = RegExp('src=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|base64\\s*,)', 'mig')
+
+    $0.replace($1, @_filter_attributes($1.replace(/[<>]/mg, '')).replace($re, ''))
+
+
   #
   # Attribute Conversion
   #
@@ -583,9 +575,10 @@ class system.core.Security
   # @param  [Array]
   # @return	[String]
   #
-  _convert_attribute : ($match...) =>
-    return str_replace(['>', '<', '\\'], ['&gt;', '&lt;', '\\\\'], $match[0])
-    
+  _convert_attribute : ($0) =>
+
+    $0.replace(/>/gm, '&gt;').replace(/</gm, '&lt;').replace(/\\/gm, '\\\\')
+
   
   #
   # Filter Attributes
@@ -598,13 +591,13 @@ class system.core.Security
   #
   _filter_attributes : ($str) ->
     $out = ''
-    
-    if preg_match_all('#\\s*[a-z\\-]+\\s*=\\s*(\\x22|\\x27)([^\\\\1]*?)\\\\1#img', $str, $matches)
-      for $match in $matches[0]
-        $out+=preg_replace("#/\\*.*?\\*/#mg", '', $match)
 
-    return $out
-    
+
+    $re = RegExp('\\s*[a-z\\-]+\\s*=\\s*(\\x22|\\x27)([^\\\\1]*?)\\\\1', 'img')
+    while ($match = $re.exec($str)) isnt null
+      $out+= $match.replace(/\/\\*.*?\\*\//mg, '')
+    $out
+
   
   #
   # HTML Entity Decode Callback
@@ -615,8 +608,8 @@ class system.core.Security
   # @param  [Array]
   # @return	[String]
   #
-  _decode_entity : ($match...) =>
-    return @entityDecode($match[0], strtoupper(config_item('charset')))
+  _decode_entity : ($0) =>
+    @entityDecode($0, (config_item('charset').toUpperCase()))
     
   
   #
@@ -634,9 +627,9 @@ class system.core.Security
     #
     
     #  901119URL5918AMP18930PROTECT8198
-    
-    $str = preg_replace('|\\&([a-z\\_0-9\\-]+)\\=([a-z\\_0-9\\-]+)|i', @xss_hash() + "$1=$2", $str)
-    
+
+    $str = $str.replace(/\\&([a-z\\_0-9\\-]+)\\=([a-z\\_0-9\\-]+)/igm, @xss_hash() + "$1=$2")
+
     #
     # Validate standard character entities
     #
@@ -644,20 +637,20 @@ class system.core.Security
     # the conversion of entities to ASCII later.
     #
     #
-    $str = preg_replace('#(&\\#?[0-9a-z]{2,})([\\x00-\\x20])*;?#i', "$1;$2", $str)
-    
+    $str = $str.replace(/(&\\#?[0-9a-z]{2,})([\\x00-\\x20])*;?/igm, "$1;$2")
+
     #
     # Validate UTF16 two byte encoding (x00)
     #
     # Just as above, adds a semicolon if missing.
     #
     #
-    $str = preg_replace('#(&\\#x?)([0-9A-F]+);?#i', "$1$2;", $str)
-    
+    $str = $str.replace(/(&\\#x?)([0-9A-F]+);?/igm, "$1$2;")
+
     #
     # Un-Protect GET variables in URLs
     #
-    $str = str_replace(@xss_hash(), '&', $str)
+    $str = $str.replace(RegExp(@xss_hash(), 'igm'), '&')
     
     return $str
     
@@ -672,10 +665,12 @@ class system.core.Security
   # @return 	string
   #
   _do_never_allowed : ($str) ->
-    $str = str_replace(array_keys(@_never_allowed_str), @_never_allowed_str, $str)
-    
+
+    for $pair in @_never_allowed_str
+      $str = $str.replace($pair[0], $paid[1])
+
     for $regex in @_never_allowed_regex
-      $str = preg_replace('#' + $regex + '#im', '[removed]', $str)
+      $str = $str.replace($regex, '[removed]')
 
     return $str
     
@@ -692,10 +687,10 @@ class system.core.Security
       #  We don't necessarily want to regenerate it with
       #  each page load since a page could contain embedded
       #  sub-pages causing this feature to fail
-      if @req.cookies[@_csrf_cookie_name]?  and preg_match('#^[0-9a-f]{32}$#i', @req.cookies[@_csrf_cookie_name])?
+      if @req.cookies[@_csrf_cookie_name]?  and /^[0-9a-f]{32}$/im.test(@req.cookies[@_csrf_cookie_name])
         return @_csrf_hash = @req.cookies[@_csrf_cookie_name]
       
-      return @_csrf_hash = md5(uniqid(rand(), true))
+      return @_csrf_hash = md5(uniqid(Math.floor(Math.random() * 2147483647)))
     
     return @_csrf_hash
 

@@ -143,8 +143,7 @@ class system.core.URI
       return @_keyval[$n]
 
     if @[$total_segments]() < $n
-      if count($default) is 0
-        return {}
+      return {} if Object.keys($default).length is 0
 
       $retval = {}
       for $val in $default
@@ -155,7 +154,7 @@ class system.core.URI
     $i = 0
     $lastval = ''
     $retval = {}
-    for $seg in array_slice(@[$segment_array](), ($n - 1))
+    for $seg in @[$segment_array]().slice(($n - 1))
       if $i2
         $retval[$lastval] = $seg
 
@@ -167,7 +166,7 @@ class system.core.URI
 
     if count($default) > 0
       for $val in $default
-        if not array_key_exists($val, $retval)
+        if not $retval[$val]?
           $retval[$val] = false
 
     #  Cache the array for reuse
@@ -187,7 +186,7 @@ class system.core.URI
       $temp.push $key
       $temp.push $val
 
-    return implode('/', $temp)
+    $temp.join('/')
 
 
   #
@@ -284,7 +283,7 @@ class system.core.URI
   # @return	[String] the re-routed uri string
   #
   ruriString :  ->
-    '/' + implode('/', @rsegment_array())
+    '/'+@rsegment_array().join('/')
 
 
 

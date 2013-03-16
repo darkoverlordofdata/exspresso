@@ -38,7 +38,7 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
   # @return	bool
   #
   _list_databases :  ->
-    return "SHOW DATABASES"
+    "SHOW DATABASES"
     
   
   #
@@ -50,7 +50,7 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
   # @param  [String]  the table name
   # @return [Object]  #
   _optimize_table: ($table) ->
-    return "OPTIMIZE TABLE " + @db._escape_identifiers($table)
+    "OPTIMIZE TABLE " + @db._escape_identifiers($table)
     
   
   #
@@ -62,7 +62,7 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
   # @param  [String]  the table name
   # @return [Object]  #
   _repair_table: ($table) ->
-    return "REPAIR TABLE " + @db._escape_identifiers($table)
+    "REPAIR TABLE " + @db._escape_identifiers($table)
     
   
   #  --------------------------------------------------------------------
@@ -73,8 +73,7 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
   # @param  [Array]  Preferences
   # @return [Mixed]  #
   _backup: ($params = {}, $next) ->
-    if count($params) is 0
-      return false
+    return false if keys($params).length is 0
 
     #  Extract the prefs for simplicity
     #extract($params)
@@ -90,7 +89,8 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
 
     $output = ''
     $sql_list = []
-    $tables = array_diff($tables, $ignore)
+    $tables = $table for $table in $tables when $ignore.indexOf($table) is -1
+
     for $table in $tables #  Is the table in the "ignore" list?
       $sql_list.push "SHOW CREATE TABLE `" + @db.database + '`.' + $table
       $sql_list.push "SELECT * FROM #{$table}"
@@ -98,7 +98,7 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
     @db.queries $sql_list, ($err, $results) =>
 
       #  No result means the table name was invalid
-      if $err then $next $err
+      $next($err) if $err
 
       for $query, $index in $results
         $table = $tables[Math.floor($index/2)]
@@ -141,12 +141,12 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
           while $field = mysql_fetch_field($query.result_id)
             #  Most versions of MySQL store timestamp as a string
             #  Create a string of field names
-            $is_int[$i] = if in_array(strtolower(mysql_field_type($query.result_id, $i)), ['tinyint', 'smallint', 'mediumint', 'int', 'bigint'], true) then true else false
+            $is_int[$i] = if ['tinyint', 'smallint', 'mediumint', 'int', 'bigint'].indexOf(mysql_field_type($query.result_id, $i).toUpperCase()) is -1 then false else true
             $field_str+='`' + $field.name + '`, '
             $i++
 
           #  Trim off the end comma
-          $field_str = preg_replace("/, $/", "", $field_str)
+          $field_str = $field_str.replace(/, $/, '')
 
           #  Build the insert string
           for $row in $query.result_array()
@@ -171,14 +171,14 @@ class system.db.mysql.MysqlUtility extends system.db.Utility
               $i++
 
             #  Remove the comma at the end of the string
-            $val_str = preg_replace("/, $/", "", $val_str)
+            $val_str = $val_str.replace(/, $/, '')
 
             #  Build the INSERT string
             $output+='INSERT INTO ' + $table + ' (' + $field_str + ') VALUES (' + $val_str + ');' + $newline
 
           $output+=$newline + $newline
 
-      $next null, $output
+      $next(null, $output)
     
 module.exports = system.db.mysql.MysqlUtility
 

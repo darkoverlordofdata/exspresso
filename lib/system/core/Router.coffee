@@ -34,8 +34,7 @@ class system.core.Router
   Modules = require(SYSPATH+'core/Modules.coffee')
   URI = require(SYSPATH+'core/URI.coffee')
 
-  is_dir = ($path) -> fs.existsSync($path) and fs.statSync($path).isDirectory()
-  is_file = ($path) -> fs.existsSync($path) and fs.statSync($path).isFile()
+  {is_dir, is_file} = require(SYSPATH+'core.coffee')
   #
   # @property [Object] Hash of bindings for each route
   #

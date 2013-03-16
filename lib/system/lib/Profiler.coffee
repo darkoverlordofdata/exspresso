@@ -34,6 +34,10 @@
 #
 class system.lib.Profiler
 
+  util = require('util')
+  format = require('format-number')
+  {ucfirst, ucwords, preg_quote} = require(SYSPATH+'core.coffee')
+
   _benchmarks         : true
   _get                : true
   _memory_usage       : true
@@ -115,7 +119,8 @@ class system.lib.Profiler
     for $key, $val of @bm.marker
       #  We match the "end" marker so that the list ends
       #  up in the order that it was defined
-      if ($match = preg_match("/(.+?)_end/i", $key))?
+      #if ($match = preg_match("/(.+?)_end/i", $key))?
+      if ($match = $key.match(/(.+?)_end/i))?
         if @bm.marker[$match[1] + '_end']?  and @bm.marker[$match[1] + '_start']?
           $profile[$match[1]] = @bm.elapsedTime($match[1] + '_start', $key)
 
@@ -131,9 +136,8 @@ class system.lib.Profiler
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $key, $val of $profile
-      $key = ucwords(str_replace(['_', '-'], ' ', $key))
+      $key = ucwords($key.replace(/[_\-]/gm, ' '))
       $output+="<tr><td>" + $key + "</td><td>" + $val + "&nbsp;ms</td></tr>\n"
-
 
     $output+="</table></dd>\n"
     $output+="</dl>"
@@ -188,10 +192,8 @@ class system.lib.Profiler
         for $key, $val of $db.queries
           $time = $db.query_times[$key]+'&nbsp;ms'
 
-          #$val = highlight_code($val, ENT_QUOTES)
-
           for $bold in $highlight
-            $val = str_replace($bold, '<strong>' + $bold + '</strong>', $val)
+            $val = $val.replace(RegExp(preg_quote($bold), 'gm'), '<strong>' + $bold + '</strong>')
 
           $output+="<tr><td>" + $time + "</td><td><pre class='prettyprint'><code class='lang-sql'>" + $val + "</code></pre></td></tr>\n"
 
@@ -257,7 +259,7 @@ class system.lib.Profiler
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       for $key, $val of @req.body
-        if not is_numeric($key)
+        if 'number' isnt typeof($key)
           $key = "'" + $key + "'"
 
 
@@ -333,17 +335,15 @@ class system.lib.Profiler
   # @return	[String]
   #
   _compile_memory_usage: () ->
+
     $output = "\n\n"
     $output+='<dl id="ex_profiler_memory_usage">'
     $output+="\n"
     $output+='<dt>' + @i18n.line('profiler_memory_usage') + '</dt>'
     $output+="\n"
 
-    if function_exists('memory_get_usage') and ($usage = memory_get_usage()) isnt ''
-      $output+="<dd>" + number_format($usage) + ' bytes</dd>'
-
-    else
-      $output+="<dd><em>" + @i18n.line('profiler_no_memory_usage') + "</em></dd>"
+    $format = format(seperator: ',', decimal: '.', padRight: 0, truncate: 0)
+    $output+="<dd>" + $format(process.memoryUsage().heapUsed) + ' bytes</dd>'
 
     $output+="</dl>"
 
@@ -379,7 +379,7 @@ class system.lib.Profiler
     $output+="<tr><td>request&nbsp;uri</td><td>" + @req.url.split('?')[0] + "</td></tr>\n"
     $output+="<tr><td>host&nbsp;name</td><td>" + @req.headers.host + "</td></tr>\n"
     $output+="<tr><td>port</td><td>" + @server.port + "</td></tr>\n"
-    $output+="<tr><td>protocol</td><td>" + strtoupper(protocol(@req.connection.encrypted))+"/"+@req.httpVersion + "</td></tr>\n"
+    $output+="<tr><td>protocol</td><td>" + protocol(@req.connection.encrypted).toUpperCase()+"/"+@req.httpVersion + "</td></tr>\n"
     $output+="<tr><td></td><td>" + @server.version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version + "</td></tr>\n"
 
 
@@ -405,9 +405,7 @@ class system.lib.Profiler
     $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $config, $val of @config.config
-      if is_array($val)
-        $val = print_r($val, true)
-
+      $val = util.inspect($val) if 'object' is typeof($val)
       $output+="<tr><td>" + $config + "</td><td>" + htmlspecialchars($val) + "</td></tr>\n"
 
     $output+="</table></dd>\n"
@@ -425,7 +423,8 @@ class system.lib.Profiler
   run: () ->
 
     $elapsed = @bm.elapsedTime('total_execution_time_start', 'total_execution_time_end')
-    $memory = if ( not function_exists('memory_get_usage')) then '0' else round(memory_get_usage() / 1024 / 1024, 2) + 'MB'
+    $memory = (Math.round((process.memoryUsage().heapUsed / 1048576) * 100) / 100)+'MB'
+
     $output = """
       <footer id="footer">
         <div class="container">

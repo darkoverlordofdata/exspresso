@@ -32,9 +32,9 @@
 class system.db.Forge
 
   db            : null
-  fields        : []
-  keys          : []
-  primary_keys  : []
+  fields        : null
+  keys          : null
+  primary_keys  : null
   db_char_set   : ''
   
   #
@@ -45,6 +45,9 @@ class system.db.Forge
   #
   constructor: ($controller, $db) ->
 
+    @fields        = {}
+    @keys          = []
+    @primary_keys  = []
     @db = $db
     @_reset() # always initialize arrays in the constructor!
     log_message('debug', "Database Forge Class Initialized")
@@ -53,12 +56,12 @@ class system.db.Forge
   #
   # Create database
   #
-    # @param  [String]  the database name
+  # @param  [String]  the database name
   # @return	bool
   #
   createDatabase: ($db_name, $next) ->
     $sql = @_create_database($db_name)
-    if is_bool($sql)
+    if 'boolean' is typeof($sql)
       $next $sql
       
     @db.query($sql, $next)
@@ -67,13 +70,13 @@ class system.db.Forge
   #
   # Drop database
   #
-    # @param  [String]  the database name
+  # @param  [String]  the database name
   # @return	bool
   #
   dropDatabase: ($db_name, $next) ->
     $sql = @_drop_database($db_name)
-    
-    if is_bool($sql)
+
+    if 'boolean' is typeof($sql)
       $next $sql
 
     @db.query($sql, $next)
@@ -82,11 +85,12 @@ class system.db.Forge
   #
   # Add Key
   #
-    # @param  [String]  key
+  # @param  [String]  key
   # @param  [String]  type
-  # @return [Void]  #
+  # @return [Void]
+  #
   addKey: ($key = '', $primary = false) ->
-    if is_array($key)
+    if 'object' is typeof($key)
       for $one in $key
         @addKey($one, $primary)
 
@@ -106,14 +110,15 @@ class system.db.Forge
   #
   # Add Field
   #
-    # @param  [String]  collation
-  # @return [Void]  #
+  # @param  [String]  collation
+  # @return [Void]
+  #
   addField: ($field = '') ->
     if $field is ''
       show_error('Field information is required.')
       
     
-    if is_string($field)
+    if 'string' is typeof($field)
       if $field is 'id'
         @addField
           'id':
@@ -124,24 +129,23 @@ class system.db.Forge
         @addKey 'id', true
         
       else 
-        if strpos($field, ' ') is false
+        if $field.indexOf(' ') is -1
           show_error('Field information is required for that operation.')
 
         @fields.push $field
 
-    if is_array($field)
-      @fields = array_merge(@fields, $field)
+    else
+      @fields[$key] = $val for $key, $val of $field
 
     
   
   #
   # Create Table
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	bool
   #
   createTable: ($table = '', $if_not_exists = false, $next) ->
-    log_message 'debug', '>DB_forge::create_database'
     if typeof $if_not_exists is 'function'
       $next = $if_not_exists
       $if_not_exists = false
@@ -149,11 +153,10 @@ class system.db.Forge
     if $table is ''
       show_error 'A table name is required for that operation.'
 
-    if count(@fields) is 0
+    if keys(@fields).length is 0
       show_error 'Field information is required.'
 
     $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, $if_not_exists)
-    log_message 'debug', '>SQL: %s', $sql
     @_reset()
     @db.query $sql, $next
 
@@ -161,13 +164,13 @@ class system.db.Forge
   #
   # Drop Table
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	bool
   #
   dropTable: ($table_name, $next) ->
     $sql = @_drop_table(@db.dbprefix + $table_name)
-    
-    if is_bool($sql)
+
+    if 'boolean' is typeof($sql)
       $next $sql
 
     @db.query($sql, $next)
@@ -176,7 +179,7 @@ class system.db.Forge
   #
   # Rename Table
   #
-    # @param  [String]  the old table name
+  # @param  [String]  the old table name
   # @param  [String]  the new table name
   # @return	bool
   #
@@ -191,7 +194,7 @@ class system.db.Forge
   #
   # Column Add
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [String]  the column name
   # @param  [String]  the column definition
   # @return	bool
@@ -210,7 +213,7 @@ class system.db.Forge
     for $k, $v of $field
       @addField array($k, $field[$k])
       
-      if count(@fields) is 0
+      if keys(@fields).length is 0
         show_error('Field information is required.')
 
       $sql = @_alter_table('ADD', @db.dbprefix + $table, @fields, $after_field)
@@ -223,7 +226,7 @@ class system.db.Forge
   #
   # Column Drop
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [String]  the column name
   # @return	bool
   #
@@ -244,7 +247,7 @@ class system.db.Forge
   #
   # Column Modify
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [String]  the column name
   # @param  [String]  the column definition
   # @return	bool
@@ -263,7 +266,7 @@ class system.db.Forge
 
       @addField array($k, $field[$k])
       
-      if count(@fields) is 0
+      if @fields.length is 0
         show_error('Field information is required.')
 
       $sql = @_alter_table('CHANGE', @db.dbprefix + $table, @fields)
@@ -278,7 +281,8 @@ class system.db.Forge
   # Resets table creation vars
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _reset :  ->
     @fields = []
     @keys = []

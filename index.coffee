@@ -36,9 +36,13 @@
 
 
 #
+# Load the core api module
+#
+core = require('./lib/system/core.coffee')
+#
 #   Add a php-ish api
 #
-require('not-php').export global
+require('./not-php').export global, core
 
 #
 # set the environment
@@ -111,10 +115,9 @@ else
   define 'MODPATH', SYSPATH+$module_folder+'/'
 
 #
-# Load the core api module
+#   Initialize the API
 #
-require SYSPATH+'core.coffee'
-
+core()
 #
 #   Create the main controller
 #

@@ -34,6 +34,9 @@
 #
 class system.lib.DriverLibrary
 
+  {ucfirst} = require(SYSPATH+'core.coffee')
+  fs = require('fs')
+
   #
   # Load driver
   #
@@ -44,15 +47,14 @@ class system.lib.DriverLibrary
     
     UNABLE_TO = "Unable to load the requested driver: %s"
 
-    $lib_name = str_replace(config_item('subclass_prefix'), '', @constructor.name)
-    #$class_name = ucfirst($lib_name + '_' + $driver)
+    $lib_name = @constructor.name.replace(config_item('subclass_prefix'), '')
     $class_name = ucfirst($driver) + ucfirst($lib_name)
     $subdir = $lib_name.toLocaleLowerCase()+'/drivers/'
     $class = null
 
     #  Is this a class extension request?
-    if file_exists($file = APPPATH+'lib/'+$subdir+config_item('subclass_prefix')+$class_name+EXT)
-      if not file_exists($baseclass = SYSPATH+'lib/'+$subdir+$class_name+EXT)
+    if fs.existsSync($file = APPPATH+'lib/'+$subdir+config_item('subclass_prefix')+$class_name+EXT)
+      if not fs.existsSync($baseclass = SYSPATH+'lib/'+$subdir+$class_name+EXT)
         log_message('error', UNABLE_TO, $class_name) if show_error(UNABLE_TO, $class_name)
 
       require $baseclass
@@ -60,7 +62,7 @@ class system.lib.DriverLibrary
 
     else
       for $path in exspresso.load.getPackagePaths(true)
-        if file_exists($file = $path+'lib/'+$subdir+$class_name+EXT)
+        if fs.existsSync($file = $path+'lib/'+$subdir+$class_name+EXT)
           $class = require($file)
           break
 

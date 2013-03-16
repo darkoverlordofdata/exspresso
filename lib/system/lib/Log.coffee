@@ -25,8 +25,9 @@
 
 class system.lib.Log
 
-  fs              = require('fs')                         # Standard POSIX file i/o
-  util            = require('util')
+  fs = require('fs')
+  util = require('util')
+  {is_dir} = require(SYSPATH+'core.coffee')
 
   _log_path       : ''
   _threshold      : 1

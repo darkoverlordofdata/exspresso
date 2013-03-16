@@ -119,9 +119,9 @@ class system.db.Result
   # @return [Mixed]  either a result object or array
   #
   row : ($n = 0, $type = 'object') ->
-    if not is_numeric($n)
+    if not 'number' is typeof($n)
       #  We cache the row data for subsequent uses
-      if not is_array(@_row_data)
+      if not 'object' is typeof(@_row_data)
         @_row_data = @row_array(0)
         
       
@@ -146,17 +146,15 @@ class system.db.Result
   # @return [Object]
   #
   setRow: ($key, $value = null) ->
-    if not is_array(@_row_data)
+    if not 'object' is typeof(@_row_data)
       @_row_data = @rowArray(0)
 
-
-    if is_array($key)
+    if 'object' is typeof($key)
       for $k, $v of $key
         @_row_data[$k] = $v
       return
 
-
-    if $key isnt '' and  not is_null($value)
+    if $key isnt '' and  $value isnt null
       @_row_data[$key] = $value
 
 
@@ -168,13 +166,10 @@ class system.db.Result
   customRowObject : ($n, $type) ->
     $result = @customResultObject($type)
 
-    if count($result) is 0
-      return $result
-
+    return $result if $result.length is 0
 
     if $n isnt @_current_row and $result[$n]?
       @_current_row = $n
-
 
     return $result[@_current_row]
 
