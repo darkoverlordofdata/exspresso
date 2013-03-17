@@ -74,7 +74,7 @@ class system.lib.UserAgent
     if @req.headers['user-agent']
       @_agent = trim(@req.headers['user-agent'])
 
-    if not is_null(@_agent)
+    if @_agent?
       if @_load_agent_file()
         @_compile_data()
 
@@ -87,7 +87,7 @@ class system.lib.UserAgent
   # @return	bool
   #
   _load_agent_file: () ->
-    if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/user_agents.coffee')
+    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/user_agents.coffee')
       $config = require(APPPATH + 'config/' + ENVIRONMENT + '/user_agents.coffee')
 
     else if is_file(APPPATH + 'config/user_agents.coffee')
@@ -196,7 +196,7 @@ class system.lib.UserAgent
 
     if is_array(@_mobiles) and count(@_mobiles) > 0
       for $key, $val of @_mobiles
-        if false isnt (strpos(strtolower(@_agent), $key))
+        if -1 isnt (@_agent.toLowerCase().indexOf($key))
           @_is_mobile = true
           @_mobile = $val
           return true
@@ -213,9 +213,9 @@ class system.lib.UserAgent
 
   # req.acceptedLanguages
     if (count(@_languages) is 0) and @req.headers['accept-language']?  and @req.headers['accept-language'] isnt ''
-      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', strtolower(trim(@req.headers['accept-language'])))
+      $languages = preg_replace('/(;q=[0-9\\.]+)/i', '', trim(@req.headers['accept-language'].toLowerCase()))
 
-      @_languages = explode(',', $languages)
+      @_languages = $languages.split(',')
 
 
     if count(@_languages) is 0
@@ -232,9 +232,9 @@ class system.lib.UserAgent
 
   # req.acceptedCharsets
     if (count(@_charsets) is 0) and @req.headers['accept-charset']?  and @req.headers['accept-charset'] isnt ''
-      $charsets = preg_replace('/(;q=.+)/i', '', strtolower(trim(@req.headers['accept-charset'])))
+      $charsets = preg_replace('/(;q=.+)/i', '', trim(@req.headers['accept-charset'].toLowerCase()))
 
-      @_charsets = explode(',', $charsets)
+      @_charsets = $charsets.split(',')
 
 
     if count(@_charsets) is 0
@@ -257,7 +257,7 @@ class system.lib.UserAgent
       return true
 
   #  Check for a specific browser
-    array_key_exists($key, @_browsers) and @_browser is @_browsers[$key]
+    @_browsers[$key]? and @_browser is @_browsers[$key]
 
   #
   # Is Robot
@@ -274,7 +274,7 @@ class system.lib.UserAgent
       return true
 
   #  Check for a specific robot
-    array_key_exists($key, @_robots) and @_robot is @_robots[$key]
+    @_robots[$key]? and @_robot is @_robots[$key]
 
   #
   # Is Mobile
@@ -291,7 +291,7 @@ class system.lib.UserAgent
       return true
 
   #  Check for a specific robot
-    array_key_exists($key, @_mobiles) and @_mobile is @_mobiles[$key]
+    @_mobiles[$key]? and @_mobile is @_mobiles[$key]
 
 
   #
@@ -393,7 +393,7 @@ class system.lib.UserAgent
   # @return	bool
   #
   acceptLang: ($lang = 'en') ->
-    in_array(strtolower($lang), @_languages(), true)
+    in_array($lang.toLowerCase(), @_languages(), true)
 
   
   #
@@ -402,7 +402,7 @@ class system.lib.UserAgent
   # @return	bool
   #
   acceptCharset: ($charset = 'utf-8') ->
-    in_array(strtolower($charset), @_charsets(), true)
+    in_array($charset.toLowerCase(), @_charsets(), true)
 
 
 module.exports = system.lib.UserAgent

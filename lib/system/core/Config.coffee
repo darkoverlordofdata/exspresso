@@ -125,7 +125,7 @@ class system.core.Config
 
         if fs.existsSync($file_path)
           $found = true
-          $config = array_merge($config, require($file_path))
+          $config[$key] = $val for $key, $val of require($file_path)
 
       if not $found
         if $fail_gracefully is true

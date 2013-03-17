@@ -63,7 +63,7 @@ class system.db.Utility extends system.db.Forge
         $dbs = []
         if $query.num_rows > 0
           for $row in $query.result_array()
-            $dbs.push current($row)
+            $dbs.push $row[Object.keys($row)[0]]
 
         @data_cache['db_names'] = $dbs
 
@@ -121,7 +121,7 @@ class system.db.Utility extends system.db.Forge
       $sql_list = []
       for $table_name in $table_list
         $sql = @_optimize_table($table_name)
-        $sql_list.push $sql unless is_bool($sql)
+        $sql_list.push $sql unless 'boolean' is typeof($sql)
 
       @db.queryList $sql_list, ($err, $results) =>
 
@@ -132,7 +132,7 @@ class system.db.Utility extends system.db.Forge
             $res = $query.result_array()
             $res = $res[0]
             $key = $res.replace(@db.database + '.', '')
-            $keys = array_keys($res)
+            $keys = Object.keys($res)
             delete $res[$keys[0]]
             $result[$key] = $res
 
@@ -153,7 +153,7 @@ class system.db.Utility extends system.db.Forge
 
     @db.query $sql, ($err, $query) ->
       $res = $query.result_array() unless $err
-      $next $err, current($res)
+      $next $err, $res[Object.keys($res)[0]]
     
   
   #
@@ -312,7 +312,7 @@ class system.db.Utility extends system.db.Forge
     if $prefs['format'] is 'zip'
       #  If they included the .zip file extension we'll remove it
       if /.+?\.zip$/.test($prefs['filename'])
-        $prefs['filename'] = str_replace('.zip', '', $prefs['filename'])
+        $prefs['filename'] = $prefs['filename'].replace('.zip', '')
         
       
       #  Tack on the ".sql" file extension if needed

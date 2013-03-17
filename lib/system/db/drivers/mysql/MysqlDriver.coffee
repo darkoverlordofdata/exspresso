@@ -446,7 +446,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # @param  [Array]  the limit clause
   # @return	[String]
   #
-  _update: ($table, $values, $where, $orderby = {}, $limit = false) ->
+  _update: ($table, $values, $where, $orderby = [], $limit = false) ->
     $valstr = []
     for $key, $val of $values
       $valstr.push $key + ' = ' + $val
@@ -481,7 +481,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
     for $key, $val of $values
       $ids.push $val[$index]
-      for $field in array_keys($val)
+      for $field in Object.keys($val)
         if $field isnt $index
           $final[$field].push 'WHEN ' + $index + ' = ' + $val[$index] + ' THEN ' + $val[$field]
 
@@ -493,7 +493,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
       for $row in $v
         $cases+=$row + "\n"
       $cases+='ELSE ' + $k + ' END, '
-    $sql+=substr($cases, 0,  - 2)
+    $sql+=$cases.substr(0,  - 2)
 
     $sql+=' WHERE ' + $where + $index + ' IN (' + $ids.join(',') + ')'
 

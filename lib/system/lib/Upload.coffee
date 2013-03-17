@@ -110,7 +110,7 @@ class system.lib.Upload
   for $key, $val of $defaults
     if $config[$key]? 
       $method = 'set_' + $key
-      if method_exists(@, $method)
+      if @[$method]?
         @$method($config[$key])
         
       else 
@@ -185,7 +185,7 @@ class system.lib.Upload
   @file_temp = $_FILES[$field]['tmp_name']
   @file_size = $_FILES[$field]['size']
   @file_type = preg_replace("/^(.+?);.*$/", "\\1", $_FILES[$field]['type'])
-  @file_type = strtolower(trim(stripslashes(@file_type), '"'))
+  @file_type = trim(stripslashes(@file_type.toLowerCase()), '"')
   @file_name = @_prep_filename($_FILES[$field]['name'])
   @file_ext = @get_extension(@file_name)
   @client_name = @file_name
@@ -201,7 +201,7 @@ class system.lib.Upload
     @file_name = @_prep_filename(@_file_name_override)
     
     #  If no extension was provided in the file_name config item, use the uploaded one
-    if strpos(@_file_name_override, '.') is false
+    if @_file_name_override.indexOf('.') is -1
       @file_name+=@file_ext
       
     
@@ -218,7 +218,7 @@ class system.lib.Upload
   
   #  Convert the file size to kilobytes
   if @file_size > 0
-    @file_size = round(@file_size / 1024, 2)
+    @file_size = Math.round(@file_size / 1024, 2)
     
   
   #  Is the file size within the allowed maximum?
@@ -352,7 +352,7 @@ class system.lib.Upload
   {
   if @encrypt_name is true
     #mt_srand()
-    $filename = md5(uniqid(mt_rand())) + @file_ext
+    $filename = md5(uniqid(rand())) + @file_ext
     
   
   if not file_exists($path + $filename)
@@ -420,14 +420,12 @@ class system.lib.Upload
   #
   # @param  [String]    # @return [Void]  #
   set_allowed_types($types)
-  {
-  if not is_array($types) and $types is '*'
-    @allowed_types = '*'
-    return 
-    
-  @allowed_types = explode('|', $types)
-  }
-  
+    if not is_array($types) and $types is '*'
+      @allowed_types = '*'
+      return
+
+    @allowed_types = explode('|', $types)
+
   #
   # Set Image Properties
   #
@@ -511,7 +509,7 @@ class system.lib.Upload
     return false
     
   
-  $ext = strtolower(ltrim(@file_ext, '.'))
+  $ext = ltrim(@file_ext.toLowerCase(), '.')
   
   if not in_array($ext, @allowed_types)
     return false
@@ -628,7 +626,7 @@ class system.lib.Upload
   get_extension($filename)
   {
   $x = explode('.', $filename)
-  return '.' + end($x)
+  return '.' + $x.pop()
   }
   
   #
@@ -684,9 +682,9 @@ class system.lib.Upload
     
   
   $ext = ''
-  if strpos($filename, '.') isnt false
+  if $filename.indexOf('.') isnt -1
     $parts = explode('.', $filename)
-    $ext = '.' + array_pop($parts)
+    $ext = '.' + $parts.pop()
     $filename = implode('.', $parts)
     
   
@@ -803,7 +801,7 @@ class system.lib.Upload
   exports.$mimes
   
   if count(@mimes) is 0
-    if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
       require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
       
     else if is_file(APPPATH + 'config/mimes' + EXT)
@@ -829,33 +827,28 @@ class system.lib.Upload
   # @param  [String]    # @return	[String]
   #
   _prep_filename($filename)
-  {
-  if strpos($filename, '.') is false or @allowed_types is '*'
+    if $filename.indexOf('.') is -1 or @allowed_types is '*'
+      return $filename
+
+
+    $parts = explode('.', $filename)
+    $ext = $parts.pop()
+    $filename = $parts.shift()
+
+    for $part in $parts
+      if not in_array($part.toLowerCase(), @allowed_types) or @mimes_types($part.toLowerCase()) is false
+        $filename+='.' + $part + '_'
+
+      else
+        $filename+='.' + $part
+
+
+
+    $filename+='.' + $ext
+
     return $filename
-    
-  
-  $parts = explode('.', $filename)
-  $ext = array_pop($parts)
-  $filename = array_shift($parts)
-  
-  for $part in $parts
-    if not in_array(strtolower($part), @allowed_types) or @mimes_types(strtolower($part)) is false
-      $filename+='.' + $part + '_'
-      
-    else 
-      $filename+='.' + $part
-      
-    
-  
-  $filename+='.' + $ext
-  
-  return $filename
-  }
-  
 
-
-register_class 'ExspressoUpload', ExspressoUpload
-module.exports = ExspressoUpload
+module.exports = system.lib.Upload
 #  END Upload Class
 
 #  End of file Upload.php 

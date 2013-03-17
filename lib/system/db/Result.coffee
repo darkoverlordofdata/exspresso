@@ -125,7 +125,6 @@ class system.db.Result
         @_row_data = @row_array(0)
         
       
-      #  array_key_exists() instead of isset() to allow for MySQL NULL values
       if @_row_data[$n]?
         return @_row_data[$n]
         

@@ -125,8 +125,8 @@ if not function_exists('anchor')
   exports.anchor = anchor = ($uri = '', $title = '', $attributes = '') ->
     $title = ''+$title
     
-    if not is_array($uri)
-      $site_url = if ( not preg_match('!^\\w+://!i', $uri)?) then @site_url($uri) else $uri
+    if not Array.isArray($uri)
+      $site_url = if ( not /^\\w+:\/\//i.test($uri)) then @site_url($uri) else $uri
       #$site_url = $uri
       
     else 
@@ -162,9 +162,9 @@ if not function_exists('anchor')
 if not function_exists('anchor_popup')
   exports.anchor_popup = anchor_popup = ($uri = '', $title = '', $attributes = false) ->
     $title = ''+$title
-    
-    $site_url = if ( not preg_match('!^\\w+://! i', $uri)? ) then site_url($uri) else $uri
-    
+
+    $site_url = if ( not /^\\w+:\/\//i.test($uri)) then @site_url($uri) else $uri
+
     if $title is ''
       $title = $site_url
       
@@ -173,7 +173,7 @@ if not function_exists('anchor_popup')
       return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank');\">" + $title + "</a>"
       
     
-    if not is_array($attributes)
+    if not 'object' is typeof($attributes)
       $attributes = {}
       
     
@@ -239,7 +239,7 @@ if not function_exists('safe_mailto')
     $x.push '"'
     
     if $attributes isnt ''
-      if is_array($attributes)
+      if 'object' is typeof($attributes)
         for $key, $val of $attributes
           $x.push ' ' + $key + '="'
           $x.push "|" + $c.charCodeAt(0) for $c in $val
@@ -260,12 +260,12 @@ if not function_exists('safe_mailto')
         $x.push "|" + $ordinal
 
       else
-        if count($temp) is 0
+        if $temp.length is 0
           $count = if ($ordinal < 224) then 2 else 3
 
 
         $temp.push $ordinal
-        if count($temp) is $count
+        if $temp.length is $count
           $number = if ($count is 3) then (($temp['0'] % 16) * 4096) + (($temp['1'] % 64) * 64) + ($temp['2'] % 64) else (($temp['0'] % 32) * 64) + ($temp['1'] % 64)
           $x.push "|" + $number
           $count = 1
@@ -278,9 +278,7 @@ if not function_exists('safe_mailto')
     $x.push 'a'
     $x.push '>'
     
-    $x = array_reverse($x)
-
-    return $x.join('')
+    $x.reverse().join('')
 
   
 
@@ -302,31 +300,32 @@ if not function_exists('safe_mailto')
 if not function_exists('auto_link')
   exports.auto_link = auto_link = ($str, $type = 'both', $popup = false) ->
     if $type isnt 'email'
+
       $matches = preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str)
       if $matches.length
         $pop = if ($popup is true) then " target=\"_blank\" " else ""
         
-        for $i in [0..count($matches['0'])-1]
+        for $i in [0..$matches['0'].length-1]
           $period = ''
           if preg_match("|\\.$|", $matches['6'][$i])?
             $period = '.'
-            $matches['6'][$i] = substr($matches['6'][$i], 0,  - 1)
+            $matches['6'][$i] = $matches['6'][$i].substr(0,  - 1)
 
 
-          $str = str_replace($matches['0'][$i], $matches['1'][$i] + '<a href="http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '"' + $pop + '>http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '</a>' + $period, $str)
+          $str = $str.replace($matches['0'][$i], $matches['1'][$i] + '<a href="http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '"' + $pop + '>http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '</a>' + $period)
 
       
     
     if $type isnt 'url'
       if preg_match_all("/([a-zA-Z0-9_\\.\\-\\+]+)@([a-zA-Z0-9\\-]+)\\.([a-zA-Z0-9\\-\\.]*)/i", $str, $matches)
-        for $i in [0..count($matches['0'])-1]
+        for $i in [0..$matches['0'].length-1]
           $period = ''
           if preg_match("|\\.$|", $matches['3'][$i])
             $period = '.'
-            $matches['3'][$i] = substr($matches['3'][$i], 0,  - 1)
+            $matches['3'][$i] = $matches['3'][$i].substr(0,  - 1)
 
 
-          $str = str_replace($matches['0'][$i], safe_mailto($matches['1'][$i] + '@' + $matches['2'][$i] + '.' + $matches['3'][$i]) + $period, $str)
+          $str = $str.replace($matches['0'][$i], safe_mailto($matches['1'][$i] + '@' + $matches['2'][$i] + '.' + $matches['3'][$i]) + $period)
 
       
     
@@ -393,11 +392,11 @@ if not function_exists('url_title')
     $str = strip_tags($str)
     
     for $key, $val of $trans
-      $str = preg_replace("#" + $key + "#i", $val, $str)
+      $str = $str.replace(RegExp($key, 'i'), $val)
       
     
     if $lowercase is true
-      $str = strtolower($str)
+      $str = $str.toLowerCase()
 
 
     return trim($str, $separator)
@@ -417,7 +416,7 @@ if not function_exists('url_title')
 #
 if not function_exists('_parse_attributes')
   exports._parse_attributes = _parse_attributes = ($attributes, $javascript = false) ->
-    if is_string($attributes)
+    if 'string' is typeof($attributes)
       return if ($attributes isnt '') then ' ' + $attributes else ''
       
     
@@ -432,7 +431,7 @@ if not function_exists('_parse_attributes')
       
     
     if $javascript is true and $att isnt ''
-      $att = substr($att, 0,  - 1)
+      $att = $att.substr(0,  - 1)
       
     
     return $att

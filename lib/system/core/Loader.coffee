@@ -40,9 +40,6 @@ class system.core.Loader
   fs = require('fs')
   Modules = require(SYSPATH+'core/Modules.coffee')
 
-  {ucfirst, array, parse_str, parse_url} = require(SYSPATH+'core.coffee')
-
-
   _module               : ''    # uri module
   _view_path            : ''    # path to view modules (*.eco)
   _library_paths        : null  # array of paths to libraries
@@ -708,8 +705,8 @@ class system.core.Loader
     # the two types and cache them so that views that are embedded within
     # other views can have access to these variables.
     #
-    if is_array($vars)
-      @_cached_vars = array_merge(@_cached_vars, $vars)
+    if 'object' is typeof($vars)
+      @_cached_vars[$key] = $var for $key, $var of $vars
 
 
     @controller.render $path, @_cached_vars, ($err, $html) =>
@@ -932,7 +929,7 @@ class system.core.Loader
 
     #  autoload database & libraries
     if $autoload['libraries']?
-      if in_array('database', $autoload['libraries'])
+      if $autoload['libraries'].indexOf('database') isnt -1
         #  autoload database
         if not ($db = @controller.config.item('database'))
           $db['params'] = 'default'
@@ -1080,10 +1077,10 @@ class system.core.Loader
         $params.hostname = if $dns['host']? then rawurldecode($dns['host']) else ''
         $params.username = if $dns['user']? then rawurldecode($dns['user']) else ''
         $params.password = if $dns['pass']? then rawurldecode($dns['pass']) else ''
-        $params.database = if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+        $params.database = if $dns['path']? then rawurldecode($dns['path'].substr(1)) else ''
 
 
-    else if is_string($params)
+    else if 'string' is typeof($params)
 
       # parse the URL from the DSN string
       #  Database settings can be passed as discreet
@@ -1100,7 +1097,7 @@ class system.core.Loader
         hostname  : if $dns['host']? then rawurldecode($dns['host']) else ''
         username  : if $dns['user']? then rawurldecode($dns['user']) else ''
         password  : if $dns['pass']? then rawurldecode($dns['pass']) else ''
-        database  : if $dns['path']? then rawurldecode(substr($dns['path'], 1)) else ''
+        database  : if $dns['path']? then rawurldecode($dns['path'].substr(1)) else ''
 
       #  were additional config items set?
       if $dns['query']?

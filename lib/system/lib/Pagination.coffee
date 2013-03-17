@@ -122,7 +122,7 @@ class system.lib.Pagination
       show_error('Your number of links must be a positive number.')
       
     
-    if not is_numeric(@_cur_page)
+    if not 'number' is typeof(@_cur_page)
       @_cur_page = 0
       
     

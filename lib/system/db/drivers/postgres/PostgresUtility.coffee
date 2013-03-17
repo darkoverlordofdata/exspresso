@@ -38,7 +38,7 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   # @return	bool
   #
   _list_databases :  ->
-    return "SELECT datname FROM pg_database"
+    "SELECT datname FROM pg_database"
     
   
   #
@@ -50,7 +50,7 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   # @param  [String]  the table name
   # @return [Object]  #
   _optimize_table : ($table) ->
-    return false
+    false
     
   
   #
@@ -62,7 +62,7 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   # @param  [String]  the table name
   # @return [Object]  #
   _repair_table : ($table) ->
-    return false
+    false
     
   
   #
@@ -73,7 +73,7 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
   # @return [Mixed]  #
   _backup : ($params = {}) ->
     #  Currently unsupported
-    return @db.display_error('db_unsuported_feature')
+    @db.display_error('db_unsuported_feature')
     
 module.exports = system.db.postgres.PostgresUtility
 

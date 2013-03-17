@@ -33,8 +33,6 @@
 #
 class system.core.Security
 
-  {md5, preg_quote, uniqid} = require(SYSPATH+'core.coffee')
-
   _xss_hash             : ''              # Random Hash for protecting URLs
   _csrf_hash            : ''              # Random Hash for Cross Site Request Forgery Protection Cookie
   _csrf_expire          : 7200            # Expiration time for Cross Site Request Forgery Protection Cookie
@@ -276,9 +274,9 @@ class system.core.Security
 
       $wordlen = $word.length
       for $i in [0...$wordlen]
-        $temp+=substr($word, $i, 1) + "\\s*"
+        $temp+=$word.substr($i, 1) + "\\s*"
 
-      $str = $str.replace(RegExp('(' + substr($temp, 0,  - 3) + ')(\\W)', 'im'), @_compact_exploded_words)
+      $str = $str.replace(RegExp('(' + $temp.substr(0,  - 3) + ')(\\W)', 'im'), @_compact_exploded_words)
     # Remove disallowed Javascript in links or img tags
     #
     while true
@@ -503,11 +501,9 @@ class system.core.Security
       #  replace illegal attribute strings that are inside an html tag
 
       if $attribs.length > 0
-        #$str = preg_replace("/<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + implode('|', $attribs) + ")(.*?)([\\s><])([><]*)/i", '<$1 $3$5$6$7', $str,  - 1, $count)
         $re = RegExp("<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + $attribs.join('|') + ")(.*?)([\\s><])([><]*)", 'igm')
         $count = $re.match($str).length
         $str = $str.replace($re, '<$1 $3$5$6$7')
-        counsole.log $re
 
       break unless $count
     
@@ -591,10 +587,7 @@ class system.core.Security
   #
   _filter_attributes : ($str) ->
     $out = ''
-
-
-    $re = RegExp('\\s*[a-z\\-]+\\s*=\\s*(\\x22|\\x27)([^\\\\1]*?)\\\\1', 'img')
-    while ($match = $re.exec($str)) isnt null
+    while ($match = /\s*[a-z\-]+\s*=\s*(\x22|\x27)([^\\1]*?)\\1/img.exec($str)) isnt null
       $out+= $match.replace(/\/\\*.*?\\*\//mg, '')
     $out
 
@@ -690,7 +683,7 @@ class system.core.Security
       if @req.cookies[@_csrf_cookie_name]?  and /^[0-9a-f]{32}$/im.test(@req.cookies[@_csrf_cookie_name])
         return @_csrf_hash = @req.cookies[@_csrf_cookie_name]
       
-      return @_csrf_hash = md5(uniqid(Math.floor(Math.random() * 2147483647)))
+      return @_csrf_hash = md5(uniqid(rand(), true))
     
     return @_csrf_hash
 

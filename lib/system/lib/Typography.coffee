@@ -74,7 +74,7 @@ class system.lib.Typography
       
     
     #  Standardize Newlines to make matching easier
-    if strpos($str, "\r") isnt false
+    if $str.indexOf("\r") isnt -1
       $str = str_replace(["\r\n", "\r"], "\n", $str)
       
     
@@ -86,7 +86,7 @@ class system.lib.Typography
     
     #  HTML comment tags don't conform to patterns of normal tags, so pull them out separately, only if needed
     $html_comments = []
-    if strpos($str, '<!--') isnt false
+    if $str.indexOf('<!--') isnt -1
       $matches = preg_match_all("#(<!\-\-.*?\-\->)#s", $str)
       if $matches.length > 0
         for $i in [0..$matches[0].length-1]
@@ -96,7 +96,7 @@ class system.lib.Typography
     
     #  match and yank <pre> tags if they exist.  It's cheaper to do this separately since most content will
     #  not contain <pre> tags, and it keeps the PCRE patterns below simpler and faster
-    if strpos($str, '<pre') isnt false
+    if $str.indexOf('<pre') isnt -1
       $str = preg_replace_callback("#<pre.*?>.*?</pre>#si", [@, '_protect_characters'], $str)
       
     
@@ -220,7 +220,7 @@ class system.lib.Typography
       $table['#<p></p>#'] = '<p>&nbsp;</p>'
       
     
-    return preg_replace(array_keys($table), $table, $str)
+    return preg_replace(Object.keys($table), $table, $str)
     
     
   
@@ -280,7 +280,7 @@ class system.lib.Typography
         '/&(?!#?[a-zA-Z0-9]{2,};)/':'&amp;'
 
 
-    return preg_replace(array_keys($table), $table, $str)
+    return preg_replace(Object.keys($table), $table, $str)
     
   
   #
@@ -295,7 +295,7 @@ class system.lib.Typography
       return $str
       
     
-    if strpos($str, "\n") is false and  not in_array(@last_block_element, @inner_block_required)
+    if $str.indexOf("\n") is -1 and  not in_array(@last_block_element, @inner_block_required)
       return $str
       
     
@@ -342,7 +342,7 @@ class system.lib.Typography
     # @param  [String]    # @return	[String]
   #
   nl2brExceptPre : ($str) ->
-    $ex = explode("pre>", $str)
+    $ex = $str.split("pre>")
     $ct = $ex.length-1
     
     $newstr = ""

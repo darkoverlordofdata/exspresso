@@ -97,7 +97,7 @@ class system.lib.FormValidation
       
     
     #  No fields? Nothing to do...
-    if not is_string($field) or  not is_string($rules) or $field is ''
+    if not 'string' is typeof($field) or  not 'string' is typeof($rules) or $field is ''
       return @
       
     
@@ -107,11 +107,11 @@ class system.lib.FormValidation
     #  Is the field name an array?  We test for the existence of a bracket "[" in
     #  the field name to determine this.  If it is an array, we break it apart
     #  into its components so that we can fetch the corresponding POST data later
-    if strpos($field, '[') isnt false and preg_match_all('/\\[(.*?)\\]/', $field, $matches)
+    if $field.indexOf('[') isnt -1 and preg_match_all('/\\[(.*?)\\]/', $field, $matches)
       #  Note: Due to a bug in current() that affects some versions
       #  of PHP we can not pass function call directly into it
       $x = explode('[', $field)
-      $indexes.push current($x)
+      $indexes.push $x[Object.keys($x)[0]]
       
       for $i in [0..count($matches['0'])-1]
         if $matches['1'][$i] isnt ''
@@ -150,7 +150,7 @@ class system.lib.FormValidation
     if not is_array($lang)
       $lang = array($lang, $val)
 
-    @_error_messages = array_merge(@_error_messages, $lang)
+    @_error_messages[$key] = $val for $key, $val of  $lang
     
     return @
     
@@ -317,7 +317,7 @@ class system.lib.FormValidation
   #
   _reset_post_array :  ->
     for $field, $row of @_field_data
-      if not is_null($row['postdata'])
+      if $row['postdata']?
         if $row['is_array'] is false
           if @req.body[$row['field']]?
             @req.body[$row['field']] = @prep_for_form($row['postdata'])
@@ -329,9 +329,9 @@ class system.lib.FormValidation
           
           #  before we assign values, make a reference to the right POST key
           if count($row['keys']) is 1
-            $post_ref = $post_ref[current($row['keys'])]
-            
-          else 
+            $post_ref = $post_ref[$row['keys'][Object.keys($row['keys'])[0]]]
+
+          else
             for $val in $row['keys']
               $post_ref = $post_ref[$val]
               
@@ -372,9 +372,9 @@ class system.lib.FormValidation
     
     #  If the field is blank, but NOT required, no further tests are necessary
     $next = false
-    if in_array('required', $rules) is false and is_null($postdata)
+    if in_array('required', $rules) is false and not($postdata?)
       #  Before we bail out, does the rule contain a callback?
-      if ($match = preg_match("/(callback_\\w+)/", implode(' ', $rules)))?
+      if ($match = preg_match("/(callback_\\w+)/", $rules.join(' ')))?
         $next = true
         $rules = '1':$match[1]
         
@@ -386,7 +386,7 @@ class system.lib.FormValidation
     #  --------------------------------------------------------------------
     
     #  Isset Test. Typically this rule will only apply to checkboxes.
-    if is_null($postdata) and $next is false
+    if not($postdata?) and $next is false
       if in_array('isset', $rules, true) or in_array('required', $rules)
         #  Set the message type
         $type = if (in_array('required', $rules)) then 'required' else 'isset'
@@ -451,7 +451,7 @@ class system.lib.FormValidation
 
       #  Call the function that corresponds to the rule
       if $next is true
-        if not method_exists(@, $rule)
+        if not @[$rule?
           continue
 
         #  Run the function and grab the result
@@ -459,37 +459,37 @@ class system.lib.FormValidation
         
         #  Re-assign the result to the master data array
         if $_in_array is true
-          @_field_data[$row['field']]['postdata'][$cycles] = if (is_bool($result)) then $postdata else $result
+          @_field_data[$row['field']]['postdata'][$cycles] = if ('boolean' is typeof($result)) then $postdata else $result
           
         else 
-          @_field_data[$row['field']]['postdata'] = if (is_bool($result)) then $postdata else $result
+          @_field_data[$row['field']]['postdata'] = if ('boolean' is typeof($result)) then $postdata else $result
           
         #  If the field isn't required and we just processed a callback we'll move on...
         if not in_array('required', $rules, true) and $result isnt false
           continue
 
       else
-        if not method_exists(@, $rule)
+        if not @[$rule]?
           #  If our own wrapper function doesn't exist we see if a native PHP function does.
           #  Users can use any native PHP function call that has one param.
           if function_exists($rule)
             $result = $rule($postdata)
             
             if $_in_array is true
-              @_field_data[$row['field']]['postdata'][$cycles] = if (is_bool($result)) then $postdata else $result
+              @_field_data[$row['field']]['postdata'][$cycles] = if ('boolean' is typeof($result)) then $postdata else $result
               
             else
-              @_field_data[$row['field']]['postdata'] = if (is_bool($result)) then $postdata else $result
+              @_field_data[$row['field']]['postdata'] = if ('boolean' is typeof($result)) then $postdata else $result
 
           continue
 
         $result = @[$rule]($postdata, $param)
 
         if $_in_array is true
-          @_field_data[$row['field']]['postdata'][$cycles] = if (is_bool($result)) then $postdata else $result
+          @_field_data[$row['field']]['postdata'][$cycles] = if ('boolean' is typeof($result)) then $postdata else $result
           
         else 
-          @_field_data[$row['field']]['postdata'] = if (is_bool($result)) then $postdata else $result
+          @_field_data[$row['field']]['postdata'] = if ('boolean' is typeof($result)) then $postdata else $result
 
       #  Did the rule test negatively?  If so, grab the error.
       if $result is false
@@ -558,7 +558,7 @@ class system.lib.FormValidation
     #  If the data is an array output them one at a time.
     #      E.g: form_input('name[]', set_value('name[]');
     if is_array(@_field_data[$field]['postdata'])
-      return array_shift(@_field_data[$field]['postdata'])
+      return @_field_data[$field]['postdata'].shift()
       
     
     return @_field_data[$field]['postdata']
@@ -761,7 +761,7 @@ class system.lib.FormValidation
     # @param  [String]    # @return	bool
   #
   valid_emails: ($str) ->
-    if strpos($str, ',') is false
+    if $str.indexOf(',') is -1
       return @valid_email(trim($str))
       
     
@@ -826,7 +826,7 @@ class system.lib.FormValidation
     # @param  [String]    # @return	bool
   #
   is_numeric: ($str) ->
-    return if ( not is_numeric($str)) then false else true
+    return if ( not 'number' is typeof($str)) then false else true
     
   
   #
@@ -853,7 +853,7 @@ class system.lib.FormValidation
     # @param  [String]    # @return	bool
   #
   greater_than: ($str, $min) ->
-    if not is_numeric($str)
+    if not 'number' is typeof($str)
       return false
       
     return $str > $min
@@ -865,7 +865,7 @@ class system.lib.FormValidation
     # @param  [String]    # @return	bool
   #
   less_than: ($str, $max) ->
-    if not is_numeric($str)
+    if not 'number' is typeof($str)
       return false
       
     return $str < $max

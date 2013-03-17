@@ -43,19 +43,19 @@ if not function_exists('byte_format')
     exspresso.lang.load('number')
     
     if $num>=1000000000000
-      $num = round($num / 1099511627776, $precision)
+      $num = Math.round($num / 1099511627776, $precision)
       $unit = exspresso.lang.line('terabyte_abbr')
       
     else if $num>=1000000000
-      $num = round($num / 1073741824, $precision)
+      $num = Math.round($num / 1073741824, $precision)
       $unit = exspresso.lang.line('gigabyte_abbr')
       
     else if $num>=1000000
-      $num = round($num / 1048576, $precision)
+      $num = Math.round($num / 1048576, $precision)
       $unit = exspresso.lang.line('megabyte_abbr')
       
     else if $num>=1000
-      $num = round($num / 1024, $precision)
+      $num = Math.round($num / 1024, $precision)
       $unit = exspresso.lang.line('kilobyte_abbr')
       
     else 

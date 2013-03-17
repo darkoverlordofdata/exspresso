@@ -105,7 +105,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
         $data =
           uid             : fetch($user_data, 'uid', UserModel.UID_ANONYMOUS)
           ip_address      : fetch($user_data, 'ip_address')
-          user_agent      : substr(fetch($user_data, 'user_agent'), 0, 120)
+          user_agent      : fetch($user_data, 'user_agent').substr(0, 120)
           last_activity   : fetch($user_data, 'last_activity')
           user_data       : serialize($user_data)
 

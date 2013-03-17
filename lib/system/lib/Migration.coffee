@@ -166,12 +166,12 @@ class system.lib.Migration
         $f = glob(sprintf(@_migration_path + '%03d_*.coffee', $i))
 
         # Only one migration per step is permitted
-        if (count($f) > 1)
+        if $f.length
           @_error_string = sprintf(@i18n.line('migration_multiple_version'), $i)
           return $next(@_error_string)
 
         # Migration step not found
-        if (count($f) is 0)
+        if $f.length is 0
           # If trying to migrate up to a version greater than the last
           # existing one, migrate to the last one.
           if ($step is 1)
@@ -186,11 +186,11 @@ class system.lib.Migration
         $name = basename($f[0], '.coffee')
 
         # Filename validations
-        if ($match = preg_match('/^\\d{3}_(\\w+)$/', $name))?
-          $match[1] = strtolower($match[1])
+        if ($match = $name.match(/^\d{3}_(\w+)$/))
+          $match[1] = $match[1].toLowerCase()
 
           # Cannot repeat a migration at different steps
-          if (in_array($match[1], $migrations))
+          if ($migrations.indexOf($match[1]) isnt -1)
             @_error_string = sprintf(@i18n.line('migration_multiple_version'), $match[1])
             return $next(@_error_string)
 
@@ -264,11 +264,11 @@ class system.lib.Migration
       @_error_string = @i18n.line('migration_none_found')
       return $next(@_error_string)
 
-    $last_migration = basename(end($migrations))
+    $last_migration = basename($migrations[$migrations.length-1])
 
     # Calculate the last migration step from existing migration
     # filenames and procceed to the standard version migration
-    @version substr($last_migration, 0, 3), ($err, $current_version) ->
+    @version $last_migration.substr(0, 3), ($err, $current_version) ->
       $next $err, $current_version
 
   #
@@ -297,17 +297,16 @@ class system.lib.Migration
 
     # Load all#_*.coffee files in the migrations path
     $files = glob(@_migration_path + '*_*.coffee')
-    $file_count = count($files)
+    $file_count = $files.length
 
     for $i in [0..$file_count-1]
 
       # Mark wrongly formatted files as false for later filtering
       $name = basename($files[$i], '.coffee')
-      if not preg_match('/^\\d{3}_(\\w+)$/', $name)?
+      if not $name.match(/^\d{3}_(\w+)$/)
         $files[$i] = false
 
-    sort($files)
-    $files
+    $files.sort()
 
 
   #

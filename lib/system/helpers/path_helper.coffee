@@ -42,17 +42,17 @@ if not function_exists('set_realpath')
   exports.set_realpath = set_realpath = ($path, $check_existance = false) ->
     #  Security check to make sure the path is NOT a URL.  No remote file inclusion!
     #if preg_match("#^(http:\/\/|https:\/\/|www\.|ftp|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#i", $path)
-    if preg_match("#^(http:\\/\\/|https:\\/\\/|www\\.|ftp|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})#i", $path)?
+    if /^(http:\/\/|https:\/\/|www\.|ftp|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/i.test($path)
       show_error('The path you submitted must be a local server path, not a URL')
       
     
     #  Resolve the path
-    if function_exists('realpath') and realpath($path) isnt false
+    if realpath($path) isnt false
       $path = realpath($path) + '/'
       
     
     #  Add a trailing slash
-    $path = preg_replace("#([^/])/*$#", "$1/", $path)
+    $path = $path.replace(/([^\/])\/*$/, "$1/")
     
     #  Make sure the path exists
     if $check_existance is true

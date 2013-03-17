@@ -47,14 +47,14 @@ if not function_exists('singular')
     
     $str = preg_replace('/(.*)?([s|c]h)es/i', '$1$2', $str)
     
-    if strtolower($end) is 'ies'
+    if $end.toLowerCase() is 'ies'
       $str = if substr($str, 0, strlen($str) - 3) + (preg_match('/[a-z]/', $end)) then 'y' else 'Y'
       
-    else if strtolower($end) is 'ses'
+    else if $end.toLowerCase() is 'ses'
       $str = substr($str, 0, strlen($str) - 2)
       
     else 
-      $end = strtolower(substr($str,  - 1))
+      $end = substr($str.toLowerCase(),  - 1)
       
       if $end is 's'
         $str = substr($str, 0, strlen($str) - 1)
@@ -83,7 +83,7 @@ if not function_exists('plural')
     if preg_match('/y/i', $end)
       #  Y preceded by vowel => regular plural
       $vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
-      $str = if in_array(substr($str,  - 2, 1), $vowels) then $str + 's' else substr($str, 0,  - 1) + 'ies'
+      $str = if $vowels.indexOf(substr($str,  - 2, 1)) isnt -1 then $str + 's' else substr($str, 0,  - 1) + 'ies'
       
     else if preg_match('/h/i', $end)
       if preg_match('/^[c|s]h$/i', substr($str,  - 2))
@@ -117,7 +117,7 @@ if not function_exists('plural')
 #
 if not function_exists('camelize')
   exports.camelize = camelize = ($str) ->
-    $str = 'x' + strtolower(trim($str))
+    $str = 'x' + trim($str.toLowerCase())
     $str = ucwords(preg_replace('/[\s_]+/', ' ', $str))
     return substr(str_replace(' ', '', $str), 1)
     
@@ -134,7 +134,7 @@ if not function_exists('camelize')
 #
 if not function_exists('underscore')
   exports.underscore = underscore = ($str) ->
-    return preg_replace('/[\s]+/', '_', strtolower(trim($str)))
+    return preg_replace('/[\s]+/', '_', trim($str.toLowerCase()))
     
   
 
@@ -149,7 +149,7 @@ if not function_exists('underscore')
 #
 if not function_exists('humanize')
   exports.humanize = humanize = ($str) ->
-    return ucwords(preg_replace('/[_]+/', ' ', strtolower(trim($str))))
+    return ucwords(preg_replace('/[_]+/', ' ', trim($str.toLowerCase())))
 
 
 #  ------------------------------------------------------------------------

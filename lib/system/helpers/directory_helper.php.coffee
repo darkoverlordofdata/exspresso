@@ -31,6 +31,8 @@
 #
 
 fs = require('fs')
+path = require('path')
+DIRECTORY_SEPARATOR = path.sep
 #  ------------------------------------------------------------------------
 
 #

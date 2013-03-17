@@ -64,7 +64,6 @@
 class system.core.Modules
 
   fs = require('fs')
-  {is_file} = require(SYSPATH+'core.coffee')
   self = @::
 
   locations: config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')

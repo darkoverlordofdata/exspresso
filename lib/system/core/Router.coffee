@@ -34,7 +34,6 @@ class system.core.Router
   Modules = require(SYSPATH+'core/Modules.coffee')
   URI = require(SYSPATH+'core/URI.coffee')
 
-  {is_dir, is_file} = require(SYSPATH+'core.coffee')
   #
   # @property [Object] Hash of bindings for each route
   #
@@ -144,7 +143,7 @@ class system.core.Router
   #
   _validate_request: ($segments) ->
 
-    if (count($segments) is 0) then return $segments
+    return $segments if $segments.length is 0
 
     # locate module controller
     #if ($located = @locate($segments)) then return $located
@@ -154,7 +153,7 @@ class system.core.Router
 
     # use a default 404_override controller
     if @_404_override
-      $segments = explode('/', @_404_override)
+      $segments = @_404_override.split('/')
       if ($located = @locate($segments)) then return $located
 
 
@@ -313,7 +312,7 @@ class system.core.Router
 
         # module sub-controller exists?
         if($directory and is_file($source+$directory+$ext))
-          return array_slice($segments, 1)
+          return $segments.slice(1)
 
         # module sub-directory exists?
         if($directory and is_dir($source+$directory+'/'))
@@ -323,11 +322,11 @@ class system.core.Router
 
           # module sub-directory controller exists?
           if(is_file($source+$directory+$ext))
-            return array_slice($segments, 1)
+            return $segments.slice(1)
 
           # module sub-directory sub-controller exists?
           if($controller and is_file($source+$controller+$ext))
-            return array_slice($segments, 2)
+            return $segments.slice(2)
 
         # module controller exists?
         if(is_file($source+$module+$ext))
@@ -340,7 +339,7 @@ class system.core.Router
     # application sub-directory controller exists?
     if($directory and is_file(APPPATH+'controllers/'+$module+'/'+$directory+$ext))
       @_directory = $module+'/'
-      return array_slice($segments, 1)
+      return $segments.slice(1)
 
     # application sub-directory default controller exists?
     if (is_file(APPPATH+'controllers/'+$module+'/'+@default_controller+$ext))

@@ -249,7 +249,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   _flashdata_mark :  ->
     $userdata = @allUserdata()
     for $name, $value of $userdata
-      $pars = $name.split(FLASH_NEW)
+      $parts = $name.split(FLASH_NEW)
       if 'object' is typeof($parts) and Object.keys($parts).length is 2
         $new_name = FLASH_KEY + FLASH_OLD + $parts[1]
         @setUserdata($new_name, $value)
@@ -275,7 +275,7 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   _get_time :  ->
     $date = new Date()
     $time = $date.getTime()
-    if strtolower(@time_reference) is 'gmt'
+    if @time_reference.toLowerCase() is 'gmt'
       $time = $time - $date.getTimezoneOffset()
     return $time
 

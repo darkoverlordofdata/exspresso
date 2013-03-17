@@ -787,7 +787,7 @@ class system.db.ActiveRecord extends system.db.Driver
       $next = $set
       $set = null
 
-    if not is_null($set)
+    if $set?
       @set_insert_batch($set)
 
     if @ar_set.length is 0

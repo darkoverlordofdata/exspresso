@@ -47,15 +47,14 @@ if not function_exists('force_download')
     
     #  Try to determine if the filename includes a file extension.
     #  We need it in order to set the MIME type
-    if false is strpos($filename, '.')
+    if $filename.indexOf('.') is -1
       return false
       
     #  Grab the file extension
-    $x = explode('.', $filename)
-    $extension = end($x)
+    $extension = $filename.split('.').pop()
     
     #  Load the mime types
-    if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
       $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
       
     else if is_file(APPPATH + 'config/mimes' + EXT)
@@ -71,7 +70,7 @@ if not function_exists('force_download')
       
     
     #  Generate the server headers
-    if strpos(@req,server['HTTP_USER_AGENT'], "MSIE") isnt false
+    if @req,server['HTTP_USER_AGENT'].indexOf("MSIE") isnt -1
       @res.header('Content-Type: "' + $mime + '"')
       @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
       @res.header('Expires: 0')

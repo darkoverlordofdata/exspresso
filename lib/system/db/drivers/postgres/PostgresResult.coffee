@@ -40,7 +40,7 @@ class system.db.postgres.PostgresResult extends system.db.Result
   #
   # Number of rows in the result set
   #
-    # @return	integer
+  # @return	integer
   #
   numRows :  ->
     return @_result_array.length
@@ -49,7 +49,7 @@ class system.db.postgres.PostgresResult extends system.db.Result
   #
   # Number of fields in the result set
   #
-    # @return	integer
+  # @return	integer
   #
   numFields :  ->
 
@@ -59,11 +59,10 @@ class system.db.postgres.PostgresResult extends system.db.Result
   #
   # Generates an array of column names
   #
-    # @return	array
+  # @return	array
   #
   listFields :  ->
     $field_names = []
-    return $field_names
 
 
   #
@@ -71,11 +70,10 @@ class system.db.postgres.PostgresResult extends system.db.Result
   #
   # Generates an array of objects containing field meta-data
   #
-    # @return	array
+  # @return	array
   #
   fieldData :  ->
     $retval = []
-    return $retval
 
 
   #

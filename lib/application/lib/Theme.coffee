@@ -137,6 +137,29 @@ class application.lib.Theme
         @template.setScript @_script[$name]
     @
 
+
+  array_merge = ($array1, $array2) ->
+
+    $ret = {}
+    for $key, $item of $array1
+      $ret[$key] = $item
+    for $key, $item of $array2
+      $ret[$key] = $item
+    return $ret
+
+
+  array_merge_recursive = ($array1, $array2) ->
+
+    $ret = {}
+    for $key, $item of $array1
+      $ret[$key] = $item
+    for $key, $item of $array2
+      if typeof $array1[$key] is 'object' or typeof $item is 'object'
+        $ret[$key] = array_merge($array1[$key], $item)
+      else
+        $ret[$key] = $item
+    return $ret
+
 module.exports = application.lib.Theme
 
 # End of file Theme.coffee

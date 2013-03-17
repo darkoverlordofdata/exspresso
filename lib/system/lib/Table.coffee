@@ -94,7 +94,7 @@ class system.lib.Table
     
     $new = []
     while count($array) > 0
-      $temp = array_splice($array, 0, $col_limit)
+      $temp = $array.splice(0, $col_limit)
       
       if count($temp) < $col_limit
         for $i in [count($temp)...$col_limit]
@@ -175,8 +175,8 @@ class system.lib.Table
   generate : ($table_data = null) ->
     #  The table data can optionally be passed to this function
     #  either as a database result object or an array
-    if not is_null($table_data)
-      if is_object($table_data)
+    if $table_data?
+      if 'object' is typeof($table_data)
         @_set_from_object($table_data)
         
       else if is_array($table_data)
@@ -266,7 +266,6 @@ class system.lib.Table
             
           else
             if $function isnt false and typeof $function is 'function'
-              #$out+=call_user_func($function, $cell)
               $out+=$function($cell)
               
             else 
@@ -308,12 +307,12 @@ class system.lib.Table
   #
     # @param  [Object]    # @return [Void]  #
   _set_from_object : ($query) ->
-    if not is_object($query)
+    if not 'object' is typeof($query)
       return false
       
     #  First generate the headings from the table column names
     if count(@_heading) is 0
-      if not method_exists($query, 'list_fields')
+      if not $query.list_fields?
         return false
         
       

@@ -203,7 +203,7 @@ if not function_exists('parse_smileys')
 # @return [Mixed]  #
 if not function_exists('_get_smiley_array')
   exports._get_smiley_array = _get_smiley_array =  ->
-    if defined('ENVIRONMENT') and file_exists(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
+    if file_exists(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
       require(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
       
     else if file_exists(APPPATH + 'config/smileys' + EXT)

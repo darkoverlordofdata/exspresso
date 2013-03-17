@@ -29,7 +29,6 @@
 class system.core.Output
 
   fs = require('fs')  # file system
-  {is_dir} = require(SYSPATH+'core.coffee')
 
   _parse_exec_vars    : true  # parse profiler vars {elapsed_time} and {memory_usage}
   _enable_profiler    : false # create profiler outout?

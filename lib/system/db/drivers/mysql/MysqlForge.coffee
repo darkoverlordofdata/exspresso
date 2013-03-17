@@ -82,28 +82,28 @@ class system.db.mysql.MysqlForge extends system.db.Forge
           $sql+=' ' + @db._protect_identifiers($attributes['NAME']) + ' '
           
         
-        if $attributes['TYPE']?
-          $sql+=' ' + $attributes['TYPE']
+        if $attributes.TYPE?
+          $sql+=' ' + $attributes.TYPE
           
-          if $attributes['CONSTRAINT']?
-            switch $attributes['TYPE']
+          if $attributes.CONSTRAINT?
+            switch $attributes.TYPE
               when 'decimal','float','numeric'
-                $sql+='(' + $attributes['CONSTRAINT'].join(',') + ')'
+                $sql+='(' + $attributes.CONSTRAINT.join(',') + ')'
               when 'enum','set'
-                $sql+='("' + $attributes['CONSTRAINT'].join('","') + '")'
+                $sql+='("' + $attributes.CONSTRAINT.join('","') + '")'
               else
-                $sql+='(' + $attributes['CONSTRAINT'] + ')'
+                $sql+='(' + $attributes.CONSTRAINT + ')'
                 
-        if $attributes['UNSIGNED']? and $attributes['UNSIGNED'] is true
+        if $attributes.UNSIGNED? and $attributes.UNSIGNED is true
           $sql+=' UNSIGNED'
           
-        if $attributes['DEFAULT']?
-          $sql+=' DEFAULT \'' + $attributes['DEFAULT'] + '\''
+        if $attributes.DEFAULT?
+          $sql+=' DEFAULT \'' + $attributes.DEFAULT + '\''
 
-        if $attributes['NULL']?
-          $sql+=if ($attributes['NULL'] is true) then ' NULL' else ' NOT NULL'
+        if $attributes.NULL?
+          $sql+=if ($attributes.NULL is true) then ' NULL' else ' NOT NULL'
           
-        if $attributes['AUTO_INCREMENT']? and $attributes['AUTO_INCREMENT'] is true
+        if $attributes.AUTO_INCREMENT? and $attributes.AUTO_INCREMENT is true
           $sql+=' AUTO_INCREMENT'
 
       #  don't add a comma on the end of the last field

@@ -72,7 +72,7 @@ if ( not function_exists('character_limiter'))
       return $str
 
     $out = ""
-    for $val in explode(' ', trim($str)) 
+    for $val in trim($str).split(' ')
       $out += $val+' '
       if strlen($out) >= $n
         $out = trim($out)
@@ -107,15 +107,15 @@ if ( not function_exists('ascii_to_entities'))
         #  If the $temp array has a value but we have moved on, then it seems only
         #  fair that we output that entity and restart $temp before continuing. -Paul
         #
-        if count($temp) is 1
-          $out  += '&#'+array_shift($temp)+';'
+        if $temp.length is 1
+          $out  += '&#'+$temp.shift()+';'
           $count = 1
 
         $out += $char
 
       else
 
-        if count($temp) is 0
+        if $temp.length is 0
           $count = if $ordinal < 224 then 2 else 3
 
         $temp.push $ordinal
@@ -286,7 +286,7 @@ if ( not function_exists('convert_accented_characters'))
 
   exports.convert_accented_characters = convert_accented_characters = ($str) ->
 
-    if (defined('ENVIRONMENT') AND is_file(APPPATH+'config/'+ENVIRONMENT+'/foreign_chars.coffee'))
+    if is_file(APPPATH+'config/'+ENVIRONMENT+'/foreign_chars.coffee')
 
       $foreign_characters = require(APPPATH+'config/'+ENVIRONMENT+'/foreign_chars.coffee')
 
@@ -297,7 +297,9 @@ if ( not function_exists('convert_accented_characters'))
     if not $foreign_characters?
       return $str
 
-    return preg_replace(array_keys($foreign_characters), array_values($foreign_characters), $str)
+    for $key, $val of $foreign_characters
+      $str = $str.replace(RegExp($key, 'g'), $val)
+    $str
 
 
 
@@ -320,14 +322,14 @@ if ( not function_exists('word_wrap'))
   exports.word_wrap = word_wrap = ($str, $charlim = '76') ->
 
     # Se the character limit
-    if not is_numeric($charlim)
+    if not 'number' is typeof($charlim)
       $charlim = 76
 
     # Reduce multiple spaces
     $str = preg_replace("| +|", " ", $str)
 
     # Standardize newlines
-    if (strpos($str, "\r") isnt false)
+    if ($str.indexOf("\r") isnt -1)
       $str = str_replace(["\r\n", "\r"], "\n", $str)
 
     # If the current word is surrounded by unwrap tags we'll
@@ -348,7 +350,7 @@ if ( not function_exists('word_wrap'))
 
     # Split the string into individual lines of text and cycle through them
     $output = ""
-    for line in explode("\n", $str)
+    for line in $str.split("\n")
 
       # Is the line within the allowed character count?
       # If so we'll join it to the output and continue
@@ -378,10 +380,10 @@ if ( not function_exists('word_wrap'))
       $output += "\n"
 
     # Put our markers back
-    if count($unwrap) > 0
+    if $unwrap.length > 0
 
-      for $key, $val of $unwrap
-        $output = str_replace("{{unwrapped"+$key+"}}", $val, $output)
+      for $o in $unwrap
+        $output = str_replace("{{unwrapped"+$o.key+"}}", $o.val, $output)
 
     # Remove the unwrap tags
     $output = str_replace(['{unwrap}', '{/unwrap}'], '', $output)

@@ -654,7 +654,7 @@ class ExspressoJavascript
   # @return	type
   #
   _is_associative_array : ($arr) ->
-    for $key, $val of array_keys($arr)
+    for $key, $val of Object.keys($arr)
       if $key isnt $val
         return true
         

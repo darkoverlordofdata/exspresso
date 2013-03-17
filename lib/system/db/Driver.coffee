@@ -355,7 +355,7 @@ class system.db.Driver
   #
   # @return [Void]  #
   transStrict : ($mode = true) ->
-    @_trans_strict = if is_bool($mode) then $mode else true
+    @_trans_strict = if 'boolean' is typeof($mode) then $mode else true
 
 
   #
@@ -436,7 +436,7 @@ class system.db.Driver
     #  The count of bind should be 1 less then the count of segments
     #  If there are more bind arguments trim it down
     if $binds.length>=$segments.length
-      $binds = $binds.slice(0, count($segments) - 1)
+      $binds = $binds.slice(0, $segments.length - 1)
 
 
     #  Construct the binded query
@@ -487,7 +487,7 @@ class system.db.Driver
   #
   # @return [Void]  #
   lastQuery: ->
-    return end(@queries)
+    if @queries.length is 0 then false else @queries[@queries.length-1]
 
 
   #
@@ -505,7 +505,7 @@ class system.db.Driver
     else if 'boolean' is typeof($str)
       $str = if ($str is false) then 0 else 1
 
-    else if is_null($str)
+    else if not($str?)
       $str = 'NULL'
 
 
@@ -628,8 +628,7 @@ class system.db.Driver
           $retval.push $row['COLUMN_NAME']
 
         else
-          $retval.push current($row)
-
+          $retval.push $row[Object.keys($row)[0]]
 
 
       @_data_cache['field_names'][$table] = $retval
@@ -831,7 +830,7 @@ class system.db.Driver
       $message = $error
 
     else
-      $message = if 'string' is typeof($error) then [str_replace('%s', $swap, @i18n.line($error))] else $error
+      $message = if 'string' is typeof($error) then [@i18n.line($error).replace('%s', $swap)] else $error
 
 
     console.log $message
@@ -961,7 +960,7 @@ class system.db.Driver
 
 
         #  We only add the table prefix if it does not already exist
-        if $parts[$i].substr(0, strlen(@dbprefix)) isnt @dbprefix
+        if $parts[$i].substr(0, @dbprefix.length) isnt @dbprefix
           $parts[$i] = @dbprefix + $parts[$i]
 
 
@@ -984,7 +983,7 @@ class system.db.Driver
 
 
       #  Do we prefix an item with no segments?
-      if $prefix_single is true and $item.substr(0, strlen(@dbprefix)) isnt @dbprefix
+      if $prefix_single is true and $item.substr(0, @dbprefix.lenth) isnt @dbprefix
         $item = @dbprefix + $item
 
 

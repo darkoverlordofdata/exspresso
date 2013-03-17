@@ -72,7 +72,7 @@ class global.Breadcrumb
 
     if $crumb['label'] isnt null and $crumb['url'] isnt null and isset($level)
 
-      while count(@crumbs) > $level
+      while Object.keys(@crumbs).length > $level
 
         @_crumbs.pop() # prune until we reach the $level we've allocated to this page
 

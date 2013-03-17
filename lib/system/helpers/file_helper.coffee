@@ -29,6 +29,8 @@
 #
 
 fs = require('fs')
+path = require('path')
+DIRECTORY_SEPARATOR = path.sep
 
 #
 # Read File
@@ -40,7 +42,7 @@ fs = require('fs')
 #
 if not function_exists('read_file')
   exports.read_file = read_file = ($file) ->
-    if not file_exists($file)
+    if not fs.existsSync($file)
       return false
 
     fs.readFileSync($file)
@@ -92,7 +94,7 @@ if not function_exists('delete_files')
       if $filename isnt "." and $filename isnt ".."
         if is_dir($path + DIRECTORY_SEPARATOR + $filename)
           #  Ignore empty folders
-          if substr($filename, 0, 1) isnt '.'
+          if $filename.substr(0, 1) isnt '.'
             delete_files($path + DIRECTORY_SEPARATOR + $filename, $del_dir, $level + 1)
         else
           fs.unlinkSync($path + DIRECTORY_SEPARATOR + $filename)
@@ -124,10 +126,10 @@ if not function_exists('get_filenames')
         $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
 
       for $file in fs.readdirSync($source_dir)
-        if is_dir($source_dir + $file) and strncmp($file, '.', 1) isnt 0
+        if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.'
           get_filenames($source_dir + $file + DIRECTORY_SEPARATOR, $include_path, true, $_filedata)
 
-        else if strncmp($file, '.', 1) isnt 0
+        else if $file.charCodeAt(0) isnt '.'
           $_filedata.push if ($include_path is true) then $source_dir + $file else $file
         
       return $_filedata
@@ -156,10 +158,10 @@ if not function_exists('get_dir_file_info')
         $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
 
       for $file in fs.readdirSync($source_dir)
-        if is_dir($source_dir + $file) and strncmp($file, '.', 1) isnt 0 and $top_level_only is false
+        if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.' and $top_level_only is false
           get_dir_file_info($source_dir + $file + DIRECTORY_SEPARATOR, $top_level_only, true, $_filedata)
 
-        else if strncmp($file, '.', 1) isnt 0
+        else if $file.charCodeAt(0) isnt '.'
           $_filedata[$file] = get_file_info($source_dir + $file)
           $_filedata[$file]['relative_path'] = $relative_path
 
@@ -180,11 +182,11 @@ if not function_exists('get_dir_file_info')
 if not function_exists('get_file_info')
   exports.get_file_info = get_file_info = ($file, $returned_values = ['name', 'server_path', 'size', 'date']) ->
 
-    if not file_exists($file)
+    if not fs.existsSync($file)
       return false
 
-    if is_string($returned_values)
-      $returned_values = explode(',', $returned_values)
+    if 'string' is typeof($returned_values)
+      $returned_values = $returned_values.split(',')
 
     $stats = fs.stat($file)
     $fileinfo = {}
@@ -192,7 +194,7 @@ if not function_exists('get_file_info')
     for $key in $returned_values
       switch $key
         when 'name'
-          $fileinfo['name'] = substr(strrchr($file, DIRECTORY_SEPARATOR), 1)
+          $fileinfo['name'] = $file.split(DIRECTORY_SEPARATOR).pop()
 
         when 'server_path'
           $fileinfo['server_path'] = $file
@@ -231,21 +233,20 @@ if not function_exists('get_file_info')
 
 if not function_exists('get_mime_by_extension')
   exports.get_mime_by_extension = get_mime_by_extension = ($file) ->
-    $extension = strtolower(substr(strrchr($file, '.'), 1))
+    $extension = $file.split('.').pop()
 
-    if $mimes is null
-      if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-        $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
+      $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
 
-      else if is_file(APPPATH + 'config/mimes' + EXT)
-        $mimes = require(APPPATH + 'config/mimes' + EXT)
-      if not is_array($mimes)
-        return false
+    else if is_file(APPPATH + 'config/mimes.coffee')
+      $mimes = require(APPPATH + 'config/mimes.coffee')
 
-    if array_key_exists($extension, $mimes)
-      if is_array($mimes[$extension])
+    else return false
+      
+    if $mimes[$extension]?
+      if Array.isArray($mimes[$extension])
         #  Multiple mime types, just give the first one
-        return current($mimes[$extension])
+        return $mimes[$extension][0]
 
       else
         return $mimes[$extension]
@@ -314,7 +315,7 @@ if not function_exists('symbolic_permissions')
 # @return	[String]
 if not function_exists('octal_permissions')
   exports.octal_permissions = octal_permissions = ($perms) ->
-    return substr(sprintf('%o', $perms),  - 3)
+    return sprintf('%o', $perms).substr(-3)
 
 #  ------------------------------------------------------------------------
 #

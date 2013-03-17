@@ -427,7 +427,7 @@ class CKEditor
       $args = '?t=' + @timestamp
 
     #  Skip relative paths...
-    if strpos($ckeditorPath, '..') isnt 0
+    if $ckeditorPath.indexOf('..') isnt 0
       $out+=@script("window.CKEDITOR_SYSPATH='" + $ckeditorPath + "';")
 
     $out+="<script type=\"text/javascript\" src=\"" + $ckeditorPath + 'ckeditor.js' + $args + "\"></script>\n"
@@ -459,10 +459,10 @@ class CKEditor
   #
   jsEncode: ($val) ->
 
-    if is_null($val)
+    if not($val?)
       return 'null'
 
-    if is_bool($val)
+    if 'boolean' is typeof($val)
       return if $val then 'true' else 'false'
 
     if is_int($val)
@@ -471,19 +471,20 @@ class CKEditor
     if is_float($val)
       return str_replace(',', '.', $val)
 
-    if is_array($val) or is_object($val)
-      if is_array($val) and (array_keys($val) is range(0, count($val) - 1))
+    if is_array($val) or 'object' is typeof($val)
+      if is_array($val) and (Object.keys($val) is range(0, count($val) - 1))
         return '[' + implode(',', array_map([@, 'jsEncode'], $val)) + ']'
 
       $temp = []
       for $k, $v of $val
         $temp.push @jsEncode("{$k}") + ':' + @jsEncode($v)
 
-      return '{' + implode(',', $temp) + '}'
+      return '{' + $temp.join(',') + '}'
+      #return '{' + implode(',', $temp) + '}'
 
     #  String otherwise
-    if strpos($val, '@@') is 0 then return substr($val, 2)
-    if strtoupper(substr($val, 0, 9)) is 'CKEDITOR.' then return $val
+    if $val.indexOf('@@') is 0 then return substr($val, 2)
+    if substr($val.toUpperCase(), 0, 9) is 'CKEDITOR.' then return $val
     return '"' + str_replace(["\\", "/", "\n", "\t", "\r", "\x08", "\x0c", '"'], ['\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"'], $val) + '"'
 
 module.exports = CKEditor

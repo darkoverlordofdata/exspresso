@@ -77,7 +77,7 @@ class system.core.Input
       $get = {}
 
       #  loop through the full _GET array
-      for $key in array_keys(@req.query)
+      for $key in Object.keys(@req.query)
         $get[$key] = @_fetch_from_array(@req.query, $key, $xss_clean)
       return $get
 

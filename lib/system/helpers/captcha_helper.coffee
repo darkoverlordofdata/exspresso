@@ -76,8 +76,7 @@ if not function_exists('create_captcha')
     #  Remove old images
     #  -----------------------------------
     
-    [$usec, $sec] = explode(" ", microtime())
-    $now = ($usec + $sec)
+    $now = Date.now()
     
     $current_dir = opendir($img_path)
     
@@ -99,7 +98,7 @@ if not function_exists('create_captcha')
       
       $str = ''
       for $i in [0..7]
-        $str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
+        $str+=substr($pool, rand(0, strlen($pool) - 1), 1)
 
       $word = $str
       

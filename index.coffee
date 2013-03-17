@@ -38,11 +38,11 @@
 #
 # Load the core api module
 #
-core = require('./lib/system/core.coffee')
+api = require('./lib/system/core.coffee')
 #
-#   Add a php-ish api
+#   Export the api methods
 #
-require('./not-php').export global, core
+api.export global
 
 #
 # set the environment
@@ -117,7 +117,7 @@ else
 #
 #   Initialize the API
 #
-core()
+api()
 #
 #   Create the main controller
 #

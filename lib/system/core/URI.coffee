@@ -136,11 +136,9 @@ class system.core.URI
       $total_segments = 'total_rsegments'
       $segment_array = 'rsegment_array'
 
-    if not is_numeric($n)
-      return $default
+    return $default if typeof $n isnt 'number'
 
-    if @_keyval[$n]?
-      return @_keyval[$n]
+    return @_keyval[$n] if @_keyval[$n]?
 
     if @[$total_segments]() < $n
       return {} if Object.keys($default).length is 0
@@ -164,7 +162,7 @@ class system.core.URI
 
       $i++
 
-    if count($default) > 0
+    if $default.length > 0
       for $val in $default
         if not $retval[$val]?
           $retval[$val] = false
@@ -256,7 +254,7 @@ class system.core.URI
   # @return	[Integer] the count of segments
   #
   totalSegments :  ->
-    count(@_segments)
+    @_segments.length
 
 
   #
@@ -265,7 +263,7 @@ class system.core.URI
   # @return	[Integer] the count of rsegments
   #
   totalRsegments :  ->
-    count(@_rsegments)
+    @_rsegments.length
 
 
   #

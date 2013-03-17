@@ -87,7 +87,7 @@ class system.core.Utf8
   # @return	[String] cleaned string
   #
   safeAsciiForXml : ($str) ->
-    return remove_invisible_characters($str, false)
+    remove_invisible_characters($str, false)
     
   
   #

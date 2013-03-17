@@ -165,7 +165,7 @@ class application.lib.Template
   # @return [Object]  #
   setCss:($css) ->
 
-    if is_string($css)
+    if 'string' is typeof($css)
       @_css.push $css
     else
       @_css.push $str for $str in $css
@@ -178,7 +178,7 @@ class application.lib.Template
   # @param  [Object]  # @return [Object]  #
   setScript: ($script) ->
 
-    if is_string($script)
+    if 'string' is typeof($script)
       @_script.push $script
     else
       @_script.push $str for $str in $script
@@ -196,7 +196,7 @@ class application.lib.Template
   # @return [Object]  #
   setMeta: ($meta) ->
 
-    if is_string($meta)
+    if 'string' is typeof($meta)
       @_metadata.push $meta
     else
       @_metadata.push $str for $str in $meta

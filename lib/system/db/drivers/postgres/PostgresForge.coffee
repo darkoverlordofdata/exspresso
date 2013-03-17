@@ -39,7 +39,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   # @return	bool
   #
   _create_database : ($name) ->
-    return "CREATE DATABASE " + $name
+    "CREATE DATABASE " + $name
     
   
   #
@@ -50,7 +50,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   # @return	bool
   #
   _drop_database : ($name) ->
-    return "DROP DATABASE " + $name
+    "DROP DATABASE " + $name
     
   
   #
@@ -65,7 +65,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   # @return	bool
   #
   _create_table : ($table, $fields, $primary_keys, $keys, $if_not_exists) ->
-    log_message 'debug', '>postgres_forge::_create_database'
+    log_message 'debug', '>PostgresForge::_create_table'
     $sql = 'CREATE TABLE '
 
     if $if_not_exists is true
@@ -80,7 +80,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
       #  Numeric field names aren't allowed in databases, so if the key is
       #  numeric, we know it was assigned by PHP and the developer manually
       #  entered the field information, so we'll simply add it to the list
-      if is_numeric($field)
+      if 'number' is typeof($field)
         $sql+="\n\t$attributes"
         
       else 
@@ -88,57 +88,57 @@ class system.db.postgres.PostgresForge extends system.db.Forge
         
         $sql+="\n\t" + @db._protect_identifiers($field)
         
-        $is_unsigned = (array_key_exists('UNSIGNED', $attributes) and $attributes['UNSIGNED'] is true)
+        $is_unsigned = ($attributes['UNSIGNED']? and $attributes['UNSIGNED'] is true)
         
         #  Convert datatypes to be PostgreSQL-compatible
-        switch strtoupper($attributes['TYPE'])
+        switch $attributes.TYPE.toUpperCase()
           when 'TINYINT'
-            $attributes['TYPE'] = 'SMALLINT'
+            $attributes.TYPE = 'SMALLINT'
             
           when 'SMALLINT'
-            $attributes['TYPE'] = if ($is_unsigned) then 'INTEGER' else 'SMALLINT'
+            $attributes.TYPE = if ($is_unsigned) then 'INTEGER' else 'SMALLINT'
             
           when 'MEDIUMINT'
-            $attributes['TYPE'] = 'INTEGER'
+            $attributes.TYPE = 'INTEGER'
             
           when 'INT'
-            $attributes['TYPE'] = if ($is_unsigned) then 'BIGINT' else 'INTEGER'
+            $attributes.TYPE = if ($is_unsigned) then 'BIGINT' else 'INTEGER'
             
           when 'BIGINT'
-            $attributes['TYPE'] = if ($is_unsigned) then 'NUMERIC' else 'BIGINT'
+            $attributes.TYPE = if ($is_unsigned) then 'NUMERIC' else 'BIGINT'
             
           when 'DOUBLE'
-            $attributes['TYPE'] = 'DOUBLE PRECISION'
+            $attributes.TYPE = 'DOUBLE PRECISION'
             
           when 'DATETIME'
-            $attributes['TYPE'] = 'TIMESTAMP'
+            $attributes.TYPE = 'TIMESTAMP'
             
           when 'LONGTEXT'
-            $attributes['TYPE'] = 'TEXT'
+            $attributes.TYPE = 'TEXT'
             
           when 'BLOB'
-            $attributes['TYPE'] = 'BYTEA'
+            $attributes.TYPE = 'BYTEA'
             
             
         
         #  If this is an auto-incrementing primary key, use the serial data type instead
-        if in_array($field, $primary_keys) and array_key_exists('AUTO_INCREMENT', $attributes) and $attributes['AUTO_INCREMENT'] is true
+        if $primary_keys.indexOf($field) isnt -1 and $attributes.AUTO_INCREMENT? and $attributes.AUTO_INCREMENT is true
           $sql+=' SERIAL'
           
         else 
-          $sql+=' ' + $attributes['TYPE']
+          $sql+=' ' + $attributes.TYPE
           
         
         #  Modified to prevent constraints with integer data types
-        if array_key_exists('CONSTRAINT', $attributes) and strpos($attributes['TYPE'], 'INT') is false
+        if $attributes.CONSTRAINT? and $attributes.TYPE.indexOf('INT') is -1
           $sql+='(' + $attributes['CONSTRAINT'] + ')'
           
         
-        if array_key_exists('DEFAULT', $attributes)
-          $sql+=' DEFAULT \'' + $attributes['DEFAULT'] + '\''
+        if $attributes.DEFAULT?
+          $sql+=' DEFAULT \'' + $attributes.DEFAULT + '\''
           
         
-        if array_key_exists('NULL', $attributes) and $attributes['NULL'] is true
+        if $attributes.NULL? and $attributes.NULL is true
           $sql+=' NULL'
           
         else 
@@ -146,31 +146,28 @@ class system.db.postgres.PostgresForge extends system.db.Forge
           
         
         #  Added new attribute to create unqite fields. Also works with MySQL
-        if array_key_exists('UNIQUE', $attributes) and $attributes['UNIQUE'] is true
+        if $attributes.UNIQUE? and $attributes.UNIQUE is true
           $sql+=' UNIQUE'
-          
-        
-      
+
       #  don't add a comma on the end of the last field
-      if ++$current_field_count < count($fields)
+      if ++$current_field_count < Object.keys($fields).length
         $sql+=','
-        
-      
+
     
-    if count($primary_keys) > 0
+    if $primary_keys.length > 0
       #  Something seems to break when passing an array to _protect_identifiers()
       for $index, $key of $primary_keys
         $primary_keys[$index] = @db._protect_identifiers($key)
         
       
-      $sql+=",\n\tPRIMARY KEY (" + implode(', ', $primary_keys) + ")"
+      $sql+=",\n\tPRIMARY KEY (" + $primary_keys.join(', ') + ")"
       
     
     $sql+="\n);"
     
-    if is_array($keys) and count($keys) > 0
+    if Array.isArray($keys) and $keys.length > 0
       for $key in $keys
-        if is_array($key)
+        if Array.isArray($key)
           $key = @db._protect_identifiers($key)
           
         else 
@@ -190,7 +187,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   # @return    bool
   #
   _drop_table : ($table) ->
-    return "DROP TABLE IF EXISTS " + @db._escape_identifiers($table) + " CASCADE"
+    "DROP TABLE IF EXISTS " + @db._escape_identifiers($table) + " CASCADE"
     
   
   #
@@ -214,25 +211,21 @@ class system.db.postgres.PostgresForge extends system.db.Forge
     #  DROP has everything it needs now.
     if $alter_type is 'DROP'
       return $sql
-      
-    
+
     $sql+=" $column_definition"
     
     if $default_value isnt ''
       $sql+=" DEFAULT \"$default_value\""
-      
-    
+
     if $null is null
       $sql+=' NULL'
       
     else 
       $sql+=' NOT NULL'
-      
-    
+
     if $after_field isnt ''
       $sql+=' AFTER ' + @db._protect_identifiers($after_field)
-      
-    
+
     return $sql
     
     

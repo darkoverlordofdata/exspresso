@@ -23,14 +23,10 @@
 # @since      Version 1.0
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Exspresso Array Helpers
 #
 #
-
-#  ------------------------------------------------------------------------
 
 #
 # Element
@@ -38,7 +34,10 @@
 # Lets you determine whether an array index is set and whether it has a value.
 # If the element is empty it returns FALSE (or whatever you specify as the default value.)
 #
-# @param  [String]  # @param  [Array]  # @param  [Mixed]  # @return [Mixed]  depends on what the array contains
+# @param  [String]
+# @param  [Array]
+# @param  [Mixed]
+# @return [Mixed]  depends on what the array contains
 #
 if not function_exists('element')
   exports.element = element = ($item, $array, $default = false) ->
@@ -55,16 +54,23 @@ if not function_exists('element')
 #
 # Random Element - Takes an array as input and returns a random element
 #
-# @param  [Array]  # @return [Mixed]  depends on what the array contains
+# @param  [Array]
+# @return [Mixed]  depends on what the array contains
 #
 if not function_exists('random_element')
   exports.random_element = random_element = ($array) ->
-    if not is_array($array)
+    if 'object' isnt typeof($array)
       return $array
       
-    
-    return $array[array_rand($array)]
-    
+    if Array.isArray($array)
+
+      $array[rand(0, $array.length)]
+
+    else
+
+      $keys = Object.keys($array)
+      $array[$keys[rand(0, $keys.length)]]
+
   
 
 #  --------------------------------------------------------------------
@@ -75,13 +81,16 @@ if not function_exists('random_element')
 # Returns only the array items specified.  Will return a default value if
 # it is not set.
 #
-# @param  [Array]  # @param  [Array]  # @param  [Mixed]  # @return [Mixed]  depends on what the array contains
+# @param  [Array]
+# @param  [Array]
+# @param  [Mixed]
+# @return [Mixed]  depends on what the array contains
 #
 if not function_exists('elements')
   exports.elements = elements = ($items, $array, $default = false) ->
     $return = {}
-    
-    if not is_array($items)
+
+    if not Array.isArray($items)
       $items = [$items]
       
     
@@ -95,14 +104,6 @@ if not function_exists('elements')
       
     
     return $return
-
-#  ------------------------------------------------------------------------
-#
-# Export helpers to the global namespace
-#
-#
-for $name, $body of module.exports
-  define $name, $body
 
 
 #  End of file array_helper.php 

@@ -46,7 +46,7 @@ if not function_exists('gravatar')
   exports.gravatar = gravatar = ($email, $s = 80, $img = true, $d = 'identicon', $r = 'x', $atts = {}) ->
     $url = if @req.connection.encrypted then 'https://secure.' else 'http://www.'
     $url+='gravatar.com/avatar/'
-    $url+=md5(strtolower(trim($email)))
+    $url+=md5((trim($email.toLowerCase()))
     $url+="?s=#{$s}&d=#{$d}&r=#{$r}"
     if $img
       $url = '<img src="' + $url + '"'
@@ -68,7 +68,7 @@ if not function_exists('gravatar_profile')
   exports.gravatar_profile = gravatar_profile = ($email) ->
     $url = if req.connection.encrypted then 'https://secure.' else 'http://www.'
     $url+='gravatar.com/'
-    $url+=md5(strtolower(trim($email)))
+    $url+=md5(trim($email.toLowerCase()))
     return $url
     
   

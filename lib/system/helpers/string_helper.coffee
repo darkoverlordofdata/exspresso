@@ -87,8 +87,8 @@ if not function_exists('strip_slashes')
 #
 if not function_exists('strip_quotes')
   exports.strip_quotes = strip_quotes = ($str) ->
-    return str_replace(['"', "'"], '', $str)
-    
+    $str.replace(/\'/g, '').replace(/\"/g, '')
+
   
 
 #  ------------------------------------------------------------------------
@@ -102,7 +102,7 @@ if not function_exists('strip_quotes')
 #
 if not function_exists('quotes_to_entities')
   exports.quotes_to_entities = quotes_to_entities = ($str) ->
-    return str_replace(["\'", "\"", "'", '"'], ["&#39;", "&quot;", "&#39;", "&quot;"], $str)
+    $str.replace(/\'/g, '&#39;').replace(/\"/g, '&quot;')
     
   
 
@@ -171,7 +171,7 @@ if not function_exists('reduce_multiples')
 if not function_exists('random_string')
   exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
     switch $type
-      when 'basic' then return mt_rand()
+      when 'basic' then return rand()
 
       when 'alnum','numeric','nozero','alpha'
         
@@ -189,19 +189,19 @@ if not function_exists('random_string')
         $str = ''
         for $i in [0..$len-1]
 
-          $str+=substr($pool, mt_rand(0, strlen($pool) - 1), 1)
+          $str+=$pool.substr(rand(0, $pool.length - 1), 1)
 
         return $str
         
       when 'unique','md5'
         
-        return md5(uniqid(mt_rand()))
+        return md5(uniqid(rand()))
         
       when 'encrypt','sha1'
         
         $s = @load.helper('security')
         
-        return $s.do_hash(uniqid(mt_rand(), true), 'sha1')
+        return $s.do_hash(uniqid(rand(), true), 'sha1')
         
         
     
@@ -227,7 +227,7 @@ if not function_exists('alternator')
       return ''
       
     $args = func_get_args()
-    return $args[(_alternator++ % count($args))]
+    return $args[(_alternator++ % $args.length)]
     
   
 

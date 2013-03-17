@@ -124,7 +124,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   dbSetCharset: ($charset, $collation, $next) ->
     #  @todo - add support if needed
-    if $next? then $next()
+    return $next() if $next?
     return true
 
 
@@ -134,7 +134,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     # @return	[String]
   #
   _version:  ->
-    return "SELECT version() AS ver"
+    "SELECT version() AS ver"
 
 
   #
@@ -159,7 +159,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _prep_query: ($sql) ->
-    return $sql
+    $sql
 
 
   #
@@ -171,17 +171,14 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     if not @_trans_enabled
       return true
 
-
     #  When transactions are nested we only begin/commit/rollback the outermost ones
     if @_trans_depth > 0
       return true
-
 
     #  Reset the transaction failure flag.
     #  If the $test_mode flag is set to TRUE transactions will be rolled back
     #  even if the queries produce a successful result.
     @_trans_failure = if ($test_mode is true) then true else false
-
     @simpleQuery 'BEGIN', $next #
 
 
@@ -191,13 +188,10 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     # @return	bool
   #
   transCommit:  ->
-    if not @_trans_enabled
-      return true
-
+    return true if not @_trans_enabled
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
-    if @_trans_depth > 0
-      return true
+    return true if @_trans_depth > 0
 
     @simpleQuery 'COMMIT', $next
 
@@ -208,14 +202,10 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     # @return	bool
   #
   transRollback:  ->
-    if not @_trans_enabled
-      return true
-
+    return true if not @_trans_enabled
 
     #  When transactions are nested we only begin/commit/rollback the outermost ones
-    if @_trans_depth > 0
-      return true
-
+    return true if @_trans_depth > 0
 
     @simpleQuery 'ROLLBACK', $next
 
@@ -230,8 +220,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     if is_array($str)
       for $key, $val of $str
         $str[$key] = @escapeStr($val, $like)
-
-
       return $str
 
     #$str = pg.escape_string($str)
@@ -239,11 +227,9 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
     #  escape LIKE condition wildcards
     if $like is true
-      $str = str_replace(['%', '_', @_like_escape_chr],
-      [@_like_escape_chr + '%', @_like_escape_chr + '_', @_like_escape_chr + @_like_escape_chr],
-      $str)
-
-
+      $str = $str.replace(/\%/g, @_like_escape_chr + '%')
+      $str = $str.replace(/\_/g, @_like_escape_chr + '_')
+      $str = $str.replace(RegExp(preg_quote(@_like_escape_chr), 'g'), @_like_escape_chr + @_like_escape_chr)
     return $str
 
 
@@ -263,11 +249,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   insertId: ($next) ->
 
     @query "SELECT LASTVAL() AS id", ($err, $insert) =>
-
-      if $err
-        $next $err
-      else
-        $next null, $insert.row().id
+      return $next($err) if $err
+      $next(null, $insert.row().id)
 
   #
   # "Count All" query
@@ -280,7 +263,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   countAll: ($table = '', $next) ->
     if $table is ''
       return 0
-
 
     @query @_count_string + @_protect_identifiers('numrows') + " FROM " + @_protect_identifiers($table, true, null, false), ($err, $query)->
 
@@ -316,7 +298,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _list_columns: ($table = '') ->
-    return "SELECT column_name FROM information_schema.columns WHERE table_name ='" + $table + "'"
+    "SELECT column_name FROM information_schema.columns WHERE table_name ='" + $table + "'"
 
 
   #
@@ -327,7 +309,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     # @param  [String]  the table name
   # @return [Object]  #
   _field_data: ($table) ->
-    return "SELECT * FROM " + $table + " LIMIT 1"
+    "SELECT * FROM " + $table + " LIMIT 1"
 
 
   #
@@ -346,7 +328,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @return	integer
   #
   _error_number:  ->
-    return ''
+    ''
 
 
   #
@@ -363,23 +345,23 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
 
     for $id in @_reserved_identifiers
-      if strpos($item, '.' + $id) isnt false
-        $str = @_escape_char + str_replace('.', @_escape_char + '.', $item)
+      if $item.indexOf('.' + $id) isnt -1
+        $str = @_escape_char + $item.replace('.', @_escape_char + '.')
 
         #  remove duplicates if the user already included the escape
-        return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
+        return $str.replace(RegExp('[' + @_escape_char + ']+'), @_escape_char)
 
 
 
-    if strpos($item, '.') isnt false
-      $str = @_escape_char + str_replace('.', @_escape_char + '.' + @_escape_char, $item) + @_escape_char
+    if $item.indexOf('.') isnt -1
+      $str = @_escape_char + $item.replace('.', @_escape_char + '.' + @_escape_char) + @_escape_char
 
     else
       $str = @_escape_char + $item + @_escape_char
 
 
     #  remove duplicates if the user already included the escape
-    return preg_replace('/[' + @_escape_char + ']+/', @_escape_char, $str)
+    return $str.replace(RegExp('[' + @_escape_char + ']+'), @_escape_char)
 
 
   #
@@ -394,9 +376,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _from_tables: ($tables) ->
     if not is_array($tables)
       $tables = [$tables]
-
-
-    return implode(', ', $tables)
+    return $tables.join(', ')
 
 
   #
@@ -410,7 +390,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _insert: ($table, $keys, $values) ->
-    return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES (" + implode(', ', $values) + ");" #SELECT LASTVAL() AS id;"
+    "INSERT INTO " + $table + " (" + $keys.join(', ') + ") VALUES (" + $values.join(', ') + ");" #SELECT LASTVAL() AS id;"
 
   #
   # Insert statement
@@ -423,7 +403,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _insert_batch: ($table, $keys, $values) ->
-    return "INSERT INTO " + $table + " (" + implode(', ', $keys) + ") VALUES " + implode(', ', $values)
+    "INSERT INTO " + $table + " (" + $keys.join(', ') + ") VALUES " + $values.join(', ')
 
   #
   # Update statement
@@ -437,19 +417,19 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @param  [Array]  the limit clause
   # @return	[String]
   #
-  _update: ($table, $values, $where, $orderby = {}, $limit = false) ->
+  _update: ($table, $values, $where, $orderby = [], $limit = false) ->
     $valstr = []
     for $key, $val of $values
       $valstr.push $key + " = " + $val
 
 
-    $limit = if ( not $limit) then '' else ' LIMIT ' + $limit
+    $limit = if not $limit then '' else ' LIMIT ' + $limit
 
-    $orderby = if (count($orderby)>=1) then ' ORDER BY ' + implode(", ", $orderby) else ''
+    $orderby = if $orderby.length>0 then ' ORDER BY ' + $orderby.join(", ") else ''
 
-    $sql = "UPDATE " + $table + " SET " + implode(', ', $valstr)
+    $sql = "UPDATE " + $table + " SET " + $valstr.join(', ')
 
-    $sql+= if ($where isnt '' and count($where)>=1) then " WHERE " + implode(" ", $where) else ''
+    $sql+= if $where isnt '' and $where.length>0 then " WHERE " + $where.join(" ") else ''
 
     $sql+=$orderby + $limit
 
@@ -467,7 +447,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _truncate: ($table) ->
-    return "TRUNCATE " + $table
+    "TRUNCATE " + $table
 
 
   #
@@ -480,20 +460,20 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # @param  [String]  the limit clause
   # @return	[String]
   #
-  _delete: ($table, $where = {}, $like = {}, $limit = false) ->
+  _delete: ($table, $where = [], $like = [], $limit = false) ->
     $conditions = ''
 
-    if count($where) > 0 or count($like) > 0
+    if $where.length > 0 or $like.length > 0
       $conditions = "\nWHERE "
-      $conditions+=implode("\n", @ar_where)
+      $conditions+=@ar_where.join("\n")
 
-      if count($where) > 0 and count($like) > 0
+      if $where.length > 0 and $like.length > 0
         $conditions+=" AND "
 
-      $conditions+=implode("\n", $like)
+      $conditions+=$like.join("\n")
 
 
-    $limit = if ( not $limit) then '' else ' LIMIT ' + $limit
+    $limit = if not $limit then '' else ' LIMIT ' + $limit
 
     return "DELETE FROM " + $table + $conditions + $limit
 
@@ -511,12 +491,8 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   _limit: ($sql, $limit, $offset) ->
     $sql+="LIMIT " + $limit
-
-    if $offset > 0
-      $sql+=" OFFSET " + $offset
-
-
-    return $sql
+    $sql+=" OFFSET " + $offset if $offset > 0
+    $sql
 
 
   #

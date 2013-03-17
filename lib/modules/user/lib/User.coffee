@@ -59,7 +59,7 @@ class modules.user.lib.User
 
         $roles = []
         for $row in $user.roles
-          $roles.push freeze(array_merge($row, {}))
+          $roles.push freeze($row)
 
         return $next($err) if $err
         defineProperties @,

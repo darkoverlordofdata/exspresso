@@ -121,7 +121,7 @@ class system.lib.ExspressoEmail
       if @[$key]?
         $method = 'set_' + $key
         
-        if method_exists(@, $method)
+        if @[$method]?
           @[$method]($val)
           
         else 
@@ -241,7 +241,7 @@ class system.lib.ExspressoEmail
     # @param  [String]    # @param  [String]    # @return [Void]  #
   bcc: ($bcc, $limit = '') ->
 
-    if $limit isnt '' and is_numeric($limit)
+    if $limit isnt '' and 'number' is typeof($limit)
       @bcc_batch_mode = true
       @bcc_batch_size = $limit
 
@@ -280,7 +280,7 @@ class system.lib.ExspressoEmail
   attach: ($filename, $disposition = 'attachment') ->
 
     @_attach_name.push $filename
-    @_attach_type.push @_mime_types(next(explode('.', basename($filename))))
+    @_attach_type.push @_mime_types($filename.split('.').pop())
     @_attach_disp.push $disposition #  Can also be 'inline'  Not sure if it matters
     return @
 
@@ -293,7 +293,7 @@ class system.lib.ExspressoEmail
   _str_to_array: ($email) ->
 
     if not is_array($email)
-      if strpos($email, ',') isnt false
+      if $email.indexOf(',') isnt -1
         $email = preg_split('/[\s,]/', $email,  - 1, PREG_SPLIT_NO_EMPTY)
 
       else
@@ -334,7 +334,7 @@ class system.lib.ExspressoEmail
     # @param  [String]    # @return [Void]  #
   setProtocol: ($protocol = 'mail') ->
 
-    @protocol = if ( not in_array($protocol, @_protocols, true)) then 'mail' else strtolower($protocol)
+    @protocol = if ( not in_array($protocol, @_protocols, true)) then 'mail' else $protocol.toLowerCase()
     return @
 
   #
@@ -343,7 +343,7 @@ class system.lib.ExspressoEmail
     # @param  [Integer]  # @return [Void]  #
   setPriority: ($n = 3) ->
 
-    if not is_numeric($n)
+    if not 'number' is typeof($n)
       @priority = 3
       return
 
@@ -391,7 +391,7 @@ class system.lib.ExspressoEmail
   #
   _get_protocol: ($return = true) ->
 
-    @protocol = strtolower(@protocol)
+    @protocol = @protocol.toLowerCase()
     @protocol = if ( not in_array(@protocol, @_protocols, true)) then 'mail' else @protocol
 
     if $return is true
@@ -534,7 +534,7 @@ class system.lib.ExspressoEmail
     $str = preg_replace("| +|", " ", $str)
 
     #  Standardize newlines
-    if strpos($str, "\r") isnt false
+    if $str.indexOf("\r") isnt false
       $str = str_replace(["\r\n", "\r"], "\n", $str)
 
     #  If the current word is surrounded by {unwrap} tags we'll
@@ -553,7 +553,7 @@ class system.lib.ExspressoEmail
 
     #  Split the string into individual lines of text and cycle through them
     $output = ""
-    for $line in explode("\n", $str)
+    for $line in $str.split("\n")
       #  Is the line within the allowed character count?
       #  If so we'll join it to the output and continue
       if strlen($line)<=$charlim

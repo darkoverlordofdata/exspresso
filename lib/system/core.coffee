@@ -57,10 +57,6 @@ __PROTO__         = true  # if true, set mixin using the '__proto__' property
 #
 # privately dereference some methods
 #
-fopen                     = fs.openSync
-fclose                    = fs.closeSync
-unlink                    = fs.unlinkSync
-chmod                     = fs.chmodSync
 create                    = Object.create
 defineProperties          = Object.defineProperties
 defineProperty            = Object.defineProperty
@@ -75,13 +71,9 @@ prototype                 = Object.prototype
 #
 # Initialize the API
 #
-# Analyze the metadata for a class, then build and cache
-# a table of property definitions for that classs.
-#
-# @param  [Object]  class a class constructor function
-# @return [Object]  the cached metadata
 #
 module.exports = ->
+
   #
   # Load the framework constants
   #
@@ -322,23 +314,22 @@ module.exports.load_class = ($path, $namespace = global) ->
 #
 module.exports.is_really_writable = ($file) ->
 
-
   #  We'll actually write a file then read it.  Bah...
   if is_dir($file)
-    $file = rtrim($file, '/') + '/' + md5(''+mt_rand(1, 100) + mt_rand(1, 100))
+    $file = rtrim($file, '/') + '/' + md5(''+rand(1, 100) + rand(1, 100))
 
-    if ($fp = fopen($file, FOPEN_WRITE_CREATE)) is false
+    if ($fp = fs.openSync($file, FOPEN_WRITE_CREATE)) is false
       return false
 
-    fclose($fp)
-    chmod($file, DIR_WRITE_MODE)
-    unlink($file)
+    fs.closeSync($fp)
+    fs.chmodSync($file, DIR_WRITE_MODE)
+    fs.unlinkSync($file)
     return true
 
-  else if not is_file($file) or ($fp = fopen($file, FOPEN_WRITE_CREATE)) is false
+  else if not is_file($file) or ($fp = fs.openSync($file, FOPEN_WRITE_CREATE)) is false
     return false
 
-  fclose($fp)
+  fs.closeSync($fp)
   return true
 
 
@@ -646,7 +637,7 @@ module.exports.get_status_text = ($code = 200, $text = '') ->
     504:'Gateway Timeout',
     505:'HTTP Version Not Supported'
 
-  return '' if $code is '' or  not is_numeric($code)
+  return '' if $code is '' or  not 'number' is typeof($code)
   $text = $stat[$code] if $stat[$code]?  and $text is ''
   $text
 
@@ -690,13 +681,15 @@ module.exports.copyOwnProperties = ($dst, $src) ->
 
   defineProperties $dst, $properties
 
-module.exports.function_exists = function_exists = ($funcname) -> typeof global[$funcname] is 'function'
-module.exports.dirname = ($str) -> path.dirname
+
 module.exports.sprintf = require('sprintf').sprintf
 module.exports.glob = require('glob').sync
 module.exports.rawurldecode = querystring.unescape
 module.exports.file_exists = fs.existsSync || path.existsSync
 module.exports.basename = require('path').basename
+
+module.exports.function_exists = ($funcname) -> typeof global[$funcname] is 'function'
+module.exports.dirname = ($str) -> path.dirname
 module.exports.is_dir = ($path) -> fs.existsSync($path) and fs.statSync($path).isDirectory()
 module.exports.is_file = ($path) -> fs.existsSync($path) and fs.statSync($path).isFile()
 module.exports.realpath = ($path) -> if fs.existsSync($path) then fs.realpathSync($path) else false
@@ -794,8 +787,12 @@ module.exports.preg_quote = ($str) ->
 # @param  [String]  prefix  prefix to prepend to the string
 # @return [String] the unique id
 #
-module.exports.uniqid = ($prefix) ->
-  $prefix + (new Date().getTime()).toString(16)+(Math.floor(Math.random() * 256)).toString(16) + (Math.random() * 10).toFixed(8).toString()
+module.exports.uniqid = ($prefix = '', $more_entropy = false) ->
+
+  $result = $prefix + (Date().now()).toString(16)+(Math.floor(Math.random() * 256)).toString(16)
+  if $more_entropy is true
+    $result += (Math.random() * 10).toFixed(8).toString()
+  $result
 
 
 # ucfirst
@@ -860,14 +857,14 @@ module.exports.parse_url = ($url) ->
     [$username, $password] = ['','']
 
   return {
-  scheme:     $p.protocol.split(':')[0]
-  host:       $p.hostname
-  port:       $p.port
-  user:       $username
-  pass:       $password
-  path:       $p.pathname
-  query:      $p.query
-  fragment:   $p.hash
+    scheme:     $p.protocol.split(':')[0]
+    host:       $p.hostname
+    port:       $p.port
+    user:       $username
+    pass:       $password
+    path:       $p.pathname
+    query:      $p.query
+    fragment:   $p.hash
   }
 
 # stripslashes
@@ -895,19 +892,62 @@ module.exports.is_array = ($var) ->
 
 module.exports.rtrim = ($str, $chars = ' ') ->
 
-  if $chars is ' ' then $str.replace(/[\s]+$/g, '')
-  else $str.replace(new RegExp("[" + $chars + "]+$", "g"), "")
+  if $chars is ' '
+    $str.replace(/[\s]+$/g, '')
+  else if $chars is '/'
+    $str.replace(/[\/]+$/g, '')
+  else
+    $str.replace(new RegExp("[" + $chars + "]+$", "g"), "")
 
 module.exports.ltrim = ($str, $chars = ' ') ->
 
-  if $chars is ' ' then $str.replace(/^[\s]+/g, '')
-  else $str.replace(new RegExp("^[" + $chars + "]+", "g"), "")
+  if $chars is ' '
+    $str.replace(/^[\s]+/g, '')
+  else if $chars is '/'
+    $str.replace(/^[\/]+/g, '')
+  else
+    $str.replace(new RegExp("^[" + $chars + "]+", "g"), "")
 
 module.exports.trim = ($str, $chars = ' ') ->
 
   if $chars is ' ' then $str.replace(/^[\s]+/g, '').replace(/[\s]+$/g, '')
   else ltrim(rtrim($str, $chars), $chars)
 
+module.exports.empty = ($var) ->
+
+  not switch typeof $var
+    when 'undefined' then false
+    when 'string'
+      if $var.length is 0 then false else true
+    when 'number'
+      if $var is 0 then false else true
+    when 'boolean'
+      $var
+    when 'object'
+      if Array.isArray($var)
+        if $var.length is 0 then false else true
+      else
+        if Object.keys($var).length is 0 then false else true
+    else false
+
+
+
+#  ------------------------------------------------------------------------
+#
+# Export module to the global namespace
+#
+#
+module.exports.export = ($scope = global) ->
+
+  for $name, $body of module.exports
+    Object.defineProperty($scope, $name, {writeable: false, value: $body}) unless $name is 'export'
+
+  Object.defineProperties $scope,
+    $_ENV:    get: -> process.env
+    $argv:    get: -> process.argv
+    $argc:    get: -> process.argv.length
+
+  return
 
 # End of file core.coffee
 # Location: ./system/core.coffee

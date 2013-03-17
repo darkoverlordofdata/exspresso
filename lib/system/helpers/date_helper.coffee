@@ -103,11 +103,11 @@ if not function_exists('timespan')
   exports.timespan = timespan = ($seconds = 1, $time = '') ->
     exspresso.lang.load('date')
 
-    if not is_numeric($seconds)
+    if not 'number' is typeof($seconds)
       $seconds = 1
 
 
-    if not is_numeric($time)
+    if not 'number' is typeof($time)
       $time = time()
 
 
@@ -197,7 +197,7 @@ if not function_exists('days_in_month')
       return 0
 
 
-    if not is_numeric($year) or strlen($year) isnt 4
+    if not 'number' is typeof($year) or strlen($year) isnt 4
       $year = date('Y')
 
 
@@ -318,15 +318,15 @@ if not function_exists('human_to_unix')
       return false
 
 
-    $split = explode(' ', $datestr)
+    $split = $datestr.split(' ')
 
-    $ex = explode("-", $split['0'])
+    $ex = $split['0'].split("-")
 
     $year = if (strlen($ex['0']) is 2) then '20' + $ex['0'] else $ex['0']
     $month = if (strlen($ex['1']) is 1) then '0' + $ex['1'] else $ex['1']
     $day = if (strlen($ex['2']) is 1) then '0' + $ex['2'] else $ex['2']
 
-    $ex = explode(":", $split['1'])
+    $ex = $split['1'].split(":")
 
     $hour = if (strlen($ex['0']) is 1) then '0' + $ex['0'] else $ex['0']
     $min = if (strlen($ex['1']) is 1) then '0' + $ex['1'] else $ex['1']
@@ -340,7 +340,7 @@ if not function_exists('human_to_unix')
 
 
     if $split['2']?
-      $ampm = strtolower($split['2'])
+      $ampm = $split['2'].toLowerCase()
 
       if substr($ampm, 0, 1) is 'p' and $hour < 12 then $hour = $hour + 12
       if substr($ampm, 0, 1) is 'a' and $hour is 12 then $hour = '00'

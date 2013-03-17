@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#  ExspressoProfiler.coffee
+#  Profiler.coffee
 #+--------------------------------------------------------------------+
 #  Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -35,8 +35,6 @@
 class system.lib.Profiler
 
   util = require('util')
-  format = require('format-number')
-  {ucfirst, ucwords, preg_quote} = require(SYSPATH+'core.coffee')
 
   _benchmarks         : true
   _get                : true
@@ -60,35 +58,6 @@ class system.lib.Profiler
     'config'
   ]
 
-  _server_headers: [
-    #    'CONTENT_TYPE'
-    #    'DOCUMENT_ROOT'
-    #    'HTTP_ACCEPT'
-    #    'HTTP_ACCEPT_CHARSET'
-    #    'HTTP_ACCEPT_ENCODING'
-    #    'HTTP_ACCEPT_LANGUAGE'
-    #    'HTTP_CLIENT_IP'
-    #    'HTTP_CONNECTION'
-    #    'HTTP_HOST'
-    #    'HTTP_REFERER'
-    #    'HTTP_USER_AGENT'
-    #    'HTTP_X_CLIENT_IP'
-    #    'HTTP_X_CLUSTER_CLIENT_IP'
-    #    'HTTP_X_FORWARDED_FOR'
-    #    'PATH_INFO'
-    #    'QUERY_STRING'
-    'REMOTE_ADDR'
-    'REMOTE_HOST'
-    'REQUEST_METHOD'
-    'REQUEST_TIME'
-    'REQUEST_URI'
-    'SERVER_ADDR'
-    'SERVER_NAME'
-    'SERVER_PORT'
-    'SERVER_PROTOCOL'
-    'SERVER_SOFTWARE'
-    'SCRIPT_NAME'
-  ]
 
 
   constructor: ($controller, $config = {}) ->
@@ -158,7 +127,7 @@ class system.lib.Profiler
       if $object? and $object.dbdriver?
         $dbs.push $object
 
-    if count($dbs) is 0
+    if $dbs.length is 0
       $output = "\n\n"
       $output+='<dl id="ex_profiler_queries">'
       $output+="\n"
@@ -181,11 +150,11 @@ class system.lib.Profiler
     for $db in $dbs
       $output+='<dl>'
       $output+="\n"
-      $output+='<dt>' + @i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @i18n.line('profiler_queries') + ': ' + count($db.queries) + '&nbsp;</dt>'
+      $output+='<dt>' + @i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @i18n.line('profiler_queries') + ': ' + $db.queries.length + '&nbsp;</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
-      if count($db.queries) is 0
+      if $db.queries.length is 0
         $output+="<tr><td><em>" + @i18n.line('profiler_no_queries') + "</em></td></tr>\n"
 
       else
@@ -214,14 +183,14 @@ class system.lib.Profiler
     $output+='<dt>' + @i18n.line('profiler_get_data') + '</dt>'
     $output+="\n"
 
-    if count(@req.query) is 0
+    if Object.keys(@req.query).length is 0
       $output+="<dd><em>" + @i18n.line('profiler_no_get') + "</em></dd>"
 
     else
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       for $key, $val of @req.query
-        if not is_numeric($key)
+        if not 'number' is typeof($key)
           $key = "'" + $key + "'"
 
         $output+="<tr><td>req.query[" + $key + "] </td><td>"
@@ -252,7 +221,7 @@ class system.lib.Profiler
     $output+='<dt>' + @i18n.line('profiler_post_data') + '</dt>'
     $output+="\n"
 
-    if count(@req.body) is 0
+    if Object.keys(@req.body).length is 0
       $output+="<dd><em>" + @i18n.line('profiler_no_post') + "</em></dd>"
 
     else
@@ -342,8 +311,7 @@ class system.lib.Profiler
     $output+='<dt>' + @i18n.line('profiler_memory_usage') + '</dt>'
     $output+="\n"
 
-    $format = format(seperator: ',', decimal: '.', padRight: 0, truncate: 0)
-    $output+="<dd>" + $format(process.memoryUsage().heapUsed) + ' bytes</dd>'
+    $output+="<dd>" + number_format(process.memoryUsage().heapUsed) + ' bytes</dd>'
 
     $output+="</dl>"
 

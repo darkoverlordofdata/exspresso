@@ -71,7 +71,7 @@ if not function_exists('form_open')
     if @config.item('csrf_protection') is true
       $hidden[@security.getCsrfTokenName()] = @security.getCsrfHash()
 
-    if is_array($hidden) and count($hidden) > 0
+    if is_array($hidden) and Object.keys($hidden).length > 0
       {format} = require('util')
       $form+=format("\n<div class=\"hidden\">%s</div>", form_hidden($hidden))
 
@@ -93,7 +93,7 @@ if not function_exists('form_open')
 #
 if not function_exists('form_open_multipart')
   exports.form_open_multipart = form_open_multipart = ($action, $attributes = {}, $hidden = {}) ->
-    if is_string($attributes)
+    if 'string' is typeof($attributes)
       $attributes+=' enctype="multipart/form-data"'
       
     else 
@@ -165,7 +165,7 @@ if not function_exists('form_input')
 if not function_exists('form_password')
   exports.form_password = form_password = ($data = '', $value = '', $extra = '') ->
     if not is_array($data)
-      $data = 'name':$data
+      $data = name:$data
       
     
     $data['type'] = 'password'
@@ -185,7 +185,7 @@ if not function_exists('form_password')
 if not function_exists('form_upload')
   exports.form_upload = form_upload = ($data = '', $value = '', $extra = '') ->
     if not is_array($data)
-      $data = 'name':$data
+      $data = name:$data
       
     
     $data['type'] = 'file'
@@ -229,7 +229,7 @@ if not function_exists('form_textarea')
 #
 if not function_exists('form_multiselect')
   exports.form_multiselect = form_multiselect = ($name = '', $options = {}, $selected = {}, $extra = '') ->
-    if not strpos($extra, 'multiple')
+    if $extra.indexOf('multiple') is -1
       $extra+=' multiple="multiple"'
       
     
@@ -245,13 +245,13 @@ if not function_exists('form_multiselect')
 # @param  [String]  # @param  [Array]  # @param  [String]  # @param  [String]  # @return	[String]
 #
 if not function_exists('form_dropdown')
-  exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = {}, $extra = '') ->
+  exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = [], $extra = '') ->
     if not Array.isArray($selected)
       $selected = [$selected]
       
     
     #  If no selected state was submitted we will attempt to set it automatically
-    if count($selected) is 0
+    if $selected.length is 0
       #  If the form name appears in the @req.body array we have a winner!
       if @req.body[$name]?
         $selected = @req.body[$name]
@@ -259,16 +259,17 @@ if not function_exists('form_dropdown')
       
     
     #if $extra isnt '' then $extra = ' ' + $extra
-    $multiple = if (count($selected) > 1 and strpos($extra, 'multiple') is false) then ' multiple="multiple"' else ''
+    #$multiple = if (count($selected) > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
+    $multiple = if ($selected.length > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
     $form = '<select name="' + $name + '"' + _parse_extra($extra) + $multiple + ">\n"
     for $key, $val of $options
       $key = ''+$key
 
-      if is_array($val) and count($val) > 0
+      if is_array($val) and Object.keys($val).length > 0
         $form+='<optgroup label="' + $key + '">' + "\n"
 
         for $optgroup_key, $optgroup_val of $val
-          $sel = if (in_array($optgroup_key, $selected)) then ' selected="selected"' else ''
+          $sel = if ($selected.indexOf($optgroup_key) isnt -1) then ' selected="selected"' else ''
 
           $form+='<option value="' + $optgroup_key + '"' + $sel + '>' + ''+$optgroup_val + "</option>\n"
 
@@ -331,7 +332,7 @@ if not function_exists('form_checkbox')
 if not function_exists('form_radio')
   exports.form_radio = form_radio = ($data = '', $value = '', $checked = false, $extra = '') ->
     if not is_array($data)
-      $data = 'name':$data
+      $data = name:$data
       
     
     $data['type'] = 'radio'
@@ -416,7 +417,7 @@ if not function_exists('form_label')
       $label+=" for=\"#{$id}\""
       
     
-    if is_array($attributes) and count($attributes) > 0
+    if is_array($attributes) and Object.keys($attributes).length > 0
       for $key, $val of $attributes
         $label+=' ' + $key + '="' + $val + '"'
         
@@ -549,7 +550,7 @@ if not function_exists('set_select')
     
     if $OBJ is false
       if not @req.body[$field]
-        if count(@req.body) is 0 and $default is true
+        if Object.keys(@req.body).length is 0 and $default is true
           return ' selected="selected"'
           
         return ''
@@ -557,7 +558,7 @@ if not function_exists('set_select')
       $field = @req.body[$field]
       
       if is_array($field)
-        if not in_array($value, $field)
+        if $field.indexOf($value) is -1
           return ''
 
       else 
@@ -587,7 +588,7 @@ if not function_exists('set_checkbox')
 
     if $OBJ is false
       if not @req.body[$field]
-        if count(@req.body) is 0 and $default is true
+        if Object.keys(@req.body).length is 0 and $default is true
           return ' checked="checked"'
           
         return ''
@@ -595,7 +596,7 @@ if not function_exists('set_checkbox')
       $field = @req.body[$field]
       
       if is_array($field)
-        if not in_array($value, $field)
+        if $field.indexOf($value) is -1
           return ''
 
       else 
@@ -625,7 +626,7 @@ if not function_exists('set_radio')
 
     if $OBJ is false
       if not @req.body[$field]
-        if count(@req.body) is 0 and $default is true
+        if Object.keys(@req.body).length is 0 and $default is true
           return ' checked="checked"'
           
         return ''
@@ -633,7 +634,7 @@ if not function_exists('set_radio')
       $field = @req.body[$field]
       
       if is_array($field)
-        if not in_array($value, $field)
+        if $field.indexOf($value) is -1
           return ''
 
       else 
@@ -703,8 +704,8 @@ if not function_exists('_parse_form_attributes')
           $default[$key] = $attributes[$key]
           delete $attributes[$key]
 
-      if count($attributes) > 0
-        $default = array_merge($default, $attributes)
+      if Object.keys($attributes).length > 0
+        $default[$key] = $val for $key, $val of $attributes
 
     $att = ''
     
@@ -731,13 +732,13 @@ if not function_exists('_parse_form_attributes')
 #
 if not function_exists('_attributes_to_string')
   exports._attributes_to_string = _attributes_to_string = ($attributes, $formtag = false) ->
-    if is_string($attributes) and strlen($attributes) > 0
-      if $formtag is true and strpos($attributes, 'method=') is false
+    if 'string' is typeof($attributes) and $attributes.length > 0
+      if $formtag is true and $attributes.indexOf('method=') is -1
         $attributes+=' method="post"'
         
       
-      if $formtag is true and strpos($attributes, 'accept-charset=') is false
-        $attributes+=' accept-charset="' + strtolower(config_item('charset')) + '"'
+      if $formtag is true and $attributes.indexOf('accept-charset=') is -1
+        $attributes+=' accept-charset="' + config_item('charset').toLowerCase() + '"'
         
       
       return ' ' + $attributes
@@ -747,7 +748,7 @@ if not function_exists('_attributes_to_string')
     #  $attributes = $attributes
       
     
-    if is_array($attributes) and count($attributes) > 0
+    if is_array($attributes) and Object.keys($attributes).length > 0
       $atts = ''
       
       if not $attributes['method']?  and $formtag is true
@@ -755,7 +756,7 @@ if not function_exists('_attributes_to_string')
         
       
       if not $attributes['accept-charset']?  and $formtag is true
-        $atts+=' accept-charset="' + strtolower(config_item('charset')) + '"'
+        $atts+=' accept-charset="' + config_item('charset') + '"'
         
       
       for $key, $val of $attributes
@@ -788,7 +789,7 @@ if not function_exists('_get_validation_object')
 
     $object = @load._ex_classes['form_validation']
     
-    if not @[$object]?  or  not is_object(@[$object])
+    if not @[$object]?  or  not 'object' is typeof(@[$object])
       return $return
 
     return @[$object]

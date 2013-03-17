@@ -184,7 +184,7 @@ if not function_exists('img')
     
     for $k, $v of $src
       
-      if $k is 'src' and strpos($v, '://') is false
+      if $k is 'src' and $v.indexOf('://') is -1
 
         if $index_page is true
           $img+=' src="' + exspresso.config.siteUrl($v) + '"'
@@ -224,7 +224,7 @@ if not function_exists('doctype')
   exports.doctype = doctype = ($type = 'xhtml1-strict') ->
 
     if not is_array($_doctypes)
-      if defined('ENVIRONMENT') and is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
+      if is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
         $_doctypes = require(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
         
       else if is_file(APPPATH + 'config/doctypes' + EXT)
@@ -261,7 +261,7 @@ if not function_exists('link_tag')
     
     if is_array($href)
       for $k, $v of $href
-        if $k is 'href' and strpos($v, '://') is false
+        if $k is 'href' and $v.indexOf('://') is -1
           if $index_page is true
             $link+='href="' + exspresso.config.siteUrl($v) + '" '
             
@@ -276,7 +276,7 @@ if not function_exists('link_tag')
       $link+="/>"
       
     else 
-      if strpos($href, '://') isnt false
+      if $href.indexOf('://') isnt -1
         $link+='href="' + $href + '" '
         
       else if $index_page is true
@@ -314,7 +314,7 @@ if not function_exists('meta')
   exports.meta = meta = ($name = '', $content = '', $type = 'name', $newline = "\n") ->
     #  Since we allow the data to be passes as a string, a simple array
     #  or a multidimensional one, we need to do a little prepping.
-    if is_string($name)
+    if 'string' is typeof($name)
       $name = ['name':$name, 'content':$content, 'type':$type, 'newline':$newline]
       
     else 
