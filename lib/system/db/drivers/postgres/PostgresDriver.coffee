@@ -229,7 +229,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
     if $like is true
       $str = $str.replace(/\%/g, @_like_escape_chr + '%')
       $str = $str.replace(/\_/g, @_like_escape_chr + '_')
-      $str = $str.replace(RegExp(preg_quote(@_like_escape_chr), 'g'), @_like_escape_chr + @_like_escape_chr)
+      $str = $str.replace(RegExp(reg_quote(@_like_escape_chr), 'g'), @_like_escape_chr + @_like_escape_chr)
     return $str
 
 

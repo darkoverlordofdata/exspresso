@@ -85,10 +85,10 @@ class system.core.Exspresso extends system.core.Object
     $profile  = @profile
 
     $profile = if ENVIRONMENT is 'development' then true else false
-    $argv.shift() # node
-    $argv.shift() # exspresso
+    process.argv.shift() # node
+    process.argv.shift() # exspresso
     $set_db = false
-    for $arg in $argv
+    for $arg in process.argv
       if $set_db is true
         $db = $arg
         $set_db = false

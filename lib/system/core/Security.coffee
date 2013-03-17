@@ -491,12 +491,12 @@ class system.core.Security
       #  find occurrences of illegal attribute strings without quotes
       $re = RegExp('(' + $evil_attributes.join('|') + ')\\s*=\\s*([^\\s>]*)', 'img')
       while ($match = $re.exec($str)) isnt null
-        $attribs.push preg_quote($match)
+        $attribs.push reg_quote($match)
 
       #  find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
       $re = RegExp("(" + $evil_attributes.join('|') + ")\\s*=\\s*(\\x22|\\x27)([^\\\\2]*?)(\\\\2)", "img")
       while ($match = $re.exec($str)) isnt null
-        $attribs.push preg_quote($match)
+        $attribs.push reg_quote($match)
 
       #  replace illegal attribute strings that are inside an html tag
 

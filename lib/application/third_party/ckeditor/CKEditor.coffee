@@ -30,9 +30,18 @@
 class CKEditor
 
   #
+  # import php api functions
+  #
+  log_message 'debug', 'Loading php emulation layer into CKEditor'
+  php = require('not-php')
+  eval "#{$name} = php.#{$name}" for $name, $body of php
+
+
+  #
   # The version of %CKEditor.
   #
   CKEditor.version = '3.6.5'
+
   #
   # A constant string unique for each release of %CKEditor.
   #

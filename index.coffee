@@ -39,8 +39,9 @@
 # Load the core api module
 #
 api = require('./lib/system/core.coffee')
+
 #
-#   Export the api methods
+# Export the api methods
 #
 api.export global
 
@@ -118,8 +119,9 @@ else
 #   Initialize the API
 #
 api()
+
 #
-#   Create the main controller
+#   Create the top level system controller
 #
 define 'exspresso', new system.core.Exspresso
 

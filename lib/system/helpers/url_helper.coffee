@@ -379,7 +379,7 @@ if not function_exists('url_title')
     else if $separator is 'underscore'
       $separator = '_'
 
-    $q_separator = preg_quote($separator)
+    $q_separator = reg_quote($separator)
 
     $trans =
       '&.+?;': ''

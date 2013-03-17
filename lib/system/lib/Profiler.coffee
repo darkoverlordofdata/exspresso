@@ -162,7 +162,7 @@ class system.lib.Profiler
           $time = $db.query_times[$key]+'&nbsp;ms'
 
           for $bold in $highlight
-            $val = $val.replace(RegExp(preg_quote($bold), 'gm'), '<strong>' + $bold + '</strong>')
+            $val = $val.replace(RegExp(reg_quote($bold), 'gm'), '<strong>' + $bold + '</strong>')
 
           $output+="<tr><td>" + $time + "</td><td><pre class='prettyprint'><code class='lang-sql'>" + $val + "</code></pre></td></tr>\n"
 

@@ -215,11 +215,11 @@ if ( not function_exists('word_censor'))
 
       if ($replacement isnt '')
 
-        $str = preg_replace("/(#{$delim})("+str_replace('\*', '\w*?', preg_quote($badword, '/'))+")(#{$delim})/i", "$1#{$replacement}$3", $str)
+        $str = preg_replace("/(#{$delim})("+str_replace('\*', '\w*?', reg_quote($badword, '/'))+")(#{$delim})/i", "$1#{$replacement}$3", $str)
 
       else
 
-        $str = preg_replace("/(#{$delim})("+str_replace('\*', '\w*?', preg_quote($badword, '/'))+")(#{$delim})/ie", "'$1'+str_repeat('#', strlen('$2'))+'$3'", $str);
+        $str = preg_replace("/(#{$delim})("+str_replace('\*', '\w*?', reg_quote($badword, '/'))+")(#{$delim})/ie", "'$1'+str_repeat('#', strlen('$2'))+'$3'", $str);
 
     return trim($str)
 
@@ -267,7 +267,7 @@ if ( not function_exists('highlight_phrase'))
       return ''
 
     if $phrase isnt ''
-      return preg_replace('/('+preg_quote($phrase, '/')+')/i', $tag_open+"$1"+$tag_close, $str)
+      return preg_replace('/('+reg_quote($phrase, '/')+')/i', $tag_open+"$1"+$tag_close, $str)
 
     return $str
 

@@ -147,7 +147,7 @@ if not function_exists('reduce_double_slashes')
 #
 if not function_exists('reduce_multiples')
   exports.reduce_multiples = reduce_multiples = ($str, $character = ',', $trim = false) ->
-    $str = preg_replace('#' + preg_quote($character, '#') + '{2,}#', $character, $str)
+    $str = preg_replace('#' + reg_quote($character, '#') + '{2,}#', $character, $str)
     
     if $trim is true
       $str = trim($str, $character)

@@ -163,7 +163,7 @@ class system.lib.Parser
   # @private
   # @param  [String]    # @param  [String]    # @return [Mixed]  #
   _match_pair: ($string, $variable) ->
-    if not ($match = preg_match("|" + preg_quote(@_l_delim) + $variable + preg_quote(@_r_delim) + "(.+?)" + preg_quote(@_l_delim) + '/' + $variable + preg_quote(@_r_delim) + "|s", $string))?
+    if not ($match = preg_match("|" + reg_quote(@_l_delim) + $variable + reg_quote(@_r_delim) + "(.+?)" + reg_quote(@_l_delim) + '/' + $variable + reg_quote(@_r_delim) + "|s", $string))?
       return false
 
     return $match

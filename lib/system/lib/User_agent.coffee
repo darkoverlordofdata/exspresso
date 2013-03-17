@@ -142,7 +142,7 @@ class system.lib.UserAgent
 
     if is_array(@_platforms) and count(@_platforms) > 0
       for $key, $val of @_platforms
-        if preg_match("|" + preg_quote($key) + "|i", @_agent)?
+        if preg_match("|" + reg_quote($key) + "|i", @_agent)?
           @_platform = $val
           return true
 
@@ -160,7 +160,7 @@ class system.lib.UserAgent
 
     if is_array(@_browsers) and count(@_browsers) > 0
       for $key, $val of @_browsers
-        if ($match = preg_match("|" + preg_quote($key) + ".*?([0-9\\.]+)|i", @_agent))?
+        if ($match = preg_match("|" + reg_quote($key) + ".*?([0-9\\.]+)|i", @_agent))?
           @_is_browser = true
           @_version = $match[1]
           @_browser = $val
@@ -179,7 +179,7 @@ class system.lib.UserAgent
 
     if is_array(@_robots) and count(@_robots) > 0
       for $key, $val of @_robots
-        if preg_match("|" + preg_quote($key) + "|i", @_agent).length
+        if preg_match("|" + reg_quote($key) + "|i", @_agent).length
           @_is_robot = true
           @_robot = $val
           return true

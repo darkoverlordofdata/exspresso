@@ -117,14 +117,6 @@ module.exports = ->
 
 
 #
-# publicly dereference some Object utility member
-#
-module.exports.defineProperties  = Object.defineProperties
-module.exports.defineProperty    = Object.defineProperty
-module.exports.freeze            = Object.freeze
-module.exports.keys              = Object.keys
-
-#
 # Magic
 #
 # Returns a new mixin from prototype.
@@ -682,6 +674,14 @@ module.exports.copyOwnProperties = ($dst, $src) ->
   defineProperties $dst, $properties
 
 
+#
+# publicly dereference some Object utility member
+#
+module.exports.defineProperties = Object.defineProperties
+module.exports.defineProperty = Object.defineProperty
+module.exports.freeze = Object.freeze
+module.exports.keys = Object.keys
+
 module.exports.sprintf = require('sprintf').sprintf
 module.exports.glob = require('glob').sync
 module.exports.rawurldecode = querystring.unescape
@@ -710,6 +710,20 @@ module.exports.htmlspecialchars = ($str) ->
     .replace(/\"/g, "&quot;")
     .replace(/\</g, "&lt;")
     .replace(/\>/g, "&gt;")
+
+# stripslashes
+#
+# Remove escaping slashes from a string
+#
+# @param  [String]  str the string to convert
+# @return [String] converted string
+#
+module.exports.stripslashes = ($str) ->
+  (''+$str)
+    .replace(/\\'/g, '\'')
+    .replace(/\\"/g, '"')
+    .replace(/\\0/g, '\0')
+    .replace(/\\\\/g, '\\')
 
 # wordwrap
 #
@@ -748,9 +762,22 @@ module.exports.number_format = ($number, $decimals = 0, $dec_point = '.', $thous
   $format = formatnumber(seperator: $thousands_sep, decimal: $dec_point, padRight: $decimals, truncate: $decimals)
   $format($number)
 
+# die
+#
+# display message end exit process with fail
+#
+# @param  [String]  str  string display
+#
 module.exports.die = ($message) ->
   console.log $message
   process.exit 1
+
+# die
+#
+# display message end exit process with success
+#
+# @param  [String]  str  string display
+#
 module.exports.exit = ($message) ->
   console.log $message
   process.exit 0
@@ -766,17 +793,24 @@ module.exports.exit = ($message) ->
 module.exports.md5 = ($str, $output='hex') ->
   crypto.createHash('md5').update($str).digest($output)
 
+# sha1
+#
+# returns an sha1 hash of a string
+#
+# @param  [String]  str  string to hash
+# @return [String] the sha1 hash value
+#
 module.exports.sha1 = ($str, $output='hex') ->
   crypto.createHash('sha1').update($str).digest($output)
 
-# preg_quote
+# reg_quote
 #
 # escape the regexp control chars in the string
 #
 # @param  [String]  str  string to escape
 # @return [String] the escaped string
 #
-module.exports.preg_quote = ($str) ->
+module.exports.reg_quote = ($str) ->
   $str.replace(/([\.\\\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:\-])/gm, '\\$1')
 
 
@@ -799,8 +833,8 @@ module.exports.uniqid = ($prefix = '', $more_entropy = false) ->
 #
 # returns a string with the first char capitalized
 #
-# @param  [String]  prefix  prefix to prepend to the string
-# @return [String] the unique id
+# @param  [String] str  string to capitalize
+# @return [String] the capitalized string
 #
 module.exports.ucfirst = ($str) ->
   $str.charAt(0).toUpperCase() + $str.substr(1)
@@ -809,8 +843,8 @@ module.exports.ucfirst = ($str) ->
 #
 # returns a string with the first char of each word capitalized
 #
-# @param  [String]  prefix  prefix to prepend to the string
-# @return [String] the unique id
+# @param  [String] str  string to capitalize
+# @return [String] the capitalized string
 #
 module.exports.ucwords = ($str) ->
   ''+$str.replace /^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, ($1) -> $1.toUpperCase()
@@ -867,22 +901,6 @@ module.exports.parse_url = ($url) ->
     fragment:   $p.hash
   }
 
-# stripslashes
-#
-# parse an url and return it's elements
-#
-# @param  [String]  url the url to parse
-# @return [Object] a new hash with the parse elements
-#
-module.exports.stripslashes = stripslashes = ($str) ->
-  return ($str + '').replace /\\(.?)/g, ($s, $p) ->
-    switch $p
-      when '\\' then '\\'
-      when '0'  then '\u0000'
-      when ''   then ''
-      else $p
-
-
 
 module.exports.is_array = ($var) ->
   if typeof $var is 'object'
@@ -890,6 +908,14 @@ module.exports.is_array = ($var) ->
   else
     false
 
+# rtrim
+#
+# right trim a string
+#
+# @param  [String] str  string to trim
+# @param  [String] char the character to trim
+# @return [String] the trimed string
+#
 module.exports.rtrim = ($str, $chars = ' ') ->
 
   if $chars is ' '
@@ -899,6 +925,14 @@ module.exports.rtrim = ($str, $chars = ' ') ->
   else
     $str.replace(new RegExp("[" + $chars + "]+$", "g"), "")
 
+# ltrim
+#
+# left trim a string
+#
+# @param  [String] str  string to trim
+# @param  [String] char the character to trim
+# @return [String] the trimed string
+#
 module.exports.ltrim = ($str, $chars = ' ') ->
 
   if $chars is ' '
@@ -908,11 +942,27 @@ module.exports.ltrim = ($str, $chars = ' ') ->
   else
     $str.replace(new RegExp("^[" + $chars + "]+", "g"), "")
 
+# rtrim
+#
+# trim a string
+#
+# @param  [String] str  string to trim
+# @param  [String] char the character to trim
+# @return [String] the trimed string
+#
 module.exports.trim = ($str, $chars = ' ') ->
 
   if $chars is ' ' then $str.replace(/^[\s]+/g, '').replace(/[\s]+$/g, '')
   else ltrim(rtrim($str, $chars), $chars)
 
+# empty
+#
+# checks if a primitive variable has a value
+# checks if a object variable has children
+#
+# @param  [String] var  variable to check
+# @returns [Boolean] true if var has a value
+#
 module.exports.empty = ($var) ->
 
   not switch typeof $var
@@ -941,11 +991,6 @@ module.exports.export = ($scope = global) ->
 
   for $name, $body of module.exports
     Object.defineProperty($scope, $name, {writeable: false, value: $body}) unless $name is 'export'
-
-  Object.defineProperties $scope,
-    $_ENV:    get: -> process.env
-    $argv:    get: -> process.argv
-    $argc:    get: -> process.argv.length
 
   return
 

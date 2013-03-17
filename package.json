@@ -10,11 +10,9 @@
       "email": "darkoverlordofdata@gmail.com"
     }
   ],
-  "bin": {
-    "php2coffee": "./bin/php2coffee"
-  },
   "dependencies": {
     "coffee-script": "*",
+    "not-php": "*",
     "mysql": "*",
     "pg": "*",
     "connect": "*",

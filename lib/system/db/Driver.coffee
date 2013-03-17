@@ -877,16 +877,13 @@ class system.db.Driver
   #
   _protect_identifiers: ($item, $prefix_single = false, $protect_identifiers = null, $field_exists = true) ->
 
-    if not 'boolean' is typeof($protect_identifiers)
+    if 'boolean' isnt typeof($protect_identifiers)
       $protect_identifiers = @_protect_identifiers_default
 
-    if Array.isArray($item)
+    if 'object' is typeof($item)
       $escaped_array = []
-
       for $k, $v of $item
         $escaped_array[@_protect_identifiers($k)] = @_protect_identifiers($v)
-
-
       return $escaped_array
 
     #  Convert tabs or multiple spaces into single spaces
@@ -922,10 +919,7 @@ class system.db.Driver
             if @_reserved_identifiers.indexOf($val) is -1
               $parts[$key] = @_escape_identifiers($val)
 
-
-
           $item = $parts.join('.')
-
         return $item + $alias
 
 
@@ -953,16 +947,13 @@ class system.db.Driver
         if $field_exists is false
           $i++
 
-
         #  Verify table prefix and replace if necessary
         if @swap_pre isnt '' and $parts[$i].substr(0,@swap_pre.length) is @swap_pre
           $parts[$i] = $parts[$i].replace(RegExp("^" + @swap_pre + "(\\S+?)"), @dbprefix + "$1")
 
-
         #  We only add the table prefix if it does not already exist
         if $parts[$i].substr(0, @dbprefix.length) isnt @dbprefix
           $parts[$i] = @dbprefix + $parts[$i]
-
 
         #  Put the parts back together
         $item = $parts.join('.')
@@ -970,7 +961,6 @@ class system.db.Driver
 
       if $protect_identifiers is true
         $item = @_escape_identifiers($item)
-
 
       return $item + $alias
 
@@ -981,12 +971,9 @@ class system.db.Driver
       if @swap_pre isnt '' and $item.substr(0, @swap_pre.length) is @swap_pre
         $item = $item.replace(RegExp("^" + @swap_pre + "(\\S+?)"), @dbprefix + "$1")
 
-
       #  Do we prefix an item with no segments?
       if $prefix_single is true and $item.substr(0, @dbprefix.lenth) isnt @dbprefix
         $item = @dbprefix + $item
-
-
 
     if $protect_identifiers is true and @_reserved_identifiers.indexOf($item) is -1
       $item = @_escape_identifiers($item)
