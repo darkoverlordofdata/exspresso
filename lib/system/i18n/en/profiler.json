@@ -1,5 +1,7 @@
 {
 	"profiler_database":"DATABASE",
+  "profiler_driver":"DRIVER",
+  "profiler_version":"VERSION",
 	"profiler_controller_info":"CLASS/METHOD",
 	"profiler_benchmarks":"BENCHMARKS",
 	"profiler_queries":"QUERIES",

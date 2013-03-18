@@ -150,7 +150,14 @@ class system.lib.Profiler
     for $db in $dbs
       $output+='<dl>'
       $output+="\n"
-      $output+='<dt>' + @i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;' + @i18n.line('profiler_queries') + ': ' + $db.queries.length + '&nbsp;</dt>'
+      $output+='<dt>'
+      $output+=@i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;'
+      $output+=@i18n.line('profiler_driver') + ':&nbsp; ' + $db.dbdriver + '&nbsp;'
+      $output+=@i18n.line('profiler_version') + ':&nbsp; ' + $db.version + '&nbsp;'
+      $output+='</dt>'
+      $output+='<dt>'
+      $output+=@i18n.line('profiler_queries') + ':&nbsp; ' + $db.queries.length + '&nbsp;'
+      $output+='</dt>'
       $output+="\n"
       $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 

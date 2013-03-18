@@ -14,7 +14,7 @@
 
  [Live Demo!](http://exspresso.herokuapp.com/)
 
-  Exspresso uses [not-php] (http://github.com/darkoverlordofdata/not-php) v0.3.9 as a drop in
+  Exspresso uses [not-php] (http://github.com/darkoverlordofdata/not-php) v0.3.14 as a drop in
   replacement for many of the php api calls that were in the ported code.
 
 
@@ -49,9 +49,8 @@ Options:
 ```
 
 examples:
- node --harmony index appjs
- node index connect
- node index express
+ node exspresso --db postgres
+ node exspresso express
 
 
 

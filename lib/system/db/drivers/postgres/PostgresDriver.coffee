@@ -38,6 +38,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   dbdriver          : 'postgres'
   port              : 5432
   connected         : false
+  version           : require(FCPATH + 'node_modules/pg/package.json').version
 
   _escape_char      : '"'
 
@@ -84,6 +85,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
         @connected = false
         console.log $err
       else
+        # return connection to pool -- pg v 0.14.x
         setTimeout $done, 1000
         $next null, $client
 

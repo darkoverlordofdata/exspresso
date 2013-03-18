@@ -89,7 +89,8 @@ class system.db.Driver
     for $key, $val of $params
       if @[$key]? then @[$key] = $val
 
-    log_message('debug', 'Database Driver Class Initialized')
+    log_message 'debug', '%s Driver Initialized', ucfirst(@dbdriver)
+    #log_message('debug', 'Database Driver Class Initialized')
 
 
   #

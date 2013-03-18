@@ -63,16 +63,17 @@ class application.lib.Theme
   #
   # Loads a theme manifest
   #
-  #   @access	public
-  #   @param	string theme name
-  # @return [Object]  #
+  # @access	public
+  # @param	string theme name
+  # @return [Object]
+  #
   loadTheme: ($theme) ->
 
-    if file_exists(APPPATH + 'themes/all/theme' + EXT)
-      $config = require(APPPATH + 'themes/all/theme' + EXT)
-
     if file_exists(APPPATH + 'themes/' + $theme + '/theme' + EXT)
-      $config = array_merge_recursive($config, require(APPPATH + 'themes/' + $theme + '/theme' + EXT))
+      $config = require(APPPATH + 'themes/' + $theme + '/theme' + EXT)
+
+    if file_exists(APPPATH + 'themes/all/theme' + EXT)
+      $config.__proto__ = require(APPPATH + 'themes/all/theme' + EXT)
 
     @['_'+$key] = $val for $key, $val of $config
     @_path = @_location + $theme + '/theme' + EXT
@@ -83,10 +84,11 @@ class application.lib.Theme
   #
   # Initialize a template with theme resources
   #
-  #   @access	public
-  #   @param	string	template
+  # @access	public
+  # @param	string	template
   # @param  [Array]  extra theme elements
-  # @return [Object]  #
+  # @return [Object]
+  #
   init: ($template, $extra = []) ->
 
     @template = $template
@@ -138,27 +140,27 @@ class application.lib.Theme
     @
 
 
-  array_merge = ($array1, $array2) ->
-
-    $ret = {}
-    for $key, $item of $array1
-      $ret[$key] = $item
-    for $key, $item of $array2
-      $ret[$key] = $item
-    return $ret
-
-
-  array_merge_recursive = ($array1, $array2) ->
-
-    $ret = {}
-    for $key, $item of $array1
-      $ret[$key] = $item
-    for $key, $item of $array2
-      if typeof $array1[$key] is 'object' or typeof $item is 'object'
-        $ret[$key] = array_merge($array1[$key], $item)
-      else
-        $ret[$key] = $item
-    return $ret
+#  array_merge = ($array1, $array2) ->
+#
+#    $ret = {}
+#    for $key, $item of $array1
+#      $ret[$key] = $item
+#    for $key, $item of $array2
+#      $ret[$key] = $item
+#    return $ret
+#
+#
+#  array_merge_recursive = ($array1, $array2) ->
+#
+#    $ret = {}
+#    for $key, $item of $array1
+#      $ret[$key] = $item
+#    for $key, $item of $array2
+#      if typeof $array1[$key] is 'object' or typeof $item is 'object'
+#        $ret[$key] = array_merge($array1[$key], $item)
+#      else
+#        $ret[$key] = $item
+#    return $ret
 
 module.exports = application.lib.Theme
 

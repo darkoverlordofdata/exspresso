@@ -35,31 +35,32 @@
 class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
   # by default, expect mysql to listen on port 3306
-  dbdriver            : 'mysql'
-  port                : 3306
-  connected           : false
+  dbdriver          : 'mysql'
+  port              : 3306
+  connected         : false
+  version           : require(FCPATH + 'node_modules/mysql/package.json').version
 
   #  The character used for escaping
-  _escape_char        : '`'
+  _escape_char      : '`'
 
   #  clause and character used for LIKE escape sequences - not used in MySQL
-  _like_escape_str    : ''
-  _like_escape_chr    : ''
+  _like_escape_str  : ''
+  _like_escape_chr  : ''
 
   #
   # Whether to use the MySQL "delete hack" which allows the number
   # of affected rows to be shown. Uses a preg_replace when enabled,
   # adding a bit more processing to all queries.
   #
-  delete_hack         : true
+  delete_hack       : true
 
   #
   # The syntax to count rows is slightly different across different
   # database engines, so this string appears in each driver and is
   # used for the count_all() and count_all_results() functions.
   #
-  _count_string       : 'SELECT COUNT(*) AS '
-  _random_keyword     : ' RAND()'#  database specific random keyword
+  _count_string     : 'SELECT COUNT(*) AS '
+  _random_keyword   : ' RAND()'#  database specific random keyword
 
 
   #
