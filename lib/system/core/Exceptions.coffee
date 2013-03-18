@@ -122,6 +122,51 @@ class system.core.AuthorizationError extends Error
     @stack    = "\nAuthorization Check Failed\n#{$msg}"
 
 
+#
+# Application Error Class
+#
+class system.core.AppError extends Error
+
+#
+# @property [String] The http status code
+#
+  code: ''
+  #
+  # @property [String] The description of the http status code
+  #
+  desc: ''
+  #
+  # @property [String] A short description of the error condition, such as the class name
+  #
+  name: ''
+  #
+  # @property [String] The css class to use for formatting the error display
+  #
+  class: ''
+  #
+  # @property [String] A description of the actual error
+  #
+  message: ''
+  #
+  # @property [String] The stack of prior error messages, seperated by new line.
+  #
+  stack: ''
+
+  #
+  # Initialize the application error
+  #
+  #
+  # @param  [Object]  msg the error description
+  # @param  [String]  status  http status code to associate to the error
+  #
+  constructor: ($name, $msg, $status = 401) ->
+
+    @code     = $status
+    @desc     = get_status_text($status)
+    @name     = $name
+    @class    = 'info'
+    @message  = get_status_text($status)
+    @stack    = "\n#{$name}\n#{$msg}"
 
 #
 # Exceptions Class

@@ -58,7 +58,7 @@ class system.lib.Migration
 
     # Are they trying to use migrations while it is disabled?
     if (@_migration_enabled isnt true)
-      show_error('Migrations has been loaded but is disabled or set up incorrectly.')
+      throw new system.core.AppError('Acess Denied', 'Migrations has been loaded but is disabled or set up incorrectly.')
 
     # If not set, set it
     @_migration_path = @_migration_path ? APPPATH + 'migrations/'
@@ -78,7 +78,7 @@ class system.lib.Migration
       @connected = true
 
       # If the migrations table is missing, make it
-      @db.table_exists 'migrations', ($err, $table_exists) =>
+      @db.tableExists 'migrations', ($err, $table_exists) =>
 
         return $next($err) if $err
         return $next(null) if $table_exists

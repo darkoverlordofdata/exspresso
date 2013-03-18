@@ -21,9 +21,7 @@ class Admin extends application.core.AdminController
 
     super $args...
 
-    @load.library 'migration',
-      migration_db      : 'mysql'
-      migration_enabled :  true
+    @load.library 'migration'
 
   #
   # List migrations
@@ -33,8 +31,8 @@ class Admin extends application.core.AdminController
   # @return [Void]  #
   index: ($module = '') ->
 
-    @migration.set_module $module
-    @migration.get_version ($err, $version) =>
+    @migration.setModule $module
+    @migration.getVersion ($err, $version) =>
 
       @template.view 'index', $err || {
         nav       : @sidenav('Migrations')

@@ -134,7 +134,6 @@ class system.core.Loader
     [$path, $_library] = Modules::find($library, $controller.module, 'lib/')
 
     # load library config file as params *
-
     [$path2, $file] = Modules::find($_alias, $controller.module, 'config/')
     if $path2 then $params[$key] = $val for $key, $val of Modules::load($file, $path2)
 
@@ -734,6 +733,7 @@ class system.core.Loader
     #  The directory path can be included as part of the class name,
     #  but we don't want a leading slash
     $class = $class.replace(/^[\/]+/g, '').replace(EXT, '')
+
 
     #  Was the path included with the class name?
     #  We look for a slash to determine this

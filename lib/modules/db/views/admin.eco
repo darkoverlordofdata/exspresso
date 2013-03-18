@@ -39,7 +39,7 @@
                 <td><%= @info.dbprefix %></td>
             </tr>
         </table>
-        <!--
+
         <h3>Tables</h3>
         <table class="table table-striped">
             <% for $name in @tables: %>
@@ -48,7 +48,7 @@
                 </tr>
             <% end %>
         </table>
-        -->
+
     </div>
 </div>
 

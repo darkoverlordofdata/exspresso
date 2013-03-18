@@ -107,6 +107,7 @@ class system.core.Connect
   #
   # Careful with that axe, Eugene...
   #
+  # @param [system.core.Router] router  the routing controller
   # @return [Void]
   #
   start: ($router) ->
@@ -115,13 +116,13 @@ class system.core.Connect
     #
     @controller.load.initialize()
     #
-    # Set dispatch routing
-    #
-    @app.use dispatch($router.routes)
-    #
     # Register the exception handler
     #
     @app.use core('Exceptions').exceptionHandler()
+    #
+    # Set dispatch routing
+    #
+    @app.use dispatch($router.routes)
     @app.use ($err, $req, $res, $next) -> show_error $err
     @app.use ($req, $res, $next) -> show_404 $req.originalUrl
 

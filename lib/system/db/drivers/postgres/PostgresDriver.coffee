@@ -80,10 +80,12 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
       @client = $client
       @done = $done
       if ($err)
+        $done()
         @connected = false
         console.log $err
       else
-        $next $err, $client
+        setTimeout $done, 1000
+        $next null, $client
 
   #
   # Persistent database connection
@@ -101,7 +103,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # Keep / reestablish the db connection if no queries have been
   # sent for a length of time exceeding the server's idle timeout
   #
-    # @return [Void]  #
+  # @return [Void]  #
   reconnect: ($next) -> @connect $next
 
 
@@ -120,7 +122,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Set client character set
   #
-    # @param  [String]    # @param  [String]    # @return	resource
+  # @param  [String]  # @param  [String]  # @return	resource
   #
   dbSetCharset: ($charset, $collation, $next) ->
     #  @todo - add support if needed
@@ -131,7 +133,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Version number query string
   #
-    # @return	[String]
+  # @return	[String]
   #
   _version:  ->
     "SELECT version() AS ver"
@@ -165,7 +167,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Begin Transaction
   #
-    # @return	bool
+  # @return	bool
   #
   transBegin: ($test_mode = false) ->
     if not @_trans_enabled
@@ -185,7 +187,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Commit Transaction
   #
-    # @return	bool
+  # @return	bool
   #
   transCommit:  ->
     return true if not @_trans_enabled
@@ -199,7 +201,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Rollback Transaction
   #
-    # @return	bool
+  # @return	bool
   #
   transRollback:  ->
     return true if not @_trans_enabled
@@ -213,7 +215,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Escape String
   #
-    # @param  [String]    # @return	[Boolean]	whether or not the string will be used in a LIKE condition
+  # @param  [String]  # @return	[Boolean]	whether or not the string will be used in a LIKE condition
   # @return	[String]
   #
   escapeStr: ($str, $like = false) ->
@@ -236,7 +238,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Affected Rows
   #
-    # @return	integer
+  # @return	integer
   #
   affectedRows:  ->
 
@@ -244,7 +246,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Insert ID
   #
-    # @return	integer
+  # @return	integer
   #
   insertId: ($next) ->
 
@@ -258,7 +260,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # Generates a platform-specific query string that counts all records in
   # the specified database
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]  # @return	[String]
   #
   countAll: ($table = '', $next) ->
     if $table is ''
@@ -294,7 +296,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query string so that the column names can be fetched
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	[String]
   #
   _list_columns: ($table = '') ->
@@ -306,7 +308,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific query so that the column data can be retrieved
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return [Object]  #
   _field_data: ($table) ->
     "SELECT * FROM " + $table + " LIMIT 1"
@@ -337,7 +339,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # This function escapes column and table names
   #
   # @private
-  # @param  [String]    # @return	[String]
+  # @param  [String]  # @return	[String]
   #
   _escape_identifiers: ($item) ->
     if @_escape_char is ''
@@ -370,7 +372,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # This function implicitly groups FROM tables so there is no confusion
   # about operator precedence in harmony with SQL standards
   #
-    # @param	type
+  # @param	type
   # @return	type
   #
   _from_tables: ($tables) ->
@@ -384,7 +386,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the insert keys
   # @param  [Array]  the insert values
   # @return	[String]
@@ -397,7 +399,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific insert string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the insert keys
   # @param  [Array]  the insert values
   # @return	[String]
@@ -410,7 +412,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific update string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the update data
   # @param  [Array]  the where clause
   # @param  [Array]  the orderby clause
@@ -443,7 +445,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   # If the database does not support the truncate() command
   # This function maps to "DELETE FROM table"
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @return	[String]
   #
   _truncate: ($table) ->
@@ -455,7 +457,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific delete string from the supplied data
   #
-    # @param  [String]  the table name
+  # @param  [String]  the table name
   # @param  [Array]  the where clause
   # @param  [String]  the limit clause
   # @return	[String]
@@ -484,7 +486,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Generates a platform-specific LIMIT clause
   #
-    # @param  [String]  the sql query string
+  # @param  [String]  the sql query string
   # @param  [Integer]  the number of rows to limit the query to
   # @param  [Integer]  the offset value
   # @return	[String]
@@ -498,11 +500,9 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # Close DB Connection
   #
-    # @param	resource
+  # @param	resource
   # @return [Void]  #
   _close: ($next) ->
-    #@done()
-    #@client.end()
     $next() if $next?
 
 

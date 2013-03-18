@@ -118,7 +118,11 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # that the expected session objects are available
   #
   # @access private
-  # @param  [Object]    # @param  [Object]    # @param  [Function]    # @return [Void]  #
+  # @param  [Object]    
+  # @param  [Object]    
+  # @param  [Function]    
+  # @return [Void]  
+  #
   #
   parseRequest: ($cookie_name) -> ($req, $res, $next) =>
 
@@ -142,7 +146,10 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Add or change data in the "userdata" array
   #
   # @access public
-  # @param  [Mixed]  # @param  [String]    # @return [Void]  #
+  # @param  [Mixed]  
+  # @param  [String]    
+  # @return [Void]  
+  #
   setUserdata: ($newdata = {}, $newval = '') ->
 
     $data = @req.session.userdata = @req.session.userdata ? {}
@@ -160,13 +167,15 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Delete a session variable from the "userdata" array
   #
   # @access public
-  # @param  [Mixed]  # @return [Void]  #
+  # @param  [Mixed]  
+  # @return [Void]  
+  #
   unsetUserdata: ($newdata = {}) ->
 
     $data = @req.session.userdata = @req.session.userdata ? {}
 
     if typeof $newdata is 'string'
-      $data[$newdata] = ''
+      delete $data[$newdata]
 
     else
       for $key, $val of $newdata
@@ -178,7 +187,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Fetch a specific item from the session array
   #
   # @access public
-  # @param  [String]    # @return string
+  # @param  [String]    
+  # @return string
   #
   userdata: ($item) ->
 
@@ -190,7 +200,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Fetch all session data
   #
   # @access public
-  # @return [Mixed]  #
+  # @return [Mixed]  
+  #
   allUserdata: () ->
 
     if not @req.session.userdata? then false else @req.session.userdata
@@ -199,7 +210,10 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Add or change flashdata, only available
   # until the next request
   #
-    # @param  [Mixed]  # @param  [String]    # @return [Void]  #
+  # @param  [Mixed]
+  # @param  [String]
+  # @return [Void]
+  #
   setFlashdata : ($newdata = {}, $args...) ->
 
     switch $args.length
@@ -218,7 +232,9 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   #
   # Keeps existing flashdata available to next request.
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]
+  # @return [Void]
+  #
   keepFlashdata : ($key) ->
     #  'old' flashdata gets removed.  Here we mark all
     #  flashdata as 'new' to preserve it from _flashdata_sweep()
@@ -233,7 +249,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   #
   # Fetch a specific flashdata item from the session array
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @return	[String]
   #
   flashdata : ($key) =>
 
@@ -245,12 +262,14 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # when _flashdata_sweep() runs.
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _flashdata_mark :  ->
     $userdata = @allUserdata()
     for $name, $value of $userdata
       $parts = $name.split(FLASH_NEW)
-      if 'object' is typeof($parts) and Object.keys($parts).length is 2
+      #if 'object' is typeof($parts) and Object.keys($parts).length is 2
+      if $parts.length is 2
         $new_name = FLASH_KEY + FLASH_OLD + $parts[1]
         @setUserdata($new_name, $value)
         @unsetUserdata($name)
@@ -259,7 +278,8 @@ class system.lib.session.Session extends system.lib.DriverLibrary
   # Removes all flashdata marked as 'old'
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _flashdata_sweep :  ->
     $userdata = @allUserdata()
     for $key, $value of $userdata

@@ -17,12 +17,14 @@ require APPPATH+'core/AdminController.coffee'
 
 class Admin extends application.core.AdminController
 
-  ## --------------------------------------------------------------------
+  #
+  # Index
+  #
   index: ->
 
     $db = require(APPPATH+'config/database.coffee')
 
-    @db.list_tables ($err, $tables) =>
+    @db.listTables ($err, $tables) =>
 
       @template.view 'admin', $err || {
         info:   $db.db[$db.active_group]

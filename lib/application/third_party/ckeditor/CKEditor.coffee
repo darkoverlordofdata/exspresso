@@ -30,11 +30,11 @@
 class CKEditor
 
   #
-  # import php api functions
+  # import api
   #
-  log_message 'debug', 'Loading php emulation layer into CKEditor'
-  php = require('not-php')
-  eval "#{$name} = php.#{$name}" for $name, $body of php
+  log_message 'debug', 'CKEditor loading not-php api'
+  api = require('not-php')
+  eval "#{$name} = api.#{$name}" for $name, $body of api
 
 
   #
