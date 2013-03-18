@@ -51,12 +51,12 @@ class system.lib.Table
   #
   # Set the template
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Array]
+  # @return [Void]
+  #
   setTemplate : ($template) ->
-    if not is_array($template)
+    if 'object' isnt typeof ($template)
       return false
-      
-    
     @_template = $template
     
   
@@ -65,9 +65,10 @@ class system.lib.Table
   #
   # Can be passed as an array or discreet params
   #
-    # @param  [Mixed]  # @return [Void]  #
-  setHeading :  ->
-    $args = func_get_args()
+  # @param  [Mixed]
+  # @return [Void]
+  #
+  setHeading: ($args...) ->
     @_heading = @_prep_args($args)
     
   
@@ -77,33 +78,25 @@ class system.lib.Table
   # columns.  This allows a single array with many elements to  be
   # displayed in a table that has a fixed column count.
   #
-    # @param  [Array]  # @param	int
-  # @return [Void]  #
-  makeColumns : ($array = {}, $col_limit = 0) ->
-    if not is_array($array) or count($array) is 0
-      return false
-      
-    
+  # @param  [Array]
+  # @param	[Integer]
+  # @return [Void]
+  #
+  makeColumns: ($array = [], $col_limit = 0) ->
+    return false if $array.length is 0
     #  Turn off the auto-heading feature since it's doubtful we
     #  will want headings from a one-dimensional array
     @_auto_heading = false
-    
-    if $col_limit is 0
-      return $array
-      
-    
+    return $array if $col_limit is 0
+
     $new = []
     while count($array) > 0
       $temp = $array.splice(0, $col_limit)
       
-      if count($temp) < $col_limit
-        for $i in [count($temp)...$col_limit]
+      if $temp.length < $col_limit
+        for $i in [$temp.length...$col_limit]
           $temp.push '&nbsp;'
-
-      
       $new.push $temp
-      
-    
     return $new
     
   
@@ -112,8 +105,10 @@ class system.lib.Table
   #
   # Can be passed as an array or discreet params
   #
-    # @param  [Mixed]  # @return [Void]  #
-  setEmpty : ($value) ->
+  # @param  [Mixed]
+  # @return [Void]
+  #
+  setEmpty: ($value) ->
     @_empty_cells = $value
     
   
@@ -122,9 +117,10 @@ class system.lib.Table
   #
   # Can be passed as an array or discreet params
   #
-    # @param  [Mixed]  # @return [Void]  #
-  addRow :  ->
-    $args = func_get_args()
+  # @param  [Mixed]
+  # @return [Void]
+  #
+  addRow: ($args...) ->
     @_rows.push @_prep_args($args)
     
   
@@ -133,28 +129,27 @@ class system.lib.Table
   #
   # Ensures a standard associative array format for all cell data
   #
-    # @param	type
+  # @param	type
   # @return	type
   #
   _prep_args : ($args) ->
     #  If there is no $args[0], skip this and treat as an associative array
-    #  This can happen if there is only a single key, for example this is passed to table->generate
-    #  array(array('foo'=>'bar'))
-    if $args[0]?  and (count($args) is 1 and is_array($args[0]))
+    #  This can happen if there is only a single key, for example this is passed to table.generate
+    #  [{'foo', 'bar'}]
+    if $args[0]? and ($args.length is 1 and Array.isArray($args[0]))
       #  args sent as indexed array
-      if not $args[0]['data']? 
+      if not $args[0].data? 
         for $key, $val of $args[0]
-          if is_array($val) and $val['data']? 
+          if 'object' is typeof($val) and $val?.data?
             $args[$key] = $val
-            
-          else 
-            $args[$key] = 'data':$val
+          else
+            $args[$key] = data:$val
 
     else
       for $key, $val of $args
-        continue if typeof $val is 'function' # strip functions left over from sql driver
-        if not is_array($val)
-          $args[$key] = 'data':$val
+        continue if typeof $val is 'function' # strip functions left over in sql result set
+        if 'object' isnt typeof($val)
+          $args[$key] = data:$val
 
     return $args
     
@@ -162,7 +157,9 @@ class system.lib.Table
   #
   # Add a table caption
   #
-    # @param  [String]    # @return [Void]  #
+  # @param  [String]
+  # @return [Void]
+  #
   setCaption : ($caption) ->
     @_caption = $caption
     
@@ -170,23 +167,24 @@ class system.lib.Table
   #
   # Generate the table
   #
-    # @param  [Mixed]  # @return	[String]
+  # @param  [Mixed]
+  # @return	[String]
   #
   generate : ($table_data = null) ->
     #  The table data can optionally be passed to this function
     #  either as a database result object or an array
     if $table_data?
-      if 'object' is typeof($table_data)
+      if Array.isArray($table_data)
+        $set_heading = if (@_heading.length is 0 and @_auto_heading is false) then false else true
+        @_set_from_array($table_data, $set_heading)
+      else if 'object' is typeof($table_data)
         @_set_from_object($table_data)
         
-      else if is_array($table_data)
-        $set_heading = if (count(@_heading) is 0 and @_auto_heading is false) then false else true
-        @_set_from_array($table_data, $set_heading)
-        
+
       
     
     #  Is there anything to display?  No?  Smite them!
-    if count(@_heading) is 0 and count(@_rows) is 0
+    if @_heading.length is 0 and @_rows.length is 0
       return 'Undefined table data'
       
     
@@ -209,7 +207,7 @@ class system.lib.Table
       
     
     #  Is there a table heading to display?
-    if count(@_heading) > 0
+    if @_heading.length > 0
       $out+=@_template['thead_open']
       $out+=@_newline
       $out+=@_template['heading_row_start']
@@ -220,12 +218,12 @@ class system.lib.Table
         
         for $key, $val of $heading
           if $key isnt 'data'
-            $temp = str_replace('<th', "<th $key='$val'", $temp)
+            $temp = $temp.replace('<th', "<th #{$key}='#{$val}'")
             
           
         
         $out+=$temp
-        $out+= if $heading['data']?  then $heading['data'] else ''
+        $out+= if $heading.data? then $heading.data else ''
         $out+=@_template['heading_cell_end']
         
       
@@ -236,13 +234,13 @@ class system.lib.Table
       
     
     #  Build the table rows
-    if count(@_rows) > 0
+    if @_rows.length > 0
       $out+=@_template['tbody_open']
       $out+=@_newline
       
       $i = 1
       for $row in @_rows
-        if not is_array($row)
+        if 'object' isnt typeof($row)
           break
 
         #  We use modulus to alternate the row colors
@@ -256,9 +254,9 @@ class system.lib.Table
           
           for $key, $val of $cell
             if $key isnt 'data'
-              $temp = str_replace('<td', "<td $key='#{$val}'", $temp)
+              $temp = $temp.replace('<td', "<td $key='#{$val}'")
 
-          $cell = if $cell['data']?  then $cell['data'] else ''
+          $cell = if $cell.data? then $cell.data else ''
           $out+=$temp
           
           if $cell is "" or $cell is null
@@ -270,20 +268,15 @@ class system.lib.Table
               
             else 
               $out+=$cell
-              
-            
-          
+
           $out+=@_template['cell_' + $name + 'end']
-          
-        
+
         $out+=@_template['row_' + $name + 'end']
         $out+=@_newline
-        
-      
+
       $out+=@_template['tbody_close']
       $out+=@_newline
-      
-    
+
     $out+=@_template['table_close']
     
     #  Clear table class properties before generating the table
@@ -295,7 +288,8 @@ class system.lib.Table
   #
   # Clears the table arrays.  Useful if multiple tables are being generated
   #
-    # @return [Void]  #
+  # @return [Void]
+  #
   clear :  ->
     @_rows = []
     @_heading = {}
@@ -305,59 +299,52 @@ class system.lib.Table
   #
   # Set table data from a database result object
   #
-    # @param  [Object]    # @return [Void]  #
+  # @param  [Object]
+  # @return [Void]
+  #
   _set_from_object : ($query) ->
-    if not 'object' is typeof($query)
-      return false
-      
-    #  First generate the headings from the table column names
-    if count(@_heading) is 0
-      if not $query.list_fields?
-        return false
-        
-      
-      @_heading = @_prep_args($query.list_fields())
-      
-    
-    #  Next blast through the result array and build out the rows
+    return false if 'object' isnt typeof($query)
 
+    #  First generate the headings from the table column names
+    if @_heading.length is 0
+      return false if not $query.listFields?
+      @_heading = @_prep_args($query.listFields())
+
+    #  Next blast through the result array and build out the rows
     if $query.num_rows > 0
-      for $row in $query.result_array()
+      for $row in $query.resultArray()
         @_rows.push @_prep_args($row)
 
   #
   # Set table data from an array
   #
-    # @param  [Array]  # @return [Void]  #
+  # @param  [Array]
+  # @return [Void]
+  #
   _set_from_array : ($data, $set_heading = true) ->
-    if not is_array($data) or count($data) is 0
+    if not Array.isArray($data) or $data.length is 0
       return false
-      
-    
+
     $i = 0
     for $row in $data
       #  If a heading hasn't already been set we'll use the first row of the array as the heading
-      if $i is 0 and count($data) > 1 and count(@_heading) is 0 and $set_heading is true
+      if $i is 0 and $data.length > 1 and @_heading.length is 0 and $set_heading is true
         @_heading = @_prep_args($row)
-        
       else
         @_rows.push @_prep_args($row)
-
       $i++
       
-    
-  
   #
   # Compile Template
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _compile_template :  ->
     if @_template is null
       @_template = @_default_template()
       return 
-      
-    
+
     @temp = @_default_template()
     for $val in ['table_open', 'thead_open', 'thead_close', 'heading_row_start', 'heading_row_end', 'heading_cell_start', 'heading_cell_end', 'tbody_open', 'tbody_close', 'row_start', 'row_end', 'cell_start', 'cell_end', 'row_alt_start', 'row_alt_end', 'cell_alt_start', 'cell_alt_end', 'table_close']
       if not @_template[$val]? 
@@ -370,7 +357,8 @@ class system.lib.Table
   # Default Template
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _default_template :  ->
     table_open          :'<table border="0" cellpadding="4" cellspacing="0">',
 

@@ -31,8 +31,11 @@
 #
 class system.lib.Parser
   
-  _l_delim        : '{'   # Left delimiter
-  _r_delim        : '}'   # Right delimiter
+  _left         : '{'   # Left delimiter
+  _right        : '}'   # Right delimiter
+  _lreg         : "\\{" # Escaped left delimiter
+  _rreg         : "\\}" # Escaped right delimiter
+
 
   constructor: ($controller, $config = {}) ->
 
@@ -41,26 +44,29 @@ class system.lib.Parser
       if @['_'+$key]?
         @['_'+$key] = $val
 
+    @setDelimiters @_left, @_right
     log_message 'debug', "Parser Class Initialized"
-    
+
   #
   #  Parse a template
   #
   # Parses pseudo-variables contained in the specified template view,
   # replacing them with the data in the second param
   #
-    # @param  [String]    # @param  [Array]  # @param  [Function]    # @return [Void]  #
+  # @param  [String]
+  # @param  [Array]
+  # @param  [Function]
+  # @return [Void]
+  #
   parse: ($template, $data, $next) ->
 
-    $fn_err = $next ? show_error
+    fn_err = $next ? show_error
 
     @load.view $template, $data, ($err, $template) =>
 
-      if $err then $fn_err $err
-      else
-        if $next? then $next null, @_parse($template, $data, true)
-        else
-          @_parse($template, $data, false)
+      return fn_err($err) if $err
+      return $next(null, @_parse($template, $data, true)) if $next?
+      @_parse($template, $data, false)
 
 
   #
@@ -69,74 +75,79 @@ class system.lib.Parser
   # Parses pseudo-variables contained in the specified string,
   # replacing them with the data in the second param
   #
-    # @param  [String]    # @param  [Array]  # @return	[Boolean]
+  # @param  [String]
+  # @param  [Array]
+  # @return	[Boolean]
   # @return	[String]
   #
   parseString: ($template, $data, $return = false) ->
     @_parse($template, $data, $return)
-    
-  
+
+
   #
   #  Parse a template
   #
   # Parses pseudo-variables contained in the specified template,
   # replacing them with the data in the second param
   #
-    # @param  [String]    # @param  [Array]  # @return	[Boolean]
+  # @param  [String]
+  # @param  [Array]
+  # @return	[Boolean]
   # @return	[String]
   #
   _parse: ($template, $data, $return = false) ->
-    if $template is ''
-      return ''
-      
-    
+    return '' if $template is ''
+
     for $key, $val of $data
-      if is_array($val)
+      if Array.isArray($val)
         $template = @_parse_pair($key, $val, $template)
-        
-      else 
+      else
         $template = @_parse_single($key, ''+$val, $template)
 
     if $return is false
       @output.appendOutput($template)
-      #
-      # ------------------------------------------------------
-      #  Send the final rendered output to the browser
-      # ------------------------------------------------------
-      #
-      if @hooks.callHook('display_override', @) is false
-        @output.display(@)
 
     return $template
-    
-  
+
+
   #
   #  Set the left/right variable delimiters
   #
-    # @param  [String]    # @param  [String]    # @return [Void]  #
+  # @param  [String]
+  # @param  [String]
+  # @return [Void]
+  #
   setDelimiters: ($l_delim = '{', $r_delim = '}') ->
-    @_l_delim = $l_delim
-    @_r_delim = $r_delim
+    @_left = $l_delim
+    @_right = $r_delim
+    @_lreg = reg_quote($l_delim)
+    @_rreg = reg_quote($r_delim)
     return
-    
-  
+
+
   #
   #  Parse a single key/value
   #
   # @private
-  # @param  [String]    # @param  [String]    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @param  [String]
+  # @param  [String]
+  # @return	[String]
   #
   _parse_single: ($key, $val, $string) ->
-    return str_replace(@_l_delim + $key + @_r_delim, $val, $string)
-    
-  
+    return $string.replace(@_left + $key + @_right, $val)
+
+
   #
   #  Parse a tag pair
   #
   # Parses tag pairs:  {some_tag} string... {/some_tag}
   #
   # @private
-  # @param  [String]    # @param  [Array]  # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @param  [Array]
+  # @param  [String]
+  # @return	[String]
   #
   _parse_pair: ($variable, $data, $string) ->
     if false is ($match = @_match_pair($string, $variable))
@@ -146,26 +157,25 @@ class system.lib.Parser
     for $row in $data
       $temp = $match['1']
       for $key, $val of $row
-        if not is_array($val)
+        if not Array.isArray($val)
           $temp = @_parse_single($key, $val, $temp)
-          
-        else 
+        else
           $temp = @_parse_pair($key, $val, $temp)
-
       $str+=$temp
+    return $string.replace($match['0'], $str)
 
-    return str_replace($match['0'], $str, $string)
-    
-  
+
   #
   #  Matches a variable pair
   #
   # @private
-  # @param  [String]    # @param  [String]    # @return [Mixed]  #
+  # @param  [String]
+  # @param  [String]
+  # @return [Mixed]
+  #
   _match_pair: ($string, $variable) ->
-    if not ($match = preg_match("|" + reg_quote(@_l_delim) + $variable + reg_quote(@_r_delim) + "(.+?)" + reg_quote(@_l_delim) + '/' + $variable + reg_quote(@_r_delim) + "|s", $string))?
+    if not ($match = $string.match(RegExp(@_lreg + $variable + @_rreg + "(.+?)" + @_lreg + '/' + $variable + @_rreg,"g")))?
       return false
-
     return $match
     
   

@@ -88,7 +88,6 @@ class system.lib.Profiler
     for $key, $val of @bm.marker
       #  We match the "end" marker so that the list ends
       #  up in the order that it was defined
-      #if ($match = preg_match("/(.+?)_end/i", $key))?
       if ($match = $key.match(/(.+?)_end/i))?
         if @bm.marker[$match[1] + '_end']?  and @bm.marker[$match[1] + '_start']?
           $profile[$match[1]] = @bm.elapsedTime($match[1] + '_start', $key)
@@ -97,21 +96,21 @@ class system.lib.Profiler
     #  Note: At some point we should turn this into a template that can
     #  be modified.  We also might want to make this data available to be logged
 
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_benchmarks">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_benchmarks') + '</dt>'
-    $output+="\n"
-    $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_benchmarks">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_benchmarks') + '</dt>'
+    $output.push "\n"
+    $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $key, $val of $profile
       $key = ucwords($key.replace(/[_\-]/gm, ' '))
-      $output+="<tr><td>" + $key + "</td><td>" + $val + "&nbsp;ms</td></tr>\n"
+      $output.push "<tr><td>" + $key + "</td><td>" + $val + "&nbsp;ms</td></tr>\n"
 
-    $output+="</table></dd>\n"
-    $output+="</dl>"
+    $output.push "</table></dd>\n"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Compile Queries
@@ -128,16 +127,16 @@ class system.lib.Profiler
         $dbs.push $object
 
     if $dbs.length is 0
-      $output = "\n\n"
-      $output+='<dl id="ex_profiler_queries">'
-      $output+="\n"
-      $output+='<dt>' + @i18n.line('profiler_queries') + '</dt>'
-      $output+="\n"
-      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
-      $output+="<tr><td><em>" + @i18n.line('profiler_no_db') + "</em></td></tr>\n"
-      $output+="</table></dd>\n"
-      $output+="</dl>"
-      return $output
+      $output = ["\n\n"]
+      $output.push '<dl id="ex_profiler_queries">'
+      $output.push "\n"
+      $output.push '<dt>' + @i18n.line('profiler_queries') + '</dt>'
+      $output.push "\n"
+      $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+      $output.push "<tr><td><em>" + @i18n.line('profiler_no_db') + "</em></td></tr>\n"
+      $output.push "</table></dd>\n"
+      $output.push "</dl>"
+      return $output.join('')
 
     #  Load the text helper so we can highlight the SQL
     @load.helper('text')
@@ -145,24 +144,24 @@ class system.lib.Profiler
     #  Key words we want bolded
     $highlight = ['SELECT', 'DISTINCT', 'FROM', 'WHERE', 'AND', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'GROUP BY', 'LIMIT', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'OR ', 'HAVING', 'OFFSET', 'NOT IN', 'IN', 'LIKE', 'NOT LIKE', 'COUNT', 'MAX', 'MIN', 'ON', 'AS', 'AVG', 'SUM', '(', ')']
 
-    $output = "\n\n"
+    $output = ["\n\n"]
 
     for $db in $dbs
-      $output+='<dl>'
-      $output+="\n"
-      $output+='<dt>'
-      $output+=@i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;'
-      $output+=@i18n.line('profiler_driver') + ':&nbsp; ' + $db.dbdriver + '&nbsp;'
-      $output+=@i18n.line('profiler_version') + ':&nbsp; ' + $db.version + '&nbsp;'
-      $output+='</dt>'
-      $output+='<dt>'
-      $output+=@i18n.line('profiler_queries') + ':&nbsp; ' + $db.queries.length + '&nbsp;'
-      $output+='</dt>'
-      $output+="\n"
-      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+      $output.push '<dl>'
+      $output.push "\n"
+      $output.push '<dt>'
+      $output.push @i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;'
+      $output.push @i18n.line('profiler_driver') + ':&nbsp; ' + $db.dbdriver + '&nbsp;'
+      $output.push @i18n.line('profiler_version') + ':&nbsp; ' + $db.version + '&nbsp;'
+      $output.push '</dt>'
+      $output.push '<dt>'
+      $output.push @i18n.line('profiler_queries') + ':&nbsp; ' + $db.queries.length + '&nbsp;'
+      $output.push '</dt>'
+      $output.push "\n"
+      $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       if $db.queries.length is 0
-        $output+="<tr><td><em>" + @i18n.line('profiler_no_queries') + "</em></td></tr>\n"
+        $output.push "<tr><td><em>" + @i18n.line('profiler_no_queries') + "</em></td></tr>\n"
 
       else
         for $key, $val of $db.queries
@@ -171,12 +170,12 @@ class system.lib.Profiler
           for $bold in $highlight
             $val = $val.replace(RegExp(reg_quote($bold), 'gm'), '<strong>' + $bold + '</strong>')
 
-          $output+="<tr><td>" + $time + "</td><td><pre class='prettyprint'><code class='lang-sql'>" + $val + "</code></pre></td></tr>\n"
+          $output.push "<tr><td>" + $time + "</td><td><pre class='prettyprint'><code class='lang-sql'>" + $val + "</code></pre></td></tr>\n"
 
-      $output+="</table></dd>\n"
-      $output+="</dl>"
+      $output.push "</table></dd>\n"
+      $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Compile GET method data parsed in req.query
@@ -184,37 +183,37 @@ class system.lib.Profiler
   # @return	[String]
   #
   _compile_get: () ->
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_get">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_get_data') + '</dt>'
-    $output+="\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_get">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_get_data') + '</dt>'
+    $output.push "\n"
 
     if Object.keys(@req.query).length is 0
-      $output+="<dd><em>" + @i18n.line('profiler_no_get') + "</em></dd>"
+      $output.push "<dd><em>" + @i18n.line('profiler_no_get') + "</em></dd>"
 
     else
-      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+      $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       for $key, $val of @req.query
         if not 'number' is typeof($key)
           $key = "'" + $key + "'"
 
-        $output+="<tr><td>req.query[" + $key + "] </td><td>"
+        $output.push "<tr><td>req.query[" + $key + "] </td><td>"
         if is_array($val)
-          $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
+          $output.push "<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
         else
-          $output+=htmlspecialchars(stripslashes($val))
+          $output.push htmlspecialchars(stripslashes($val))
 
-        $output+="</td></tr>\n"
+        $output.push "</td></tr>\n"
 
 
-      $output+="</table></dd>\n"
+      $output.push "</table></dd>\n"
 
-    $output+="</dl>"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Compile POST method data parsed in req.body
@@ -222,38 +221,38 @@ class system.lib.Profiler
   # @return	[String]
   #
   _compile_post: () ->
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_post">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_post_data') + '</dt>'
-    $output+="\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_post">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_post_data') + '</dt>'
+    $output.push "\n"
 
     if Object.keys(@req.body).length is 0
-      $output+="<dd><em>" + @i18n.line('profiler_no_post') + "</em></dd>"
+      $output.push "<dd><em>" + @i18n.line('profiler_no_post') + "</em></dd>"
 
     else
-      $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+      $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
       for $key, $val of @req.body
         if 'number' isnt typeof($key)
           $key = "'" + $key + "'"
 
 
-        $output+="<tr><td>req.body[" + $key + "] </td><td>"
+        $output.push "<tr><td>req.body[" + $key + "] </td><td>"
         if is_array($val)
-          $output+="<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
+          $output.push "<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
 
         else
-          $output+=htmlspecialchars(stripslashes($val))
+          $output.push htmlspecialchars(stripslashes($val))
 
-        $output+="</td></tr>\n"
+        $output.push "</td></tr>\n"
 
 
-      $output+="</table></dd>\n"
+      $output.push "</table></dd>\n"
 
-    $output+="</dl>"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Show query string
@@ -261,21 +260,21 @@ class system.lib.Profiler
   # @return	[String]
   #
   _compile_uri_string: () ->
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_uri_string">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_uri_string') + '</dt>'
-    $output+="\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_uri_string">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_uri_string') + '</dt>'
+    $output.push "\n"
 
     if @uri.uriString() is ''
-      $output+="<dd><em>" + @i18n.line('profiler_no_uri') + "</em></dd>"
+      $output.push "<dd><em>" + @i18n.line('profiler_no_uri') + "</em></dd>"
 
     else
-      $output+="<dd>" + @uri.uriString() + "</dd>"
+      $output.push "<dd>" + @uri.uriString() + "</dd>"
 
-    $output+="</dl>"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Show the controller and function that were called
@@ -283,25 +282,25 @@ class system.lib.Profiler
   # @return	[String]
   #
   _compile_controller_info: () ->
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_controller_module">'
-    $output+="\n"
-    $output+='<dt>' + 'MODULE' + '</dt>'
-    $output+="\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_controller_module">'
+    $output.push "\n"
+    $output.push '<dt>' + 'MODULE' + '</dt>'
+    $output.push "\n"
 
-    $output+="<dd>" + @module + "</dd>"
+    $output.push "<dd>" + @module + "</dd>"
 
-    $output+="</dl>"
-    $output+='<dl id="ex_profiler_controller_info">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_controller_info') + '</dt>'
-    $output+="\n"
+    $output.push "</dl>"
+    $output.push '<dl id="ex_profiler_controller_info">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_controller_info') + '</dt>'
+    $output.push "\n"
 
-    $output+="<dd>" + @class + "/" + @method + "</dd>"
+    $output.push "<dd>" + @class + "/" + @method + "</dd>"
 
-    $output+="</dl>"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Compile memory usage
@@ -312,17 +311,17 @@ class system.lib.Profiler
   #
   _compile_memory_usage: () ->
 
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_memory_usage">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_memory_usage') + '</dt>'
-    $output+="\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_memory_usage">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_memory_usage') + '</dt>'
+    $output.push "\n"
 
-    $output+="<dd>" + number_format(process.memoryUsage().heapUsed) + ' bytes</dd>'
+    $output.push "<dd>" + number_format(process.memoryUsage().heapUsed) + ' bytes</dd>'
 
-    $output+="</dl>"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Compile header information
@@ -337,31 +336,31 @@ class system.lib.Profiler
     os = require('os')
     protocol = ($secure) -> if $secure then 'https' else 'http'
 
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_http_headers">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_headers') + '</dt>'
-    $output+="\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_http_headers">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_headers') + '</dt>'
+    $output.push "\n"
 
-    $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+    $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $key, $val of @req.headers
-      $output+="<tr><td>" + $key + "</td><td>" + $val + "</td></tr>\n"
+      $output.push "<tr><td>" + $key + "</td><td>" + $val + "</td></tr>\n"
 
-    $output+="<tr><td>remote&nbsp;address </td><td>" + @req.connection.remoteAddress + "</td></tr>\n"
-    $output+="<tr><td>request&nbsp;method</td><td>" + @req.method + "</td></tr>\n"
-    $output+="<tr><td>request&nbsp;start</td><td>" + @req._startTime + "</td></tr>\n"
-    $output+="<tr><td>request&nbsp;uri</td><td>" + @req.url.split('?')[0] + "</td></tr>\n"
-    $output+="<tr><td>host&nbsp;name</td><td>" + @req.headers.host + "</td></tr>\n"
-    $output+="<tr><td>port</td><td>" + @server.port + "</td></tr>\n"
-    $output+="<tr><td>protocol</td><td>" + protocol(@req.connection.encrypted).toUpperCase()+"/"+@req.httpVersion + "</td></tr>\n"
-    $output+="<tr><td></td><td>" + @server.version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version + "</td></tr>\n"
+    $output.push "<tr><td>remote&nbsp;address </td><td>" + @req.connection.remoteAddress + "</td></tr>\n"
+    $output.push "<tr><td>request&nbsp;method</td><td>" + @req.method + "</td></tr>\n"
+    $output.push "<tr><td>request&nbsp;start</td><td>" + @req._startTime + "</td></tr>\n"
+    $output.push "<tr><td>request&nbsp;uri</td><td>" + @req.url.split('?')[0] + "</td></tr>\n"
+    $output.push "<tr><td>host&nbsp;name</td><td>" + @req.headers.host + "</td></tr>\n"
+    $output.push "<tr><td>port</td><td>" + @server.port + "</td></tr>\n"
+    $output.push "<tr><td>protocol</td><td>" + protocol(@req.connection.encrypted).toUpperCase()+"/"+@req.httpVersion + "</td></tr>\n"
+    $output.push "<tr><td></td><td>" + @server.version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version + "</td></tr>\n"
 
 
-    $output+="</table></dd>\n"
-    $output+="</dl>"
+    $output.push "</table></dd>\n"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Compile config information
@@ -371,22 +370,22 @@ class system.lib.Profiler
   # @return	[String]
   #
   _compile_config: () ->
-    $output = "\n\n"
-    $output+='<dl id="ex_profiler_config">'
-    $output+="\n"
-    $output+='<dt>' + @i18n.line('profiler_config') + '</dt>'
-    $output+="\n"
+    $output = ["\n\n"]
+    $output.push '<dl id="ex_profiler_config">'
+    $output.push "\n"
+    $output.push '<dt>' + @i18n.line('profiler_config') + '</dt>'
+    $output.push "\n"
 
-    $output+="\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
+    $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $config, $val of @config.config
       $val = util.inspect($val) if 'object' is typeof($val)
-      $output+="<tr><td>" + $config + "</td><td>" + htmlspecialchars($val) + "</td></tr>\n"
+      $output.push "<tr><td>" + $config + "</td><td>" + htmlspecialchars($val) + "</td></tr>\n"
 
-    $output+="</table></dd>\n"
-    $output+="</dl>"
+    $output.push "</table></dd>\n"
+    $output.push "</dl>"
 
-    return $output
+    $output.join('')
 
   #
   # Run the Profiler
@@ -400,7 +399,7 @@ class system.lib.Profiler
     $elapsed = @bm.elapsedTime('total_execution_time_start', 'total_execution_time_end')
     $memory = (Math.round((process.memoryUsage().heapUsed / 1048576) * 100) / 100)+'MB'
 
-    $output = """
+    $output = ["""
       <footer id="footer">
         <div class="container">
           <div class="credit">
@@ -424,23 +423,23 @@ class system.lib.Profiler
         <div id="exspresso_profiler-body" class="modal-body">
           <div class="hero-unit">
             <div class="row">
-      """
+      """]
     $fields_displayed = 0
 
     for $section in @_available_sections
       if @['_'+$section] isnt false
-        $output+=@["_compile_#{$section}"]()
+        $output.push @["_compile_#{$section}"]()
         $fields_displayed++
 
     if $fields_displayed is 0
-      $output+='<p>' + @i18n.line('profiler_no_profiles') + '</p>'
-    $output+='''            </div>
+      $output.push '<p>' + @i18n.line('profiler_no_profiles') + '</p>'
+    $output.push '''            </div>
                 </div>
             </div>
         </div>
         </form>'''
 
-    return $output
+    $output.join('')
 
 module.exports = system.lib.Profiler
 

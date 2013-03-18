@@ -29,32 +29,20 @@
 # This is the default controller
 #
 
-class Welcome extends application.core.PublicController
+class Welcome extends system.core.Controller
 
   #
   # Index
   #
   # Demo welcome page
   #
-  #   @access	public
-  # @return [Void]  #
+  # @access	public
+  # @return [Void]
+  #
   index: ->
 
-    @template.view 'welcome_message'
+    @load.view 'welcome_message'
 
-
-  #
-  # Not Found
-  #
-  # Custom 404 error page
-  #
-  #   @access	public
-  # @return [Void]  #
-  not_found: ->
-
-    #@template.set_title config_item('site_name'), '404 Not Found'
-    @load.view 'errors/404',
-      url: 'invalid uri'
 
 
 

@@ -306,13 +306,6 @@ class application.lib.Template
           return $next(null, $page) if $next?
 
           @output.setOutput $page
-          #
-          # ------------------------------------------------------
-          #  Send the final rendered output to the browser
-          # ------------------------------------------------------
-          #
-          #if @hooks.callHook('display_override', @) is false
-          #  @output.display(@)
           @next()
 
 
