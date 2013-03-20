@@ -59,6 +59,7 @@ exports['404_override']                       = 'welcome/not_found'
 
 exports['/home']                              = 'home/index'
 exports['/welcome']                           = 'welcome/index'
+exports['/test']                           = 'welcome/test'
 
 exports['/admin']                             = 'admin/index'
 exports['/admin/login']                       = 'admin/login'

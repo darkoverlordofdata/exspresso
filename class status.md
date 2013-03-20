@@ -56,19 +56,18 @@
         * Calendar              ?
         * Cart                  ?
         * Driver                X
-        * Email                 X
+        * Email                 ?
         * Encrypt               -
-        * Form_validation       X
+        * Form_validation       ?
         * Ftp                   -
         * Image_lib             -
         * Javascript            -
         * Log                   X
         * Migration             X
         * Pagination            X
-        * Parser                ?
+        * Parser                X
         * Profiler              X
         * Session               X
-        * Sha1                  Not required
         * Table                 X
         * Trackback             -
         * Typography            ?

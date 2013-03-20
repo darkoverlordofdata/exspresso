@@ -181,12 +181,6 @@ class system.core.Connect
     parseUrl = $driver.utils.parseUrl
     @port = @config.item('port') || 3000
 
-    # Sets the config values on the Variables class
-    # prototype. This makes them global to all views.
-    Variables::['settings'] =
-      site_name:    @config.item('site_name')
-      site_slogan:  @config.item('site_slogan')
-
     @app.use $driver.logger(@config.item('logger'))
     #
     # Expose asset folders

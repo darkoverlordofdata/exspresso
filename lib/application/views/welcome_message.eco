@@ -6,7 +6,7 @@
     <meta name="copyright" content="darkoverlordofdata.com" />
     <meta name="resource-type" content="document" />
     <meta name="language" content="en" />
-    <title><%= @settings.site_name %></title>
+    <title>{site_name}</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/site.css' />
     <link href="/google-code-prettify/prettify.css" type="text/css" rel="stylesheet" />
@@ -51,7 +51,7 @@
     <div class="container">
         <div class="credit">
             <span class="pull-left muted">
-                &copy; Copyright 2012 by Dark Overlord of Data
+                &copy; Copyright 2012 - 2013 by Dark Overlord of Data
             </span>
             <span class="pull-right">powered by &nbsp;
                 <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>

@@ -59,6 +59,27 @@ exports.menu =
     Admin   : ['/admin', 'Login']
 
 
+exports.partials =
+  banner  : 'layout/banner'
+  menu    : 'layout/menu'
+  sidebar : 'layout/sidebar'
+  flash   : 'layout/flash'
+  footer  : 'layout/footer'
+
+#
+# Regions
+#
+# Defines block regions
+#
+exports.regions =
+  $band0    : ['banner']
+  $band1    : ['menu']
+  $band2    : ['sidebar', 'content']
+  $band3    : ['flash']
+  $band5    : ['footer']
+
+
+
 #
 # Scripts
 #

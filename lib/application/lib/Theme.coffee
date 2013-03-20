@@ -30,6 +30,7 @@
 #
 #
 #
+
 class application.lib.Theme
 
   _location       : ''
@@ -43,6 +44,7 @@ class application.lib.Theme
   _location       : ''
   _favicon        : ''
   _layout         : null
+  _regions        : null
   _meta           : null
   _script         : null
   _css            : null
@@ -69,14 +71,14 @@ class application.lib.Theme
   #
   loadTheme: ($theme) ->
 
-    if file_exists(APPPATH + 'themes/' + $theme + '/theme' + EXT)
-      $config = require(APPPATH + 'themes/' + $theme + '/theme' + EXT)
+    if file_exists(APPPATH + 'themes/' + $theme + '/theme.coffee')
+      $config = require(APPPATH + 'themes/' + $theme + '/theme.coffee')
 
-    if file_exists(APPPATH + 'themes/all/theme' + EXT)
-      $config.__proto__ = require(APPPATH + 'themes/all/theme' + EXT)
+    if file_exists(APPPATH + 'themes/all/theme.coffee')
+      $config.__proto__ = require(APPPATH + 'themes/all/theme.coffee')
 
     @['_'+$key] = $val for $key, $val of $config
-    @_path = @_location + $theme + '/theme' + EXT
+    @_path = @_location + $theme + '/theme.coffee'
     
     @
 
@@ -140,27 +142,6 @@ class application.lib.Theme
     @
 
 
-#  array_merge = ($array1, $array2) ->
-#
-#    $ret = {}
-#    for $key, $item of $array1
-#      $ret[$key] = $item
-#    for $key, $item of $array2
-#      $ret[$key] = $item
-#    return $ret
-#
-#
-#  array_merge_recursive = ($array1, $array2) ->
-#
-#    $ret = {}
-#    for $key, $item of $array1
-#      $ret[$key] = $item
-#    for $key, $item of $array2
-#      if typeof $array1[$key] is 'object' or typeof $item is 'object'
-#        $ret[$key] = array_merge($array1[$key], $item)
-#      else
-#        $ret[$key] = $item
-#    return $ret
 
 module.exports = application.lib.Theme
 

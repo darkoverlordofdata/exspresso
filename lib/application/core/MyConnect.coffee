@@ -68,8 +68,6 @@ class application.core.MyConnect extends system.core.Connect
 
     @app.set 'env', ENVIRONMENT
     @app.set 'port', @port
-    @app.set 'site_name', @controller.config.item('site_name')
-    @app.set 'site_slogan', @controller.config.item('site_slogan')
 
     @app.use $driver.logger(@controller.config.item('logger'))
 

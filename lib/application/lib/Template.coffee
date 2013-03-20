@@ -22,14 +22,15 @@
 #
 #
 
-#  ------------------------------------------------------------------------
 #
 #	  Template Class
 #
 #
 #
 
-class application.lib.Template
+require SYSPATH+'lib/Parser.coffee'
+
+class application.lib.Template extends system.lib.Parser
 
   html                : null
   theme               : null
@@ -42,6 +43,7 @@ class application.lib.Template
   _menu               : null
   _data               : null
   _partials           : null
+  _regions            : null
   _breadcrumbs        : null
   _metadata           : null
   _script             : null
@@ -51,8 +53,9 @@ class application.lib.Template
   #
   # constructor
   #
-  #   @access	public
-  # @return [Void]  #
+  # @param  [Object]  controller  
+  # @param  [Object]  config  configuration array
+  #
   constructor: ($controller, $config = {}) ->
 
     # Initialize the config preferences
@@ -65,35 +68,39 @@ class application.lib.Template
     @_theme_locations = [APPPATH + 'themes/'] if @_theme_locations is null
     @_menu = {}
     @_data = {}
+    @_regions = {}
     @_metadata = []
     @_partials = []
     @_breadcrumbs = []
     @_script = []
     @_css = []
     @html = @load.helper('html')
+    @parser = @load.library('parser')
     @setTheme @_theme_name
 
 
   #
   # Set data name/value pair
   #
-  #   @access	public
-  # @param  [Mixed]  #   @param string
-  # @return [Object]  #
+  # @param  [String]  name  variable name to set 
+  # @param  [Mixed] value the value
+  # @return [Object] this
+  #
   set: ($name, $value) ->
-    if is_array($name)
-      @_data[$key] = $val for $key, $val of $name
-    else
+    if 'string' is typeof($name)
       @_data[$name] = $value
+    else
+      @_data[$key] = $val for $key, $val of $name
     @
 
 
   #
   # Set the theme
   #
-  #   @access	public
-  #   @param string
-  # @return [Object]  #
+  # @param  [String]  theme_name  the name of the theme
+  # @return [Array] hash with extra parameters to initialize the theme
+  # @return [Object] this
+  #
   setTheme: ($theme_name = 'default', $extra...) ->
     @_theme_name = $theme_name
     for $location in @_theme_locations
@@ -108,9 +115,9 @@ class application.lib.Template
   #
   # Set the layout
   #
-  #   @access	public
-  #   @param string
-  # @return [Object]  #
+  # @param  [String]  layout  name of the layout
+  # @return [Object] this
+  #
   setLayout: ($layout) ->
     @_layout = $layout
     @
@@ -118,9 +125,9 @@ class application.lib.Template
   #
   # Set the title
   #
-  #   @access	public
-  #   @param string
-  # @return [Object]  #
+  # @param  [Array<String>] title array of title segments
+  # @return [Object] this
+  #
   setTitle: ($title...) ->
     @_title = $title.join(' | ')
     @
@@ -128,31 +135,32 @@ class application.lib.Template
   #
   # Set a named partial
   #
-  #   @access	public
-  #   @param string
-  #   @param string
-  # @param  [Object]  # @return [Object]  #
+  # @param  [String]  name  partial name
+  # @param  [String]  view  view filename
+  # @param  [Object]  data  hash of data vars
+  # @return [Object] this
+  #
   setPartial: ($name, $view, $data = {}) ->
-    @_partials[$name] = 'view':$view, 'data':$data
+    @_partials.push = name:$name, view:$view, data:$data
     @
 
   #
   # Add breadcrumb
   #
-  #   @access	public
-  #   @param string
-  #   @param string
-  # @return [Object]  #
+  # @param  [String]  name  breadcrumb name
+  # @param  [String]  uri uri to associate
+  # @return [Object] this
+  #
   setBreadcrumb: ($name, $uri = '') ->
-    @_breadcrumbs.push 'name':$name, 'uri':$uri
+    @_breadcrumbs.push name:$name, uri:$uri
     @
 
   #
   # Set doctype
   #
-  #   @access	public
-  #   @param string
-  # @return [Object]  #
+  # @param  [String]  doctype the html doctype to use
+  # @return [Object] this
+  #
   setDoctype: ($doctype = 'html5') ->
     @_doctype = $doctype
     @
@@ -160,9 +168,9 @@ class application.lib.Template
   #
   # Add css tag
   #
-  #   @access	public
-  #   @param	string
-  # @return [Object]  #
+  # @param	[String]  css snippet of css to inject into output
+  # @return [Object] this
+  #
   setCss:($css) ->
 
     if 'string' is typeof($css)
@@ -174,8 +182,9 @@ class application.lib.Template
   #
   # Add script
   #
-  #   @access	public
-  # @param  [Object]  # @return [Object]  #
+  # @param	[String]  script snippet of script to inject into output
+  # @return [Object] this
+  #
   setScript: ($script) ->
 
     if 'string' is typeof($script)
@@ -188,12 +197,9 @@ class application.lib.Template
   #
   # Add meta tags
   #
-  #   @access	public
-  #   @param	string	name
-  #   @param	string	content
-  #   @param	string	type
-  #   @param	string	newline
-  # @return [Object]  #
+  # @param	[String]  meta  html meta tag content
+  # @return [Object] this
+  #
   setMeta: ($meta) ->
 
     if 'string' is typeof($meta)
@@ -203,6 +209,12 @@ class application.lib.Template
     @
 
 
+  #
+  # Add menu tags
+  #
+  # @param	[String]  menu  name of the menu to use
+  # @return [Object] this
+  #
   setMenu: ($menu) ->
     @_menu = $menu
     @
@@ -211,29 +223,15 @@ class application.lib.Template
   #
   # render a template
   #
-  #   @access	public
-  #   @param	string	view
-  # @param  [Array]  data
-  #   @param	function callback
-  # @return [Void]  #
+  # @param	[String]  view  view filename
+  # @param  [Object] data hash of name/value pairs
+  # @param	[Function]  next  async callback
+  # @return [Void] this
+  #
   view: ($view = '' , $data = {}, $next) =>
 
     #
-    # If the $view is an Error object, show the error as content
-    #
-    if $view instanceof Error
-      $data = {err: new system.core.ExspressoError($view)}
-      $view = 'errors'
-
-    #
-    # If the $data is an Error object, show the error as content
-    #
-    if $data instanceof Error
-      $data = {err: new system.core.ExspressoError($data)}
-      $view = 'errors'
-
-    #
-    # Collect all of the template bits
+    # Collect all of the template bits and build a page
     #
     $script = []
     for $str in @_script
@@ -257,66 +255,59 @@ class application.lib.Template
     @set '$menu',       @htmlMenu(@_menu, @uri.segment(1, ''))
     @set 'site_name',   config_item('site_name')
     @set 'site_slogan', config_item('site_slogan')
-    @set $data
+    #@set $data
+    @_data.__proto__ = $data
     $index = 0
 
     #
     # Collect the rendering of each partial
     #
-    #   @access	private
-    #   @param	function callback
-    # @return [Void]  #
+    # @access	private
+    # @param	function callback
+    # @return [Void]  
+    #
     get_partials = ($next) =>
-
       return $next(null) if @_partials.length is 0
       #
-      # process the partial at index
+      # load the partial at index
       #
       $partial = @_partials[$index]
-      @load.view $partial.view, $partial.data, ($err, $html) =>
-
+      @parse $partial.view, $partial.data, ($err, $html) =>
         return $next($err) if $err
         #
-        # save the result and do the next
+        # save the result and get the next
         #
-        @_data[$partial.name] = $html
+        $region = @theme._regions[$partial.name]
+        if @_data[$region]? then @_data[$region] += $html else @_data[$region] = $html
         $index += 1
-        if $index is $partials.length then $next null
-        else get_partials $next
+        return $next(null) if $index is $partials.length
+        return get_partials($next)
 
     #
     # load all partials
+    #
     get_partials ($err) =>
-
       return log_message('error', 'Template::view get_partials %s', $err) if show_error($err)
 
       #
-      # load the body view & merge with partials
-      @load.view $view, @_data, ($err, $content) =>
-
+      # load the body view & render it with the partials
+      #
+      @parse $view, @_data, ($err, $content) =>
         return log_message('error', 'Template::view load.view %s', $err) if show_error($err)
-
         #
-        # merge the body into the theme layout
+        # load the main layout for the final render
+        #
         @set '$content', $content
-        @render @_theme_path+@_layout, @_data, ($err, $page) =>
-
-          return log_message('error', 'Template::view render %s', $err) if show_error($err)
-
-          return $next(null, $page) if $next?
-
-          @output.setOutput $page
-          @next()
-
+        return @parse @_theme_path+@_layout, @_data, $next
 
   #
   # Menu
   #
   # Main menu
   #
-  #   @access	public
-  #   @param string
-  # @return [Void]  #
+  # @param  [String]
+  # @return [Void]  
+  #
   htmlMenu: ($items, $active) ->
 
     $k = keys($items)[0]
@@ -338,9 +329,9 @@ class application.lib.Template
   #
   # side-bar navigation menu
   #
-  #   @access	public
-  #   @param string
-  # @return [Void]  #
+  # @param  [String]
+  # @return [Void]  
+  #
   htmlSidenav: ($items, $active) ->
 
     $menu = "<ul class=\"nav nav-list sidenav\">\n"
@@ -359,9 +350,9 @@ class application.lib.Template
   #
   # sub menu
   #
-  #   @access	public
-  #   @param string
-  # @return [Void]  #
+  # @param  [String]
+  # @return [Void]  
+  #
   htmlSubmenu: ($modules, $module) ->
 
     $active = ucfirst($module)

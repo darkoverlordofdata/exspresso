@@ -35,7 +35,7 @@
     <div class="container">
         <div class="credit">
             <span class="pull-left muted">
-                &copy; Copyright 2012 by Dark Overlord of Data
+                &copy; Copyright 2012 - 2013 by Dark Overlord of Data
             </span>
             <span class="pull-right">powered by &nbsp;
                 <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>

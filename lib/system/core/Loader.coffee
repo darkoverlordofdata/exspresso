@@ -420,7 +420,27 @@ class system.core.Loader
   # @return [Void]
   #
   view: ($view, $vars = {}, $next = null) ->
-    [$path, $view] = Modules::find($view, @controller.module, 'views/')
+
+    #
+    # If we get an Error object, show it as content
+    #
+    if $view instanceof Error
+      $vars = {err: new system.core.ExspressoError($view)}
+      $view = APPPATH+'errors/5xx.eco'
+    else if $vars instanceof Error
+      $vars = {err: new system.core.ExspressoError($vars)}
+      $view = APPPATH+'errors/5xx.eco'
+
+    #
+    # If the path is absolute, use it
+    #
+    if $view.charAt(0) is '/'
+      $pos = $view.lastIndexOf('/')
+      $path = $view.substr(0,$pos)
+      $view = $view.substr($pos)
+    else
+      [$path, $view] = Modules::find($view, @controller.module, 'views/')
+
     @_view_path = if $path then $path else APPPATH + config_item('views')
     @_load('', $view, $vars, $next)
 

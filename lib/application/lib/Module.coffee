@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| welcome.coffee
+#| Module.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -11,42 +11,26 @@
 #|
 #+--------------------------------------------------------------------+
 #
+#
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
+# @link       http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
 
+#  ------------------------------------------------------------------------
 #
-#	Welcome
+#	Class application.lib.Module
 #
-# This is the default controller
-#
+class application.lib.Module
 
-class Welcome extends system.core.Controller
 
-  #
-  # Index
-  #
-  # Demo welcome page
-  #
-  # @access	public
-  # @return [Void]
-  #
-  index: ->
-
-    #@load.view 'welcome_message', site_name: config_item('site_name')
-    @load.library 'parser'
-    @parser.parse 'welcome_message', site_name: config_item('site_name')
-#
-# Export the class:
-#
-module.exports = Welcome
-
-# End of file Welcome.coffee
-# Location: .application/controllers/Welcome.coffee
+# END CLASS Module
+module.exports = application.lib.Module
+# End of file Module.coffee
+# Location: .application/lib/Module.coffee

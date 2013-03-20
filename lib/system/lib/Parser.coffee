@@ -28,6 +28,8 @@
 #
 # Parser Class
 #
+#   lightweight template
+#
 #
 class system.lib.Parser
   
@@ -58,15 +60,12 @@ class system.lib.Parser
   # @param  [Function]
   # @return [Void]
   #
-  parse: ($template, $data, $next) ->
-
-    fn_err = $next ? show_error
+  parse: ($template, $data = {}, $next) ->
 
     @load.view $template, $data, ($err, $template) =>
 
-      return fn_err($err) if $err
-      return $next(null, @_parse($template, $data, true)) if $next?
-      @_parse($template, $data, false)
+      ($next ? @next)(null, @_parse($template, $data, $next?))
+
 
 
   #
@@ -174,12 +173,11 @@ class system.lib.Parser
   # @return [Mixed]
   #
   _match_pair: ($string, $variable) ->
-    if not ($match = $string.match(RegExp(@_lreg + $variable + @_rreg + "(.+?)" + @_lreg + '/' + $variable + @_rreg,"g")))?
+    $re = @_lreg + $variable + @_rreg + "([\\s\\S]*)" + @_lreg + reg_quote('/') + $variable + @_rreg
+    if not ($match = $string.match(RegExp($re,"m")))?
       return false
     return $match
-    
-  
-  
+
 
 module.exports = system.lib.Parser
 #  END Parser Class
