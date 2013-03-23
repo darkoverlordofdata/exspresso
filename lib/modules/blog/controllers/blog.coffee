@@ -70,6 +70,12 @@ class Blog extends application.core.AdminController
   #
   edit: ($id) ->
 
+    #
+    # check for access to edit blog article
+    #
+    unless @user.isLoggedIn
+      throw new system.core.AuthorizationError('You must be logged in')
+
     @db.from 'blog'
     @db.where 'id', $id
     @db.get ($err, $blog) =>
@@ -91,6 +97,12 @@ class Blog extends application.core.AdminController
   #
   del: ($id) ->
 
+    #
+    # check for access to delete blog article
+    #
+    unless @user.isLoggedIn
+      throw new system.core.AuthorizationError('You must be logged in')
+
     @db.where 'id', $id
     @db.delete 'blog', ($err) =>
 
@@ -98,9 +110,9 @@ class Blog extends application.core.AdminController
       # Show the status of the delete operation
       #
       if $err?
-        @session.setFlashdata('error', $err.message)
+        @session.setFlashdata 'error', $err.message
       else
-        @session.setFlashdata('info', 'Blog entry %s deleted', $id)
+        @session.setFlashdata 'info', 'Blog entry %s deleted', $id
 
       @redirect '/blog'
 
@@ -128,15 +140,24 @@ class Blog extends application.core.AdminController
   #
   create: () ->
 
+    #
+    # check for access to create blog article
+    #
+    unless @user.isLoggedIn
+      throw new system.core.AuthorizationError('You must be logged in')
+
+    #
+    # Pack up the article data
+    #
     $now = String(new Date())
     $data =
-      author_id: @user.uid
-      category_id: 1
-      status: 1
-      created_on: $now
-      updated_on: $now
-      title: @input.post('title')
-      body: @input.post('blog')
+      author_id     : @user.uid
+      category_id   : 1
+      status        : 1
+      created_on    : $now
+      updated_on    : $now
+      title         : @input.post('title')
+      body          : @input.post('blog')
 
     @db.insert 'blog', $data, ($err) =>
 
@@ -144,7 +165,7 @@ class Blog extends application.core.AdminController
       # Add the article to the database
       #
       if $err? # can't insert, try again?
-        @session.setFlashdata('error', $err.message)
+        @session.setFlashdata 'error', $err.message
         return @redirect '/blog/new'
 
       @db.insertId ($err, $id) =>
@@ -153,13 +174,13 @@ class Blog extends application.core.AdminController
         # get the ID
         #
         if $err? # can't get the id, display the whole list
-          @session.setFlashdata('error', $err.message)
+          @session.setFlashdata 'error', $err.message
           return @redirect '/blog'
 
         #
         # Show the id that was created
         #
-        @session.setFlashdata('info', 'Blog entry %s created', $id)
+        @session.setFlashdata 'info', 'Blog entry %s created', $id
         @redirect '/blog/edit/'+$id
 
 
@@ -172,6 +193,12 @@ class Blog extends application.core.AdminController
   #
   save: () ->
 
+    #
+    # check for access to save a blog article
+    #
+    unless @user.isLoggedIn
+      throw new system.core.AuthorizationError('You must be logged in')
+
     $id = @input.post('id')
     $body = @input.post('blog')
 
@@ -182,9 +209,9 @@ class Blog extends application.core.AdminController
       # Show the status of the update operation
       #
       if $err?
-        @session.setFlashdata('error', $err.message)
+        @session.setFlashdata 'error', $err.message
       else
-        @session.setFlashdata('info', 'Blog entry %s saved', $id)
+        @session.setFlashdata 'info', 'Blog entry %s saved', $id
 
       @redirect '/blog/edit/'+$id
 
