@@ -4,21 +4,31 @@
         <h3>Blog Entries</h3>
     </div>
     <div class="row">
-        <div class="span6">
+        <div class="span12">
             <table class="table table striped table-hover table-condensed">
                 <thead>
                 <tr>
                     <th>Id</th>
                     <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Updated</th>
                     <th></th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <% for $entry, $index in @entries: %>
+                <% for $entry in @entries: %>
                 <tr>
                     <td><%= $entry.id %></td>
                     <td><%- @anchor("blog/show/#{$entry.id}", $entry.title) %></td>
+                    <td><%= $entry.author %></td>
+                    <td><%= $entry.category %></td>
+                    <td><%= $entry.status %></td>
+                    <td><%= @date('MM-DD-YYYY hh:mm:ss', $entry.created_on) %></td>
+                    <td><%= @date('MM-DD-YYYY hh:mm:ss', $entry.updated_on) %></td>
                     <td><%- @anchor("blog/edit/#{$entry.id}", 'Edit') %></td>
                     <td><%- @anchor("blog/del/#{$entry.id}", 'Delete') %></td>
                 </tr>
@@ -28,8 +38,8 @@
         </div>
     </div>
     <div class="row">
-        <div class="span6"></div>
-        <div class="span4">
+        <div class="span11"></div>
+        <div class="span1">
             <p>
                 <%- @anchor("blog/new", "New", class: "btn-primary btn") %>
             </p>

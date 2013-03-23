@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| Module.coffee
+#| Routes.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -23,14 +23,24 @@
 #
 #
 
-#  ------------------------------------------------------------------------
 #
-#	Class application.lib.Module
+#	Class application.lib.Routes
 #
-class application.lib.Module
+
+require APPPATH+'core/Module.coffee'
+
+class Routes extends application.core.Module
+
+  name: 'Routes'
+  description: ''
+  path: __dirname
+
+  constructor: ->
+    @name = 'Routes'
+    @path = __dirname
 
 
-# END CLASS Module
-module.exports = application.lib.Module
-# End of file Module.coffee
-# Location: .application/lib/Module.coffee
+# END CLASS Routes
+module.exports = Routes
+# End of file Routes.coffee
+# Location: .application/lib/Routes.coffee

@@ -30,7 +30,7 @@
 moment = require('moment')
 
 exports.date = date = ($format, $timestamp = Date.now()) ->
-  moment($timestamp, $format)
+  moment($timestamp).format($format)
 
 #
 # Get "now" time
@@ -55,7 +55,9 @@ if not function_exists('now')
 # have to worry about escaping your text letters that
 # match the date codes.
 #
-# @param  [String]  # @param  [Integer]  # @return	integer
+# @param  [String]
+# @param  [Integer]
+# @return	[Integer]
 #
 if not function_exists('mdate')
   exports.mdate = mdate = ($datestr = '', $time = now()) ->
@@ -443,8 +445,8 @@ if not function_exists('timezones')
 # Export the module
 #
 #
-for $name, $body of module.exports
-  define $name, $body
+#for $name, $body of module.exports
+#  define $name, $body
 
 #  End of file date_helper.php
 #  Location: ./system/helpers/date_helper.php

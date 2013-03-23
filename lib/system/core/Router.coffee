@@ -40,7 +40,7 @@ class system.core.Router
   routes                  : null        # route dispatch bindings
 
   _default_controller     : false       # matches route '/'
-  _404_override           : false       # when the specified controller is not found
+  _not_found              : false       # when the specified controller is not found
   _directory              : ''          # parsed directory
   _module                 : ''          # parsed module
   _class                  : ''          # parsed class
@@ -67,11 +67,13 @@ class system.core.Router
   #
   setRouting: ($uri) ->
 
+    @_not_found = false
     @_directory = ''
     @_module = ''
     @_class = ''
     @_method = ''
     @_set_request $uri.split('/')
+    not @_not_found
 
 
   #
@@ -150,18 +152,10 @@ class system.core.Router
     $located = @locate($segments)
     if ($located) then return $located
 
-
-    # use a default 404_override controller
-    if @_404_override
-      $segments = @_404_override.split('/')
-      if ($located = @locate($segments)) then return $located
-
-
     # no controller found
-    #show_404()
-    # Nothing else to do at this point but show a 404
+    @_not_found = true
     log_message 'error', "Unable to validate uri %j", $segments
-    return []
+    return false
 
 
   #
@@ -219,19 +213,7 @@ class system.core.Router
 
       return $segments
 
-    # If we've gotten this far it means that the URI does not correlate to a valid
-    # controller class.  We will now see if there is an override
-    if @_404_override isnt false
-
-      $x = @_404_override.split('/')
-
-      @setClass $x[0]
-      @setMethod $x[1] ? 'index'
-
-      return $x
-
-
-    # Nothing else to do at this point but show a 404
+    @_not_found = true
     log_message 'error', "Unable to validate uri %j", $segments
     return []
 
@@ -277,10 +259,8 @@ class system.core.Router
     # Set the default controller so we can display it in the event
     # the URI doesn't correlated to a valid controller.
     @_default_controller = $routes['default_controller'] ? false
-    @_404_override = $routes['404_override'] ? false
 
     delete $routes['default_controller']
-    delete $routes['404_override']
     $routes['/'] = @_default_controller
     $routes
 
@@ -306,6 +286,8 @@ class system.core.Router
 
       # module exists?
       if (is_dir($source = $location+$module+'/controllers/'))
+
+        return false unless Modules::getModule($module).active
 
         @_module = $module
         @_directory = $offset+$module+'/controllers/'

@@ -422,8 +422,8 @@ class CKEditor
 
     $out = ""
 
-    if not empty($initComplete)
-      return ""
+    #if not empty($initComplete)
+    #  return ""
 
     if @initialized
       $initComplete = true

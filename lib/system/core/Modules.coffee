@@ -66,19 +66,39 @@ class system.core.Modules
   fs = require('fs')
   self = @::
 
+  #
+  # @property [Object] Hash list module root locations
+  #
   locations: config_item('modules_locations') or array(APPPATH+'modules/', '../modules/')
+  #
+  # @property [Object] Hash list of loaded modules
+  #
+  modules: null
 
   #
   # Returns a list of modules
   #
-  # @return [Array] the modules found
+  # @return [Object] hash of module: location
   #
   list: ->
 
-    $modules = []
+    return self.modules unless self.modules is null
+    self.modules = {}
     for $location, $offset of self.locations
-      $modules.concat(readdirSync($location))
-    $modules
+      for $module in fs.readdirSync($location)
+        if fs.existsSync($location+$module+'/'+ucfirst($module)+EXT)
+          $class = require($location+$module+'/'+ucfirst($module)+EXT)
+          self.modules[$module] = new $class
+    self.modules
+
+  #
+  # Returns the module definition
+  #
+  # @return [Object] hash of module properties
+  #
+  getModule: ($module) ->
+    self.list() if self.modules is null
+    return self.modules[$module]
 
   #
   # Load a module file
@@ -147,6 +167,7 @@ class system.core.Modules
     return [false, $file]
 
 module.exports = system.core.Modules
+
 
 # End of file Modules.coffee
 # Location: .system/core/Modules.coffee

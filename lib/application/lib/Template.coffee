@@ -141,7 +141,7 @@ class application.lib.Template extends system.lib.Parser
   # @return [Object] this
   #
   setPartial: ($name, $view, $data = {}) ->
-    @_partials.push = name:$name, view:$view, data:$data
+    @_partials.push name:$name, view:$view, data:$data
     @
 
   #

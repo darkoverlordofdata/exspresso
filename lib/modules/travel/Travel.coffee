@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| PublicController.coffee
+#| Travel.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -11,38 +11,36 @@
 #|
 #+--------------------------------------------------------------------+
 #
+#
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
+# @link       http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
 
-#  ------------------------------------------------------------------------
 #
-#	PublicController
-#
-#   Base class for all publicly viewable pages
+#	Class application.lib.Travel
 #
 
-class application.core.PublicController extends system.core.Controller
+require APPPATH+'core/Module.coffee'
 
-  constructor: ($args...) ->
+class Travel extends application.core.Module
 
-    super($args...)
+  name: 'Travel'
+  description: ''
+  path: __dirname
 
-    @load.library 'template'
-    @template.setTheme 'default', 'prettify'
-    @load.database()
-    @output.enableProfiler exspresso.profile
-    @output.cache 5
-
-module.exports = application.core.PublicController
+  constructor: ->
+    @name = 'Travel'
+    @path = __dirname
 
 
-# End of file PublicController.coffee
-# Location: ./application/core/PublicController.coffee
+# END CLASS Travel
+module.exports = Travel
+# End of file Travel.coffee
+# Location: .application/lib/Travel.coffee

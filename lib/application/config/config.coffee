@@ -22,9 +22,9 @@ exports['view_ext'] = '.eco'
 exports['cache_rules'] =
   '.*': 0 # 60000
 exports['classpaths'] =
-  system       : SYSPATH
-  application  : APPPATH
-  modules      : MODPATH
+  'system'            : SYSPATH
+  'application'       : APPPATH
+  'modules'           : MODPATH
 
 #
 #|--------------------------------------------------------------------------

@@ -15,10 +15,8 @@
         <header>
             <%- @anchor("", @img("images/logo.png"), title: "Home", rel: "home", id: "logo" ) %>
             <hgroup id="name-and-slogan">
-                <div class="page-header">
-                    <h1><%= @site_name %><p><blockquote>
-                    <small><%= @site_slogan %></small></blockquote></p></h1>
-                </div>
+                <h1><%= @site_name %><p><blockquote>
+                <small><%= @site_slogan %></small></blockquote></p></h1>
             </hgroup>
         </header>
         <div class="clearfix"></div>

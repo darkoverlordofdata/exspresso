@@ -1136,11 +1136,25 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [Mixed]  the table(s) to delete from. String or array
   # @param  [Mixed]  the where clause
   # @param  [Mixed]  the limit clause
-  # @return	[Boolean]ean
-  # @return [Object]  #
-  delete: ($table = '', $where = '', $limit = null, $reset_data = true) ->
+  # @return	[Boolean]
+  # @return [Object]
+  #
+  delete: ($table = '', $where = '', $limit = null, $reset_data = true, $next) ->
 
-    if typeof $limit is 'function'
+    if typeof $table is 'function'
+      $next = $table
+      $table = ''
+      $where = ''
+      $limit = null
+      $reset_data = true
+
+    else if typeof $where is 'function'
+      $next = $where
+      $where = ''
+      $limit = null
+      $reset_data = true
+
+    else if typeof $limit is 'function'
       $next = $limit
       $limit = null
       $reset_data = true

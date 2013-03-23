@@ -24,9 +24,7 @@ class Migration_Blog_create_blog_table extends ExspressoMigration
   up: ($next) ->
 
     @dbforge.addField @data
-
     @dbforge.addKey 'id', true
-
     @dbforge.createTable @table, $next
 
   down: ($next) ->

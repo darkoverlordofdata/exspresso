@@ -144,8 +144,8 @@ class system.core.Exspresso extends system.core.Object
     # Load the base controller class
     require SYSPATH+'core/Controller.coffee'
 
-    if file_exists(APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller' + EXT)
-      require APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller' + EXT
+    if file_exists(APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller.coffee')
+      require APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller.coffee'
 
     for $path, $uri of @router.loadRoutes()
       @bind $path, $uri
@@ -201,7 +201,7 @@ class system.core.Exspresso extends system.core.Object
   #
   bind: ($path, $uri) ->
 
-    @router.setRouting($uri)
+    return unless @router.setRouting($uri)
 
     if not file_exists(APPPATH+'controllers/'+@router.getDirectory()+@router.getClass()+EXT)
 

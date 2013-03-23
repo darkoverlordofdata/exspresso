@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| PublicController.coffee
+#| Migrate.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -11,38 +11,36 @@
 #|
 #+--------------------------------------------------------------------+
 #
+#
 # Exspresso
 #
 # An open source application development framework for coffee-script
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
+# @link       http://darkoverlordofdata.com
 # @since      Version 1.0
 #
 #
 
-#  ------------------------------------------------------------------------
 #
-#	PublicController
-#
-#   Base class for all publicly viewable pages
+#	Class application.lib.Migrate
 #
 
-class application.core.PublicController extends system.core.Controller
+require APPPATH+'core/Module.coffee'
 
-  constructor: ($args...) ->
+class Migrate extends application.core.Module
 
-    super($args...)
+  name: 'Migrate'
+  description: ''
+  path: __dirname
 
-    @load.library 'template'
-    @template.setTheme 'default', 'prettify'
-    @load.database()
-    @output.enableProfiler exspresso.profile
-    @output.cache 5
-
-module.exports = application.core.PublicController
+  constructor: ->
+    @name = 'Migrate'
+    @path = __dirname
 
 
-# End of file PublicController.coffee
-# Location: ./application/core/PublicController.coffee
+# END CLASS Migrate
+module.exports = Migrate
+# End of file Migrate.coffee
+# Location: .application/lib/Migrate.coffee

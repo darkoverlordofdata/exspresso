@@ -114,6 +114,7 @@ module.exports = ->
   load_class MODPATH+'user/models/UserModel.coffee'
   load_class SYSPATH+'lib/session/Session.coffee'
   load_class APPPATH+'core/PublicController.coffee'
+  load_class APPPATH+'core/Module.coffee'
 
 
 #
