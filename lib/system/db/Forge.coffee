@@ -166,7 +166,7 @@ class system.db.Forge
       show_error 'A table name is required for that operation.'
 
     $def(@) if $def?
-    
+
     if keys(@fields).length is 0
       show_error 'Field information is required.'
 
@@ -181,6 +181,7 @@ class system.db.Forge
 
         return log_message('error', 'Error creating table %s: %s', $table, $err.message) if $err?
 
+        log_message 'debug', 'dbForge created table: %s', $table
         if @data? then @db.insertBatch($table, @data, $next)
         else $next(null)
 

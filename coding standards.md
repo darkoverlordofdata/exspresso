@@ -87,5 +87,32 @@ module.exports = application.lib.MyBase
 ```
 
 
+## Sprintf Style Messages
+
+  * When displaying flash and log messages, you can use a sprinf style call
+
+```CoffeeScript
+  @session.setFlashdata 'info', 'Blog entry %s deleted', $id
+
+  log_mesage 'debug', 'Blog entry %s deleted', $id
+```
+
+## Using DB Forge
+
+  * Pass a callback as the 3rd argument to be processed prior to creating the table. This
+    callback can be used to set the table attributes and initial data load.
+
+```CoffeeScript
+  @dbforge.createTable 'category', $next, ($t) ->
+
+    $t.addKey 'id', true
+    $t.addField
+      id:
+        type: 'INT', constraint: 5, unsigned: true, auto_increment: true
+      name:
+        type: 'VARCHAR', constraint: 255
+
+    $t.addData id: 1, name: "Article"
+```
 
 

@@ -111,102 +111,26 @@ class modules.user.models.UserModel extends system.core.Model
   #
   # @return [Void]
   #
-  installCheck: () ->
+  installCheck: ->
+    @load.dbforge() unless @dbforge?
+    @queue @install_session
+    @queue @install_roles
+    @queue @install_users
+    @queue @install_user_roles
 
-    # Migrate the session table
-    @queue ($next) =>
-      $migrate = new MigrateSession(@)
-      $migrate.up $next
-
-    # Migrate the roles table
-    @queue ($next) =>
-      $migrate = new MigrateRoles(@)
-      $migrate.up $next
-
-    # Migrate the users table
-    @queue ($next) =>
-      $migrate = new MigrateUsers(@)
-      $migrate.up $next
-
-    # Migrate the user_roles table
-    @queue ($next) =>
-      $migrate = new MigrateUserRoles(@)
-      $migrate.up $next
-
-# END CLASS UserModel
-
-module.exports = UserModel = modules.user.models.UserModel
-
-#  ------------------------------------------------------------------------
-
-#
-# Class Migrate
-#
-#   Base class for database migrations
-#
-class Migrate
-
-  name        : ''      # table name
-  pkey        : ''      # primary key
-  key         : null    # secondary key(s)
-  fields      : null    # database column definitions
-  data        : null    # data rows to insert
 
   #
-  # Set the owning controller
+  # Step 1:
+  # Install Check
   #
-  # @access public
-  # @param  [Object]  Controller
+  # Create the sessions table
   #
-  constructor: (@controller) ->
+  install_session: ($next) =>
 
-  #
-  # Apply database changes
-  #
-  #
-  up: ($next) =>
-
-    # check if the migration is needed
-    @controller.db.tableExists @name, ($err, $table_exists) =>
-
-      return $next($err) if $err
-      return $next(null) if $table_exists
-
-      # The table doesn't exist, create it
-      @controller.load.dbforge()
-      @controller.dbforge.addField @fields
-      @controller.dbforge.addKey @pkey, true
-      @controller.dbforge.addKey $key for $key in @key
-      @controller.dbforge.createTable @name, ($err) =>
-
-        # populate the table
-        return $next($err) if $err
-        return if @data.length is 0 then $next()
-        else @controller.db.insertBatch @name, @data, $next
-
-# --------------------------------------------------------------------
-
-#
-# Migrate Session table
-#
-class MigrateSession extends Migrate
-
-  #
-  # sessions Table
-  #
-  name  : 'sessions'
-  #
-  # sid Primary key
-  #
-  pkey  : 'sid'
-  #
-  # Indexes
-  #
-  key   : ['last_activity']
-  #
-  # Fields
-  #
-  fields:
+    @dbforge.createTable 'sessions', $next, ($sessions) ->
+      $sessions.addKey 'sid', true
+      $sessions.addKey ['last_activity']
+      $sessions.addField
         sid:
           type: 'VARCHAR', constraint: 24, default: '0', null: false
         uid:
@@ -219,36 +143,18 @@ class MigrateSession extends Migrate
           type: 'INT', constraint: 10, unsigned: true, default: 0, null: false
         user_data:
           type: 'TEXT', null: true
-  #
-  # Initial data
-  #
-  data  : []
-
-
-
-# --------------------------------------------------------------------
-
-#
-# Migrate roles
-#
-class MigrateRoles extends Migrate
 
   #
-  # Table name
+  # Step 2:
+  # Install Roles
   #
-  name  : 'roles'
+  # Create the roles table
   #
-  # Primary key
-  #
-  pkey  : 'rid'
-  #
-  # Indexes
-  #
-  key   :  []
-  #
-  # Fields
-  #
-  fields:
+  install_roles: ($next) =>
+
+    @dbforge.createTable 'roles', $next, ($roles) ->
+      $roles.addKey 'rid', true
+      $roles.addField
         rid:
           type:'INT', constraint:10, unsigned:true, null:false, auto_increment:true
         name:
@@ -256,38 +162,23 @@ class MigrateRoles extends Migrate
         description:
           type:'VARCHAR', constraint:'100', null:false
 
-  #
-  # Initial data
-  #
-  data  : [
-    {rid: UserModel.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
-    {rid: UserModel.RID_ADMIN, name:'admin', description:'Administrator'}
-    {rid: UserModel.RID_MEMBER, name:'member', description:'Member'}
-  ]
-
-# --------------------------------------------------------------------
-
-#
-# Migrate users
-#
-class MigrateUsers extends Migrate
+      $roles.addData [
+          {rid: UserModel.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
+          {rid: UserModel.RID_ADMIN, name:'admin', description:'Administrator'}
+          {rid: UserModel.RID_MEMBER, name:'member', description:'Member'}
+        ]
 
   #
-  # Table name
+  # Step 3:
+  # Install Users
   #
-  name  : 'users'
+  # Create the users table
   #
-  # Primary key
-  #
-  pkey  : 'uid'
-  #
-  # Indexes
-  #
-  key   :  []
-  #
-  # Fields
-  #
-  fields:
+  install_users: ($next) =>
+
+    @dbforge.createTable 'users', $next, ($users) ->
+      $users.addKey 'uid', true
+      $users.addField
         uid:
           type:'INT', constraint:10, unsigned:true, null:false, auto_increment:true
         name:
@@ -305,54 +196,44 @@ class MigrateUsers extends Migrate
         active:
           type:'tinyint', constraint:'1', unsigned:true, null:true
 
-  #
-  # Initial data
-  #
-  data  : [
-    {uid: UserModel.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
-    {uid: UserModel.UID_ADMIN, name: 'admin', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
-    {uid: UserModel.UID_TEST, name: 'shaggy', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
-  ]
-
-# --------------------------------------------------------------------
-
-#
-# Migrate users x roles
-#
-class MigrateUserRoles extends Migrate
+      $users.addData [
+          {uid: UserModel.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
+          {uid: UserModel.UID_ADMIN, name: 'admin', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+          {uid: UserModel.UID_TEST, name: 'shaggy', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+        ]
 
   #
-  # Table name
+  # Step 4:
+  # Install User/Roles index
   #
-  name  : 'user_roles'
+  # Create the user_roles table
   #
-  # Primary key
-  #
-  pkey  : 'id'
-  #
-  # Indexes
-  #
-  key   : []
-  #
-  # Fields
-  #
-  fields:
+  install_user_roles: ($next) =>
+
+    @dbforge.createTable 'user_roles', $next, ($user_roles) ->
+      $user_roles.addKey 'id', true
+      $user_roles.addField
         id:
           type:'INT', constraint:10, 'unsigned':true, null:false, auto_increment:true
         uid:
           type:'INT', constraint:10, 'unsigned':true, null:false
         rid:
           type:'INT', constraint:10, 'unsigned':true, null:false
-  #
-  # Initial data
-  #
-  data  : [
-    {uid: UserModel.UID_ANONYMOUS, rid: UserModel.RID_ANONYMOUS}
-    {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ADMIN}
-    {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ANONYMOUS}
-    {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_MEMBER}
-    {uid: UserModel.UID_TEST,      rid: UserModel.RID_MEMBER}
-  ]
+
+      $user_roles.addData [
+          {uid: UserModel.UID_ANONYMOUS, rid: UserModel.RID_ANONYMOUS}
+          {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ADMIN}
+          {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ANONYMOUS}
+          {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_MEMBER}
+          {uid: UserModel.UID_TEST,      rid: UserModel.RID_MEMBER}
+        ]
+
+
+
+
+# END CLASS UserModel
+
+module.exports = UserModel = modules.user.models.UserModel
 
 
 # End of file UserModel.coffee
