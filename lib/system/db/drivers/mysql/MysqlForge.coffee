@@ -130,14 +130,13 @@ class system.db.mysql.MysqlForge extends system.db.Forge
     $sql+='IF NOT EXISTS ' if $if_not_exists is true
 
     $sql+=@db._escape_identifiers($table) + " ("
-    
+
     $sql+=@_process_fields($fields)
 
     if $primary_keys.length > 0
 
       $key_name = @db._protect_identifiers($primary_keys.join('_'))
       $primary_keys = @db._protect_identifiers($primary_keys)
-      console.log $primary_keys
       $sql+=",\n\tPRIMARY KEY " + $key_name + " (" + $primary_keys.join(', ') + ")"
 
     if Array.isArray($keys) and $keys.length > 0

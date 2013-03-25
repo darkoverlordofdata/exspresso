@@ -1,1 +1,1 @@
-web: node exspresso.js express connect --profile --db postgres
+web: node exspresso.js connect --profile --db postgres

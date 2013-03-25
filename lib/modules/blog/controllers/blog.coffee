@@ -17,6 +17,8 @@ require APPPATH+'core/AdminController.coffee'
 
 class Blog extends application.core.AdminController
 
+  Modules = system.core.Modules
+
   #
   # Index
   #
@@ -71,20 +73,33 @@ class Blog extends application.core.AdminController
   edit: ($id) ->
 
     #
-    # check for access to edit blog article
+    # if we're not logged in, check no further
     #
     unless @user.isLoggedIn
-      throw new system.core.AuthorizationError('You must be logged in')
+      throw new system.core.AuthorizationError('Not logged in')
 
     @db.from 'blog'
     @db.where 'id', $id
-    @db.get ($err, $blog) =>
+    @db.get ($err, $doc) =>
+
+      $doc = $doc.row()
+      #
+      # check for access to edit this document
+      #
+      unless @user.isAdmin or (@user.uid is $doc.author_id)
+        throw new system.core.AuthorizationError('Not the document owner')
+
+      $blog = Modules::getModule('blog')
 
       #
       # Edit the article
       #
-      @template.view 'blog_edit', $err ||
-        blog: $blog.row()
+      @template.view 'blog_edit', $err || {
+        category    : $blog.categoryName($doc.category_id)
+        categories  : $blog.categoryNames()
+        blog        : $doc
+      }
+          
 
 
   #
@@ -98,23 +113,34 @@ class Blog extends application.core.AdminController
   del: ($id) ->
 
     #
-    # check for access to delete blog article
+    # if we're not logged in, check no further
     #
     unless @user.isLoggedIn
-      throw new system.core.AuthorizationError('You must be logged in')
+      throw new system.core.AuthorizationError('Not logged in')
 
+    @db.from 'blog'
     @db.where 'id', $id
-    @db.delete 'blog', ($err) =>
+    @db.get ($err, $doc) =>
 
+      $doc = $doc.row()
       #
-      # Show the status of the delete operation
+      # Must be author or admin
       #
-      if $err?
-        @session.setFlashdata 'error', $err.message
-      else
-        @session.setFlashdata 'info', 'Blog entry %s deleted', $id
+      unless @user.isAdmin or (@user.uid is $doc.author_id)
+        throw new system.core.AuthorizationError('Not an owner of this article')
 
-      @redirect '/blog'
+      @db.where 'id', $id
+      @db.delete 'blog', ($err) =>
+
+        #
+        # Show the status of the delete
+        #
+        if $err?
+          @session.setFlashdata 'error', $err.message
+        else
+          @session.setFlashdata 'info', 'Blog entry %s deleted', $id
+
+        @redirect '/blog'
 
 
   #
@@ -127,9 +153,14 @@ class Blog extends application.core.AdminController
   new: () ->
 
     #
-    # Present an empty article
+    # no anonymous access
     #
-    @template.view 'blog_new'
+    unless @user.isLoggedIn
+      throw new system.core.AuthorizationError('Not logged in')
+
+    $blog = Modules::getModule('blog')
+    @template.view 'blog_new',
+      categories  : $blog.categoryNames()
 
   #
   # Create
@@ -141,25 +172,27 @@ class Blog extends application.core.AdminController
   create: () ->
 
     #
-    # check for access to create blog article
+    # Must be logged in to create a doc
     #
     unless @user.isLoggedIn
-      throw new system.core.AuthorizationError('You must be logged in')
+      throw new system.core.AuthorizationError('Not logged in')
 
+    $blog = Modules::getModule('blog')
+    $now = @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
     #
     # Pack up the article data
     #
-    $now = String(new Date())
-    $data =
+    $doc =
       author_id     : @user.uid
-      category_id   : 1
+      category_id   : $blog.categoryId(@input.post('category'))
       status        : 1
       created_on    : $now
       updated_on    : $now
       title         : @input.post('title')
       body          : @input.post('blog')
 
-    @db.insert 'blog', $data, ($err) =>
+
+    @db.insert 'blog', $doc, ($err) =>
 
       #
       # Add the article to the database
@@ -194,26 +227,43 @@ class Blog extends application.core.AdminController
   save: () ->
 
     #
-    # check for access to save a blog article
+    # if we're not logged in, check no further
     #
     unless @user.isLoggedIn
-      throw new system.core.AuthorizationError('You must be logged in')
+      throw new system.core.AuthorizationError('Not logged in')
 
     $id = @input.post('id')
-    $body = @input.post('blog')
-
+    @db.from 'blog'
     @db.where 'id', $id
-    @db.update 'blog', {body: $body}, ($err) =>
+    @db.get ($err, $doc) =>
 
+      $doc = $doc.row()
       #
-      # Show the status of the update operation
+      # Must be author or admin
       #
-      if $err?
-        @session.setFlashdata 'error', $err.message
-      else
-        @session.setFlashdata 'info', 'Blog entry %s saved', $id
+      unless @user.isAdmin or (@user.uid is $doc.author_id)
+        throw new system.core.AuthorizationError('Not an owner of this article')
 
-      @redirect '/blog/edit/'+$id
+      $blog = Modules::getModule('blog')
+
+      $update =
+        catagory      : $blog.categoryId(@input.post('category'))
+        title         : @input.post('title')
+        body          : @input.post('blog')
+        updated_on    : @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
+
+      @db.where 'id', $id
+      @db.update 'blog', $update, ($err) =>
+
+        #
+        # Show the status of the update operation
+        #
+        if $err?
+          @session.setFlashdata 'error', $err.message
+        else
+          @session.setFlashdata 'info', 'Blog entry %s saved', $id
+
+        @redirect '/blog/edit/'+$id
 
 
 

@@ -60,7 +60,8 @@ class system.core.Object
   #
   queue: ($fn) ->
 
-    @define _queue: [] if not @_queue?
+    #@define _queue: [] if not @_queue?
+    @_queue = [] unless @_queue?
 
     if $fn then @_queue.push($fn) else @_queue
 
@@ -72,21 +73,28 @@ class system.core.Object
   #
   run: ($next) ->
 
-    @define _queue: [] if not @_queue?
+    #@define _queue: [] if not @_queue?
+    @_queue = [] unless @_queue?
 
     $queue = @_queue
     $index = 0
+
+    $done = ($err) =>
+      @_queue = []
+      $next($err)
+
     $iterate = ->
 
-      $next (null) if $queue.length is 0
+      $done(null) if $queue.length is 0
       #
       # call the function at index
       #
       $function = $queue[$index]
+
       $function ($err) ->
         return $next($err) if $err
         $index += 1
-        if $index is $queue.length then $next null
+        if $index is $queue.length then $done(null)
         else $iterate()
 
     $iterate()

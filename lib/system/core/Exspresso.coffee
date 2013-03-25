@@ -147,6 +147,7 @@ class system.core.Exspresso extends system.core.Object
     if file_exists(APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller.coffee')
       require APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller.coffee'
 
+    system.core.Modules::initialize(@)
     for $path, $uri of @router.loadRoutes()
       @bind $path, $uri
 

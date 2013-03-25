@@ -34,6 +34,7 @@ class modules.user.lib.User
 
   isAnonymous       : null  # returns true for anonymous user
   isLoggedIn        : null  # returns true for authenticated user
+  isAdmin           : null  # returns true if authenticated user has admin role
   uid               : null  # returns current user database id
   name              : null  # returns current user name
   email             : null  # returns current user email
@@ -58,13 +59,16 @@ class modules.user.lib.User
       @usermodel.loadById @req.session.uid, ($err, $user) =>
 
         $roles = []
+        $is_admin = false
         for $row in $user.roles
+          $is_admin = true if $row.rid is UserModel.RID_ADMIN
           $roles.push freeze($row)
 
         return $next($err) if $err
         defineProperties @,
           isAnonymous   : {enumerable: true,   get: -> $user.uid is UserModel.UID_ANONYMOUS}
           isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt UserModel.UID_ANONYMOUS}
+          isAdmin       : {enumerable: true,   get: -> $is_admin}
           uid           : {enumerable: true,   get: -> $user.uid}
           name          : {enumerable: true,   get: -> $user.name}
           email         : {enumerable: true,   get: -> $user.email}

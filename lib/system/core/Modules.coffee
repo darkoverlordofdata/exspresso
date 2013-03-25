@@ -74,6 +74,22 @@ class system.core.Modules
   # @property [Object] Hash list of loaded modules
   #
   modules: null
+  #
+  # @property [core.system.Exspresso] system controller
+  #
+  controller: null
+
+
+
+  initialize: ($controller) ->
+    self.controller = $controller
+    self.modules = {}
+    for $location, $offset of self.locations
+      for $module in fs.readdirSync($location)
+        if fs.existsSync($location+$module+'/'+ucfirst($module)+EXT)
+          $class = require($location+$module+'/'+ucfirst($module)+EXT)
+          self.modules[$module] = new $class($controller)
+    self.modules
 
   #
   # Returns a list of modules
@@ -82,13 +98,6 @@ class system.core.Modules
   #
   list: ->
 
-    return self.modules unless self.modules is null
-    self.modules = {}
-    for $location, $offset of self.locations
-      for $module in fs.readdirSync($location)
-        if fs.existsSync($location+$module+'/'+ucfirst($module)+EXT)
-          $class = require($location+$module+'/'+ucfirst($module)+EXT)
-          self.modules[$module] = new $class
     self.modules
 
   #
@@ -97,8 +106,7 @@ class system.core.Modules
   # @return [Object] hash of module properties
   #
   getModule: ($module) ->
-    self.list() if self.modules is null
-    return self.modules[$module]
+    self.modules[$module]
 
   #
   # Load a module file

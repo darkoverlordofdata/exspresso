@@ -35,6 +35,7 @@ class system.db.Forge
   fields        : null
   keys          : null
   primary_keys  : null
+  data          : null
   db_char_set   : ''
   
   #
@@ -60,7 +61,10 @@ class system.db.Forge
   # @return	bool
   #
   createDatabase: ($db_name, $next) ->
+
     $sql = @_create_database($db_name)
+    console.log 'FORGE'
+
     if 'boolean' is typeof($sql)
       $next $sql
       
@@ -93,7 +97,6 @@ class system.db.Forge
     if 'object' is typeof($key)
       for $one in $key
         @addKey($one, $primary)
-
       return
 
     if $key is ''
@@ -101,10 +104,9 @@ class system.db.Forge
 
     if $primary is true
       @primary_keys.push $key
-      
-    else 
+    else
       @keys.push $key
-      
+
     
   
   #
@@ -137,7 +139,18 @@ class system.db.Forge
     else
       @fields[$key] = $val for $key, $val of $field
 
-    
+  #
+  # Add Data
+  #
+  # @param  [mixed]  data the initial data load
+  # @return [Void]
+  #
+  addData: ($data) ->
+
+    if Array.isArray($data)
+      @data = $data
+    else
+      @data = [$data]
   
   #
   # Create Table
@@ -145,10 +158,7 @@ class system.db.Forge
   # @param  [String]  the table name
   # @return	bool
   #
-  createTable: ($table = '', $if_not_exists = false, $next) ->
-    if typeof $if_not_exists is 'function'
-      $next = $if_not_exists
-      $if_not_exists = false
+  createTable: ($table = '', $next) ->
 
     if $table is ''
       show_error 'A table name is required for that operation.'
@@ -156,9 +166,20 @@ class system.db.Forge
     if keys(@fields).length is 0
       show_error 'Field information is required.'
 
-    $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, $if_not_exists)
-    @_reset()
-    @db.query $sql, $next
+    @db.tableExists @db.dbprefix + $table, ($err, $table_exists) =>
+
+      return $next($err) if $err
+      return $next(null) if $table_exists
+
+      $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, false)
+      @_reset()
+      @db.query $sql, ($err) =>
+
+        return log_message('error', 'Error creating table %s: %s', $table, $err.message) if $err?
+
+        if @data? then @db.insertBatch($table, @data, $next)
+        else $next(null)
+
 
   
   #

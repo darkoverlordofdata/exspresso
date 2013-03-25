@@ -83,7 +83,7 @@ class system.db.ActiveRecord extends system.db.Driver
     @ar_wherein =         []
     @ar_aliased_tables =  []
     @ar_store_array =     []
-    @ar_rec =          {}
+    @ar_rec =             {}
     @ar_cache_exists =    []
     @ar_cache_select =    []
     @ar_cache_from =      []
@@ -826,7 +826,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [Mixed]  # @param  [String]  # @return	[Boolean]ean
   # @return [Object]  #
 
-  setInsertBatch : ($key, $value = '', $escape = true) ->
+  set_insert_batch : ($key, $value = '', $escape = true) ->
 
     $key = @_object_to_array_batch($key)
 
@@ -1039,7 +1039,7 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [Array]  # @param  [String]  # @return	[Boolean]ean
   # @return [Object]  #
 
-  setUpdateBatch : ($key, $index = '', $escape = true) ->
+  set_update_batch : ($key, $index = '', $escape = true) ->
     $key = @_object_to_array_batch($key)
 
     for $k, $v of $key

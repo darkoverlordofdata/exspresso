@@ -437,7 +437,7 @@ class system.core.Loader
     if $view.charAt(0) is '/'
       $pos = $view.lastIndexOf('/')
       $path = $view.substr(0,$pos)
-      $view = $view.substr($pos)
+      $view = $view.substr($pos+1)
     else
       [$path, $view] = Modules::find($view, @controller.module, 'views/')
 

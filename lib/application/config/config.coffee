@@ -209,7 +209,7 @@ exports['log_path'] = ''
 # codes to set your own date formatting
 #
 #
-exports['log_date_format'] = 'Y-m-d H:i:s'
+exports['log_date_format'] = 'YYYY-MM-DD H:m:s'
 
 #
 #|--------------------------------------------------------------------------
@@ -253,7 +253,7 @@ exports['encryption_key'] = process.env.CLIENT_SECRET ? 'ZAHvYIu8u1iRS6Hox7jADpn
 
 exports['sess_driver'] = 'sql'
 exports['sess_cookie_name']		= 'sid'
-exports['sess_expiration']		= 7200
+exports['sess_expiration']		= 7200*60
 exports['sess_expire_on_close']	= false
 exports['sess_encrypt_cookie']	= false
 exports['sess_use_database']	= true # process.env.REDISTOGO_URL ? 'redis://localhost:6379'

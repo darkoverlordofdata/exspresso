@@ -6,6 +6,10 @@
             <%- @form_input('title', '') %>
         </div>
         <div class="control-group">
+            <%- @form_label('Category:', 'category', class:'control-label') %>
+            <%- @form_dropdown('category', @categories, @category, size:1) %>
+        </div>
+        <div class="control-group">
             <%- @ckeditor('blog', '') %>
         </div>
         <div class="control-group">

@@ -874,12 +874,18 @@ class system.db.Driver
   # @private
   # @param  [String]  # @return	[Boolean]
   # @param  [Mixed]  # @return	[Boolean]
-  # @return	[String]
+  # @return	[String]F
   #
   _protect_identifiers: ($item, $prefix_single = false, $protect_identifiers = null, $field_exists = true) ->
 
     if 'boolean' isnt typeof($protect_identifiers)
       $protect_identifiers = @_protect_identifiers_default
+
+    if Array.isArray($item)
+      $escaped_array = []
+      for $v in $item
+        $escaped_array.push @_protect_identifiers($v)
+      return $escaped_array
 
     if 'object' is typeof($item)
       $escaped_array = []

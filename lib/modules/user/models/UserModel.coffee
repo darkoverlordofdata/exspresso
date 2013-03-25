@@ -41,7 +41,7 @@ class modules.user.models.UserModel extends system.core.Model
   #
   #   load user by uid
   #
-    # @return [Object]  #
+  # @return [Object]  #
   loadById: ($id, $next) ->
 
     @db.where 'uid', $id
@@ -57,7 +57,7 @@ class modules.user.models.UserModel extends system.core.Model
   #
   #   load user by name
   #
-    # @return [Object]  #
+  # @return [Object]  #
   loadByName: ($name, $next) ->
 
     @db.where 'name', $name
@@ -71,7 +71,7 @@ class modules.user.models.UserModel extends system.core.Model
   #
   # Load roles for a user
   #
-    # @return [Object]  #
+  # @return [Object]  #
   load_roles: ($uid, $next) ->
 
     @db.select 'roles.rid, name, description'
@@ -86,19 +86,19 @@ class modules.user.models.UserModel extends system.core.Model
   #
   # Add role to user
   #
-    # @return [Object]  #
+  # @return [Object]  #
   add_role: ($uid, $role, $next) ->
 
     #
     # Remove role from user
     #
-        # @return [Object]  #
+      # @return [Object]  #
   remove_role: ($uid, $role, $next) ->
 
   #
   # Delete a user
   #
-    # @return [Object]  #
+  # @return [Object]  #
   delete: ($uid, $next) ->
 
 
@@ -109,7 +109,8 @@ class modules.user.models.UserModel extends system.core.Model
   #   This is called from Server.start as part
   #   of the boot sequence.
   #
-    # @return [Void]  #
+  # @return [Void]
+  #
   installCheck: () ->
 
     # Migrate the session table

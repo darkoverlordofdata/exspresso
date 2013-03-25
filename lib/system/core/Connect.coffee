@@ -40,6 +40,8 @@ class system.core.Connect
 
   protocol = ($secure) -> if $secure then 'https' else 'http'
 
+  Modules = system.core.Modules
+
 
   #
   # @property [String] http driver: connect
@@ -115,6 +117,12 @@ class system.core.Connect
     # check for config/autoload
     #
     @controller.load.initialize()
+    #
+    # initialize modules
+    #
+    for $name, $module of Modules::list()
+      $module.initialize() if $module.initialize?
+
     #
     # Register the exception handler
     #
