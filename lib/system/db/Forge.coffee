@@ -155,14 +155,18 @@ class system.db.Forge
   #
   # Create Table
   #
-  # @param  [String]  the table name
-  # @return	bool
+  # @param  [String]  table the table name
+  # @param  [Function]  next  async callback
+  # @param  [Function]  def definition callback
+  # @return	[Void]
   #
-  createTable: ($table = '', $next) ->
+  createTable: ($table = '', $next, $def) ->
 
     if $table is ''
       show_error 'A table name is required for that operation.'
 
+    $def(@) if $def?
+    
     if keys(@fields).length is 0
       show_error 'Field information is required.'
 
