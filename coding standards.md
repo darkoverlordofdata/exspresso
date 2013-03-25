@@ -92,9 +92,9 @@ module.exports = application.lib.MyBase
   * When displaying flash and log messages, you can use a sprinf style call
 
 ```CoffeeScript
-  @session.setFlashdata 'info', 'Blog entry %s deleted', $id
+  @session.setFlashdata 'info', 'Blog entry %s deleted', id
 
-  log_mesage 'debug', 'Blog entry %s deleted', $id
+  log_mesage 'debug', 'Blog entry %s deleted', id
 ```
 
 ## Using DB Forge
@@ -103,16 +103,16 @@ module.exports = application.lib.MyBase
     callback can be used to set the table attributes and initial data load.
 
 ```CoffeeScript
-  @dbforge.createTable 'category', $next, ($t) ->
+  @dbforge.createTable 'category', next, (t) ->
 
-    $t.addKey 'id', true
-    $t.addField
+    t.addKey 'id', true
+    t.addField
       id:
         type: 'INT', constraint: 5, unsigned: true, auto_increment: true
       name:
         type: 'VARCHAR', constraint: 255
 
-    $t.addData id: 1, name: "Article"
+    t.addData id: 1, name: "Article"
 ```
 
 
