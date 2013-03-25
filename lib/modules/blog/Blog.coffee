@@ -52,7 +52,7 @@ class Blog extends application.core.Module
       _category_names   : {writeable: false, value: {}}
 
 
-  initialise: () ->
+  initialize: () ->
 
     @controller.load.dbforge() unless @controller.dbforge?
     @install(@controller.dbforge)
@@ -65,22 +65,22 @@ class Blog extends application.core.Module
   #
   # @return [Void]  
   #
-  install: ($t) ->
+  install: ($db) ->
 
     #
     # Create the category table
     #
     @controller.queue ($next) ->
 
-      $t.createTable 'category', $next, do ($t) ->
-        $t.addKey 'id', true
-        $t.addField
+      $db.createTable 'category', $next, do ->
+        $db.addKey 'id', true
+        $db.addField
           id:
             type: 'INT', constraint: 5, unsigned: true, auto_increment: true
           name:
             type: 'VARCHAR', constraint: 255
 
-        $t.addData id: 1, name: "Article"
+        $db.addData id: 1, name: "Article"
 
 
     #
@@ -88,9 +88,9 @@ class Blog extends application.core.Module
     #
     @controller.queue ($next) ->
 
-      $t.createTable 'blog', $next, do ($t) ->
-        $t.addKey 'id', true
-        $t.addField
+      $db.createTable 'blog', $next, do ->
+        $db.addKey 'id', true
+        $db.addField
           id:
             type: 'INT', constraint: 5, unsigned: true, auto_increment: true
           author_id:
@@ -110,7 +110,7 @@ class Blog extends application.core.Module
           body:
             type: 'TEXT'
 
-        $t.addData
+        $db.addData
           id: 1,
           author_id: 2,
           category_id: 1,
@@ -120,21 +120,6 @@ class Blog extends application.core.Module
           title: "About",
           body: "<p>Dark Overlord of Data is:</p><dl><dt><strong>a web page</strong></dt><dd><em>created using e x s p r e s s o</em></dd><dt><strong>bruce davidson</strong></dt><dd><em>a software developer who lives in seattle with his wife and daughter, two cats, one dog, and an electric guitar</em></dd></dl>"
 
-
-
-  installz: () ->
-
-    # Migrate the blog categories table
-    @controller.queue ($next) =>
-      InstallCategory = require(MODPATH+'blog/install/InstallCategory.coffee')
-      $table = new InstallCategory(@controller)
-      $table.install $next
-
-    # Migrate the blog document table
-    @controller.queue ($next) =>
-      InstallBlog = require(MODPATH+'blog/install/InstallBlog.coffee')
-      $table = new InstallBlog(@controller)
-      $table.install $next
 
 
 
