@@ -32,17 +32,17 @@ require SYSPATH+'lib/Parser.coffee'
 #
 #   Standard template variables/regions:
 #   -------------------------------------------
-#   $doctype      html doctype (default: html5)
-#   $meta         meta tags
-#   $style        css tags
-#   $script       javascript tags
-#   $title        html title tag
-#   $site_name    displayed in banner
-#   $site_slogan  displayed in banner
-#   $menu         main menu
-#   $sidenav      optional sub menu
-#   $content      the floor show
-#   $flash        session flashdata messages
+#   $doctype      html doctype (default: html5)<br />
+#   $meta         meta tags<br />
+#   $style        css tags<br />
+#   $script       javascript tags<br />
+#   $title        html title tag<br />
+#   $site_name    displayed in banner<br />
+#   $site_slogan  displayed in banner<br />
+#   $menu         main menu<br />
+#   $sidenav      optional sub menu<br />
+#   $content      the floor show<br />
+#   $flash        session flashdata messages<br />
 #
 #
 class application.lib.Template extends system.lib.Parser
