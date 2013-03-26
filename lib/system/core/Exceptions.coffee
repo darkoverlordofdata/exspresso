@@ -309,9 +309,9 @@ class system.core.Exceptions
 
       $next = $next ? ($err, $content) ->
         $res.render APPPATH+'errors/layout.eco',
-          title       : $error.code + ': ' + $error.desc
-          content     : $content
-          site_name   : config_item('site_name')
+          $title       : $error.code + ': ' + $error.desc
+          $content     : $content
+          $site_name   : config_item('site_name')
 
       $res.render APPPATH+'errors/'+$template+'.eco', err: $error, $next
       return true
@@ -337,10 +337,10 @@ class system.core.Exceptions
         $filepath = $x[$x.length - 2] + '/' + $x[$x.length - 1]
 
       $res.render 'errors/native',
-        severity: $severity
-        message:  $message
-        filepath: $filepath
-        line:     $line
+        $severity: $severity
+        $message:  $message
+        $filepath: $filepath
+        $line:     $line
 
       return true
 

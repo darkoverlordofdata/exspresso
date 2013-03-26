@@ -25,6 +25,21 @@
 #
 #	  Template Class
 #
+#   Renders the custom data in a standard template layout.
+#
+#   Standard template variables/regions:
+#   -------------------------------------------
+#   $doctype      html doctype (default: html5)
+#   $meta         meta tags
+#   $style        css tags
+#   $script       javascript tags
+#   $title        html title tag
+#   $site_name    displayed in banner
+#   $site_slogan  displayed in banner
+#   $menu         main menu
+#   $sidenav      optional sub menu
+#   $content      the floor show
+#   $flash        session flashdata messages
 #
 #
 
@@ -247,14 +262,25 @@ class application.lib.Template extends system.lib.Parser
       else
         $css.push @html.stylesheet($str)
 
-    @set '$doctype',    @html.doctype(@_doctype)
-    @set '$meta',       @html.meta(@_metadata)
-    @set '$style',      $css.join("\n")
-    @set '$script',     $script.join("\n")
-    @set '$title',      @_title
-    @set '$menu',       @htmlMenu(@_menu, @uri.segment(1, ''))
-    @set 'site_name',   config_item('site_name')
-    @set 'site_slogan', config_item('site_slogan')
+    $admin_menu = Dashboard: '/admin'
+    $active = ''
+    for $name, $module of system.core.Modules::list()
+      if $module.active
+        $admin_menu[$name] = '/admin/'+$name
+
+    @set            # define standard template variables
+      $doctype      : @html.doctype(@_doctype)
+      $meta         : @html.meta(@_metadata)
+      $style        : $css.join("\n")
+      $script       : $script.join("\n")
+      $title        : @_title
+      $site_name    : config_item('site_name')
+      $site_slogan  : config_item('site_slogan')
+      $menu         : @htmlMenu(@_menu, @uri.segment(1, ''))
+      $sidenav      : @htmlSidenav($admin_menu, $active)
+      $flash        : @htmlFlash()
+      $content      : '<div></div>'
+
     #@set $data
     @_data.__proto__ = $data
     $index = 0
@@ -305,8 +331,9 @@ class application.lib.Template extends system.lib.Parser
   #
   # Main menu
   #
-  # @param  [String]
-  # @return [Void]  
+  # @param  [Object]  items hash of menu items
+  # @param  [String]  active  the active menu item
+  # @return [String]  the html
   #
   htmlMenu: ($items, $active) ->
 
@@ -329,8 +356,9 @@ class application.lib.Template extends system.lib.Parser
   #
   # side-bar navigation menu
   #
-  # @param  [String]
-  # @return [Void]  
+  # @param  [Object]  items hash of menu items
+  # @param  [String]  active  the active menu item
+  # @return [String]  the html
   #
   htmlSidenav: ($items, $active) ->
 
@@ -350,8 +378,9 @@ class application.lib.Template extends system.lib.Parser
   #
   # sub menu
   #
-  # @param  [String]
-  # @return [Void]  
+  # @param  [Object]  items hash of menu items
+  # @param  [String]  active  the active menu item
+  # @return [String]  the html
   #
   htmlSubmenu: ($modules, $module) ->
 
@@ -367,7 +396,29 @@ class application.lib.Template extends system.lib.Parser
     $menu += "</ul>\n"
 
 
+  #
+  # Flash
+  #
+  # Create the html for flash messages
+  #
+  # @return [String]  the html
+  #
+  htmlFlash: () ->
 
+    $flash = []
+    $msg = @session.flashdata('error')
+    if $msg isnt false
+      $flash.push "<div class='alert alert-error'>"
+      $flash.push "<p><b>Error:</b> #{$msg}</p>"
+      $flash.push "</div>"
+
+    $msg = @session.flashdata('info')
+    if $msg isnt false
+      $flash.push "<div class='alert alert-info'>"
+      $flash.push "<p><b>Info:</b> #{$msg}</p>"
+      $flash.push "</div>"
+
+    $flash.join('')
 
 module.exports = application.lib.Template
 

@@ -165,15 +165,14 @@ class system.db.Forge
     if $table is ''
       show_error 'A table name is required for that operation.'
 
-    $def(@) if $def?
-
-    if keys(@fields).length is 0
-      show_error 'Field information is required.'
-
     @db.tableExists @db.dbprefix + $table, ($err, $table_exists) =>
 
       return $next($err) if $err
       return $next(null) if $table_exists
+
+      $def(@) if $def?
+      if Object.keys(@fields).length is 0
+        show_error 'Field information is required.'
 
       $sql = @_create_table(@db.dbprefix + $table, @fields, @primary_keys, @keys, false)
       @_reset()
@@ -310,7 +309,7 @@ class system.db.Forge
   # @return [Void]
   #
   _reset :  ->
-    @fields = []
+    @fields = {}
     @keys = []
     @primary_keys = []
 

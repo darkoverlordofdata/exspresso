@@ -65,7 +65,6 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   # @return	bool
   #
   _create_table : ($table, $fields, $primary_keys, $keys, $if_not_exists) ->
-    log_message 'debug', '>PostgresForge::_create_table'
     $sql = 'CREATE TABLE '
 
     if $if_not_exists is true
@@ -76,19 +75,17 @@ class system.db.postgres.PostgresForge extends system.db.Forge
     $sql+=@db._escape_identifiers($table) + " ("
     $current_field_count = 0
     
-    for $field, $attributes of $fields
-      #  Numeric field names aren't allowed in databases, so if the key is
-      #  numeric, we know it was assigned by PHP and the developer manually
-      #  entered the field information, so we'll simply add it to the list
+    for $field, $attr of $fields
       if 'number' is typeof($field)
-        $sql+="\n\t$attributes"
+        $sql+="\n\t#{$attr}"
         
-      else 
-        $attributes = array_change_key_case($attributes, CASE_UPPER)
-        
+      else
+        $attributes = {}
+        $attributes[$key.toUpperCase()] = $val for $key, $val of $attr
+
         $sql+="\n\t" + @db._protect_identifiers($field)
         
-        $is_unsigned = ($attributes['UNSIGNED']? and $attributes['UNSIGNED'] is true)
+        $is_unsigned = ($attributes.UNSIGNED? and $attributes.UNSIGNED is true)
         
         #  Convert datatypes to be PostgreSQL-compatible
         switch $attributes.TYPE.toUpperCase()
@@ -131,7 +128,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
         
         #  Modified to prevent constraints with integer data types
         if $attributes.CONSTRAINT? and $attributes.TYPE.indexOf('INT') is -1
-          $sql+='(' + $attributes['CONSTRAINT'] + ')'
+          $sql+='(' + $attributes.CONSTRAINT + ')'
           
         
         if $attributes.DEFAULT?

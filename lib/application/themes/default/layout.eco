@@ -1,7 +1,7 @@
 <%- @$doctype %>
 <html>
 <head>
-<title><%= @site_name %></title>
+<title><%= @$site_name %></title>
 <%- @$meta %>
 <%- @$style %>
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -15,8 +15,8 @@
         <header>
             <%- @anchor("", @img("images/logo.png"), title: "Home", rel: "home", id: "logo" ) %>
             <hgroup id="name-and-slogan">
-                <h1><%= @site_name %><p><blockquote>
-                <small><%= @site_slogan %></small></blockquote></p></h1>
+                <h1><%= @$site_name %><p><blockquote>
+                <small><%= @$site_slogan %></small></blockquote></p></h1>
             </hgroup>
         </header>
         <div class="clearfix"></div>
@@ -26,18 +26,7 @@
         <%- @$content %>
 
         <div class="clearfix"></div>
-        <% err = @flashdata('error') %>
-        <% if err isnt false : %>
-        <div class='alert alert-error'>
-            <p><b>Error:</b> <%= err %></p>
-        </div>
-        <% end %>
-        <% info = @flashdata('info') %>
-        <% if info isnt false : %>
-        <div class='alert alert-info'>
-            <p><b>Info:</b> <%= info %></p>
-        </div>
-        <% end %>
+        <%- @$flash %>
 
 
     </div>

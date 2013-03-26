@@ -63,6 +63,10 @@ class system.core.Connect
   # @property [system.core.config] configuration 
   #
   config: null
+  #
+  # @property [String] driver version
+  #
+  version: ''
 
   #
   # inner class Variables
@@ -90,7 +94,12 @@ class system.core.Connect
 
     @config = @controller.config
     log_message('debug', "%s Driver Initialized", ucfirst(@driver))
-    @initialize(require(@driver))
+
+    $driver = require(@driver)
+    $version = @driver+' v'+$driver.version
+    defineProperties @, version  : {writeable: false, value: $version}
+    @initialize($driver)
+
 
   #
   # Set view helpers

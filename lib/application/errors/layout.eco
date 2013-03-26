@@ -17,14 +17,14 @@
             <a href="/" title="Home" rel="home" id="logo"><img src="/images/logo.png" alt=""/></a>
             <hgroup id="name-and-slogan">
                 <div class="page-header">
-                    <h1><%= @site_name %><p><blockquote>
+                    <h1><%= @$site_name %><p><blockquote>
                         <small>&quot;<%= @title %>&quot;</small></blockquote></p></h1>
                 </div>
             </hgroup>
         </header>
 
         <div class="clearfix"></div>
-        <%- @content %>
+        <%- @$content %>
     </div>
 
     <div id="push"></div>

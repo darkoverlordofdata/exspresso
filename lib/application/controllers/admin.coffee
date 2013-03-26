@@ -34,8 +34,7 @@ class Admin extends application.core.AdminController
   #
   # Admin overview - list/enable/disable modules
   #
-  # @access	public
-  # @return [Void]  
+  # @return [Void]
   #
   #
   index: ->
@@ -52,7 +51,6 @@ class Admin extends application.core.AdminController
   #
   # Authenticate user credentials
   #
-  # @access	public
   # @return [Void]  #
   #
   authenticate: ->
@@ -63,7 +61,6 @@ class Admin extends application.core.AdminController
   #
   # User Logout
   #
-  # @access	public
   # @return [Void]  #
   #
   logout: ->

@@ -121,7 +121,7 @@ class system.lib.Profiler
 
     $dbs = []
 
-    #  Let's determine which databases are currently connected to
+    #  Let's determine which databases we are currently connected to
     for $name, $object of @
       if $object? and $object.dbdriver?
         $dbs.push $object
@@ -354,7 +354,7 @@ class system.lib.Profiler
     $output.push "<tr><td>host&nbsp;name</td><td>" + @req.headers.host + "</td></tr>\n"
     $output.push "<tr><td>port</td><td>" + @server.port + "</td></tr>\n"
     $output.push "<tr><td>protocol</td><td>" + protocol(@req.connection.encrypted).toUpperCase()+"/"+@req.httpVersion + "</td></tr>\n"
-    $output.push "<tr><td></td><td>" + @server.version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version + "</td></tr>\n"
+    $output.push "<tr><td>software</td><td>" + @server.version+" (" + os.type() + '/' + os.release() + ") Node.js " + process.version + "</td></tr>\n"
 
 
     $output.push "</table></dd>\n"
