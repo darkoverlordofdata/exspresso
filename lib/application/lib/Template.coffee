@@ -22,6 +22,9 @@
 #
 #
 
+require SYSPATH+'lib/Parser.coffee'
+
+
 #
 #	  Template Class
 #
@@ -42,9 +45,6 @@
 #   $flash        session flashdata messages
 #
 #
-
-require SYSPATH+'lib/Parser.coffee'
-
 class application.lib.Template extends system.lib.Parser
 
   html                : null
