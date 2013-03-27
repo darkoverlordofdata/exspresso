@@ -63,6 +63,8 @@ class application.lib.Template extends system.lib.Parser
   _metadata           : null
   _script             : null
   _css                : null
+  _admin              : false
+  _active             : ''
 
 
   #
@@ -234,6 +236,18 @@ class application.lib.Template extends system.lib.Parser
     @_menu = $menu
     @
 
+  #
+  # Use admin menu
+  #
+  # @param	[String]  active  the active menu selection
+  # @return [Object] this
+  #
+  setAdminMenu: ($active) ->
+    @_admin = true
+    @_active = $active
+    @
+
+
 
   #
   # render a template
@@ -262,11 +276,11 @@ class application.lib.Template extends system.lib.Parser
       else
         $css.push @html.stylesheet($str)
 
-    $admin_menu = Dashboard: '/admin'
-    $active = ''
-    for $name, $module of system.core.Modules::list()
-      if $module.active
-        $admin_menu[$name] = '/admin/'+$name
+    if @_admin
+      $admin_menu = Dashboard: '/admin'
+      for $name, $module of system.core.Modules::list()
+        if $module.active
+          $admin_menu[$module.name] = '/admin/'+$name
 
     @set                # define standard template variables
       $doctype          : @html.doctype(@_doctype)
@@ -279,7 +293,7 @@ class application.lib.Template extends system.lib.Parser
       $site_slogan      : config_item('site_slogan')
       $menu             : @htmlMenu(@_menu, @uri.segment(1, ''))
       $breadcrumb       : if @breadcrumb? then @breadcrumb.output() else ''
-      $sidenav          : @htmlSidenav($admin_menu, $active)
+      $sidenav          : if @_admin then @htmlSidenav($admin_menu, @_active) else ''
       $flash            : @htmlFlash()
       $content          : '<div></div>'
       $sidebar_first    : ''

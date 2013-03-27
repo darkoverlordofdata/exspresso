@@ -43,8 +43,7 @@ class Blog extends application.core.Module
   #
   constructor: ($controller) ->
 
-    defineProperties @,
-      controller        : {writeable: false, value: $controller}
+    defineProperties @, controller : {writeable: false, value: $controller}
 
 
   #

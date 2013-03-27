@@ -31,6 +31,7 @@ class Admin extends application.core.AdminController
   # @return [Void]  #
   index: ($module = '') ->
 
+    @template.setAdminMenu 'Migrate'
     @migration.setModule $module
     @migration.getVersion ($err, $version) =>
 

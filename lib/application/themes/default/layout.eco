@@ -39,7 +39,18 @@
         <%- @$menu %>
 
         <div class="clearfix"></div>
-        <%- @$content %>
+        <% if @$sidenav: %>
+            <div class="row">
+                <div class="span2">
+                    <%- @$sidenav %>
+                </div>
+                <div class="span10">
+                    <%- @$content %>
+                </div>
+            </div>
+        <% else: %>
+            <%- @$content %>
+        <% end %>
 
         <div class="clearfix"></div>
         <%- @$flash %>

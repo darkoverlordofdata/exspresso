@@ -31,13 +31,11 @@ require APPPATH+'core/Module.coffee'
 
 class Db extends application.core.Module
 
-  name: 'Db'
-  description: ''
-  path: __dirname
+  name          : 'Db'
+  description   : ''
+  path          : __dirname
+  active        : true
 
-  constructor: ->
-    @name = 'Db'
-    @path = __dirname
 
 
 # END CLASS Db

@@ -31,13 +31,11 @@ require APPPATH+'core/Module.coffee'
 
 class User extends application.core.Module
 
-  name: 'User'
-  description: ''
-  path: __dirname
+  name          : 'User'
+  description   : ''
+  path          : __dirname
+  active        : true
 
-  constructor: ->
-    @name = 'User'
-    @path = __dirname
 
 
 # END CLASS User

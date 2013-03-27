@@ -31,13 +31,11 @@ require APPPATH+'core/Module.coffee'
 
 class Routes extends application.core.Module
 
-  name: 'Routes'
-  description: ''
-  path: __dirname
+  name          : 'Routes'
+  description   : ''
+  path          : __dirname
+  active        : true
 
-  constructor: ->
-    @name = 'Routes'
-    @path = __dirname
 
 
 # END CLASS Routes

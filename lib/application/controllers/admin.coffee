@@ -41,6 +41,7 @@ class Admin extends application.core.AdminController
 
     if @user.isLoggedIn
       if @user.authorizationCheck('admin')
+        @template.setAdminMenu 'Dashboard'
         @template.view 'admin'
       else
         @template.view new system.core.AuthorizationError('No Admin Permissions')
@@ -51,7 +52,7 @@ class Admin extends application.core.AdminController
   #
   # Authenticate user credentials
   #
-  # @return [Void]  #
+  # @return [Void]
   #
   authenticate: ->
 
@@ -61,7 +62,7 @@ class Admin extends application.core.AdminController
   #
   # User Logout
   #
-  # @return [Void]  #
+  # @return [Void]  
   #
   logout: ->
 

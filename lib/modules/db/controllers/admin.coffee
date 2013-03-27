@@ -24,6 +24,7 @@ class Admin extends application.core.AdminController
 
     $db = require(APPPATH+'config/database.coffee')
 
+    @template.setAdminMenu 'Db'
     @db.listTables ($err, $tables) =>
 
       @template.view 'admin', $err || {

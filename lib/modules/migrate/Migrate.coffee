@@ -31,13 +31,12 @@ require APPPATH+'core/Module.coffee'
 
 class Migrate extends application.core.Module
 
-  name: 'Migrate'
-  description: ''
-  path: __dirname
+  name          : 'Migrate'
+  description   : ''
+  path          : __dirname
+  active        : false
 
-  constructor: ->
-    @name = 'Migrate'
-    @path = __dirname
+
 
 
 # END CLASS Migrate

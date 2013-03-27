@@ -31,13 +31,10 @@ require APPPATH+'core/Module.coffee'
 
 class Config extends application.core.Module
 
-  name: 'Config'
-  description: ''
-  path: __dirname
-
-  constructor: ->
-    @name = 'Config'
-    @path = __dirname
+  name          : 'Config'
+  description   : ''
+  path          : __dirname
+  active        : true
 
 
 # END CLASS Config

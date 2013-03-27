@@ -31,13 +31,11 @@ require APPPATH+'core/Module.coffee'
 
 class Travel extends application.core.Module
 
-  name: 'Travel'
-  description: ''
-  path: __dirname
+  name          : 'Travel'
+  description   : ''
+  path          : __dirname
+  active        : true
 
-  constructor: ->
-    @name = 'Travel'
-    @path = __dirname
 
 
 # END CLASS Travel
