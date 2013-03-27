@@ -62,7 +62,7 @@ class Admin extends application.core.AdminController
   #
   # User Logout
   #
-  # @return [Void]  
+  # @return [Void]
   #
   logout: ->
 
