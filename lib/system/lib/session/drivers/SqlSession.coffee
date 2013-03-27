@@ -34,15 +34,18 @@ class system.lib.session.SqlSession extends require('express').session.Store
   unserialize     = JSON.parse          # Creates an object from a stored representation
 
   parent                  : null        # The parent class for this driver
+  controller              : null        # the system controller
 
   #
   # Load the user data model
   #
-  # @param  [Object]  # @return 	nothing
+  # @param  [system.lib.DriverLibrary]  parent  the drivers parent object
+  # @param  [system.core.Exspresso] controller  the system controller
+  # @return 	nothing
   #
-  constructor: (@parent) ->
+  constructor: (@parent, @controller) ->
 
-    exspresso.load.model('user/UserModel')
+    @controller.load.model('user/UserModel')
     return
 
 
@@ -56,13 +59,13 @@ class system.lib.session.SqlSession extends require('express').session.Store
   get: ($sid, $next) ->
 
     # Ensure that we have a live database connection
-    exspresso.db.reconnect ($err) =>
+    @controller.db.reconnect ($err) =>
 
       return $next($err) if log_message('error', 'Session::get connect %s', $err) if $err
 
       # Get the record for this session
-      exspresso.db.where 'sid', $sid
-      exspresso.db.get @parent.sess_table_name, ($err, $result) ->
+      @controller.db.where 'sid', $sid
+      @controller.db.get @parent.sess_table_name, ($err, $result) =>
 
         return $next($err) if log_message('error', 'Session::get %s %s', $sid, $err) if $err
 
@@ -89,13 +92,13 @@ class system.lib.session.SqlSession extends require('express').session.Store
   set: ($sid, $session, $next) ->
 
     # Ensure that we have a live database connection
-    exspresso.db.reconnect ($err) =>
+    @controller.db.reconnect ($err) =>
 
       return $next($err) if log_message('error', 'Session::set connect %s', $err) if $err
 
       # Get the record for this session
-      exspresso.db.where 'sid', $sid
-      exspresso.db.get @parent.sess_table_name, ($err, $result) =>
+      @controller.db.where 'sid', $sid
+      @controller.db.get @parent.sess_table_name, ($err, $result) =>
 
         return $next($err) if log_message('error', 'Session::set %s %s', $sid, $err) if $err
 
@@ -113,15 +116,15 @@ class system.lib.session.SqlSession extends require('express').session.Store
 
           # Add primary key data so we can insert a new record
           $data['sid'] = $sid
-          exspresso.db.insert @parent.sess_table_name, $data, ($err) =>
+          @controller.db.insert @parent.sess_table_name, $data, ($err) =>
             return $next($err) if log_message('error', 'Session::set insert %s', $err) if $err
             $next()
 
         else
 
           # Just update the data
-          exspresso.db.where 'sid', $sid
-          exspresso.db.update @parent.sess_table_name, $data, ($err) =>
+          @controller.db.where 'sid', $sid
+          @controller.db.update @parent.sess_table_name, $data, ($err) =>
             return $next($err) if log_message('error', 'Session::set update %s', $err) if $err
             $next()
 
@@ -135,26 +138,27 @@ class system.lib.session.SqlSession extends require('express').session.Store
   destroy: ($sid, $next) ->
 
     # Ensure that we have a live database connection
-    exspresso.db.reconnect ($err) =>
+    @controller.db.reconnect ($err) =>
 
       return $next($err) if log_message('error', 'Session::destroy connect %s', $err) if $err
 
       # Nuke the record for this session
-      exspresso.db.where 'sid', $sid
-      exspresso.db.delete @parent.sess_table_name, =>
+      @controller.db.where 'sid', $sid
+      @controller.db.delete @parent.sess_table_name, =>
         return $next($err) if log_message('error', 'Session::destroy delete %s', $err) if $err
         $next()
 
   #
-  # Installation check
+  # Installation
   #
   #   create user & session tables if they doesn't exist
   #   called when Session library is auto loaded during boot
+  #   deferred to the UserModel, due to the dependencies on User
   #
-    # @return [Void]  #
-  installCheck: ->
-
-    exspresso.usermodel.installCheck()
+  # @return [Void]
+  #
+  install: ->
+    @controller.usermodel.install()
     @
 
   #
@@ -163,7 +167,7 @@ class system.lib.session.SqlSession extends require('express').session.Store
   #   Retrieve an item from a table and remove it
   #   If not found, return the default value
   #
-  # @param  [Object]    # @param  [String]    # @param  [String]    # @return string
+  # @param  [Object]  # @param  [String]  # @param  [String]  # @return string
   #
   fetch = ($table, $key, $default='') ->
     if $table[$key]?

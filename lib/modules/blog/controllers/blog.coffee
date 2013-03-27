@@ -15,9 +15,16 @@
 #
 require APPPATH+'core/AdminController.coffee'
 
+#
+# Blog Controller
+#
 class Blog extends application.core.AdminController
 
-  Modules = system.core.Modules
+  constructor: ($args...) ->
+
+    super $args...
+    @load.model 'blog/BlogModel'
+    @blogmodel.initialize()
 
   #
   # Index
@@ -78,6 +85,7 @@ class Blog extends application.core.AdminController
     unless @user.isLoggedIn
       throw new system.core.AuthorizationError('Not logged in')
 
+
     @db.from 'blog'
     @db.where 'id', $id
     @db.get ($err, $doc) =>
@@ -89,14 +97,13 @@ class Blog extends application.core.AdminController
       unless @user.isAdmin or (@user.uid is $doc.author_id)
         throw new system.core.AuthorizationError('Not the document owner')
 
-      $blog = Modules::getModule('blog')
 
       #
       # Edit the article
       #
       @template.view 'blog_edit', $err || {
-        category    : $blog.categoryName($doc.category_id)
-        categories  : $blog.categoryNames()
+        category    : @blogmodel.categoryName($doc.category_id)
+        categories  : @blogmodel.categoryNames()
         blog        : $doc
       }
           
@@ -158,9 +165,8 @@ class Blog extends application.core.AdminController
     unless @user.isLoggedIn
       throw new system.core.AuthorizationError('Not logged in')
 
-    $blog = Modules::getModule('blog')
     @template.view 'blog_new',
-      categories  : $blog.categoryNames()
+      categories  : @blogmodel.categoryNames()
 
   #
   # Create
@@ -177,14 +183,13 @@ class Blog extends application.core.AdminController
     unless @user.isLoggedIn
       throw new system.core.AuthorizationError('Not logged in')
 
-    $blog = Modules::getModule('blog')
     $now = @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
     #
     # Pack up the article data
     #
     $doc =
       author_id     : @user.uid
-      category_id   : $blog.categoryId(@input.post('category'))
+      category_id   : @blogmodel.categoryId(@input.post('category'))
       status        : 1
       created_on    : $now
       updated_on    : $now
@@ -244,10 +249,8 @@ class Blog extends application.core.AdminController
       unless @user.isAdmin or (@user.uid is $doc.author_id)
         throw new system.core.AuthorizationError('Not an owner of this article')
 
-      $blog = Modules::getModule('blog')
-
       $update =
-        catagory      : $blog.categoryId(@input.post('category'))
+        catagory      : @blogmodel.categoryId(@input.post('category'))
         title         : @input.post('title')
         body          : @input.post('blog')
         updated_on    : @load.helper('date').date('YYYY-MM-DD hh:mm:ss')

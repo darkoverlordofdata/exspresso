@@ -49,6 +49,7 @@ class application.lib.Template extends system.lib.Parser
 
   html                : null
   theme               : null
+  breadcrumb          : null
 
   _title              : ''
   _doctype            : 'html5'
@@ -59,7 +60,6 @@ class application.lib.Template extends system.lib.Parser
   _data               : null
   _partials           : null
   _regions            : null
-  _breadcrumbs        : null
   _metadata           : null
   _script             : null
   _css                : null
@@ -86,7 +86,6 @@ class application.lib.Template extends system.lib.Parser
     @_regions = {}
     @_metadata = []
     @_partials = []
-    @_breadcrumbs = []
     @_script = []
     @_css = []
     @html = @load.helper('html')
@@ -166,8 +165,9 @@ class application.lib.Template extends system.lib.Parser
   # @param  [String]  uri uri to associate
   # @return [Object] this
   #
-  setBreadcrumb: ($name, $uri = '') ->
-    @_breadcrumbs.push name:$name, uri:$uri
+  setBreadcrumb: ($name, $uri, $level) ->
+    if @breadcrumb is null then @load.library('breadcrumb')
+    @breadcrumb.add $name, $uri, $level
     @
 
   #
@@ -268,18 +268,22 @@ class application.lib.Template extends system.lib.Parser
       if $module.active
         $admin_menu[$name] = '/admin/'+$name
 
-    @set            # define standard template variables
-      $doctype      : @html.doctype(@_doctype)
-      $meta         : @html.meta(@_metadata)
-      $style        : $css.join("\n")
-      $script       : $script.join("\n")
-      $title        : @_title
-      $site_name    : config_item('site_name')
-      $site_slogan  : config_item('site_slogan')
-      $menu         : @htmlMenu(@_menu, @uri.segment(1, ''))
-      $sidenav      : @htmlSidenav($admin_menu, $active)
-      $flash        : @htmlFlash()
-      $content      : '<div></div>'
+    @set                # define standard template variables
+      $doctype          : @html.doctype(@_doctype)
+      $meta             : @html.meta(@_metadata)
+      $style            : $css.join("\n")
+      $script           : $script.join("\n")
+      $title            : @_title
+      $logo             : config_item('logo')
+      $site_name        : config_item('site_name')
+      $site_slogan      : config_item('site_slogan')
+      $menu             : @htmlMenu(@_menu, @uri.segment(1, ''))
+      $breadcrumb       : if @breadcrumb? then @breadcrumb.output() else ''
+      $sidenav          : @htmlSidenav($admin_menu, $active)
+      $flash            : @htmlFlash()
+      $content          : '<div></div>'
+      $sidebar_first    : ''
+      $sidebar_second   : ''
 
     #@set $data
     @_data.__proto__ = $data

@@ -14,6 +14,7 @@
 
 exports['site_name'] = 'Dark Overlord of Data'
 exports['site_slogan'] = "\"If It Isn\'t Dark, It Just Isn\'t Data\""
+exports['logo'] = "logo.png"
 exports['favicon'] = 'favicon.png'
 exports['port'] = process.env.PORT # 3000
 exports['logger'] = 'dev'

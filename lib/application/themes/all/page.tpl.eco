@@ -53,15 +53,15 @@
 #   comment/reply/12345).
 #
 # Regions:
-# - @page['header']: Items for the header region.
-# - @page['navigation']: Items for the navigation region, below the main menu (if any).
-# - @page['help']: Dynamic help text, mostly for admin pages.
-# - @page['highlighted']: Items for the highlighted content region.
-# - @page['content']: The main content of the current page.
-# - @page['sidebar_first']: Items for the first sidebar.
-# - @page['sidebar_second']: Items for the second sidebar.
-# - @page['footer']: Items for the footer region.
-# - @page['bottom']: Items to appear at the bottom of the page below the footer.
+# - @region['header']: Items for the header region.
+# - @region['navigation']: Items for the navigation region, below the main menu (if any).
+# - @region['help']: Dynamic help text, mostly for admin pages.
+# - @region['highlighted']: Items for the highlighted content region.
+# - @region['content']: The main content of the current page.
+# - @region['sidebar_first']: Items for the first sidebar.
+# - @region['sidebar_second']: Items for the second sidebar.
+# - @region['footer']: Items for the footer region.
+# - @region['bottom']: Items to appear at the bottom of the page below the footer.
 #
 # @see template_preprocess()
 # @see template_preprocess_page()
@@ -96,14 +96,14 @@
       </nav>
     <% end %>
 
-    <%- @partial(@page['header']) %>
+    <%- @partial(@region['header']) %>
 
   </header>
 
   <div id="main">
 
     <div id="content" class="column" role="main">
-      <%- @partial(@page['highlighted']) %>
+      <%- @partial(@region['highlighted']) %>
       <%- @breadcrumb %>
       <a id="main-content"></a>
       <%- @partial(@title_prefix) %>
@@ -113,11 +113,11 @@
       <%- @partial(@title_suffix) %>
       <%- @messages %>
       <%- @partial(@tabs) %>
-      <%- @partial(@page['help']) %>
+      <%- @partial(@region['help']) %>
       <% if (@action_links): %>
         <ul class="action-links"><%- @partial(@action_links) %></ul>
       <% end %>
-      <%- @partial(@page['content']) %>
+      <%- @partial(@region['content']) %>
       <%- @feed_icons %>
     </div><!-- /#content -->
 
@@ -129,12 +129,12 @@
         </nav>
       <% end %>
 
-      <%- @partial(@page['navigation']) %>
+      <%- @partial(@region['navigation']) %>
 
     </div><!-- /#navigation -->
 
-    <% @sidebar_first  = @partial(@page['sidebar_first']) %>
-    <% @sidebar_second = @partial(@page['sidebar_second']) %>
+    <% @sidebar_first  = @partial(@region['sidebar_first']) %>
+    <% @sidebar_second = @partial(@region['sidebar_second']) %>
 
 
     <% if (@sidebar_first || @sidebar_second): %>
@@ -146,8 +146,8 @@
 
   </div><!-- /#main -->
 
-  <%- @partial(@page['footer']) %>
+  <%- @partial(@region['footer']) %>
 
 </div><!-- /#page -->
 
-<%- @partial(@page['bottom']) %>
+<%- @partial(@region['bottom']) %>

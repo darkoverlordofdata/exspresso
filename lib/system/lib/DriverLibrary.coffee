@@ -42,8 +42,11 @@ class system.lib.DriverLibrary
   #
   # Load's the requested driver
   #
-  # @param  [String]    # @return [Object]  #
-  loadDriver: ($driver) ->
+  # @param  [String]  driver  the driver prefix
+  # @param  [system.core.Exspresso] controller  the system controller
+  # @return [Object]
+  #
+  loadDriver: ($driver, $controller) ->
     
     UNABLE_TO = "Unable to load the requested driver: %s"
 
@@ -68,7 +71,7 @@ class system.lib.DriverLibrary
 
     log_message('error', UNABLE_TO, $class_name) if show_error(UNABLE_TO, $class_name) if $class is null
 
-    @[$driver] = if $class::decorate? then new $class().decorate(@) else new $class(@)
+    @[$driver] = if $class::decorate? then new $class($controller).decorate(@) else new $class(@, $controller)
 
       
 module.exports = system.lib.DriverLibrary

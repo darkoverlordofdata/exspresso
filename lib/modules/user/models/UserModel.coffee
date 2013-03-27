@@ -22,7 +22,6 @@
 #
 #
 
-#  ------------------------------------------------------------------------
 #
 #   User Data Model
 #
@@ -103,7 +102,7 @@ class modules.user.models.UserModel extends system.core.Model
 
 
   #
-  # Installation check
+  # Installation
   #
   #   Create session tables if they don't exist.
   #   This is called from Server.start as part
@@ -111,7 +110,7 @@ class modules.user.models.UserModel extends system.core.Model
   #
   # @return [Void]
   #
-  installCheck: ->
+  install: ->
     @load.dbforge() unless @dbforge?
     @queue @install_session
     @queue @install_roles

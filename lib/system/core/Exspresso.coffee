@@ -51,6 +51,10 @@ class system.core.Exspresso extends system.core.Object
   #
   profile: false
   #
+  # @property [Boolean] do install checks
+  #
+  install: false
+  #
   # @property [String] exspresso version
   #
   version: ''
@@ -69,6 +73,7 @@ class system.core.Exspresso extends system.core.Object
   #  --csrf       enable xss checks <br />
   #  --preview    preview using appjs <br />
   #  --profile    enable profiling <br />
+  #  --install    run install checks
   #  --nocache    disable cacheing <br />
   #  --nocsrf     disable xss checks <br />
   #  --noprofile  disable profiling <br />
@@ -83,6 +88,7 @@ class system.core.Exspresso extends system.core.Object
     $csrf     = @useCsrf
     $preview  = @preview
     $profile  = @profile
+    $install  = false
 
     $profile = if ENVIRONMENT is 'development' then true else false
     process.argv.shift() # node
@@ -100,6 +106,7 @@ class system.core.Exspresso extends system.core.Object
         when '--csrf'       then $csrf     = true
         when '--preview'    then $preview  = true
         when '--profile'    then $profile  = true
+        when '--install'    then $install  = true
         when '--nocache'    then $cache    = false
         when '--nocsrf'     then $csrf     = false
         when '--noprofile'  then $profile  = false
@@ -109,6 +116,7 @@ class system.core.Exspresso extends system.core.Object
     @define useCsrf     : $csrf
     @define preview     : $preview
     @define profile     : $profile
+    @define install     : $install
 
 
   #

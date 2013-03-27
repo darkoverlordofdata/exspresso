@@ -76,7 +76,7 @@ class global.Breadcrumb
 
         @_crumbs.pop() # prune until we reach the $level we've allocated to this page
 
-      if not isset(@_crumbs[0]) and $level > 0 # If there's no session data yet, assume a homepage link
+      if not @_crumbs[0]? and $level > 0 # If there's no session data yet, assume a homepage link
 
         @_crumbs[0]['url'] = base_url()
         @_crumbs[0]['label'] = "Home"

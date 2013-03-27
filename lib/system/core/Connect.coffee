@@ -181,7 +181,8 @@ class system.core.Connect
 
     #  Are we using a database?  If so, load the driver
     if $session.sess_use_database
-      $options['store'] = $session.loadDriver($session.sess_driver).installCheck()
+      $options.store = $session.loadDriver($session.sess_driver, @controller)
+      if @controller.install then $options.store.install()
 
     @app.use $driver.session($options)
     @app.use $session.parseRequest($session.cookie_prefix + $session.sess_cookie_name)
