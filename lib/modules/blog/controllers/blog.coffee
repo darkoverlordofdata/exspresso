@@ -230,7 +230,7 @@ class Blog extends application.core.AdminController
   # @return [Void]
   #
   save: () ->
-
+    return @redirect('/blog') if @input.post('cancel')
     #
     # if we're not logged in, check no further
     #

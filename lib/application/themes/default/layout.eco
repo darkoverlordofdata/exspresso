@@ -1,9 +1,9 @@
-<%- @$doctype %>
+{$doctype}
 <html>
 <head>
-<title><%= @$title %></title>
-<%- @$meta %>
-<%- @$style %>
+<title>{$title}</title>
+{$meta}
+{$style}
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -17,18 +17,18 @@
         <header>
 
             <% if (@$logo): %>
-                <%- @anchor("", @img("images/#{@$logo}"), title: "Home", rel: "home", id: "logo" ) %>
+                <%- @anchor("", @img("images/{$logo}"), title: "Home", rel: "home", id: "logo" ) %>
             <% end %>
 
             <% if (@$site_name || @$site_slogan): %>
             <hgroup id="name-and-slogan">
 
                 <% if (@$site_name): %>
-                    <h1><%= @$site_name %></h1>
+                    <h1>{$site_name}</h1>
                 <% end %>
 
                 <% if (@$site_slogan): %>
-                    <h1><blockquote><small><%= @$site_slogan %></small></blockquote></h1>
+                    <h1><blockquote><small>{$site_slogan}</small></blockquote></h1>
                 <% end %>
 
             </hgroup>
@@ -36,29 +36,29 @@
         </header>
 
         <div class="clearfix"></div>
-        <%- @$menu %>
+        {$menu}
 
         <div class="clearfix"></div>
         <% if @$sidenav: %>
             <div class="row">
                 <div class="span2">
-                    <%- @$sidenav %>
+                    {$sidenav}
                 </div>
                 <div class="span10">
-                    <%- @$content %>
+                    {$content}
                 </div>
             </div>
         <% else: %>
-            <%- @$content %>
+            {$content}
         <% end %>
 
         <div class="clearfix"></div>
-        <%- @$flash %>
+        {$flash}
 
         <% if (@$sidebar_first || @$sidebar_second): %>
         <aside class="sidebars">
-            <%- @$sidebar_first %>
-            <%- @$sidebar_second %>
+            {$sidebar_first}
+            {$sidebar_second}
         </aside><!-- /.sidebars -->
         <% end %>
 
@@ -66,7 +66,7 @@
     <div id="push"></div>
 </div>
 
-<%- @$script %>
+{$script}
 
 <footer id="footer">
     <div class="container">

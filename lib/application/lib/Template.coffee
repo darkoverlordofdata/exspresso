@@ -51,7 +51,7 @@ class application.lib.Template extends system.lib.Parser
   theme               : null
   breadcrumb          : null
 
-  _title              : ''
+  _title              : config_item('site_name')
   _doctype            : 'html5'
   _layout             : 'layout'
   _theme_name         : 'default'

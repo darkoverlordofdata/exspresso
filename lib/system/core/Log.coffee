@@ -25,17 +25,18 @@
 
 class system.core.Log
 
-  fs              = require('fs')   # Standard POSIX file i/o
+  fs = require('fs')
+  moment = require('moment')
+  is_dir = require(SYSPATH+'core.coffee').is_dir
 
-  {is_dir} = require(SYSPATH+'core.coffee')
-
-  _enabled        : true            # Use logging?
-  _log_path       : ''              # Path to the log file
-  _threshold      : 1               # Current threshhold level
-  _levels:                          # Threshold Levels:
-    ERROR         : 1               #   log only errors
-    DEBUG         : 2               #   log errors and debug entries
-    INFO          : 3               #   log everything
+  _enabled        : true                # Use logging?
+  _log_path       : ''                  # Path to the log file
+  _threshold      : 1                   # Current threshhold level
+  _date_fmt       : 'YYYY-MM-DD H:m:s'  # Date format
+  _levels:                              # Threshold Levels:
+    ERROR         : 1                   #   log only errors
+    DEBUG         : 2                   #   log errors and debug entries
+    INFO          : 3                   #   log everything
 
   #
   # Load configuration
@@ -50,6 +51,9 @@ class system.core.Log
       @_enabled = false
 
     @_threshold = parseInt($config.log_threshold, 10)
+
+    if $config.log_date_format isnt ''
+      @_date_fmt = $config.log_date_format
 
   #
   # Write Log File
@@ -67,14 +71,14 @@ class system.core.Log
     if not @_levels[$level]? then return false
     if @_levels[$level] >= @_threshold then return false
 
-    $d = new Date
-    $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d.toISOString() + ' -->' + $msg
+    $d = moment().format(@_date_fmt)
+    $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d + ' -->' + $msg
     console.log $message
 
     if @_enabled
       try
 
-        $filepath = @_log_path + 'log-' + $d.toISOString().substr(0,10) + '.log'
+        $filepath = @_log_path + 'log-' + $d.split(' ')[0] + '.log'
         fs.appendFileSync $filepath, $message+"\n"
 
       catch $err

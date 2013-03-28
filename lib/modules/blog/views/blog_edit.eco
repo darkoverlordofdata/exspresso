@@ -11,6 +11,7 @@
         </div>
         <div class="control-group">
             <input class="btn btn-primary" name="save" type="submit" value="Save" />
+            <input class="btn" name="cancel" type="submit" value="Cancel" />
         </div>
         <%- @form_close() %>
     </div>

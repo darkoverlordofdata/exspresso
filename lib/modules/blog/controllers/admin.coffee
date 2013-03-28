@@ -17,14 +17,19 @@ require APPPATH+'core/AdminController.coffee'
 
 class Admin extends application.core.AdminController
 
-## --------------------------------------------------------------------
-
-
-
-
+  #
+  # Blog Categories/Options
+  #
   index: ->
+    @load.library 'table'
     @template.setAdminMenu 'Blog'
-    @template.view 'admin'
+
+    @db.from 'category'
+    @db.get ($err, $categories) =>
+
+      @template.view 'admin', $err || {
+        categories: $categories
+      }
 
 
 #

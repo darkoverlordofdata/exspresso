@@ -1,0 +1,47 @@
+<div class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab1" data-toggle="tab">Options</a></li>
+        <li><a href="#tab2" data-toggle="tab">Tables</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab1">
+            <table class="table table-striped">
+                <tr>
+                    <th>driver</th>
+                    <td><%= @info.dbdriver %></td>
+                </tr>
+                <tr>
+                    <th>url</th>
+                    <td><%= @info.url %></td>
+                </tr>
+                <tr>
+                    <th>host name</th>
+                    <td><%= @info.hostname %></td>
+                </tr>
+                <tr>
+                    <th>user name</th>
+                    <td><%= @info.username %></td>
+                </tr>
+                <tr>
+                    <th>database</th>
+                    <td><%= @info.database %></td>
+                </tr>
+                <tr>
+                    <th>prefix</th>
+                    <td><%= @info.dbprefix %></td>
+                </tr>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab2">
+            <table class="table table-striped">
+                <% for $name in @tables: %>
+                <tr>
+                    <td><%= $name %></td>
+                </tr>
+                <% end %>
+            </table>
+        </div>
+    </div>
+</div>
+
+

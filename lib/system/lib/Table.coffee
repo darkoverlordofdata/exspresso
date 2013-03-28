@@ -42,12 +42,26 @@ class system.lib.Table
   _newline          : "\n"
   _empty_cells      : ""
   _function         : false
-  
+  _striped          : false
+  _hover            : false
+  _condensed        : false
+  _class            : 'table-striped table-hover table-condensed'
+
   constructor: () ->
     log_message('debug', "Table Class Initialized")
     @_rows = []
     @_heading = {}
-  
+
+
+  #
+  # Set the html class
+  #
+  # @param  [String]  class table class to use
+  # @return [Void]
+  #
+  setClass: ($class) ->
+    @_class = $class
+
   #
   # Set the template
   #
@@ -90,13 +104,14 @@ class system.lib.Table
     return $array if $col_limit is 0
 
     $new = []
-    while count($array) > 0
+    while $array.length > 0
       $temp = $array.splice(0, $col_limit)
       
       if $temp.length < $col_limit
         for $i in [$temp.length...$col_limit]
           $temp.push '&nbsp;'
       $new.push $temp
+
     return $new
     
   
@@ -133,6 +148,7 @@ class system.lib.Table
   # @return	type
   #
   _prep_args : ($args) ->
+
     #  If there is no $args[0], skip this and treat as an associative array
     #  This can happen if there is only a single key, for example this is passed to table.generate
     #  [{'foo', 'bar'}]
@@ -173,16 +189,15 @@ class system.lib.Table
   generate : ($table_data = null) ->
     #  The table data can optionally be passed to this function
     #  either as a database result object or an array
+
     if $table_data?
-      if Array.isArray($table_data)
+      if $table_data.result? and typeof $table_data.result is 'function'
+        @_set_from_object($table_data)
+      else if 'object' is typeof($table_data)
+        console.log $table_data
         $set_heading = if (@_heading.length is 0 and @_auto_heading is false) then false else true
         @_set_from_array($table_data, $set_heading)
-      else if 'object' is typeof($table_data)
-        @_set_from_object($table_data)
-        
 
-      
-    
     #  Is there anything to display?  No?  Smite them!
     if @_heading.length is 0 and @_rows.length is 0
       return 'Undefined table data'
@@ -219,9 +234,7 @@ class system.lib.Table
         for $key, $val of $heading
           if $key isnt 'data'
             $temp = $temp.replace('<th', "<th #{$key}='#{$val}'")
-            
-          
-        
+
         $out+=$temp
         $out+= if $heading.data? then $heading.data else ''
         $out+=@_template['heading_cell_end']
@@ -251,7 +264,10 @@ class system.lib.Table
         $out+=@_newline
         for $k, $cell of $row
           $temp = @_template['cell_' + $name + 'start']
-          
+
+          # ignore methods...
+          continue if typeof $cell is 'function'
+
           for $key, $val of $cell
             if $key isnt 'data'
               $temp = $temp.replace('<td', "<td $key='#{$val}'")
@@ -322,18 +338,26 @@ class system.lib.Table
   # @return [Void]
   #
   _set_from_array : ($data, $set_heading = true) ->
-    if not Array.isArray($data) or $data.length is 0
-      return false
+    if Array.isArray($data)
+      $i = 0
+      for $row in $data
+        #  If a heading hasn't already been set we'll use the first row of the array as the heading
+        if $i is 0 and $data.length > 1 and @_heading.length is 0 and $set_heading is true
+          @_heading = @_prep_args($row)
+        else
+          @_rows.push @_prep_args($row)
+        $i++
 
-    $i = 0
-    for $row in $data
-      #  If a heading hasn't already been set we'll use the first row of the array as the heading
-      if $i is 0 and $data.length > 1 and @_heading.length is 0 and $set_heading is true
-        @_heading = @_prep_args($row)
-      else
-        @_rows.push @_prep_args($row)
-      $i++
-      
+    else
+      for $key, $val of $data
+        #  If a heading hasn't already been set we'll use the first row of the array as the heading
+        if $i is 0 and $data.length > 1 and @_heading.length is 0 and $set_heading is true
+          @_heading = @_prep_args([$key, $val])
+        else
+          @_rows.push @_prep_args([$key, $val])
+        $i++
+
+
   #
   # Compile Template
   #
@@ -360,30 +384,30 @@ class system.lib.Table
   # @return [Void]
   #
   _default_template :  ->
-    table_open          :'<table border="0" cellpadding="4" cellspacing="0">',
+    table_open          : " <table class=\"table #{@_class}\">",
 
-    thead_open          :'<thead>',
-    thead_close         :'</thead>',
+    thead_open          : '<thead>',
+    thead_close         : '</thead>',
 
-    heading_row_start   :'<tr>',
-    heading_row_end     :'</tr>',
-    heading_cell_start  :'<th>',
-    heading_cell_end    :'</th>',
+    heading_row_start   : '<tr>',
+    heading_row_end     : '</tr>',
+    heading_cell_start  : '<th>',
+    heading_cell_end    : '</th>',
 
-    tbody_open          :'<tbody>',
-    tbody_close         :'</tbody>',
+    tbody_open          : '<tbody>',
+    tbody_close         : '</tbody>',
 
-    row_start           :'<tr>',
-    row_end             :'</tr>',
-    cell_start          :'<td>',
-    cell_end            :'</td>',
+    row_start           : '<tr>',
+    row_end             : '</tr>',
+    cell_start          : '<td>',
+    cell_end            : '</td>',
 
-    row_alt_start       :'<tr>',
-    row_alt_end         :'</tr>',
-    cell_alt_start      :'<td>',
-    cell_alt_end        :'</td>',
+    row_alt_start       : '<tr>',
+    row_alt_end         : '</tr>',
+    cell_alt_start      : '<td>',
+    cell_alt_end        : '</td>',
 
-    table_close         :'</table>'
+    table_close         : '</table>'
       
 module.exports = system.lib.Table
 

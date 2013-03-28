@@ -210,7 +210,7 @@ exports['log_path'] = ''
 # codes to set your own date formatting
 #
 #
-exports['log_date_format'] = 'YYYY-MM-DD H:m:s'
+exports['log_date_format'] = 'YYYY-MM-DD HH:mm:ss'
 
 #
 #|--------------------------------------------------------------------------
