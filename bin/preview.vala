@@ -115,7 +115,7 @@ public class Preview : Window {
            */
           (source, frame) => {
 
-              updateButtons();
+              this.updateButtons();
           });
 
         // wire up the plumbing
