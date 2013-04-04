@@ -282,6 +282,12 @@ class application.lib.Template extends system.lib.Parser
         if $module.active
           $admin_menu[$module.name] = '/admin/'+$name
 
+    # If the profiler is running, replace 'powered by' with a button
+    $poweredby = config_item('poweredby')
+    if @output._enable_profiler
+      $poweredby += '&nbsp;' + system.lib.Profiler::button
+
+
     @set                # define standard template variables
       $doctype          : @html.doctype(@_doctype)
       $meta             : @html.meta(@_metadata)
@@ -291,6 +297,8 @@ class application.lib.Template extends system.lib.Parser
       $logo             : config_item('logo')
       $site_name        : config_item('site_name')
       $site_slogan      : config_item('site_slogan')
+      $copyright        : config_item('copyright')
+      $poweredby        : $poweredby
       $menu             : @htmlMenu(@_menu, @uri.segment(1, ''))
       $breadcrumb       : if @breadcrumb? then @breadcrumb.output() else ''
       $sidenav          : if @_admin then @htmlSidenav($admin_menu, @_active) else ''
@@ -307,7 +315,7 @@ class application.lib.Template extends system.lib.Parser
     # Collect the rendering of each partial
     #
     # @access	private
-    # @param	function callback
+    # @param	[Function]  next  async callback
     # @return [Void]  
     #
     get_partials = ($next) =>

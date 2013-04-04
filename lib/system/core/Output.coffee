@@ -72,7 +72,7 @@ class system.core.Output
       $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
 
     else
-      $mimes = require(APPPATH + 'config/mimes' + EXT)
+      $mimes = require(APPPATH + 'config/mimes.coffee')
 
     @_mime_types = $mimes
 
@@ -269,7 +269,7 @@ class system.core.Output
 
       #  If the output data contains closing </body> and </html> tags
       #  we will remove them and add them back after we insert the profile data
-      $footer = /<footer[^]*?<\/html>/mig
+      $footer = /<\/body>[^]*?<\/html>/mig
       if $footer.test($output)
         $output = $output.replace($footer, '')
         $output+=$controller.profiler.run()

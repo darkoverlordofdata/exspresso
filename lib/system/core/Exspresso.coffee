@@ -192,7 +192,7 @@ class system.core.Exspresso extends system.core.Object
       # preview in appjs
       #
       {exec} = require('child_process')
-      exec "node --harmony bin/preview #{$port}", ($err, $stdout, $stderr) ->
+      exec "bin/preview http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
         process.exit()

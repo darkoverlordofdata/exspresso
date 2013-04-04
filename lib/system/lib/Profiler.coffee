@@ -36,16 +36,9 @@ class system.lib.Profiler
 
   util = require('util')
 
-  _benchmarks         : true
-  _get                : true
-  _memory_usage       : true
-  _post               : true
-  _uri_string         : true
-  _controller_info    : true
-  _queries            : true
-  _http_headers       : true
-  _config             : true
-
+  #
+  # @property [Array<String>] list of all available profiler sections
+  #
   _available_sections: [
     'benchmarks'
     'get'
@@ -58,7 +51,27 @@ class system.lib.Profiler
     'config'
   ]
 
+  #
+  # @property [Boolean] list of profiler sections enabled status
+  #
+  _benchmarks         : true
+  _get                : true
+  _memory_usage       : true
+  _post               : true
+  _uri_string         : true
+  _controller_info    : true
+  _queries            : true
+  _http_headers       : true
+  _config             : true
 
+
+  #
+  # @property [String] button ui element to display the profile data
+  #
+  button : '''<a data-toggle="modal" href="#exspresso_profiler" accesskey="P"
+     title="{elapsed_time} ms - {memory_usage} mb">
+    <i class="icon-time"></i> </a>&nbsp;
+    '''
 
   constructor: ($controller, $config = {}) ->
 
@@ -105,7 +118,7 @@ class system.lib.Profiler
 
     for $key, $val of $profile
       $key = ucwords($key.replace(/[_\-]/gm, ' '))
-      $output.push "<tr><td>" + $key + "</td><td>" + $val + "&nbsp;ms</td></tr>\n"
+      $output.push ["<tr><td>", $key, "</td><td>", $val, "&nbsp;ms</td></tr>\n"].join('')
 
     $output.push "</table></dd>\n"
     $output.push "</dl>"
@@ -392,28 +405,11 @@ class system.lib.Profiler
   #
   #   Injects the results into the generated html stream
   #
-  # @param  [String]    # @return	[String]
+  # @return	[String]
   #
   run: () ->
 
-    $elapsed = @bm.elapsedTime('total_execution_time_start', 'total_execution_time_end')
-    $memory = (Math.round((process.memoryUsage().heapUsed / 1048576) * 100) / 100)+'MB'
-
     $output = ["""
-      <footer id="footer">
-        <div class="container">
-          <div class="credit">
-            <span class="pull-left muted">
-              <a data-toggle="modal" href="#exspresso_profiler">
-                <i class="icon-time"></i> #{$elapsed} ms - #{$memory}</a>
-            </span>
-            <span class="pull-right">powered by &nbsp;
-              <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
-            </span>
-          </div>
-        </div>
-      </footer>
-
       <form>
       <div id="exspresso_profiler" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="exspresso_profilerLabel" aria-hidden="true">
         <div class="modal-header">
@@ -443,7 +439,7 @@ class system.lib.Profiler
 
 module.exports = system.lib.Profiler
 
-#  END ExspressoProfiler class
+#  END system.lib.Profiler class
 
 #  End of file Profiler.coffee
 #  Location: .system/lib/Profiler.coffee

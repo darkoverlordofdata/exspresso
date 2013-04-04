@@ -108,6 +108,7 @@ module.exports = ->
   load_class SYSPATH+'core/Security.coffee'
   load_class SYSPATH+'core/URI.coffee'
   load_class SYSPATH+'core/Utf8.coffee'
+  load_class SYSPATH+'lib/Profiler.coffee'
   load_class SYSPATH+'lib/Driver.coffee'
   load_class SYSPATH+'lib/DriverLibrary.coffee'
   load_class MODPATH+'user/lib/User.coffee'

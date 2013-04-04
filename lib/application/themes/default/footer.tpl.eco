@@ -1,0 +1,9 @@
+
+<footer id="footer">
+    <div class="container">
+        <div class="credit">
+            <span class="pull-left muted">{$copyright}</span>
+            <span class="pull-right">{$poweredby}</span>
+        </div>
+    </div>
+</footer>

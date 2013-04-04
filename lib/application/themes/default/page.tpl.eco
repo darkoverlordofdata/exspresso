@@ -1,15 +1,3 @@
-{$doctype}
-<html>
-<head>
-<title>{$title}</title>
-{$meta}
-{$style}
-<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-</head>
-<body>
 <div id="wrap">
 
     <div class="container">
@@ -70,16 +58,4 @@
     <div id="push"></div>
 </div>
 
-<footer id="footer">
-    <div class="container">
-        <div class="credit">
-            <span class="pull-left muted">{$copyright}</span>
-            <span class="pull-right">{$poweredby}</span>
-        </div>
-    </div>
-</footer>
-
-{$script}
-
-</body>
-</html>
+<%- @partial('footer') %>

@@ -16,6 +16,8 @@ exports['site_name'] = 'Dark Overlord of Data'
 exports['site_slogan'] = "\"If It Isn\'t Dark, It Just Isn\'t Data\""
 exports['logo'] = "logo.png"
 exports['favicon'] = 'favicon.png'
+exports['copyright'] = '&copy; Copyright 2012 - 2013 by Dark Overlord of Data'
+exports['poweredby'] = 'powered by &nbsp; <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>'
 exports['port'] = process.env.PORT # 3000
 exports['logger'] = 'dev'
 exports['views'] = 'views'
