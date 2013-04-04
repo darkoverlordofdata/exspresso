@@ -52,6 +52,12 @@ examples:
  node exspresso --db postgres
  node exspresso express
 
+To use the --preview option, you will need to build the preview excutable.
+note - you may need to install valac first.
+```bash
+$ sudo apt-get install
+$ cake build:preview
+```
 
 
 ## License

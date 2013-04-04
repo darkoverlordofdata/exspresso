@@ -1,76 +1,168 @@
+/*
++--------------------------------------------------------------------+
+| Preview
++--------------------------------------------------------------------+
+| Copyright DarkOverlordOfData (c) 2013
++--------------------------------------------------------------------+
+|
+| file is a part of Exspresso
+|
+| Exspresso is free software; you can copy, modify, and distribute
+| it under the terms of the MIT License
+|
++--------------------------------------------------------------------+
+*
+* @copyright	DarkOverlordOfData (c) 2013
+* @author		BruceDavidson@darkoverlordofdata.com
+*
+*
+* Class Preview
+*
+*  A WebKit client to preview the local server output
+*
+*
+*/
+
 using Gtk;
 using WebKit;
 
-public class ValaBrowser : Window {
+public class Preview : Window {
 
     private const string TITLE = "Preview";
     private const int WIDTH = 1024;
     private const int HEIGHT = 768;
     
-    private WebView web_view;
-    private Label status_bar;
-    private ToolButton back_button;
-    private ToolButton forward_button;
-    private ToolButton reload_button;
+    private WebView webView;
+    private ToolButton backButton;
+    private ToolButton forwardButton;
+    private ToolButton reloadButton;
 
-    public ValaBrowser() {
-        this.title = ValaBrowser.TITLE;
-        set_default_size(ValaBrowser.WIDTH, ValaBrowser.HEIGHT);
-        create_widgets();
-        connect_signals();
+    /*
+     * Constructor
+     */
+    public Preview() {
+
+        title = Preview.TITLE;
+        set_default_size(Preview.WIDTH, Preview.HEIGHT);
+        createWidgets();
+        connectEvents();
     }
 
-    private void create_widgets() {
-        var toolbar = new Toolbar();
-        this.back_button = new ToolButton.from_stock(Stock.GO_BACK);
-        this.forward_button = new ToolButton.from_stock(Stock.GO_FORWARD);
-        this.reload_button = new ToolButton.from_stock(Stock.REFRESH);
-        toolbar.add(this.back_button);
-        toolbar.add(this.forward_button);
-        toolbar.add(this.reload_button);
+    /*
+     * Create Widgets
+     *
+     * @return void
+     *
+     */
+    private void createWidgets() {
 
-        this.web_view = new WebView();
+        //  Make the toolbar
+        var toolbar = new Toolbar();
+        backButton = new ToolButton.from_stock(Stock.GO_BACK);
+        forwardButton = new ToolButton.from_stock(Stock.GO_FORWARD);
+        reloadButton = new ToolButton.from_stock(Stock.REFRESH);
+        toolbar.add(backButton);
+        toolbar.add(forwardButton);
+        toolbar.add(reloadButton);
+
+        //  Make the browser window
+        webView = new WebView();
         var scrolled_window = new ScrolledWindow(null, null);
         scrolled_window.set_policy(PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
-        scrolled_window.add(this.web_view);
-        this.status_bar = new Label("");
-        this.status_bar.xalign = 0;
+        scrolled_window.add(webView);
+
+
+        //  Finish assebmling the gui components
         var vbox = new VBox(false, 0);
         vbox.pack_start(toolbar, false, true, 0);
         vbox.add(scrolled_window);
-        vbox.pack_start(this.status_bar, false, true, 0);
         add(vbox);
     }
 
-    private void connect_signals() {
-        this.destroy.connect(Gtk.main_quit);
-        this.web_view.title_changed.connect((source, frame, title) => {
-            this.title = "%s - %s".printf(title, ValaBrowser.TITLE);
-        });
-        this.web_view.load_committed.connect((source, frame) => {
-            this.status_bar.label = frame.get_uri();
-            update_buttons();
-        });
-        this.back_button.clicked.connect(this.web_view.go_back);
-        this.forward_button.clicked.connect(this.web_view.go_forward);
-        this.reload_button.clicked.connect(this.web_view.reload);
+    /*
+     * Connect Events
+     *
+     * @return void
+     *
+     */
+    private void connectEvents() {
+
+        webView.title_changed.connect(
+
+          /*
+           * On Title Changed
+           *
+           * @param source
+           * @param frame
+           * @param title
+           * @return void
+           *
+           */
+          (source, frame, title) => {
+
+              this.title = "%s - %s".printf(title, Preview.TITLE);
+          });
+
+        webView.load_committed.connect(
+
+          /*
+           * On Load Committed
+           *
+           * @param source
+           * @param frame
+           * @return void
+           *
+           */
+          (source, frame) => {
+
+              updateButtons();
+          });
+
+        // wire up the plumbing
+        destroy.connect(Gtk.main_quit);
+        backButton.clicked.connect(webView.go_back);
+        forwardButton.clicked.connect(webView.go_forward);
+        reloadButton.clicked.connect(webView.reload);
     }
 
-    private void update_buttons() {
-        this.back_button.sensitive = this.web_view.can_go_back();
-        this.forward_button.sensitive = this.web_view.can_go_forward();
+    /*
+     * Update Buttons
+     *
+     * @return void
+     *
+     */
+    private void updateButtons() {
+
+        backButton.sensitive = webView.can_go_back();
+        forwardButton.sensitive = webView.can_go_forward();
     }
 
 
+    /*
+     * Start
+     *
+     * @param string  url the root url to start the client at
+     * @return void
+     *
+     */
     public void start(string url) {
+
         show_all();
-        this.web_view.open(url);
+        webView.open(url);
     }
 
+    /*
+     * Main
+     *
+     * @param array<string>  args command line args
+     * @return int  0 Success!
+     *
+     */
     public static int main(string[] args) {
+
         Gtk.init(ref args);
-        var browser = new ValaBrowser();
-        browser.start(args[1]);
+        var client = new Preview();
+        client.start(args[1]);
         Gtk.main();
         return 0;
     }
