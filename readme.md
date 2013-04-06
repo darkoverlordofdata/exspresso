@@ -1,4 +1,4 @@
-# [Exspresso v0.9.0] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.9.1] (https://github.com/darkoverlordofdata/exspresso)
 
  A framework for coffee-script, inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
@@ -15,7 +15,8 @@
  [Live Demo!](http://exspresso.herokuapp.com/)
 
   Exspresso uses [not-php] (http://github.com/darkoverlordofdata/not-php) v0.3.14 as a drop in
-  replacement for many of the php api calls that were in the ported code.
+  replacement for many of the php api calls that were in the ported code. Since version 0.9.0,
+  the not-php module is not used by exspresso core, but may still be used by third party apps.
 
 
 ## Quick Start
