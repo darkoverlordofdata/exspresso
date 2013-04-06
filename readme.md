@@ -10,7 +10,7 @@
       * DB Drivers for MySQL and PostgreSQL
       * Configuration inheritance
       * Themed templating engine
-      * Per module migrations
+      * Run as a local desktop application
 
  [Live Demo!](http://exspresso.herokuapp.com/)
 
@@ -40,7 +40,7 @@ Usage: node exspresso <connect|express> [--option]
 Options:
  --cache
  --csrf
- --preview
+ --desktop
  --profile
  --nocache
  --nocsrf
@@ -52,11 +52,17 @@ examples:
  node exspresso --db postgres
  node exspresso express
 
-To use the --preview option, you will need to build the preview excutable.
-note - you may need to install valac first.
+To use the --desktop option, you will need to build the excutable.
+note - valac required.
 ```bash
-$ sudo apt-get install
+$ sudo apt-get install valac
 $ cake build:preview
+```
+
+To run as a local desktop app, create a launch script and desktop icon:
+```bash
+$ sudo apt-get install valac
+$ cake build:desktop
 ```
 
 

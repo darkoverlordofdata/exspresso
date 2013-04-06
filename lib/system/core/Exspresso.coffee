@@ -86,7 +86,7 @@ class system.core.Exspresso extends system.core.Object
     $db       = @dbDriver
     $cache    = @useCache
     $csrf     = @useCsrf
-    $preview  = @preview
+    $desktop  = @desktop
     $profile  = @profile
     $install  = false
 
@@ -104,7 +104,7 @@ class system.core.Exspresso extends system.core.Object
         when '--db'         then $set_db    = true
         when '--cache'      then $cache    = true
         when '--csrf'       then $csrf     = true
-        when '--preview'    then $preview  = true
+        when '--desktop'    then $desktop  = true
         when '--profile'    then $profile  = true
         when '--install'    then $install  = true
         when '--nocache'    then $cache    = false
@@ -114,7 +114,7 @@ class system.core.Exspresso extends system.core.Object
     @define dbDriver    : $db
     @define useCache    : $cache
     @define useCsrf     : $csrf
-    @define preview     : $preview
+    @define desktop     : $desktop
     @define profile     : $profile
     @define install     : $install
 
@@ -187,12 +187,12 @@ class system.core.Exspresso extends system.core.Object
       log_message "debug", "View at http://localhost:" + $port
 
 
-    if @preview
+    if @desktop
       #
-      # preview in appjs
+      # display in desktop app
       #
       {exec} = require('child_process')
-      exec "/home/bruce/Projects/exspresso/bin/preview http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "/home/bruce/Projects/exspresso/bin/desktop http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
         process.exit()

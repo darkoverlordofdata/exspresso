@@ -50,10 +50,10 @@ task "generate:password", "password data generator", (options) ->
 task "build:preview", "build webkit previewer", ->
 
   #
-  # compile preview.vala
+  # compile desktop.vala
   #
-  console.log 'Building bin/preview...'
-  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread bin/preview.vala --output=bin/preview", (err, output) ->
+  console.log 'Building bin/desktop...'
+  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread bin/desktop.vala --output=bin/desktop", (err, output) ->
     console.log output
     if err?
       console.log err.message
@@ -66,48 +66,57 @@ task "build:preview", "build webkit previewer", ->
 #
 task "build:desktop", "build desktop launcher", ->
 
-  exspresso_path = process.cwd()
-
   #
-  # create the shell file
+  # compile desktop.vala
   #
-  console.log 'Building exspresso.sh...'
-  bash = [
-    "#!/usr/bin/env bash"
-    "cd #{exspresso_path}"
-    "/usr/bin/node #{exspresso_path}/exspresso --db postgres --preview"
-  ].join('\n')
+  console.log 'Building bin/desktop...'
+  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread bin/desktop.vala --output=bin/desktop", (err, output) ->
+    console.log output
+    if err?
+      console.log err.message
+    else
+      exspresso_path = process.cwd()
 
-  fs.writeFileSync  "#{exspresso_path}/exspresso.sh", bash
-  fs.chmodSync      "#{exspresso_path}/exspresso.sh", 0o0775
+      #
+      # create the shell file
+      #
+      console.log 'Building exspresso.sh...'
+      bash = [
+        "#!/usr/bin/env bash"
+        "cd #{exspresso_path}"
+        "/usr/bin/node #{exspresso_path}/exspresso --db postgres --desktop"
+      ].join('\n')
 
-  #
-  # create the desktop icon
-  #
-  console.log 'Building Exspresso.desktop...'
-  desktop = [
-    "[Desktop Entry]"
-    "Version=1.0"
-    "Type=Application"
-    "Name=Exspresso"
-    "Comment="
-    "Exec=#{exspresso_path}/exspresso.sh"
-    "Icon=#{exspresso_path}/bin/icons/128.png"
-    "Path="
-    "Terminal=false"
-    "StartupNotify=false"
-  ].join('\n')
+      fs.writeFileSync  "#{exspresso_path}/exspresso.sh", bash
+      fs.chmodSync      "#{exspresso_path}/exspresso.sh", 0o0775
 
-  fs.writeFileSync  "#{exspresso_path}/Exspresso.desktop", desktop
+      #
+      # create the desktop icon
+      #
+      console.log 'Building Exspresso.desktop...'
+      desktop = [
+        "[Desktop Entry]"
+        "Version=1.0"
+        "Type=Application"
+        "Name=Exspresso"
+        "Comment="
+        "Exec=#{exspresso_path}/exspresso.sh"
+        "Icon=#{exspresso_path}/bin/icons/128.png"
+        "Path="
+        "Terminal=false"
+        "StartupNotify=false"
+      ].join('\n')
 
-  #
-  # put it on the desktop, too
-  #
-  if process.env['USER']?
-    user = process.env['USER']
-    desktop_path = "/home/#{user}/Desktop"
-    if fs.existsSync(desktop_path)
-      fs.writeFileSync  "#{desktop_path}/Exspresso.desktop", desktop
+      fs.writeFileSync  "#{exspresso_path}/Exspresso.desktop", desktop
+
+      #
+      # put it on the desktop, too
+      #
+      if process.env['USER']?
+        user = process.env['USER']
+        desktop_path = "/home/#{user}/Desktop"
+        if fs.existsSync(desktop_path)
+          fs.writeFileSync  "#{desktop_path}/Exspresso.desktop", desktop
 
 
-  console.log 'Ok.'
+    console.log 'Ok.'
