@@ -58,11 +58,11 @@ public class Preview : Window {
     // Add inspector to the context menu
     WebSettings settings = webView.get_settings();
     settings.enable_developer_extras = true;
-    webView.web_inspector.inspect_web_view.connect(getInspectorView);
 
     // Wire up the events
     destroy.connect(Gtk.main_quit);
     webView.title_changed.connect(titleChanged);
+    webView.web_inspector.inspect_web_view.connect(inspectWebView);
 
     // Display
     show_all();
@@ -89,20 +89,22 @@ public class Preview : Window {
   }
 
   /**
-   * getInspectorView
+   * inspectWebView
+   *
+   * Display the Inspector
    *
    * @param WebView
    * @return uncounted ref
    *
    */
-  public unowned WebView getInspectorView(WebView v) {
+  public unowned WebView inspectWebView(WebView v) {
 
     unowned WebView result = (new Inspector(this)).webView;
     return result;
   }
 
   /**
-   * Main
+   * Main - start the application
    *
    * @param array<string>  args command line args
    * @return int  0 Success!
