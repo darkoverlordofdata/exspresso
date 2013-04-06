@@ -197,10 +197,13 @@ class modules.user.models.UserModel extends system.core.Model
 
       $users.addData [
           {uid: UserModel.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
-          {uid: UserModel.UID_ADMIN, name: 'admin', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
-          {uid: UserModel.UID_TEST, name: 'shaggy', password: '$2a$10$G6QlZBj3Ie4dIirolpBGje', salt: 'X9AToNatEwEGPc6FM0rA.sqnH51AGli', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+          {uid: UserModel.UID_ADMIN, name: 'admin', password: '$2a$10$7PVELW1pLmKiJIJ8MacLe.', salt: 'XWneHe/CgFMmI/iVpvibH5i/g1p98Tu', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+          {uid: UserModel.UID_TEST, name: 'shaggy', password: '$2a$10$7PVELW1pLmKiJIJ8MacLe.', salt: 'XWneHe/CgFMmI/iVpvibH5i/g1p98Tu', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
         ]
 
+      # scoobydoo
+      # $2a$10$7PVELW1pLmKiJIJ8MacLe.
+      # XWneHe/CgFMmI/iVpvibH5i/g1p98Tu
   #
   # Step 4:
   # Install User/Roles index

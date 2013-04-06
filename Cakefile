@@ -14,7 +14,34 @@
 # Cakefile
 #
 {exec} = require "child_process"
+bcrypt = require('bcrypt')
 fs = require('fs')
+
+# ANSI Terminal Colors.
+bold = ''
+red = ''
+green = ''
+reset = ''
+unless process.env.NODE_DISABLE_COLORS
+  bold  = '\x1B[0;1m'
+  red   = '\x1B[0;31m'+bold
+  green = '\x1B[0;32m'+bold
+  reset = '\x1B[0m'
+
+#
+# generate password salt & hash values
+#
+option '-p', '--pwd [PWD]', 'password value'
+
+task "generate:password", "password data generator", (options) ->
+
+  pwd = options.pwd or 'password'
+
+  salt = bcrypt.genSaltSync(10)
+  hash = bcrypt.hashSync(pwd, salt)
+
+  console.log red+'salt = |'+green+salt+red+'|'
+  console.log red+'hash = |'+green+hash.substr(salt.length)+red+'|'+reset
 
 
 #
@@ -26,7 +53,7 @@ task "build:preview", "build webkit previewer", ->
   # compile preview.vala
   #
   console.log 'Building bin/preview...'
-  exec "valac --pkg gtk+-2.0 --pkg webkit-1.0 --thread bin/preview.vala --output=bin/preview", (err, output) ->
+  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread bin/preview.vala --output=bin/preview", (err, output) ->
     console.log output
     if err?
       console.log err.message

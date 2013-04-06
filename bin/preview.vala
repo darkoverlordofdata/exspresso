@@ -28,145 +28,131 @@ using WebKit;
 
 public class Preview : Window {
 
-    private const string TITLE = "Preview";
-    private const int WIDTH = 1024;
-    private const int HEIGHT = 768;
-    
-    private WebView webView;
-    private ToolButton backButton;
-    private ToolButton forwardButton;
-    private ToolButton reloadButton;
+  private const string ICON = "lib/application/assets/favicon.png";
+  private const string TITLE = "Preview";
+  private const int WIDTH = 1280;
+  private const int HEIGHT = 1024;
 
-    /*
-     * Constructor
+  private WebView webView;
+
+  /**
+   * Constructor
+   */
+  public Preview(string url) {
+
+    icon = new Gdk.Pixbuf.from_file(ICON);
+    title = Preview.TITLE;
+    set_default_size(Preview.WIDTH, Preview.HEIGHT);
+
+    //  Make the client window
+    webView = new WebView();
+    var scrolledWindow = new ScrolledWindow(null, null);
+    scrolledWindow.set_policy(PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
+    scrolledWindow.add(webView);
+
+    // Assemble the gui components
+    var vbox = new VBox(false, 0);
+    vbox.add(scrolledWindow);
+    add(vbox);
+
+    // Add inspector to the context menu
+    WebSettings settings = webView.get_settings();
+    settings.enable_developer_extras = true;
+    webView.web_inspector.inspect_web_view.connect(getInspectorView);
+
+    // Wire up the events
+    destroy.connect(Gtk.main_quit);
+    webView.title_changed.connect(titleChanged);
+
+    // Display
+    show_all();
+    webView.open(url);
+    webView.set_zoom_level((float)1.1);
+    webView.zoom_in();
+
+  }
+
+  /**
+   * titleChanged
+   *
+   * Set title from the html <title>...</title> tags
+   *
+   * @param source
+   * @param frame
+   * @param title
+   * @return void
+   *
+   */
+  public void titleChanged(Object source, Object frame, string title) {
+
+    this.title = title ?? Preview.TITLE;
+  }
+
+  /**
+   * getInspectorView
+   *
+   * @param WebView
+   * @return uncounted ref
+   *
+   */
+  public unowned WebView getInspectorView(WebView v) {
+
+    unowned WebView result = (new Inspector(this)).webView;
+    return result;
+  }
+
+  /**
+   * Main
+   *
+   * @param array<string>  args command line args
+   * @return int  0 Success!
+   *
+   */
+  public static int main(string[] args) {
+
+    Gtk.init(ref args);
+    var client = new Preview(args[1]);
+    Gtk.main();
+    return 0;
+  }
+
+  /**
+   *
+   * Class Inspector
+   *
+   * Wrap the web_inspector in it's own window
+   *
+   */
+  class Inspector : Window {
+
+    public WebView webView;
+
+    /**
+     *  Display the web_inspector
      */
-    public Preview() {
+    public Inspector(Window parent) {
 
-        title = Preview.TITLE;
-        set_default_size(Preview.WIDTH, Preview.HEIGHT);
-        createWidgets();
-        connectEvents();
+      icon = parent.icon;
+      title = "Developer Tools - " + (parent.title ?? Preview.TITLE);
+      set_default_size(Preview.WIDTH, Preview.HEIGHT);
+
+      //  Make the client window
+      webView = new WebView();
+      var scrolledWindow = new ScrolledWindow(null, null);
+      scrolledWindow.set_policy(PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
+      scrolledWindow.add(webView);
+      add(scrolledWindow);
+
+      show_all();
     }
 
-    /*
-     * Create Widgets
-     *
-     * @return void
-     *
+    /**
+     *  Teardown
      */
-    private void createWidgets() {
-
-        //  Make the toolbar
-        var toolbar = new Toolbar();
-        backButton = new ToolButton.from_stock(Stock.GO_BACK);
-        forwardButton = new ToolButton.from_stock(Stock.GO_FORWARD);
-        reloadButton = new ToolButton.from_stock(Stock.REFRESH);
-        toolbar.add(backButton);
-        toolbar.add(forwardButton);
-        toolbar.add(reloadButton);
-
-        //  Make the browser window
-        webView = new WebView();
-        var scrolled_window = new ScrolledWindow(null, null);
-        scrolled_window.set_policy(PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
-        scrolled_window.add(webView);
-
-
-        //  Finish assebmling the gui components
-        var vbox = new VBox(false, 0);
-        vbox.pack_start(toolbar, false, true, 0);
-        vbox.add(scrolled_window);
-        add(vbox);
+    ~Inspector() {
+      webView.web_inspector.close();
     }
-
-    /*
-     * Connect Events
-     *
-     * @return void
-     *
-     */
-    private void connectEvents() {
-
-        webView.title_changed.connect(
-
-          /*
-           * On Title Changed
-           *
-           * @param source
-           * @param frame
-           * @param title
-           * @return void
-           *
-           */
-          (source, frame, title) => {
-
-              this.title = "%s - %s".printf(title, Preview.TITLE);
-          });
-
-        webView.load_committed.connect(
-
-          /*
-           * On Load Committed
-           *
-           * @param source
-           * @param frame
-           * @return void
-           *
-           */
-          (source, frame) => {
-
-              this.updateButtons();
-          });
-
-        // wire up the plumbing
-        destroy.connect(Gtk.main_quit);
-        backButton.clicked.connect(webView.go_back);
-        forwardButton.clicked.connect(webView.go_forward);
-        reloadButton.clicked.connect(webView.reload);
-    }
-
-    /*
-     * Update Buttons
-     *
-     * @return void
-     *
-     */
-    private void updateButtons() {
-
-        backButton.sensitive = webView.can_go_back();
-        forwardButton.sensitive = webView.can_go_forward();
-    }
-
-
-    /*
-     * Start
-     *
-     * @param string  url the root url to start the client at
-     * @return void
-     *
-     */
-    public void start(string url) {
-
-        show_all();
-        webView.open(url);
-    }
-
-    /*
-     * Main
-     *
-     * @param array<string>  args command line args
-     * @return int  0 Success!
-     *
-     */
-    public static int main(string[] args) {
-
-        Gtk.init(ref args);
-        var client = new Preview();
-        client.start(args[1]);
-        Gtk.main();
-        return 0;
-    }
+  }
 }
-
 
 
