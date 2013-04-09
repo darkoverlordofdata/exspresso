@@ -4,4 +4,7 @@
         <%- @blog.body %>
     </div>
     <p class="row"></p>
+    <p class="row">
+        <%- @anchor("blog", "All blogs") %>
+    </p>
 </div>

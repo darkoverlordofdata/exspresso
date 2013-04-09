@@ -120,4 +120,4 @@ class system.db.postgres.PostgresResult extends system.db.Result
 module.exports = system.db.postgres.PostgresResult
 
 #  End of file PostgreResult.coffee
-#  Location: ./system/database/drivers/postgre/PostgreResult.coffee
+#  Location: ./system/db/drivers/postgres/PostgreResult.coffee

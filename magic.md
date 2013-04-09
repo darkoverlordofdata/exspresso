@@ -1,5 +1,17 @@
    ------------------------------------------------------------------------
- 
+
+    Magic:
+
+      The controller instance is injected into the prototype chain of all
+      libs, models, and views; forming a virtual supercontroller instance
+      such that the controller's properties and methods are available to
+      all other objects loaded by the same controller.
+
+      For example, the intances of the Theme and Template classes below
+      inherit the @output property of the controller instance.
+
+
+
     Graph of a sample web page controller object model, Home:
  
     -----------------     -----------------     -----------------     -----------------

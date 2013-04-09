@@ -1,8 +1,8 @@
 {
   "name": "exspresso",
-  "version": "0.9.1",
-  "description": "A framework for coffee-script, based on CodeIgniter",
-  "keywords": ["framework", "web", "coffee-script"],
+  "version": "0.9.2",
+  "description": "A CoffeeScript framework inspired by CodeIgniter",
+  "keywords": ["framework", "web", "coffee-script", "mvc", "desktop"],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",
   "contributors": [
     {
@@ -15,6 +15,7 @@
     "not-php": "*",
     "mysql": "*",
     "pg": "*",
+    "node-sqlite-purejs": "*",
     "connect": "*",
     "express": "",
     "bcrypt": "*",

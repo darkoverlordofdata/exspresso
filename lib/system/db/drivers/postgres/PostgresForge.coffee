@@ -203,7 +203,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
   # @param  [String]  the field after which we should add the new field
   # @return [Object]  #
   _alter_table : ($alter_type, $table, $column_name, $column_definition = '', $default_value = '', $null = '', $after_field = '') ->
-    $sql = 'ALTER TABLE ' + @db._protect_identifiers($table) + " $alter_type " + @db._protect_identifiers($column_name)
+    $sql = 'ALTER TABLE ' + @db._protect_identifiers($table) + " #{$alter_type} " + @db._protect_identifiers($column_name)
     
     #  DROP has everything it needs now.
     if $alter_type is 'DROP'
@@ -212,7 +212,7 @@ class system.db.postgres.PostgresForge extends system.db.Forge
     $sql+=" $column_definition"
     
     if $default_value isnt ''
-      $sql+=" DEFAULT \"$default_value\""
+      $sql+=" DEFAULT \"#{$default_value}\""
 
     if $null is null
       $sql+=' NULL'
@@ -244,4 +244,4 @@ class system.db.postgres.PostgresForge extends system.db.Forge
 module.exports = system.db.postgres.PostgresForge
 
 #  End of file PostgresForge.coffee
-#  Location: ./system/database/drivers/postgres/PostgresForge.coffee
+#  Location: ./system/db/drivers/postgres/PostgresForge.coffee

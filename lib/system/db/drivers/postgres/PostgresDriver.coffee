@@ -28,10 +28,6 @@
 #
 # Postgre Database Adapter Class
 #
-# Note: _DB is an extender class that the app controller
-# creates dynamically based on whether the active record
-# class is being used or not.
-#
 #
 class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
@@ -511,4 +507,4 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 # End Class ExspressoPostgresDriver
 module.exports = system.db.postgres.PostgresDriver
 #  End of file PostgresDriver.coffee
-#  Location: ./system/database/drivers/postgre/PostgresDriver.coffee
+#  Location: ./system/db/drivers/postgres/PostgresDriver.coffee

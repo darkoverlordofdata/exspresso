@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
-#  MysqlForge.coffee
+#  sqlite_forge.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -23,52 +23,70 @@
 # @since      Version 1.0
 #
 
-#  ------------------------------------------------------------------------
+#
+# SQLite Forge Class
+#
+#
+class system.db.sqlite.SqliteForge extends system.db.Forge
 
-#
-# MySQL Forge Class
-#
-#
-class system.db.mysql.MysqlForge extends system.db.Forge
-  
+  fs = require('fs')
+
   #
   # Create database
   #
-  # @private
-  # @param  [String]  the database name
+  # @access	public
+  # @param	string	the database name
   # @return	bool
   #
-  _create_database : ($name) ->
-    "CREATE DATABASE " + $name
+  _create_database :  ->
+    #  In SQLite, a database is created when you connect to the database.
+    #  We'll return TRUE so that an error isn't generated
+    return true
     
   
   #
   # Drop database
   #
-  # @private
-  # @param  [String]  the database name
+  # @access	private
+  # @param	string	the database name
   # @return	bool
   #
   _drop_database : ($name) ->
-    "DROP DATABASE " + $name
+    if not fs.existsSync(@db.database) or not fs.unlinkSync(@db.database)
+      if @db.db_debug
+        return @db.display_error('db_unable_to_drop')
+        
+      return false
+      
+    return true
     
-  
   #
-  # Process Fields
+  # Create Table
   #
-  # @private
-  # @param  [Mixed]  the fields
-  # @return	[String]
+  # @access	private
+  # @param	string	the table name
+  # @param	array	the fields
+  # @param	mixed	primary key(s)
+  # @param	mixed	key(s)
+  # @param	boolean	should 'IF NOT EXISTS' be added to the SQL
+  # @return	bool
   #
-  _process_fields : ($fields) ->
+  _create_table : ($table, $fields, $primary_keys, $keys, $if_not_exists) ->
+    $sql = 'CREATE TABLE '
+    
+    #  IF NOT EXISTS added to SQLite in 3.3.0
+    if $if_not_exists is true # and version_compare(@db._version(), '3.3.0', '>=') is true
+      $sql+='IF NOT EXISTS '
+      
+    
+    $sql+=@db._escape_identifiers($table) + "("
     $current_field_count = 0
-    $sql = ''
     
     for $field, $attributes of $fields
       #  Numeric field names aren't allowed in databases, so if the key is
       #  numeric, we know it was assigned by PHP and the developer manually
       #  entered the field information, so we'll simply add it to the list
-      if 'number' is typeof($field)
+      if is_numeric($field)
         $sql+="\n\t#{$attributes}"
         
       else
@@ -78,31 +96,23 @@ class system.db.mysql.MysqlForge extends system.db.Forge
 
         $sql+="\n\t" + @db._protect_identifiers($field)
         
-        if $attributes['NAME']?
-          $sql+=' ' + @db._protect_identifiers($attributes['NAME']) + ' '
-          
+        $sql+=' ' + $attributes.TYPE
         
-        if $attributes.TYPE?
-          $sql+=' ' + $attributes.TYPE
-          
-          if $attributes.CONSTRAINT?
-            switch $attributes.TYPE
-              when 'decimal','float','numeric'
-                $sql+='(' + $attributes.CONSTRAINT.join(',') + ')'
-              when 'enum','set'
-                $sql+='("' + $attributes.CONSTRAINT.join('","') + '")'
-              else
-                $sql+='(' + $attributes.CONSTRAINT + ')'
-                
+        if $attributes.CONSTRAINT?
+          $sql+='(' + $attributes['CONSTRAINT'] + ')'
+
         if $attributes.UNSIGNED? and $attributes.UNSIGNED is true
           $sql+=' UNSIGNED'
-          
+
         if $attributes.DEFAULT?
           $sql+=' DEFAULT \'' + $attributes.DEFAULT + '\''
 
-        if $attributes.NULL?
-          $sql+=if ($attributes.NULL is true) then ' NULL' else ' NOT NULL'
+        if $attributes.NULL? and $attributes.NULL is true
+          $sql+=' NULL'
           
+        else 
+          $sql+=' NOT NULL'
+
         if $attributes.AUTO_INCREMENT? and $attributes.AUTO_INCREMENT is true
           $sql+=' AUTO_INCREMENT'
 
@@ -110,34 +120,9 @@ class system.db.mysql.MysqlForge extends system.db.Forge
       if ++$current_field_count < keys($fields).length
         $sql+=','
 
-    return $sql
-    
-  
-  #
-  # Create Table
-  #
-  # @private
-  # @param  [String]  the table name
-  # @param  [Mixed]  the fields
-  # @param  [Mixed]  primary key(s)
-  # @param  [Mixed]  key(s)
-  # @return	[Boolean]ean	should 'IF NOT EXISTS' be added to the SQL
-  # @return	bool
-  #
-  _create_table : ($table, $fields, $primary_keys, $keys, $if_not_exists) ->
-    $sql = 'CREATE TABLE '
-
-    $sql+='IF NOT EXISTS ' if $if_not_exists is true
-
-    $sql+=@db._escape_identifiers($table) + " ("
-
-    $sql+=@_process_fields($fields)
-
-    if $primary_keys.length > 0
-
-      $key_name = @db._protect_identifiers($primary_keys.join('_'))
+    if count($primary_keys) > 0
       $primary_keys = @db._protect_identifiers($primary_keys)
-      $sql+=",\n\tPRIMARY KEY " + $key_name + " (" + $primary_keys.join(', ') + ")"
+      $sql+=",\n\tPRIMARY KEY (" + $primary_keys.join(', ') + ")"
 
     if Array.isArray($keys) and $keys.length > 0
 
@@ -152,60 +137,74 @@ class system.db.mysql.MysqlForge extends system.db.Forge
 
         $sql+=",\n\tKEY #{$key_name} (" + $key.join(', ') + ")"
 
-    $sql+="\n) DEFAULT CHARACTER SET #{@db.char_set} COLLATE #{@db.dbcollat};"
+    $sql+="\n)"
 
   
   #
   # Drop Table
   #
-  # @private
-  # @return	[String]
+  # @access	private
+  # @return	bool
   #
   _drop_table : ($table) ->
     "DROP TABLE IF EXISTS " + @db._escape_identifiers($table)
-    
-  
+
+
   #
   # Alter table query
   #
   # Generates a platform-specific query so that a table can be altered
-  # Called by addColumn(), dropColumn(), and column_alter(),
+  # Called by add_column(), drop_column(), and column_alter(),
   #
-  # @private
-  # @param  [String]  the ALTER type (ADD, DROP, CHANGE)
-  # @param  [String]  the column name
-  # @param  [Array]  fields
-  # @param  [String]  the field after which we should add the new field
-  # @return [Object]  #
-  _alter_table : ($alter_type, $table, $fields, $after_field = '') ->
-    $sql = 'ALTER TABLE ' + @db._protect_identifiers($table) + " $alter_type "
-    
+  # @access	private
+  # @param	string	the ALTER type (ADD, DROP, CHANGE)
+  # @param	string	the column name
+  # @param	string	the table name
+  # @param	string	the column definition
+  # @param	string	the default value
+  # @param	boolean	should 'NOT NULL' be added
+  # @param	string	the field after which we should add the new field
+  # @return	object
+  #
+  _alter_table : ($alter_type, $table, $column_name, $column_definition = '', $default_value = '', $null = '', $after_field = '') ->
+    $sql = 'ALTER TABLE ' + @db._protect_identifiers($table) + " #{$alter_type} " + @db._protect_identifiers($column_name)
+
     #  DROP has everything it needs now.
     if $alter_type is 'DROP'
-      return $sql + @db._protect_identifiers($fields)
+      return $sql
 
-    $sql+=@_process_fields($fields)
-    
+    $sql+=" $column_definition"
+
+    if $default_value isnt ''
+      $sql+=" DEFAULT \"#{$default_value}\""
+
+    if $null is null
+      $sql+=' NULL'
+
+    else
+      $sql+=' NOT NULL'
+
     if $after_field isnt ''
       $sql+=' AFTER ' + @db._protect_identifiers($after_field)
 
     return $sql
-    
-  
+
   #
   # Rename a table
   #
   # Generates a platform-specific query so that a table can be renamed
   #
-  # @private
-  # @param  [String]  the old table name
-  # @param  [String]  the new table name
-  # @return	[String]
+  # @access	private
+  # @param	string	the old table name
+  # @param	string	the new table name
+  # @return	string
   #
   _rename_table : ($table_name, $new_table_name) ->
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
+    return $sql
+    
+  
+module.exports = system.db.sqlite.SqliteForge
 
-module.exports = system.db.mysql.MysqlForge
-
-#  End of file MysqlForge.coffee
-#  Location: ./system/db/drivers/mysql/MysqlForge.coffee
+#  End of file SqliteForge.coffee
+#  Location: ./system/db/drivers/sqlite/SqliteForge.coffee

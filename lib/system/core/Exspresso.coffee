@@ -30,6 +30,8 @@
 #
 class system.core.Exspresso extends system.core.Object
 
+  {exec} = require('child_process')
+
   #
   # @property [String] db driver: mysql | postgres
   #
@@ -87,6 +89,7 @@ class system.core.Exspresso extends system.core.Object
     $cache    = @useCache
     $csrf     = @useCsrf
     $desktop  = @desktop
+    $preview  = @preview
     $profile  = @profile
     $install  = false
 
@@ -105,6 +108,7 @@ class system.core.Exspresso extends system.core.Object
         when '--cache'      then $cache    = true
         when '--csrf'       then $csrf     = true
         when '--desktop'    then $desktop  = true
+        when '--preview'    then $preview  = true
         when '--profile'    then $profile  = true
         when '--install'    then $install  = true
         when '--nocache'    then $cache    = false
@@ -115,6 +119,7 @@ class system.core.Exspresso extends system.core.Object
     @define useCache    : $cache
     @define useCsrf     : $csrf
     @define desktop     : $desktop
+    @define preview     : $preview
     @define profile     : $profile
     @define install     : $install
 
@@ -187,12 +192,20 @@ class system.core.Exspresso extends system.core.Object
       log_message "debug", "View at http://localhost:" + $port
 
 
+    #
+    # run as desktop app?
+    #
     if @desktop
-      #
-      # display in desktop app
-      #
-      {exec} = require('child_process')
-      exec "/home/bruce/Projects/exspresso/bin/desktop http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "#{FCPATH}bin/desktop http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+        console.log $stderr if $stderr?
+        console.log $stdout if $stdout?
+        process.exit()
+
+    #
+    # preview locally?
+    #
+    else if @preview
+      exec "#{FCPATH}bin/preview http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
         process.exit()

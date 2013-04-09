@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
-#  MysqlResult.coffee
+#  SqliteResult.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -23,23 +23,25 @@
 # @since      Version 1.0
 #
 
-#  --------------------------------------------------------------------
+#  ------------------------------------------------------------------------
 
 #
-# MySQL Result Class
+# SQLite Result Class
 #
-# This class extends the parent result class: system.db.Result
 #
 
-class system.db.mysql.MysqlResult extends system.db.Result
+class system.db.sqlite.SqliteResult extends system.db.Result
 
   _metadata : null
 
 
-  constructor: ($results, $info) ->
+  constructor: ($results) ->
 
     @_result_array = @_result_object = $results
-    @_metadata = $info
+    @_metadata = []
+    if $results.length > 0
+      for $name, $val of $results[0]
+        @_metadata.push {name: $name}
     @_num_rows = @numRows()
 
   #
@@ -112,16 +114,17 @@ class system.db.mysql.MysqlResult extends system.db.Result
   #
   _fetch_assoc :  ->
 
-  #
-  # Result - object
-  #
-  # Returns the result set as an object
-  #
-  # @private
-  # @return [Object]  #
+    #
+    # Result - object
+    #
+    # Returns the result set as an object
+    #
+    # @private
+    # @return [Object]  #
   _fetch_object :  ->
 
-module.exports = system.db.mysql.MysqlResult
+module.exports = system.db.sqlite.SqliteResult
 
-#  End of file MysqlResult.coffee
-#  Location: ./system/db/drivers/mysql/MysqlResult.coffee
+
+#  End of file SqliteResult.coffee
+#  Location: ./system/db/drivers/sqlite/SqliteResult.coffee

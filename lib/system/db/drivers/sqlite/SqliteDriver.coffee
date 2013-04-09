@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
-#  MysqlDriver.coffee
+#  SqliteDriver.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -11,10 +11,9 @@
 #
 #+--------------------------------------------------------------------+
 #
+# CodeIgniter
 #
-# Exspresso
-#
-# An open source application development framework for coffee-script
+# An open source application development framework for PHP 5.1.6 or newer
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
@@ -22,148 +21,155 @@
 # @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
+
+#  ------------------------------------------------------------------------
+
+
+
 #
-#
-# MySQL Database Adapter Class
+# SQLite Database Adapter Class
 #
 # Note: _DB is an extender class that the app controller
 # creates dynamically based on whether the active record
 # class is being used or not.
 #
+# @package		CodeIgniter
+# @subpackage	Drivers
+# @category	Database
+# @author		ExpressionEngine Dev Team
+# @link		http://codeigniter.com/user_guide/database/
+#
+class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
 
+  dbdriver          : 'sqlite'
+  version           : require(FCPATH + 'node_modules/node-sqlite-purejs/package.json').version
 
-class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
-
-  # by default, expect mysql to listen on port 3306
-  dbdriver          : 'mysql'
-  port              : 3306
-  connected         : false
-  version           : require(FCPATH + 'node_modules/mysql/package.json').version
-
-  #  The character used for escaping
-  _escape_char      : '`'
-
-  #  clause and character used for LIKE escape sequences - not used in MySQL
-  _like_escape_str  : ''
-  _like_escape_chr  : ''
-
-  #
-  # Whether to use the MySQL "delete hack" which allows the number
-  # of affected rows to be shown. Uses a preg_replace when enabled,
-  # adding a bit more processing to all queries.
-  #
-  delete_hack       : true
-
+  #  The character used to escape with - not needed for SQLite
+  _escape_char      : '"'
+  
+  #  clause and character used for LIKE escape sequences
+  _like_escape_str  : '' # " ESCAPE '%s' "
+  _like_escape_chr  : '' # '!'
+  
   #
   # The syntax to count rows is slightly different across different
   # database engines, so this string appears in each driver and is
   # used for the count_all() and count_all_results() functions.
   #
-  _count_string     : 'SELECT COUNT(*) AS '
-  _random_keyword   : ' RAND()'#  database specific random keyword
-
-
+  _count_string     : "SELECT COUNT(*) AS "
+  _random_keyword   : ' random()'#  database specific random keyword
+  
   #
   # Non-persistent database connection
   #
-  # @private called by the base class
+  # @access	private called by the base class
   # @return	resource
   #
-  connect: ($next) =>
+  db_connect: ($next) ->
 
-    if not @connected
-      mysql = require('mysql')
+    sqlite = require('node-sqlite-purejs')
+    sqlite.open @database, {}, ($err, $client) =>
 
-      @client = new mysql.createConnection
-        host: @hostname
-        port: @port
-        user: @username
-        password: @password
-        database: @database
-        debug: false # @db_debug
-
-      @connected = true
-
-    @client.connect $next, ($err) =>
+      @client = $client
       if ($err)
         @connected = false
         console.log $err
       else
-        $next($err, @client)
+        $next null, $client
 
+  
+  #  --------------------------------------------------------------------
+  
   #
   # Persistent database connection
   #
-  # @private called by the base class
+  # @access	private called by the base class
   # @return	resource
   #
-  pconnect: ($next) ->
-    throw new Error('Not Supported: mysql_driver::pconnect')
+  db_pconnect :  ->
 
+  
+  #  --------------------------------------------------------------------
+  
   #
   # Reconnect
   #
   # Keep / reestablish the db connection if no queries have been
   # sent for a length of time exceeding the server's idle timeout
   #
-  # @return [Void]  #
-  reconnect: ($next) ->
-    @client.ping($next)
-
+  # @access	public
+  # @return	void
+  #
+  reconnect :  ->
+    #  not implemented in SQLite
+    
+  
+  #  --------------------------------------------------------------------
+  
   #
   # Select the database
   #
-  # @private called by the base class
+  # @access	private called by the base class
   # @return	resource
   #
-  db_select: ($next) ->
-    @client.useDatabase(@database, $next)
-
-
+  db_select :  ->
+    return true
+    
+  
+  #  --------------------------------------------------------------------
+  
   #
   # Set client character set
   #
-  # @param  [String]  # @param  [String]  # @return	resource
+  # @access	public
+  # @param	string
+  # @param	string
+  # @return	resource
   #
   dbSetCharset: ($charset, $collation, $next) ->
-    @client.query("SET NAMES '" + @escapeStr($charset) + "' COLLATE '" + @escapeStr($collation) + "'", $next)
+    #  @todo - add support if needed
+    return $next() if $next?
+    return true
 
-
+  
+  #  --------------------------------------------------------------------
+  
   #
   # Version number query string
   #
-  # @return	[String]
+  # @access	public
+  # @return	string
   #
-  _version: () ->
-    "SELECT version() AS ver"
-
-
+  _version :  ->
+    "SELECT sqlite_version() AS ver"
+    
+  
+  #  --------------------------------------------------------------------
+  
   #
   # Execute the query
   #
-  # @private called by the base class
-  # @param  [String]  an SQL query
+  # @access	private called by the base class
+  # @param	string	an SQL query
   # @return	resource
   #
   _execute: ($sql, $params, $next) ->
     $sql = @_prep_query($sql)
-    @client.query $sql, $params, $next
+    @client.exec $sql, $next
 
+  
+  #  --------------------------------------------------------------------
+  
   #
   # Prep the query
   #
   # If needed, each database adapter can prep the query string
   #
-  # @private called by execute()
-  # @param  [String]  an SQL query
-  # @return	[String]
+  # @access	private called by execute()
+  # @param	string	an SQL query
+  # @return	string
   #
-  _prep_query: ($sql) ->
-    #  "DELETE FROM TABLE" returns 0 affected rows This hack modifies
-    #  the query so that it returns the number of affected rows
-    if @delete_hack is true
-      if /^\s*DELETE\s+FROM\s+(\S+)\s*$/i.test($sql)
-        $sql = $sql.replace(/^\s*DELETE\s+FROM\s+(\S+)\s*$/, "DELETE FROM $1 WHERE 1=1")
+  _prep_query : ($sql) ->
     return $sql
 
 
@@ -189,9 +195,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     #  even if the queries produce a successful result.
     @_trans_failure = if ($test_mode is true) then true else false
 
-    @simpleQuery 'SET AUTOCOMMIT=0', =>
-      @simpleQuery 'START TRANSACTION', => #  can also be BEGIN or BEGIN WORK
-        $next(null, true)
+    @simpleQuery 'BEGIN TRANSACTION', => #  can also be BEGIN or BEGIN WORK
+      $next(null, true)
 
   #
   # Commit Transaction
@@ -206,9 +211,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     if @_trans_depth > 0
       return $next(null, true)
 
-    @simpleQuery 'COMMIT', =>
-      @simpleQuery 'SET AUTOCOMMIT=1', =>
-        $next(null, true)
+    @simpleQuery 'COMMIT TRANSACTION', => #  can also be BEGIN or BEGIN WORK
+      $next(null, true)
 
 
   #
@@ -225,8 +229,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
       return $next(null, true)
 
     @simpleQuery 'ROLLBACK', =>
-      @simpleQuery 'SET AUTOCOMMIT=1', =>
-        $next(null, true)
+      $next(null, true)
 
 
   #
@@ -237,16 +240,20 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   escapeStr: ($str, $like = false) ->
-    if not 'string' is typeof($str)
+    if is_array($str)
       for $key, $val of $str
         $str[$key] = @escapeStr($val, $like)
       return $str
 
-    $str = @client.escape($str)
+    #$str = pg.escape_string($str)
+    $str = "'" + $str + "'"
+
     #  escape LIKE condition wildcards
     if $like is true
-      $str = $str.replace(/\%/g, '\\%').replace(/\_/g, '\\_')
-    $str
+      $str = $str.replace(/\%/g, @_like_escape_chr + '%')
+      $str = $str.replace(/\_/g, @_like_escape_chr + '_')
+      $str = $str.replace(RegExp(reg_quote(@_like_escape_chr), 'g'), @_like_escape_chr + @_like_escape_chr)
+    return $str
 
 
   #
@@ -258,14 +265,14 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
     #@client.affected_rows($next)
 
 
-  #
-  # Insert ID
-  #
-  # @return	integer
-  #
+    #
+    # Insert ID
+    #
+    # @return	integer
+    #
   insertId: ($next) ->
 
-    @query "SELECT LAST_INSERT_ID() AS id;", ($err, $insert) =>
+    @query "SELECT LAST_INSERT_ROWID() AS id;", ($err, $insert) =>
       return($next $err) if $err
       $next(null, $insert.row().id)
 
@@ -296,10 +303,13 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _list_tables: ($prefix_limit = false) ->
-    $sql = "SHOW TABLES FROM " + @_escape_char + @database + @_escape_char
+    $sql = "SELECT name FROM sqlite_master WHERE  tyype = 'table' "
+
 
     if $prefix_limit isnt false and @dbprefix isnt ''
-      $sql+=" LIKE '" + @escape_like_str(@dbprefix) + "%'"
+      $sql+="AND name LIKE '" + @escape_like_str(@dbprefix) + "%'"
+    else
+      $sel+="AND name NOT LIKE 'sqlite_%'"
     return $sql
 
 
@@ -312,7 +322,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _list_columns: ($table = '') ->
-    "SHOW COLUMNS FROM " + @_protect_identifiers($table, true, null, false)
+    "PRAGMA table_info(" + @_protect_identifiers($table, true, null, false)+");"
 
 
   #
@@ -334,7 +344,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   _error_message: () ->
     'sql error_message'
-    #@client.error()
+  #@client.error()
 
 
   #
@@ -345,7 +355,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   _error_number: () ->
     'sql error_number'
-    #@client.errno()
+  #@client.errno()
 
 
   #
@@ -569,7 +579,8 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _close: ($next) ->
     @client.end($next)
 
-# End Class ExspressoMysqlDriver
-module.exports = system.db.mysql.MysqlDriver
-#  End of file MysqlDriver.coffee
-#  Location: ./system/db/drivers/mysql/MysqlDriver.coffee
+module.exports = system.db.sqlite.SqliteDriver
+
+
+#  End of file SqliteDriver.coffee
+#  Location: ./system/db/drivers/sqlite/SqliteDriver.coffee

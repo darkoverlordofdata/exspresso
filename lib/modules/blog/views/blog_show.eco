@@ -6,5 +6,7 @@
     <div class="row">
         <%- @blog.body %>
     </div>
-    <p class="row"></p>
+    <p class="row">
+        <%- @anchor("blog", "List all") %>
+    </p>
 </div>

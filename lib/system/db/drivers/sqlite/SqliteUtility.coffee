@@ -1,7 +1,7 @@
 #+--------------------------------------------------------------------+
-#  PostgreUtility.coffee
+#  SqliteUtility.coffee
 #+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
+#  Copyright DarkOverlordOfData (c) 2012
 #+--------------------------------------------------------------------+
 #
 #  This file is a part of Exspresso
@@ -26,56 +26,68 @@
 #  ------------------------------------------------------------------------
 
 #
-# Postgre Utility Class
+# SQLite Utility Class
 #
-#
-class system.db.postgres.PostgresUtility extends system.db.Utility
+class system.db.sqlite.SqliteUtility extends system.db.Utility
   
   #
   # List databases
   #
-  # @private
+  # @access	private
   # @return	bool
   #
   _list_databases :  ->
-    "SELECT datname FROM pg_database"
+    if @db_debug then 
+      return @db.display_error('db_unsuported_feature')
+      
+    return {}
     
+  
+  #  --------------------------------------------------------------------
   
   #
   # Optimize table query
   #
-  # Is table optimization supported in Postgre?
+  # Is optimization even supported in SQLite?
   #
-  # @private
-  # @param  [String]  the table name
-  # @return [Object]  #
+  # @access	private
+  # @param	string	the table name
+  # @return	object
+  #
   _optimize_table : ($table) ->
-    false
+    return false
     
+  
+  #  --------------------------------------------------------------------
   
   #
   # Repair table query
   #
-  # Are table repairs supported in Postgre?
+  # Are table repairs even supported in SQLite?
   #
-  # @private
-  # @param  [String]  the table name
-  # @return [Object]  #
+  # @access	private
+  # @param	string	the table name
+  # @return	object
+  #
   _repair_table : ($table) ->
-    false
+    return false
     
   
+  #  --------------------------------------------------------------------
+  
   #
-  # Postgre Export
+  # SQLite Export
   #
-  # @private
-  # @param  [Array]  Preferences
-  # @return [Mixed]  #
+  # @access	private
+  # @param	array	Preferences
+  # @return	mixed
+  #
   _backup : ($params = {}) ->
     #  Currently unsupported
-    @db.display_error('db_unsuported_feature')
+    return @db.display_error('db_unsuported_feature')
     
-module.exports = system.db.postgres.PostgresUtility
+  
+module.exports = system.db.sqlite.SqliteUtility
 
-#  End of file PostgreUtility.coffee
-#  Location: ./system/db/drivers/postgres/PostgreUtility.coffee
+#  End of file SqliteUtility.coffee
+#  Location: ./system/db/drivers/sqlite/SqliteUtility.coffee

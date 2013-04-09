@@ -121,7 +121,8 @@ module.exports = ->
 #
 # Magic
 #
-# Returns a new mixin from prototype.
+# Dependency injection via prototype.
+#
 # Args can be
 #
 #

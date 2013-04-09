@@ -1,6 +1,6 @@
 /*
 +--------------------------------------------------------------------+
-| Preview
+| Desktop
 +--------------------------------------------------------------------+
 | Copyright DarkOverlordOfData (c) 2013
 +--------------------------------------------------------------------+
@@ -15,10 +15,13 @@
 * @copyright	DarkOverlordOfData (c) 2013
 * @author		BruceDavidson@darkoverlordofdata.com
 *
+* "Yu Mo Gui Gwai Fai Di Zao" -- Uncle
 *
-* Class Preview
 *
-*  A WebKit client to preview the local server output
+* Class Desktop
+*
+*   A WebKit client to present the local server output
+*   Use to run server app as a local desktop app
 *
 *
 */
@@ -26,10 +29,10 @@
 using Gtk;
 using WebKit;
 
-public class Preview : Window {
+public class Desktop : Window {
 
   private const string ICON = "lib/application/assets/favicon.png";
-  private const string TITLE = "Preview";
+  private const string TITLE = "Desktop";
   private const int WIDTH = 1280;
   private const int HEIGHT = 1024;
 
@@ -38,11 +41,11 @@ public class Preview : Window {
   /**
    * Constructor
    */
-  public Preview(string url) {
+  public Desktop(string url) {
 
     icon = new Gdk.Pixbuf.from_file(ICON);
-    title = Preview.TITLE;
-    set_default_size(Preview.WIDTH, Preview.HEIGHT);
+    title = Desktop.TITLE;
+    set_default_size(Desktop.WIDTH, Desktop.HEIGHT);
 
     //  Make the client window
     webView = new WebView();
@@ -85,7 +88,7 @@ public class Preview : Window {
    */
   public void titleChanged(Object source, Object frame, string title) {
 
-    this.title = title ?? Preview.TITLE;
+    this.title = title ?? Desktop.TITLE;
   }
 
   /**
@@ -113,7 +116,7 @@ public class Preview : Window {
   public static int main(string[] args) {
 
     Gtk.init(ref args);
-    var client = new Preview(args[1]);
+    var client = new Desktop(args[1]);
     Gtk.main();
     return 0;
   }
@@ -135,8 +138,8 @@ public class Preview : Window {
     public Inspector(Window parent) {
 
       icon = parent.icon;
-      title = "Developer Tools - " + (parent.title ?? Preview.TITLE);
-      set_default_size(Preview.WIDTH, Preview.HEIGHT);
+      title = "Developer Tools - " + (parent.title ?? Desktop.TITLE);
+      set_default_size(Desktop.WIDTH, Desktop.HEIGHT);
 
       //  Make the client window
       webView = new WebView();

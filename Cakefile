@@ -52,8 +52,8 @@ task "build:preview", "build webkit previewer", ->
   #
   # compile desktop.vala
   #
-  console.log 'Building bin/desktop...'
-  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread bin/desktop.vala --output=bin/desktop", (err, output) ->
+  console.log 'Building bin/preview...'
+  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread src/preview.vala --output=bin/preview", (err, output) ->
     console.log output
     if err?
       console.log err.message
@@ -62,7 +62,7 @@ task "build:preview", "build webkit previewer", ->
 
 
 #
-# Build the desktop file
+# Build the desktop app  - requires valac
 #
 task "build:desktop", "build desktop launcher", ->
 
@@ -70,11 +70,12 @@ task "build:desktop", "build desktop launcher", ->
   # compile desktop.vala
   #
   console.log 'Building bin/desktop...'
-  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread bin/desktop.vala --output=bin/desktop", (err, output) ->
+  exec "valac --pkg gtk+-3.0 --pkg webkitgtk-3.0 --thread src/desktop.vala --output=bin/desktop", (err, output) ->
     console.log output
     if err?
       console.log err.message
     else
+
       exspresso_path = process.cwd()
 
       #
@@ -99,7 +100,7 @@ task "build:desktop", "build desktop launcher", ->
         "Version=1.0"
         "Type=Application"
         "Name=Exspresso"
-        "Comment="
+        "Comment=Exspresso Demo Application"
         "Exec=#{exspresso_path}/exspresso.sh"
         "Icon=#{exspresso_path}/bin/icons/128.png"
         "Path="

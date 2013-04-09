@@ -1,22 +1,24 @@
-# [Exspresso v0.9.1] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.9.2] (https://github.com/darkoverlordofdata/exspresso)
 
- A framework for coffee-script, inspired by [CodeIgniter] (<http://codeigniter.com/>)
+ A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
-    Exspresso features
+    Exspresso Features:
 
-      * HMVC architecture ported from Wiredesignz
-      * embedded coffee-script (ECO) for views.
-      * bootstrap css styles
-      * DB Drivers for MySQL and PostgreSQL
-      * Configuration inheritance
+      * Connect.js server stack
+      * HMVC architecture
+      * Magic: controller methods are injected into libs, models, and views.
+      * Embedded coffee-script (*.eco) views.
+      * DB Drivers for
+        * MySQL       - requires mysql
+        * PostgreSQL  - requires pg
+        * SQLite      - requires node-sqlite-purejs
+      * Cascading configuration
       * Themed templating engine
-      * Run as a local desktop application
+      * Bootstrap css styles
+      * Run as a desktop application in dedicated webkit window (requires vala)
 
- [Live Demo!](http://exspresso.herokuapp.com/)
+ [Live Demo!](http://exspresso.herokuapp.com/) on heroku using postgesql database.
 
-  Exspresso uses [not-php] (http://github.com/darkoverlordofdata/not-php) v0.3.14 as a drop in
-  replacement for many of the php api calls that were in the ported code. Since version 0.9.0,
-  the not-php module is not used by exspresso core, but may still be used by third party apps.
 
 
 ## Quick Start
@@ -42,6 +44,7 @@ Options:
  --cache
  --csrf
  --desktop
+ --preview
  --profile
  --nocache
  --nocsrf
@@ -53,14 +56,13 @@ examples:
  node exspresso --db postgres
  node exspresso express
 
-To use the --desktop option, you will need to build the excutable.
+To use the -- preview or --desktop options, you will need to build the excutable.
 note - valac required.
 ```bash
 $ sudo apt-get install valac
 $ cake build:preview
 ```
 
-To run as a local desktop app, create a launch script and desktop icon:
 ```bash
 $ sudo apt-get install valac
 $ cake build:desktop
