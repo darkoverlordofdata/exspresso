@@ -32,6 +32,7 @@ unless process.env.NODE_DISABLE_COLORS
 # generate password salt & hash values
 #
 option '-p', '--pwd [PWD]', 'password value'
+option '-d', '--db [sqlite]', 'datbase group to use'
 
 task "generate:password", "password data generator", (options) ->
 
@@ -64,8 +65,9 @@ task "build:preview", "build webkit previewer", ->
 #
 # Build the desktop app  - requires valac
 #
-task "build:desktop", "build desktop launcher", ->
+task "build:desktop", "build desktop launcher", (options) ->
 
+  options.db = 'sqlite' unless options.db?
   #
   # compile desktop.vala
   #
@@ -85,7 +87,7 @@ task "build:desktop", "build desktop launcher", ->
       bash = [
         "#!/usr/bin/env bash"
         "cd #{exspresso_path}"
-        "/usr/bin/node #{exspresso_path}/exspresso --db postgres --desktop"
+        "/usr/bin/node #{exspresso_path}/exspresso --db #{options.db} --desktop"
       ].join('\n')
 
       fs.writeFileSync  "#{exspresso_path}/exspresso.sh", bash

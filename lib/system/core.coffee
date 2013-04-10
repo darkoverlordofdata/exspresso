@@ -19,7 +19,6 @@
 #
 # @author     darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #
@@ -77,7 +76,7 @@ module.exports = ->
   #
   # Load the framework constants
   #
-  if file_exists(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
+  if fs.existsSync(APPPATH+'config/'+ENVIRONMENT+'/constants.coffee')
     require APPPATH+'config/'+ENVIRONMENT+'/constants.coffee'
   else
     require APPPATH+'config/constants.coffee'
@@ -961,7 +960,7 @@ module.exports.trim = ($str, $chars = ' ') ->
 # empty
 #
 # checks if a primitive variable has a value
-# checks if a object variable has children
+# checks if an object variable has children
 #
 # @param  [String] var  variable to check
 # @returns [Boolean] true if var has a value

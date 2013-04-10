@@ -18,7 +18,6 @@
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
@@ -176,7 +175,8 @@ class system.db.Driver
   #
   # @param  [String]  An SQL query string
   # @param  [Array]  An array of binding data
-  # @return [Mixed]  #
+  # @return [Mixed]
+  #
   query: ($sql, $binds, $next = null) =>
     if $sql is ''
       if @db_debug
@@ -218,39 +218,22 @@ class system.db.Driver
 
     return $sql
 
+  #
+  # Execute the query (continued)
+  #
   _query2: ($err, $results, $info, $time_start, $sql, $next) =>
 
     $time_end = Date.now()
 
     if $err
-      return $next($err)
-      if @_save_queries is true
-        @query_times.push 0
-
-
       #  This will trigger a rollback if transactions are being used
       @_trans_status = false
-
-      if @db_debug
-        #  grab the error number and message now, as we might run some
-        #  additional queries before displaying the error
-        $error_no = @_error_number()
-        $error_msg = @_error_message()
-
-        #  We call this function in order to roll-back queries
-        #  if transactions are enabled.  If we don't call this here
-        #  the error message will trigger an exit, causing the
-        #  transactions to remain in limbo.
-        @trans_complete()
-
-        #  Log and display errors
-        log_message('error', 'Query error: ' + $error_msg)
-        return @displayError([
-          'Error Number: ' + $error_no,
-          $error_msg,
-          $sql
-        ]
-        )
+      #  We call this function in order to roll-back queries
+      #  if transactions are enabled.  If we don't call this here
+      #  the error message will trigger an exit, causing the
+      #  transactions to remain in limbo.
+      #@transComplete =>
+      return show_error($err)
 
     #  Stop and aggregate the query time results
     @_benchmark+= $time_end - $time_start
@@ -258,14 +241,14 @@ class system.db.Driver
     if @_save_queries is true
       @query_times.push $time_end - $time_start
 
-
     #  Increment the query counter
     @_query_count++
 
     #  Was the query a "write" type?
     #  If so we'll simply return true
     if @is_write_type($sql) is true
-      #  If caching is enabled we'll auto-cleanup any
+      $results = []
+    #  If caching is enabled we'll auto-cleanup any
       #  existing files related to this particular URI
       if @cache_on is true and @_cache_autodel is true and @_cache_init()
         @_cache.delete()
@@ -273,9 +256,7 @@ class system.db.Driver
     #  Load and instantiate the result driver
 
     $driver = @_load_rdriver()
-
     $rs = new $driver($results, $info)
-
     $rs.num_rows = $rs.numRows()
 
     #  Is query caching enabled?  If so, we'll serialize the
@@ -308,8 +289,8 @@ class system.db.Driver
   #
   _load_rdriver :  ->
 
-    require SYSPATH + 'db/Result' + EXT
-    $driver = require(SYSPATH + 'db/drivers/' + @dbdriver + '/' + ucfirst(@dbdriver) + 'Result' + EXT)
+    require SYSPATH + 'db/Result.coffee'
+    $driver = require(SYSPATH + 'db/drivers/' + @dbdriver + '/' + ucfirst(@dbdriver) + 'Result.coffee')
     return $driver
 
 
@@ -320,7 +301,8 @@ class system.db.Driver
   # not require all the features of the main query() function.
   #
   # @param  [String]  the sql query
-  # @return [Mixed]  #
+  # @return [Mixed]
+  #
   simpleQuery : ($sql, $binds, $next) ->
 
     if $next is null
@@ -556,7 +538,7 @@ class system.db.Driver
 
     #  Is there a cached result?
     if @_data_cache['table_names']?
-      return $next null,  @_data_cache['table_names']
+      return $next null, @_data_cache['table_names']
 
 
     if false is ($sql = @_list_tables($constrain_by_prefix))
@@ -564,7 +546,6 @@ class system.db.Driver
         return $next @displayError('db_unsupported_function')
 
       return $next false
-
 
     $retval = []
     @query $sql, ($err, $query) =>

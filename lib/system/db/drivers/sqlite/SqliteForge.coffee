@@ -18,7 +18,6 @@
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
@@ -81,12 +80,13 @@ class system.db.sqlite.SqliteForge extends system.db.Forge
     
     $sql+=@db._escape_identifiers($table) + "("
     $current_field_count = 0
+    $pkey = false
     
     for $field, $attributes of $fields
       #  Numeric field names aren't allowed in databases, so if the key is
       #  numeric, we know it was assigned by PHP and the developer manually
       #  entered the field information, so we'll simply add it to the list
-      if is_numeric($field)
+      if 'number' is typeof($field)
         $sql+="\n\t#{$attributes}"
         
       else
@@ -95,36 +95,46 @@ class system.db.sqlite.SqliteForge extends system.db.Forge
         $attributes = $tmp
 
         $sql+="\n\t" + @db._protect_identifiers($field)
-        
-        $sql+=' ' + $attributes.TYPE
-        
-        if $attributes.CONSTRAINT?
-          $sql+='(' + $attributes['CONSTRAINT'] + ')'
 
-        if $attributes.UNSIGNED? and $attributes.UNSIGNED is true
-          $sql+=' UNSIGNED'
+        if $attributes.AUTO_INCREMENT? and $attributes.AUTO_INCREMENT is true and $primary_keys.indexOf($field) is 0
+          $pkey = true
+          $sql+=' INTEGER PRIMARY KEY'
 
-        if $attributes.DEFAULT?
-          $sql+=' DEFAULT \'' + $attributes.DEFAULT + '\''
+        else
 
-        if $attributes.NULL? and $attributes.NULL is true
-          $sql+=' NULL'
-          
-        else 
-          $sql+=' NOT NULL'
+          if $attributes.UNSIGNED? and $attributes.UNSIGNED is true
+            $sql+=' UNSIGNED'
 
-        if $attributes.AUTO_INCREMENT? and $attributes.AUTO_INCREMENT is true
-          $sql+=' AUTO_INCREMENT'
+          if $attributes.TYPE is 'tinyint' then $attributes.TYPE = 'int'
+          $sql+=' ' + $attributes.TYPE
+
+          if $attributes.CONSTRAINT?
+            $sql+='(' + $attributes['CONSTRAINT'] + ')'
+
+          if $attributes.DEFAULT?
+            $sql+=' DEFAULT \'' + $attributes.DEFAULT + '\''
+
+          if $attributes.NULL? and $attributes.NULL is true
+            $sql+=' NULL'
+
+          else
+            $sql+=' NOT NULL'
+
+          if $attributes.AUTO_INCREMENT? and $attributes.AUTO_INCREMENT is true
+            $sql+=' AUTOINCREMENT'
 
       #  don't add a comma on the end of the last field
       if ++$current_field_count < keys($fields).length
         $sql+=','
 
-    if count($primary_keys) > 0
+    if $primary_keys.length > 0 and $pkey is false
       $primary_keys = @db._protect_identifiers($primary_keys)
       $sql+=",\n\tPRIMARY KEY (" + $primary_keys.join(', ') + ")"
 
+    $sql+="\n)"
+
     if Array.isArray($keys) and $keys.length > 0
+
 
       for $key in $keys
         if Array.isArray($key)
@@ -135,9 +145,9 @@ class system.db.sqlite.SqliteForge extends system.db.Forge
           $key_name = @db._protect_identifiers($key)
           $key = [$key_name]
 
-        $sql+=",\n\tKEY #{$key_name} (" + $key.join(', ') + ")"
+        $sql+=";\n\tCREATE INDEX #{$key_name} ON " +@db._escape_identifiers($table) + " (" + $key.join(', ') + ")"
 
-    $sql+="\n)"
+    return $sql
 
   
   #

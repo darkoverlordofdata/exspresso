@@ -4,14 +4,14 @@
 
     Exspresso Features:
 
-      * Connect.js server stack
+      * Runs on the connect.js stack
       * HMVC architecture
       * Magic: controller methods are injected into libs, models, and views.
       * Embedded coffee-script (*.eco) views.
       * DB Drivers for
         * MySQL       - requires mysql
         * PostgreSQL  - requires pg
-        * SQLite      - requires node-sqlite-purejs
+        * SQLite      - requires sqlite3
       * Cascading configuration
       * Themed templating engine
       * Bootstrap css styles
@@ -33,7 +33,7 @@ $ npm install exspresso
 ### Run on localhost
 
 ```bash
-$ npm start
+$ node exspresso.js --db sqlite --install
 ```
 and point your browser to http://localhost:5000
 
@@ -49,7 +49,7 @@ Options:
  --nocache
  --nocsrf
  --noprofile
- --db <mysql|postgres>
+ --db <mysql|postgres|sqlite>
 ```
 
 examples:

@@ -18,7 +18,6 @@
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
@@ -63,11 +62,11 @@ class system.db.Forge
   createDatabase: ($db_name, $next) ->
 
     $sql = @_create_database($db_name)
-    console.log 'FORGE'
 
     if 'boolean' is typeof($sql)
-      $next $sql
-      
+      return $next(null) if $sql
+      return show_error('Unable to create database %s', $db_name)
+
     @db.query($sql, $next)
     
   

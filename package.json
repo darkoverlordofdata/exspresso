@@ -15,7 +15,7 @@
     "not-php": "*",
     "mysql": "*",
     "pg": "*",
-    "node-sqlite-purejs": "*",
+    "sqlite3": "*",
     "connect": "*",
     "express": "",
     "bcrypt": "*",
@@ -32,7 +32,7 @@
     "utf8": "*"
   },
   "scripts": {
-    "start": "foreman start web",
+    "start": "forman start web",
     "test": "cake test"
   },
   "devDependencies": {

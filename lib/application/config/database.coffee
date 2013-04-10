@@ -125,5 +125,22 @@ exports['db'] =
     'autoinit': false
     'stricton': false
 
+  sqlite:
+    'hostname': ''
+    'username': ''
+    'password': ''
+    'database': '/home/bruce/Projects/exspresso/exspresso.sqlite'
+    'dbdriver': 'sqlite'
+    'dbprefix': ''
+    'pconnect': true
+    'db_debug': true
+    'cache_on': false
+    'cachedir': ''
+    'char_set': 'utf8'
+    'dbcollat': 'utf8_general_ci'
+    'swap_pre': ''
+    'autoinit': true
+    'stricton': false
+
 #  End of file database.php
 #  Location: ./application/config/database.php 

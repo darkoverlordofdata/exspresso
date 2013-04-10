@@ -19,7 +19,6 @@
 # @author		  darkoverlordofdata
 # @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
 # @copyright	Copyright (c) 2011 Wiredesignz
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @see 		    http://darkoverlordofdata.com
 # @since		  Version 1.0
 #

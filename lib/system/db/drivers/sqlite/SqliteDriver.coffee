@@ -17,7 +17,6 @@
 #
 # @author     darkoverlordofdata
 # @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @copyright  Copyright (c) 2008 - 2011, EllisLab, Inc.
 # @see        http://darkoverlordofdata.com
 # @since      Version 1.0
 #
@@ -29,20 +28,11 @@
 #
 # SQLite Database Adapter Class
 #
-# Note: _DB is an extender class that the app controller
-# creates dynamically based on whether the active record
-# class is being used or not.
-#
-# @package		CodeIgniter
-# @subpackage	Drivers
-# @category	Database
-# @author		ExpressionEngine Dev Team
-# @link		http://codeigniter.com/user_guide/database/
 #
 class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
 
   dbdriver          : 'sqlite'
-  version           : require(FCPATH + 'node_modules/node-sqlite-purejs/package.json').version
+  version           : require(FCPATH + 'node_modules/sqlite3/package.json').version
 
   #  The character used to escape with - not needed for SQLite
   _escape_char      : '"'
@@ -65,31 +55,35 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   # @access	private called by the base class
   # @return	resource
   #
-  db_connect: ($next) ->
+  connect: ($next) ->
 
-    sqlite = require('node-sqlite-purejs')
-    sqlite.open @database, {}, ($err, $client) =>
+    if @database.charAt(0) isnt '/'
+      @database = FCPATH+@database
 
-      @client = $client
-      if ($err)
-        @connected = false
-        console.log $err
-      else
-        $next null, $client
+    sqlite3 = require('sqlite3')
 
-  
-  #  --------------------------------------------------------------------
-  
+    connected = ($err) =>
+      return $next($err) if $err
+      @connected = @client.open
+      sqlite3.verbose() if ENVIRONMENT is 'development'
+      $next null, @client
+
+    @client = new sqlite3.Database(@database, ($err) =>
+      return $next($err) if $err
+      @connected = @client.open
+      sqlite3.verbose() if ENVIRONMENT is 'development'
+      $next null, @client
+    )
+
+
   #
   # Persistent database connection
   #
   # @access	private called by the base class
   # @return	resource
   #
-  db_pconnect :  ->
+  pconnect :  ->
 
-  
-  #  --------------------------------------------------------------------
   
   #
   # Reconnect
@@ -100,11 +94,9 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   # @access	public
   # @return	void
   #
-  reconnect :  ->
-    #  not implemented in SQLite
-    
-  
-  #  --------------------------------------------------------------------
+  reconnect : ($next) ->
+    # no implementation needed for sqlite
+    $next null
   
   #
   # Select the database
@@ -115,8 +107,6 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   db_select :  ->
     return true
     
-  
-  #  --------------------------------------------------------------------
   
   #
   # Set client character set
@@ -132,8 +122,6 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
     return true
 
   
-  #  --------------------------------------------------------------------
-  
   #
   # Version number query string
   #
@@ -144,8 +132,6 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
     "SELECT sqlite_version() AS ver"
     
   
-  #  --------------------------------------------------------------------
-  
   #
   # Execute the query
   #
@@ -155,11 +141,16 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   #
   _execute: ($sql, $params, $next) ->
     $sql = @_prep_query($sql)
-    @client.exec $sql, $next
+    if $next?
+      @client.all $sql, $params, $next
+    else
+      $next = $params
+      if @is_write_type($sql)
+        @client.exec $sql, $next
+      else
+        @client.all $sql, $next
 
-  
-  #  --------------------------------------------------------------------
-  
+
   #
   # Prep the query
   #
@@ -195,7 +186,7 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
     #  even if the queries produce a successful result.
     @_trans_failure = if ($test_mode is true) then true else false
 
-    @simpleQuery 'BEGIN TRANSACTION', => #  can also be BEGIN or BEGIN WORK
+    @simpleQuery 'BEGIN TRANSACTION', =>
       $next(null, true)
 
   #
@@ -211,7 +202,7 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
     if @_trans_depth > 0
       return $next(null, true)
 
-    @simpleQuery 'COMMIT TRANSACTION', => #  can also be BEGIN or BEGIN WORK
+    @simpleQuery 'COMMIT TRANSACTION', =>
       $next(null, true)
 
 
@@ -299,17 +290,16 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   # Generates a platform-specific query string so that the table names can be fetched
   #
   # @private
-  # @return	[Boolean]ean
+  # @return	[Boolean]
   # @return	[String]
   #
   _list_tables: ($prefix_limit = false) ->
-    $sql = "SELECT name FROM sqlite_master WHERE  tyype = 'table' "
-
+    $sql = "SELECT name AS 'TABLE_NAME' FROM sqlite_master WHERE  type = 'table' "
 
     if $prefix_limit isnt false and @dbprefix isnt ''
       $sql+="AND name LIKE '" + @escape_like_str(@dbprefix) + "%'"
-    else
-      $sel+="AND name NOT LIKE 'sqlite_%'"
+    #else
+    #  $sql+="AND name NOT LIKE 'sqlite_%'"
     return $sql
 
 
@@ -441,8 +431,10 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   # @return	[String]
   #
   _insert_batch : ($table, $keys, $values) ->
-    "INSERT INTO " + $table + " (" + $keys.join(', ') + ") VALUES " + $values.join(', ')
-
+    $result = []
+    for $value in $values
+      $result.push "INSERT INTO " + $table + " (" + $keys.join(', ') + ") VALUES " + $value + ';'
+    return $result.join('\n');
 
 
   #
@@ -577,7 +569,8 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   # @param	resource
   # @return [Void]  #
   _close: ($next) ->
-    @client.end($next)
+    @client.close()
+    $next() if $next?
 
 module.exports = system.db.sqlite.SqliteDriver
 
