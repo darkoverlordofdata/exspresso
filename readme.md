@@ -6,7 +6,7 @@
 
       * Runs on the connect.js stack
       * HMVC architecture
-      * Magic: controller methods are injected into libs, models, and views.
+      * Magic: controller members are available to all libs, models, and views.
       * Embedded coffee-script (*.eco) views.
       * DB Drivers for
         * MySQL       - requires mysql
