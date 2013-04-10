@@ -38,6 +38,19 @@ class Travel extends application.core.Module
 
 
 
+  #
+  # Initialize the module
+  #
+  #   Install if needed
+  #   Load the categories
+  #
+  # @return [Void]
+  #
+  initialize: () ->
+    @controller.load.model 'travel/HotelModel'
+    @controller.hotelmodel.install() if @controller.install
+
+
 # END CLASS Travel
 module.exports = Travel
 # End of file Travel.coffee

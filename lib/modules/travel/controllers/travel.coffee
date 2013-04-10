@@ -119,14 +119,11 @@ class Travel extends application.core.PublicController
     $searchString = @session.userdata("searchString") ||  ''
     $pageSize     = @session.userdata('pageSize') || ''
 
-    @db.select ['hotel.name', 'hotel.address', 'hotel.city', 'hotel.state', 'booking.checkinDate', 'booking.checkoutDate', 'booking.id']
-    @db.from 'booking'
-    @db.where 'booking.state', 'BOOKED'
-    @db.join 'hotel', 'hotel.id = booking.hotel','inner'
-    @db.get ($err, $bookings) =>
+    @load.model 'HotelModel'
+    @hotelmodel.getBooked ($err, $bookings) =>
 
       @template.view "travel/main", $err || {
-        bookings:       $bookings.result()
+        bookings:       $bookings
         searchString:   $searchString
         pageSize:       ''+parseInt($pageSize,10)
         pageSizes:
@@ -143,6 +140,7 @@ class Travel extends application.core.PublicController
   #
   hotels: ($start = 0) ->
 
+    @load.model 'HotelModel'
     base_url = @load.helper('url').base_url
 
     $start = parseInt($start)
@@ -157,7 +155,7 @@ class Travel extends application.core.PublicController
       $searchString = @session.userdata("searchString")
       $pageSize     = parseInt(@session.userdata('pageSize'),10)
 
-    @db.countAll 'hotel', ($err, $count) =>
+    @hotelmodel.getCount ($err, $count) =>
 
       return @template.view($err) if $err
 
@@ -167,13 +165,10 @@ class Travel extends application.core.PublicController
         total_rows  : parseInt($count, 10)
         per_page    : $pageSize
 
-      @db.from 'hotel'
-      @db.like 'name', "%#{$searchString}%"
-      @db.limit $pageSize, $start
-      @db.get ($err, $hotels) =>
+      @hotelmodel.getLike $searchString, $pageSize, $start, ($err, $hotels) =>
 
         @template.view "travel/hotels", $err || {
-          hotels:       $hotels.result()
+          hotels:       $hotels
           searchString: $searchString
           pageSize:     $pageSize
         }
@@ -188,13 +183,12 @@ class Travel extends application.core.PublicController
   #
   hotel: ($id) ->
 
-    @db.from 'hotel'
-    @db.where 'id', $id
-    @db.get ($err, $hotel) =>
+    @load.model 'HotelModel'
+    @hotelmodel.getById $id, ($err, $hotel) =>
 
       @template.view "travel/detail", $err || {
         id:       $id
-        hotel:    $hotel.row()
+        hotel:    $hotel
       }
 
 
@@ -210,13 +204,12 @@ class Travel extends application.core.PublicController
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/booking/#{$id}"
 
-    @db.from 'hotel'
-    @db.where 'id', $id
-    @db.get ($err, $hotel) =>
+    @load.model 'HotelModel'
+    @hotelmodel.getById $id, ($err, $hotel) =>
 
       @template.view "travel/booking", $err || {
         id:       $id
-        hotel:    $hotel.row()
+        hotel:    $hotel
         beds:
                   '1':    'One king-size bed'
                   '2':    'Two double beds'
@@ -258,13 +251,11 @@ class Travel extends application.core.PublicController
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/confirm/#{$id}"
 
-    @db.from 'hotel'
-    @db.where 'id', $id
-    @db.get ($err, $hotel) =>
+    @load.model 'HotelModel'
+    @hotelmodel.getById $id, ($err, $hotel) =>
 
       return @template.view($err) if $err
 
-      $hotel = $hotel.row()
       $customer = @session.userdata('customer')
       $booking =
         username:       $customer.username
@@ -280,26 +271,24 @@ class Travel extends application.core.PublicController
         amenities:      @input.post('amenities')
         state:          "CREATED"
 
-      @db.insert 'booking', $booking, ($err) =>
+      @hotelmodel.createBooking $booking, ($err, $booking_id) =>
 
-        if $err then throw new Error($err)
-        @db.insert_id ($err, $booking_id) =>
+        return @template.view($err) if $err
+        return @template.view(new Error('booking id not returned')) unless $booking_id?
 
-          return @template.view($err) if $err
-          if not $booking_id? then throw new Error('insert id not returned')
+        $booking.id = $booking_id
+        $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
+        $booking.totalPayment = $booking.numberOfNights * $hotel.price
+        @template.view "travel/confirm",
 
-          $booking.id = $booking_id
-          $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
-          $booking.totalPayment = $booking.numberOfNights * $hotel.price
-          @template.view "travel/confirm",
-
-            hotel:    $hotel
-            booking:  $booking
+          hotel:    $hotel
+          booking:  $booking
 
 
   #
   # Book/Revise/Cancel
   #
+  # @param  [String]  $id booking id
   # @return [Void]
   #
   book: ($id) ->
@@ -307,39 +296,42 @@ class Travel extends application.core.PublicController
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/book/#{$id}"
 
-    @db.from 'booking'
-    @db.where 'id', $id
-    @db.get ($err, $booking) =>
+    @load.model 'HotelModel'
+    @hotelmodel.getById $id, ($err, $booking) =>
 
       return @template.view($err) if $err
-      $booking = $booking.row()
 
       if @input.post('confirm')?
 
-        @db.where 'id', $id
-        @db.update 'booking', state: 'BOOKED', ($err) =>
+        #
+        # Confirm
+        #
+        @hotelmodel.confirmBooking $id, ($err) =>
 
           return @redirect "/travel"
 
       else if @input.post('cancel')?
 
-        @db.where 'id', $id
-        @db.update 'booking', state: 'CANCELLED', ($err) =>
+        #
+        # Cancel
+        #
+        @hotelmodel.cancelBooking $id, ($err) =>
 
           return @redirect "/travel"
 
       else if @input.post('revise')?
 
-        @db.from 'hotel'
-        @db.where 'id', $booking.hotel
-        @db.get ($err, $hotel) =>
+        #
+        # Revise
+        #
+        @hotelmodel.getById $booking.hotel, ($err, $hotel) =>
 
           return @template.view($err) if $err
 
           $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
           $booking.totalPayment = $booking.numberOfNights * $hotel.price
           @template.view "travel/booking",
-            hotel:    $hotel.row()
+            hotel:    $hotel
             booking:  $booking
 
 

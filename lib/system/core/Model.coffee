@@ -41,6 +41,7 @@ class system.core.Model
   constructor: ($controller) ->
 
     log_message 'debug', "Model Class Initialized"
+    defineProperties @, controller : {writeable: false, value: $controller}
 
 
 # END Model class

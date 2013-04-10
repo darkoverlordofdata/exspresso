@@ -37,16 +37,6 @@ class Blog extends application.core.Module
   active        : true
 
   #
-  # Set the properties
-  #
-  # @param  [system.core.Exspresso] controller  the system controller
-  #
-  constructor: ($controller) ->
-
-    defineProperties @, controller : {writeable: false, value: $controller}
-
-
-  #
   # Initialize the module
   #
   #   Install if needed

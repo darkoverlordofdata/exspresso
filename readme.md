@@ -53,9 +53,10 @@ Options:
 ```
 
 examples:
- node exspresso --db postgres
- node exspresso express
-
+```bash
+$ node exspresso --db postgres  # launch using postgesql database
+$ node exspresso express        # launch using express.js server
+```
 To use the -- preview or --desktop options, you will need to build the excutable.
 note - valac required.
 ```bash

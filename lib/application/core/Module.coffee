@@ -33,6 +33,15 @@ class application.core.Module
   description   : ''
   active        : true
 
+  #
+  # Set the properties
+  #
+  # @param  [system.core.Exspresso] controller  the system controller
+  #
+  constructor: ($controller) ->
+
+    defineProperties @, controller : {writeable: false, value: $controller}
+
   install: ->
 
 
