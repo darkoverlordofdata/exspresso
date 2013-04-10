@@ -47,5 +47,5 @@
  
  
     -->   represents the .__proto__ field of the object
-    ...   represends a cyclic limk back to the controller instance
+    ...   represends a cyclic link back to the controller instance
  

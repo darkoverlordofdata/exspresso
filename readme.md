@@ -68,6 +68,12 @@ $ sudo apt-get install valac
 $ cake build:desktop
 ```
 
+### More...
+
+  * [Magic](/magic.md) Inheritance injection
+  * [Coding](/coding%20standards.md) Exspresso coding standards
+  * [Status](/class%20status.md) Component status
+  * [Todo](/todo.md) Wish list
 
 ## License
 

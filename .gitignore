@@ -6,6 +6,7 @@
 /lib/application/cache
 /docs
 /bin/preview
-exspresso.sh
+/bin/desktop
 Exspresso.desktop
+exspresso.sh
 exspresso.sqlite
