@@ -137,17 +137,17 @@ class modules.travel.models.HotelModel
   #
   # Create booking
   #
-  # @param  [Integer] $booking booking data
+  # @param  [Integer] $data booking data
   # @param  [Function] $next  async function
   # @return [Void]
   #
-  createBooking: ($booking, $next) ->
-    @db.insert 'booking', $booking, ($err) =>
+  createBooking: ($data, $next) ->
+    @db.insert 'booking', $data, ($err) =>
       return $next($err) if $err?
 
-      @db.insertId ($err, $booking_id) ->
+      @db.insertId ($err, $id) ->
         return $next($err) if $err?
-        $next null, $booking_id
+        $next null, $id
 
 
 

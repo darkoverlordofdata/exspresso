@@ -22,7 +22,7 @@ class Admin extends application.core.AdminController
 
 
 
-  index: ->
+  indexAction: ->
     @template.setAdminMenu 'Travel'
     @template.view 'admin'
 

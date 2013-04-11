@@ -37,6 +37,40 @@ class modules.blog.models.BlogModel
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
+  getAll: ($next) ->
+    @db.select 'blog.id, users.name AS author, category.name AS category, blog.status, blog.created_on, blog.updated_on, blog.title'
+    @db.from 'blog'
+    @db.join 'users', 'users.uid = blog.author_id', 'inner'
+    @db.join 'category', 'category.id = blog.category_id', 'inner'
+    @db.get ($err, $blog) ->
+      return $next($err) if $err?
+      $next null, $blog.result()
+
+  getById: ($id, $next) ->
+    @db.from 'blog'
+    @db.where 'id', $id
+    @db.get ($err, $blog) ->
+      return $next($err) if $err?
+      $next null, $blog.row()
+
+  deleteById: ($id, $next) ->
+    @db.where 'id', $id
+    @db.delete 'blog', $next
+
+  create: ($doc, $next) ->
+
+    @db.insert 'blog', $doc, ($err) =>
+      return $next($err) if $err?
+
+      @db.insertId ($err, $id) ->
+        return $next($err) if $err?
+        $next null, $id
+
+  save: ($id, $doc, $next) ->
+    @db.where 'id', $id
+    @db.update 'blog', $update, $next
+
+
   #
   # Category Names
   #

@@ -20,7 +20,7 @@ class Admin extends application.core.AdminController
   #
   # Blog Categories/Options
   #
-  index: ->
+  indexAction: ->
     @load.library 'table'
     @template.setAdminMenu 'Blog'
 
