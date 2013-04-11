@@ -1,13 +1,13 @@
 <div class="container">
     <div class="row">
         <%- @form_open('/blog/save') %>
-        <%- @form_hidden('id', @blog.id) %>
+        <%- @form_hidden('id', @doc.id) %>
         <div class="control-group">
             <%- @form_label('Title:', 'title', class:'control-label') %>
-            <%- @form_input('title', @blog.title) %>
+            <%- @form_input('title', @doc.title) %>
         </div>
         <div class="control-group">
-            <%- @ckeditor('blog', @blog.body) %>
+            <%- @ckeditor('blog', @doc.body) %>
         </div>
         <div class="control-group">
             <input class="btn btn-primary" name="save" type="submit" value="Save" />

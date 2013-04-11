@@ -31,12 +31,23 @@ class modules.blog.models.BlogModel
   _categories       : null
   _category_names   : null
 
+  #
+  # Initialize Blog Model
+  #
   constructor: () ->
 
     defineProperties @,
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
+    @load_categories()
+
+  #
+  # Get all
+  #
+  # @param  [Function] $next  async function
+  # @return [Void]
+  #
   getAll: ($next) ->
     @db.select 'blog.id, users.name AS author, category.name AS category, blog.status, blog.created_on, blog.updated_on, blog.title'
     @db.from 'blog'
@@ -46,6 +57,13 @@ class modules.blog.models.BlogModel
       return $next($err) if $err?
       $next null, $blog.result()
 
+  #
+  # Get blog by id
+  #
+  # @param  [Integer] $id blog id
+  # @param  [Function] $next  async function
+  # @return [Void]
+  #
   getById: ($id, $next) ->
     @db.from 'blog'
     @db.where 'id', $id
@@ -53,10 +71,24 @@ class modules.blog.models.BlogModel
       return $next($err) if $err?
       $next null, $blog.row()
 
+  #
+  # Delete blog by id
+  #
+  # @param  [Integer] $id blog id
+  # @param  [Function] $next  async function
+  # @return [Void]
+  #
   deleteById: ($id, $next) ->
     @db.where 'id', $id
     @db.delete 'blog', $next
 
+  #
+  # Create new blog doc
+  #
+  # @param  [Integer] $doc blog document
+  # @param  [Function] $next  async function
+  # @return [Void]
+  #
   create: ($doc, $next) ->
 
     @db.insert 'blog', $doc, ($err) =>
@@ -66,6 +98,14 @@ class modules.blog.models.BlogModel
         return $next($err) if $err?
         $next null, $id
 
+  #
+  # Save blog doc by id
+  #
+  # @param  [Integer] $id blog id
+  # @param  [Integer] $doc blog document
+  # @param  [Function] $next  async function
+  # @return [Void]
+  #
   save: ($id, $doc, $next) ->
     @db.where 'id', $id
     @db.update 'blog', $update, $next
@@ -107,7 +147,7 @@ class modules.blog.models.BlogModel
   # @param  [Function]  next  async callback
   # @return [Void]
   #
-  initialize: () ->
+  load_categories: () ->
 
     @queue ($next) =>
 

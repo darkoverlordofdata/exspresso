@@ -1,7 +1,7 @@
 <div class="container">
     <p></p>
     <div class="row">
-        <h3>Blog Entries</h3>
+        <h3>Blog Articles</h3>
     </div>
     <div class="row">
         <div class="span12">
@@ -20,17 +20,19 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% for $entry in @entries: %>
+                <% for $doc in @docs: %>
                 <tr>
-                    <td><%= $entry.id %></td>
-                    <td><%- @anchor("blog/show/#{$entry.id}", $entry.title) %></td>
-                    <td><%= $entry.author %></td>
-                    <td><%= $entry.category %></td>
-                    <td><%= $entry.status %></td>
-                    <td><%= @date('MM-DD-YYYY hh:mm:ss', $entry.created_on) %></td>
-                    <td><%= @date('MM-DD-YYYY hh:mm:ss', $entry.updated_on) %></td>
-                    <td><%- @anchor("blog/edit/#{$entry.id}", 'Edit') %></td>
-                    <td><%- @anchor("blog/del/#{$entry.id}", 'Delete') %></td>
+                    <td><%= $doc.id %></td>
+                    <td><%- @anchor("blog/show/#{$doc.id}", $doc.title) %></td>
+                    <td><%= $doc.author %></td>
+                    <td><%= $doc.category %></td>
+                    <td><%= $doc.status %></td>
+                    <td><%= @date('MM-DD-YYYY hh:mm:ss', $doc.created_on) %></td>
+                    <td><%= @date('MM-DD-YYYY hh:mm:ss', $doc.updated_on) %></td>
+                    <% if @user.isLoggedIn: %>
+                    <td><%- @anchor("blog/edit/#{$doc.id}", 'Edit') %></td>
+                    <td><%- @anchor("blog/del/#{$doc.id}", 'Delete') %></td>
+                    <% end %>
                 </tr>
                 <% end %>
                 </tbody>
@@ -40,9 +42,9 @@
     <div class="row">
         <div class="span11"></div>
         <div class="span1">
-            <p>
-                <%- @anchor("blog/new", "New", class: "btn-primary btn") %>
-            </p>
+            <% if @user.isLoggedIn: %>
+            <p><%- @anchor("blog/new", "New", class: "btn-primary btn") %></p>
+            <% end %>
         </div>
     </div>
     <p class="row"></p>

@@ -38,7 +38,7 @@ $ node exspresso.js --db sqlite --install
 and point your browser to http://localhost:5000
 
 ```bash
-Usage: node exspresso <connect|express> [--option]
+Usage: node exspresso [--option]
 
 Options:
  --cache
@@ -52,11 +52,6 @@ Options:
  --db <mysql|postgres|sqlite>
 ```
 
-examples:
-```bash
-$ node exspresso --db postgres  # launch using postgesql database
-$ node exspresso express        # launch using express.js server
-```
 To use the -- preview or --desktop options, you will need to build the excutable.
 note - valac required.
 ```bash

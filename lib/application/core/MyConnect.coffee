@@ -112,7 +112,6 @@ class application.core.MyConnect extends system.core.Connect
     @app.use $driver.query()
     @app.use $driver.bodyParser()
     @app.use $driver.methodOverride()
-    @app.use @controller.parseBaseUrl()
 
 
 

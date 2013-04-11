@@ -149,10 +149,7 @@ class modules.travel.models.HotelModel
         return $next($err) if $err?
         $next null, $id
 
-
-
-
-        #
+  #
   # Install the Hotel Module data
   #
   # @return [Void]

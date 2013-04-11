@@ -197,7 +197,7 @@ class system.core.Connect
 
     @app = $driver()
     parseUrl = $driver.utils.parseUrl
-    @port = @config.item('port') || 3000
+    @port = @config.item('port') #|| 3000
 
     @app.use $driver.logger(@config.item('logger'))
     #
