@@ -247,7 +247,6 @@ class system.db.Driver
     #  Was the query a "write" type?
     #  If so we'll simply return true
     if @is_write_type($sql) is true
-      $results = []
       #  If caching is enabled we'll auto-cleanup any
       #  existing files related to this particular URI
       if @cache_on is true and @_cache_autodel is true and @_cache_init()

@@ -36,6 +36,7 @@ class system.db.sqlite.SqliteResult extends system.db.Result
 
   constructor: ($results) ->
 
+    $results = [] unless $results?
     @_result_array = @_result_object = $results
     @_metadata = []
     if $results.length > 0

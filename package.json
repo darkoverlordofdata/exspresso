@@ -29,7 +29,7 @@
     "utf8": "*"
   },
   "scripts": {
-    "start": "forman start web",
+    "start": "foreman start web",
     "test": "cake test"
   },
   "devDependencies": {
