@@ -28,8 +28,8 @@
 #
 class modules.blog.models.BlogModel
 
-  _categories       : null
-  _category_names   : null
+  _categories       : null  # category table cache
+  _category_names   : null  # hash of category names for drop-down list
 
   #
   # Initialize Blog Model
@@ -40,7 +40,7 @@ class modules.blog.models.BlogModel
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
-    @load_categories()
+    @queue @_load_categories
 
   #
   # Get all
@@ -112,11 +112,37 @@ class modules.blog.models.BlogModel
 
 
   #
+  # New Category
+  #
+  # Create a new category, update cache
+  #
+  # @param  [String]  $name new category name
+  # @param  [Fundtion]  $next async callback
+  # @return [Void]
+  #
+  newCategory: ($name, $next) ->
+
+    @db.insert 'category', name: $name, ($err) =>
+      return $next($err) if $err?
+
+      @db.insertId ($err, $id) =>
+        return $next($err) if $err?
+
+        @_categories.push id: $id, name: $name
+        @_category_names[$name] = $name
+
+        $next null, $id
+
+
+  getCategories: () ->
+    @_categories
+
+  #
   # Category Names
   #
   # @return [Object] hash of category names for dropdown list
   #
-  categoryNames: () ->
+  getCategoryNames: () ->
     @_category_names
 
   #
@@ -125,7 +151,7 @@ class modules.blog.models.BlogModel
   # @param  [String]  id  category id
   # @return [String] the name associated with the id
   #
-  categoryName: ($id) ->
+  getCategoryName: ($id) ->
     for $row in @_categories
       return $row.name if $id is $row.id
     ''
@@ -136,7 +162,7 @@ class modules.blog.models.BlogModel
   # @param  [String]  name  category name
   # @return [String] the id associated with the name
   #
-  categoryId: ($name) ->
+  getCategoryId: ($name) ->
     for $row in @_categories
       return $row.id if $name is $row.name
     ''
@@ -147,22 +173,17 @@ class modules.blog.models.BlogModel
   # @param  [Function]  next  async callback
   # @return [Void]
   #
-  load_categories: () ->
+  _load_categories: ($next) =>
 
-    @queue ($next) =>
+    @db.from 'category'
+    @db.get ($err, $cat) =>
 
-      #
-      # load the blog categories
-      #
-      @db.from 'category'
-      @db.get ($err, $cat) =>
+      return $next() if $err
+      for $row in $cat.result()
+        @_categories.push $row
+        @_category_names[$row.name] = $row.name
 
-        return $next() if $err
-        for $row in $cat.result()
-          @_categories.push $row
-          @_category_names[$row.name] = $row.name
-
-        $next()
+      $next()
 
   #
   # Install the Blog Module data
@@ -174,9 +195,6 @@ class modules.blog.models.BlogModel
     @load.dbforge() unless @dbforge?
     @queue @install_category
     @queue @install_blog
-
-
-
 
   #
   # Step 1:

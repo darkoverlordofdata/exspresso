@@ -36,14 +36,14 @@ class system.core.Router
   #
   # @property [Object] Hash of bindings for each route
   #
-  routes                  : null        # route dispatch bindings
-
-  _default_controller     : false       # matches route '/'
-  _not_found              : false       # when the specified controller is not found
-  _directory              : ''          # parsed directory
-  _module                 : ''          # parsed module
-  _class                  : ''          # parsed class
-  _method                 : ''          # parsed method
+  routes                  : null          # route dispatch bindings
+  _default_controller     : false         # matches route '/'
+  _default_method         : 'indexAction' # when no method is supplied
+  _not_found              : false         # when the specified controller is not found
+  _directory              : ''            # parsed directory
+  _module                 : ''            # parsed module
+  _class                  : ''            # parsed class
+  _method                 : ''            # parsed method
 
   #
   # Initialize the router hash
@@ -97,8 +97,8 @@ class system.core.Router
     else
 
       @setClass @_default_controller
-      @setMethod 'index'
-      @_set_request [@_default_controller, 'index']
+      @setMethod @_default_method
+      @_set_request [@_default_controller, @_default_method]
 
     log_message 'debug', "No URI present. Default controller set."
 
@@ -131,7 +131,7 @@ class system.core.Router
 
       # This lets the "routed" segment array identify that the default
       # index method is being used.
-      $segments[1] = 'index'
+      $segments[1] = @_default_method
 
 
   #
@@ -203,7 +203,7 @@ class system.core.Router
         else
 
           @setClass @_default_controller
-          @setMethod 'index'
+          @setMethod @_default_method
 
         # Does the default controller exist in the sub-folder?
         if not fs.existsSync(APPPATH + 'controllers/' + @getDirectory() + @_default_controller + EXT)
@@ -353,7 +353,12 @@ class system.core.Router
   # @return [Void]
   #
   setMethod: ($method) ->
-    @_method = $method
+
+    if /\w*Action$/.test($method)
+      @_method = $method
+    else
+      @_method = "#{$method}Action"
+
 
 
   #
@@ -363,9 +368,9 @@ class system.core.Router
   #
   getMethod: ->
     if @_method is @getClass()
-      return 'index'
+      return @_default_method
 
-    return @_method || 'index'
+    return @_method || @_default_method
 
   #
   #  Set the directory name

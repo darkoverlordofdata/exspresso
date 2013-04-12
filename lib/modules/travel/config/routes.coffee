@@ -55,18 +55,18 @@
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
 # travel database application demo
-exports['/admin/travel']                  = 'travel/adminAction'
-exports['/travel']                        = 'travel/searchAction'
-exports['/travel/search']                 = 'travel/searchAction'
-exports['/travel/hotels']                 = 'travel/hotelsAction'
-exports['/travel/hotels/:start']          = 'travel/hotelsAction'
-exports['/travel/hotel/:id']              = 'travel/hotelAction'
-exports['/travel/booking/:id']            = 'travel/bookingAction'
-exports['/travel/confirm/:id']            = 'travel/confirmAction'
-exports['/travel/book/:id']               = 'travel/bookAction'
-exports['/travel/login']                  = 'travel/loginAction'
-exports['/travel/logout']                 = 'travel/logoutAction'
-exports['/travel/authenticate']           = 'travel/authenticateAction'
+exports['/admin/travel']                  = 'travel/Admin'
+exports['/travel']                        = 'travel/Travel/search'
+exports['/travel/search']                 = 'travel/Travel/search'
+exports['/travel/hotels']                 = 'travel/Travel/hotels'
+exports['/travel/hotels/:start']          = 'travel/Travel/hotels'
+exports['/travel/hotel/:id']              = 'travel/Travel/hotel'
+exports['/travel/booking/:id']            = 'travel/Travel/booking'
+exports['/travel/confirm/:id']            = 'travel/Travel/confirm'
+exports['/travel/book/:id']               = 'travel/Travel/book'
+exports['/travel/login']                  = 'travel/Travel/login'
+exports['/travel/logout']                 = 'travel/Travel/logout'
+exports['/travel/authenticate']           = 'travel/Travel/authenticate'
 
 # End of file routes.coffee
 # Location: ./application/modules/travel/config/routes.coffee

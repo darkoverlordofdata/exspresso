@@ -55,7 +55,7 @@
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
 # blog routeing
-exports['/admin/user']                        = 'user/adminAction'
+exports['/admin/user']                        = 'user/Admin'
 
 # End of file routes.coffee
 # Location: .modules/blog/config/routes.coffee

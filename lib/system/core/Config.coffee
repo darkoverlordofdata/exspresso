@@ -248,7 +248,8 @@ class system.core.Config
   #
   setItem : ($item, $value) ->
     if 'string' is typeof $item then @config[$item] = $value
-    else @setItem($key, $val) for $key, $val of $items
+    else @setItem($key, $val) for $key, $val of $item
+
     return
 
 # END Config class

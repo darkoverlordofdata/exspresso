@@ -55,15 +55,15 @@
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
 # blog routeing
-exports['/admin/blog']                        = 'blog/adminAction'
-exports['/blog']                              = 'blog/indexAction'
-exports['/blog/show/:id']                     = 'blog/showAction'
-exports['/blog/edit/:id']                     = 'blog/editAction'
-exports['/blog/del/:id']                      = 'blog/deleleAction'
-exports['/blog/new']                          = 'blog/newAction'
-exports['/blog/save']                         = 'blog/saveAction'
-exports['/blog/create']                       = 'blog/createAction'
-exports['/category/new']                      = 'blog/admin/newCategoryAction'
+exports['/admin/blog']                        = 'blog/Admin'
+exports['/category/new']                      = 'blog/Admin/newCategory'
+exports['/blog']                              = 'blog/Blog/index'
+exports['/blog/show/:id']                     = 'blog/Blog/show'
+exports['/blog/edit/:id']                     = 'blog/Blog/edit'
+exports['/blog/del/:id']                      = 'blog/Blog/delele'
+exports['/blog/new']                          = 'blog/Blog/new'
+exports['/blog/save']                         = 'blog/Blog/save'
+exports['/blog/create']                       = 'blog/Blog/create'
 
 # End of file routes.coffee
 # Location: .modules/blog/config/routes.coffee

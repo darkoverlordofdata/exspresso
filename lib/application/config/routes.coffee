@@ -54,15 +54,15 @@
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-exports['default_controller']                 = "home/index"
+exports['default_controller']                 = "Home/index"
 
-exports['/home']                              = 'home/index'
-exports['/welcome']                           = 'welcome/index'
+exports['/home']                              = 'Home/index'
+exports['/welcome']                           = 'Welcome/index'
 
-exports['/admin']                             = 'admin/index'
-exports['/admin/login']                       = 'admin/login'
-exports['/admin/logout']                      = 'admin/logout'
-exports['/admin/authenticate']                = 'admin/authenticate'
+exports['/admin']                             = 'Admin/index'
+exports['/admin/login']                       = 'Admin/login'
+exports['/admin/logout']                      = 'Admin/logout'
+exports['/admin/authenticate']                = 'Admin/authenticate'
 
 
 # End of file routes.coffee

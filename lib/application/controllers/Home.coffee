@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| admin.coffee
+#| home.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -24,55 +24,35 @@
 
 #  ------------------------------------------------------------------------
 #
-#	  Admin
+#	  Home page
 #
-require APPPATH+'core/AdminController.coffee'
+#
+#
+require APPPATH+'core/PublicController.coffee'
 
-class Admin extends application.core.AdminController
-
-
-  #
-  # Admin overview - list/enable/disable modules
-  #
-  # @return [Void]
-  #
-  #
-  index: ->
-
-    if @user.isLoggedIn
-      if @user.authorizationCheck('admin')
-        @template.setAdminMenu 'Dashboard'
-        @template.view 'admin'
-      else
-        @template.view new system.core.AuthorizationError('No Admin Permissions')
-    else
-      @template.view 'signin'
-
+class Home extends application.core.PublicController
 
   #
-  # Authenticate user credentials
+  # Index
   #
-  # @return [Void]
+  # Display the home page
   #
-  authenticate: ->
+  #   @access	public
+  # @return [Void]  #
+  indexAction: ->
 
-    @user.login @input.post("username"), @input.post("password")
+    @db.from 'blog'
+    @db.where 'id', '1'
+    @db.get ($err, $blog) =>
 
-
-  #
-  # User Logout
-  #
-  # @return [Void]
-  #
-  logout: ->
-
-    @user.logout()
+      @template.view 'home_page', $err ||
+        blog: $blog.row()
 
 
 #
 # Export the class:
 #
-module.exports = Admin
+module.exports = Home
 
-# End of file Admin.coffee
-# Location: .application/controllers/Admin.coffee
+# End of file home.coffee
+# Location: .application/controllers/home.coffee

@@ -706,7 +706,7 @@ class system.core.Loader
     #  Set the path to the requested file
     if $path is ''
       $ext = path.extname($view)
-      $file = if ($ext is '') then $view + config_item('view_ext') else $view
+      $file = if ($ext is '') then $view + '.eco' else $view
       $path = @_view_path.replace(/[\/]+$/g, '')+'/'+$file # rtrim /
 
     else

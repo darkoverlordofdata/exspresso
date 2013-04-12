@@ -256,7 +256,7 @@ class system.core.Connect
               $next null, eco.render($str, new Variables($data, flashdata: $res.flashdata))
             catch $err
               console.log $err
-              $next($err)
+              show_error $err
 
       $next()
 

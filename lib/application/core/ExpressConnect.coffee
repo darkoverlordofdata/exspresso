@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| MyConnect.coffee
+#| ExpressConnect.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -22,15 +22,17 @@
 #
 #
 
-#	MyConnect driver
+#	ExpressConnect driver
 #
 #   Extends the connect driver to use express using
-#   the subclass_prefix 'My'
+#   the subclass_prefix 'Express'
+#
+#   Set using option  --subclass Express
 #
 
 require SYSPATH+'core/Connect.coffee'
 
-class application.core.MyConnect extends system.core.Connect
+class application.core.ExpressConnect extends system.core.Connect
 
   eco             = require('eco')                # Embedded CoffeeScript templates
   fs              = require("fs")                 # File system
@@ -60,9 +62,6 @@ class application.core.MyConnect extends system.core.Connect
   #
   initialize:($driver) ->
 
-    # since we're not using
-    delete @patch
-
     @app = if $driver.version[0] is '3' then $driver() else $driver.createServer()
     @port = @controller.config.item('port')
 
@@ -72,17 +71,20 @@ class application.core.MyConnect extends system.core.Connect
     @app.use $driver.logger(@controller.config.item('logger'))
 
     #
-    # Expose assets & views
+    # Expose asset folders
     #
     @app.set 'views', APPPATH + @controller.config.item('views')
     @app.use $driver.static(APPPATH+"assets/")
     @app.use $driver.static(DOCPATH) unless DOCPATH is false
-    @app.set 'view engine', ltrim(@controller.config.item('view_ext'), '.')
+    #
+    # Set rendering
+    #
+    @app.set 'view engine', 'eco'
     if $driver.version[0] is '3'
       #
       # express v3.x
       #
-      @app.engine @controller.config.item('view_ext'), ($view, $data, $next) ->
+      @app.engine '.eco', ($view, $data, $next) ->
 
         fs.readFile $view, 'utf8', ($err, $str) ->
           if $err then $next($err)
@@ -97,7 +99,7 @@ class application.core.MyConnect extends system.core.Connect
       #
       # express v2.x
       #
-      @app.register @controller.config.item('view_ext'), eco
+      @app.register '.eco', eco
       # don't use express layouts,
       # Exspresso has it's own templating
       @app.set('view options', { layout: false });
@@ -115,7 +117,7 @@ class application.core.MyConnect extends system.core.Connect
 
 
 
-module.exports = application.core.MyConnect
+module.exports = application.core.ExpressConnect
 
-# End of file MyConnect.coffee
-# Location: .application/core/MyConnect.coffee
+# End of file ExpressConnect.coffee
+# Location: .application/core/ExpressConnect.coffee

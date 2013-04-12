@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| home.coffee
+#| welcome.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -22,37 +22,31 @@
 #
 #
 
-#  ------------------------------------------------------------------------
 #
-#	  Home page
+#	Welcome
 #
+# This is the default controller
 #
-#
-require APPPATH+'core/PublicController.coffee'
 
-class Home extends application.core.PublicController
+class Welcome extends system.core.Controller
 
   #
   # Index
   #
-  # Display the home page
+  # Demo welcome page
   #
-  #   @access	public
-  # @return [Void]  #
-  index: ->
+  # @access	public
+  # @return [Void]
+  #
+  indexAction: ->
 
-    @db.from 'blog'
-    @db.where 'id', '1'
-    @db.get ($err, $blog) =>
-
-      @template.view 'home_page', $err ||
-        blog: $blog.row()
-
-
+    #@load.view 'welcome_message', site_name: config_item('site_name')
+    @load.library 'parser'
+    @parser.parse 'welcome_message', site_name: config_item('site_name')
 #
 # Export the class:
 #
-module.exports = Home
+module.exports = Welcome
 
-# End of file home.coffee
-# Location: .application/controllers/home.coffee
+# End of file Welcome.coffee
+# Location: .application/controllers/Welcome.coffee

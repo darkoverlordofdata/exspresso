@@ -34,6 +34,7 @@ $ npm install exspresso
 
 ```bash
 $ node exspresso.js --db sqlite --install
+$ node exspresso.js --db sqlite --install --subclass Express
 ```
 and point your browser to http://localhost:5000
 
@@ -46,6 +47,7 @@ Options:
  --desktop
  --preview
  --profile
+ --subclass <Express>
  --nocache
  --nocsrf
  --noprofile
@@ -66,6 +68,7 @@ $ cake build:desktop
 
 ### More...
 
+  * [Compare](/comparison.md) Compare Exspresso to CodeIgniter
   * [Magic](/magic.md) Inheritance injection
   * [Coding](/coding%20standards.md) Exspresso coding standards
   * [Status](/class%20status.md) Component status

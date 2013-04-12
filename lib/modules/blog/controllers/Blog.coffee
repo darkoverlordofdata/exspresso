@@ -23,7 +23,7 @@ class Blog extends application.core.AdminController
   constructor: ($args...) ->
 
     super $args...
-    @load.model 'BlogModel', 'blogs'
+    @load.model 'BlogModel', 'blog'
 
   #
   # Index Action
@@ -34,7 +34,7 @@ class Blog extends application.core.AdminController
   #
   indexAction: () ->
 
-    @blogs.getAll ($err, $docs) =>
+    @blog.getAll ($err, $docs) =>
 
       @template.view 'list', $err ||
         docs : $docs
@@ -50,7 +50,7 @@ class Blog extends application.core.AdminController
   #
   showAction: ($id) ->
 
-    @blogs.getById $id, ($err, $doc) =>
+    @blog.getById $id, ($err, $doc) =>
 
       @template.view 'display', $err ||
         doc  : $doc
@@ -73,7 +73,7 @@ class Blog extends application.core.AdminController
       @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @blogs.getById $id, ($err, $doc) =>
+    @blog.getById $id, ($err, $doc) =>
       return @template.view($err) if $err?
 
       #
@@ -87,11 +87,9 @@ class Blog extends application.core.AdminController
       # Edit the article
       #
       @template.view 'edit',
-        category    : @blogs.categoryName($doc.category_id)
-        categories  : @blogs.categoryNames()
+        category    : @blog.getCategoryName($doc.category_id)
+        categories  : @blog.getCategoryNames()
         doc         : $doc
-
-          
 
 
   #
@@ -105,22 +103,22 @@ class Blog extends application.core.AdminController
   deleteAction: ($id) ->
 
     #
-    # if we're not logged in, check no further
+    # Security check: must be logged in
     #
     unless @user.isLoggedIn
-      @session.setFlashdata 'error', "Not logged in"
+      @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @blogs.getById $id, ($err, $doc) =>
+    @blog.getById $id, ($err, $doc) =>
 
       #
-      # Must be author or admin
+      # Security check: must be document owner
       #
       unless @user.isAdmin or (@user.uid is $doc.author_id)
         @session.setFlashdata 'error', 'Not an owner of this document'
         return @redirect '/blog'
 
-      @blogs.delete $id, ($err) =>
+      @blog.delete $id, ($err) =>
 
         #
         # Show the status of the delete
@@ -143,14 +141,13 @@ class Blog extends application.core.AdminController
   newAction: () ->
 
     #
-    # no anonymous access
+    # Security check: must be logged in
     #
     unless @user.isLoggedIn
-      @session.setFlashdata 'error', "Not logged in"
+      @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @template.view 'new',
-      categories  : @blogs.categoryNames()
+    @template.view 'new'
 
   #
   # Create Action
@@ -162,10 +159,15 @@ class Blog extends application.core.AdminController
   createAction: () ->
 
     #
-    # Must be logged in to create a doc
+    # Canceled?
+    #
+    return @redirect('/blog') if @input.post('cancel')
+
+    #
+    # Security check: must be logged in
     #
     unless @user.isLoggedIn
-      @session.setFlashdata 'error', "Not logged in"
+      @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
     #
@@ -174,7 +176,7 @@ class Blog extends application.core.AdminController
     $now = @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
     $doc =
       author_id     : @user.uid
-      category_id   : @blogs.categoryId(@input.post('category'))
+      category_id   : @blog.getCategoryId(@input.post('category'))
       status        : 1
       created_on    : $now
       updated_on    : $now
@@ -185,7 +187,7 @@ class Blog extends application.core.AdminController
     #
     # Create the document in database
     #
-    @blogs.create $doc, ($err, $id) =>
+    @blog.create $doc, ($err, $id) =>
 
       if $err?
         @session.setFlashdata 'error', $err.message
@@ -206,28 +208,34 @@ class Blog extends application.core.AdminController
   # @return [Void]
   #
   saveAction: () ->
-    return @redirect('/blog') if @input.post('cancel')
+
     #
-    # if we're not logged in, check no further
+    # Canceled?
+    #
+    return @redirect('/blog') if @input.post('cancel')
+
+    #
+    # Security check: must be logged in
     #
     unless @user.isLoggedIn
-      @session.setFlashdata 'error', "Not logged in"
+      @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
 
-    @blogs.getById @input.post('id'), ($err, $doc) =>
+    @blog.getById @input.post('id'), ($err, $doc) =>
 
       #
-      # Must be author or admin
+      # Security check: must be document owner
       #
       unless @user.isAdmin or (@user.uid is $doc.author_id)
-        throw new system.core.AuthorizationError('Not an owner of this article')
+        @session.setFlashdata 'error', 'Not an owner of this document'
+        return @redirect '/blog'
 
       #
       # pack up the document update
       #
       $update =
-        catagory      : @blogs.categoryId(@input.post('category'))
+        catagory      : @blog.getCategoryId(@input.post('category'))
         title         : @input.post('title')
         body          : @input.post('blog')
         updated_on    : @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
@@ -235,7 +243,7 @@ class Blog extends application.core.AdminController
       #
       # save it!
       #
-      @blogs.save $doc.id, $update, ($err) =>
+      @blog.save $doc.id, $update, ($err) =>
 
         if $err?
           @session.setFlashdata 'error', $err.message

@@ -19,6 +19,7 @@ options =
 
   * 1 public class per file
   * The public class is the exported class
+  * Controller methods mapped to uri's shall end with the 'Action' suffix to avoid name collisions
   * Public classes may be defined in a namespace
   * Include private helper classes in the same file
   * Prefix protected member names with an undersocore
@@ -40,6 +41,8 @@ class application.lib.MyBase
 
   constructor: () ->
     @_headers = []
+
+  indexAction: () ->
 
 
 module.exports = application.lib.MyBase

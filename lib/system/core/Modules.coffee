@@ -145,7 +145,7 @@ class system.core.Modules
     $file = $segments.pop()
 
     if $base is 'views/'
-      $file_ext = if $file.indexOf('.') is -1 then $file+config_item('view_ext') else $file
+      $file_ext = if $file.indexOf('.') is -1 then $file+'.eco' else $file
     else
       $file_ext = if $file.indexOf('.') is -1 then $file+EXT else $file
 

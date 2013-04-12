@@ -59,12 +59,19 @@ class system.core.Exspresso extends system.core.Object
   # @property [String] exspresso version
   #
   version: ''
+  #
+  # @property [Object] config overrides
+  #
+  configOverride: null
 
   #
   #   Exspresso Version
   #     get the current version info from the npm package
   #
   @define version: require(FCPATH + 'package.json').version
+
+  constructor: ->
+    @configOverride = {}
 
   #
   # Parse the command line options.
@@ -75,6 +82,7 @@ class system.core.Exspresso extends system.core.Object
   #  --preview    preview using appjs <br />
   #  --profile    enable profiling <br />
   #  --install    run install checks
+  #  --subclass   set the subclass prefix
   #  --nocache    disable cacheing <br />
   #  --nocsrf     disable xss checks <br />
   #  --noprofile  disable profiling <br />
@@ -96,23 +104,32 @@ class system.core.Exspresso extends system.core.Object
     process.argv.shift() # node
     process.argv.shift() # exspresso
     $set_db = false
+    $set_pfx = false
     for $arg in process.argv
+
       if $set_db is true
         $db = $arg
         $set_db = false
         continue
 
+      if $set_pfx is true
+        @setConfig subclass_prefix: $arg
+        $set_pfx = false
+        continue
+
       switch $arg
-        when '--db'         then $set_db    = true
-        when '--cache'      then $cache    = true
-        when '--csrf'       then $csrf     = true
-        when '--desktop'    then $desktop  = true
-        when '--preview'    then $preview  = true
-        when '--profile'    then $profile  = true
-        when '--install'    then $install  = true
-        when '--nocache'    then $cache    = false
-        when '--nocsrf'     then $csrf     = false
-        when '--noprofile'  then $profile  = false
+        when '--db'         then $set_db  = true
+        when '--cache'      then $cache   = true
+        when '--csrf'       then $csrf    = true
+        when '--desktop'    then $desktop = true
+        when '--preview'    then $preview = true
+        when '--profile'    then $profile = true
+        when '--install'    then $install = true
+        when '--nocache'    then $cache   = false
+        when '--nocsrf'     then $csrf    = false
+        when '--noprofile'  then $profile = false
+        when '--subclass'   then $set_pfx = true
+        else  console.log 'WARNING unknown option "'+$arg+'"'
 
     @define dbDriver    : $db
     @define useCache    : $cache
@@ -122,6 +139,11 @@ class system.core.Exspresso extends system.core.Object
     @define profile     : $profile
     @define install     : $install
 
+
+  setConfig: ($config) ->
+
+    for $key, $value of $config
+      @configOverride[$key] = $value
 
   #
   #   Boot exspresso
@@ -148,6 +170,7 @@ class system.core.Exspresso extends system.core.Object
     # And the rest...
     #
     @define config : core('Config')
+    @config.setItem @configOverride
     @define server : core('Connect', @)
     @define router : core('Router', @)
     @define load   : core('Loader', @)
@@ -285,7 +308,6 @@ class system.core.Exspresso extends system.core.Object
         $hooks = new_core('Hooks')
         $hooks.callHook 'pre_system'
 
-        #$config = new_core('Config')
         $config = core('Config')
         $uri = new_core('URI', $req)
         $output = new_core('Output', $req, $res, $bench, $hooks, $config, $uri)
