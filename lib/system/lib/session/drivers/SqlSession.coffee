@@ -26,7 +26,7 @@
 #   Sql Session store driver
 #
 #
-class system.lib.session.SqlSession extends require('connect').session.Store
+class system.lib.session.SqlSession extends require(exspresso.server.driver).session.Store
 
   UserModel = require(MODPATH+'user/models/UserModel.coffee')
 

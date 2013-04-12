@@ -13,8 +13,8 @@
   "dependencies": {
     "coffee-script": "*",
     "not-php": "*",
+    "mysql": "*",
     "connect": "*",
-    "pg": "*",
     "bcrypt": "*",
     "cookie": "*",
     "cookie-signature": "*",
@@ -29,7 +29,7 @@
     "utf8": "*"
   },
   "scripts": {
-    "start": "foreman start web",
+    "start": "forman start web",
     "test": "cake test"
   },
   "devDependencies": {
@@ -40,8 +40,8 @@
   "repository": "git://github.com/darkoverlordofdata/exspresso",
   "main": "index",
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": "<= 0.8.16",
+    "npm": "<= 1.1.69"
   },
   "license": "MIT"
 }

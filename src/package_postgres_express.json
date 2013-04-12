@@ -13,8 +13,9 @@
   "dependencies": {
     "coffee-script": "*",
     "not-php": "*",
-    "connect": "*",
     "pg": "*",
+    "connect": "*",
+    "express": "",
     "bcrypt": "*",
     "cookie": "*",
     "cookie-signature": "*",
@@ -40,8 +41,8 @@
   "repository": "git://github.com/darkoverlordofdata/exspresso",
   "main": "index",
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": "<= 0.8.16",
+    "npm": "<= 1.1.69"
   },
   "license": "MIT"
 }
