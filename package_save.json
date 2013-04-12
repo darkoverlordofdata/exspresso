@@ -13,8 +13,11 @@
   "dependencies": {
     "coffee-script": "*",
     "not-php": "*",
+    "mysql": "*",
     "pg": "*",
+    "sqlite3": "*",
     "connect": "*",
+    "express": "",
     "bcrypt": "*",
     "cookie": "*",
     "cookie-signature": "*",
