@@ -15,6 +15,7 @@
     "not-php": "*",
     "pg": "*",
     "connect": "*",
+    "express": "*",
     "bcrypt": "*",
     "cookie": "*",
     "cookie-signature": "*",
