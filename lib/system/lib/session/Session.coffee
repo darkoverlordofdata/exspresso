@@ -30,7 +30,6 @@ class system.lib.session.Session extends system.lib.DriverLibrary
 
   UserModel = load_class(MODPATH+'user/models/UserModel.coffee')
 
-  express     = require('express')      # Express 3.0 Framework
   cookie      = require('cookie')       # cookie parsing and serialization
   format      = require('util').format  # sprintf style formated string
 
@@ -91,10 +90,9 @@ class system.lib.session.Session extends system.lib.DriverLibrary
 
       # expose flashdata method in views
       if @res.locals?
-        if express.version[0] is '3'
-          @res.locals.flashdata = @flashdata
-        else
-          @res.local('flashdata', @flashdata)
+        @res.locals.flashdata = @flashdata
+      else if @res.local
+        @res.local('flashdata', @flashdata)
       else
         @res.flashdata = @flashdata
 
