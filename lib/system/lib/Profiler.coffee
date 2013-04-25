@@ -10,17 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 # Exspresso Profiler Class
@@ -31,7 +20,7 @@
 # Displays modaly from a bottom toolbar
 #
 #
-class system.lib.Profiler
+module.exports = class system.lib.Profiler
 
   util = require('util')
 
@@ -391,8 +380,13 @@ class system.lib.Profiler
     $output.push "\n\n<dd><table class='table table-condensed table-bordered table-hover'>\n"
 
     for $config, $val of @config.config
-      $val = util.inspect($val) if 'object' is typeof($val)
-      $output.push "<tr><td>" + $config + "</td><td>" + htmlspecialchars($val) + "</td></tr>\n"
+      if 'object' is typeof($val)
+        $val = htmlspecialchars(util.inspect($val))
+          .replace(/^\{\s/, "")
+          .replace(/\s\}$/, "")
+          .split(',').sort().join('<br />')
+
+      $output.push "<tr><td>" + $config + "</td><td>" + ($val) + "</td></tr>\n"
 
     $output.push "</table></dd>\n"
     $output.push "</dl>"
@@ -436,9 +430,3 @@ class system.lib.Profiler
 
     $output.join('')
 
-module.exports = system.lib.Profiler
-
-#  END system.lib.Profiler class
-
-#  End of file Profiler.coffee
-#  Location: .system/lib/Profiler.coffee

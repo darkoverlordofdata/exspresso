@@ -10,28 +10,14 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author		  darkoverlordofdata
-# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @copyright	Copyright (c) 2011 Wiredesignz
-# @see 		    http://darkoverlordofdata.com
-# @since		  Version 1.0
-#
 
 #
-# Localization package loader
+# I18n loader
 #
 #
-class system.core.I18n
+module.exports = class system.core.I18n
 
   fs = require('fs')
-
-  Modules = require(SYSPATH+'core/Modules.coffee')
 
   #
   # @property [Object] cache of loaded i18n strings
@@ -47,12 +33,13 @@ class system.core.I18n
   #
   # @param  [system.core.Config]  config  The application configuratin
   #
-  constructor : ($config) ->
+  constructor : ($config, $module = '') ->
 
     @_language = {}
     @_is_loaded = []
     defineProperties @,
-      config:   {writeable: false, value: $config}
+      config        : {enumerable: true,  writeable: false, value: $config}
+      module        : {enumerable: true,  writeable: false, value: $module}
 
     log_message 'debug', "I18n Class Initialized"
 
@@ -60,44 +47,11 @@ class system.core.I18n
   # Load a module language file
   #
   # @param  [String]  langfile  the name of the language file to be loaded. Can be an array
-  # @param  [String]  lang  the language ISO 639-1 code(de, en, etc.)
+  # @param  [String]  code  the language ISO 639-1 code(de, en, etc.)
   # @param  [String]  module  the module parsed from the uri
   # @return [Object] a hash of key/values for the language
   #
-  load: ($langfile, $lang = '', $module = '', $return = false) ->
-
-    if is_array($langfile)
-      for $_lang in $langfile
-        @load($_lang)
-      return @_language
-
-    $deft_lang = @config.item('language')
-    $code = if ($lang is '') then $deft_lang else $lang
-
-    return @_language unless @_is_loaded.indexOf($langfile + '.json') is -1
-
-    [$path, $_langfile] = Modules::find($langfile+'.json', $module, 'i18n/' + $code + '/')
-    if $path is false
-      if $lang = @_application_load($langfile, $lang, $return)
-        return $lang
-    else
-      if $lang = Modules::load($_langfile, $path, '.json')
-        if $return then return $lang
-
-    @_is_loaded.push $langfile + '.json'
-    @_language[$key] = $val for $key, $val of $lang
-
-    return @_language
-
-  #
-  # Load an application language file
-  #
-  # @private
-  # @param  [String]  langfile  the name of the language file to be loaded. Can be an array
-  # @param  [String]  lang  the language ISO 639-1 code(de, en, etc.)
-  # @return [Object] a hash of key/values for the language
-  #
-  _application_load: ($langfile = '', $code = '', $return = false) ->
+  load: ($langfile, $module = @module, $code = '', $return = false) ->
 
     $langfile = $langfile.replace(EXT, '')+'.json'
 
@@ -109,17 +63,19 @@ class system.core.I18n
 
     #  Determine where the language file is and load it
     $found = false
-    for $package_path in exspresso.load.getPackagePaths(true)
+    for $package_path in @config.getPaths($module, @controller.load.getModulePaths(true))
+
       if fs.existsSync($package_path + 'i18n/' + $code + '/' + $langfile)
         $lang = require($package_path + 'i18n/' + $code + '/' + $langfile)
         $found = true
         break
 
-    if $found isnt true
-      show_error('Unable to load the requested language file: i18n/' + $code + '/' + $langfile)
+    if not $found
+      log_message 'error', 'Unable to load the requested i18n file: i18n/' + $code + '/' + $langfile
+      return
 
     if not $lang?
-      log_message('error', 'Language file contains no data: i18n/' + $code + '/' + $langfile)
+      log_message 'error', 'I18n file contains no data: i18n/' + $code + '/' + $langfile
       return
 
     if $return is true
@@ -128,7 +84,7 @@ class system.core.I18n
     @_is_loaded.push $langfile
     @_language[$key] = $val for $key, $val of $lang
 
-    log_message('debug', 'Language file loaded: i18n/%s/%s', $code, $langfile)
+    log_message 'debug', 'I18n file loaded: i18n/%s/%s', $code, $langfile
     return true
 
 
@@ -141,14 +97,8 @@ class system.core.I18n
   line : ($line = '') ->
     $line = if ($line is '' or  not @_language[$line]? ) then false else @_language[$line]
 
-    #  Because killer robots like unicorns!
     if $line is false
-      log_message('error', 'Could not find the language line "' + $line + '"')
+      log_message('error', 'Could not find the i18n line "' + $line + '"')
 
+    $line
 
-    return $line
-
-#  END ExspressoLang Class
-module.exports = system.core.I18n
-#  End of file I18n.coffee
-#  Location: ./system/core/I18n.coffee

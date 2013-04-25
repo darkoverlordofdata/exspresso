@@ -10,24 +10,11 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @link       http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
-#  ------------------------------------------------------------------------
 #
 #	Class application.core.Module
 #
-class application.core.Module
+module.exports = class application.core.Module
 
   name          : ''
   description   : ''
@@ -47,9 +34,3 @@ class application.core.Module
 
   uninstall: ->
 
-
-
-# END CLASS Module
-module.exports = application.core.Module
-# End of file Module.coffee
-# Location: .application/lib/Module.coffee

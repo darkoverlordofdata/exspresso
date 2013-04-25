@@ -10,19 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Email Class
@@ -30,7 +17,7 @@
 # Permits email to be sent using Mail, Sendmail, or SMTP.
 #
 #
-class system.lib.ExspressoEmail
+module.exports = class system.lib.ExspressoEmail
   
   useragent       : "Exspresso"
   mailpath        : "/usr/sbin/sendmail"  #  Sendmail path
@@ -605,11 +592,3 @@ class system.lib.ExspressoEmail
     @server.send $msg, $next
 
 
-
-
-#  END ExspressoEmail class
-
-module.exports = system.lib.Email
-
-#  End of file Email.coffee
-#  Location: .system/lib/Email.coffee

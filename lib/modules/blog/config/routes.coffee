@@ -1,18 +1,3 @@
-#+--------------------------------------------------------------------+
-#| routes.coffee
-#+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Expresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the MIT License
-#|
-#+--------------------------------------------------------------------+
-#
-#
-#
 #| -------------------------------------------------------------------------
 #| URI ROUTING
 #| -------------------------------------------------------------------------
@@ -38,32 +23,30 @@
 #|
 #| There area two reserved routes:
 #|
-#|	exports['default_controller'] = 'welcome';
+#|	'default_controller' : 'welcome';
 #|
 #| This route indicates which controller class should be loaded if the
 #| URI contains no data. In the above example, the "welcome" class
 #| would be loaded.
 #|
-#|	exports['404_override'] = 'errors/page_missing';
+#|	'404_override' : 'errors/page_missing';
 #|
 #| This route will tell the Router what URI segments to use if those provided
 #| in the URL cannot be matched to a valid route.
 #|
 #
 
+module.exports =
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-# blog routeing
-exports['/admin/blog']                        = 'blog/Admin'
-exports['/category/new']                      = 'blog/Admin/newCategory'
-exports['/blog']                              = 'blog/Blog/index'
-exports['/blog/show/:id']                     = 'blog/Blog/show'
-exports['/blog/edit/:id']                     = 'blog/Blog/edit'
-exports['/blog/del/:id']                      = 'blog/Blog/delele'
-exports['/blog/new']                          = 'blog/Blog/new'
-exports['/blog/save']                         = 'blog/Blog/save'
-exports['/blog/create']                       = 'blog/Blog/create'
+  '/admin/blog'                        : 'blog/Admin'
+  '/category/new'                      : 'blog/Admin/newCategory'
+  '/blog'                              : 'blog/Blog/index'
+  '/blog/show/:id'                     : 'blog/Blog/show'
+  '/blog/edit/:id'                     : 'blog/Blog/edit'
+  '/blog/del/:id'                      : 'blog/Blog/delele'
+  '/blog/new'                          : 'blog/Blog/new'
+  '/blog/save'                         : 'blog/Blog/save'
+  '/blog/create'                       : 'blog/Blog/create'
 
-# End of file routes.coffee
-# Location: .modules/blog/config/routes.coffee

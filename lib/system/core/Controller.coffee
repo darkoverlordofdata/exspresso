@@ -10,26 +10,15 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 # Exspresso Application Controller Class
 #
 # This class object is the super class for all controllers
 #
-# @see http://coffeedoc.info/github/darkoverlordofdata/exspresso/master/ Controller Graph
+# @see http://coffeedoc.info/github/darkoverlordofdata/exspresso/master/Controller Graph
 #
-class system.core.Controller extends system.core.Object
+module.exports = class system.core.Controller extends system.core.Object
 
   #
   # @property [String] module name
@@ -110,21 +99,24 @@ class system.core.Controller extends system.core.Object
   #
   constructor: ($server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method) ->
 
+    # Assign all the class objects that were instantiated by the
+    # bootstrap file (exspresso.coffee) to local class variables
+    # so that Exspresso can run as one big super object.
     @define
-      # Assign all the class objects that were instantiated by the
-      # bootstrap file (exspresso.coffee) to local class variables
-      # so that Exspresso can run as one big super object.
-      bm          : $bench       # system.core.Benchmark
+      # Singltons instantiated by the system controller
       config      : $config      # system.core.Config
+      server      : $server      # system.core.Server
+
+      # Unique instance per request
+      bm          : $bench       # system.core.Benchmark
       hooks       : $hooks       # system.core.Hooks
       input       : $input       # system.core.Input
       i18n        : $i18n        # system.core.I18n
       output      : $output      # system.core.Output
       security    : $security    # system.core.Security
-      server      : $server      # system.core.Server
       uri         : $uri         # system.core.URI
 
-      # http objects
+      # connect objects
       req         : $req         # http Request object
       res         : $res         # http Response object
 
@@ -139,6 +131,10 @@ class system.core.Controller extends system.core.Object
 
       # bootstrap the loader object into the controller:
       load: load_core('Loader', @)
+
+    for $prop in ['bm', 'hooks', 'input', 'i18n', 'output', 'security', 'uri']
+      defineProperties @[$prop],
+        controller: {enumerable: true,  writeable: false, value: @}
 
     log_message 'debug', "Controller Class Initialized"
 
@@ -187,8 +183,3 @@ class system.core.Controller extends system.core.Object
     @res.end null
 
 
-
-# END Controller class
-module.exports = system.core.Controller
-# End of file Controller.coffee
-# Location: ./system/core/Controller.coffee

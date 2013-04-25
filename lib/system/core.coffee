@@ -101,17 +101,19 @@ module.exports = ->
   load_class SYSPATH+'core/Loader.coffee'
   load_class SYSPATH+'core/Log.coffee'
   load_class SYSPATH+'core/Model.coffee'
-  load_class SYSPATH+'core/Modules.coffee'
+  #load_class SYSPATH+'core/Modules.coffee'
   load_class SYSPATH+'core/Output.coffee'
   load_class SYSPATH+'core/Router.coffee'
   load_class SYSPATH+'core/Security.coffee'
-  load_class SYSPATH+'core/URI.coffee'
+  load_class SYSPATH+'core/Uri.coffee'
   load_class SYSPATH+'core/Utf8.coffee'
   load_class SYSPATH+'lib/Profiler.coffee'
   load_class SYSPATH+'lib/Driver.coffee'
   load_class SYSPATH+'lib/DriverLibrary.coffee'
-  load_class MODPATH+'user/lib/User.coffee'
-  load_class MODPATH+'user/models/UserModel.coffee'
+  #load_class MODPATH+'user/lib/User.coffee'
+  #load_class MODPATH+'user/models/UserModel.coffee'
+  load_class APPPATH+'modules/user/lib/User.coffee'
+  load_class APPPATH+'modules/user/models/UserModel.coffee'
   load_class SYSPATH+'lib/session/Session.coffee'
   load_class APPPATH+'core/PublicController.coffee'
   load_class APPPATH+'core/Module.coffee'
@@ -708,10 +710,18 @@ module.exports.htmlspecialchars = ($str) ->
 
   (''+$str)
     .replace(/\&/g, "&amp;")
-    .replace(/\'/g, "&#39;")
     .replace(/\"/g, "&quot;")
     .replace(/\</g, "&lt;")
     .replace(/\>/g, "&gt;")
+
+module.exports.html_entity_decode = ($str) ->
+
+  (''+$str)
+    .replace(/\&amp;/g, "&")
+    .replace(/\&quot;/g, '"')
+    .replace(/\&lt;/g, "<")
+    .replace(/\&gt;/g, ">")
+
 
 # stripslashes
 #
@@ -866,15 +876,21 @@ module.exports.rand = ($min = 0, $max = 2147483647) ->
 
 # array
 #
-# returns an array with 1 key/value pair
+# collapse the argument list to a hash table
+# args alternate as key/value pairs
 #
-# @param  [String]  key the hash key
-# @param  [Mixed] value the value
+# @param  [Array]  args alternating key/value pairs
 # @return [String] a new object with 1 key/value pair
 #
-module.exports.array = ($key, $value) ->
+#module.exports.array = ($key, $value) ->
+#  $array = {}
+#  $array[$key] = $value
+#  $array
+
+module.exports.array = ($args...) ->
   $array = {}
-  $array[$key] = $value
+  for $key, $index in $args by 2
+    $array[$key] = $args[$index+1]
   $array
 
 # parse_url

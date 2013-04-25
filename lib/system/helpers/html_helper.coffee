@@ -10,31 +10,10 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso HTML Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @see 		http://darkoverlordofdata.com/user_guide/helpers/html_helper.html
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Heading
@@ -42,168 +21,151 @@
 # Generates an HTML heading tag.  First param is the data.
 # Second param is the size of the heading tag.
 #
-# @param  [String]  # @param  [Integer]  # @return	[String]
+# @param  [String]
+# @param  [Integer]
+# @return	[String]
 #
-if not function_exists('heading')
-  exports.heading = heading = ($data = '', $h = '1') ->
-    return "<h" + $h + ">" + $data + "</h" + $h + ">"
+exports.heading = heading = ($data = '', $h = '1') ->
+  return "<h" + $h + ">" + $data + "</h" + $h + ">"
     
-  
-
-#  ------------------------------------------------------------------------
-
 #
 # Unordered List
 #
 # Generates an HTML unordered list from an single or multi-dimensional array.
 #
-# @param  [Array]  # @param  [Mixed]  # @return	[String]
+# @param  [Array]
+# @param  [Mixed]
+# @return	[String]
 #
-if not function_exists('ul')
-  exports.ul = ul = ($list, $attributes = '') ->
-    return _list('ul', $list, $attributes)
+exports.ul = ul = ($list, $attributes = '') ->
+  return _list('ul', $list, $attributes)
     
   
-
-#  ------------------------------------------------------------------------
-
 #
 # Ordered List
 #
 # Generates an HTML ordered list from an single or multi-dimensional array.
 #
-# @param  [Array]  # @param  [Mixed]  # @return	[String]
+# @param  [Array]
+# @param  [Mixed]
+# @return	[String]
 #
-if not function_exists('ol')
-  exports.ol = ol = ($list, $attributes = '') ->
-    return _list('ol', $list, $attributes)
+exports.ol = ol = ($list, $attributes = '') ->
+  return _list('ol', $list, $attributes)
     
-  
-
-#  ------------------------------------------------------------------------
-
 #
 # Generates the list
 #
 # Generates an HTML ordered list from an single or multi-dimensional array.
 #
 # @private
-# @param  [String]  # @param  [Mixed]  # @param  [Mixed]  # @param  [Integer]  # @return	[String]
+# @param  [String]
+# @param  [Mixed]
+# @param  [Mixed]
+# @param  [Integer]
+# @return	[String]
 #
 $_last_list_item = {}
 
-if not function_exists('_list')
-  exports._list = _list = ($type = 'ul', $list, $attributes = '', $depth = 0) ->
-    #  If an array wasn't submitted there's nothing to do...
-    if not is_array($list)
-      return $list
-      
-    
-    #  Set the indentation based on the depth
-    $out = str_repeat(" ", $depth)
-    
-    #  Were any attributes submitted?  If so generate a string
-    if is_array($attributes)
-      $atts = ''
-      for $key, $val of $attributes
-        $atts+=' ' + $key + '="' + $val + '"'
-        
-      $attributes = $atts
-      
-    
-    #  Write the opening list tag
-    $out+="<" + $type + $attributes + ">\n"
-    
-    #  Cycle through the list elements.  If an array is
-    #  encountered we will recursively call _list()
-    
-    $_last_list_item = $_last_list_item ? {}
-    for $key, $val of $list
-      $_last_list_item = $key
-      
-      $out+=str_repeat(" ", $depth + 2)
-      $out+="<li>"
-      
-      if not is_array($val)
-        $out+=$val
-        
-      else 
-        $out+=$_last_list_item + "\n"
-        $out+=_list($type, $val, '', $depth + 4)
-        $out+=str_repeat(" ", $depth + 2)
-        
-      
-      $out+="</li>\n"
-      
-    
-    #  Set the indentation for the closing tag
-    $out+=str_repeat(" ", $depth)
-    
-    #  Write the closing list tag
-    $out+="</" + $type + ">\n"
-    
-    return $out
-    
-  
+exports._list = _list = ($type = 'ul', $list, $attributes = '', $depth = 0) ->
+  #  If an array wasn't submitted there's nothing to do...
+  if not is_array($list)
+    return $list
 
-#  ------------------------------------------------------------------------
+
+  #  Set the indentation based on the depth
+  $out = str_repeat(" ", $depth)
+
+  #  Were any attributes submitted?  If so generate a string
+  if is_array($attributes)
+    $atts = ''
+    for $key, $val of $attributes
+      $atts+=' ' + $key + '="' + $val + '"'
+
+    $attributes = $atts
+
+
+  #  Write the opening list tag
+  $out+="<" + $type + $attributes + ">\n"
+
+  #  Cycle through the list elements.  If an array is
+  #  encountered we will recursively call _list()
+
+  $_last_list_item = $_last_list_item ? {}
+  for $key, $val of $list
+    $_last_list_item = $key
+
+    $out+=str_repeat(" ", $depth + 2)
+    $out+="<li>"
+
+    if not is_array($val)
+      $out+=$val
+
+    else
+      $out+=$_last_list_item + "\n"
+      $out+=_list($type, $val, '', $depth + 4)
+      $out+=str_repeat(" ", $depth + 2)
+
+
+    $out+="</li>\n"
+
+
+  #  Set the indentation for the closing tag
+  $out+=str_repeat(" ", $depth)
+
+  #  Write the closing list tag
+  $out+="</" + $type + ">\n"
+
+  return $out
 
 #
 # Generates HTML BR tags based on number supplied
 #
-# @param  [Integer]  # @return	[String]
+# @param  [Integer]
+# @return	[String]
 #
-if not function_exists('br')
-  exports.br = br = ($num = 1) ->
-    return str_repeat("<br />", $num)
+exports.br = br = ($num = 1) ->
+  return str_repeat("<br />", $num)
     
-  
-
-#  ------------------------------------------------------------------------
-
 #
 # Image
 #
 # Generates an <img /> element
 #
-# @param  [Mixed]  # @return	[String]
+# @param  [Mixed]
+# @return	[String]
 #
-if not function_exists('img')
-  exports.img = img = ($src = '', $index_page = false) ->
-    if not is_array($src)
-      $src = 'src':$src
-      
-    
-    #  If there is no alt attribute defined, set it to an empty string
-    if not $src['alt']? 
-      $src['alt'] = ''
-      
-    
-    $img = '<img'
-    
-    for $k, $v of $src
-      
-      if $k is 'src' and $v.indexOf('://') is -1
+exports.img = img = ($src = '', $index_page = false) ->
+  if not is_array($src)
+    $src = 'src':$src
 
-        if $index_page is true
-          $img+=' src="' + exspresso.config.siteUrl($v) + '"'
-          
-        else 
-          $img+=' src="' + exspresso.config.slashItem('base_url') + $v + '"'
-          
-        
-      else 
-        $img+=" #{$k}=\"#{$v}\""
-        
-      
-    
-    $img+='/>'
-    
-    return $img
-    
-  
 
-#  ------------------------------------------------------------------------
+  #  If there is no alt attribute defined, set it to an empty string
+  if not $src['alt']?
+    $src['alt'] = ''
+
+
+  $img = '<img'
+
+  for $k, $v of $src
+
+    if $k is 'src' and $v.indexOf('://') is -1
+
+      if $index_page is true
+        $img+=' src="' + exspresso.config.siteUrl($v) + '"'
+
+      else
+        $img+=' src="' + exspresso.config.slashItem('base_url') + $v + '"'
+
+
+    else
+      $img+=" #{$k}=\"#{$v}\""
+
+
+
+  $img+='/>'
+
+  return $img
 
 #
 # Doctype
@@ -219,26 +181,23 @@ if not function_exists('img')
 #
 $_doctypes = null # static cache for doctypes
 
-if not function_exists('doctype')
-  exports.doctype = doctype = ($type = 'xhtml1-strict') ->
+exports.doctype = doctype = ($type = 'xhtml1-strict') ->
+
+  if not is_array($_doctypes)
+    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
+      $_doctypes = require(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
+
+    else if is_file(APPPATH + 'config/doctypes' + EXT)
+      $_doctypes = require(APPPATH + 'config/doctypes' + EXT)
 
     if not is_array($_doctypes)
-      if is_file(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
-        $_doctypes = require(APPPATH + 'config/' + ENVIRONMENT + '/doctypes' + EXT)
-        
-      else if is_file(APPPATH + 'config/doctypes' + EXT)
-        $_doctypes = require(APPPATH + 'config/doctypes' + EXT)
-
-      if not is_array($_doctypes)
-        return false
-
-    if $_doctypes[$type]? 
-      return $_doctypes[$type]
-      
-    else 
       return false
 
-#  ------------------------------------------------------------------------
+  if $_doctypes[$type]?
+    return $_doctypes[$type]
+
+  else
+    return false
 
 #
 # Link
@@ -253,102 +212,124 @@ if not function_exists('doctype')
 # @return	[Boolean]ean	should index_page be added to the css path
 # @return	[String]
 #
-if not function_exists('link_tag')
-  exports.link_tag = link_tag = ($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = false) ->
+exports.link_tag = link_tag = ($href = '', $rel = 'stylesheet', $type = 'text/css', $title = '', $media = '', $index_page = false) ->
 
-    $link = '<link '
-    
-    if is_array($href)
-      for $k, $v of $href
-        if $k is 'href' and $v.indexOf('://') is -1
-          if $index_page is true
-            $link+='href="' + exspresso.config.siteUrl($v) + '" '
-            
-          else 
-            $link+='href="' + exspresso.config.slashItem('base_url') + $v + '" '
+  $link = '<link '
 
-        else 
-          $link+="$k=\"$v\" "
-          
-        
-      
-      $link+="/>"
-      
-    else 
-      if $href.indexOf('://') isnt -1
-        $link+='href="' + $href + '" '
-        
-      else if $index_page is true
-        $link+='href="' + exspresso.config.siteUrl($href) + '" '
-        
-      else 
-        $link+='href="' + exspresso.config.slashItem('base_url') + $href + '" '
+  if is_array($href)
+    for $k, $v of $href
+      if $k is 'href' and $v.indexOf('://') is -1
+        if $index_page is true
+          $link+='href="' + exspresso.config.siteUrl($v) + '" '
 
-      $link+='rel="' + $rel + '" type="' + $type + '" '
-      
-      if $media isnt ''
-        $link+='media="' + $media + '" '
-        
-      
-      if $title isnt ''
-        $link+='title="' + $title + '" '
-        
-      
-      $link+='/>'
-      
-    
-    
-    return $link
-    
-  
+        else
+          $link+='href="' + exspresso.config.slashItem('base_url') + $v + '" '
 
-#  ------------------------------------------------------------------------
+      else
+        $link+="$k=\"$v\" "
+
+
+
+    $link+="/>"
+
+  else
+    if $href.indexOf('://') isnt -1
+      $link+='href="' + $href + '" '
+
+    else if $index_page is true
+      $link+='href="' + exspresso.config.siteUrl($href) + '" '
+
+    else
+      $link+='href="' + exspresso.config.slashItem('base_url') + $href + '" '
+
+    $link+='rel="' + $rel + '" type="' + $type + '" '
+
+    if $media isnt ''
+      $link+='media="' + $media + '" '
+
+
+    if $title isnt ''
+      $link+='title="' + $title + '" '
+
+
+    $link+='/>'
+
+
+
+  return $link
+
+#
+# stylesheet_decl
+#
+# Generates an HTML stylesheet declaration.
+#
+# @param  [String]
+# @return	[String]
+#
+exports.stylesheet = ($content = '', $type = 'text/css') ->
+  "<style type=\"#{$type}\">\n#{$content}\n</style>"
+
+#
+# javascript_tag
+#
+# Generates an HTML javascript tag.
+#
+# @param  [String]
+# @return	[String]
+#
+exports.javascript_tag = ($src = '', $type = 'text/javascript') ->
+  $src = exspresso.config.slashItem('base_url')+$src
+  "<script src=\"#{$src}\" type=\"#{$type}\"></script>"
+
+#
+# javascript_decl
+#
+# Generates an HTML javascript declaration.
+#
+# @param  [String]
+# @return	[String]
+#
+exports.javascript_decl = ($content = '', $type = 'text/javascript') ->
+  "<script>\n#{$content}\n</script>"
+
 
 #
 # Generates meta tags from an array of key/values
 #
-# @param  [Array]  # @return	[String]
+# @param  [Array]
+# @return	[String]
 #
-if not function_exists('meta')
-  exports.meta = meta = ($name = '', $content = '', $type = 'name', $newline = "\n") ->
-    #  Since we allow the data to be passes as a string, a simple array
-    #  or a multidimensional one, we need to do a little prepping.
-    if 'string' is typeof($name)
-      $name = ['name':$name, 'content':$content, 'type':$type, 'newline':$newline]
-      
-    else 
-      #  Turn single array into multidimensional
-      if $name['name']? 
-        $name = [$name]
+exports.meta = meta = ($name = '', $content = '', $type = 'name', $newline = "\n") ->
+  #  Since we allow the data to be passes as a string, a simple array
+  #  or a multidimensional one, we need to do a little prepping.
+  if 'string' is typeof($name)
+    $name = ['name':$name, 'content':$content, 'type':$type, 'newline':$newline]
 
-    $str = ''
-    for $meta in ($data = $name)
+  else
+    #  Turn single array into multidimensional
+    if $name['name']?
+      $name = [$name]
 
-      $type = if not $meta['type']? then 'name' else $meta['type']
-      $name = if not $meta['name']? then '' else $meta['name']
-      $content = if not $meta['content']? then '' else $meta['content']
-      $newline = if not $meta['newline']? then "\n" else $meta['newline']
+  $str = ''
+  for $meta in ($data = $name)
 
-      $content = ' content="' + $content + '"' if $content
-      $str+='<meta ' + $type + '="' + $name + '"' + $content + ' />' + $newline
-      
+    $type = if not $meta['type']? then 'name' else $meta['type']
+    $name = if not $meta['name']? then '' else $meta['name']
+    $content = if not $meta['content']? then '' else $meta['content']
+    $newline = if not $meta['newline']? then "\n" else $meta['newline']
+
+    $content = ' content="' + $content + '"' if $content
+    $str+='<meta ' + $type + '="' + $name + '"' + $content + ' />' + $newline
+
+
+  return $str
     
-    return $str
-    
-  
-
-#  ------------------------------------------------------------------------
-
 #
 # Generates non-breaking space entities based on number supplied
 #
-# @param  [Integer]  # @return	[String]
+# @param  [Integer]
+# @return	[String]
 #
-if not function_exists('nbs')
-  exports.nbs = nbs = ($num = 1) ->
-    return str_repeat("&nbsp;", $num)
+exports.nbs = nbs = ($num = 1) ->
+  return str_repeat("&nbsp;", $num)
 
-
-
-#  End of file html_helper.php
-#  Location: ./system/helpers/html_helper.php 

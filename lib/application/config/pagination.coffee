@@ -1,15 +1,3 @@
-#+--------------------------------------------------------------------+
-#| pagination.coffee
-#+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Exspresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the MIT License
-#|
-#+--------------------------------------------------------------------+
 #
 #	pagination config
 #
@@ -17,30 +5,28 @@
 #
 # enclosing markup:
 #
-exports['full_tag_open'] = '<div class="pagination pagination-centered"><ul>'
-exports['full_tag_close'] = '</ul></div>'
+module.exports =
+  full_tag_open: '<div class="pagination pagination-centered"><ul>'
+  full_tag_close: '</ul></div>'
 
-exports['first_link'] = false
-exports['next_link'] = false
-exports['prev_link'] = false
-exports['last_link'] = false
-exports['uri_segment'] = 3
-exports['first_tag_open'] = '<li>'
-exports['first_tag_close'] = '</li>'
-exports['last_tag_open'] = '<li>'
-exports['last_tag_close'] = '</li>'
-exports['cur_tag_open'] = '<li class="active"><span>'
-exports['cur_tag_close'] = '</span></li>'
-exports['next_tag_open'] = '<li>'
-exports['next_tag_close'] = '</li>'
-exports['prev_tag_open'] = '<li>'
-exports['prev_tag_close'] = '</li>'
-exports['num_tag_open'] = '<li>'
-exports['num_tag_close'] = '</li>'
-exports['page_query_string'] = false
-exports['query_string_segment'] = 'per_page'
-exports['display_pages'] = true
-exports['anchor_class'] = ''
-
-# End of file pagination.coffee
-# Location: .application/config/pagination.coffee
+  first_link: false
+  next_link: false
+  prev_link: false
+  last_link: false
+  uri_segment: 3
+  first_tag_open: '<li>'
+  first_tag_close: '</li>'
+  last_tag_open: '<li>'
+  last_tag_close: '</li>'
+  cur_tag_open: '<li class="active"><span>'
+  cur_tag_close: '</span></li>'
+  next_tag_open: '<li>'
+  next_tag_close: '</li>'
+  prev_tag_open: '<li>'
+  prev_tag_close: '</li>'
+  num_tag_open: '<li>'
+  num_tag_close: '</li>'
+  page_query_string: false
+  query_string_segment: 'per_page'
+  display_pages: true
+  anchor_class: ''

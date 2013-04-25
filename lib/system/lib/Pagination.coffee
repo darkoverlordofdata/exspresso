@@ -10,25 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Pagination Class
 #
 #
-class system.lib.Pagination
+module.exports = class system.lib.Pagination
 
   ceil = Math.ceil
   floor = Math.floor
@@ -59,7 +46,6 @@ class system.lib.Pagination
   _prev_tag_close           : ''
   _num_tag_open             : '&nbsp;'
   _num_tag_close            : ''
-  _page_query_string        : false
   _query_string_segment     : 'per_page'
   _display_pages            : true
   _anchor_class             : ''
@@ -84,7 +70,7 @@ class system.lib.Pagination
   #
   # Generate the pagination links
   #
-    # @return	[String]
+  # @return	[String]
   #
   createLinks :  ->
     #  If our item count or per-page total is zero there is no need to continue.
@@ -99,7 +85,7 @@ class system.lib.Pagination
       return ''
 
     #  Determine the current page number.
-    if @config.item('enable_query_strings') is true or @_page_query_string is true
+    if @_page_query_string is true
       if @input.get(@_query_string_segment) isnt 0
         @_cur_page = @input.get(@_query_string_segment)
         
@@ -142,7 +128,7 @@ class system.lib.Pagination
     
     #  Is pagination being used over GET or POST?  If get, add a per_page query
     #  string. If post, add a trailing slash to the base URL if needed
-    if @config.item('enable_query_strings') is true or @_page_query_string is true
+    if @_page_query_string is true
       @_base_url = rtrim(@_base_url) + '&amp;' + @_query_string_segment + '='
       
     else 
@@ -215,8 +201,3 @@ class system.lib.Pagination
     
     return $output
     
-module.exports = system.lib.Pagination
-#  END Pagination Class
-
-#  End of file Pagination.coffee
-#  Location: .system/lib/Pagination.coffee

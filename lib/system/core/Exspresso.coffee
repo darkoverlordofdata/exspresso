@@ -10,31 +10,20 @@
 #  it under the terms of the MIT License
 # 
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 # e x s p r e s s o<br />
 #
 #   Top level controller for exspresso
 #
-class system.core.Exspresso extends system.core.Object
+module.exports = class system.core.Exspresso extends system.core.Object
 
   {exec} = require('child_process')
 
   #
   # @property [String] db driver: mysql | postgres
   #
-  dbDriver: 'mysql'
+  dbDriver: 'default'
   #
   # @property [Boolean] cache output?
   #
@@ -44,7 +33,7 @@ class system.core.Exspresso extends system.core.Object
   #
   useCsrf: false
   #
-  # @property [Boolean] preview locally using appjs (must be installed separately)
+  # @property [Boolean] preview locally in webkit
   #
   preview: false
   #
@@ -63,6 +52,10 @@ class system.core.Exspresso extends system.core.Object
   # @property [Object] config overrides
   #
   configOverride: null
+  #
+  # @property [Object] module environment
+  #
+  modules: null
 
   #
   #   Exspresso Version
@@ -169,7 +162,7 @@ class system.core.Exspresso extends system.core.Object
     #
     # And the rest...
     #
-    @define config : core('Config')
+    @define config : core('Config', @)
     @config.setItem @configOverride
     @define server : core('Connect', @)
     @define router : core('Router', @)
@@ -179,10 +172,9 @@ class system.core.Exspresso extends system.core.Object
     # Load the base controller class
     require SYSPATH+'core/Controller.coffee'
 
-    if file_exists(APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller.coffee')
-      require APPPATH + 'core/' + @config.config['subclass_prefix'] + 'Controller.coffee'
+    if file_exists(APPPATH + 'core/' + @config.item('subclass_prefix') + 'Controller.coffee')
+      require APPPATH + 'core/' + @config.item('subclass_prefix') + 'Controller.coffee'
 
-    system.core.Modules::initialize(@)
     for $path, $uri of @router.loadRoutes()
       @bind $path, $uri
 
@@ -243,36 +235,24 @@ class system.core.Exspresso extends system.core.Object
   # @param  [String]  uri corresponding controller uri specifier
   # @return [Void]
   #
-  bind: ($path, $uri) ->
+  bind: ($route, $uri) ->
 
-    return unless @router.setRouting($uri)
+    return unless @router.setMapping($uri)
 
-    if not file_exists(APPPATH+'controllers/'+@router.getDirectory()+@router.getClass()+EXT)
-
-      log_message "debug", 'Unable to load controller for %s', $uri
-      log_message "debug", 'Please make sure the controller specified in your Routes.coffee file is valid.'
-      return
-
-    #
-    #  Security check
-    #
-    #  None of the functions in the $app controller or the
-    #  loader class can be called via the URI, nor can
-    #  controller functions that begin with an underscore
-    #
-
+    $path   = @router.getPath()
     $module = @router.getModule()
     $class  = @router.getClass()
     $method = @router.getMethod()
 
-    if $method[0] is '_' or system.core.Controller::[$method]?
-      log_message "debug", "Controller not found: %s/%s", $class, $method
-      return
+    #
+    # Don't allow 'private' methods to be invoked:
+    #
+    return log_message('error', 'Invalid method name: %s', $method) if $method[0] is '_'
 
     #
-    #  Load the local application controller
+    # Load the local application controller
     #
-    $klass = require(APPPATH+'controllers/'+@router.getDirectory()+@router.getClass()+EXT)
+    $klass = require($path+$class+EXT)
 
     #
     # Close over a bootstrap for the page and invoke the contoller method
@@ -287,7 +267,7 @@ class system.core.Exspresso extends system.core.Object
     # @param  [Array]  the remaining uri arguments
     # @return [Void]
     #
-    @router.routes[$path] = ($req, $res, $next, $args...) =>
+    @router.setRoute $route, ($req, $res, $next, $args...) =>
 
 
       # Bootstrap a controller. Load the core classes first.
@@ -309,7 +289,7 @@ class system.core.Exspresso extends system.core.Object
         $hooks.callHook 'pre_system'
 
         $config = core('Config')
-        $uri = new_core('URI', $req)
+        $uri = new_core('Uri', $req)
         $output = new_core('Output', $req, $res, $bench, $hooks, $config, $uri)
 
         #
@@ -319,7 +299,7 @@ class system.core.Exspresso extends system.core.Object
             return
 
         # locale support
-        $i18n = new_core('I18n', $config)
+        $i18n = new_core('I18n', $config, $module)
         # xss and csrf support
         $security = new_core('Security', $req, $res)
         # encoding support
@@ -386,9 +366,3 @@ class system.core.Exspresso extends system.core.Object
         catch $err
           $next $err
 
-
-
-module.exports = system.core.Exspresso
-
-# End of file exspresso.coffee
-# Location: ./system/core/exspresso.coffee

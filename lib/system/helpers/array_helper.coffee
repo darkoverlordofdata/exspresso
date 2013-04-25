@@ -38,17 +38,14 @@
 # @param  [Mixed]
 # @return [Mixed]  depends on what the array contains
 #
-if not function_exists('element')
-  exports.element = element = ($item, $array, $default = false) ->
-    if not $array[$item]?  or $array[$item] is ""
-      return $default
-      
-    
-    return $array[$item]
-    
-  
+exports.element = element = ($item, $array, $default = false) ->
+  if not $array[$item]?  or $array[$item] is ""
+    return $default
 
-#  ------------------------------------------------------------------------
+
+  return $array[$item]
+
+
 
 #
 # Random Element - Takes an array as input and returns a random element
@@ -56,23 +53,19 @@ if not function_exists('element')
 # @param  [Array]
 # @return [Mixed]  depends on what the array contains
 #
-if not function_exists('random_element')
-  exports.random_element = random_element = ($array) ->
-    if 'object' isnt typeof($array)
-      return $array
-      
-    if Array.isArray($array)
+exports.random_element = random_element = ($array) ->
+  if 'object' isnt typeof($array)
+    return $array
 
-      $array[rand(0, $array.length)]
+  if Array.isArray($array)
 
-    else
+    $array[rand(0, $array.length)]
 
-      $keys = Object.keys($array)
-      $array[$keys[rand(0, $keys.length)]]
+  else
 
-  
+    $keys = Object.keys($array)
+    $array[$keys[rand(0, $keys.length)]]
 
-#  --------------------------------------------------------------------
 
 #
 # Elements
@@ -85,25 +78,21 @@ if not function_exists('random_element')
 # @param  [Mixed]
 # @return [Mixed]  depends on what the array contains
 #
-if not function_exists('elements')
-  exports.elements = elements = ($items, $array, $default = false) ->
-    $return = {}
+exports.elements = elements = ($items, $array, $default = false) ->
+  $return = {}
 
-    if not Array.isArray($items)
-      $items = [$items]
-      
-    
-    for $item in $items
-      if $array[$item]? 
-        $return[$item] = $array[$item]
-        
-      else 
-        $return[$item] = $default
-        
-      
-    
-    return $return
+  if not Array.isArray($items)
+    $items = [$items]
 
 
-#  End of file array_helper.php 
-#  Location: ./system/helpers/array_helper.php 
+  for $item in $items
+    if $array[$item]?
+      $return[$item] = $array[$item]
+
+    else
+      $return[$item] = $default
+
+
+
+  return $return
+

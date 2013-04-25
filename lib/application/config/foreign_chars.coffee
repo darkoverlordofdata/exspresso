@@ -1,16 +1,3 @@
-#+--------------------------------------------------------------------+
-#  foreign_chars.coffee
-#+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#
-#  This file is a part of Exspresso
-#
-#  Exspresso is free software you can copy modify and distribute
-#  it under the terms of the MIT License
-#
-#+--------------------------------------------------------------------+
-#
 #
 #| -------------------------------------------------------------------
 #| Foreign Characters
@@ -71,6 +58,3 @@ module.exports =
   '/Œ/':'OE'
   '/ƒ/':'f'
 
-
-#  End of file foreign_chars.php
-#  Location: ./application/config/foreign_chars.php

@@ -10,46 +10,50 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
-# Database Utility Class
+# Abstract Database Utility Class
 #
 #
-class system.db.Forge
+module.exports = class system.db.Forge
 
-  db            : null
-  fields        : null
-  keys          : null
-  primary_keys  : null
-  data          : null
-  db_char_set   : ''
-  
+  #
+  # @property [system.core.Controller] The page controller
+  #
+  controller: null
+  #
+  # @property [system.db.Driver] The db connection
+  #
+  db: null
+  #
+  # @property [Object] Hash of field names: attributes
+  #
+  fields: null
+  #
+  # @property [Array] List of key field names
+  #
+  keys: null
+  #
+  # @property [Array] List of primary key field names
+  #
+  primary_keys: null
+  #
+  # @property [Object] data object
+  #
+  data: null
+
   #
   # Constructor
-  #
-  # Grabs the CI super object instance so we can access it.
   #
   #
   constructor: ($controller, $db) ->
 
-    @fields        = {}
-    @keys          = []
-    @primary_keys  = []
-    @db = $db
-    @_reset() # always initialize arrays in the constructor!
+
+    Object.defineProperties @,
+      controller        : {enumerable: true, writeable: false, value: $controller}
+      db                : {enumerable: true, writeable: false, value: $db}
+    @_reset()
+
     log_message('debug', "Database Forge Class Initialized")
     
 
@@ -78,9 +82,8 @@ class system.db.Forge
   #
   dropDatabase: ($db_name, $next) ->
     $sql = @_drop_database($db_name)
-
     if 'boolean' is typeof($sql)
-      $next $sql
+      return $next null, $sql
 
     @db.query($sql, $next)
     
@@ -117,8 +120,7 @@ class system.db.Forge
   addField: ($field = '') ->
     if $field is ''
       show_error('Field information is required.')
-      
-    
+
     if 'string' is typeof($field)
       if $field is 'id'
         @addField
@@ -312,7 +314,3 @@ class system.db.Forge
     @keys = []
     @primary_keys = []
 
-module.exports = system.db.Forge
-
-#  End of file Forge.coffee
-#  Location: ./system/database/Forge.coffee

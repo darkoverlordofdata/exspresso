@@ -10,18 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author		  darkoverlordofdata
-# @copyright	Copyright (c) 2011 Wiredesignz
-# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see 		    http://darkoverlordofdata.com
-# @since		  Version 1.0
-#
 
 #
 # Exspresso Config Class
@@ -29,11 +17,10 @@
 # This class contains functions that enable config files to be managed
 #
 #
-class system.core.Config
+module.exports = class system.core.Config
 
 
   fs = require('fs')
-  Modules = require(SYSPATH+'core/Modules.coffee')
 
   _is_loaded: null  #  array list of loaded config files
 
@@ -45,6 +32,14 @@ class system.core.Config
   # @property [Object] config data loaded from files
   #
   config: null
+  #
+  # @property [Object] system controller
+  #
+  controller: null
+  #
+  # @property [Object] module environment
+  #
+  modules: null
 
   #
   # Constructor
@@ -52,28 +47,63 @@ class system.core.Config
   # Sets the config data from the primary config.coffee file as a class variable
   #
   #
-  constructor :  ->
+  constructor: ($controller) ->
 
     $config = get_config()  # Get the core config array
 
     defineProperties @,
       _is_loaded    : {enumerable: false, writeable: false, value: []}
-      paths         : {enumerable: false, writeable: false, value: [APPPATH]}
+      paths         : {enumerable: true,  writeable: false, value: [APPPATH]}
+      modpaths      : {enumerable: true,  writeable: false, value: []}
+      modules       : {enumerable: true,  writeable: false, value: {}}
       config        : {enumerable: true,  writeable: false, value: $config}
+      controller    : {enumerable: true,  writeable: false, value: $controller}
 
-    log_message('debug', "Config Class Initialized")
+
+    log_message 'debug', "Config Class Initialized"
+
+    #
+    # discover the installed modules
+    #
+    for $path in $config['module_paths']
+      for $module in fs.readdirSync($path)
+        if fs.existsSync($path+$module+'/'+ucfirst($module)+EXT)
+          $class = require($path+$module+'/'+ucfirst($module)+EXT)
+          @modules[$module] = new $class($controller)
+          @modpaths.push @modules[$module].path+'/'
 
 
   #
-  # Load Config File
+  # Get Paths
   #
-  #   Checks in MODPATH first. If not found, there, look the APPPATH and package folders.
+  # @param  [String]  hint  the module to search first
+  # @param  [Array<String>] packages  array of app locations to search next
+  # @return [Array<String>] the combined list
+  #
+  getPaths: ($hint = '', $packages = @paths) ->
+    return @modpaths.concat($packages) if $hint is ''
+    #
+    # Search the specified $module first
+    #
+    if @modules[$hint]?
+      $paths = [@modules[$hint].path+'/']
+      for $name, $module of @modules
+        $paths.push $module.path+'/' unless $name is $hint
+      $paths.concat($packages)
+
+
+  #
+  # Load configuration file
+  #
+  # Checks in MODPATH first. 
+  # Then check in the APPPATH.
+  # Lastly check in packages
   #
   # @param  [String]  file the config file name
   # @param  [Boolean] use_sections if configuration values should be loaded into their own section
   # @param  [Boolean] fail_gracefully  true if errors should just return false, false if an error message should be displayed
   # @param  [String]  module module name from the uri
-  # @return	[Boolean]	if the file was loaded correctly
+  # @return	[Boolean]	true if the file was loaded correctly
   #
   load: ($file = 'config', $use_sections = false, $fail_gracefully = false, $module = '') ->
 
@@ -82,38 +112,13 @@ class system.core.Config
     else if typeof $fail_gracefully is 'string'
       [$fail_gracefully, $module] = [false, $use_sections]
 
-    #if in_array($file, @_is_loaded, true) then return @item($file)
     return @item($file) unless @_is_loaded.indexOf($file) is -1
 
-    [$path, $file] = Modules::find($file, $module, 'config/')
-    if $path is false
-      @_application_load($file, $use_sections, $fail_gracefully)
-      return @item($file)
-    if $config = Modules::load($file, $path)
-      if $use_sections is true
-        @config[$file] = {} unless @config[$file]?
-        @config[$file][$key] = $val for $key, $val of $config
-
-      else
-        @config[$key] = $val for $key, $val of $config
-      @_is_loaded.push $file
-      return @item($file)
-
-  #
-  # Load Application Config File
-  #
-  #   Looks in APPPATH. If not found, then look in packages (if any)
-  #
-  # @param  [String]  file the config file name
-  # @param  [Boolean] use_sections if configuration values should be loaded into their own section
-  # @param  [Boolean] fail_gracefully  true if errors should just return false, false if an error message should be displayed
-  # @return	[Boolean]	if the file was loaded correctly
-  #
-  _application_load : ($file = '', $use_sections = false, $fail_gracefully = false) ->
-    $file = if $file is '' then 'config' else $file.replace(EXT, '')
+    $file = $file.replace(EXT, '')
     $loaded = false
 
-    for $path in @paths
+
+    for $path in @getPaths($module)
 
       $config = {}
       $found = false
@@ -127,12 +132,10 @@ class system.core.Config
           $config[$key] = $val for $key, $val of require($file_path)
 
       if not $found
-        if $fail_gracefully is true
-          return false
+        if $fail_gracefully is true then return false
+        else show_error('The config file [%s] does not contain valid configuration settings.', $file_path)
 
-        show_error('Your %s file does not appear to contain a valid configuration array.', $file_path)
-
-      if $use_sections is true
+      if $use_sections
         @config[$file] = {} unless @config[$file]?
         @config[$file][$key] = $val for $key, $val of $config
 
@@ -142,13 +145,11 @@ class system.core.Config
       @_is_loaded.push $file_path
       $loaded = true
 
-    if $loaded is false
-      if $fail_gracefully is true
-        return false
+    if not $loaded
+      if $fail_gracefully is true then return false
+      else show_error('The config file [%s] does not exist.', $file+EXT)
 
-      show_error('The configuration file %s does not exist.', $file+EXT)
-
-    return true
+    @item($file)
 
 
   #
@@ -159,38 +160,26 @@ class system.core.Config
   # @param  [String]  index the index name
   # @return	[String]  the config item, empty string if not found
   #
-  item : ($item, $index = '') ->
+  item: ($item, $index = '') ->
     if $index is ''
-      if not @config[$item]?
-        return '' #false
-
-      $pref = @config[$item]
+      return '' if not @config[$item]?
+      @config[$item]
 
     else
-      if not @config[$index]?
-        return '' #false
-
-      if not @config[$index][$item]?
-        return '' #false
-
-      $pref = @config[$index][$item]
-
-    $pref
-
+      return '' if not @config[$index]?
+      return '' if not @config[$index][$item]?
+      @config[$index][$item]
 
   #
-  # Fetch a config file item - adds slash after item
+  # Slash Item
   #
-  # The second parameter allows a slash to be added to the end of
-  # the item, in the case of a path.
+  # Get a config item and make sure it ends with a slash
   #
   # @param  [String]  item the config item name
   # @return	[Mixed] returns the slashed value, false if not found
   #
-  slashItem : ($item) ->
-    if not @config[$item]?
-      return false
-
+  slashItem: ($item) ->
+    return false if not @config[$item]?
     rtrim(@config[$item], '/') + '/'
 
 
@@ -200,43 +189,23 @@ class system.core.Config
   # @param  [String]  uri the URI string
   # @return	[String]
   #
-  siteUrl : ($uri = '') ->
+  siteUrl: ($uri = '') ->
 
     if typeof $uri is 'string' and $uri is ''
       return @slashItem('base_url') + @item('index_page')
 
-    if @item('enable_query_strings') is false
-      if Array.isArray($uri)
-        $uri = $uri.join('/')
-
-      $index = if @item('index_page') is '' then '' else @slashItem('index_page')
-      $suffix = if (@item('url_suffix') is false) then '' else @item('url_suffix')
-      @slashItem('base_url') + $index + trim($uri, '/') + $suffix
-
-    else
-      if typeof $uri is 'object'
-        $i = 0
-        $str = ''
-        for $val, $key of $uri
-          $prefix = if ($i is 0) then '' else '&'
-          $str+=$prefix + $key + '=' + $val
-          $i++
-
-        $uri = $str
-
-      @slashItem('base_url') + @item('index_page') + '?' + $uri
-
-
+    $uri = $uri.join('/') if Array.isArray($uri)
+    $index = if @item('index_page') is '' then '' else @slashItem('index_page')
+    $suffix = if (@item('url_suffix') is false) then '' else @item('url_suffix')
+    @slashItem('base_url') + $index + trim($uri, '/') + $suffix
 
   #
   # System URL
   #
   # @return	[String]
   #
-  systemUrl :  ->
-
-    $x = SYSPATH.split("/")
-    @slashItem('base_url') + $x[$x.length-1] + '/'
+  systemUrl: () ->
+    @slashItem('base_url') + SYSPATH.split("/").pop() + '/'
 
 
   #
@@ -246,14 +215,8 @@ class system.core.Config
   # @param  [String]  value the config item value
   # @return [Void]
   #
-  setItem : ($item, $value) ->
+  setItem: ($item, $value) ->
     if 'string' is typeof $item then @config[$item] = $value
     else @setItem($key, $val) for $key, $val of $item
-
     return
 
-# END Config class
-module.exports = system.core.Config
-
-# End of file Config.coffee
-# Location: ./system/core/Config.coffee

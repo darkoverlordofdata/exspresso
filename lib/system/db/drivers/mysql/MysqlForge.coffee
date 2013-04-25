@@ -10,25 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # MySQL Forge Class
 #
 #
-class system.db.mysql.MysqlForge extends system.db.Forge
+module.exports = class system.db.mysql.MysqlForge extends system.db.Forge
   
   #
   # Create database
@@ -204,7 +191,3 @@ class system.db.mysql.MysqlForge extends system.db.Forge
   _rename_table : ($table_name, $new_table_name) ->
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
 
-module.exports = system.db.mysql.MysqlForge
-
-#  End of file MysqlForge.coffee
-#  Location: ./system/db/drivers/mysql/MysqlForge.coffee

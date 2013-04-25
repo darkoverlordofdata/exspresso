@@ -10,18 +10,8 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
+#
 #	ExpressConnect driver
 #
 #   Extends the connect driver to use express using
@@ -29,10 +19,9 @@
 #
 #   Set using option  --subclass Express
 #
-
 require SYSPATH+'core/Connect.coffee'
 
-class application.core.ExpressConnect extends system.core.Connect
+module.exports = class application.core.ExpressConnect extends system.core.Connect
 
   eco             = require('eco')                # Embedded CoffeeScript templates
   fs              = require("fs")                 # File system
@@ -63,17 +52,17 @@ class application.core.ExpressConnect extends system.core.Connect
   initialize:($driver) ->
 
     @app = if $driver.version[0] is '3' then $driver() else $driver.createServer()
-    @port = @controller.config.item('port')
+    @port = @controller.config.item('http_port')
 
     @app.set 'env', ENVIRONMENT
     @app.set 'port', @port
 
-    @app.use $driver.logger(@controller.config.item('logger'))
+    @app.use $driver.logger(@controller.config.item('log_http'))
 
     #
     # Expose asset folders
     #
-    @app.set 'views', APPPATH + @controller.config.item('views')
+    @app.set 'views', APPPATH + 'views'
     @app.use $driver.static(APPPATH+"assets/")
     @app.use $driver.static(DOCPATH) unless DOCPATH is false
     #
@@ -115,9 +104,3 @@ class application.core.ExpressConnect extends system.core.Connect
     @app.use $driver.bodyParser()
     @app.use $driver.methodOverride()
 
-
-
-module.exports = application.core.ExpressConnect
-
-# End of file ExpressConnect.coffee
-# Location: .application/core/ExpressConnect.coffee

@@ -10,19 +10,6 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#-----------------------------------------------------------------------
 
 #
 # Migration Class
@@ -31,7 +18,7 @@
 # access to the CI super-global.
 #
 #
-class system.lib.Migration
+module.exports = class system.lib.Migration
 
   _migration_enabled    : false
   _migration_module     : ''
@@ -100,10 +87,11 @@ class system.lib.Migration
   #   Look for migrations (in order) :
   #
   #     APPPATH + 'migrations/'
-  #     APPPATH + 'third_party/' + $module + '/migrations/'
+  #     APPPATH + 'vendor/' + $module + '/migrations/'
   #
-  #     and in $config['modules_locations']
+  #     and in $config['module_paths']
   #     APPPATH + 'modules/' + $module + '/migrations/'
+  #     MODPATH + $module + '/migrations/'
   #
   # @param  string
   # @return [Void]  #
@@ -113,10 +101,9 @@ class system.lib.Migration
 
     $paths = []
     $config = get_config()
-    if $config['modules_locations']? # using HMVC?
-      for $k, $v of $config['modules_locations']
-        $paths.push $k + $module + '/migrations/'
-    $paths.push APPPATH + 'third_party/' + $module + '/migrations/'
+    for $k in $config['module_paths']
+      $paths.push $k + $module + '/migrations/'
+    $paths.push APPPATH + 'vendor/' + $module + '/migrations/'
 
     @_migration_module = $module
     for $path in $paths
@@ -337,7 +324,3 @@ class system.lib.Migration
     @db.update 'migrations',
       'version': $migrations, $next
 
-#  END ExspressoMigration class
-module.exports = system.lib.Migration
-# End of file Migration.coffee
-# Location: .system/lib/Migration.coffee

@@ -10,24 +10,11 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Input Class
 #
-class system.core.Input
+module.exports = class system.core.Input
 
   os = require('os')
 
@@ -479,9 +466,3 @@ class system.core.Input
     return $str
 
 
-
-
-# END Input class
-module.exports = system.core.Input
-# End of file Input.coffee
-# Location: ./system/core/Input.coffee

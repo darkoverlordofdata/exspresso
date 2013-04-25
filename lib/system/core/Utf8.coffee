@@ -10,23 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-# This file was ported from php to coffee-script using php2coffee
-#
-#
-
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @package		Exspresso
-# @author		  darkoverlordofdata
-# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license		MIT License
-# @see 		    http://darkoverlordofdata.com
-# @since		  Version 1.0
-#
 
 #
 # Utf8 Class
@@ -34,9 +17,30 @@
 # Provides support for UTF-8 environments
 #
 #
-class system.core.Utf8
+module.exports = class system.core.Utf8
 
   utf8 = require('utf8')
+
+  #
+  # Regexp to match invalid utf8
+  #
+  is_invalid = ///
+    [\xC0-\xDF]([^\x80-\x8F]|$)
+    |[\xE0-\xEF].{0,1}([^\x80-\x8F]|$)
+    |[\xF0-\xF7].{0,2}([^\x80-\x8F]|$)
+    |[\xF8-\xFB].{0,3}([^\x80-\x8F]|$)
+    |[\xFC-\xFD].{0,4}([^\x80-\x8F]|$)
+    |[\xFE-\xFE].{0,5}([^\x80-\x8F]|$)
+    |[\x00-\x7F][\x80-\xBF]
+    |[\xC0-\xDF].[\x80-\xBF]
+    |[\xE0-\xEF]..[\x80-\xBF]
+    |[\xF0-\xF7]...[\x80-\xBF]
+    |[\xF8-\xFB]....[\x80-\xBF]
+    |[\xFC-\xFD].....[\x80-\xBF]
+    |[\xFE-\xFE]......[\x80-\xBF]
+    |[\x80-\xBF]
+    ///
+
   #
   # Constructor
   #
@@ -45,18 +49,16 @@ class system.core.Utf8
   # @param  [system.core.Config]  config  The application configuratin
   #
   constructor : ($config) ->
-    log_message('debug', "Utf8 Class Initialized")
-    
-    if /./.test('é') and $config.item('charset') is 'UTF-8'
+    log_message 'debug', "Utf8 Class Initialized"
+
     #  RegExp must support UTF-8
     #  Application charset must be UTF-8 then
-      log_message('debug', "UTF-8 Support Enabled")
-      define('UTF8_ENABLED', true)
-      
-
-    else 
-      log_message('debug', "UTF-8 Support Disabled")
-      define('UTF8_ENABLED', false)
+    if /./.test('é') and $config.item('charset') is 'UTF-8'
+      log_message 'debug', "UTF-8 Support Enabled"
+      define 'UTF8_ENABLED', true
+    else
+      log_message 'debug', "UTF-8 Support Disabled"
+      define 'UTF8_ENABLED', false
       
     
   
@@ -69,10 +71,11 @@ class system.core.Utf8
   # @return	[String] cleaned string
   #
   cleanString : ($str) ->
-    if @_is_ascii($str) is false
+    if is_invalid.test($str)
       $str = utf8.decode($str)
       $str = utf8.encode(remove_invisible_characters($str, false))
-    return $str
+
+    $str
     
   
   #
@@ -100,7 +103,10 @@ class system.core.Utf8
   #
   convertToUtf8 : ($str, $encoding) ->
     utf8.encode($str)
-    
+
+
+  isValidUtf8: ($str) ->
+    validate.test($str)
   
   #
   # Is ASCII?
@@ -114,11 +120,3 @@ class system.core.Utf8
   _is_ascii : ($str) ->
     not /[^\x00-\x7F]/.test($str)
 
-    
-  
-
-module.exports = system.core.Utf8
-#  End Utf8 Class
-
-#  End of file Utf8.coffee
-#  Location: .system/core/Utf8.coffee

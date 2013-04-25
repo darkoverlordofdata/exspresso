@@ -10,26 +10,15 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
 #
 # Exspresso Benchmark Class
 #
 # This class enables you to mark points and calculate the time difference
-# between them.  Memory consumption can also be displayed.
+# between them.
 #
 #
-class system.core.Benchmark
+module.exports = class system.core.Benchmark
 
   #
   # @property [Object] Hash list of time markers
@@ -46,10 +35,9 @@ class system.core.Benchmark
 
 
   #
-  # Set a benchmark marker
+  # Set a benchmark
   #
-  # Multiple calls to this function can be made so that several
-  # execution points can be timed
+  # Mark the time at name
   #
   # @param  [String]  name  name of the marker
   # @return [Void]
@@ -59,47 +47,18 @@ class system.core.Benchmark
 
 
   #
-  # Calculates the time difference between two marked points.
+  # Elapsed Time
   #
-  # If the first parameter is empty this function instead returns the
-  # {elapsed_time} pseudo-variable. This permits the full system
-  # execution time to be shown in a template. The output class will
-  # swap the real value for this variable.
+  # Returns the time elapsed between two markers
   #
   # @param  [String]  point1   a particular marked point
   # @param  [String]  point2   a particular marked point
-  # @param  [Integer] decimals the number of decimal places
   # @return [Mixed]
   #
-  elapsedTime : ($point1 = '', $point2 = '', $decimals = 4) ->
-    if $point1 is ''
-      return '{elapsed_time}'
+  elapsedTime : ($point1, $point2) ->
 
+    return 0 if not @marker[$point1]?
 
-    if not @marker[$point1]?
-      return ''
-
-
-    if not @marker[$point2]?
-      @marker[$point2] = new Date() # microtime()
-
+    @marker[$point2] = new Date() if not @marker[$point2]?
     @marker[$point2] - @marker[$point1]
   
-  #
-  # Memory Usage
-  #
-  # This function returns the {memory_usage} pseudo-variable.
-  # This permits it to be put it anywhere in a template
-  # without the memory being calculated until the end.
-  # The output class will swap the real value for this variable.
-  #
-  # @return  [String]
-  #
-  memoryUsage :  ->
-    '{memory_usage}'
-    
-  
-#  END ExspressoBenchmark class
-module.exports = system.core.Benchmark
-#  End of file Benchmark.php 
-#  Location: ./system/core/Benchmark.php 

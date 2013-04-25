@@ -10,25 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
 #
 # Exspresso Hooks Class
 #
-# Provides a mechanism to extend the base system without hacking.
 #
-#
-class system.core.Hooks
+module.exports = class system.core.Hooks
 
   fs = require('fs')
   #
@@ -50,15 +37,15 @@ class system.core.Hooks
   #
   constructor :  ->
     
-    log_message('debug', "Hooks Class Initialized")
+    log_message 'debug', "Hooks Class Initialized"
 
     @hooks = {}
     #
     #  If hooks are not enabled in the config file
     #  there is nothing else to do
     #
-    if config_item('enable_hooks') is false
-      return 
+    return unless config_item('enable_hooks')
+
       
     #
     #  Grab the "hooks" definition file.
@@ -80,25 +67,20 @@ class system.core.Hooks
   #
   # Call Hook
   #
-  # Calls a particular hook
-  #
   # @param  [String]  which the hook name
   # @param  [Object]  instance  the controller instance
   # @return [Boolean] returns true if the hook was run, false if it was not
   #
   callHook : ($which = '', $instance = null) ->
 
-    if not @enabled or not @hooks[$which]?
-      return false
+    return false if not @enabled or not @hooks[$which]?
 
     if @hooks[$which][0]?  and typeof @hooks[$which][0] is 'object'
-      for $val in @hooks[$which]
-        @runHook($val, $instance)
-
+      @runHook($val, $instance) for $val in @hooks[$which]
     else
       @runHook(@hooks[$which], $instance)
 
-    return true
+    true
     
   
   #
@@ -111,48 +93,37 @@ class system.core.Hooks
   # @return [Boolean] returns true if the hook was run, false if it was not
   #
   runHook : ($data, $instance) ->
-    if typeof $data isnt 'object'
-      return false
-      
-    
+    return false if typeof $data isnt 'object'
+
     #
     #  Safety - Prevents run-away loops
     #
     #  If the script being called happens to have the same
     #  hook call within it a loop can happen
     #
-    if @in_progress is true
-      return false
+    return false if @in_progress is true
 
     #
     #  Set file path
     #
-    if not $data['filepath']?  or  not $data['filename']?
-      return false
+    return false if not $data['filepath']? or not $data['filename']?
 
     $filepath = APPPATH + $data['filepath'] + '/' + $data['filename']
-    
-    if not file_exists($filepath)
-      return false
 
+    return false if not file_exists($filepath)
     #
     #  Set class/function name
     #
     $class = false
     $function = false
     $params = ''
-    
-    if $data['class']?  and $data['class'] isnt ''
-      $class = $data['class']
 
-    if $data['function']? 
-      $function = $data['function']
+    $class    = $data['class']    if $data['class']?  and $data['class'] isnt ''
+    $function = $data['function'] if $data['function']?
+    $params   = $data['params']   if $data['params']?
 
-    if $data['params']? 
-      $params = $data['params']
+    return false if $class is false and $function is false
 
-    if $class is false and $function is false
-      return false
 
     #
     #  Set the in_progress flag
@@ -172,11 +143,4 @@ class system.core.Hooks
       $function($instance, $params)
 
     @in_progress = false
-    return true
-    
-
-#  END ExspressoHooks class
-module.exports = system.core.Hooks
-
-#  End of file Hooks.php 
-#  Location: ./system/core/Hooks.php 
+    true

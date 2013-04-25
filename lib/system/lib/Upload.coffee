@@ -10,25 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # File Uploading Class
 #
 #
-class system.lib.Upload
+module.exports = class system.lib.Upload
   
   max_size: 0
   max_width: 0
@@ -62,15 +49,13 @@ class system.lib.Upload
   # Constructor
   #
     #
-  __construct($props = {})
-  {
-  if count($props) > 0
-    @initialize($props)
-    
-  
-  log_message('debug', "Upload Class Initialized")
-  }
-  
+  construct: ($props = {}) ->
+    if count($props) > 0
+      @initialize($props)
+
+
+    log_message('debug', "Upload Class Initialized")
+
   #
   # Initialize preferences
   #
@@ -847,8 +832,3 @@ class system.lib.Upload
 
     return $filename
 
-module.exports = system.lib.Upload
-#  END Upload Class
-
-#  End of file Upload.php 
-#  Location: ./system/lib/Upload.php

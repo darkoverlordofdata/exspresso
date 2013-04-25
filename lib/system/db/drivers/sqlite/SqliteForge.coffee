@@ -10,23 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
 #
 # SQLite Forge Class
 #
 #
-class system.db.sqlite.SqliteForge extends system.db.Forge
+module.exports = class system.db.sqlite.SqliteForge extends system.db.Forge
 
   fs = require('fs')
 
@@ -214,7 +203,3 @@ class system.db.sqlite.SqliteForge extends system.db.Forge
     return $sql
     
   
-module.exports = system.db.sqlite.SqliteForge
-
-#  End of file SqliteForge.coffee
-#  Location: ./system/db/drivers/sqlite/SqliteForge.coffee

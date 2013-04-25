@@ -10,44 +10,34 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Postgre Database Adapter Class
 #
 #
-class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
+module.exports = class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
 
-  dbdriver          : 'postgres'
-  port              : 5432
-  connected         : false
-  version           : require(FCPATH + 'node_modules/pg/package.json').version
+  #  some platform specific strings
 
   _escape_char      : '"'
-
-  #  clause and character used for LIKE escape sequences
   _like_escape_str  : '' # " ESCAPE '%s' "
   _like_escape_chr  : '' # !'
-
-  #
-  # The syntax to count rows is slightly different across different
-  # database engines, so this string appears in each driver and is
-  # used for the count_all() and count_all_results() functions.
-  #
   _count_string     : "SELECT COUNT(*) AS "
   _random_keyword   : ' RANDOM()'#  database specific random keyword
+
+  #
+  # Database connection settings
+  # Selects the internal driver
+  #
+  # @param  [Object]  params  config array
+  # @param  [system.core.Controller]  controller  the page controller
+  #
+  constructor: ($args...) ->
+    super $args...
+
+    Object.defineProperties @,
+      driver        : {writeable: false, enumerable: true, value: 'pg'}
+      version       : {writeable: false, enumerable: true, value: require(FCPATH + 'node_modules/pg/package.json').version}
 
   #
   # Connection String
@@ -69,7 +59,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   connect: ($next) =>
 
-    pg = require('pg')
+    pg = require(@driver)
     @connected = true
     pg.connect @_connect_string(), ($err, $client, $done) =>
 
@@ -83,16 +73,6 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
         # return connection to pool -- pg v 0.14.x
         setTimeout $done, 1000
         $next null, $client
-
-  #
-  # Persistent database connection
-  #
-  # @private called by the base class
-  # @return	resource
-  #
-  db_pconnect:  ->
-    throw new Error('Not Supported: postgres_driver::pconnect')
-
 
   #
   # Reconnect
@@ -132,7 +112,7 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   #
   # @return	[String]
   #
-  _version:  ->
+  _db_version:  ->
     "SELECT version() AS ver"
 
 
@@ -502,8 +482,3 @@ class system.db.postgres.PostgresDriver extends system.db.ActiveRecord
   _close: ($next) ->
     $next() if $next?
 
-
-# End Class ExspressoPostgresDriver
-module.exports = system.db.postgres.PostgresDriver
-#  End of file PostgresDriver.coffee
-#  Location: ./system/db/drivers/postgres/PostgresDriver.coffee

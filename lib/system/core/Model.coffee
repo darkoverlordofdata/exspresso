@@ -10,25 +10,11 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Model Class
 #
-
-class system.core.Model
+module.exports = class system.core.Model
 
   #
   # Model Constructor
@@ -43,10 +29,3 @@ class system.core.Model
     log_message 'debug', "Model Class Initialized"
     defineProperties @, controller : {writeable: false, value: $controller}
 
-
-# END Model class
-
-module.exports = system.core.Model
-
-# End of file Model.coffee
-# Location: ./system/core/Model.coffee

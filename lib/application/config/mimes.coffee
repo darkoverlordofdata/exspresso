@@ -1,17 +1,3 @@
-#+--------------------------------------------------------------------+
-#  mimes.coffee
-#+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#
-#  This file is a part of Exspresso
-#
-#  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the MIT License
-#
-#+--------------------------------------------------------------------+
-#
-
 #
 #| -------------------------------------------------------------------
 #| MIME TYPES
@@ -113,8 +99,3 @@ module.exports =
   'xl':'application/excel',
   'eml':'message/rfc822',
   'json':['application/json', 'text/json']
-
-
-
-#  End of file mimes.php 
-#  Location: ./application/config/mimes.php 

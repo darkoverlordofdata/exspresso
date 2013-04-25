@@ -10,17 +10,6 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 require SYSPATH+'lib/Parser.coffee'
 
@@ -45,7 +34,7 @@ require SYSPATH+'lib/Parser.coffee'
 #   $flash        session flashdata messages<br />
 #
 #
-class application.lib.Template extends system.lib.Parser
+module.exports = class application.lib.Template extends system.lib.Parser
 
   html                : null
   theme               : null
@@ -278,7 +267,7 @@ class application.lib.Template extends system.lib.Parser
 
     if @_admin
       $admin_menu = Dashboard: '/admin'
-      for $name, $module of system.core.Modules::list()
+      for $name, $module of @config.modules
         if $module.active
           $admin_menu[$module.name] = '/admin/'+$name
 
@@ -446,7 +435,3 @@ class application.lib.Template extends system.lib.Parser
 
     $flash.join('')
 
-module.exports = application.lib.Template
-
-# End of file Template.coffee
-# Location: .application/lib/Template.coffee

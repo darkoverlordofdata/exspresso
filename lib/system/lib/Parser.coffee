@@ -10,19 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Parser Class
@@ -30,7 +17,7 @@
 #   lightweight template
 #
 #
-class system.lib.Parser
+module.exports = class system.lib.Parser
   
   _left         : '{'   # Left delimiter
   _right        : '}'   # Right delimiter
@@ -178,8 +165,3 @@ class system.lib.Parser
     return $match
 
 
-module.exports = system.lib.Parser
-#  END Parser Class
-
-#  End of file Parser.php 
-#  Location: .system/lib/Parser.php

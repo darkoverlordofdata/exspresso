@@ -10,18 +10,6 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 # Define - read only attribute
@@ -34,11 +22,10 @@ Function::define = ($def) ->
   defineProperty @::, $name, {writeable: false, enumerable: ($name[0] isnt '_'), value: $def[$name]}
 
 
-#  ------------------------------------------------------------------------
 #
 #	Class Object
 #
-class system.core.Object
+module.exports = class system.core.Object
 
   #
   # Define a read-only property
@@ -99,8 +86,3 @@ class system.core.Object
 
     $iterate()
 
-
-# END CLASS Object
-module.exports = system.core.Object
-# End of file Object.coffee
-# Location: .system/core/Object.coffee

@@ -10,52 +10,39 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @package		Exspresso
-# @author		  darkoverlordofdata
-# @copyright	Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license		MIT License
-# @see 		    http://darkoverlordofdata.com
-# @since		  Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Security Class
 #
 #
-class system.core.Security
+module.exports = class system.core.Security
+
+  querystring = require('querystring')
+
 
   _xss_hash             : ''              # Random Hash for protecting URLs
   _csrf_hash            : ''              # Random Hash for Cross Site Request Forgery Protection Cookie
   _csrf_expire          : 7200            # Expiration time for Cross Site Request Forgery Protection Cookie
   _csrf_token_name      : 'ex_csrf_token' # Token name for Cross Site Request Forgery Protection Cookie
   _csrf_cookie_name     : 'ex_csrf_token' # Cookie name for Cross Site Request Forgery Protection Cookie
-  _never_allowed_str    : [                 # List of never allowed strings
-    [/document.cookie/gm    , '[removed]']
-    [/document.write/gm     , '[removed]']
-    [/\.parentNode/gm       , '[removed]']
-    [/\.innerHTML/gm        , '[removed]']
-    [/window\.location/gm   , '[removed]']
-    [/-moz-binding/gm       , '[removed]']
-    [/<!--/gm               , '&lt;!--']
-    [/-->/gm                , '--&gt;']
-    [/<!\[CDATA\[/gm        , '&lt;![CDATA[']
-    [/<comment>/gm          , '&lt;comment&gt;']
-  ]
-  
+  _never_allowed_str    :                 # List of never allowed strings
+    'document.cookie'	  : '[removed]'
+    'document.write'	  : '[removed]'
+    '.parentNode'		    : '[removed]'
+    '.innerHTML'		    : '[removed]'
+    'window.location'	  : '[removed]'
+    '-moz-binding'		  : '[removed]'
+    '<!--'				      : '&lt;!--'
+    '-->'				        : '--&gt;'
+    '<![CDATA['			    : '&lt;![CDATA['
+    '<comment>'			    : '&lt;comment&gt;'
+
   _never_allowed_regex : [                # List of never allowed regex replacement
-    'javascript\\s*:'                     #  javascript
-    'expression\\s*(\\(|&\\#40;)'         #  CSS and IE
-    'vbscript\\s*:'                       #  IE, surprise!
-    'Redirect\\s+302'                     #  Redirects
-    "([\\\"'])?data\\s*:[^\\\\1]*?base64[^\\\\1]*?,[^\\\\1]*?\\\\1?"
+    /javascript\s*:/i                     #  javascript
+    /expression\s*(\(|&\#40;)/i           #  CSS and IE
+    /vbscript\s*:/i                       #  IE
+    /Redirect\s+302/i                     #  Redirects
+    /([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?/i
     ]
 
   #
@@ -84,7 +71,7 @@ class system.core.Security
       #  Set the CSRF hash
       @_csrf_set_hash()
     
-    log_message('debug', "Security Class Initialized")
+    log_message 'debug', "Security Class Initialized"
     
 
   #
@@ -114,9 +101,8 @@ class system.core.Security
     @_csrf_set_hash()
     @csrfSetCookie()
     
-    log_message('debug', 'CSRF token verified')
-    
-    return @
+    log_message 'debug', 'CSRF token verified'
+    @
     
   
   #
@@ -126,20 +112,17 @@ class system.core.Security
   #
   csrfSetCookie :  ->
     $expire = time() + @_csrf_expire
-    $secure_cookie = if (config_item('cookie_secure') is true) 1 else 0
-    
-    if $secure_cookie and (not $req.connection.encrypted)
-      return false
+    $secure_cookie = if config_item('cookie_secure') is true then 1 else 0
 
+    return false if $secure_cookie and (not $req.connection.encrypted)
     @res.cookie @_csrf_cookie_name, @_csrf_hash,
       expires : $expire
       domain  : config_item('cookie_domain')
       path    : config_item('cookie_path')
       secure  : $secure_cookie
 
-    log_message('debug', "CRSF cookie Set")
-
-    return @
+    log_message 'debug', "CRSF cookie Set"
+    @
     
   
   #
@@ -218,9 +201,7 @@ class system.core.Security
     #
     # <a href="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">Google</a>
     #
-    # Note: Use rawurldecode() so it does not remove plus signs
-    #
-    $str = rawurldecode($str)
+    $str = querystring.unescape($str)
     ##
     # Convert character entities to ASCII
     #
@@ -229,8 +210,8 @@ class system.core.Security
     # these are the ones that will pose security problems.
     #
     ##
-    $str = $str.replace(/[a-z]+=([\'\"]).*?\\1/mig, @_convert_attribute)
-    $str = $str.replace(/<\w+.*?(?=>|<|$)/mig, @_decode_entity)
+    $str = $str.replace(/[a-z]+=([\'\"]).*?\1/mig, @_convert_attribute)
+    $str = $str.replace(/<\w+.*/mig, @_decode_entity)
     # Remove Invisible Characters Again!
     $str = remove_invisible_characters($str)
     ##
@@ -243,21 +224,6 @@ class system.core.Security
     $converted_string = $str
     ##  Remove Strings that are never allowed
     $str = @_do_never_allowed($str)
-    # Makes PHP tags safe
-    #
-    # Note: XML tags are inadvertently replaced too:
-    #
-    # <?xml
-
-    #
-    # But it doesn't seem to pose a problem.
-    if $is_image is true
-      #  Images have a tendency to have the PHP short opening and
-      #  closing tags every so often so we skip those and only
-      #  do the long opening tags.
-      $str = $str.replace(/<\\?(php)/i, "&lt;?$1")
-    else
-      $str = $str.replace(/<?/mg, '&lt;?').replace(/?>/mg, '?&gt;')
     ##
     # Compact any exploded words
     #
@@ -306,7 +272,7 @@ class system.core.Security
     #
     $naughty = 'alert|applet|audio|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|isindex|layer|link|meta|object|plaintext|style|script|textarea|title|video|xml|xss'
 
-    $str = $str.replace(RegExp('<(/*\\s*)(' + $naughty + ')([^><]*)([><]*)', 'img'), @_sanitize_naughty_html)
+    $str = $str.replace(RegExp('<(\/*\\s*)(' + $naughty + ')([^><]*)([><]*)', 'img'), @_sanitize_naughty_html)
     #
     # Sanitize naughty scripting elements
     #
@@ -319,7 +285,7 @@ class system.core.Security
     # For example:	eval('some code')
     # Becomes:		eval&#40;'some code'&#41;
     #
-    $re = RegExp('(alert|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\\s*)\\((.*?)\\)', 'mig')
+    $re = /(alert|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\s*)\((.*?)\)/mig
     $str = $str.replace($re, "$1$2&#40;$3&#41;")
 
     #  Final clean up
@@ -361,29 +327,27 @@ class system.core.Security
     return @_xss_hash
 
   #
-  # HTML Entities Decode
+  # HTML Entity Decode
   #
-  # This function is a replacement for html_entity_decode()
-  #
-  # The reason we are not using html_entityDecode() by itself is because
-  # while it is not technically correct to leave out the semicolon
-  # at the end of an entity most browsers will still interpret the entity
-  # correctly.  html_entityDecode() does not convert entities without
-  # semicolons, so we are left with our own little solution here. Bummer.
+  # Convert html entities back to chars
   #
   # @param  [String]  str string to be decoded
-  # @param  [String]  charset optional encoding (default UTF-8)
   # @return	[String] the decoded string value
   #
-  entityDecode : ($str, $charset = 'UTF-8') ->
+  entityDecode : ($str) ->
 
     return $str if $str.indexOf('&') is -1
 
-    $str = htmlspecialchars($str)
-    $str = $str.replace(/&#x(0*[0-9a-f]{2,5})/ig, ($0, $1) -> String.fromCharCode(parseInt($1, 16)))
-    $str = $str.replace(/&#([0-9]{2,4})/g, ($0, $1) -> String.fromCharCode(parseInt($1, 10)))
+    $str = $str
+      .replace(/\&amp;/g,   "&")
+      .replace(/\&quot;/g,  '"')
+      .replace(/\&lt;/g,    "<")
+      .replace(/\&gt;/g,    ">")
 
-  
+    $str = $str.replace(/&#x(0*[0-9a-f]{2,5});?/ig, ($0, $1) -> String.fromCharCode(parseInt($1, 16)))
+    $str = $str.replace(/&#([0-9]{2,4});?/g, ($0, $1) -> String.fromCharCode(parseInt($1, 10)))
+
+
   #
   # Filename Security
   #
@@ -395,42 +359,42 @@ class system.core.Security
   #
   sanitizeFilename : ($str, $relative_path = false) ->
     $ruin = [
-      "../" 
-      "<!--" 
-      "-->" 
-      "<" 
-      ">" 
-      "'" 
-      '"' 
-      '&' 
-      '$' 
-      '#' 
-      '{' 
-      '}' 
-      '[' 
-      ']' 
-      '=' 
-      ';' 
-      '?' 
-      "%20" 
-      "%22" 
-      "%3c"     #  <
-      "%253c"   #  <
-      "%3e"     #  >
-      "%0e"     #  >
-      "%28"     #  (
-      "%29"     #  )
-      "%2528"   #  (
-      "%26"     #  &
-      "%24"     #  $
-      "%3f"     #  ?
-      "%3b"     #  ;
-      "%3d"     #  =
+      /..\//g
+      /<!--/g 
+      /-->/g 
+      /\</g 
+      /\>/g 
+      /\'/g 
+      /\"/g 
+      /\&/g 
+      /\$/g 
+      /\#/g
+      /\{/g 
+      /\}/g
+      /\[/g
+      /\]/g
+      /\=/g
+      /\;/g
+      /\?/g
+      /%20/g
+      /%22/g
+      /%3c/g     #  <
+      /%253c/g   #  <
+      /%3e/g     #  >
+      /%0e/g     #  >
+      /%28/g     #  (
+      /%29/g     #  )
+      /%2528/g   #  (
+      /%26/g     #  &
+      /%24/g     #  $
+      /%3f/g     #  ?
+      /%3b/g     #  ;
+      /%3d/g     #  =
       ]
     
     if not $relative_path 
-      $ruin.push './'
-      $ruin.push '/'
+      $ruin.push /\.\//
+      $ruin.push /\//
       
     
     $str = remove_invisible_characters($str, false)
@@ -453,7 +417,7 @@ class system.core.Security
   #
   _compact_exploded_words : ($0, $1, $2) ->
 
-    $1.replace(/\\s+/gm, '')+$2
+    $1.replace(/\s+/gm, '')+$2
 
   
   #
@@ -500,7 +464,7 @@ class system.core.Security
       #  replace illegal attribute strings that are inside an html tag
 
       if $attribs.length > 0
-        $re = RegExp("<(\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + $attribs.join('|') + ")(.*?)([\\s><])([><]*)", 'igm')
+        $re = RegExp("<(\\/?[^><]+?)([^A-Za-z<>\\-])(.*?)(" + $attribs.join('|') + ")(.*?)([\\s><])([><]*)", 'igm')
         $count = $re.match($str).length
         $str = $str.replace($re, '<$1 $3$5$6$7')
 
@@ -540,9 +504,7 @@ class system.core.Security
   #
   _js_link_removal : ($0, $1) =>
 
-    $re = RegExp('href=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|data\\s*:)', 'mig')
-
-    $0.replace($1, @_filter_attributes($1.replace(/[<>]/mg, '')).replace($re, ''))
+    $0.replace($1, @_filter_attributes($1.replace(/[<>]/mg, '')).replace(/href=.*?(alert\(|alert&\#40;|javascript\:|livescript\:|mocha\:|charset\=|window\.|document\.|\.cookie|<script|<xss|data\s*:)/mig, ''))
 
   
   #
@@ -556,9 +518,7 @@ class system.core.Security
   #
   _js_img_removal : ($0, $1) =>
 
-    $re = RegExp('src=.*?(alert\(|alert&\\#40;|javascript\\:|livescript\\:|mocha\\:|charset\\=|window\\.|document\\.|\\.cookie|<script|<xss|base64\\s*,)', 'mig')
-
-    $0.replace($1, @_filter_attributes($1.replace(/[<>]/mg, '')).replace($re, ''))
+    $0.replace($1, @_filter_attributes($1.replace(/[<>]/mg, '')).replace(/src=.*?(alert\(|alert&\#40;|javascript\:|livescript\:|mocha\:|charset\=|window\.|document\.|\.cookie|<script|<xss|base64\s*:)/mig, ''))
 
 
   #
@@ -586,8 +546,8 @@ class system.core.Security
   #
   _filter_attributes : ($str) ->
     $out = ''
-    while ($match = /\s*[a-z\-]+\s*=\s*(\x22|\x27)([^\\1]*?)\\1/img.exec($str)) isnt null
-      $out+= $match.replace(/\/\\*.*?\\*\//mg, '')
+    while ($match = /\s*[a-z-]+\s*=\s*(\x22|\x27)([^\1]*?)\1/img.exec($str)) isnt null
+      $out+= $match.replace(/\/\*.*?\*\//mg, '')
     $out
 
   
@@ -620,7 +580,7 @@ class system.core.Security
     
     #  901119URL5918AMP18930PROTECT8198
 
-    $str = $str.replace(/\\&([a-z\\_0-9\\-]+)\\=([a-z\\_0-9\\-]+)/igm, @xss_hash() + "$1=$2")
+    $str = $str.replace(/\&([a-z\_0-9\-]+)\=([a-z\_0-9\-]+)/igm, @xss_hash() + "$1=$2")
 
     #
     # Validate standard character entities
@@ -629,7 +589,7 @@ class system.core.Security
     # the conversion of entities to ASCII later.
     #
     #
-    $str = $str.replace(/(&\\#?[0-9a-z]{2,})([\\x00-\\x20])*;?/igm, "$1;$2")
+    $str = $str.replace(/(&\#?[0-9a-z]{2,})([\x00-\x20])*;?/igm, "$1;$2")
 
     #
     # Validate UTF16 two byte encoding (x00)
@@ -637,7 +597,7 @@ class system.core.Security
     # Just as above, adds a semicolon if missing.
     #
     #
-    $str = $str.replace(/(&\\#x?)([0-9A-F]+);?/igm, "$1$2;")
+    $str = $str.replace(/(&\#x?)([0-9A-F]+);?/igm, "$1$2;")
 
     #
     # Un-Protect GET variables in URLs
@@ -658,8 +618,8 @@ class system.core.Security
   #
   _do_never_allowed : ($str) ->
 
-    for $pair in @_never_allowed_str
-      $str = $str.replace($pair[0], $paid[1])
+    for $key, $val of @_never_allowed_str
+      $str = $str.replace($key, $val)
 
     for $regex in @_never_allowed_regex
       $str = $str.replace($regex, '[removed]')
@@ -687,7 +647,3 @@ class system.core.Security
     return @_csrf_hash
 
 
-module.exports = system.core.Security
-
-#  End of file Security.coffee
-#  Location: .system/core/Security.coffee

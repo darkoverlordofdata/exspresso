@@ -47,7 +47,7 @@ class Travel extends application.core.Module
   # @return [Void]
   #
   initialize: () ->
-    @controller.load.model 'travel/HotelModel'
+    @controller.load.model 'HotelModel'
     @controller.hotelmodel.install() if @controller.install
 
 

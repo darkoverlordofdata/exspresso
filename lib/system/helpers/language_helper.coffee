@@ -11,25 +11,10 @@
 #
 #+--------------------------------------------------------------------+
 #
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
-
-#
 # Exspresso Language Helpers
 #
 #
 
-#  ------------------------------------------------------------------------
 
 #
 # Lang
@@ -40,16 +25,15 @@
 # @param  [String]  the id of the form element
 # @return	[String]
 #
-if not function_exists('lang')
-  exports.lang = lang = ($line, $id = '') ->
+exports.lang = lang = ($line, $id = '') ->
 
-    $line = exspresso.lang.line($line)
-    
-    if $id isnt ''
-      $line = '<label for="' + $id + '">' + $line + "</label>"
-      
-    
-    return $line
+  $line = exspresso.lang.line($line)
+
+  if $id isnt ''
+    $line = '<label for="' + $id + '">' + $line + "</label>"
+
+
+  return $line
 
 #  ------------------------------------------------------------------------
 #
@@ -61,6 +45,3 @@ for $name, $body of module.exports
 
 
 
-#  ------------------------------------------------------------------------
-#  End of file language_helper.php 
-#  Location: ./system/helpers/language_helper.php 

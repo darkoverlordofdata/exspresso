@@ -45,7 +45,7 @@ class Blog extends application.core.Module
   # @return [Void]
   #
   initialize: () ->
-    @controller.load.model 'blog/BlogModel'
+    @controller.load.model 'BlogModel'
     @controller.blogmodel.install() if @controller.install
 
 

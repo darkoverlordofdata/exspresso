@@ -1,10 +1,10 @@
-# [Exspresso v0.9.2] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.9.3] (https://github.com/darkoverlordofdata/exspresso)
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
     Exspresso Features:
 
-      * Runs on the connect.js stack
+      * Runs on the connect.js http stack
       * HMVC architecture
       * Magic: controller members are available to all libs, models, and views.
       * Embedded coffee-script (*.eco) views.
@@ -69,8 +69,8 @@ $ cake build:desktop
 ### More...
 
   * [Compare](/comparison.md) Compare Exspresso to CodeIgniter
-  * [Magic](/magic.md) Inheritance injection
-  * [Coding](/coding%20standards.md) Exspresso coding standards
+  * [Magic](/magic.md) Inheritance injection (Magic!)
+  * [Coding](/style%20guide.md) Exspresso style guide
   * [Status](/class%20status.md) Component status
   * [Todo](/todo.md) Wish list
 

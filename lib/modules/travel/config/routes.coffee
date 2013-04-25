@@ -1,18 +1,3 @@
-#+--------------------------------------------------------------------+
-#| routes.coffee
-#+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Expresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the MIT License
-#|
-#+--------------------------------------------------------------------+
-#
-#
-#
 #| -------------------------------------------------------------------------
 #| URI ROUTING
 #| -------------------------------------------------------------------------
@@ -38,13 +23,13 @@
 #|
 #| There area two reserved routes:
 #|
-#|	exports['default_controller'] = 'welcome';
+#|	  'default_controller'    : 'welcome';
 #|
 #| This route indicates which controller class should be loaded if the
 #| URI contains no data. In the above example, the "welcome" class
 #| would be loaded.
 #|
-#|	exports['404_override'] = 'errors/page_missing';
+#|	  '404_override'    : 'errors/page_missing';
 #|
 #| This route will tell the Router what URI segments to use if those provided
 #| in the URL cannot be matched to a valid route.
@@ -54,19 +39,17 @@
 #----------------------------------------------------------------------
 #          Route                                 Controller URI
 #----------------------------------------------------------------------
-# travel database application demo
-exports['/admin/travel']                  = 'travel/Admin'
-exports['/travel']                        = 'travel/Travel/search'
-exports['/travel/search']                 = 'travel/Travel/search'
-exports['/travel/hotels']                 = 'travel/Travel/hotels'
-exports['/travel/hotels/:start']          = 'travel/Travel/hotels'
-exports['/travel/hotel/:id']              = 'travel/Travel/hotel'
-exports['/travel/booking/:id']            = 'travel/Travel/booking'
-exports['/travel/confirm/:id']            = 'travel/Travel/confirm'
-exports['/travel/book/:id']               = 'travel/Travel/book'
-exports['/travel/login']                  = 'travel/Travel/login'
-exports['/travel/logout']                 = 'travel/Travel/logout'
-exports['/travel/authenticate']           = 'travel/Travel/authenticate'
+module.exports =
+  '/admin/travel'                     : 'travel/Admin'
+  '/travel'                           : 'travel/Travel/search'
+  '/travel/search'                    : 'travel/Travel/search'
+  '/travel/hotels'                    : 'travel/Travel/hotels'
+  '/travel/hotels/:start'             : 'travel/Travel/hotels'
+  '/travel/hotel/:id'                 : 'travel/Travel/hotel'
+  '/travel/booking/:id'               : 'travel/Travel/booking'
+  '/travel/confirm/:id'               : 'travel/Travel/confirm'
+  '/travel/book/:id'                  : 'travel/Travel/book'
+  '/travel/login'                     : 'travel/Travel/login'
+  '/travel/logout'                    : 'travel/Travel/logout'
+  '/travel/authenticate'              : 'travel/Travel/authenticate'
 
-# End of file routes.coffee
-# Location: ./application/modules/travel/config/routes.coffee

@@ -10,28 +10,14 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 #   Sql Session store driver
 #
 #
-class system.lib.session.SqlSession extends require(exspresso.server.driver).session.Store
+module.exports = class system.lib.session.SqlSession extends require(exspresso.server.driver).session.Store
 
-  UserModel = require(MODPATH+'user/models/UserModel.coffee')
-
-  serialize       = JSON.stringify      # Generates a storable representation of a value
-  unserialize     = JSON.parse          # Creates an object from a stored representation
+  UserModel = require(APPPATH+'modules/user/models/UserModel.coffee')
 
   parent                  : null        # The parent class for this driver
   controller              : null        # the system controller
@@ -43,9 +29,13 @@ class system.lib.session.SqlSession extends require(exspresso.server.driver).ses
   # @param  [system.core.Exspresso] controller  the system controller
   # @return 	nothing
   #
-  constructor: (@parent, @controller) ->
+  constructor: ($parent, $controller) ->
 
-    @controller.load.model('user/UserModel')
+    Object.defineProperties @,
+      parent        : {enumerable: true, writeable: false, value: $parent}
+      controller    : {enumerable: true, writeable: false, value: $controller}
+
+    @controller.load.model('UserModel')
     return
 
 
@@ -73,7 +63,7 @@ class system.lib.session.SqlSession extends require(exspresso.server.driver).ses
 
         # unpack the data
         $data                   = $result.row()
-        $session                = unserialize($data.user_data)
+        $session                = JSON.parse($data.user_data)
         $session.uid            = $data.uid || UserModel.UID_ANONYMOUS
         $session.ip_address     = $data.ip_address
         $session.user_agent     = $data.user_agent
@@ -110,7 +100,7 @@ class system.lib.session.SqlSession extends require(exspresso.server.driver).ses
           ip_address      : fetch($user_data, 'ip_address')
           user_agent      : fetch($user_data, 'user_agent').substr(0, 120)
           last_activity   : fetch($user_data, 'last_activity')
-          user_data       : serialize($user_data)
+          user_data       : JSON.stringify($user_data)
 
         if $result.num_rows is 0
 
@@ -177,6 +167,3 @@ class system.lib.session.SqlSession extends require(exspresso.server.driver).ses
     return $val
 
 
-module.exports = system.lib.session.SqlSession
-# End of file SqlSession.coffee
-# Location: ./system/lib/Session/drivers/SqlSession.coffee

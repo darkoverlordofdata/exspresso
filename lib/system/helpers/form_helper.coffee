@@ -11,30 +11,8 @@
 #
 #+--------------------------------------------------------------------+
 #
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
-
-#
 # Exspresso Form Helpers
 #
-# @package		Exspresso
-# @subpackage	Helpers
-# @category	Helpers
-# @author		darkoverlordofdata
-# @see 		http://darkoverlordofdata.com/user_guide/helpers/form_helper.html
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Form Declaration
@@ -46,39 +24,34 @@
 # @param  [Array]  a key/value pair hidden data
 # @return	[String]
 #
-if not function_exists('form_open')
-  exports.form_open = form_open = ($action = '', $attributes = '', $hidden = {}) ->
+exports.form_open = form_open = ($action = '', $attributes = '', $hidden = {}) ->
 
-    if $attributes is ''
-      $attributes = 'method="post"'
+  if $attributes is ''
+    $attributes = 'method="post"'
 
-    #  If an action is not a full URL then turn it into one
-    #if $action and strpos($action, '://') is false
-    #  $action = @config.siteUrl($action)
+  #  If an action is not a full URL then turn it into one
+  #if $action and strpos($action, '://') is false
+  #  $action = @config.siteUrl($action)
 
 
-    #  If no action is provided then set to the current url
-    $action or ($action = @config.siteUrl(@uri.uriString()))
+  #  If no action is provided then set to the current url
+  $action or ($action = @config.siteUrl(@uri.uriString()))
 
-    $form = '<form action="' + $action + '"'
+  $form = '<form action="' + $action + '"'
 
-    $form+=_attributes_to_string($attributes, true)
-    
-    $form+='>'
+  $form+=_attributes_to_string($attributes, true)
 
-    #  CSRF
-    if @config.item('csrf_protection') is true
-      $hidden[@security.getCsrfTokenName()] = @security.getCsrfHash()
+  $form+='>'
 
-    if is_array($hidden) and Object.keys($hidden).length > 0
-      {format} = require('util')
-      $form+=format("\n<div class=\"hidden\">%s</div>", form_hidden($hidden))
+  #  CSRF
+  if @config.item('csrf_protection') is true
+    $hidden[@security.getCsrfTokenName()] = @security.getCsrfHash()
 
-    return $form
-    
-  
+  if is_array($hidden) and Object.keys($hidden).length > 0
+    {format} = require('util')
+    $form+=format("\n<div class=\"hidden\">%s</div>", form_hidden($hidden))
 
-#  ------------------------------------------------------------------------
+  return $form
 
 #
 # Form Declaration - Multipart type
@@ -90,315 +63,287 @@ if not function_exists('form_open')
 # @param  [Array]  a key/value pair hidden data
 # @return	[String]
 #
-if not function_exists('form_open_multipart')
-  exports.form_open_multipart = form_open_multipart = ($action, $attributes = {}, $hidden = {}) ->
-    if 'string' is typeof($attributes)
-      $attributes+=' enctype="multipart/form-data"'
-      
-    else 
-      $attributes['enctype'] = 'multipart/form-data'
-      
-    
-    return form_open($action, $attributes, $hidden)
-    
-  
+exports.form_open_multipart = form_open_multipart = ($action, $attributes = {}, $hidden = {}) ->
+  if 'string' is typeof($attributes)
+    $attributes+=' enctype="multipart/form-data"'
 
-#  ------------------------------------------------------------------------
+  else
+    $attributes['enctype'] = 'multipart/form-data'
 
+
+  return form_open($action, $attributes, $hidden)
+    
 #
 # Hidden Input Field
 #
 # Generates hidden fields.  You can pass a simple key/value string or an associative
 # array with multiple values.
 #
-# @param  [Mixed]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_hidden')
-  exports.form_hidden = form_hidden = ($name, $value = '', $form = "\n") ->
+exports.form_hidden = form_hidden = ($name, $value = '', $form = "\n") ->
 
-    if is_array($name)
-      for $key, $val of $name
-        $form += form_hidden($key, $val, $form)
-
-      return $form
-      
-    
-    if not is_array($value)
-      $form+='<input type="hidden" name="' + $name + '" value="' + form_prep($value, $name) + '" />' + "\n"
-      
-    else 
-      for $k, $v of $value
-        $form += form_hidden($name + '[' + $k + ']', $v, $form)
+  if is_array($name)
+    for $key, $val of $name
+      $form += form_hidden($key, $val, $form)
 
     return $form
-    
-  
 
-#  ------------------------------------------------------------------------
+
+  if not is_array($value)
+    $form+='<input type="hidden" name="' + $name + '" value="' + form_prep($value, $name) + '" />' + "\n"
+
+  else
+    for $k, $v of $value
+      $form += form_hidden($name + '[' + $k + ']', $v, $form)
+
+  return $form
 
 #
 # Text Input Field
 #
-# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_input')
-  exports.form_input = form_input = ($data = '', $value = '', $extra = '') ->
-    $defaults =
-      type:   'text'
-      name:   if not is_array($data) then $data else ''
-      value:  $value
-    
-    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
+exports.form_input = form_input = ($data = '', $value = '', $extra = '') ->
+  $defaults =
+    type:   'text'
+    name:   if not is_array($data) then $data else ''
+    value:  $value
 
-
-
-#  ------------------------------------------------------------------------
+  return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
 
 #
 # Password Field
 #
 # Identical to the input function but adds the "password" type
 #
-# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_password')
-  exports.form_password = form_password = ($data = '', $value = '', $extra = '') ->
-    if not is_array($data)
-      $data = name:$data
-      
-    
-    $data['type'] = 'password'
-    return form_input($data, $value, $extra)
-    
-  
+exports.form_password = form_password = ($data = '', $value = '', $extra = '') ->
+  if not is_array($data)
+    $data = name:$data
 
-#  ------------------------------------------------------------------------
+
+  $data['type'] = 'password'
+  return form_input($data, $value, $extra)
 
 #
 # Upload Field
 #
 # Identical to the input function but adds the "file" type
 #
-# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_upload')
-  exports.form_upload = form_upload = ($data = '', $value = '', $extra = '') ->
-    if not is_array($data)
-      $data = name:$data
-      
-    
-    $data['type'] = 'file'
-    return form_input($data, $value, $extra)
-    
-  
+exports.form_upload = form_upload = ($data = '', $value = '', $extra = '') ->
+  if not is_array($data)
+    $data = name:$data
 
-#  ------------------------------------------------------------------------
+
+  $data['type'] = 'file'
+  return form_input($data, $value, $extra)
 
 #
 # Textarea field
 #
-# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_textarea')
-  exports.form_textarea = form_textarea = ($data = '', $value = '', $extra = '') ->
-    $defaults =
-      name:if not is_array($data) then $data else ''
-      cols:'90'
-      rows:'12'
-    
-    if not is_array($data) or  not $data['value']? 
-      $val = $value
-      
-    else 
-      $val = $data['value']
-      delete $data['value']#  textareas don't use the value attribute
-      
-    
-    $name = if (is_array($data)) then $data['name'] else $data
-    return "<textarea " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + ">" + form_prep($val, $name) + "</textarea>"
-    
-  
+exports.form_textarea = form_textarea = ($data = '', $value = '', $extra = '') ->
+  $defaults =
+    name:if not is_array($data) then $data else ''
+    cols:'90'
+    rows:'12'
 
-#  ------------------------------------------------------------------------
+  if not is_array($data) or  not $data['value']?
+    $val = $value
+
+  else
+    $val = $data['value']
+    delete $data['value']#  textareas don't use the value attribute
+
+
+  $name = if (is_array($data)) then $data['name'] else $data
+  return "<textarea " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + ">" + form_prep($val, $name) + "</textarea>"
 
 #
 # Multi-select menu
 #
-# @param  [String]  # @param  [Array]  # @param  [Mixed]  # @param  [String]  # @return	type
+# @param  [String]
+# @param  [Array]
+# @param  [Mixed]
+# @param  [String]
+# @return	type
 #
-if not function_exists('form_multiselect')
-  exports.form_multiselect = form_multiselect = ($name = '', $options = {}, $selected = {}, $extra = '') ->
-    if $extra.indexOf('multiple') is -1
-      $extra+=' multiple="multiple"'
-      
-    
-    return form_dropdown($name, $options, $selected, $extra)
-    
-  
+exports.form_multiselect = form_multiselect = ($name = '', $options = {}, $selected = {}, $extra = '') ->
+  if $extra.indexOf('multiple') is -1
+    $extra+=' multiple="multiple"'
 
-#  --------------------------------------------------------------------
+
+  return form_dropdown($name, $options, $selected, $extra)
 
 #
 # Drop-down Menu
 #
-# @param  [String]  # @param  [Array]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [String]
+# @param  [Array]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_dropdown')
-  exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = [], $extra = '') ->
-    if not Array.isArray($selected)
-      $selected = [$selected]
-      
-    
-    #  If no selected state was submitted we will attempt to set it automatically
-    if $selected.length is 0
-      #  If the form name appears in the @req.body array we have a winner!
-      if @req.body[$name]?
-        $selected = @req.body[$name]
-
-      
-    
-    #if $extra isnt '' then $extra = ' ' + $extra
-    #$multiple = if (count($selected) > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
-    $multiple = if ($selected.length > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
-    $form = '<select name="' + $name + '"' + _parse_extra($extra) + $multiple + ">\n"
-    for $key, $val of $options
-      $key = ''+$key
-
-      if is_array($val) and Object.keys($val).length > 0
-        $form+='<optgroup label="' + $key + '">' + "\n"
-
-        for $optgroup_key, $optgroup_val of $val
-          $sel = if ($selected.indexOf($optgroup_key) isnt -1) then ' selected="selected"' else ''
-
-          $form+='<option value="' + $optgroup_key + '"' + $sel + '>' + ''+$optgroup_val + "</option>\n"
+exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = [], $extra = '') ->
+  if not Array.isArray($selected)
+    $selected = [$selected]
 
 
-        $form+='</optgroup>' + "\n"
+  #  If no selected state was submitted we will attempt to set it automatically
+  if $selected.length is 0
+    #  If the form name appears in the @req.body array we have a winner!
+    if @req.body[$name]?
+      $selected = @req.body[$name]
 
-      else
-        $sel = if ($selected.indexOf($key) isnt -1) then ' selected="selected"' else ''
 
-        $form+='<option value="' + $key + '"' + $sel + '>' + ''+$val + "</option>\n"
 
-    $form+='</select>'
-    
-    return $form
-    
-  
+  #if $extra isnt '' then $extra = ' ' + $extra
+  #$multiple = if (count($selected) > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
+  $multiple = if ($selected.length > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
+  $form = '<select name="' + $name + '"' + _parse_extra($extra) + $multiple + ">\n"
+  for $key, $val of $options
+    $key = ''+$key
 
-#  ------------------------------------------------------------------------
+    if is_array($val) and Object.keys($val).length > 0
+      $form+='<optgroup label="' + $key + '">' + "\n"
+
+      for $optgroup_key, $optgroup_val of $val
+        $sel = if ($selected.indexOf($optgroup_key) isnt -1) then ' selected="selected"' else ''
+
+        $form+='<option value="' + $optgroup_key + '"' + $sel + '>' + ''+$optgroup_val + "</option>\n"
+
+
+      $form+='</optgroup>' + "\n"
+
+    else
+      $sel = if ($selected.indexOf($key) isnt -1) then ' selected="selected"' else ''
+
+      $form+='<option value="' + $key + '"' + $sel + '>' + ''+$val + "</option>\n"
+
+  $form+='</select>'
+
+  return $form
 
 #
 # Checkbox Field
 #
-# @param  [Mixed]  # @param  [String]  # @return	[Boolean]
-# @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @return	[Boolean]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_checkbox')
-  exports.form_checkbox = form_checkbox = ($data = '', $value = '', $checked = false, $extra = '') ->
-    $defaults =
-      type:   'checkbox'
-      name:   if not is_array($data) then $data else ''
-      value:  $value
+exports.form_checkbox = form_checkbox = ($data = '', $value = '', $checked = false, $extra = '') ->
+  $defaults =
+    type:   'checkbox'
+    name:   if not is_array($data) then $data else ''
+    value:  $value
 
-    if is_array($data) and $data['checked']?
-      $checked = $data['checked']
-      
-      if $checked is false
-        delete $data['checked']
-        
-      else 
-        $data['checked'] = 'checked'
+  if is_array($data) and $data['checked']?
+    $checked = $data['checked']
 
-    if $checked is true
-      $defaults['checked'] = 'checked'
-      
-    else 
-      delete $defaults['checked']
+    if $checked is false
+      delete $data['checked']
 
-    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
+    else
+      $data['checked'] = 'checked'
 
-  
+  if $checked is true
+    $defaults['checked'] = 'checked'
 
-#  ------------------------------------------------------------------------
+  else
+    delete $defaults['checked']
+
+  return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
 
 #
 # Radio Button
 #
-# @param  [Mixed]  # @param  [String]  # @return	[Boolean]
-# @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @return	[Boolean]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_radio')
-  exports.form_radio = form_radio = ($data = '', $value = '', $checked = false, $extra = '') ->
-    if not is_array($data)
-      $data = name:$data
-      
-    
-    $data['type'] = 'radio'
-    return form_checkbox($data, $value, $checked, $extra)
-    
-  
+exports.form_radio = form_radio = ($data = '', $value = '', $checked = false, $extra = '') ->
+  if not is_array($data)
+    $data = name:$data
 
-#  ------------------------------------------------------------------------
+
+  $data['type'] = 'radio'
+  return form_checkbox($data, $value, $checked, $extra)
 
 #
 # Submit Button
 #
-# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_submit')
-  exports.form_submit = form_submit = ($data = '', $value = '', $extra = '') ->
-    $defaults =
-      type:   'submit'
-      name:   if not is_array($data) then $data else ''
-      value:  $value
-    
-    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
-    
-  
+exports.form_submit = form_submit = ($data = '', $value = '', $extra = '') ->
+  $defaults =
+    type:   'submit'
+    name:   if not is_array($data) then $data else ''
+    value:  $value
 
-#  ------------------------------------------------------------------------
+  return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
 
 #
 # Reset Button
 #
-# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_reset')
-  exports.form_reset = form_reset = ($data = '', $value = '', $extra = '') ->
-    $defaults =
-      type:   'reset'
-      name:   if not is_array($data) then $data else ''
-      value:  $value
-    
-    return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
-    
-  
+exports.form_reset = form_reset = ($data = '', $value = '', $extra = '') ->
+  $defaults =
+    type:   'reset'
+    name:   if not is_array($data) then $data else ''
+    value:  $value
 
-#  ------------------------------------------------------------------------
-
+  return "<input " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + " />"
+    
 #
 # Form Button
 #
-# @param  [Mixed]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [Mixed]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_button')
-  exports.form_button = form_button = ($data = '', $content = '', $extra = '') ->
-    $defaults =
-      name:   if not is_array($data) then $data else ''
-      type:   'button'
-    
-    if is_array($data) and $data['content']? 
-      $content = $data['content']
-      delete $data['content']#  content is not an attribute
-      
-    
-    return "<button " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + ">" + $content + "</button>"
-    
-  
+exports.form_button = form_button = ($data = '', $content = '', $extra = '') ->
+  $defaults =
+    name:   if not is_array($data) then $data else ''
+    type:   'button'
 
-#  ------------------------------------------------------------------------
+  if is_array($data) and $data['content']?
+    $content = $data['content']
+    delete $data['content']#  content is not an attribute
 
+
+  return "<button " + _parse_form_attributes($data, $defaults) + _parse_extra($extra) + ">" + $content + "</button>"
+    
 #
 # Form Label Tag
 #
@@ -407,28 +352,24 @@ if not function_exists('form_button')
 # @param  [String]  Additional attributes
 # @return	[String]
 #
-if not function_exists('form_label')
-  exports.form_label = form_label = ($label_text = '', $id = '', $attributes = {}) ->
-    
-    $label = '<label'
-    
-    if $id isnt ''
-      $label+=" for=\"#{$id}\""
-      
-    
-    if is_array($attributes) and Object.keys($attributes).length > 0
-      for $key, $val of $attributes
-        $label+=' ' + $key + '="' + $val + '"'
-        
-      
-    
-    $label+=">#{$label_text}</label>"
-    
-    return $label
-    
-  
+exports.form_label = form_label = ($label_text = '', $id = '', $attributes = {}) ->
 
-#  ------------------------------------------------------------------------
+  $label = '<label'
+
+  if $id isnt ''
+    $label+=" for=\"#{$id}\""
+
+
+  if is_array($attributes) and Object.keys($attributes).length > 0
+    for $key, $val of $attributes
+      $label+=' ' + $key + '="' + $val + '"'
+
+
+
+  $label+=">#{$label_text}</label>"
+
+  return $label
+    
 #
 # Fieldset Tag
 #
@@ -439,76 +380,59 @@ if not function_exists('form_label')
 # @param  [String]  Additional attributes
 # @return	[String]
 #
-if not function_exists('form_fieldset')
-  exports.form_fieldset = form_fieldset = ($legend_text = '', $attributes = {}) ->
-    $fieldset = "<fieldset"
-    
-    $fieldset+=_attributes_to_string($attributes, false)
-    
-    $fieldset+=">\n"
-    
-    if $legend_text isnt ''
-      $fieldset+="<legend>$legend_text</legend>\n"
-      
-    
-    return $fieldset
-    
-  
+exports.form_fieldset = form_fieldset = ($legend_text = '', $attributes = {}) ->
+  $fieldset = "<fieldset"
 
-#  ------------------------------------------------------------------------
+  $fieldset+=_attributes_to_string($attributes, false)
+
+  $fieldset+=">\n"
+
+  if $legend_text isnt ''
+    $fieldset+="<legend>$legend_text</legend>\n"
+
+
+  return $fieldset
 
 #
 # Fieldset Close Tag
 #
-# @param  [String]  # @return	[String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_fieldset_close')
-  exports.form_fieldset_close = form_fieldset_close = ($extra = '') ->
-    return "</fieldset>" + $extra
-    
-  
-
-#  ------------------------------------------------------------------------
+exports.form_fieldset_close = form_fieldset_close = ($extra = '') ->
+  return "</fieldset>" + $extra
 
 #
 # Form Close Tag
 #
-# @param  [String]  # @return	[String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_close')
-  exports.form_close = form_close = ($extra = '') ->
-    return "</form>" + $extra
+exports.form_close = form_close = ($extra = '') ->
+  return "</form>" + $extra
     
-  
-
-#  ------------------------------------------------------------------------
-
 #
 # Form Prep
 #
 # Formats text so that it can be safely placed in a form field in the event it has HTML tags.
 #
-# @param  [String]  # @return	[String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_prep')
-  exports.form_prep = form_prep = ($str = '', $field_name = '') ->
+exports.form_prep = form_prep = ($str = '', $field_name = '') ->
 
-    #  if the field name is an array we do this recursively
-    if is_array($str)
-      for $key, $val of $str
-        $str[$key] = form_prep($val)
-      return $str
-
-    if $str is ''
-      return ''
-
-    $str = htmlspecialchars(''+$str)
-
+  #  if the field name is an array we do this recursively
+  if is_array($str)
+    for $key, $val of $str
+      $str[$key] = form_prep($val)
     return $str
-    
-  
 
-#  ------------------------------------------------------------------------
+  if $str is ''
+    return ''
+
+  $str = htmlspecialchars(''+$str)
+
+  return $str
 
 #
 # Form Value
@@ -517,21 +441,18 @@ if not function_exists('form_prep')
 # re-populate an input field or textarea.  If Form Validation
 # is active it retrieves the info from the validation class
 #
-# @param  [String]  # @return [Mixed]  #
-if not function_exists('set_value')
-  exports.set_value = set_value = ($field = '', $default = '') ->
-    if false is ($OBJ = @_get_validation_object())
-      
-      if not @req.body[$field]
-        return $default
+# @param  [String]
+# @return [Mixed]
+#
+exports.set_value = set_value = ($field = '', $default = '') ->
+  if false is ($OBJ = @_get_validation_object())
 
-      return form_prep(@req.body[$field], $field)
+    if not @req.body[$field]
+      return $default
 
-    return form_prep($OBJ.set_value($field, $default), $field)
-    
-  
+    return form_prep(@req.body[$field], $field)
 
-#  ------------------------------------------------------------------------
+  return form_prep($OBJ.set_value($field, $default), $field)
 
 #
 # Set Select
@@ -539,38 +460,35 @@ if not function_exists('set_value')
 # Let's you set the selected value of a <select> menu via data in the POST array.
 # If Form Validation is active it retrieves the info from the validation class
 #
-# @param  [String]  # @param  [String]  # @return	[Boolean]
+# @param  [String]
+# @param  [String]
+# @return	[Boolean]
 # @return	[String]
 #
-if not function_exists('set_select')
-  exports.set_select = set_select = ($field = '', $value = '', $default = false) ->
-    $OBJ = @_get_validation_object()
+exports.set_select = set_select = ($field = '', $value = '', $default = false) ->
+  $OBJ = @_get_validation_object()
 
-    
-    if $OBJ is false
-      if not @req.body[$field]
-        if Object.keys(@req.body).length is 0 and $default is true
-          return ' selected="selected"'
-          
+
+  if $OBJ is false
+    if not @req.body[$field]
+      if Object.keys(@req.body).length is 0 and $default is true
+        return ' selected="selected"'
+
+      return ''
+
+    $field = @req.body[$field]
+
+    if is_array($field)
+      if $field.indexOf($value) is -1
         return ''
 
-      $field = @req.body[$field]
-      
-      if is_array($field)
-        if $field.indexOf($value) is -1
-          return ''
+    else
+      if ($field is '' or $value is '') or ($field isnt $value)
+        return ''
 
-      else 
-        if ($field is '' or $value is '') or ($field isnt $value)
-          return ''
+    return ' selected="selected"'
 
-      return ' selected="selected"'
-
-    return $OBJ.set_select($field, $value, $default)
-    
-  
-
-#  ------------------------------------------------------------------------
+  return $OBJ.set_select($field, $value, $default)
 
 #
 # Set Checkbox
@@ -578,37 +496,34 @@ if not function_exists('set_select')
 # Let's you set the selected value of a checkbox via the value in the POST array.
 # If Form Validation is active it retrieves the info from the validation class
 #
-# @param  [String]  # @param  [String]  # @return	[Boolean]
+# @param  [String]
+# @param  [String]
+# @return	[Boolean]
 # @return	[String]
 #
-if not function_exists('set_checkbox')
-  exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = false) ->
-    $OBJ = @_get_validation_object()
+exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = false) ->
+  $OBJ = @_get_validation_object()
 
-    if $OBJ is false
-      if not @req.body[$field]
-        if Object.keys(@req.body).length is 0 and $default is true
-          return ' checked="checked"'
-          
+  if $OBJ is false
+    if not @req.body[$field]
+      if Object.keys(@req.body).length is 0 and $default is true
+        return ' checked="checked"'
+
+      return ''
+
+    $field = @req.body[$field]
+
+    if is_array($field)
+      if $field.indexOf($value) is -1
         return ''
 
-      $field = @req.body[$field]
-      
-      if is_array($field)
-        if $field.indexOf($value) is -1
-          return ''
+    else
+      if ($field is '' or $value is '') or ($field isnt $value)
+        return ''
 
-      else 
-        if ($field is '' or $value is '') or ($field isnt $value)
-          return ''
+    return ' checked="checked"'
 
-      return ' checked="checked"'
-
-    return $OBJ.set_checkbox($field, $value, $default)
-    
-  
-
-#  ------------------------------------------------------------------------
+  return $OBJ.set_checkbox($field, $value, $default)
 
 #
 # Set Radio
@@ -616,37 +531,34 @@ if not function_exists('set_checkbox')
 # Let's you set the selected value of a radio field via info in the POST array.
 # If Form Validation is active it retrieves the info from the validation class
 #
-# @param  [String]  # @param  [String]  # @return	[Boolean]
+# @param  [String]
+# @param  [String]
+# @return	[Boolean]
 # @return	[String]
 #
-if not function_exists('set_radio')
-  exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
-    $OBJ = @_get_validation_object()
+exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
+  $OBJ = @_get_validation_object()
 
-    if $OBJ is false
-      if not @req.body[$field]
-        if Object.keys(@req.body).length is 0 and $default is true
-          return ' checked="checked"'
-          
+  if $OBJ is false
+    if not @req.body[$field]
+      if Object.keys(@req.body).length is 0 and $default is true
+        return ' checked="checked"'
+
+      return ''
+
+    $field = @req.body[$field]
+
+    if is_array($field)
+      if $field.indexOf($value) is -1
         return ''
 
-      $field = @req.body[$field]
-      
-      if is_array($field)
-        if $field.indexOf($value) is -1
-          return ''
+    else
+      if ($field is '' or $value is '') or ($field isnt $value)
+        return ''
 
-      else 
-        if ($field is '' or $value is '') or ($field isnt $value)
-          return ''
+    return ' checked="checked"'
 
-      return ' checked="checked"'
-
-    return $OBJ.set_radio($field, $value, $default)
-    
-  
-
-#  ------------------------------------------------------------------------
+  return $OBJ.set_radio($field, $value, $default)
 
 #
 # Form Error
@@ -654,17 +566,15 @@ if not function_exists('set_radio')
 # Returns the error for a specific form field.  This is a helper for the
 # form validation class.
 #
-# @param  [String]  # @param  [String]  # @param  [String]  # @return	[String]
+# @param  [String]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('form_error')
-  exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
-    if false is ($OBJ = @_get_validation_object())
-      return ''
-    return $OBJ.error($field, $prefix, $suffix)
-    
-  
-
-#  ------------------------------------------------------------------------
+exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
+  if false is ($OBJ = @_get_validation_object())
+    return ''
+  return $OBJ.error($field, $prefix, $suffix)
 
 #
 # Validation Error String
@@ -672,20 +582,17 @@ if not function_exists('form_error')
 # Returns all the errors associated with a form submission.  This is a helper
 # function for the form validation class.
 #
-# @param  [String]  # @param  [String]  # @return	[String]
+# @param  [String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('validation_errors')
-  exports.validation_errors = validation_errors = ($prefix = '', $suffix = '') ->
+exports.validation_errors = validation_errors = ($prefix = '', $suffix = '') ->
 
-    if false is ($OBJ = @_get_validation_object())
-      return ''
+  if false is ($OBJ = @_get_validation_object())
+    return ''
 
-    log_message 'debug', 'validation_errors %s', $OBJ.error_string($prefix, $suffix)
-    return $OBJ.error_string($prefix, $suffix)
-    
-  
-
-#  ------------------------------------------------------------------------
+  log_message 'debug', 'validation_errors %s', $OBJ.error_string($prefix, $suffix)
+  return $OBJ.error_string($prefix, $suffix)
 
 #
 # Parse the form attributes
@@ -693,32 +600,29 @@ if not function_exists('validation_errors')
 # Helper function used by some of the form helpers
 #
 # @private
-# @param  [Array]  # @param  [Array]  # @return	[String]
+# @param  [Array]
+# @param  [Array]
+# @return	[String]
 #
-if not function_exists('_parse_form_attributes')
-  exports._parse_form_attributes = _parse_form_attributes = ($attributes, $default) ->
-    if is_array($attributes)
-      for $key, $val of $default
-        if $attributes[$key]? 
-          $default[$key] = $attributes[$key]
-          delete $attributes[$key]
-
-      if Object.keys($attributes).length > 0
-        $default[$key] = $val for $key, $val of $attributes
-
-    $att = ''
-    
+exports._parse_form_attributes = _parse_form_attributes = ($attributes, $default) ->
+  if is_array($attributes)
     for $key, $val of $default
-      if $key is 'value'
-        $val = form_prep($val, $default['name'])
+      if $attributes[$key]?
+        $default[$key] = $attributes[$key]
+        delete $attributes[$key]
 
-      $att+=$key + '="' + $val + '" '
+    if Object.keys($attributes).length > 0
+      $default[$key] = $val for $key, $val of $attributes
 
-    return $att
-    
-  
+  $att = ''
 
-#  ------------------------------------------------------------------------
+  for $key, $val of $default
+    if $key is 'value'
+      $val = form_prep($val, $default['name'])
+
+    $att+=$key + '="' + $val + '" '
+
+  return $att
 
 #
 # Attributes To String
@@ -726,49 +630,44 @@ if not function_exists('_parse_form_attributes')
 # Helper function used by some of the form helpers
 #
 # @private
-# @param  [Mixed]  # @return	[Boolean]
+# @param  [Mixed]
+# @return	[Boolean]
 # @return	[String]
 #
-if not function_exists('_attributes_to_string')
-  exports._attributes_to_string = _attributes_to_string = ($attributes, $formtag = false) ->
-    if 'string' is typeof($attributes) and $attributes.length > 0
-      if $formtag is true and $attributes.indexOf('method=') is -1
-        $attributes+=' method="post"'
-        
-      
-      if $formtag is true and $attributes.indexOf('accept-charset=') is -1
-        $attributes+=' accept-charset="' + config_item('charset').toLowerCase() + '"'
-        
-      
-      return ' ' + $attributes
-      
-    
-    #if is_object($attributes) and count($attributes) > 0
-    #  $attributes = $attributes
-      
-    
-    if is_array($attributes) and Object.keys($attributes).length > 0
-      $atts = ''
-      
-      if not $attributes['method']?  and $formtag is true
-        $atts+=' method="post"'
-        
-      
-      if not $attributes['accept-charset']?  and $formtag is true
-        $atts+=' accept-charset="' + config_item('charset') + '"'
-        
-      
-      for $key, $val of $attributes
-        $atts+=' ' + $key + '="' + $val + '"'
-        
-      
-      return $atts
-      
-    
-  
+exports._attributes_to_string = _attributes_to_string = ($attributes, $formtag = false) ->
+  if 'string' is typeof($attributes) and $attributes.length > 0
+    if $formtag is true and $attributes.indexOf('method=') is -1
+      $attributes+=' method="post"'
 
-#  ------------------------------------------------------------------------
 
+    if $formtag is true and $attributes.indexOf('accept-charset=') is -1
+      $attributes+=' accept-charset="' + config_item('charset').toLowerCase() + '"'
+
+
+    return ' ' + $attributes
+
+
+  #if is_object($attributes) and count($attributes) > 0
+  #  $attributes = $attributes
+
+
+  if is_array($attributes) and Object.keys($attributes).length > 0
+    $atts = ''
+
+    if not $attributes['method']?  and $formtag is true
+      $atts+=' method="post"'
+
+
+    if not $attributes['accept-charset']?  and $formtag is true
+      $atts+=' accept-charset="' + config_item('charset') + '"'
+
+
+    for $key, $val of $attributes
+      $atts+=' ' + $key + '="' + $val + '"'
+
+
+    return $atts
+      
 #
 # Validation Object
 #
@@ -776,25 +675,22 @@ if not function_exists('_attributes_to_string')
 # the object and returns it.
 #
 # @private
-# @return [Mixed]  #
-if not function_exists('_get_validation_object')
-  exports._get_validation_object = _get_validation_object =  ->
-    
-    #  We set this as a variable since we're returning by reference
-    $return = false
+# @return [Mixed]
+#
+exports._get_validation_object = _get_validation_object =  ->
 
-    if not @load._ex_classes?  or  not @load._ex_classes['form_validation']?
-      return $return
+  #  We set this as a variable since we're returning by reference
+  $return = false
 
-    $object = @load._ex_classes['form_validation']
-    
-    if not @[$object]?  or  not 'object' is typeof(@[$object])
-      return $return
+  if not @load._classes? or not @load._classes['form_validation']?
+    return $return
 
-    return @[$object]
+  $object = @load._classes['form_validation']
 
+  if not @[$object]? or not 'object' is typeof(@[$object])
+    return $return
 
-#  ------------------------------------------------------------------------
+  return @[$object]
 
 #
 # parse extra
@@ -808,6 +704,3 @@ _parse_extra = ($extra = '') ->
   if is_array($extra) then return ' '+_parse_form_attributes($extra, {})
   return ''
 
-
-#  End of file form_helper.php 
-#  Location: ./system/helpers/form_helper.php 

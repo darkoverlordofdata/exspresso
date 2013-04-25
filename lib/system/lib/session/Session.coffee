@@ -10,31 +10,19 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
-#  ------------------------------------------------------------------------
 #
 # Session Class
 #
-class system.lib.session.Session extends system.lib.DriverLibrary
+module.exports = class system.lib.session.Session extends system.lib.DriverLibrary
 
-  UserModel = load_class(MODPATH+'user/models/UserModel.coffee')
+  UserModel = load_class(APPPATH+'modules/user/models/UserModel.coffee')
 
   cookie      = require('cookie')       # cookie parsing and serialization
   format      = require('util').format  # sprintf style formated string
 
   FLASH_KEY               = 'flash'     # flash data key prefix
-  FLASH_NEW               = ':new:'     # flash data key new flag
+  FLASH_NEW               = ':new:'     # flash data key ne w flag
   FLASH_OLD               = ':old:'     # flash data key old flag
 
   #
@@ -297,8 +285,3 @@ class system.lib.session.Session extends system.lib.DriverLibrary
     return $time
 
 
-#  END Session Class
-module.exports = system.lib.session.Session
-
-#  End of file Session.coffee
-#  Location: .system/lib/session/Session.coffee

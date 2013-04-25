@@ -10,25 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Postgre Forge Class
 #
 #
-class system.db.postgres.PostgresForge extends system.db.Forge
+module.exports = class system.db.postgres.PostgresForge extends system.db.Forge
   
   #
   # Create database
@@ -240,7 +227,3 @@ class system.db.postgres.PostgresForge extends system.db.Forge
     $sql = 'ALTER TABLE ' + @db._protect_identifiers($table_name) + " RENAME TO " + @db._protect_identifiers($new_table_name)
     return $sql
     
-module.exports = system.db.postgres.PostgresForge
-
-#  End of file PostgresForge.coffee
-#  Location: ./system/db/drivers/postgres/PostgresForge.coffee

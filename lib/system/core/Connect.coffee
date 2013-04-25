@@ -10,18 +10,8 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
+#
 #	Connect driver
 #
 #   An adapter to the connect server instance
@@ -29,7 +19,7 @@
 #   registers all of our middleware in the right order
 #   exposes an adapter registration point for sessions
 #
-class system.core.Connect
+module.exports = class system.core.Connect
 
   dispatch        = require('dispatch')           # URL dispatcher for Connect
   eco             = require('eco')                # Embedded CoffeeScript templates
@@ -39,9 +29,6 @@ class system.core.Connect
   os              = require('os')                 # operating-system related utility functions
 
   protocol = ($secure) -> if $secure then 'https' else 'http'
-
-  Modules = system.core.Modules
-
 
   #
   # @property [String] http driver: connect
@@ -93,7 +80,7 @@ class system.core.Connect
   constructor: (@controller) ->
 
     @config = @controller.config
-    log_message('debug', "%s Driver Initialized", ucfirst(@driver))
+    log_message 'debug', "%s Driver Initialized", ucfirst(@driver)
 
     $driver = require(@driver)
     $version = @driver+' v'+$driver.version
@@ -121,7 +108,7 @@ class system.core.Connect
   # @param [system.core.Router] router  the routing controller
   # @return [Void]
   #
-  start: ($router) ->
+  start: ($router, $ready) ->
     #
     # check for config/autoload
     #
@@ -129,7 +116,7 @@ class system.core.Connect
     #
     # initialize modules
     #
-    for $name, $module of Modules::list()
+    for $name, $module of @config.modules
       $module.initialize() if $module.initialize?
 
     #
@@ -197,9 +184,9 @@ class system.core.Connect
 
     @app = $driver()
     parseUrl = $driver.utils.parseUrl
-    @port = @config.item('port') #|| 3000
+    @port = @config.item('http_port') #|| 3000
 
-    @app.use $driver.logger(@config.item('logger'))
+    @app.use $driver.logger(@config.item('log_http'))
     #
     # Expose asset folders
     #
@@ -260,8 +247,3 @@ class system.core.Connect
 
       $next()
 
-module.exports = system.core.Connect
-
-
-# End of file Connect.coffee
-# Location: .system/core/Connect.coffee

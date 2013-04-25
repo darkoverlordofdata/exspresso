@@ -11,25 +11,9 @@
 #
 #+--------------------------------------------------------------------+
 #
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
-
-#
 # Exspresso String Helpers
 #
 #
-
-#  ------------------------------------------------------------------------
 
 #
 # Trim Slashes
@@ -44,11 +28,10 @@
 #
 # @param  [String]  # @return	[String]
 #
-if not function_exists('trim_slashes')
-  exports.trim_slashes = trim_slashes = ($str) ->
-    return trim($str, '/')
-    
-  
+exports.trim_slashes = trim_slashes = ($str) ->
+  return trim($str, '/')
+
+
 
 #  ------------------------------------------------------------------------
 
@@ -60,20 +43,19 @@ if not function_exists('trim_slashes')
 # @param  [Mixed]  string or array
 # @return [Mixed]  string or array
 #
-if not function_exists('strip_slashes')
-  exports.strip_slashes = strip_slashes = ($str) ->
-    if is_array($str)
-      for $key, $val of $str
-        $str[$key] = strip_slashes($val)
-        
-      
-    else 
-      $str = stripslashes($str)
-      
-    
-    return $str
-    
-  
+exports.strip_slashes = strip_slashes = ($str) ->
+  if is_array($str)
+    for $key, $val of $str
+      $str[$key] = strip_slashes($val)
+
+
+  else
+    $str = stripslashes($str)
+
+
+  return $str
+
+
 
 #  ------------------------------------------------------------------------
 
@@ -84,11 +66,10 @@ if not function_exists('strip_slashes')
 #
 # @param  [String]  # @return	[String]
 #
-if not function_exists('strip_quotes')
-  exports.strip_quotes = strip_quotes = ($str) ->
-    $str.replace(/\'/g, '').replace(/\"/g, '')
+exports.strip_quotes = strip_quotes = ($str) ->
+  $str.replace(/\'/g, '').replace(/\"/g, '')
 
-  
+
 
 #  ------------------------------------------------------------------------
 
@@ -99,11 +80,10 @@ if not function_exists('strip_quotes')
 #
 # @param  [String]  # @return	[String]
 #
-if not function_exists('quotes_to_entities')
-  exports.quotes_to_entities = quotes_to_entities = ($str) ->
-    $str.replace(/\'/g, '&#39;').replace(/\"/g, '&quot;')
-    
-  
+exports.quotes_to_entities = quotes_to_entities = ($str) ->
+  $str.replace(/\'/g, '&#39;').replace(/\"/g, '&quot;')
+
+
 
 #  ------------------------------------------------------------------------
 
@@ -121,11 +101,10 @@ if not function_exists('quotes_to_entities')
 #
 # @param  [String]  # @return	[String]
 #
-if not function_exists('reduce_double_slashes')
-  exports.reduce_double_slashes = reduce_double_slashes = ($str) ->
-    return preg_replace("#(^|[^:])//+#", "\\1/", $str)
-    
-  
+exports.reduce_double_slashes = reduce_double_slashes = ($str) ->
+  return preg_replace("#(^|[^:])//+#", "\\1/", $str)
+
+
 
 #  ------------------------------------------------------------------------
 
@@ -144,17 +123,16 @@ if not function_exists('reduce_double_slashes')
 # @return	[Boolean]	TRUE/FALSE - whether to trim the character from the beginning/end
 # @return	[String]
 #
-if not function_exists('reduce_multiples')
-  exports.reduce_multiples = reduce_multiples = ($str, $character = ',', $trim = false) ->
-    $str = preg_replace('#' + reg_quote($character, '#') + '{2,}#', $character, $str)
-    
-    if $trim is true
-      $str = trim($str, $character)
-      
-    
-    return $str
-    
-  
+exports.reduce_multiples = reduce_multiples = ($str, $character = ',', $trim = false) ->
+  $str = preg_replace('#' + reg_quote($character, '#') + '{2,}#', $character, $str)
+
+  if $trim is true
+    $str = trim($str, $character)
+
+
+  return $str
+
+
 
 #  ------------------------------------------------------------------------
 
@@ -167,44 +145,43 @@ if not function_exists('reduce_multiples')
 # @param  [Integer]  number of characters
 # @return	[String]
 #
-if not function_exists('random_string')
-  exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
-    switch $type
-      when 'basic' then return rand()
+exports.random_string = random_string = ($type = 'alnum', $len = 8) ->
+  switch $type
+    when 'basic' then return rand()
 
-      when 'alnum','numeric','nozero','alpha'
-        
-        switch $type
-          when 'alpha' then $pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            
-          when 'alnum' then $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            
-          when 'numeric' then $pool = '0123456789'
-            
-          when 'nozero'then $pool = '123456789'
-            
-            
-        
-        $str = ''
-        for $i in [0..$len-1]
+    when 'alnum','numeric','nozero','alpha'
 
-          $str+=$pool.substr(rand(0, $pool.length - 1), 1)
+      switch $type
+        when 'alpha' then $pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-        return $str
-        
-      when 'unique','md5'
-        
-        return md5(uniqid(rand()))
-        
-      when 'encrypt','sha1'
-        
-        $s = @load.helper('security')
-        
-        return $s.do_hash(uniqid(rand(), true), 'sha1')
-        
-        
-    
-  
+        when 'alnum' then $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+        when 'numeric' then $pool = '0123456789'
+
+        when 'nozero'then $pool = '123456789'
+
+
+
+      $str = ''
+      for $i in [0..$len-1]
+
+        $str+=$pool.substr(rand(0, $pool.length - 1), 1)
+
+      return $str
+
+    when 'unique','md5'
+
+      return md5(uniqid(rand()))
+
+    when 'encrypt','sha1'
+
+      $s = @load.helper('security')
+
+      return $s.do_hash(uniqid(rand(), true), 'sha1')
+
+
+
+
 
 #  ------------------------------------------------------------------------
 
@@ -218,17 +195,16 @@ if not function_exists('random_string')
 #
 _alternator = 0
 
-if not function_exists('alternator')
-  exports.alternator = alternator =  ->
+exports.alternator = alternator =  ->
 
-    if func_num_args() is 0
-      _alternator = 0
-      return ''
-      
-    $args = func_get_args()
-    return $args[(_alternator++ % $args.length)]
-    
-  
+  if func_num_args() is 0
+    _alternator = 0
+    return ''
+
+  $args = func_get_args()
+  return $args[(_alternator++ % $args.length)]
+
+
 
 #  ------------------------------------------------------------------------
 
@@ -238,9 +214,8 @@ if not function_exists('alternator')
 # @param  [String]  # @param  [Integer]  number of repeats
 # @return	[String]
 #
-if not function_exists('repeater')
-  exports.repeater = repeater = ($data, $num = 1) ->
-    return if $num > 0 then str_repeat($data, $num) else ''
+exports.repeater = repeater = ($data, $num = 1) ->
+  return if $num > 0 then str_repeat($data, $num) else ''
 
 
 #  ------------------------------------------------------------------------
@@ -251,6 +226,3 @@ if not function_exists('repeater')
 for $name, $body of module.exports
   define $name, $body
 
-
-#  End of file string_helper.php 
-#  Location: ./system/helpers/string_helper.php 

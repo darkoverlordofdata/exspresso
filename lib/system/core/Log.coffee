@@ -10,19 +10,11 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
-class system.core.Log
+#
+# Exspresso Benchmark Class
+#
+module.exports = class system.core.Log
 
   fs = require('fs')
   moment = require('moment')
@@ -44,15 +36,11 @@ class system.core.Log
 
     $config = get_config()
 
-    @_log_path = $config.log_path or APPPATH + 'logs/'
-
-    if not is_dir(@_log_path) or not is_really_writable(@_log_path)
-      @_enabled = false
-
+    @_log_path  = $config.log_path or APPPATH + 'logs/'
+    @_enabled   = false if not is_dir(@_log_path) or not is_really_writable(@_log_path)
     @_threshold = parseInt($config.log_threshold, 10)
+    @_date_fmt  = $config.log_date_format if $config.log_date_format isnt ''
 
-    if $config.log_date_format isnt ''
-      @_date_fmt = $config.log_date_format
 
   #
   # Write Log File
@@ -65,10 +53,9 @@ class system.core.Log
   #
   write: ($level = 'error', $msg) ->
 
-
     $level = $level.toUpperCase()
-    if not @_levels[$level]? then return false
-    if @_levels[$level] >= @_threshold then return false
+    return false unless @_levels[$level]?
+    return false if @_levels[$level] >= @_threshold
 
     $d = moment().format(@_date_fmt)
     $message = $level + (if $level is 'INFO' then ' ' else '') + ' ' + $d + ' -->' + $msg
@@ -83,11 +70,4 @@ class system.core.Log
       catch $err
         @_enabled = false
 
-    return true
-
-
-# END Log Class
-module.exports = system.core.Log
-
-# End of file Log.coffee
-# Location: .system/core/Log.coffee
+    true

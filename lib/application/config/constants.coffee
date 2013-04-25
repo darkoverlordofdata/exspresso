@@ -1,15 +1,3 @@
-#+--------------------------------------------------------------------+
-#| constants.coffee
-#+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Exspresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the MIT License
-#|
-#+--------------------------------------------------------------------+
 #
 #|--------------------------------------------------------------------------
 #| File and Directory Modes
@@ -46,6 +34,3 @@ define('FOPEN_READ_WRITE_CREATE', 'a+')
 define('FOPEN_WRITE_CREATE_STRICT', 'xb')
 define('FOPEN_READ_WRITE_CREATE_STRICT', 'x+b')
 
-
-#  End of file constants.php 
-#  Location: ./application/config/constants.php 

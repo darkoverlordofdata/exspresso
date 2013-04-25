@@ -10,24 +10,13 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 #  Breadcrumb Class
 #
 #
 #
-class global.Breadcrumb
+module.exportrs = class application.lib.Breadcrumb
 
   _output               : ''
   _crumbs               : null
@@ -109,5 +98,3 @@ class global.Breadcrumb
     $bc+= @_right_outer
     return $bc
 
-# End of file Breadcrumb.coffee
-# Location: .application/lib/Breadcrumb.coffee

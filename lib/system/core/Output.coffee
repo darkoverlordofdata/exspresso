@@ -10,22 +10,11 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
 #
 # Exspresso Output Class
 #
-class system.core.Output
+module.exports = class system.core.Output
 
   fs = require('fs')  # file system
 
@@ -58,7 +47,7 @@ class system.core.Output
       config:   {writeable: false, value: $config}
       uri:      {writeable: false, value: $uri}
 
-    log_message('debug', "Output Class Initialized")
+    log_message 'debug', "Output Class Initialized"
 
     @_final_output = ''
     @_cache_expiration = 0
@@ -396,12 +385,3 @@ class system.core.Output
         log_message('debug', "Cache file has expired. File '%s' deleted", $filepath)
 
     return false
-
-
-
-
-    # END Output class
-module.exports = system.core.Output
-
-# End of file Output.coffee
-# Location: ./system/core/Output.coffee

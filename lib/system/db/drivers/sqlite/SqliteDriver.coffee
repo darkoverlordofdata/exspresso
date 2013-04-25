@@ -10,47 +10,37 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-# CodeIgniter
-#
-# An open source application development framework for PHP 5.1.6 or newer
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
-
-
 
 #
 # SQLite Database Adapter Class
 #
 #
-class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
+module.exports = class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
 
-  dbdriver          : 'sqlite'
-  version           : require(FCPATH + 'node_modules/sqlite3/package.json').version
+  #  some platform specific strings
 
-  #  The character used to escape with - not needed for SQLite
   _escape_char      : '"'
-  
-  #  clause and character used for LIKE escape sequences
   _like_escape_str  : '' # " ESCAPE '%s' "
   _like_escape_chr  : '' # '!'
-  
-  #
-  # The syntax to count rows is slightly different across different
-  # database engines, so this string appears in each driver and is
-  # used for the count_all() and count_all_results() functions.
-  #
   _count_string     : "SELECT COUNT(*) AS "
   _random_keyword   : ' random()'#  database specific random keyword
-  
+
   #
-  # Non-persistent database connection
+  # Database connection settings
+  # Selects the internal driver
+  #
+  # @param  [Object]  params  config array
+  # @param  [system.core.Controller]  controller  the page controller
+  #
+  constructor: ($args...) ->
+    super $args...
+
+    Object.defineProperties @,
+      driver        : {writeable: false, enumerable: true, value: 'sqlite3'}
+      version       : {writeable: false, enumerable: true, value: require(FCPATH + 'node_modules/sqlite3/package.json').version}
+
+  #
+  # Database connection
   #
   # @access	private called by the base class
   # @return	resource
@@ -60,7 +50,7 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
     if @database.charAt(0) isnt '/'
       @database = FCPATH+@database
 
-    sqlite3 = require('sqlite3')
+    sqlite3 = require(@driver)
 
     connected = ($err) =>
       return $next($err) if $err
@@ -75,16 +65,6 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
       $next null, @client
     )
 
-
-  #
-  # Persistent database connection
-  #
-  # @access	private called by the base class
-  # @return	resource
-  #
-  pconnect :  ->
-
-  
   #
   # Reconnect
   #
@@ -128,7 +108,7 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   # @access	public
   # @return	string
   #
-  _version :  ->
+  _db_version :  ->
     "SELECT sqlite_version() AS ver"
     
   
@@ -571,9 +551,3 @@ class system.db.sqlite.SqliteDriver extends system.db.ActiveRecord
   _close: ($next) ->
     @client.close()
     $next() if $next?
-
-module.exports = system.db.sqlite.SqliteDriver
-
-
-#  End of file SqliteDriver.coffee
-#  Location: ./system/db/drivers/sqlite/SqliteDriver.coffee

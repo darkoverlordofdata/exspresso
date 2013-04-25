@@ -1,0 +1,9 @@
+<div class="container">
+    <p></p>
+    <div class="row">
+        <div class="hero-unit">
+            <h2>Unit Test</h2>
+            <%- @test %>
+        </div>
+    </div>
+</div>

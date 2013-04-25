@@ -11,18 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#
 # Exspresso File Helpers
 #
 #
@@ -39,14 +27,13 @@ DIRECTORY_SEPARATOR = path.sep
 # @param  [String]  path to file
 # @return	[String]
 #
-if not function_exists('read_file')
-  exports.read_file = read_file = ($file) ->
-    if not fs.existsSync($file)
-      return false
+exports.read_file = read_file = ($file) ->
+  if not fs.existsSync($file)
+    return false
 
-    fs.readFileSync($file)
+  fs.readFileSync($file)
 
-  
+
 
 #  ------------------------------------------------------------------------
 
@@ -60,15 +47,14 @@ if not function_exists('read_file')
 # @param  [String]  file data
 # @return	bool
 #
-if not function_exists('write_file')
-  exports.write_file = write_file = ($path, $data, $mode = FOPEN_WRITE_CREATE_DESTRUCTIVE) ->
+exports.write_file = write_file = ($path, $data, $mode = FOPEN_WRITE_CREATE_DESTRUCTIVE) ->
 
-    if not ($fp = fs.openSync($path, $mode))
-      return false
+  if not ($fp = fs.openSync($path, $mode))
+    return false
 
-    fs.writeSync($fp, $data, 0, $data.length)
-    fs.closeSync($fp)
-    return true
+  fs.writeSync($fp, $data, 0, $data.length)
+  fs.closeSync($fp)
+  return true
 
 #
 # Delete Files
@@ -82,29 +68,28 @@ if not function_exists('write_file')
 # @return	[Boolean]	whether to delete any directories found in the path
 # @return	bool
 #
-if not function_exists('delete_files')
-  exports.delete_files = delete_files = ($path, $del_dir = false, $level = 0) ->
-    #  Trim the trailing slash
-    $path = rtrim($path, DIRECTORY_SEPARATOR)
-    
-    if not is_dir($path)
-      return false
-    for $filename in fs.readdirSync($path)
-      if $filename isnt "." and $filename isnt ".."
-        if is_dir($path + DIRECTORY_SEPARATOR + $filename)
-          #  Ignore empty folders
-          if $filename.substr(0, 1) isnt '.'
-            delete_files($path + DIRECTORY_SEPARATOR + $filename, $del_dir, $level + 1)
-        else
-          fs.unlinkSync($path + DIRECTORY_SEPARATOR + $filename)
+exports.delete_files = delete_files = ($path, $del_dir = false, $level = 0) ->
+  #  Trim the trailing slash
+  $path = rtrim($path, DIRECTORY_SEPARATOR)
 
-    if $del_dir is true and $level > 0
-      return fs.rmdirSync($path)
-      
-    
-    return true
-    
-  
+  if not is_dir($path)
+    return false
+  for $filename in fs.readdirSync($path)
+    if $filename isnt "." and $filename isnt ".."
+      if is_dir($path + DIRECTORY_SEPARATOR + $filename)
+        #  Ignore empty folders
+        if $filename.substr(0, 1) isnt '.'
+          delete_files($path + DIRECTORY_SEPARATOR + $filename, $del_dir, $level + 1)
+      else
+        fs.unlinkSync($path + DIRECTORY_SEPARATOR + $filename)
+
+  if $del_dir is true and $level > 0
+    return fs.rmdirSync($path)
+
+
+  return true
+
+
 #
 # Get Filenames
 #
@@ -116,24 +101,23 @@ if not function_exists('delete_files')
 # @return	[Boolean]	internal variable to determine recursion status - do not use in calls
 # @return	array
 #
-if not function_exists('get_filenames')
-  exports.get_filenames = get_filenames = ($source_dir, $include_path = false, $_recursion = false, $_filedata = []) ->
+exports.get_filenames = get_filenames = ($source_dir, $include_path = false, $_recursion = false, $_filedata = []) ->
 
-    if is_dir($source_dir)
-      if $_recursion is false
-        $_filedata = []
-        $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
+  if is_dir($source_dir)
+    if $_recursion is false
+      $_filedata = []
+      $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
 
-      for $file in fs.readdirSync($source_dir)
-        if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.'
-          get_filenames($source_dir + $file + DIRECTORY_SEPARATOR, $include_path, true, $_filedata)
+    for $file in fs.readdirSync($source_dir)
+      if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.'
+        get_filenames($source_dir + $file + DIRECTORY_SEPARATOR, $include_path, true, $_filedata)
 
-        else if $file.charCodeAt(0) isnt '.'
-          $_filedata.push if ($include_path is true) then $source_dir + $file else $file
-        
-      return $_filedata
-    else
-      return false
+      else if $file.charCodeAt(0) isnt '.'
+        $_filedata.push if ($include_path is true) then $source_dir + $file else $file
+
+    return $_filedata
+  else
+    return false
 
 # Get Directory File Information
 #
@@ -147,26 +131,25 @@ if not function_exists('get_filenames')
 # @return	[Boolean]	internal variable to determine recursion status - do not use in calls
 # @return	array
 #
-if not function_exists('get_dir_file_info')
-  exports.get_dir_file_info = get_dir_file_info = ($source_dir, $top_level_only = true, $_recursion = false, $_filedata = {}) ->
-    $relative_path = $source_dir
+exports.get_dir_file_info = get_dir_file_info = ($source_dir, $top_level_only = true, $_recursion = false, $_filedata = {}) ->
+  $relative_path = $source_dir
 
-    if is_dir($source_dir)
-      if $_recursion is false
-        $_filedata = {}
-        $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
+  if is_dir($source_dir)
+    if $_recursion is false
+      $_filedata = {}
+      $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
 
-      for $file in fs.readdirSync($source_dir)
-        if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.' and $top_level_only is false
-          get_dir_file_info($source_dir + $file + DIRECTORY_SEPARATOR, $top_level_only, true, $_filedata)
+    for $file in fs.readdirSync($source_dir)
+      if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.' and $top_level_only is false
+        get_dir_file_info($source_dir + $file + DIRECTORY_SEPARATOR, $top_level_only, true, $_filedata)
 
-        else if $file.charCodeAt(0) isnt '.'
-          $_filedata[$file] = get_file_info($source_dir + $file)
-          $_filedata[$file]['relative_path'] = $relative_path
+      else if $file.charCodeAt(0) isnt '.'
+        $_filedata[$file] = get_file_info($source_dir + $file)
+        $_filedata[$file]['relative_path'] = $relative_path
 
-      return $_filedata
-    else
-      return false
+    return $_filedata
+  else
+    return false
 
 # Get File Info
 #
@@ -178,46 +161,45 @@ if not function_exists('get_dir_file_info')
 # @param  [String]  path to file
 # @param  [Mixed]  array or comma separated string of information returned
 # @return	array
-if not function_exists('get_file_info')
-  exports.get_file_info = get_file_info = ($file, $returned_values = ['name', 'server_path', 'size', 'date']) ->
+exports.get_file_info = get_file_info = ($file, $returned_values = ['name', 'server_path', 'size', 'date']) ->
 
-    if not fs.existsSync($file)
-      return false
+  if not fs.existsSync($file)
+    return false
 
-    if 'string' is typeof($returned_values)
-      $returned_values = $returned_values.split(',')
+  if 'string' is typeof($returned_values)
+    $returned_values = $returned_values.split(',')
 
-    $stats = fs.stat($file)
-    $fileinfo = {}
+  $stats = fs.stat($file)
+  $fileinfo = {}
 
-    for $key in $returned_values
-      switch $key
-        when 'name'
-          $fileinfo['name'] = $file.split(DIRECTORY_SEPARATOR).pop()
+  for $key in $returned_values
+    switch $key
+      when 'name'
+        $fileinfo['name'] = $file.split(DIRECTORY_SEPARATOR).pop()
 
-        when 'server_path'
-          $fileinfo['server_path'] = $file
+      when 'server_path'
+        $fileinfo['server_path'] = $file
 
-        when 'size'
-          $fileinfo['size'] = $stats.size
+      when 'size'
+        $fileinfo['size'] = $stats.size
 
-        when 'date'
-          $fileinfo['date'] = $stats.mtime
+      when 'date'
+        $fileinfo['date'] = $stats.mtime
 
-        #when 'readable'
-        #  $fileinfo['readable'] = is_readable($file)
+      #when 'readable'
+      #  $fileinfo['readable'] = is_readable($file)
 
-        #when 'writable'#  There are known problems using is_weritable on IIS.  It may not be reliable - consider fileperms()
-          #  There are known problems using is_weritable on IIS.  It may not be reliable - consider fileperms()
-        #  $fileinfo['writable'] = is_writable($file)
+      #when 'writable'#  There are known problems using is_weritable on IIS.  It may not be reliable - consider fileperms()
+        #  There are known problems using is_weritable on IIS.  It may not be reliable - consider fileperms()
+      #  $fileinfo['writable'] = is_writable($file)
 
-        #when 'executable'
-        #  $fileinfo['executable'] = is_executable($file)
+      #when 'executable'
+      #  $fileinfo['executable'] = is_executable($file)
 
-        when 'fileperms'
-          $fileinfo['fileperms'] = $stats.mode
+      when 'fileperms'
+        $fileinfo['fileperms'] = $stats.mode
 
-    return $fileinfo
+  return $fileinfo
 
 # Get Mime by Extension
 #
@@ -230,28 +212,27 @@ if not function_exists('get_file_info')
 # @param  [String]  path to file
 # @return [Mixed]  $mimes = null
 
-if not function_exists('get_mime_by_extension')
-  exports.get_mime_by_extension = get_mime_by_extension = ($file) ->
-    $extension = $file.split('.').pop()
+exports.get_mime_by_extension = get_mime_by_extension = ($file) ->
+  $extension = $file.split('.').pop()
 
-    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
-      $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
+  if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
+    $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
 
-    else if is_file(APPPATH + 'config/mimes.coffee')
-      $mimes = require(APPPATH + 'config/mimes.coffee')
+  else if is_file(APPPATH + 'config/mimes.coffee')
+    $mimes = require(APPPATH + 'config/mimes.coffee')
 
-    else return false
-      
-    if $mimes[$extension]?
-      if Array.isArray($mimes[$extension])
-        #  Multiple mime types, just give the first one
-        return $mimes[$extension][0]
+  else return false
 
-      else
-        return $mimes[$extension]
+  if $mimes[$extension]?
+    if Array.isArray($mimes[$extension])
+      #  Multiple mime types, just give the first one
+      return $mimes[$extension][0]
 
     else
-      return false
+      return $mimes[$extension]
+
+  else
+    return false
 
 
 # Symbolic Permissions
@@ -261,49 +242,48 @@ if not function_exists('get_mime_by_extension')
 #
 # @param	int
 # @return	[String]
-if not function_exists('symbolic_permissions')
-  exports.symbolic_permissions = symbolic_permissions = ($perms) ->
-    if ($perms and 0xC000) is 0xC000
-      $symbolic = 's'#  Socket
+exports.symbolic_permissions = symbolic_permissions = ($perms) ->
+  if ($perms and 0xC000) is 0xC000
+    $symbolic = 's'#  Socket
 
-    else if ($perms and 0xA000) is 0xA000
-      $symbolic = 'l'#  Symbolic Link
+  else if ($perms and 0xA000) is 0xA000
+    $symbolic = 'l'#  Symbolic Link
 
-    else if ($perms and 0x8000) is 0x8000
-      $symbolic = '-'#  Regular
+  else if ($perms and 0x8000) is 0x8000
+    $symbolic = '-'#  Regular
 
-    else if ($perms and 0x6000) is 0x6000
-      $symbolic = 'b'#  Block special
+  else if ($perms and 0x6000) is 0x6000
+    $symbolic = 'b'#  Block special
 
-    else if ($perms and 0x4000) is 0x4000
-      $symbolic = 'd'#  Directory
+  else if ($perms and 0x4000) is 0x4000
+    $symbolic = 'd'#  Directory
 
-    else if ($perms and 0x2000) is 0x2000
-      $symbolic = 'c'#  Character special
+  else if ($perms and 0x2000) is 0x2000
+    $symbolic = 'c'#  Character special
 
-    else if ($perms and 0x1000) is 0x1000
-      $symbolic = 'p'#  FIFO pipe
+  else if ($perms and 0x1000) is 0x1000
+    $symbolic = 'p'#  FIFO pipe
 
-    else
-      $symbolic = 'u'#  Unknown
+  else
+    $symbolic = 'u'#  Unknown
 
 
-    #  Owner
-    $symbolic+=(if ($perms and 0x0100) then 'r' else '-')
-    $symbolic+=(if ($perms and 0x0080) then 'w' else '-')
-    $symbolic+=(if ($perms and 0x0040) then (if ($perms and 0x0800) then 's' else 'x') else (if ($perms and 0x0800) then 'S' else '-'))
+  #  Owner
+  $symbolic+=(if ($perms and 0x0100) then 'r' else '-')
+  $symbolic+=(if ($perms and 0x0080) then 'w' else '-')
+  $symbolic+=(if ($perms and 0x0040) then (if ($perms and 0x0800) then 's' else 'x') else (if ($perms and 0x0800) then 'S' else '-'))
 
-    #  Group
-    $symbolic+=(if ($perms and 0x0020) then 'r' else '-')
-    $symbolic+=(if ($perms and 0x0010) then 'w' else '-')
-    $symbolic+=(if ($perms and 0x0008) then (if ($perms and 0x0400) then 's' else 'x') else (if ($perms and 0x0400) then 'S' else '-'))
+  #  Group
+  $symbolic+=(if ($perms and 0x0020) then 'r' else '-')
+  $symbolic+=(if ($perms and 0x0010) then 'w' else '-')
+  $symbolic+=(if ($perms and 0x0008) then (if ($perms and 0x0400) then 's' else 'x') else (if ($perms and 0x0400) then 'S' else '-'))
 
-    #  World
-    $symbolic+=(if ($perms and 0x0004) then 'r' else '-')
-    $symbolic+=(if ($perms and 0x0002) then 'w' else '-')
-    $symbolic+=(if ($perms and 0x0001) then (if ($perms and 0x0200) then 't' else 'x') else (if ($perms and 0x0200) then 'T' else '-'))
+  #  World
+  $symbolic+=(if ($perms and 0x0004) then 'r' else '-')
+  $symbolic+=(if ($perms and 0x0002) then 'w' else '-')
+  $symbolic+=(if ($perms and 0x0001) then (if ($perms and 0x0200) then 't' else 'x') else (if ($perms and 0x0200) then 'T' else '-'))
 
-    return $symbolic
+  return $symbolic
 
 # Octal Permissions
 #
@@ -312,9 +292,8 @@ if not function_exists('symbolic_permissions')
 #
 # @param	int
 # @return	[String]
-if not function_exists('octal_permissions')
-  exports.octal_permissions = octal_permissions = ($perms) ->
-    return sprintf('%o', $perms).substr(-3)
+exports.octal_permissions = octal_permissions = ($perms) ->
+  return sprintf('%o', $perms).substr(-3)
 
 #  ------------------------------------------------------------------------
 #

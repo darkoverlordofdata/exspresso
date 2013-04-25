@@ -10,25 +10,14 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
-#	Welcome
+#	Welcome Controller
 #
 # This is the default controller
 #
 
-class Welcome extends system.core.Controller
+module.exports = class Welcome extends system.core.Controller
 
   #
   # Index
@@ -43,10 +32,4 @@ class Welcome extends system.core.Controller
     #@load.view 'welcome_message', site_name: config_item('site_name')
     @load.library 'parser'
     @parser.parse 'welcome_message', site_name: config_item('site_name')
-#
-# Export the class:
-#
-module.exports = Welcome
 
-# End of file Welcome.coffee
-# Location: .application/controllers/Welcome.coffee

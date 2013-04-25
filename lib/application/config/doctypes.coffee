@@ -1,15 +1,3 @@
-#+--------------------------------------------------------------------+
-#  doctypes.coffee
-#+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#
-#  This file is a part of Exspresso
-#
-#  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the MIT License
-#
-#+--------------------------------------------------------------------+
 #
 module.exports =
   'xhtml11':      '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
@@ -22,5 +10,3 @@ module.exports =
   'html4-frame':  '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">'
 
 
-#  End of file doctypes.coffee
-#  Location: ./application/config/doctypes.coffee

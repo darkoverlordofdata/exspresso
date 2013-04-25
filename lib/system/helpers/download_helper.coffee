@@ -10,26 +10,11 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Download Helpers
 #
 #
-
-#  ------------------------------------------------------------------------
 
 #
 # Force Download
@@ -38,62 +23,57 @@
 #
 # @param  [String]  filename
 # @param  [Mixed]  the data to be downloaded
-# @return [Void]  #
-if not function_exists('force_download')
-  exports.force_download = force_download = ($filename = '', $data = '') ->
-    if $filename is '' or $data is ''
-      return false
-    
-    #  Try to determine if the filename includes a file extension.
-    #  We need it in order to set the MIME type
-    if $filename.indexOf('.') is -1
-      return false
-      
-    #  Grab the file extension
-    $extension = $filename.split('.').pop()
-    
-    #  Load the mime types
-    if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-      $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-      
-    else if is_file(APPPATH + 'config/mimes' + EXT)
-      $mimes = require(APPPATH + 'config/mimes' + EXT)
-      
-    
-    #  Set a default mime if we can't find it
-    if not $mimes[$extension]? 
-      $mime = 'application/octet-stream'
-      
-    else 
-      $mime = if (is_array($mimes[$extension])) then $mimes[$extension][0] else $mimes[$extension]
-      
-    
-    #  Generate the server headers
-    if @req,server['HTTP_USER_AGENT'].indexOf("MSIE") isnt -1
-      @res.header('Content-Type: "' + $mime + '"')
-      @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
-      @res.header('Expires: 0')
-      @res.header('Cache-Control: must-revalidate, post-check=0, pre-check=0')
-      @res.header("Content-Transfer-Encoding: binary")
-      @res.header('Pragma: public')
-      @res.header("Content-Length: " + strlen($data))
-      
-    else 
-      @res.header('Content-Type: "' + $mime + '"')
-      @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
-      @res.header("Content-Transfer-Encoding: binary")
-      @res.header('Expires: 0')
-      @res.header('Pragma: no-cache')
-      @res.header("Content-Length: " + strlen($data))
+# @return [Void]
+#
+exports.force_download = force_download = ($filename = '', $data = '') ->
+  if $filename is '' or $data is ''
+    return false
+
+  #  Try to determine if the filename includes a file extension.
+  #  We need it in order to set the MIME type
+  if $filename.indexOf('.') is -1
+    return false
+
+  #  Grab the file extension
+  $extension = $filename.split('.').pop()
+
+  #  Load the mime types
+  if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+    $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+
+  else if is_file(APPPATH + 'config/mimes' + EXT)
+    $mimes = require(APPPATH + 'config/mimes' + EXT)
 
 
-    @res.writeHead 200,
-                   'Content-Length'  : $data.length
-                   'Content-Type'    : 'text/html; charset=utf-8'
-    @res.end $data
+  #  Set a default mime if we can't find it
+  if not $mimes[$extension]?
+    $mime = 'application/octet-stream'
 
-  
+  else
+    $mime = if (is_array($mimes[$extension])) then $mimes[$extension][0] else $mimes[$extension]
 
 
-#  End of file download_helper.php 
-#  Location: ./system/helpers/download_helper.php 
+  #  Generate the server headers
+  if @req,server['HTTP_USER_AGENT'].indexOf("MSIE") isnt -1
+    @res.header('Content-Type: "' + $mime + '"')
+    @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
+    @res.header('Expires: 0')
+    @res.header('Cache-Control: must-revalidate, post-check=0, pre-check=0')
+    @res.header("Content-Transfer-Encoding: binary")
+    @res.header('Pragma: public')
+    @res.header("Content-Length: " + strlen($data))
+
+  else
+    @res.header('Content-Type: "' + $mime + '"')
+    @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
+    @res.header("Content-Transfer-Encoding: binary")
+    @res.header('Expires: 0')
+    @res.header('Pragma: no-cache')
+    @res.header("Content-Length: " + strlen($data))
+
+
+  @res.writeHead 200,
+                 'Content-Length'  : $data.length
+                 'Content-Type'    : 'text/html; charset=utf-8'
+  @res.end $data
+

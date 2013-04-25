@@ -35,24 +35,25 @@
         * array_helper          X
         * captcha_helper        ?
         * cookie_helper         ?
-        * date_helper           -
-        * directory_helper      -
-        * download_helper       -
-        * email_helper          -
+        * date_helper           ?
+        * directory_helper      ?
+        * download_helper       ?
+        * email_helper          ?
         * file_helper           X
         * form_helper           X
         * inflector_helper      ?
         * language_heler        X
         * number_helper         ?
         * path_helper           ?
-        * security_helper       -
-        * smiley_helper         -
+        * security_helper       ?
+        * smiley_helper         ?
         * string_helper         ?
         * text_helper           X
         * typography_helper     ?
         * url_helper            X
         * xml_helper            X
     * Libraries
+        * Cache                 X
         * Calendar              ?
         * Cart                  ?
         * Driver                X
@@ -71,7 +72,7 @@
         * Table                 X
         * Trackback             -
         * Typography            ?
-        * Unit_test             ?
+        * Unit_test             X
         * Upload                ?
         * User_agent            X
         * Xmlrpc                -

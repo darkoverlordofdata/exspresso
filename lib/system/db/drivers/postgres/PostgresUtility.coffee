@@ -10,25 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Postgre Utility Class
 #
 #
-class system.db.postgres.PostgresUtility extends system.db.Utility
+module.exports = class system.db.postgres.PostgresUtility extends system.db.Utility
   
   #
   # List databases
@@ -74,7 +61,3 @@ class system.db.postgres.PostgresUtility extends system.db.Utility
     #  Currently unsupported
     @db.display_error('db_unsuported_feature')
     
-module.exports = system.db.postgres.PostgresUtility
-
-#  End of file PostgreUtility.coffee
-#  Location: ./system/db/drivers/postgres/PostgreUtility.coffee

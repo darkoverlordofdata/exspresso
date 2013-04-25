@@ -10,28 +10,17 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Database Utility Class
 #
 #
-class system.db.Utility extends system.db.Forge
-  
-  db            : null
-  data_cache    : {}
+module.exports = class system.db.Utility extends system.db.Forge
+
+  #
+  # @property [Object] metadata cache
+  #
+  data_cache: null
   
   #
   # Constructor
@@ -39,10 +28,13 @@ class system.db.Utility extends system.db.Forge
   # Grabs the CI super object instance so we can access it.
   #
   #
-  constructor: ($controller) ->
-    #  Assign the main database object to $this->db
-    super $controller
-    
+  constructor: ($controller, $db) ->
+
+    super $controller, $db
+
+    Object.defineProperties @,
+      data_cache        : {enumerable: true, writeable: false, value: {}}
+
     log_message('debug', "Database Utility Class Initialized")
     
   
@@ -61,7 +53,7 @@ class system.db.Utility extends system.db.Forge
       if not $err
         $dbs = []
         if $query.num_rows > 0
-          for $row in $query.result_array()
+          for $row in $query.result()
             $dbs.push $row[Object.keys($row)[0]]
 
         @data_cache['db_names'] = $dbs
@@ -76,9 +68,7 @@ class system.db.Utility extends system.db.Forge
   # @return	[Boolean]
   #
   databaseExists: ($database_name) ->
-    #  Some databases won't have access to the listDatabases() function, so
-    #  this is intended to allow them to override with their own functions as
-    #  defined in $driver_utility.php
+
     if @_database_exists?
       return @_database_exists($database_name)
       
@@ -102,7 +92,7 @@ class system.db.Utility extends system.db.Forge
 
     @db.query $sql, ($err, $query) ->
 
-      $res = $query.result_array() unless $err
+      $res = $query.result() unless $err
 
       $next $err, $res
     
@@ -115,7 +105,7 @@ class system.db.Utility extends system.db.Forge
   optimizeDatabase: ($next) ->
 
     $result = {}
-    @db.list_tables ($table_list) =>
+    @db.listTables ($table_list) =>
 
       $sql_list = []
       for $table_name in $table_list
@@ -128,7 +118,7 @@ class system.db.Utility extends system.db.Forge
           for $query in $results
 
             #  Build the result array...
-            $res = $query.result_array()
+            $res = $query.result()
             $res = $res[0]
             $key = $res.replace(@db.database + '.', '')
             $keys = Object.keys($res)
@@ -151,7 +141,7 @@ class system.db.Utility extends system.db.Forge
       $next $sql, []
 
     @db.query $sql, ($err, $query) ->
-      $res = $query.result_array() unless $err
+      $res = $query.result() unless $err
       $next $err, $res[Object.keys($res)[0]]
     
   
@@ -237,10 +227,9 @@ class system.db.Utility extends system.db.Forge
     if 'string' is typeof($prefs)
       $prefs = {tables: $prefs}
       
-    
-    #  ------------------------------------------------------
-    
-    #  Set up our default preferences
+    #
+    #  Set defaults
+    #
     $prefs.__proto__ =
       tables      :[]
       ignore      :[]
@@ -250,11 +239,10 @@ class system.db.Utility extends system.db.Forge
       add_insert  :true
       newline     :"\n"
       
-
-    #  ------------------------------------------------------
-    
+    #
     #  Are we backing up a complete database or individual tables?
     #  If no table names were submitted we'll fetch the entire table list
+    #
     if $prefs['tables'].length is 0
       @db.list_tables ($err, $result) =>
         return $next $errif $err
@@ -263,18 +251,16 @@ class system.db.Utility extends system.db.Forge
         @backup $prefs, $next
       return
 
-
-    #  ------------------------------------------------------
-    
+    #
     #  Validate the format
+    #
     if ['gzip', 'zip', 'txt'].indexOf($prefs['format']) is -1
       $prefs['format'] = 'txt'
       
-    
-    #  ------------------------------------------------------
-    
+    #
     #  Is the encoder supported?  If not, we'll either issue an
     #  error or use plain text depending on the debug settings
+    #
     if ($prefs['format'] is 'gzip' and  not function_exists('gzencode')) or ($prefs['format'] is 'zip' and  not function_exists('gzcompress'))
       if @db.db_debug
         return @db.display_error('db_unsuported_compression')
@@ -282,51 +268,45 @@ class system.db.Utility extends system.db.Forge
       
       $prefs['format'] = 'txt'
       
-    
-    #  ------------------------------------------------------
-    
+    #
     #  Set the filename if not provided - Only needed with Zip files
+    #
     if $prefs['filename'] is '' and $prefs['format'] is 'zip'
       $prefs['filename'] = if $prefs['tables'].length is 1 then $prefs['tables'] else @db.database
       $prefs['filename']+='_' + date('Y-m-d_H-i', time())
       
-    
-    #  ------------------------------------------------------
-    
+    #
     #  Was a Gzip file requested?
+    #
     if $prefs['format'] is 'gzip'
       return gzencode(@_backup($prefs))
       
-    
-    #  ------------------------------------------------------
-    
+    #
     #  Was a text file requested?
+    #
     if $prefs['format'] is 'txt'
       return @_backup($prefs)
       
-    
-    #  ------------------------------------------------------
-    
+    #
     #  Was a Zip file requested?
+    #
     if $prefs['format'] is 'zip'
-      #  If they included the .zip file extension we'll remove it
+      #
+      #  Remove default *.zip extendsion from file name
+      #
       if /.+?\.zip$/.test($prefs['filename'])
         $prefs['filename'] = $prefs['filename'].replace('.zip', '')
         
-      
+      #
       #  Tack on the ".sql" file extension if needed
+      #
       if not /.+?\.sql$/.test($prefs['filename'])
         $prefs['filename']+='.sql'
         
-      
+      #
       #  Load the Zip class and output it
-      
+      #
       @zip = @load.library('zip')
       @zip.add_data($prefs['filename'], @_backup($prefs))
       return @zip.get_zip()
       
-module.exports = system.db.Utility
-
-
-#  End of file DbUtility.coffee
-#  Location: ./system/database/DbUtility.coffee

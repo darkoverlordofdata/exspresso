@@ -11,20 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
-
-#
 # Exspresso Inflector Helpers
 #
 #
@@ -39,30 +25,29 @@
 #
 # @param  [String]  # @return	str
 #
-if not function_exists('singular')
-  exports.singular = singular = ($str) ->
-    $str = trim($str)
-    $end = substr($str,  - 3)
-    
-    $str = preg_replace('/(.*)?([s|c]h)es/i', '$1$2', $str)
-    
-    if $end.toLowerCase() is 'ies'
-      $str = if substr($str, 0, strlen($str) - 3) + (preg_match('/[a-z]/', $end)) then 'y' else 'Y'
-      
-    else if $end.toLowerCase() is 'ses'
-      $str = substr($str, 0, strlen($str) - 2)
-      
-    else 
-      $end = substr($str.toLowerCase(),  - 1)
-      
-      if $end is 's'
-        $str = substr($str, 0, strlen($str) - 1)
-        
-      
-    
-    return $str
-    
-  
+exports.singular = singular = ($str) ->
+  $str = trim($str)
+  $end = substr($str,  - 3)
+
+  $str = preg_replace('/(.*)?([s|c]h)es/i', '$1$2', $str)
+
+  if $end.toLowerCase() is 'ies'
+    $str = if substr($str, 0, strlen($str) - 3) + (preg_match('/[a-z]/', $end)) then 'y' else 'Y'
+
+  else if $end.toLowerCase() is 'ses'
+    $str = substr($str, 0, strlen($str) - 2)
+
+  else
+    $end = substr($str.toLowerCase(),  - 1)
+
+    if $end is 's'
+      $str = substr($str, 0, strlen($str) - 1)
+
+
+
+  return $str
+
+
 
 #  --------------------------------------------------------------------
 
@@ -74,36 +59,35 @@ if not function_exists('singular')
 # @param  [String]  # @return	[Boolean]
 # @return	str
 #
-if not function_exists('plural')
-  exports.plural = plural = ($str, $force = false) ->
-    $str = trim($str)
-    $end = substr($str,  - 1)
-    
-    if preg_match('/y/i', $end)
-      #  Y preceded by vowel => regular plural
-      $vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
-      $str = if $vowels.indexOf(substr($str,  - 2, 1)) isnt -1 then $str + 's' else substr($str, 0,  - 1) + 'ies'
-      
-    else if preg_match('/h/i', $end)
-      if preg_match('/^[c|s]h$/i', substr($str,  - 2))
-        $str+='es'
-        
-      else 
-        $str+='s'
-        
-      
-    else if preg_match('/s/i', $end)
-      if $force is true
-        $str+='es'
-        
-      
-    else 
+exports.plural = plural = ($str, $force = false) ->
+  $str = trim($str)
+  $end = substr($str,  - 1)
+
+  if preg_match('/y/i', $end)
+    #  Y preceded by vowel => regular plural
+    $vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
+    $str = if $vowels.indexOf(substr($str,  - 2, 1)) isnt -1 then $str + 's' else substr($str, 0,  - 1) + 'ies'
+
+  else if preg_match('/h/i', $end)
+    if preg_match('/^[c|s]h$/i', substr($str,  - 2))
+      $str+='es'
+
+    else
       $str+='s'
-      
-    
-    return $str
-    
-  
+
+
+  else if preg_match('/s/i', $end)
+    if $force is true
+      $str+='es'
+
+
+  else
+    $str+='s'
+
+
+  return $str
+
+
 
 #  --------------------------------------------------------------------
 
@@ -114,13 +98,12 @@ if not function_exists('plural')
 #
 # @param  [String]  # @return	str
 #
-if not function_exists('camelize')
-  exports.camelize = camelize = ($str) ->
-    $str = 'x' + trim($str.toLowerCase())
-    $str = ucwords(preg_replace('/[\s_]+/', ' ', $str))
-    return substr(str_replace(' ', '', $str), 1)
-    
-  
+exports.camelize = camelize = ($str) ->
+  $str = 'x' + trim($str.toLowerCase())
+  $str = ucwords(preg_replace('/[\s_]+/', ' ', $str))
+  return substr(str_replace(' ', '', $str), 1)
+
+
 
 #  --------------------------------------------------------------------
 
@@ -131,11 +114,10 @@ if not function_exists('camelize')
 #
 # @param  [String]  # @return	str
 #
-if not function_exists('underscore')
-  exports.underscore = underscore = ($str) ->
-    return preg_replace('/[\s]+/', '_', trim($str.toLowerCase()))
-    
-  
+exports.underscore = underscore = ($str) ->
+  return preg_replace('/[\s]+/', '_', trim($str.toLowerCase()))
+
+
 
 #  --------------------------------------------------------------------
 
@@ -146,9 +128,8 @@ if not function_exists('underscore')
 #
 # @param  [String]  # @return	str
 #
-if not function_exists('humanize')
-  exports.humanize = humanize = ($str) ->
-    return ucwords(preg_replace('/[_]+/', ' ', trim($str.toLowerCase())))
+exports.humanize = humanize = ($str) ->
+  return ucwords(preg_replace('/[_]+/', ' ', trim($str.toLowerCase())))
 
 
 #  ------------------------------------------------------------------------
@@ -158,8 +139,3 @@ if not function_exists('humanize')
 #
 for $name, $body of module.exports
   exports.define $name, $body
-
-
-
-#  End of file inflector_helper.php 
-#  Location: ./system/helpers/inflector_helper.php 

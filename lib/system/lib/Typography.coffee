@@ -10,19 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Typography Class
@@ -33,7 +20,7 @@
 # @author		darkoverlordofdata
 # @see 		http://darkoverlordofdata.com/user_guide/helpers/
 #
-class system.lib.Typography
+module.exports = class system.lib.Typography
   
   #  Block level elements that should not be wrapped inside <p> tags
   block_elements: 'address|blockquote|div|dl|fieldset|form|h\d|hr|noscript|object|ol|p|pre|script|table|ul'
@@ -359,8 +346,3 @@ class system.lib.Typography
   
 
 
-module.exports = system.lib.Typography
-#  END Typography Class
-
-#  End of file Typography.coffee
-#  Location: .system/lib/Typography.coffee

@@ -10,17 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013 Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
 #
 # Exspresso Error Class
@@ -170,7 +159,7 @@ class system.core.AppError extends Error
 #
 # Exceptions Class
 #
-class system.core.Exceptions
+module.exports = class system.core.Exceptions
 
   constructor: ->
 
@@ -345,8 +334,3 @@ class system.core.Exceptions
 
     $next()
 
-module.exports = system.core.Exceptions
-#  END Exceptions Class
-
-#  End of file Exceptions.coffee
-#  Location: .system/core/Exceptions.cofee

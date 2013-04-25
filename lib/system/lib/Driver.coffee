@@ -10,18 +10,6 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
 
 #
 # Exspresso Driver Class
@@ -30,14 +18,16 @@
 # It handles the drivers' access to the parent library
 #
 #
-class system.lib.Driver
+module.exports = class system.lib.Driver
 
   #
   # Decorate
   #
   # Decorates the child with the parent driver lib's methods and properties
   #
-  # @param  [Object]    # @return [Void]  #
+  # @param  [Object]
+  # @return [Void]
+  #
   decorate: ($parent) ->
 
     # Decorate the driver with forwarders to the
@@ -53,10 +43,5 @@ class system.lib.Driver
             # forward the parent accessor
             defineProperty @, $name, get:  -> $parent[$name]
             defineProperty @, $name, set: ($newval) -> $parent[$name] = $newval
-    return @
+    @
 
-#  END Driver CLASS
-module.exports = system.lib.Driver
-
-#  End of file Driver.php
-#  Location: .system/lib/Driver.php

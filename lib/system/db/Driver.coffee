@@ -10,51 +10,106 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
-# Database Driver Class
-#
-# This is the platform-independent base DB implementation class.
-# This class will not be called directly. Rather, the adapter
-# class for the specific database will extend and instantiate it.
-#
-#
 
-class system.db.Driver
+#
+# Abstract Database Driver Class
+#
+#
+module.exports = class system.db.Driver
 
 
-  url                 : ''      # Optional url. Overrides any of the following:
-  hostname            : ''      # The hostname of your database server.
-  username            : ''      # The username used to connect to the database
-  password            : ''      # The password used to connect to the database
-  database            : ''      # The name of the database you want to connect to
-  dbdriver            : ''      # The database type: mysql | postgres
-  dbprefix            : ''      # Optional table name prefix when using the Active Record class
-  #pconnect            : true    # true/false - Whether to use a persistent connection
-  db_debug            : true    # true/false - Whether database errors should be displayed.
-  cache_on            : false   # true/false - Enables/disables query caching
-  cachedir            : ''      # The path to the folder where cache files should be stored
-  char_set            : 'utf8'  # The character set used in communicating with the database
-  dbcollat            : 'utf8_general_ci' # The character collation used in communicating with the database
-  swap_pre            : ''      # A default table prefix that should be swapped with the dbprefix
-  autoinit            : true    # Whether or not to automatically initialize the database.
-  stricton            : false   # true/false - forces 'Strict Mode' connections
-  
-  
-  port                : ''      # port to connect with
-  client              : null    # connected client reference
-  queries             : null    # Saved queries array
-  query_times         : null    # Saved query times
+  #
+  # @property [String] Dsn url. Overrides all other connection settings
+  #
+  url: ''
+  #
+  # @property [String] The hostname of your database server.
+  #
+  hostname: ''
+  #
+  # @property [String] The username used to connect to the database
+  #
+  username: ''
+  #
+  # @property [String] The password used to connect to the database
+  #
+  password: ''
+  #
+  # @property [String] The name of the database you want to connect to
+  #
+  database: ''
+  #
+  # @property [String] The database type: mysql | postgres | sqlite
+  #
+  dbdriver: ''
+  #
+  # @property [String] Optional table name prefix when using the Active Record class
+  #
+  dbprefix: ''
+  #
+  # @property [String] true/false - Whether database errors should be displayed.
+  #
+  db_debug: true
+  #
+  # @property [String] true/false - Enables/disables query caching
+  #
+  cache_on: true
+  #
+  # @property [String] The path to the folder where cache files should be stored
+  #
+  cachedir: ''
+  #
+  # @property [String] The character set used in communicating with the database
+  #
+  char_set: 'utf8'
+  #
+  # @property [String] The character collation used in communicating with the database
+  #
+  dbcollat: 'utf8_general_ci'
+  #
+  # @property [String] A default table prefix that should be swapped with the dbprefix
+  #
+  swap_pre: ''
+  #
+  # @property [String] Whether or not to automatically initialize the database.
+  #
+  autoinit: true
+  #
+  # @property [String] true/false - forces 'Strict Mode' connections
+  #
+  stricton: false
+  #
+  # @property [String] port to connect with
+  #
+  port: ''
+  #
+  # @property [Object] the connected db client reference
+  #
+  client: null
+  #
+  # @property [Array<String>] Saved queries array
+  #
+  queries: null
+  #
+  # @property [Array<Number>] Saved query times
+  #
+  query_times: null
+  #
+  # @property [system.core.Controller] The page controller
+  #
+  controller: null
+  #
+  # @property [String] The internal driver: mysql | pg | sqlite3
+  #
+  driver: ''
+  #
+  # @property [String] Internal driver version.
+  #
+  version: ''
+  #
+  # @property [String] true/false - Is db connected?
+  #
+  connected: false
 
   _query_count        : 0       # Count of saved queries
   _save_queries       : true    # true/false - Save queries in array for profiling
@@ -63,8 +118,8 @@ class system.db.Driver
   _trans_strict       : true    # true/false - Strict mode transactions
   _trans_depth        : 0       # Transaction nestion level
   _trans_status       : true    # Used with transactions to determine if a rollback should occur
+  _cache              : null    # The controller cache object
   _cache_autodel      : false   # true/false - auto delete cache
-  _cache              : null    # The cache class object
   _data_cache         : null    # Table & field anmes
   _bind_marker        : '?'     # Symbol for parameter in query
 
@@ -74,22 +129,24 @@ class system.db.Driver
 
 
   #
-  # Constructor.  Accepts one parameter containing the database
-  # connection settings.
+  # Database connection settings
   #
-  # @param  [Array]  #
-  constructor: ($params = {}) ->
+  #
+  # @param  [Object]  params  config array
+  # @param  [system.core.Controller]  controller  the page controller
+  #
+  constructor: ($params = {}, $controller) ->
 
-    @queries = []
-    @query_times = []
-    @_data_cache = {}
-    @_cache = {}
+    Object.defineProperties @,
+      controller    : {writeable: false, enumerable: true, value: $controller}
+      queries       : {writeable: false, enumerable: true, value: []}
+      query_times   : {writeable: false, enumerable: true, value: []}
+      _data_cache   : {writeable: false, enumerable: true, value: {}}
 
     for $key, $val of $params
       if @[$key]? then @[$key] = $val
 
     log_message 'debug', '%s Driver Initialized', ucfirst(@dbdriver)
-    #log_message('debug', 'Database Driver Class Initialized')
 
 
   #
@@ -121,16 +178,13 @@ class system.db.Driver
   #
   # @return	[String]
   #
-  version: ($next) ->
-    if false is ($sql = @_version())
+  dbVersion: ($next) ->
+    if false is ($sql = @_db_version())
       if @db_debug
         return @displayError('db_unsupported_function')
-
       return false
 
-
     @query $sql, ($err, $result) =>
-
       if $err then throw new Error($err)
 
 
@@ -189,16 +243,6 @@ class system.db.Driver
     if (@dbprefix isnt '' and @swap_pre isnt '') and (@dbprefix isnt @swap_pre)
       $sql = $sql.replace(RegExp("(\\W)" + @swap_pre + "(\\S+?)", 'mig'), "$1" + @dbprefix + "$2")
 
-
-    #  Is query caching enabled?  If the query is a "read type"
-    #  we will load the caching class and return the previously
-    #  cached query if it exists
-    if @cache_on is true and $sql.search(new RegExp('SELECT', 'i')) isnt -1
-      if @_cache_init()
-        @_load_rdriver()
-        if false isnt ($cache = @_cache.read($sql))
-          return $cache
-
     #  Save the  query for debugging
     if @_save_queries is true
       @queries.push $sql
@@ -208,89 +252,95 @@ class system.db.Driver
     #  Start the Query Timer
     $time_start = Date.now()
 
-    if $next?
-      @_execute $sql, $binds, ($err, $results, $info) =>
-        @_query2 $err, $results, $info, $time_start, $sql, $next
+    #
+    # Async call to execute sql
+    #
+    execute_sql = =>
 
-    else if $binds?
-      @_execute $sql, ($err, $results, $info) =>
-        @_query2 $err, $results, $info, $time_start, $sql, $binds
+      if $next?
+        @_execute $sql, $binds, ($err, $results, $info) =>
+          @_query2 $err, $results, $info, $time_start, $sql, $next
 
+      else if $binds?
+        @_execute $sql, ($err, $results, $info) =>
+          @_query2 $err, $results, $info, $time_start, $sql, $binds
+
+    #@cache_on = false
+    if @cache_on is true and $sql.search(/SELECT/i) isnt -1
+      @_cache_init()
+      @_cache.read $sql, ($err, $cache) =>
+        if $cache is false
+          execute_sql()
+
+        else
+          $driver = @_load_rdriver()
+          $rs = new $driver($cache.data, $cache.meta)
+          if $next?
+            return $next(null, $rs)
+          else if $binds?
+            return $binds(null, $rs)
+
+    else
+      execute_sql()
     return $sql
 
   #
   # Execute the query (continued)
   #
   _query2: ($err, $results, $info, $time_start, $sql, $next) =>
-
-    $time_end = Date.now()
-
     if $err
-      #  This will trigger a rollback if transactions are being used
+      #  Trigger a rollback if transactions are being used
       @_trans_status = false
-      #  We call this function in order to roll-back queries
-      #  if transactions are enabled.  If we don't call this here
-      #  the error message will trigger an exit, causing the
-      #  transactions to remain in limbo.
       #@transComplete =>
       return show_error($err)
 
-    #  Stop and aggregate the query time results
+    #
+    # metrics
+    #
+    $time_end = Date.now()
     @_benchmark+= $time_end - $time_start
-
     if @_save_queries is true
       @query_times.push $time_end - $time_start
-
-    #  Increment the query counter
     @_query_count++
 
-    #  Was the query a "write" type?
-    #  If so we'll simply return true
-    if @is_write_type($sql) is true
-      #  If caching is enabled we'll auto-cleanup any
-      #  existing files related to this particular URI
-      if @cache_on is true and @_cache_autodel is true and @_cache_init()
-        @_cache.delete()
-
-    #  Load and instantiate the result driver
-
+    #
+    # Load and instantiate the result driver
+    #
     $driver = @_load_rdriver()
     $rs = new $driver($results, $info)
-    $rs.num_rows = $rs.numRows()
 
-    #  Is query caching enabled?  If so, we'll serialize the
-    #  result object and save it to a cache file.
-    if @cache_on is true and @_cache_init()
-      #  We'll create a new instance of the result object
-      #  only without the platform specific driver since
-      #  we can't use it with cached data (the query result
-      #  resource ID won't be any good once we've cached the
-      #  result object, so we'll have to compile the data
-      #  and save it)
-      $cr = new system.db.Result()
-      $cr.num_rows = $rs.num_rows
-      $cr._result_object = $rs.result_object()
-      $cr._result_array = $rs.result_array()
+    #
+    # Write Cache
+    #
+    write_cache = =>
+      if @cache_on
+        @_cache_init()
+        @_cache.write $sql, {data: $results, meta: $info}, ($warn) ->
+          log_message 'error', $warn if $warn?
+          return $next $err, $rs, $info
+      else
+        return $next $err, $rs, $info
 
-      #  Reset these since cached objects can not utilize resource IDs.
-      $cr.conn_id = null
-      $cr.result_id = null
-
-      @_cache.write($sql, $cr)
-
-    $next $err, $rs, $info
+    #
+    # delete cache when updating?
+    #
+    if @is_write_type($sql) is true and @cache_on is true and @_cache_autodel is true
+      @_cache_init()
+      @_cache.delete ($warn) =>
+        log_message 'error', $warn if $warn?
+        write_cache()
+    else
+      write_cache()
 
   #
   # Load the result drivers
   #
   # @private
-  # @return	[String]	the name of the result class
+  # @return	[Class] the result set driver class
   #
   _load_rdriver :  ->
-
     require SYSPATH + 'db/Result.coffee'
     $driver = require(SYSPATH + 'db/drivers/' + @dbdriver + '/' + ucfirst(@dbdriver) + 'Result.coffee')
-    return $driver
 
 
   #
@@ -550,7 +600,7 @@ class system.db.Driver
     @query $sql, ($err, $query) =>
 
       if $query.num_rows > 0
-        for $row in $query.resultArray()
+        for $row in $query.result()
           if $row['TABLE_NAME']?
             $retval.push $row['TABLE_NAME']
 
@@ -604,7 +654,7 @@ class system.db.Driver
     @query $sql, ($err, $results) ->
 
       $retval = []
-      for $row in $query.result_array()
+      for $row in $query.result()
         if $row['COLUMN_NAME']?
           $retval.push $row['COLUMN_NAME']
 
@@ -673,11 +723,9 @@ class system.db.Driver
     if $where is ''
       return false
 
-
     $fields = []
     for $key, $val of $data
       $fields[@_protect_identifiers($key)] = @escape($val)
-
 
     if 'string' is typeof($where)
       $dest = [$where]
@@ -691,13 +739,9 @@ class system.db.Driver
           if not @_has_operator($key)
             $key+=' ='
 
-
           $val = ' ' + @escape($val)
 
-
         $dest.push $prefix + $key + $val
-
-
 
     return @_update(@_protect_identifiers($table, true, null, false), $fields, $dest)
 
@@ -721,7 +765,8 @@ class system.db.Driver
   # Set Cache Directory Path
   #
   # @param  [String]  the path to the cache directory
-  # @return [Void]  #
+  # @return [Void]
+  #
   cacheSetPath : ($path = '') ->
     @cachedir = $path
 
@@ -729,7 +774,8 @@ class system.db.Driver
   #
   # Enable Query Caching
   #
-  # @return [Void]  #
+  # @return [Void]
+  #
   cacheOn: ->
     @cache_on = true
     return true
@@ -738,7 +784,8 @@ class system.db.Driver
   #
   # Disable Query Caching
   #
-  # @return [Void]  #
+  # @return [Void]
+  #
   cacheOff: ->
     @cache_on = false
     return false
@@ -748,42 +795,42 @@ class system.db.Driver
   #
   # Delete the cache files associated with a particular URI
   #
-  # @return [Void]  #
+  # @return [Void]
+  #
   cacheDelete : ($segment_one = '', $segment_two = '') ->
-    if not @_cache_init()
-      return false
-
-    return @cache.delete($segment_one, $segment_two)
+    @_cache_init()
+    @_cache.delete($segment_one, $segment_two)
 
 
   #
   # Delete All cache files
   #
-  # @return [Void]  #
-  cacheDeleteAll: ->
-    if not @_cache_init()
-      return false
-
-
-    return @cache.deleteAll()
+  # @return [Void]
+  #
+  cacheDeleteAll: () ->
+    @_cache_init()
+    @_cache.deleteAll()
 
 
   #
   # Initialize the Cache Class
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _cache_init: ->
-    require(SYSPATH + 'db/Cache' + EXT)
-    @cache = new system.db.Cache(@)#  pass db object to support multiple db connections and returned db objects
-    return true
+    return true if @_cache?
 
-  # --------------------------------------------------------------------
+    require(SYSPATH + 'db/Cache' + EXT)
+    Object.defineProperties @,
+      _cache    : {writeable: false, enumerable: true, value: new system.db.Cache(@, @controller.uri)}
+    return true
 
   #
   # Close DB Connection
   #
-  # @return [Void]  #
+  # @return [Void]
+  #
   close: ($next)->
 
     @conn_id = false
@@ -967,8 +1014,3 @@ class system.db.Driver
 
 
     return $item + $alias
-
-module.exports = system.db.Driver
-
-# End of file Driver.coffee
-# Location: ./database/Driver.coffee

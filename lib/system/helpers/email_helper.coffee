@@ -8,59 +8,28 @@
 #
 #  Exspresso is free software you can copy, modify, and distribute
 #  it under the terms of the MIT License
-#
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Email Helpers
 #
 #
 
-#  ------------------------------------------------------------------------
-
 #
 # Validate email address
 #
 # @return	bool
 #
-if not function_exists('valid_email')
-  exports.valid_email = valid_email = ($address) ->
-    return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/i", $address)?) then false else true
-    
-  
+exports.valid_email = valid_email = ($address) ->
+  return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/i", $address)?) then false else true
 
-#  ------------------------------------------------------------------------
 
 #
 # Send an email
 #
 # @return	bool
 #
-if not function_exists('send_email')
-  exports.send_email = send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
-    return mail($recipient, $subject, $message)
+exports.send_email = send_email = ($recipient, $subject = 'Test email', $message = 'Hello World') ->
+  return mail($recipient, $subject, $message)
 
 
 
-#  ------------------------------------------------------------------------
-#
-# Export helpers to the global namespace
-#
-#
-for $name, $body of module.exports
-  define $name, $body
-
-#  End of file email_helper.php 
-#  Location: ./system/helpers/email_helper.php 

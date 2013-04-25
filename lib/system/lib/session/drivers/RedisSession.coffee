@@ -10,24 +10,12 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
-#  ------------------------------------------------------------------------
 #
 #   Redis Session store driver
 #
 #
-class system.lib.RedisSession extends require('connect-redis')(require('express'))
+module.exports = class system.lib.RedisSession extends require('connect-redis')(require('express'))
 
   #
   # Constructor
@@ -56,6 +44,3 @@ class system.lib.RedisSession extends require('connect-redis')(require('express'
     return
 
 
-module.exports = system.lib.RedisSession
-# End of file RedisSession.coffee
-# Location: .system/lib/Session/drivers/RedisSession.coffee

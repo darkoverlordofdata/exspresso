@@ -10,57 +10,36 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
+
 #
 #
 # MySQL Database Adapter Class
 #
-# Note: _DB is an extender class that the app controller
-# creates dynamically based on whether the active record
-# class is being used or not.
-#
+module.exports = class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
+  #  some platform specific strings
 
-class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
-
-  # by default, expect mysql to listen on port 3306
-  dbdriver          : 'mysql'
-  port              : 3306
-  connected         : false
-  version           : require(FCPATH + 'node_modules/mysql/package.json').version
-
-  #  The character used for escaping
   _escape_char      : '`'
-
-  #  clause and character used for LIKE escape sequences - not used in MySQL
   _like_escape_str  : ''
   _like_escape_chr  : ''
-
-  #
-  # Whether to use the MySQL "delete hack" which allows the number
-  # of affected rows to be shown. Uses a preg_replace when enabled,
-  # adding a bit more processing to all queries.
-  #
-  delete_hack       : true
-
-  #
-  # The syntax to count rows is slightly different across different
-  # database engines, so this string appears in each driver and is
-  # used for the count_all() and count_all_results() functions.
-  #
+  _delete_hack      : true
   _count_string     : 'SELECT COUNT(*) AS '
   _random_keyword   : ' RAND()'#  database specific random keyword
 
+
+  #
+  # Database connection settings
+  # Selects the internal driver
+  #
+  # @param  [Object]  params  config array
+  # @param  [system.core.Controller]  controller  the page controller
+  #
+  constructor: ($args...) ->
+    super $args...
+
+    Object.defineProperties @,
+      driver        : {writeable: false, enumerable: true, value: 'mysql'}
+      version       : {writeable: false, enumerable: true, value: require(FCPATH + 'node_modules/mysql/package.json').version}
 
   #
   # Non-persistent database connection
@@ -71,7 +50,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   connect: ($next) =>
 
     if not @connected
-      mysql = require('mysql')
+      mysql = require(@driver)
 
       @client = new mysql.createConnection
         host: @hostname
@@ -89,15 +68,6 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
         console.log $err
       else
         $next($err, @client)
-
-  #
-  # Persistent database connection
-  #
-  # @private called by the base class
-  # @return	resource
-  #
-  pconnect: ($next) ->
-    throw new Error('Not Supported: mysql_driver::pconnect')
 
   #
   # Reconnect
@@ -133,7 +103,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   #
   # @return	[String]
   #
-  _version: () ->
+  _db_version: () ->
     "SELECT version() AS ver"
 
 
@@ -160,7 +130,7 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   _prep_query: ($sql) ->
     #  "DELETE FROM TABLE" returns 0 affected rows This hack modifies
     #  the query so that it returns the number of affected rows
-    if @delete_hack is true
+    if @_delete_hack is true
       if /^\s*DELETE\s+FROM\s+(\S+)\s*$/i.test($sql)
         $sql = $sql.replace(/^\s*DELETE\s+FROM\s+(\S+)\s*$/, "DELETE FROM $1 WHERE 1=1")
     return $sql
@@ -567,8 +537,3 @@ class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
   # @return [Void]  #
   _close: ($next) ->
     @client.end($next)
-
-# End Class ExspressoMysqlDriver
-module.exports = system.db.mysql.MysqlDriver
-#  End of file MysqlDriver.coffee
-#  Location: ./system/db/drivers/mysql/MysqlDriver.coffee

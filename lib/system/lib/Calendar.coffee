@@ -10,32 +10,14 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso Calendar Class
 #
 # This class enables the creation of calendars
 #
-# @package		Exspresso
-# @subpackage	Libraries
-# @category	Libraries
-# @author		darkoverlordofdata
-# @see 		http://darkoverlordofdata.com/user_guide/lib/calendar.html
 #
-class system.lib.Calendar
+module.exports = class system.lib.Calendar
 
   {ucfirst} = require(SYSPATH+'core.coffee')
 
@@ -69,7 +51,7 @@ class system.lib.Calendar
   #
   # Generate the calendar
   #
-    # @param  [Integer]  the year
+  # @param  [Integer]  the year
   # @param  [Integer]  the month
   # @param  [Array]  the data to be shown in the calendar cells
   # @return	[String]
@@ -204,7 +186,7 @@ class system.lib.Calendar
   # Generates a textual month name based on the numeric
   # month provided.
   #
-    # @param  [Integer]  the month
+  # @param  [Integer]  the month
   # @return	[String]
   #
   getMonthName : ($month) ->
@@ -271,8 +253,6 @@ class system.lib.Calendar
       $days.push if (@i18n.line('cal_' + $val) is false) then ucfirst($val) else @i18n.line('cal_' + $val)
     return $days
 
-  # --------------------------------------------------------------------
-
   #
   # Adjust Date
   #
@@ -280,7 +260,7 @@ class system.lib.Calendar
   # For example, if you submit 13 as the month, the year will
   # increment and the month will become January.
   #
-    # @param  [Integer]  the month
+  # @param  [Integer]  the month
   # @param  [Integer]  the year
   # @return	array
   #
@@ -304,12 +284,10 @@ class system.lib.Calendar
 
     return $date
 
-  # --------------------------------------------------------------------
-
   #
   # Total days in a given month
   #
-    # @param  [Integer]  the month
+  # @param  [Integer]  the month
   # @param  [Integer]  the year
   # @return	integer
   #
@@ -326,8 +304,6 @@ class system.lib.Calendar
 
     return $days_in_month[$month - 1]
 
-
-  # --------------------------------------------------------------------
 
   #
   # Set Default Template Data
@@ -359,7 +335,7 @@ class system.lib.Calendar
     'cal_row_end':'</tr>'
     'table_close':'</table>'
 
-  ##  --------------------------------------------------------------------#
+  #
   # Parse Template
   #
   # Harvests the data within the template {pseudo-variables}
@@ -383,9 +359,3 @@ class system.lib.Calendar
         if $today.indexOf($val) isnt -1
           @temp[$val] = @temp[$val.replace('_today', '')]
 
-##  END ExspressoCalendar class
-
-module.exports = system.lib.Calendar
-
-#  End of file Calendar.php
-#  Location: .system/lib/Calendar.php

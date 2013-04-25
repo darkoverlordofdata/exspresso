@@ -10,26 +10,11 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Exspresso URL Helpers
 #
 #
-
-#  ------------------------------------------------------------------------
 
 #
 # Site URL
@@ -37,15 +22,12 @@
 # Create a local URL based on your basepath. Segments can be passed via the
 # first parameter either as a string or an array.
 #
-# @param  [String]  # @return	[String]
+# @param  [String]
+# @return	[String]
 #
-if not function_exists('site_url')
-  exports.site_url = site_url = ($uri = '') ->
-    return @config.siteUrl($uri)
+exports.site_url = site_url = ($uri = '') ->
+  return @config.siteUrl($uri)
     
-  
-
-#  ------------------------------------------------------------------------
 
 #
 # Base URL
@@ -54,13 +36,8 @@ if not function_exists('site_url')
 #
 # @return	[String]
 #
-if not function_exists('base_url')
-  exports.base_url = base_url =  ->
-    return @config.slashItem('base_url')
-    
-  
-
-#  ------------------------------------------------------------------------
+exports.base_url = base_url =  ->
+  return @config.slashItem('base_url')
 
 #
 # Current URL
@@ -70,14 +47,9 @@ if not function_exists('base_url')
 #
 # @return	[String]
 #
-if not function_exists('current_url')
-  exports.current_url = current_url =  ->
+exports.current_url = current_url =  ->
+  return @config.siteUrl(@uri.uriString())
     
-    return @config.siteUrl(@uri.uriString())
-    
-  
-
-#  ------------------------------------------------------------------------
 #
 # URL String
 #
@@ -85,15 +57,9 @@ if not function_exists('current_url')
 #
 # @return	[String]
 #
-if not function_exists('uri_string')
-  exports.uriString = uri_string =  ->
+exports.uriString = uri_string =  ->
+  return @uri.uriString()
     
-    return @uri.uriString()
-    
-  
-
-#  ------------------------------------------------------------------------
-
 #
 # Index page
 #
@@ -101,14 +67,8 @@ if not function_exists('uri_string')
 #
 # @return	[String]
 #
-if not function_exists('index_page')
-  exports.index_page = index_page =  ->
-    
-    return @config.item('index_page')
-    
-  
-
-#  ------------------------------------------------------------------------
+exports.index_page = index_page =  ->
+  return @config.item('index_page')
 
 #
 # Anchor Link
@@ -120,32 +80,27 @@ if not function_exists('index_page')
 # @param  [Mixed]  any attributes
 # @return	[String]
 #
-if not function_exists('anchor')
-  exports.anchor = anchor = ($uri = '', $title = '', $attributes = '') ->
-    $title = ''+$title
-    
-    if not Array.isArray($uri)
-      $site_url = if ( not /^\\w+:\/\//i.test($uri)) then @site_url($uri) else $uri
-      #$site_url = $uri
-      
-    else 
-      #$site_url = site_url($uri)
-      $site_url = $uri.join('/')
+exports.anchor = anchor = ($uri = '', $title = '', $attributes = '') ->
+  $title = ''+$title
 
-    
-    if $title is ''
-      $title = $site_url
-      
-    
-    if $attributes isnt ''
-      $attributes = _parse_attributes($attributes)
-      
-    
-    return '<a href="' + $site_url + '"' + $attributes + '>' + $title + '</a>'
-    
-  
+  if not Array.isArray($uri)
+    $site_url = if ( not /^\\w+:\/\//i.test($uri)) then @site_url($uri) else $uri
+    #$site_url = $uri
 
-#  ------------------------------------------------------------------------
+  else
+    #$site_url = site_url($uri)
+    $site_url = $uri.join('/')
+
+
+  if $title is ''
+    $title = $site_url
+
+
+  if $attributes isnt ''
+    $attributes = _parse_attributes($attributes)
+
+
+  return '<a href="' + $site_url + '"' + $attributes + '>' + $title + '</a>'
 
 #
 # Anchor Link - Pop-up version
@@ -158,38 +113,33 @@ if not function_exists('anchor')
 # @param  [Mixed]  any attributes
 # @return	[String]
 #
-if not function_exists('anchor_popup')
-  exports.anchor_popup = anchor_popup = ($uri = '', $title = '', $attributes = false) ->
-    $title = ''+$title
+exports.anchor_popup = anchor_popup = ($uri = '', $title = '', $attributes = false) ->
+  $title = ''+$title
 
-    $site_url = if ( not /^\\w+:\/\//i.test($uri)) then @site_url($uri) else $uri
+  $site_url = if ( not /^\\w+:\/\//i.test($uri)) then @site_url($uri) else $uri
 
-    if $title is ''
-      $title = $site_url
-      
-    
-    if $attributes is false
-      return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank');\">" + $title + "</a>"
-      
-    
-    if not 'object' is typeof($attributes)
-      $attributes = {}
-      
-    
-    for $key, $val of {width:'800', height:'600', scrollbars:'yes', status:'yes', resizable:'yes', screenx:'0', screeny:'0'}
-      $atts[$key] = if ( not $attributes[$key]? ) then $val else $attributes[$key]
-      delete $attributes[$key]
-      
-    
-    if $attributes isnt ''
-      $attributes = _parse_attributes($attributes)
-      
-    
-    return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank', '" + _parse_attributes($atts, true) + "');\"$attributes>" + $title + "</a>"
-    
-  
+  if $title is ''
+    $title = $site_url
 
-#  ------------------------------------------------------------------------
+
+  if $attributes is false
+    return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank');\">" + $title + "</a>"
+
+
+  if not 'object' is typeof($attributes)
+    $attributes = {}
+
+
+  for $key, $val of {width:'800', height:'600', scrollbars:'yes', status:'yes', resizable:'yes', screenx:'0', screeny:'0'}
+    $atts[$key] = if ( not $attributes[$key]? ) then $val else $attributes[$key]
+    delete $attributes[$key]
+
+
+  if $attributes isnt ''
+    $attributes = _parse_attributes($attributes)
+
+
+  return "<a href='javascript:void(0);' onclick=\"window.open('" + $site_url + "', '_blank', '" + _parse_attributes($atts, true) + "');\"$attributes>" + $title + "</a>"
 
 #
 # Mailto Link
@@ -199,21 +149,16 @@ if not function_exists('anchor_popup')
 # @param  [Mixed]  any attributes
 # @return	[String]
 #
-if not function_exists('mailto')
-  exports.mailto = mailto = ($email, $title = '', $attributes = '') ->
-    $title = ''+$title
-    
-    if $title is ""
-      $title = $email
-      
-    
-    $attributes = _parse_attributes($attributes)
-    
-    return '<a href="mailto:' + $email + '"' + $attributes + '>' + $title + '</a>'
-    
-  
+exports.mailto = mailto = ($email, $title = '', $attributes = '') ->
+  $title = ''+$title
 
-#  ------------------------------------------------------------------------
+  if $title is ""
+    $title = $email
+
+
+  $attributes = _parse_attributes($attributes)
+
+  return '<a href="mailto:' + $email + '"' + $attributes + '>' + $title + '</a>'
 
 #
 # Encoded Mailto Link
@@ -225,63 +170,58 @@ if not function_exists('mailto')
 # @param  [Mixed]  any attributes
 # @return	[String]
 #
-if not function_exists('safe_mailto')
-  exports.safe_mailto = safe_mailto = ($email, $title = '', $attributes = '') ->
-    $title = ''+$title
-    
-    if $title is ""
-      $title = $email
-      
-    $x = []
-    $x.push $c for $c in '<a href="mailto:'
-    $x.push "|" + $c.charCodeAt(0) for $c in $email
-    $x.push '"'
-    
-    if $attributes isnt ''
-      if 'object' is typeof($attributes)
-        for $key, $val of $attributes
-          $x.push ' ' + $key + '="'
-          $x.push "|" + $c.charCodeAt(0) for $c in $val
-          $x.push '"'
-          
-        
-      else
-        $x.push $c for $c in $attributes
+exports.safe_mailto = safe_mailto = ($email, $title = '', $attributes = '') ->
+  $title = ''+$title
 
-    
-    $x.push '>'
-    
-    $temp = []
-    for $c in $title
-      $ordinal = $c.charCodeAt(0)
+  if $title is ""
+    $title = $email
 
-      if $ordinal < 128
-        $x.push "|" + $ordinal
+  $x = []
+  $x.push $c for $c in '<a href="mailto:'
+  $x.push "|" + $c.charCodeAt(0) for $c in $email
+  $x.push '"'
 
-      else
-        if $temp.length is 0
-          $count = if ($ordinal < 224) then 2 else 3
+  if $attributes isnt ''
+    if 'object' is typeof($attributes)
+      for $key, $val of $attributes
+        $x.push ' ' + $key + '="'
+        $x.push "|" + $c.charCodeAt(0) for $c in $val
+        $x.push '"'
 
 
-        $temp.push $ordinal
-        if $temp.length is $count
-          $number = if ($count is 3) then (($temp['0'] % 16) * 4096) + (($temp['1'] % 64) * 64) + ($temp['2'] % 64) else (($temp['0'] % 32) * 64) + ($temp['1'] % 64)
-          $x.push "|" + $number
-          $count = 1
-          $temp = []
+    else
+      $x.push $c for $c in $attributes
 
-      
 
-    $x.push '<'
-    $x.push '/'
-    $x.push 'a'
-    $x.push '>'
-    
-    $x.reverse().join('')
+  $x.push '>'
 
-  
+  $temp = []
+  for $c in $title
+    $ordinal = $c.charCodeAt(0)
 
-#  ------------------------------------------------------------------------
+    if $ordinal < 128
+      $x.push "|" + $ordinal
+
+    else
+      if $temp.length is 0
+        $count = if ($ordinal < 224) then 2 else 3
+
+
+      $temp.push $ordinal
+      if $temp.length is $count
+        $number = if ($count is 3) then (($temp['0'] % 16) * 4096) + (($temp['1'] % 64) * 64) + ($temp['2'] % 64) else (($temp['0'] % 32) * 64) + ($temp['1'] % 64)
+        $x.push "|" + $number
+        $count = 1
+        $temp = []
+
+
+
+  $x.push '<'
+  $x.push '/'
+  $x.push 'a'
+  $x.push '>'
+
+  $x.reverse().join('')
 
 #
 # Auto-linker
@@ -296,43 +236,38 @@ if not function_exists('safe_mailto')
 # @return	[Boolean]	whether to create pop-up links
 # @return	[String]
 #
-if not function_exists('auto_link')
-  exports.auto_link = auto_link = ($str, $type = 'both', $popup = false) ->
-    if $type isnt 'email'
+exports.auto_link = auto_link = ($str, $type = 'both', $popup = false) ->
+  if $type isnt 'email'
 
-      $matches = preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str)
-      if $matches.length
-        $pop = if ($popup is true) then " target=\"_blank\" " else ""
-        
-        for $i in [0..$matches['0'].length-1]
-          $period = ''
-          if preg_match("|\\.$|", $matches['6'][$i])?
-            $period = '.'
-            $matches['6'][$i] = $matches['6'][$i].substr(0,  - 1)
+    $matches = preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str)
+    if $matches.length
+      $pop = if ($popup is true) then " target=\"_blank\" " else ""
 
-
-          $str = $str.replace($matches['0'][$i], $matches['1'][$i] + '<a href="http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '"' + $pop + '>http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '</a>' + $period)
-
-      
-    
-    if $type isnt 'url'
-      if preg_match_all("/([a-zA-Z0-9_\\.\\-\\+]+)@([a-zA-Z0-9\\-]+)\\.([a-zA-Z0-9\\-\\.]*)/i", $str, $matches)
-        for $i in [0..$matches['0'].length-1]
-          $period = ''
-          if preg_match("|\\.$|", $matches['3'][$i])
-            $period = '.'
-            $matches['3'][$i] = $matches['3'][$i].substr(0,  - 1)
+      for $i in [0..$matches['0'].length-1]
+        $period = ''
+        if preg_match("|\\.$|", $matches['6'][$i])?
+          $period = '.'
+          $matches['6'][$i] = $matches['6'][$i].substr(0,  - 1)
 
 
-          $str = $str.replace($matches['0'][$i], safe_mailto($matches['1'][$i] + '@' + $matches['2'][$i] + '.' + $matches['3'][$i]) + $period)
+        $str = $str.replace($matches['0'][$i], $matches['1'][$i] + '<a href="http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '"' + $pop + '>http' + $matches['4'][$i] + '://' + $matches['5'][$i] + $matches['6'][$i] + '</a>' + $period)
 
-      
-    
-    return $str
-    
-  
 
-#  ------------------------------------------------------------------------
+
+  if $type isnt 'url'
+    if preg_match_all("/([a-zA-Z0-9_\\.\\-\\+]+)@([a-zA-Z0-9\\-]+)\\.([a-zA-Z0-9\\-\\.]*)/i", $str, $matches)
+      for $i in [0..$matches['0'].length-1]
+        $period = ''
+        if preg_match("|\\.$|", $matches['3'][$i])
+          $period = '.'
+          $matches['3'][$i] = $matches['3'][$i].substr(0,  - 1)
+
+
+        $str = $str.replace($matches['0'][$i], safe_mailto($matches['1'][$i] + '@' + $matches['2'][$i] + '.' + $matches['3'][$i]) + $period)
+
+
+
+  return $str
 
 #
 # Prep URL
@@ -342,23 +277,18 @@ if not function_exists('auto_link')
 # @param  [String]  the URL
 # @return	[String]
 #
-if not function_exists('prep_url')
-  exports.prep_url = prep_url = ($str = '') ->
-    if $str is 'http://' or $str is ''
-      return ''
-      
-    
-    $url = parse_url($str)
-    
-    if not $url or  not $url['scheme']? 
-      $str = 'http://' + $str
-      
-    
-    return $str
-    
-  
+exports.prep_url = prep_url = ($str = '') ->
+  if $str is 'http://' or $str is ''
+    return ''
 
-#  ------------------------------------------------------------------------
+
+  $url = parse_url($str)
+
+  if not $url or  not $url['scheme']?
+    $str = 'http://' + $str
+
+
+  return $str
 
 #
 # Create URL Title
@@ -371,38 +301,33 @@ if not function_exists('prep_url')
 # @param  [String]  the separator: dash, or underscore
 # @return	[String]
 #
-if not function_exists('url_title')
-  exports.url_title = url_title = ($str, $separator = 'dash', $lowercase = false) ->
-    if $separator is 'dash'
-      $separator = '-'
-    else if $separator is 'underscore'
-      $separator = '_'
+exports.url_title = url_title = ($str, $separator = 'dash', $lowercase = false) ->
+  if $separator is 'dash'
+    $separator = '-'
+  else if $separator is 'underscore'
+    $separator = '_'
 
-    $q_separator = reg_quote($separator)
+  $q_separator = reg_quote($separator)
 
-    $trans =
-      '&.+?;': ''
-      '[^a-z0-9 _-]': ''
-      '\\s+': $separator
+  $trans =
+    '&.+?;': ''
+    '[^a-z0-9 _-]': ''
+    '\\s+': $separator
 
-    $trans['('+$q_separator+')+'] = $separator
-
-    
-    $str = strip_tags($str)
-    
-    for $key, $val of $trans
-      $str = $str.replace(RegExp($key, 'i'), $val)
-      
-    
-    if $lowercase is true
-      $str = $str.toLowerCase()
+  $trans['('+$q_separator+')+'] = $separator
 
 
-    return trim($str, $separator)
-    
-  
+  $str = strip_tags($str)
 
-#  ------------------------------------------------------------------------
+  for $key, $val of $trans
+    $str = $str.replace(RegExp($key, 'i'), $val)
+
+
+  if $lowercase is true
+    $str = $str.toLowerCase()
+
+
+  return trim($str, $separator)
 
 #
 # Parse out the attributes
@@ -410,31 +335,27 @@ if not function_exists('url_title')
 # Some of the functions use this
 #
 # @private
-# @param  [Array]  # @return	[Boolean]
+# @param  [Array]
 # @return	[String]
 #
-if not function_exists('_parse_attributes')
-  exports._parse_attributes = _parse_attributes = ($attributes, $javascript = false) ->
-    if 'string' is typeof($attributes)
-      return if ($attributes isnt '') then ' ' + $attributes else ''
-      
-    
-    $att = ''
-    for $key, $val of $attributes
-      if $javascript is true
-        $att+=$key + '=' + $val + ','
-        
-      else 
-        $att+=' ' + $key + '="' + $val + '"'
-        
-      
-    
-    if $javascript is true and $att isnt ''
-      $att = $att.substr(0,  - 1)
-      
-    
-    return $att
+exports._parse_attributes = _parse_attributes = ($attributes, $javascript = false) ->
+  if 'string' is typeof($attributes)
+    return if ($attributes isnt '') then ' ' + $attributes else ''
 
 
-#  End of file url_helper.php 
-#  Location: ./system/helpers/url_helper.php 
+  $att = ''
+  for $key, $val of $attributes
+    if $javascript is true
+      $att+=$key + '=' + $val + ','
+
+    else
+      $att+=' ' + $key + '="' + $val + '"'
+
+
+
+  if $javascript is true and $att isnt ''
+    $att = $att.substr(0,  - 1)
+
+
+  return $att
+

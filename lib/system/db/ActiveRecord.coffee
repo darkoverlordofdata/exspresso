@@ -10,25 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
 
 #
-# Active Record Class
-#
-# This is the platform-independent base Active Record implementation class.
+# Abstract Active Record Class
 #
 #
-class system.db.ActiveRecord extends system.db.Driver
+module.exports = class system.db.ActiveRecord extends system.db.Driver
   
   ar_select:          null
   ar_distinct:        false
@@ -48,7 +35,7 @@ class system.db.ActiveRecord extends system.db.Driver
   ar_aliased_tables:  null
   ar_store_array:     null
   ar_record:          null
-  
+
   #  Active Record Caching variables
   ar_caching:         false
   ar_cache_exists:    null
@@ -63,12 +50,13 @@ class system.db.ActiveRecord extends system.db.Driver
   ar_cache_set:       null
 
   #
-  # Constructor.  Accepts one parameter containing the database
-  # connection settings.
+  # Constructor.
   #
-  # @param  [Array]  #
-  constructor: ($params = {}) ->
-    super($params)
+  # @param  [Array]
+  #
+  constructor: ($args...) ->
+    super $args...
+
     @ar_select =          []
     @ar_from =            []
     @ar_join =            []
@@ -118,8 +106,8 @@ class system.db.ActiveRecord extends system.db.Driver
           @ar_cache_exists.push 'select'
 
     return @
-    
-  
+
+
   #
   # Select Max
   #
@@ -127,11 +115,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  the field
   # @param  [String]  an alias
-  # @return [Object]  #
+  # @return [Object]
+  #
   selectMax: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'MAX')
-    
-  
+
+
   #
   # Select Min
   #
@@ -139,11 +128,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  the field
   # @param  [String]  an alias
-  # @return [Object]  #
+  # @return [Object]
+  #
   selectMin: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'MIN')
-    
-  
+
+
   #
   # Select Average
   #
@@ -151,11 +141,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  the field
   # @param  [String]  an alias
-  # @return [Object]  #
+  # @return [Object]
+  #
   selectAvg: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'AVG')
-    
-  
+
+
   #
   # Select Sum
   #
@@ -163,11 +154,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  the field
   # @param  [String]  an alias
-  # @return [Object]  #
+  # @return [Object]
+  #
   selectSum: ($select = '', $alias = '') ->
     @_max_min_avg_sum($select, $alias, 'SUM')
-    
-  
+
+
   #
   # Processing Function for the four functions above:
   #
@@ -178,7 +170,8 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  the field
   # @param  [String]  an alias
-  # @return [Object]  #
+  # @return [Object]
+  #
   _max_min_avg_sum: ($select = '', $alias = '', $type = 'MAX') ->
     if not 'string' is typeof($select) or $select is ''
       @displayError('db_invalid_query')
@@ -204,8 +197,8 @@ class system.db.ActiveRecord extends system.db.Driver
 
 
     return @
-    
-  
+
+
   #
   # Determines the alias name based on the table
   #
@@ -215,15 +208,16 @@ class system.db.ActiveRecord extends system.db.Driver
   _create_alias_from_table: ($item) ->
     return $item.split('.').pop() unless $item.indexOf('.') is -1
     return $item
-    
-  
+
+
   #
   # DISTINCT
   #
   # Sets a flag which tells the query string compiler to add DISTINCT
   #
   # @return	[Boolean]
-  # @return [Object]  #
+  # @return [Object]
+  #
   distinct: ($val = true) ->
     @ar_distinct = if 'boolean' is typeof($val) then $val else true
     return @
@@ -234,7 +228,8 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates the FROM portion of the query
   #
   # @param  [Mixed]  can be a string or array
-  # @return [Object]  #
+  # @return [Object]
+  #
   from: ($from) ->
     if 'string' is typeof($from) then $from = [$from]
     for $val in $from
@@ -271,7 +266,8 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  # @param  [String]  the join condition
   # @param  [String]  the type of join
-  # @return [Object]  #
+  # @return [Object]
+  #
   join: ($table, $cond, $type = '') ->
     if $type isnt ''
       $type = trim($type).toUpperCase()
@@ -311,29 +307,39 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates the WHERE portion of the query. Separates
   # multiple calls with AND
   #
-  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]
+  # @param  [Mixed]
+  # @return [Object]
+  #
   where: ($key, $value = null, $escape = true) ->
     @_where($key, $value, 'AND ', $escape)
-    
-  
+
+
   #
   # OR Where
   #
   # Generates the WHERE portion of the query. Separates
   # multiple calls with OR
   #
-  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]
+  # @param  [Mixed]
+  # @return [Object]
+  #
   orWhere: ($key, $value = null, $escape = true) ->
     @_where($key, $value, 'OR ', $escape)
-    
-  
+
+
   #
   # Where
   #
   # Called by where() or orwhere()
   #
   # @private
-  # @param  [Mixed]  # @param  [Mixed]  # @param  [String]  # @return [Object]  #
+  # @param  [Mixed]
+  # @param  [Mixed]
+  # @param  [String]
+  # @return [Object]
+  #
   _where: ($key, $value = null, $type = 'AND ', $escape = null) ->
     if 'string' is typeof($key)
       $key = array($key, $value)
@@ -376,11 +382,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  The field to search
   # @param  [Array]  The values searched on
-  # @return [Object]  #
+  # @return [Object]
+  #
   whereIn: ($key = null, $values = null) ->
     @_where_in($key, $values)
-    
-  
+
+
   #
   # Where_in_or
   #
@@ -389,11 +396,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  The field to search
   # @param  [Array]  The values searched on
-  # @return [Object]  #
+  # @return [Object]
+  #
   orWhereIn: ($key = null, $values = null) ->
     @_where_in($key, $values, false, 'OR ')
-    
-  
+
+
   #
   # Where_not_in
   #
@@ -402,11 +410,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  The field to search
   # @param  [Array]  The values searched on
-  # @return [Object]  #
+  # @return [Object]
+  #
   whereNotIn: ($key = null, $values = null) ->
     @_where_in($key, $values, true)
-    
-  
+
+
   #
   # Where_not_in_or
   #
@@ -415,11 +424,12 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @param  [String]  The field to search
   # @param  [Array]  The values searched on
-  # @return [Object]  #
+  # @return [Object]
+  #
   orWhereNotIn: ($key = null, $values = null) ->
     @_where_in($key, $values, true, 'OR ')
-    
-  
+
+
   #
   # Where_in
   #
@@ -428,7 +438,9 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [String]  The field to search
   # @param  [Array]  The values searched on
   # @return	[Boolean]ean	If the statement would be IN or NOT IN
-  # @param  [String]  # @return [Object]  #
+  # @param  [String]
+  # @return [Object]
+  #
   _where_in: ($key = null, $values = null, $not = false, $type = 'AND ') ->
     if $key is null or $values is null
       return
@@ -462,22 +474,28 @@ class system.db.ActiveRecord extends system.db.Driver
   # Generates a %LIKE% portion of the query. Separates
   # multiple calls with AND
   #
-  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]
+  # @param  [Mixed]
+  # @return [Object]
+  #
   like: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'AND ', $side)
-    
-  
+
+
   #
   # Not Like
   #
   # Generates a NOT LIKE portion of the query. Separates
   # multiple calls with AND
   #
-  # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
+  # @param  [Mixed]
+  # @param  [Mixed]
+  # @return [Object]
+  #
   not_like: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'AND ', $side, 'NOT')
-    
-  
+
+
   #
   # OR Like
   #
@@ -487,8 +505,8 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   orLike: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'OR ', $side)
-    
-  
+
+
   #
   # OR Not Like
   #
@@ -498,8 +516,8 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [Mixed]  # @param  [Mixed]  # @return [Object]  #
   orNotLike: ($field, $match = '', $side = 'both') ->
     @_like($field, $match, 'OR ', $side, 'NOT')
-    
-  
+
+
   #
   # Like
   #
@@ -539,7 +557,7 @@ class system.db.ActiveRecord extends system.db.Driver
 
     return @
 
-  
+
   #
   # GROUP BY
   #
@@ -559,8 +577,8 @@ class system.db.ActiveRecord extends system.db.Driver
           @ar_cache_exists.push 'groupby'
 
     return @
-    
-  
+
+
   #
   # Sets the HAVING value
   #
@@ -569,8 +587,8 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [String]  # @param  [String]  # @return [Object]  #
   having: ($key, $value = '', $escape = true) ->
     @_having($key, $value, 'AND ', $escape)
-    
-  
+
+
   #
   # Sets the OR HAVING value
   #
@@ -579,8 +597,8 @@ class system.db.ActiveRecord extends system.db.Driver
   # @param  [String]  # @param  [String]  # @return [Object]  #
   orHaving: ($key, $value = '', $escape = true) ->
     @_having($key, $value, 'OR ', $escape)
-    
-  
+
+
   #
   # Sets the HAVING values
   #
@@ -659,13 +677,13 @@ class system.db.ActiveRecord extends system.db.Driver
   # @return [Object]  #
   limit: ($value, $offset = '') ->
     @ar_limit = $value
-    
+
     if $offset isnt ''
       @ar_offset = $offset
-    
+
     return @
-    
-  
+
+
   #
   # Sets the OFFSET value
   #
@@ -674,8 +692,8 @@ class system.db.ActiveRecord extends system.db.Driver
   offset: ($offset) ->
     @ar_offset = $offset
     return @
-    
-  
+
+
   #
   # The "set" function.  Allows key/value pairs to be set for inserting or updating
   #
@@ -714,12 +732,12 @@ class system.db.ActiveRecord extends system.db.Driver
     if $table isnt ''
       @_track_aliases($table)
       @from($table)
-    
+
     $sql = @_compile_select()
     @_reset_select()
     @query $sql, $next
 
-  
+
   #
   # "Count All Results" query
   #
@@ -732,7 +750,7 @@ class system.db.ActiveRecord extends system.db.Driver
     if $table isnt ''
       @_track_aliases($table)
       @from($table)
-    
+
     $sql = @_compile_select(@_count_string + @_protect_identifiers('numrows'))
     @_reset_select()
 
@@ -746,8 +764,8 @@ class system.db.ActiveRecord extends system.db.Driver
         else
           $row = $query.row()
           $next null, $row.numrows
-    
-  
+
+
   #
   # Get_Where
   #
@@ -875,23 +893,23 @@ class system.db.ActiveRecord extends system.db.Driver
     if Object.keys(@ar_rec).length is 0
       if @db_debug
         return @display_error('db_must_use_set')
-        
+
       return false
-    
+
     if $table is ''
-      if not @ar_from[0]? 
+      if not @ar_from[0]?
         if @db_debug
           return @display_error('db_must_set_table')
-          
+
         return false
-      
+
       $table = @ar_from[0]
-      
+
     $sql = @_insert(@_protect_identifiers($table, true, null, false), Object.keys(@ar_rec).sort(), @ar_rec[$k] for $k in Object.keys(@ar_rec).sort())
 
     @_reset_write()
     return @query($sql, $next)
-  
+
   replace: ($table = '', $set = null) ->
     if $set isnt null
       @set($set)
@@ -900,27 +918,27 @@ class system.db.ActiveRecord extends system.db.Driver
     if Object.keys(@ar_rec).length is 0
       if @db_debug
         return @display_error('db_must_use_set')
-        
+
       return false
-      
-    
+
+
     if $table is ''
-      if not @ar_from[0]? 
+      if not @ar_from[0]?
         if @db_debug
           return @display_error('db_must_set_table')
-          
+
         return false
-        
-      
+
+
       $table = @ar_from[0]
-      
-    
+
+
     $sql = @_replace(@_protect_identifiers($table, true, null, false), Object.keys(@ar_rec).sort(), @ar_rec[$k] for $k in Object.keys(@ar_rec).sort())
 
     @_reset_write()
     return @query($sql, $next)
-    
-  
+
+
   #
   # Update
   #
@@ -946,7 +964,7 @@ class system.db.ActiveRecord extends system.db.Driver
 
     #  Combine any cached components with the current statements
     @_merge_cache()
-    
+
     if $set isnt null
       @set($set)
 
@@ -954,29 +972,29 @@ class system.db.ActiveRecord extends system.db.Driver
     if Object.keys(@ar_rec).length is 0
       if @db_debug
         return @display_error('db_must_use_set')
-        
+
       return false
-      
-    
+
+
     if $table is ''
-      if not @ar_from[0]? 
+      if not @ar_from[0]?
         if @db_debug
           return @display_error('db_must_set_table')
-          
+
         return false
-        
-      
+
+
       $table = @ar_from[0]
-      
-    
+
+
     if $where isnt null
       @where($where)
-      
-    
+
+
     if $limit isnt null
       @limit($limit)
-      
-    
+
+
     $sql = @_update(@_protect_identifiers($table, true, null, false), @ar_rec, @ar_where, @ar_orderby, @ar_limit)
 
     @_reset_write()
@@ -1072,26 +1090,26 @@ class system.db.ActiveRecord extends system.db.Driver
   # @return [Object]  #
   emptyTable: ($table = '') ->
     if $table is ''
-      if not @ar_from[0]? 
+      if not @ar_from[0]?
         if @db_debug
           return @display_error('db_must_set_table')
-          
+
         return false
-        
-      
+
+
       $table = @ar_from[0]
-      
-    else 
+
+    else
       $table = @_protect_identifiers($table, true, null, false)
-      
-    
+
+
     $sql = @_delete($table)
-    
+
     @_reset_write()
-    
+
     return @query($sql)
-    
-  
+
+
   #
   # Truncate
   #
@@ -1107,26 +1125,26 @@ class system.db.ActiveRecord extends system.db.Driver
       $table = ''
 
     if $table is ''
-      if not @ar_from[0]? 
+      if not @ar_from[0]?
         if @db_debug
           return @display_error('db_must_set_table')
-          
+
         return false
-        
-      
+
+
       $table = @ar_from[0]
-      
-    else 
+
+    else
       $table = @_protect_identifiers($table, true, null, false)
-      
-    
+
+
     $sql = @_truncate($table)
-    
+
     @_reset_write()
-    
+
     @query($sql, $next)
-    
-  
+
+
   #
   # Delete
   #
@@ -1164,25 +1182,25 @@ class system.db.ActiveRecord extends system.db.Driver
 
     #  Combine any cached components with the current statements
     @_merge_cache()
-    
+
     if $table is ''
-      if not @ar_from[0]? 
+      if not @ar_from[0]?
         if @db_debug
           return @display_error('db_must_set_table')
-          
+
         return false
-        
-      
+
+
       $table = @ar_from[0]
-      
+
     else if Array.isArray($table)
       for $single_table in $table
         @['delete']($single_table, $where, $limit, false)
 
       @_reset_write()
-      return 
-      
-    else 
+      return
+
+    else
       $table = @_protect_identifiers($table, true, null, false)
 
     if $where isnt ''
@@ -1197,13 +1215,13 @@ class system.db.ActiveRecord extends system.db.Driver
       return false
 
     $sql = @_delete($table, @ar_where, @ar_like, @ar_limit)
-    
+
     if $reset_data
       @_reset_write()
 
     @query($sql, $next)
-    
-  
+
+
   #
   # DB Prefix
   #
@@ -1215,11 +1233,11 @@ class system.db.ActiveRecord extends system.db.Driver
   _dbprefix: ($table = '') ->
     if $table is ''
       @display_error('db_table_name_required')
-      
-    
+
+
     return @dbprefix + $table
-    
-  
+
+
   #
   # Track Aliases
   #
@@ -1255,7 +1273,7 @@ class system.db.ActiveRecord extends system.db.Driver
       if @ar_aliased_tables.indexOf($table) is -1
         @ar_aliased_tables.push $table
 
-  
+
   #
   # Compile the SELECT statement
   #
@@ -1413,41 +1431,44 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # Starts AR caching
   #
-  # @return [Void]  #
+  # @return [Void]
+  #
   startCache:  ->
     @ar_caching = true
-    
-  
+
+
   #
   # Stop Cache
   #
   # Stops AR caching
   #
-  # @return [Void]  #
+  # @return [Void]
+  #
   stopCache:  ->
     @ar_caching = false
-    
-  
+
+
   #
   # Flush Cache
   #
   # Empties the AR cache
   #
-  # @return [Void]  #
+  # @return [Void]
+  #
   flushCache:  ->
     @_reset_run
-      'ar_cache_select':[]
-      'ar_cache_from':[]
-      'ar_cache_join':[]
-      'ar_cache_where':[]
-      'ar_cache_like':[]
-      'ar_cache_groupby':[]
-      'ar_cache_having':[]
-      'ar_cache_orderby':[]
-      'ar_cache_set':[]
-      'ar_cache_exists':[]
+      ar_cache_select:[]
+      ar_cache_from:[]
+      ar_cache_join:[]
+      ar_cache_where:[]
+      ar_cache_like:[]
+      ar_cache_groupby:[]
+      ar_cache_having:[]
+      ar_cache_orderby:[]
+      ar_cache_set:[]
+      ar_cache_exists:[]
 
-  
+
   #
   # Merge Cache
   #
@@ -1455,7 +1476,8 @@ class system.db.ActiveRecord extends system.db.Driver
   # locally called ones.
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _merge_cache:  ->
     if @ar_cache_exists.length is 0
       return
@@ -1487,7 +1509,8 @@ class system.db.ActiveRecord extends system.db.Driver
   #
   # @private
   # @param  [Array]  An array of fields to reset
-  # @return [Void]  #
+  # @return [Void]
+  #
   _reset_run: ($ar_reset_items) ->
     for $item, $default_value of $ar_reset_items
       if @ar_store_array.indexOf($item) is -1
@@ -1497,23 +1520,24 @@ class system.db.ActiveRecord extends system.db.Driver
   # Resets the active record values.  Called by the get() function
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _reset_select:  ->
     $ar_reset_items = 
-      'ar_select':[]
-      'ar_from':[]
-      'ar_join':[]
-      'ar_where':[]
-      'ar_like':[]
-      'ar_groupby':[]
-      'ar_having':[]
-      'ar_orderby':[]
-      'ar_wherein':[]
-      'ar_aliased_tables':[]
-      'ar_distinct':false
-      'ar_limit':false
-      'ar_offset':false
-      'ar_order':false
+      ar_select:[]
+      ar_from:[]
+      ar_join:[]
+      ar_where:[]
+      ar_like:[]
+      ar_groupby:[]
+      ar_having:[]
+      ar_orderby:[]
+      ar_wherein:[]
+      ar_aliased_tables:[]
+      ar_distinct:false
+      ar_limit:false
+      ar_offset:false
+      ar_order:false
 
     @_reset_run($ar_reset_items)
     
@@ -1524,22 +1548,19 @@ class system.db.ActiveRecord extends system.db.Driver
   # Called by the insert() update() insert_batch() update_batch() and delete() functions
   #
   # @private
-  # @return [Void]  #
+  # @return [Void]
+  #
   _reset_write:  ->
     $ar_reset_items = 
-      'ar_set':[]
-      'ar_from':[]
-      'ar_where':[]
-      'ar_like':[]
-      'ar_orderby':[]
-      'ar_keys':[]
-      'ar_rec':{}
-      'ar_limit':false
-      'ar_order':false
+      ar_set:[]
+      ar_from:[]
+      ar_where:[]
+      ar_like:[]
+      ar_orderby:[]
+      ar_keys:[]
+      ar_rec:{}
+      ar_limit:false
+      ar_order:false
 
     @_reset_run($ar_reset_items)
     
-module.exports = system.db.ActiveRecord
-
-#  End of file ActiveRecord.coffee
-#  Location: ./system/db/ActiveRecord.coffee

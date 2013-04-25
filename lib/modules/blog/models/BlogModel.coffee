@@ -26,7 +26,7 @@
 #
 #	Class modules.blog.models.BlogModel
 #
-class modules.blog.models.BlogModel
+module.exports = class modules.blog.models.BlogModel
 
   _categories       : null  # category table cache
   _category_names   : null  # hash of category names for drop-down list
@@ -168,22 +168,38 @@ class modules.blog.models.BlogModel
     ''
 
   #
-  # Load the Categories
+  # Load the Categories.
+  #
+  # 1. load the category table rows
+  # 2. compile a drop down list of category names
+  #
+  # Save/Get values from cache
   #
   # @param  [Function]  next  async callback
   # @return [Void]
   #
   _load_categories: ($next) =>
 
-    @db.from 'category'
-    @db.get ($err, $cat) =>
+    @cache.get 'blog._load_categories', ($err, $data) =>
 
-      return $next() if $err
-      for $row in $cat.result()
-        @_categories.push $row
-        @_category_names[$row.name] = $row.name
+      if $data isnt false
+        @_categories = $data.categories
+        @_category_names = $data.category_names
+        return $next(null)
 
-      $next()
+      @db.from 'category'
+      @db.get ($err, $cat) =>
+        return $next() if $err
+
+        for $row in $cat.result()
+          @_categories.push $row
+          @_category_names[$row.name] = $row.name
+
+        $data =
+          categories: @_categories
+          category_names: @_category_names
+
+        @cache.save 'blog._load_categories', $data, -1, $next
 
   #
   # Install the Blog Module data
@@ -268,7 +284,3 @@ class modules.blog.models.BlogModel
 
 
 
-# END CLASS Blogmodel
-module.exports = modules.blog.models.BlogModel
-# End of file BlogModel.coffee
-# Location: .modules/blog/models/BlogModel.coffee

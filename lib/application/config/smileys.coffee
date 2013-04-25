@@ -1,16 +1,3 @@
-#+--------------------------------------------------------------------+
-#  smileys.coffee
-#+--------------------------------------------------------------------+
-#  Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#
-#  This file is a part of Exspresso
-#
-#  Exspresso is free software you can copy, modify, and distribute
-#  it under the terms of the MIT License
-#
-#+--------------------------------------------------------------------+
-#
 #
 #| -------------------------------------------------------------------
 #| SMILEYS
@@ -72,7 +59,3 @@ nodule.exports =
   ':exclaim:':['exclaim.gif', '19', '19', 'excaim'], 
   ':question:':['question.gif', '19', '19', 'question']#  no comma after last item
   
-  
-
-#  End of file smileys.coffee
-#  Location: ./application/config/smileys.coffee

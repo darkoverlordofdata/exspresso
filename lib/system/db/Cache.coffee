@@ -10,46 +10,41 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#  ------------------------------------------------------------------------
 
 #
 # Database Cache Class
 #
 #
-class system.db.Cache
+module.exports = class system.db.Cache
 
-  is_dir            = require(SYSPATH+'util.coffee').is_dir
-  md5               = require(SYSPATH+'util.coffee').md5
   fs = require('fs')
-  unserialize = JSON.parse
-  serialize   = JSON.stringify
 
-  
-  db: null #  allows passing of db object so that multiple database connections and returned db objects can be supported
-  
+  self = @
+  #self.cache = {}
+
+  #
+  # @property [system.db.ActiveRecord] database connection object
+  #
+  db : null
+  #
+  # @property [system.db.ActiveRecord] controller uri
+  #
+  uri : null
+  #
+  # @property [system.db.ActiveRecord] system lib Cache object
+  #
+  cache : null
+
   #
   # Constructor
   #
-  # Grabs the Exspresso super object instance so we can access it.
-  #
-  #
-  constructor: ($controller, @db) ->
-    #  and load the file helper since we use it a lot
-    @load.helper('file')
-    
-  
+  constructor: ($db, $uri, $cache) ->
+
+    Object.defineProperties @,
+      db        : {enumerable: true, writeable: false, value: $db}
+      uri       : {enumerable: true, writeable: false, value: $uri}
+      cache     : {enumerable: true, writeable: false, value: $cache}
+
   #
   # Set Cache Directory Path
   #
@@ -57,6 +52,8 @@ class system.db.Cache
   # @return	bool
   #
   checkPath: ($path = '') ->
+    return true if self.cache?
+
     if $path is ''
       if @db.cachedir is ''
         return @db.cacheOff()
@@ -71,71 +68,127 @@ class system.db.Cache
 
     @db.cachedir = $path
     return true
-    
-  
+
+
   #
   # Retrieve a cached query
   #
   # The URI being requested will become the name of the cache sub-folder.
   # An MD5 hash of the SQL statement will become the cache file name
   #
-  # @return	[String]
+  # @param  [String]  sql script to execute
+  # @param  [Function]  next  async callback
+  # @return	[Void]
   #
-  read: ($sql) ->
+  read: ($sql, $next) ->
+    return $next(null, false) unless @uri # skip system requests
     if not @checkPath()
-      return @db.cacheOff()
+      return $next(null, @db.cacheOff())
 
-    $segment_one = if (@uri.segment(1) is false) then 'default' else @uri.segment(1)
-    $segment_two = if (@uri.segment(2) is false) then 'index' else @uri.segment(2)
-    $filepath = @db.cachedir + $segment_one + '+' + $segment_two + '/' + md5($sql)
-    
-    if false is ($cachedata = fs.readFileSync($filepath))
-      return false
+    $segment_one = @uri.segment(1, 'default')
+    $segment_two = @uri.segment(2, 'index')
+    $path = $segment_one + '+' + $segment_two
 
-    return unserialize($cachedata)
-    
+    if self.cache?
+      $cache = self.cache?[$path]?[md5($sql)] ? false
+      return $next(null, $cache)
+
+    else
+      $filepath = @db.cachedir+$path+'/'+md5($sql)
+      fs.exists $filepath, ($exists) ->
+        if $exists
+          fs.readFile $filepath, encoding:'utf8', ($err, $cache) ->
+            return $next(null, if $err then false else JSON.parse($cache))
+        else
+          return $next(null, false)
+
+
   
   #
   # Write a query to a cache file
   #
-  # @return	bool
+  # @param  [String]  sql script to execute
+  # @param  [Object]  data  hash of data to cache
+  # @param  [Function]  next  async callback
+  # @return	[Void]
   #
-  write: ($sql, $object) ->
-    if not @check_path()
-      return @db.cache_off()
-      
-    
-    $segment_one = if (@uri.segment(1) is false) then 'default' else @uri.segment(1)
-    $segment_two = if (@uri.segment(2) is false) then 'index' else @uri.segment(2)
-    $dir_path = @db.cachedir + $segment_one + '+' + $segment_two + '/'
-    
-    $filename = md5($sql)
-    if not is_dir($dir_path)
-      if not fs.mkdirSync($dir_path, DIR_WRITE_MODE)
-        return false
+  write: ($sql, $data, $next) ->
+    return $next(null, false) unless @uri # skip system requests
+    if not @checkPath()
+      return $next(null, @db.cacheOff())
 
-      fs.chmodSync($dir_path, DIR_WRITE_MODE)
+    $segment_one = @uri.segment(1, 'default')
+    $segment_two = @uri.segment(2, 'index')
+    if $segment_one is '' then $segment_one = 'default'
+    $path = $segment_one + '+' + $segment_two
 
-    if fs.writeFileSync($dir_path + $filename, serialize($object)) is false
-      return false
+    $cache =
+      time: Math.floor(Date.now()/1000)
+      ttl: -1
+      sql: $sql
+      data: $data.data
+      meta: $data.meta
 
-    fs.chmodSync($dir_path + $filename, FILE_WRITE_MODE)
-    return true
-    
+    if self.cache?
+      self.cache[$path] = {} unless self.cache[$path]
+      self.cache[$path][md5($sql)] = $cache
+      $next(null)
+
+    else
+      $dir_path = @db.cachedir + $path + '/'
+      $filename = md5($sql)
+
+      fs.exists $dir_path, ($exists) ->
+
+        if $exists
+          fs.writeFile $dir_path + $filename, JSON.stringify($cache), encoding:'utf8', ($err) ->
+            return $next($err) if $err?
+
+            fs.chmod $dir_path + $filename, FILE_WRITE_MODE, ($err) ->
+              return $next($err) if $err?
+              $next()
+
+        else
+          fs.mkdir $dir_path, DIR_WRITE_MODE, ($err) ->
+            return $next($err) if $err?
+
+            fs.chmod $dir_path, DIR_WRITE_MODE, ($err) ->
+              return $next($err) if $err?
+
+              fs.writeFile $dir_path + $filename, JSON.stringify($cache), encoding:'utf8', ($err) ->
+                return $next($err) if $err?
+
+                fs.chmod $dir_path + $filename, FILE_WRITE_MODE, ($err) ->
+                  return $next($err) if $err?
+                  $next()
+
+
   
   #
   # Delete cache files within a particular directory
   #
   # @return	bool
   #
-  delete: ($segment_one = '', $segment_two = '') ->
-    if $segment_one is ''
-      $segment_one = if (@uri.segment(1) is false) then 'default' else @uri.segment(1)
-    if $segment_two is ''
-      $segment_two = if (@uri.segment(2) is false) then 'index' else @uri.segment(2)
-    $dir_path = @db.cachedir + $segment_one + '+' + $segment_two + '/'
-    
-    delete_files($dir_path, true)
+  delete: ($segment_one = '', $segment_two = '', $next) ->
+    return unless @uri
+    if 'function' is typeof $segment_one
+      $next = $segment_one
+      $segment_one = ''
+      $segment_two = ''
+    else if 'function' is typeof $segment_two
+      $next = $segment_two
+      $segment_two = ''
+
+    $segment_one = @uri.segment(1, 'default') if $segment_one is ''
+    $segment_two = @uri.segment(2, 'index') if $segment_two is ''
+    $path = $segment_one + '+' + $segment_two
+
+    if self.cache?
+      delete self.cache[$path] if self.cache[$path]?
+    else
+      delete_files(@db.cachedir+$path+'/', true)
+    $next()
+
     
   
   #
@@ -143,11 +196,10 @@ class system.db.Cache
   #
   # @return	bool
   #
-  deleteAll :  ->
-    delete_files(@db.cachedir, true)
+  deleteAll : ($next) ->
+    if self.cache?
+      self.cache = {}
+    else
+      delete_files(@db.cachedir, true)
+    $next()
 
-module.exports = system.db.Cache
-
-
-#  End of file Cache.coffee
-#  Location: ./system/database/Cache.coffee

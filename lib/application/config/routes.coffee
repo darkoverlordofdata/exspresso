@@ -1,18 +1,3 @@
-#+--------------------------------------------------------------------+
-#| routes.coffee
-#+--------------------------------------------------------------------+
-#| Copyright DarkOverlordOfData (c) 2012 - 2013
-#+--------------------------------------------------------------------+
-#|
-#| This file is a part of Expresso
-#|
-#| Exspresso is free software; you can copy, modify, and distribute
-#| it under the terms of the MIT License
-#|
-#+--------------------------------------------------------------------+
-#
-#
-#
 #| -------------------------------------------------------------------------
 #| URI ROUTING
 #| -------------------------------------------------------------------------
@@ -38,32 +23,31 @@
 #|
 #| There area two reserved routes:
 #|
-#|	exports['default_controller'] = 'welcome';
+#|	'default_controller' : 'welcome';
 #|
 #| This route indicates which controller class should be loaded if the
 #| URI contains no data. In the above example, the "welcome" class
 #| would be loaded.
 #|
-#|	exports['404_override'] = 'errors/page_missing';
+#|	'404_override' : 'errors/page_missing';
 #|
 #| This route will tell the Router what URI segments to use if those provided
 #| in the URL cannot be matched to a valid route.
 #|
 #
 
-#----------------------------------------------------------------------
-#          Route                                 Controller URI
-#----------------------------------------------------------------------
-exports['default_controller']                 = "Home/index"
+module.exports =
+  #----------------------------------------------------------------------
+  #          Route                                 Controller URI
+  #----------------------------------------------------------------------
+  'default_controller'                 : "Home/index"
+  
+  '/home'                              : 'Home/index'
+  '/welcome'                           : 'Welcome/index'
+  
+  '/admin'                             : 'Admin/index'
+  '/admin/login'                       : 'Admin/login'
+  '/admin/logout'                      : 'Admin/logout'
+  '/admin/authenticate'                : 'Admin/authenticate'
 
-exports['/home']                              = 'Home/index'
-exports['/welcome']                           = 'Welcome/index'
 
-exports['/admin']                             = 'Admin/index'
-exports['/admin/login']                       = 'Admin/login'
-exports['/admin/logout']                      = 'Admin/logout'
-exports['/admin/authenticate']                = 'Admin/authenticate'
-
-
-# End of file routes.coffee
-# Location: ./application/config/routes.coffee

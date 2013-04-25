@@ -1,0 +1,11 @@
+<div class="container">
+    <p></p>
+    <div class="row">
+        <div class="hero-unit">
+            <%- @form_open('/test/input') %>
+            <%- @form_input('input_field', @input_field) %>
+            <%- @form_submit('submit', 'Submit', class:'btn btn-large btn-success') %>
+            <%- @form_close() %>
+        </div>
+    </div>
+</div>
