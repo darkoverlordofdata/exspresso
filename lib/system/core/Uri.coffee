@@ -33,6 +33,7 @@ module.exports = class system.core.Uri
 
     log_message 'debug', "Uri Class Initialized"
 
+
     defineProperties @,
       _uri_string   : {enumerable: false, writeable: false, value: $req.url}
       _keyval       : {enumerable: false, writeable: false, value: {}}

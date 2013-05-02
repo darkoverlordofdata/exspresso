@@ -15,111 +15,99 @@
 #
 #
 
-
-#  --------------------------------------------------------------------
+exports.is_global = true
 
 #
 # Singular
 #
 # Takes a plural word and makes it singular
 #
-# @param  [String]  # @return	str
+# @param  [String]
+# @return	[String]
 #
-exports.singular = singular = ($str) ->
+exports.singular = ($str) ->
   $str = trim($str)
-  $end = substr($str,  - 3)
+  $end = $str.substr(-3)
 
-  $str = preg_replace('/(.*)?([s|c]h)es/i', '$1$2', $str)
+  $str = $str.replace(/(.*)?([s|c]h)es/i, '$1$2')
 
   if $end.toLowerCase() is 'ies'
-    $str = if substr($str, 0, strlen($str) - 3) + (preg_match('/[a-z]/', $end)) then 'y' else 'Y'
+    $str = $str.substr(0, $str.length - 3) + if (preg_match('/[a-z]/', $end)) then 'y' else 'Y'
 
   else if $end.toLowerCase() is 'ses'
-    $str = substr($str, 0, strlen($str) - 2)
+    $str = $str.substr(0, $str.length - 2)
 
   else
-    $end = substr($str.toLowerCase(),  - 1)
+    $end = $str.substr(-1).toLowerCase()
 
     if $end is 's'
-      $str = substr($str, 0, strlen($str) - 1)
-
-
+      $str = $str.substr(0, $str.length - 1)
 
   return $str
 
-
-
-#  --------------------------------------------------------------------
 
 #
 # Plural
 #
 # Takes a singular word and makes it plural
 #
-# @param  [String]  # @return	[Boolean]
+# @param  [String]
+# @return	[Boolean]
 # @return	str
 #
-exports.plural = plural = ($str, $force = false) ->
+exports.plural = ($str, $force = false) ->
   $str = trim($str)
-  $end = substr($str,  - 1)
+  $end = $str.substr(- 1)
 
-  if preg_match('/y/i', $end)
+  if $end is 'y' or $end is 'Y'
     #  Y preceded by vowel => regular plural
     $vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
-    $str = if $vowels.indexOf(substr($str,  - 2, 1)) isnt -1 then $str + 's' else substr($str, 0,  - 1) + 'ies'
+    $str = if $vowels.indexOf($str.substr(-2, 1)) isnt -1 then $str + 's' else $str.substr(0, -1) + 'ies'
 
-  else if preg_match('/h/i', $end)
-    if preg_match('/^[c|s]h$/i', substr($str,  - 2))
+  else if $end is 'h' or $end is 'H'
+    if /^[c|s]h$/i.test($str.substr(-2))
       $str+='es'
-
     else
       $str+='s'
 
-
-  else if preg_match('/s/i', $end)
+  else if $end is 's' or $end is 'S'
     if $force is true
       $str+='es'
-
 
   else
     $str+='s'
 
-
   return $str
 
 
-
-#  --------------------------------------------------------------------
 
 #
 # Camelize
 #
 # Takes multiple words separated by spaces or underscores and camelizes them
 #
-# @param  [String]  # @return	str
+# @param  [String]
+# @return	str
 #
 exports.camelize = camelize = ($str) ->
   $str = 'x' + trim($str.toLowerCase())
-  $str = ucwords(preg_replace('/[\s_]+/', ' ', $str))
-  return substr(str_replace(' ', '', $str), 1)
+  $str = ucwords($str.replace(/[\s_]+/, ' '))
+  $str.substr(1).replace(/\s/g, '')
 
 
-
-#  --------------------------------------------------------------------
 
 #
 # Underscore
 #
 # Takes multiple words separated by spaces and underscores them
 #
-# @param  [String]  # @return	str
+# @param  [String]
+# @return	str
 #
-exports.underscore = underscore = ($str) ->
-  return preg_replace('/[\s]+/', '_', trim($str.toLowerCase()))
+exports.underscore = ($str) ->
+  trim($str).toLowerCase().replace(/[\s]+/g, '_')
 
 
-
-#  --------------------------------------------------------------------
 
 #
 # Humanize
@@ -128,8 +116,8 @@ exports.underscore = underscore = ($str) ->
 #
 # @param  [String]  # @return	str
 #
-exports.humanize = humanize = ($str) ->
-  return ucwords(preg_replace('/[_]+/', ' ', trim($str.toLowerCase())))
+exports.humanize = ($str) ->
+  trim($str).toLowerCase().replace(/[_]+/g, ' ')
 
 
 #  ------------------------------------------------------------------------
@@ -137,5 +125,5 @@ exports.humanize = humanize = ($str) ->
 # Export helpers to the global namespace
 #
 #
-for $name, $body of module.exports
-  exports.define $name, $body
+#for $name, $body of module.exports
+#  exports.define $name, $body

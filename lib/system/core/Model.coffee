@@ -29,3 +29,9 @@ module.exports = class system.core.Model
     log_message 'debug', "Model Class Initialized"
     defineProperties @, controller : {writeable: false, value: $controller}
 
+  #
+  # Do installation processing
+  #
+  # @return [Void]
+  #
+  install: () ->

@@ -50,7 +50,7 @@ module.exports = class system.lib.DriverLibrary
         $class = require($file)
 
       else
-        for $path in exspresso.load.getModulePaths(true)
+        for $path in exspresso.load.getClassPaths(true)
           if fs.existsSync($file = $path+'lib/'+$subdir+$class_name+EXT)
             $class = require($file)
             break

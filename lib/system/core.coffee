@@ -103,6 +103,7 @@ module.exports = ->
   load_class SYSPATH+'core/Model.coffee'
   #load_class SYSPATH+'core/Modules.coffee'
   load_class SYSPATH+'core/Output.coffee'
+  #load_class SYSPATH+'core/Render.coffee'
   load_class SYSPATH+'core/Router.coffee'
   load_class SYSPATH+'core/Security.coffee'
   load_class SYSPATH+'core/Uri.coffee'
@@ -1012,5 +1013,3 @@ module.exports.export = ($scope = global) ->
 
   return
 
-# End of file core.coffee
-# Location: ./system/core.coffee

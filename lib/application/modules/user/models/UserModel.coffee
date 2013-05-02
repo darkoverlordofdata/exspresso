@@ -10,17 +10,6 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 #   User Data Model
@@ -39,7 +28,8 @@ module.exports = class application.modules.user.models.UserModel extends system.
   #
   #   load user by uid
   #
-  # @return [Object]  #
+  # @return [Object]
+  #
   loadById: ($id, $next) ->
 
     @db.where 'uid', $id
@@ -55,7 +45,8 @@ module.exports = class application.modules.user.models.UserModel extends system.
   #
   #   load user by name
   #
-  # @return [Object]  #
+  # @return [Object]
+  #
   loadByName: ($name, $next) ->
 
     @db.where 'name', $name
@@ -69,7 +60,8 @@ module.exports = class application.modules.user.models.UserModel extends system.
   #
   # Load roles for a user
   #
-  # @return [Object]  #
+  # @return [Object]
+  #
   load_roles: ($uid, $next) ->
 
     @db.select 'roles.rid, name, description'
@@ -84,19 +76,22 @@ module.exports = class application.modules.user.models.UserModel extends system.
   #
   # Add role to user
   #
-  # @return [Object]  #
+  # @return [Object]
+  #
   add_role: ($uid, $role, $next) ->
 
     #
     # Remove role from user
     #
-      # @return [Object]  #
+      # @return [Object]
+      #
   remove_role: ($uid, $role, $next) ->
 
   #
   # Delete a user
   #
-  # @return [Object]  #
+  # @return [Object]
+  #
   delete: ($uid, $next) ->
 
 

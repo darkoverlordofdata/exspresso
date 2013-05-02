@@ -29,7 +29,7 @@
 # @param  [String]  the cookie prefix
 # @return [Void]
 #
-exports.setCookie = setCookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
+exports.set_cookie = ($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = false) ->
   #  Set the config file options
 
   @input.setCookie($name, $value, $expire, $domain, $path, $prefix, $secure)
@@ -43,7 +43,7 @@ exports.setCookie = setCookie = ($name = '', $value = '', $expire = '', $domain 
 # @return	[Boolean]
 # @return [Mixed]
 #
-exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
+exports.get_cookie = ($index = '', $xss_clean = false) ->
 
   $prefix = ''
 
@@ -63,7 +63,7 @@ exports.get_cookie = get_cookie = ($index = '', $xss_clean = false) ->
 # @param  [String]  the cookie prefix
 # @return [Void]
 #
-exports.delete_cookie = delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
-  setCookie($name, '', '', $domain, $path, $prefix)
+exports.delete_cookie = ($name = '', $domain = '', $path = '/', $prefix = '') ->
+  @input.setCookie($name, '', '', $domain, $path, $prefix)
 
 

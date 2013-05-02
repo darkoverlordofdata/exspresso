@@ -10,13 +10,14 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
+
 #
 #	Travel Controller Class
 #
 require APPPATH+'core/PublicController.coffee'
 
 
-class Travel extends application.core.PublicController
+module.exports = class Travel extends application.core.PublicController
 
 
   bcrypt = require('bcrypt')  # A bcrypt library for NodeJS.
@@ -357,11 +358,3 @@ class Travel extends application.core.PublicController
     return @redirect "/travel"
 
 
-
-#
-# Export the class:
-#
-module.exports = Travel
-
-# End of file Travel.coffee
-# Location: ./application/modules/travel/controllers/Travel.coffee

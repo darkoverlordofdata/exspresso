@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| admin.coffee
+#| MyModel.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -10,29 +10,18 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#	Admin Blog
-#
-require APPPATH+'core/AdminController.coffee'
 
-module.exports = class Admin extends application.core.AdminController
+#
+#	Class MyModel
+#
+module.exports = class application.core.MyModel extends system.core.Model
+
+  source: null
 
   constructor: ($args...) ->
-
     super $args...
-    @load.model 'BlogModel', 'blog'
-    @template.setAdminMenu 'Blog'
 
-  #
-  # Blog Categories/Options
-  #
-  indexAction: ->
-    @load.library 'table'
-
-    @template.view 'admin/list'
+    @source = plural(@constructor.name.replace(/Model$/, '').toLowerCase())
 
 
-
-  newCategoryAction: ->
-
-
+    log_message 'debug', 'MyModel Initialized %s', @source

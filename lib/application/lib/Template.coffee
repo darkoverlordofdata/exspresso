@@ -36,13 +36,21 @@ require SYSPATH+'lib/Parser.coffee'
 #
 module.exports = class application.lib.Template extends system.lib.Parser
 
+  path = require('path')
+
+  _template_cache     = {}    # Static template cache
+
+
   html                : null
   theme               : null
   breadcrumb          : null
 
+  _logo               : config_item('logo')
   _title              : config_item('site_name')
+  _site_name          : config_item('site_name')
+  _site_slogan        : config_item('site_slogan')
   _doctype            : 'html5'
-  _layout             : 'layout'
+  _layout             : 'html'
   _theme_name         : 'default'
   _theme_locations    : null
   _menu               : null
@@ -54,6 +62,7 @@ module.exports = class application.lib.Template extends system.lib.Parser
   _css                : null
   _admin              : false
   _active             : ''
+  _index              : 0
 
 
   #
@@ -81,7 +90,10 @@ module.exports = class application.lib.Template extends system.lib.Parser
     @_css = []
     @html = @load.helper('html')
     @parser = @load.library('parser')
+    @blockmodel = @load.model('BlockModel')
     @setTheme @_theme_name
+    for $reg, $val of @theme._regions
+      @_regions[$reg] = $val
 
 
   #
@@ -146,7 +158,8 @@ module.exports = class application.lib.Template extends system.lib.Parser
   # @return [Object] this
   #
   setPartial: ($name, $view, $data = {}) ->
-    @_partials.push name:$name, view:$view, data:$data
+    $ = if $name.charAt(0) is '$' then '' else '$'
+    @_partials.push region:$+$name, view:$view, data:$data
     @
 
   #
@@ -249,97 +262,119 @@ module.exports = class application.lib.Template extends system.lib.Parser
   view: ($view = '' , $data = {}, $next) =>
 
     #
-    # Collect all of the template bits and build a page
+    # get the template layout & partials
+    #
+    $tmp = @load_templates(@_theme_name)
+    @_layout = $tmp.html
+    @_partials = $tmp.regions
+
+    #
+    # Client scripts
     #
     $script = []
     for $str in @_script
-      if $str.substr($str.length-3) is '.js'
+      if $str.substr(-3) is '.js'
         $script.push @html.javascript_tag($str)
       else
         $script.push @html.javascript_decl($str)
 
+    #
+    # Style sheets & css
+    #
     $css = []
     for $str in @_css
-      if $str.substr($str.length-4) is '.css'
+      if $str.substr(-4) is '.css'
         $css.push @html.link_tag($str)
       else
         $css.push @html.stylesheet($str)
 
+    #
+    # Admin menu?
+    #
     if @_admin
       $admin_menu = Dashboard: '/admin'
       for $name, $module of @config.modules
         if $module.active
           $admin_menu[$module.name] = '/admin/'+$name
 
-    # If the profiler is running, replace 'powered by' with a button
-    $poweredby = config_item('poweredby')
-    if @output._enable_profiler
-      $poweredby += '&nbsp;' + system.lib.Profiler::button
-
-
-    @set                # define standard template variables
-      $doctype          : @html.doctype(@_doctype)
-      $meta             : @html.meta(@_metadata)
+    #
+    # define standard template variables
+    #
+    @set
+      $doctype          : if @_doctype then @html.doctype(@_doctype) else 'html5'
+      $meta             : if @_metadata then @html.meta(@_metadata) else ''
       $style            : $css.join("\n")
       $script           : $script.join("\n")
       $title            : @_title
-      $logo             : config_item('logo')
-      $site_name        : config_item('site_name')
-      $site_slogan      : config_item('site_slogan')
-      $copyright        : config_item('copyright')
-      $poweredby        : $poweredby
-      $menu             : @htmlMenu(@_menu, @uri.segment(1, ''))
+      $logo             : @_logo
+      $site_name        : @_site_name
+      $site_slogan      : @_site_slogan
+      $menu             : if keys(@_menu).length>0 then @htmlMenu(@_menu, @uri.segment(1, '')) else ''
       $breadcrumb       : if @breadcrumb? then @breadcrumb.output() else ''
       $sidenav          : if @_admin then @htmlSidenav($admin_menu, @_active) else ''
       $flash            : @htmlFlash()
-      $content          : '<div></div>'
       $sidebar_first    : ''
       $sidebar_second   : ''
+      $profile          : if @output._enable_profiler then system.lib.Profiler::button else ''
 
-    #@set $data
     @_data.__proto__ = $data
-    $index = 0
 
-    #
-    # Collect the rendering of each partial
-    #
-    # @access	private
-    # @param	[Function]  next  async callback
-    # @return [Void]  
-    #
-    get_partials = ($next) =>
-      return $next(null) if @_partials.length is 0
-      #
-      # load the partial at index
-      #
-      $partial = @_partials[$index]
-      @parse $partial.view, $partial.data, ($err, $html) =>
-        return $next($err) if $err
-        #
-        # save the result and get the next
-        #
-        $region = @theme._regions[$partial.name]
-        if @_data[$region]? then @_data[$region] += $html else @_data[$region] = $html
-        $index += 1
-        return $next(null) if $index is $partials.length
-        return get_partials($next)
-
-    #
-    # load all partials
-    #
-    get_partials ($err) =>
-      return log_message('error', 'Template::view get_partials %s', $err) if show_error($err)
+    @blockmodel.getByTheme @_theme_name, ($err, $blocks) =>
+      $blocks =  if $err? then [] else $blocks
 
       #
-      # load the body view & render it with the partials
+      # First render the blocks
       #
-      @parse $view, @_data, ($err, $content) =>
-        return log_message('error', 'Template::view load.view %s', $err) if show_error($err)
+      for $block in $blocks
+
+        $html = @parseString($block.content, @_data, true)
         #
-        # load the main layout for the final render
+        # TODO: Is there a block template? Then apply it here.
         #
-        @set '$content', $content
-        return @parse @_theme_path+@_layout, @_data, $next
+        if @_data[$block.region]? then @_data[$block.region] += $html else @_data[$block.region] = $html
+
+      #
+      # Then render the partials
+      #
+      @_index = 0
+      @_parse_partials ($err) =>
+        return log_message('error', 'Template::view get_partials %s', $err) if show_error($err)
+
+        #
+        # Next render the main content
+        #
+        @parse $view, @_data, ($err, $content) =>
+          return log_message('error', 'Template::view load.view %s', $err) if show_error($err)
+          #
+          # Lastly, render the container
+          #
+          @set '$content', $content
+          return @parse @_theme_path+'views/'+@_layout, @_data, $next
+
+
+  #
+  # Collect the rendering of each partial -
+  # header, footer, etc.
+  #
+  # @access	private
+  # @param	[Function]  next  async callback
+  # @return [Void]
+  #
+  _parse_partials: ($next) =>
+    return $next(null) if @_partials.length is 0
+    #
+    # load the partial at index
+    #
+    $partial = @_partials[@_index]
+    @parse $partial.view, @_data, ($err, $html) =>
+      return $next($err) if $err
+      #
+      # save the result and get the next
+      #
+      if @_data[$partial.region]? then @_data[$partial.region] += $html else @_data[$partial.region] = $html
+      @_index += 1
+      return $next(null) if @_index is @_partials.length
+      return @_parse_partials($next)
 
   #
   # Menu
@@ -434,4 +469,102 @@ module.exports = class application.lib.Template extends system.lib.Parser
       $flash.push "</div>"
 
     $flash.join('')
+
+
+  #
+  # parse filename
+  #
+  #   file  full file name
+  #   name  base name
+  #   type  first part of base name (html|page|region|block)
+  #   slug  remainder of base name
+  #
+  _parse_filename: ($file) ->
+    $ext = path.extname($file)
+    $name = path.basename($file, $ext)
+    [$type, $slug] = $name.split('--')
+    return {
+      file: $file
+      name: $name
+      type: $type
+      slug: $slug ? ''
+    }
+
+
+  #
+  # Load & parse the template suggestions
+  # Sort of like Drupal, the most specific
+  # template that is found will be used.
+  #
+  #   html.tpl
+  #
+  #   block--[region|[module|--slug]].tpl
+  #
+  #     1. block--module--slug.tpl
+  #     2. block--module.tpl
+  #     3. block--region.tpl
+  #
+  #   page--[front|internal/path].tpl
+  #
+  #     for 'http://www.example.com/blog/1/edit'
+  #
+  #     1. page--front.tpl
+  #     2. page--blog--edit.tpl
+  #     3. page--blog--1.tpl
+  #     4. page--blog--%.tpl
+  #     5. page--blog.tpl
+  #     6. page.tpl
+  #
+  #   region--[region].tpl
+  #
+  #
+  load_templates: ($theme) ->
+
+    #
+    #   html.tpl
+    #
+    $html = @_parse_filename(@theme.getTemplates('html'))
+
+    #
+    #   page--[front|internal/path].tpl
+    #
+    $page = @_parse_filename(@theme.getTemplates('page', @uri.segmentArray()))
+    $regions = [region: '$page', view: $page.file[0]]
+    $blocks = []
+
+    for $module, $val of @config.modules
+
+      #
+      #   block[--module].tpl
+      #
+      for $file in @theme.getTemplates('block', [$module])
+        $mod = @_parse_filename($file)
+        $blocks.push module: '$'+$module, view: $mod.file
+        break
+
+
+    for $region, $val of @_regions
+
+      #
+      #   region--region.tpl
+      #
+      for $file in @theme.getTemplates('region', [$region])
+        $reg = @_parse_filename($file)
+        $regions.push region: '$'+$reg.slug, view: $reg.file
+        break
+
+      #
+      #   block[--region].tpl
+      #
+      for $file in @theme.getTemplates('block', [$region])
+        $reg = @_parse_filename($file)
+        $blocks.push region: '$'+$region, view: $reg.file
+        break
+
+    _template_cache[$theme] =
+      html      : $html.file[0]   # html document template
+      blocks    : $blocks         # block container templates
+      regions   : $regions        # region container templates
+
+
 

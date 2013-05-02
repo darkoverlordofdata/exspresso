@@ -33,14 +33,3 @@ exports.meta = [
   {name: 'viewport',      content: 'width=device-width, initial-scale=1.0'}
 ]
 
-exports.regions =
-  left:     'Left sidebar'
-  right:    'Right sidebar'
-  content:  'Content'
-  header:   'Header'
-  footer:   'Footer'
-
-  # theme_set_content 'left', $left_sidebar
-
-# End of file theme.coffee
-# Location = .application/themes/default/theme.coffee

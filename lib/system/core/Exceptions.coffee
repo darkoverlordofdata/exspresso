@@ -52,6 +52,7 @@ class system.core.ExspressoError extends Error
   #
   constructor: ($err = {}, $status = 500) ->
 
+    $err = new Error($err) if 'string' is typeof($err)
     $status = $err.status || $status
 
     @code     = $status
@@ -291,7 +292,7 @@ module.exports = class system.core.Exceptions
     @show5xx = ($err, $template = '5xx', $status_code = 500, $next) ->
 
       if typeof $template is 'function'
-        [$$template, $status_code, $next] = ['5xx', 500, $template]
+        [$template, $status_code, $next] = ['5xx', 500, $template]
 
       $error = new system.core.ExspressoError($err)
 

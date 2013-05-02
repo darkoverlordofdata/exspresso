@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| admin.coffee
+#| Admin.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -15,22 +15,10 @@
 #
 require APPPATH+'core/AdminController.coffee'
 
-class Admin extends application.core.AdminController
-
-## --------------------------------------------------------------------
-
-
-
+module.exports = class Admin extends application.core.AdminController
 
   indexAction: ->
     @template.setAdminMenu 'Travel'
     @template.view 'admin'
 
 
-#
-# Export the class:
-#
-module.exports = Admin
-
-# End of file Admin.coffee
-# Location: .modules/admin/controllers/Admin.coffee

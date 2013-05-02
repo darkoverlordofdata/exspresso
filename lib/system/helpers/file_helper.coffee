@@ -101,21 +101,21 @@ exports.delete_files = delete_files = ($path, $del_dir = false, $level = 0) ->
 # @return	[Boolean]	internal variable to determine recursion status - do not use in calls
 # @return	array
 #
-exports.get_filenames = get_filenames = ($source_dir, $include_path = false, $_recursion = false, $_filedata = []) ->
+exports.get_filenames = get_filenames = ($source_dir, $include_path = false, $recursion = false, $filedata = []) ->
 
   if is_dir($source_dir)
-    if $_recursion is false
-      $_filedata = []
+    if $recursion is false
+      $filedata = []
       $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
 
     for $file in fs.readdirSync($source_dir)
       if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.'
-        get_filenames($source_dir + $file + DIRECTORY_SEPARATOR, $include_path, true, $_filedata)
+        get_filenames($source_dir + $file + DIRECTORY_SEPARATOR, $include_path, true, $filedata)
 
       else if $file.charCodeAt(0) isnt '.'
-        $_filedata.push if ($include_path is true) then $source_dir + $file else $file
+        $filedata.push if ($include_path is true) then $source_dir + $file else $file
 
-    return $_filedata
+    return $filedata
   else
     return false
 
@@ -131,23 +131,23 @@ exports.get_filenames = get_filenames = ($source_dir, $include_path = false, $_r
 # @return	[Boolean]	internal variable to determine recursion status - do not use in calls
 # @return	array
 #
-exports.get_dir_file_info = get_dir_file_info = ($source_dir, $top_level_only = true, $_recursion = false, $_filedata = {}) ->
+exports.get_dir_file_info = get_dir_file_info = ($source_dir, $top_level_only = true, $recursion = false, $filedata = {}) ->
   $relative_path = $source_dir
 
   if is_dir($source_dir)
-    if $_recursion is false
-      $_filedata = {}
+    if $recursion is false
+      $filedata = {}
       $source_dir = rtrim(realpath($source_dir), DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
 
     for $file in fs.readdirSync($source_dir)
       if is_dir($source_dir + $file) and $file.charCodeAt(0) isnt '.' and $top_level_only is false
-        get_dir_file_info($source_dir + $file + DIRECTORY_SEPARATOR, $top_level_only, true, $_filedata)
+        get_dir_file_info($source_dir + $file + DIRECTORY_SEPARATOR, $top_level_only, true, $filedata)
 
       else if $file.charCodeAt(0) isnt '.'
-        $_filedata[$file] = get_file_info($source_dir + $file)
-        $_filedata[$file]['relative_path'] = $relative_path
+        $filedata[$file] = get_file_info($source_dir + $file)
+        $filedata[$file]['relative_path'] = $relative_path
 
-    return $_filedata
+    return $filedata
   else
     return false
 
@@ -303,5 +303,3 @@ exports.octal_permissions = octal_permissions = ($perms) ->
 for $name, $body of module.exports
   define $name, $body
 
-#  End of file file_helper.php
-#  Location: ./system/helpers/file_helper.php

@@ -23,15 +23,17 @@ module.exports = class system.core.Loader
   path = require('path')
   fs = require('fs')
 
-  _module               : ''    # uri module
-  _sys_paths            : null  # array of paths including system/lib
-  _app_paths            : null  # array of paths excluding system/lib
-  _classes              : null  # cache of classes loaded by Loader
-  _cached_vars          : null  # cache of view data variables
-  _loaded_files         : null  # array list of loaded files
-  _models               : null  # array list of loaded models
-  _helpers              : null  # chache of loaded helpers
-  _varmap               : null  # standard object aliases
+  _module             : ''      # uri module
+  _view_ext           : ''      # the default view file extension
+  _model_paths        : null    # array of paths to models (app paths)
+  _view_paths         : null    # array of paths to views
+  _class_paths        : null    # array of paths to classes (sys paths)
+  _classes            : null    # cache of classes loaded by Loader
+  _cached_vars        : null    # cache of view data variables
+  _loaded_files       : null    # array list of loaded files
+  _models             : null    # array list of loaded models
+  _helpers            : null    # chache of loaded helpers
+  _varmap             : null    # standard object aliases
 
   #
   # Initiailize the loader search paths
@@ -42,28 +44,18 @@ module.exports = class system.core.Loader
 
     defineProperties @,
       controller      : {enumerable: true, writeable: false, value: $controller}
-      
-    @_sys_paths       = [APPPATH, SYSPATH]
-    @_app_paths       = [APPPATH]
-
-    log_message 'debug', "Loader Class Initialized"
-
-  #
-  # Perform the autoloads
-  #
-  # @return [Void]
-  #
-  initialize: () ->
-
-    defineProperties @,
       _cached_vars    : {enumerable: true, writeable: false, value: {}}
       _loaded_files   : {enumerable: true, writeable: false, value: []}
       _models         : {enumerable: true, writeable: false, value: []}
       _classes        : {enumerable: true, writeable: false, value: {}}
       _helpers        : {enumerable: true, writeable: false, value: {}}
 
-    @_autoloader()
-    @
+    @_model_paths = config_item('model_paths')
+    @_view_ext = config_item('view_ext')
+    @_view_paths = config_item('view_paths')
+    @_class_paths = config_item('controller_paths')
+
+    log_message 'debug', "Loader Class Initialized"
 
   #
   # Class Loader
@@ -129,7 +121,7 @@ module.exports = class system.core.Loader
     if @controller[$name]?
       show_error 'The model name you are loading is the name of a resource that is already being used: %s', $name
 
-    for $path in @controller.config.getPaths(@controller.module, @getModulePaths())
+    for $path in @controller.config.getPaths(@controller.module, @getModelPaths())
 
       if fs.existsSync($path+'models/'+$subdir+$model+EXT)
 
@@ -251,7 +243,9 @@ module.exports = class system.core.Loader
   #
   # Dynamically load a view file, and render it with the $vars hash.
   # By default, the view is rendered, but may also be returned as a string
-  # to the async xallback function.
+  # to the async callback function.
+  #
+  # The view file default extension is '.eco'
   #
   # @param  [String]  view  the view tamplate to use
   # @param  [Array] vars  hash of variables to render in the template
@@ -265,10 +259,16 @@ module.exports = class system.core.Loader
     #
     if $view instanceof Error
       $vars = {err: new system.core.ExspressoError($view)}
-      $view = APPPATH+'errors/5xx.eco'
+      $view = APPPATH+'errors/5xx'
     else if $vars instanceof Error
       $vars = {err: new system.core.ExspressoError($vars)}
-      $view = APPPATH+'errors/5xx.eco'
+      $view = APPPATH+'errors/5xx'
+
+    #
+    # Default extendsion: '.eco'
+    #
+    $ext = path.extname($view)
+    $ext = if $ext is '' then @_view_ext else ''
 
     if $view.charAt(0) is '/'
       #
@@ -298,30 +298,31 @@ module.exports = class system.core.Loader
         $module = @controller.module
 
       $path = false
-      for $root in @controller.config.getPaths($module, @getModulePaths())
+      for $root in @controller.config.getPaths($module, @getViewPaths())
 
-        if fs.existsSync($root+'views/'+$view+'.eco')
+        if fs.existsSync($root+'views/'+$view+$ext)
           $path = $root+'views/'
           break
 
         if $pos isnt -1
-          if fs.existsSync($root+'views/'+$orig+'.eco')
+          if fs.existsSync($root+'views/'+$orig+$ext)
             $view = $orig
             $path = $root+'views/'
             break
 
       if $path is false # then we didn't find it
-        if fs.existsSync(APPPATH+'views/'+$orig+'.eco')
+        if fs.existsSync(APPPATH+'views/'+$orig+$ext)
           $view = $orig
           $path = APPPATH+'views/'
 
+    #
     #  Set the path to the requested file
-    $ext = path.extname($view)
-    $file = if ($ext is '') then $view + '.eco' else $view
+    #
+    $file = $view+$ext
     $path = $path.replace(/[\/]+$/g, '')+'/'+$file # rtrim /
 
     if not fs.existsSync($path)
-      show_error('Unable to load the requested file: %s', $file)
+      return show_error('Unable to load the requested file: %s', $file)
 
     @_cached_vars[$key] = $var for $key, $var of $vars
 
@@ -363,18 +364,6 @@ module.exports = class system.core.Loader
     if @_cached_vars[$var]? then @_cached_vars[$var] else null
 
   #
-  # Load File
-  #
-  # This is a generic file loader
-  #
-  # @param  [String]  path  the path to the file
-  # @param	[Function]  next  async callback
-  # @return	[Void]
-  #
-  #file: ($path, $next) ->
-  #  @_load($path, '', {}, $next)
-
-  #
   # Load Helper
   #
   # Dynamically loads the helper files
@@ -405,16 +394,26 @@ module.exports = class system.core.Loader
         show_error 'Unable to load the requested base file: helpers/%s', $helper+EXT
 
       @_helpers[$helper] = require($base_helper)
+      # override with 'subclass'
       @_helpers[$helper][$key] = $val for $key, $val of require($ext_helper)
+      # export?
+      if @_helpers[$helper].is_global is true
+        for $name, $body of @_helpers[$helper]
+          define $name, $body
+
       log_message 'debug', 'Helper loaded: '+$helper
       return @controller.server.setHelpers @_helpers[$helper]
 
     #
     # Search modules, then application
     #
-    for $path in @controller.config.getPaths(@controller.module, @getModulePaths(true))
+    for $path in @controller.config.getPaths(@controller.module, @getClassPaths())
       if fs.existsSync($path+'helpers/'+$helper+EXT)
         @_helpers[$helper] = require($path+'helpers/'+$helper+EXT)
+        # export?
+        if @_helpers[$helper].is_global is true
+          for $name, $body of @_helpers[$helper]
+            define $name, $body
         log_message 'debug', 'Helper loaded: '+$helper
         return @controller.server.setHelpers @_helpers[$helper]
 
@@ -486,28 +485,41 @@ module.exports = class system.core.Loader
 
     $path = $path.replace(/[\/]+$/g, '')+'/'
 
-    @_sys_paths.unshift $path if @_sys_paths.indexOf($path) is -1
-    @_app_paths.unshift $path if @_app_paths.indexOf($path) is -1
-
+    @_model_paths.unshift $path if @_model_paths.indexOf($path) is -1
+    @_view_paths.unshift $path if @_view_paths.indexOf($path) is -1
+    @_class_paths.unshift $path if @_class_paths.indexOf($path) is -1
     #
     #  Add to config file paths
     #
     @controller.config.paths.unshift $path if @controller.config.paths.indexOf($path) is -1
     return
 
-
-
   #
-  # Get Module Paths
+  # Get Model Paths
   #
-  # Gets the loader paths array
+  # Gets the loader paths array for models
   #
-  # @param  [Boolean] include_base  True will include system classes
   # @return [Array] an array of path strings
   #
-  getModulePaths: ($include_base = false) ->
-    return if $include_base is true then @_sys_paths else @_app_paths
+  getModelPaths:() -> @_model_paths
 
+  #
+  # Get View Paths
+  #
+  # Gets the loader paths array for views
+  #
+  # @return [Array] an array of path strings
+  #
+  getViewPaths: () -> @_view_paths
+
+  #
+  # Get Class Paths
+  #
+  # Gets the loader paths array for classes
+  #
+  # @return [Array] an array of path strings
+  #
+  getClassPaths:() -> @_class_paths
 
   #
   # Remove Module Path
@@ -521,14 +533,15 @@ module.exports = class system.core.Loader
   removeModulePath: ($path = '') ->
 
     if $path is ''
-      @_sys_paths.shift()
-      @_app_paths.shift()
+      @_class_paths.shift()
+      @_model_paths.shift()
+      @_view_paths.shift()
       @controller.config.paths.shift()
 
     else
       $path = $path.replace(/[\/]+$/g, '')+'/' # rtrim /
 
-      for $var in ['_sys_paths', '_app_paths']
+      for $var in ['_class_paths', '_model_paths', '_view_paths']
         for $key, $val of @[$var]
           if $val is $path
             delete @[$var][$key]
@@ -542,8 +555,11 @@ module.exports = class system.core.Loader
     #
     #  make sure the core paths don't get clobered
     #
-    @_sys_paths.unshift SYSPATH if @_sys_paths.indexOf(SYSPATH) is -1
-    @_app_paths.unshift APPPATH if @_app_paths.indexOf(APPPATH) is -1
+    @_model_paths.unshift APPPATH if @_model_paths.indexOf(APPPATH) is -1
+    @_view_paths.unshift APPPATH+'views/' if @_view_paths.indexOf(APPPATH+'views/') is -1
+    @_view_paths.unshift APPPATH+'themes/default/views/' if @_view_paths.indexOf(APPPATH+'themes/default/views/') is -1
+    @_class_paths.unshift SYSPATH if @_class_paths.indexOf(SYSPATH) is -1
+
     @controller.config.paths.unshift APPPATH if @controller.config.paths.indexOf(APPPATH) is -1
 
     return
@@ -597,7 +613,7 @@ module.exports = class system.core.Loader
     # Search for class
     #
     $is_duplicate = false
-    for $path in @controller.config.getPaths(@controller.module, @getModulePaths(true))
+    for $path in @controller.config.getPaths(@controller.module, @getClassPaths())
       $filepath = $path + 'lib/' + $subdir + $class + EXT
 
       if fs.existsSync($filepath)
@@ -675,12 +691,13 @@ module.exports = class system.core.Loader
 
 
   #
-  # Autoload module items
+  # Initialize
   #
-  # @private
+  # Autoload the specified resources
+  #
   # @return [Void]
   #
-  _autoloader:  ->
+  initialize:  ->
 
     $autoload = {}
     if fs.existsSync(APPPATH + 'config/autoload.coffee')

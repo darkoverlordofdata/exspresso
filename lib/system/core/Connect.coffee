@@ -22,11 +22,11 @@
 module.exports = class system.core.Connect
 
   dispatch        = require('dispatch')           # URL dispatcher for Connect
-  eco             = require('eco')                # Embedded CoffeeScript templates
   cookie          = require('cookie')             # cookie parsing and serialization
   sign            = require('cookie-signature')   # Sign and unsign cookies
   fs              = require("fs")                 # File system
   os              = require('os')                 # operating-system related utility functions
+  path            = require('path')
 
   protocol = ($secure) -> if $secure then 'https' else 'http'
 
@@ -51,14 +51,18 @@ module.exports = class system.core.Connect
   #
   config: null
   #
+  # @property [RenderView] render lib
+  #
+  render: null
+  #
   # @property [String] driver version
   #
   version: ''
 
   #
-  # inner class Variables
+  # inner class Vars
   #
-  class Variables
+  class Vars
 
     #
     # Provides variables to a view
@@ -99,7 +103,7 @@ module.exports = class system.core.Connect
   #
   setHelpers: ($helpers) ->
     for $key, $val of $helpers
-      Variables::[$key] = $val
+      Vars::[$key] = $val
     $helpers
 
   #
@@ -183,8 +187,8 @@ module.exports = class system.core.Connect
   initialize:($driver) ->
 
     @app = $driver()
-    parseUrl = $driver.utils.parseUrl
-    @port = @config.item('http_port') #|| 3000
+    @port = @config.item('http_port')
+    $render = new_core('Render')
 
     @app.use $driver.logger(@config.item('log_http'))
     #
@@ -222,11 +226,15 @@ module.exports = class system.core.Connect
       # @private
       # @param [String] view  path to view template
       # @param [Object] data  hash of variables to render with template
-      # @param [Funcion] next async callback
+      # @param [Funcion] next optional async callback
       # @return [Void]
       #
       $res.render = ($view, $data = {}, $next) ->
         if typeof $data is 'function' then [$data, $next] = [{}, $data]
+
+        #
+        # Default terminal next
+        #
         $next = $next ? ($err, $str) ->
           return $next($err) if $err
           $res.writeHead 200,
@@ -235,15 +243,24 @@ module.exports = class system.core.Connect
           $res.end $str
           return
 
+        #
+        # Read in the view file
+        #
         fs.readFile $view, 'utf8', ($err, $str) ->
-          if $err then $next($err)
-          else
+          return $next($err) if $err
+          $ext = path.extname($view).replace('.','')
+
+          if $render[$ext]?
+
             try
-              $data.filename = $view
-              $next null, eco.render($str, new Variables($data, flashdata: $res.flashdata))
+              $next(null, $render[$ext]($str, new Vars($data, filename: $view, flashdata: $res.flashdata)))
+
             catch $err
-              console.log $err
               show_error $err
 
+          else show_error 'Invalid view file type: %s (%s)', $ext, $view
+
       $next()
+
+
 

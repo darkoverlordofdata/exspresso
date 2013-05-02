@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| admin.coffee
+#| Block.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -10,29 +10,30 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
+
 #
-#	Admin Blog
+#	Block Module
 #
-require APPPATH+'core/AdminController.coffee'
+# Manage content blocks
+#
 
-module.exports = class Admin extends application.core.AdminController
+require APPPATH+'core/Module.coffee'
 
-  constructor: ($args...) ->
+module.exports = class Block extends application.core.Module
 
-    super $args...
-    @load.model 'BlogModel', 'blog'
-    @template.setAdminMenu 'Blog'
+  name          : 'Block'
+  description   : ''
+  path          : __dirname
+  active        : true
 
   #
-  # Blog Categories/Options
+  # Initialize the module
   #
-  indexAction: ->
-    @load.library 'table'
-
-    @template.view 'admin/list'
-
-
-
-  newCategoryAction: ->
-
-
+  #   Install if needed
+  #   Load the categories
+  #
+  # @return [Void]
+  #
+  initialize: () ->
+    @controller.load.model 'BlockModel'
+    @controller.blockmodel.install() if @controller.install?

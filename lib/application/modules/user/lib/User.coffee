@@ -10,27 +10,13 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
-#  ------------------------------------------------------------------------
 #
 #	  User Library
 #
-#UserModel = load_class(MODPATH+'user/models/UserModel.coffee')
-UserModel = load_class(APPPATH+'modules/user/models/UserModel.coffee')
-
 module.exports = class application.modules.user.lib.User
 
+  UserModel = load_class(APPPATH+'modules/user/models/UserModel.coffee')
   bcrypt            = require('bcrypt')     # A bcrypt library for NodeJS
 
   isAnonymous       : null  # returns true for anonymous user

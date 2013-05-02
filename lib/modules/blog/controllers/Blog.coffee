@@ -18,7 +18,7 @@ require APPPATH+'core/AdminController.coffee'
 #
 # Blog Controller
 #
-class Blog extends application.core.AdminController
+module.exports = class Blog extends application.core.AdminController
 
   constructor: ($args...) ->
 
@@ -253,8 +253,3 @@ class Blog extends application.core.AdminController
         @redirect '/blog/edit/'+$doc.id
 
 
-
-module.exports = Blog
-
-# End of file Blog.coffee
-# Location: .modules/blog/controllers/Blog.coffee

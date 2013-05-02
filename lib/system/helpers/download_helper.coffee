@@ -15,7 +15,7 @@
 # Exspresso Download Helpers
 #
 #
-
+fs = require('fs')
 #
 # Force Download
 #
@@ -38,11 +38,11 @@ exports.force_download = force_download = ($filename = '', $data = '') ->
   $extension = $filename.split('.').pop()
 
   #  Load the mime types
-  if is_file(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
-    $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes' + EXT)
+  if fs.existsSync(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
+    $mimes = require(APPPATH + 'config/' + ENVIRONMENT + '/mimes.coffee')
 
-  else if is_file(APPPATH + 'config/mimes' + EXT)
-    $mimes = require(APPPATH + 'config/mimes' + EXT)
+  else if fs.existsSync(APPPATH + 'config/mimes.coffee')
+    $mimes = require(APPPATH + 'config/mimes.coffee')
 
 
   #  Set a default mime if we can't find it
@@ -50,11 +50,11 @@ exports.force_download = force_download = ($filename = '', $data = '') ->
     $mime = 'application/octet-stream'
 
   else
-    $mime = if (is_array($mimes[$extension])) then $mimes[$extension][0] else $mimes[$extension]
+    $mime = if (Array.isArray($mimes[$extension])) then $mimes[$extension][0] else $mimes[$extension]
 
 
   #  Generate the server headers
-  if @req,server['HTTP_USER_AGENT'].indexOf("MSIE") isnt -1
+  if @req.server['HTTP_USER_AGENT'].indexOf("MSIE") isnt -1
     @res.header('Content-Type: "' + $mime + '"')
     @res.header('Content-Disposition: attachment; filename="' + $filename + '"')
     @res.header('Expires: 0')

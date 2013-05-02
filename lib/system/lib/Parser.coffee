@@ -49,7 +49,6 @@ module.exports = class system.lib.Parser
   parse: ($template, $data = {}, $next) ->
 
     @load.view $template, $data, ($err, $template) =>
-
       ($next ? @next)(null, @_parse($template, $data, $next?))
 
 
@@ -120,7 +119,7 @@ module.exports = class system.lib.Parser
   # @return	[String]
   #
   _parse_single: ($key, $val, $string) ->
-    return $string.replace(@_left + $key + @_right, $val)
+    $string.replace(@_left + $key + @_right, $val)
 
 
   #
@@ -140,14 +139,14 @@ module.exports = class system.lib.Parser
 
     $str = ''
     for $row in $data
-      $temp = $match['1']
+      $temp = $match[1]
       for $key, $val of $row
         if not Array.isArray($val)
           $temp = @_parse_single($key, $val, $temp)
         else
           $temp = @_parse_pair($key, $val, $temp)
       $str+=$temp
-    return $string.replace($match['0'], $str)
+    return $string.replace($match[0], $str)
 
 
   #

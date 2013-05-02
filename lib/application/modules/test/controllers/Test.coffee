@@ -10,17 +10,6 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
 #	  Unit Test page

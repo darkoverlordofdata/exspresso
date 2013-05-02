@@ -103,7 +103,7 @@ module.exports =
       dbdriver: 'sqlite'
       dbprefix: ''
       db_debug: true
-      cache_on: true # false
+      cache_on: false
       cachedir: APPPATH+'cache/'
       char_set: 'utf8'
       dbcollat: 'utf8_general_ci'

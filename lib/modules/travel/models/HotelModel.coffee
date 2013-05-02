@@ -10,26 +10,11 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @package    Exspresso
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @license    MIT License
-# @link       http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
-#  ------------------------------------------------------------------------
 #
 #	Class HotelModel
 #
-class modules.travel.models.HotelModel
+module.exports = class modules.travel.models.HotelModel
 
   #
   # Get booked rooms
@@ -298,13 +283,6 @@ class modules.travel.models.HotelModel
         state:
           type: 'VARCHAR', constraint: 255
 
-      $booking.addData []
 
 
 
-
-
-# END CLASS HotelModel
-module.exports = modules.travel.models.HotelModel
-# End of file HotelModel.coffee
-# Location: .modules/travel/models/HotelModel.coffee

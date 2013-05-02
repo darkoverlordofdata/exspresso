@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| Blogmodel.coffee
+#| BlogModel.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -10,23 +10,11 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @link       http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
-#	Class modules.blog.models.BlogModel
+#	Blog Data Model
 #
-module.exports = class modules.blog.models.BlogModel
+module.exports = class modules.blog.models.BlogModel extends system.core.Model
 
   _categories       : null  # category table cache
   _category_names   : null  # hash of category names for drop-down list
@@ -34,13 +22,15 @@ module.exports = class modules.blog.models.BlogModel
   #
   # Initialize Blog Model
   #
-  constructor: () ->
+  constructor: ($args...) ->
+
+    super $args...
 
     defineProperties @,
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
-    @queue @_load_categories
+    #@queue @_load_categories
 
   #
   # Get all

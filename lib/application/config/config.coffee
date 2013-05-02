@@ -330,7 +330,7 @@ module.exports =
     MODPATH
     APPPATH+'modules/'
   ]
-  
+
   #|
   #|--------------------------------------------------------------------------
   #| Classpaths
@@ -346,3 +346,32 @@ module.exports =
     application       : APPPATH
     modules           : MODPATH
 
+  #|
+  #|--------------------------------------------------------------------------
+  #| MVC paths
+  #|--------------------------------------------------------------------------
+  #|
+  #| Paths where models/views/controllers are found
+  #|
+  #|
+  model_paths: [
+    APPPATH
+  ]
+  view_paths: [
+    APPPATH
+    APPPATH+'themes/default/'
+  ]
+  controller_paths: [
+    APPPATH
+    SYSPATH
+  ]
+
+  #|
+  #|--------------------------------------------------------------------------
+  #| View Extension
+  #|--------------------------------------------------------------------------
+  #|
+  #| The default view filetype that is loaded when no extension is specified
+  #|
+  #|
+  view_ext: '.eco'

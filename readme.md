@@ -1,4 +1,4 @@
-# [Exspresso v0.9.3] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.9.4] (https://github.com/darkoverlordofdata/exspresso)
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
@@ -7,7 +7,10 @@
       * Runs on the connect.js http stack
       * HMVC architecture
       * Magic: controller members are available to all libs, models, and views.
-      * Embedded coffee-script (*.eco) views.
+      * Multiple view formats
+        * html
+        * md (markdown)
+        * eco (embedded coffee-script)
       * DB Drivers for
         * MySQL       - requires mysql
         * PostgreSQL  - requires pg
@@ -68,11 +71,11 @@ $ cake build:desktop
 
 ### More...
 
-  * [Compare](/comparison.md) Compare Exspresso to CodeIgniter
-  * [Magic](/magic.md) Inheritance injection (Magic!)
-  * [Coding](/style%20guide.md) Exspresso style guide
-  * [Status](/class%20status.md) Component status
-  * [Todo](/todo.md) Wish list
+  * [Compare](/doc/comparison.md) Compare Exspresso to CodeIgniter
+  * [Magic](/doc/magic.md) Inheritance injection (Magic!)
+  * [Coding](/doc/style%20guide.md) Exspresso style guide
+  * [Status](/doc/class%20status.md) Component status
+  * [Todo](/doc/todo.md) Wish list
 
 ## License
 

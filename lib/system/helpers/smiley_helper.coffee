@@ -10,10 +10,12 @@
 #  it under the terms of the MIT License
 #
 #+--------------------------------------------------------------------+
+
 #
 # Exspresso Smiley Helpers
 #
 #
+$do_setup = {}
 
 #
 # Smiley Javascript
@@ -25,14 +27,12 @@
 # @param  [String]  field_id if alias name was passed in
 # @return	array
 #
-exports.smiley_js = smiley_js = ($alias = '', $field_id = '', $inline = true) ->
-  exports.$do_setup = $do_setup ? {}true
+exports.smiley_js = ($alias = '', $field_id = '', $inline = true) ->
 
   $r = ''
 
   if $alias isnt '' and  not is_array($alias)
-    $alias = $alias:$field_id
-
+    $alias = array($alias, $field_id)
 
   if $do_setup is true
     $do_setup = false
@@ -43,12 +43,11 @@ exports.smiley_js = smiley_js = ($alias = '', $field_id = '', $inline = true) ->
       for $name, $id of $alias
         $m.push '"' + $name + '" : "' + $id + '"'
 
-
-
     $m = '{' + implode(',', $m) + '}'
 
-    $r+="""
-        var smiley_map = {$m};
+    $r+=
+      """
+        var smiley_map = #{$m};
 
 				function insert_smiley(smiley, field_id) {
 					var el = document.getElementById(field_id), newStart;
@@ -77,20 +76,16 @@ exports.smiley_js = smiley_js = ($alias = '', $field_id = '', $inline = true) ->
 				}
       """
 
+  else
+    if is_array($alias)
+      for $name, $id of $alias
+        $r+='smiley_map["' + $name + '"] = "' + $id + '";' + "\n"
 
-    else
-      if is_array($alias)
-        for $name, $id of $alias
-          $r+='smiley_map["' + $name + '"] = "' + $id + '";' + "\n"
+  if $inline
+    return '<script type="text/javascript" charset="utf-8">/*<![CDATA[ */' + $r + '// ]]></script>'
 
-
-
-
-    if $inline
-      return '<script type="text/javascript" charset="utf-8">/*<![CDATA[ */' + $r + '// ]]></script>'
-
-    else
-      return $r
+  else
+    return $r
 
 
 #
@@ -102,7 +97,7 @@ exports.smiley_js = smiley_js = ($alias = '', $field_id = '', $inline = true) ->
 # @param  [String]  the URL to the folder containing the smiley images
 # @return	array
 #
-exports.get_clickable_smileys = get_clickable_smileys = ($image_url, $alias = '', $smileys = null) ->
+exports.get_clickable_smileys = ($image_url, $alias = '', $smileys = null) ->
   #  For backward compatibility with js_insert_smiley
 
   if is_array($alias)
@@ -135,10 +130,6 @@ exports.get_clickable_smileys = get_clickable_smileys = ($image_url, $alias = ''
 
   return $link
 
-
-
-#  ------------------------------------------------------------------------
-
 #
 # Parse Smileys
 #
@@ -148,7 +139,7 @@ exports.get_clickable_smileys = get_clickable_smileys = ($image_url, $alias = ''
 # @param  [String]  the URL to the folder containing the smiley images
 # @return	[String]
 #
-exports.parse_smileys = parse_smileys = ($str = '', $image_url = '', $smileys = null) ->
+exports.parse_smileys = ($str = '', $image_url = '', $smileys = null) ->
   if $image_url is ''
     return $str
 
@@ -170,8 +161,6 @@ exports.parse_smileys = parse_smileys = ($str = '', $image_url = '', $smileys = 
 
 
 
-#  ------------------------------------------------------------------------
-
 #
 # Get Smiley Array
 #
@@ -179,12 +168,12 @@ exports.parse_smileys = parse_smileys = ($str = '', $image_url = '', $smileys = 
 #
 # @private
 # @return [Mixed]  #
-exports._get_smiley_array = _get_smiley_array =  ->
-  if file_exists(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
-    require(APPPATH + 'config/' + ENVIRONMENT + '/smileys' + EXT)
+_get_smiley_array =  ->
+  if file_exists(APPPATH + 'config/' + ENVIRONMENT + '/smileys.coffee')
+    require(APPPATH + 'config/' + ENVIRONMENT + '/smileys.coffee')
 
-  else if file_exists(APPPATH + 'config/smileys' + EXT)
-    require(APPPATH + 'config/smileys' + EXT)
+  else if file_exists(APPPATH + 'config/smileys.coffee')
+    require(APPPATH + 'config/smileys.coffee')
 
 
   if $smileys?  and is_array($smileys)

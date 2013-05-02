@@ -1,0 +1,6 @@
+<div class="<%- @class%>" <%- @attributes %>>
+    <% if @title? : %>
+        <h2 <%- @title_attributes%>><%- @title %></h2>
+    <% end %>
+    <%- @content %>
+</div>

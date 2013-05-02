@@ -10,26 +10,13 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @link       http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
 #
-#	Class application.lib.Blog
+#	Blog Module
 #
-
 require APPPATH+'core/Module.coffee'
 
-class Blog extends application.core.Module
+module.exports = class Blog extends application.core.Module
 
   name          : 'Blog'
   description   : ''
@@ -49,9 +36,3 @@ class Blog extends application.core.Module
     @controller.blogmodel.install() if @controller.install
 
 
-# END CLASS Blog
-module.exports = Blog
-
-
-# End of file Blog.coffee
-# Location: .application/lib/Blog.coffee

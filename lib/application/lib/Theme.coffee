@@ -21,6 +21,10 @@
 
 module.exports = class application.lib.Theme
 
+  path = require('path')
+
+  _template_cache = {}    # Static template cache
+
   _location       : ''
   _path           : ''
   _id             : ''
@@ -67,7 +71,9 @@ module.exports = class application.lib.Theme
 
     @['_'+$key] = $val for $key, $val of $config
     @_path = @_location + $theme + '/theme.coffee'
-    
+
+    @_name = $theme
+
     @
 
 
@@ -115,6 +121,13 @@ module.exports = class application.lib.Theme
         $template.setScript @_script[$name]
     @
 
+  #
+  # Load additional theme components
+  #
+  # @access	public
+  # @param  [Array]  extra theme elements
+  # @return [Object]
+  #
   more: ($extra...) ->
 
     if @output._enable_profiler is true
@@ -130,3 +143,66 @@ module.exports = class application.lib.Theme
     @
 
 
+  #
+  # Load the template file names for this theme
+  #
+  # @access private
+  # @param  [String]  theme name of the theme
+  # @return [Array<String>] all the templates for theme
+  #
+  get_template_files: ($theme) ->
+
+    return _template_cache[$theme] if _template_cache[$theme]?
+    _template_cache[$theme] = directory_map(APPPATH+"themes/#{$theme}/views", 1)
+
+
+  #
+  # Returns a prioritized list of candidate templates for the type
+  #
+  # @access private
+  # @param  [String]  type base type to generate from
+  # @param  [Array<String>] slug  list of specifiers to match
+  # @return [Object] struct containing all of the templates that match
+  #
+  getTemplates: ($type, $slugs = []) ->
+
+    $files = {}
+    for $file in @get_template_files(@_name)
+      $name = path.basename($file, path.extname($file))
+      $files[$name] = $file
+
+    #
+    # start with the least specific - just the base type
+    #
+    $candidates = if $files[$type]? then [$files[$type]] else []
+
+    $pfx = $type
+    for $slug in $slugs
+
+      continue if $slug.length is 0
+
+      # If the slug is a number,
+      # add the prefix plus "--%" to the list
+      if 'number' is typeof($slug)
+        if $files["#{$pfx}--%"]?
+          $candidates.push $files["#{$pfx}--%"]
+
+      # Regardless of whether the slug is a number or not,
+      # add the prefix plus "--" plus the slug to the list
+      if $files["#{$pfx}--#{$slug}"]?
+        $candidates.push $files["#{$pfx}--#{$slug}"]
+
+      # If the slug is not a number,
+      # append "--" plus the slug to the prefix.
+      if 'number' isnt typeof($slug)
+        $pfx+="--#{$slug}"
+
+    # If the page is the front page
+    # add "page--front" to the list
+    if @uri.uriString() is '/'
+      if $files["#{$type}--front"]?
+        $candidates.push $files["#{$type}--front"]
+
+    # Reverse the order, so that [0] is
+    # the most specific template found
+    $candidates.reverse()

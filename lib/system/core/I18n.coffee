@@ -63,7 +63,7 @@ module.exports = class system.core.I18n
 
     #  Determine where the language file is and load it
     $found = false
-    for $package_path in @config.getPaths($module, @controller.load.getModulePaths(true))
+    for $package_path in @config.getPaths($module, @controller.load.getClassPaths())
 
       if fs.existsSync($package_path + 'i18n/' + $code + '/' + $langfile)
         $lang = require($package_path + 'i18n/' + $code + '/' + $langfile)

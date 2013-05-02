@@ -24,16 +24,15 @@
         * Security              X
         * URI                   X
         * Utf8                  X
-    * Database                  mysql   postgresql
-        * DB_active_rec         X       X
-        * DB_cache              ?       ?
-        * DB_driver             X       X
-        * DB_forge              X       X
-        * DB_result             X       X
-        * DB_utility            X       X
+    * Database                  mysql   sqlite  postgresql
+        * DB_active_rec         X       X       X
+        * DB_cache              X       X       X
+        * DB_driver             X       X       X
+        * DB_forge              X       X       X
+        * DB_result             X       X       X
+        * DB_utility            X       X       X
     * Helpers
         * array_helper          X
-        * captcha_helper        ?
         * cookie_helper         ?
         * date_helper           ?
         * directory_helper      ?
@@ -41,7 +40,7 @@
         * email_helper          ?
         * file_helper           X
         * form_helper           X
-        * inflector_helper      ?
+        * inflector_helper      X
         * language_heler        X
         * number_helper         ?
         * path_helper           ?
@@ -58,8 +57,7 @@
         * Cart                  ?
         * Driver                X
         * Email                 ?
-        * Encrypt               -
-        * Form_validation       ?
+        * FormValidation        ?
         * Ftp                   -
         * Image_lib             -
         * Javascript            -

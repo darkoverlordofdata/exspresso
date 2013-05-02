@@ -10,19 +10,7 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-#
 
-#  ------------------------------------------------------------------------
 #
 #	  Default Theme Manifest
 #
@@ -35,14 +23,29 @@ exports.author =        'darkoverlordofdata'
 exports.website =       'http://darkoverlordofdata.com'
 exports.version =       '1.0'
 exports.description =   'Exspresso Default Public Theme'
-exports.location =      APPPATH+'themes/public'
+exports.location =      APPPATH+'themes/'
+
+exports.regions =
+  header          : 'Header'
+  navigation      : 'Navigation bar'
+  highlighted     : 'Highlighted'
+  help            : 'Help'
+  content         : 'Content'
+  sidebar_first   : 'First sidebar'
+  sidebar_second  : 'Second sidebar'
+  footer          : 'Footer'
+  bottom          : 'Page bottom'
+  page_top        : 'Page top'
+  page_bottom     : 'Page bottom'
+
 
 #
 # Layout
 #
 # This is the main page layout template
 #
-exports.layout = 'layout.eco'
+#exports.layout = 'html.tpl'
+
 
 #
 # Menu
@@ -85,7 +88,7 @@ exports.script =
 #
 # CSS
 #
-# The sstyle sheets available to this template
+# The style sheets available to this template
 #
 exports.css =
   default: [
@@ -107,5 +110,3 @@ exports.css =
     'css/sidenav.css'
   ]
 
-# End of file theme.coffee
-# Location = .application/themes/default/theme.coffee

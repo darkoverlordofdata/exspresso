@@ -68,7 +68,7 @@ module.exports =
   #|
   #|	helper: ['url', 'file']
   #
-  helper: ['form', 'url', 'html', 'ckeditor', 'date']
+  helper: ['form', 'url', 'html', 'ckeditor', 'date', 'inflector', 'file', 'directory']
   
   #
   #| -------------------------------------------------------------------
