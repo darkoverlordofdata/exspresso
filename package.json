@@ -15,7 +15,6 @@
     "not-php": "*",
     "connect": "*",
     "pg": "*",
-    "sqlite3": "*",
     "bcrypt": "*",
     "cookie": "*",
     "cookie-signature": "*",
@@ -27,7 +26,6 @@
     "moment": "*",
     "sprintf": "*",
     "glob": "*",
-    "validator": "*",
     "utf8": "*"
   },
   "scripts": {

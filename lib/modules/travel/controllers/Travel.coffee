@@ -29,7 +29,7 @@ module.exports = class Travel extends application.core.PublicController
 
     super $args...
     @load.model 'HotelModel', 'hotels'
-    @load.library 'formvalidation'
+    @load.library 'validation'
 
   #
   # Search Action
