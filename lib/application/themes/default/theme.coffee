@@ -28,15 +28,15 @@ exports.location =      APPPATH+'themes/'
 exports.regions =
   header          : 'Header'
   navigation      : 'Navigation bar'
-  highlighted     : 'Highlighted'
-  help            : 'Help'
+  #highlighted     : 'Highlighted'
+  #help            : 'Help'
   content         : 'Content'
-  sidebar_first   : 'First sidebar'
-  sidebar_second  : 'Second sidebar'
+  #sidebar_first   : 'First sidebar'
+  #sidebar_second  : 'Second sidebar'
   footer          : 'Footer'
   bottom          : 'Page bottom'
-  page_top        : 'Page top'
-  page_bottom     : 'Page bottom'
+  #page_top        : 'Page top'
+  #page_bottom     : 'Page bottom'
 
 
 #

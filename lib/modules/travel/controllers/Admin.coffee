@@ -18,7 +18,7 @@ require APPPATH+'core/AdminController.coffee'
 module.exports = class Admin extends application.core.AdminController
 
   indexAction: ->
-    @template.setAdminMenu 'Travel'
-    @template.view 'admin'
+    @theme.setAdminMenu 'Travel'
+    @theme.view 'admin'
 
 

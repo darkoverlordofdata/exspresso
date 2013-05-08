@@ -26,19 +26,19 @@ module.exports = class application.modules.block.models.BlockModel extends syste
   getById: ($id, $next) ->
     @db.where 'id', $id
     @db.get @table, ($err, $block) =>
-      return $next($err) if $err
+      return $next($err, {}) if $err
       return $next(null, $block.row())
 
   getByName: ($name, $next) ->
     @db.where 'name', $name
     @db.get @table, ($err, $block) =>
-      return $next($err) if $err
+      return $next($err, {}) if $err
       return $next(null, $block.row())
 
   getByTheme: ($theme, $next) ->
     @db.where 'theme', $theme
     @db.get @table, ($err, $block) =>
-      return $next($err) if $err
+      return $next($err, []) if $err
       return $next(null, $block.result())
 
   #
@@ -77,6 +77,8 @@ module.exports = class application.modules.block.models.BlockModel extends syste
           type: 'VARCHAR', constraint: 255
         region:
           type: 'VARCHAR', constraint: 255
+        active:
+          type:'TINYINT', constraint:'1', unsigned:true, null:true
         order:
           type:'TINYINT', constraint:'1', unsigned:true, null:true
         view:
@@ -92,7 +94,8 @@ module.exports = class application.modules.block.models.BlockModel extends syste
           name: "copyright"
           theme: "default"
           module: "system"
-          region: "$credits"
+          region: "$footer"
+          active: 1
           order: 1
           view: ""
           cache: 0
@@ -108,7 +111,8 @@ module.exports = class application.modules.block.models.BlockModel extends syste
           name: "poweredby"
           theme: "default"
           module: "system"
-          region: "$credits"
+          region: "$footer"
+          active: 1
           order: 2
           view: ""
           cache: 0

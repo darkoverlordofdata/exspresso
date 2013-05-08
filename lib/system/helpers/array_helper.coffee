@@ -11,18 +11,6 @@
 #
 #+--------------------------------------------------------------------+
 #
-#
-# Exspresso
-#
-# An open source application development framework for coffee-script
-#
-# @author     darkoverlordofdata
-# @copyright  Copyright (c) 2012 - 2013, Dark Overlord of Data
-# @see        http://darkoverlordofdata.com
-# @since      Version 1.0
-#
-
-#
 # Exspresso Array Helpers
 #
 #
@@ -38,11 +26,9 @@
 # @param  [Mixed]
 # @return [Mixed]  depends on what the array contains
 #
-exports.element = element = ($item, $array, $default = false) ->
+exports.element = ($item, $array, $default = false) ->
   if not $array[$item]?  or $array[$item] is ""
     return $default
-
-
   return $array[$item]
 
 
@@ -53,16 +39,14 @@ exports.element = element = ($item, $array, $default = false) ->
 # @param  [Array]
 # @return [Mixed]  depends on what the array contains
 #
-exports.random_element = random_element = ($array) ->
+exports.random_element = ($array) ->
   if 'object' isnt typeof($array)
     return $array
 
   if Array.isArray($array)
-
     $array[rand(0, $array.length)]
 
   else
-
     $keys = Object.keys($array)
     $array[$keys[rand(0, $keys.length)]]
 
@@ -78,12 +62,11 @@ exports.random_element = random_element = ($array) ->
 # @param  [Mixed]
 # @return [Mixed]  depends on what the array contains
 #
-exports.elements = elements = ($items, $array, $default = false) ->
+exports.elements = ($items, $array, $default = false) ->
   $return = {}
 
   if not Array.isArray($items)
     $items = [$items]
-
 
   for $item in $items
     if $array[$item]?
@@ -91,8 +74,6 @@ exports.elements = elements = ($items, $array, $default = false) ->
 
     else
       $return[$item] = $default
-
-
 
   return $return
 

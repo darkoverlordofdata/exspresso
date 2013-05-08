@@ -202,7 +202,7 @@ module.exports = class system.lib.Profiler
 
         $output.push "<tr><td>req.query[" + $key + "] </td><td>"
         if is_array($val)
-          $output.push "<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
+          $output.push "<pre>" + htmlspecialchars(stripslashes(util.inspect($val))) + "</pre>"
 
         else
           $output.push htmlspecialchars(stripslashes($val))
@@ -241,7 +241,7 @@ module.exports = class system.lib.Profiler
 
         $output.push "<tr><td>req.body[" + $key + "] </td><td>"
         if is_array($val)
-          $output.push "<pre>" + htmlspecialchars(stripslashes(print_r($val, true))) + "</pre>"
+          $output.push "<pre>" + htmlspecialchars(stripslashes(util.inspect($val))) + "</pre>"
 
         else
           $output.push htmlspecialchars(stripslashes($val))
@@ -384,6 +384,8 @@ module.exports = class system.lib.Profiler
         $val = htmlspecialchars(util.inspect($val))
           .replace(/^\{\s/, "")
           .replace(/\s\}$/, "")
+          .replace(/^\[\s/, "")
+          .replace(/\s\]$/, "")
           .split(',').sort().join('<br />')
 
       $output.push "<tr><td>" + $config + "</td><td>" + ($val) + "</td></tr>\n"

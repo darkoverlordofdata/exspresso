@@ -6,7 +6,7 @@ module.exports =
   #|
   #| Layout to use by default
   #|
-  #| Can be overriden with @template.setLayout 'foo'
+  #| Can be overriden with @theme.setLayout 'foo'
   #|
   #|   Default: 'html'
   #|
@@ -20,7 +20,7 @@ module.exports =
   #|
   #| Theme to use by default
   #|
-  #| Can be overriden with @template.setTheme 'bar'
+  #| Can be overriden with @theme.setTheme 'bar'
   #|
   #|   Default: 'default'
   #|
@@ -48,7 +48,7 @@ module.exports =
   #|
   #| Doctype to use by default
   #|
-  #| Can be overriden with @template.setDoctype 'html4-trans'
+  #| Can be overriden with @theme.setDoctype 'html4-trans'
   #|
   #|   Default: 'html5'
   #|

@@ -22,7 +22,8 @@ module.exports = class application.core.AdminController extends application.core
 
     super $args...
 
-    @theme.more 'signin', 'sidenav'
-    @load.library 'user'
+    @theme.use 'signin', 'sidenav'
+    @load.library 'User'
+    @load.library 'Validation'
 
 

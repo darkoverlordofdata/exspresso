@@ -32,7 +32,7 @@ module.exports = class Test extends application.core.PublicController
   #
   indexAction: ->
 
-    @template.view 'test',
+    @theme.view 'test',
       test: @unit.run(1+1, 2, 'one_plus_one', 'Demo unit test: Adds one plus one<br /><pre><code>1 + 1 = 2</code></pre>')
 
   #
@@ -50,7 +50,7 @@ module.exports = class Test extends application.core.PublicController
     console.log '--------------------------------'
     $expected = '&amp;'
 
-    @template.view 'test',
+    @theme.view 'test',
 
       test: @unit.run($result, $expected, 'entity_decode', "Entity Decode<br /><pre><code>&amp; = &amp;amp;</code></pre>")
 
@@ -66,6 +66,6 @@ module.exports = class Test extends application.core.PublicController
 
     # <a href="javascript:alert('!')">
 
-    @template.view 'input',
+    @theme.view 'input',
       input_field: @security.xssClean(@input.post('input_field'))
 

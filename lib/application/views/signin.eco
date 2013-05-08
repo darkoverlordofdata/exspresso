@@ -8,7 +8,7 @@
             <label class="checkbox">
                 <%- @form_checkbox(name:'remember', checked: false, value: 'remember') %> Remember me
             </label>
-            <%- @form_submit('submit', 'Sign in', class:'btn btn-large btn-success') %>
+            <%- @form_submit('login', 'Sign in', class:'btn btn-large btn-success') %>
             <%- @form_close() %>
         </div>
     </div>

@@ -29,12 +29,12 @@ module.exports = class Admin extends application.core.AdminController
 
     if @user.isLoggedIn
       if @user.authorizationCheck('admin')
-        @template.setAdminMenu 'Dashboard'
-        @template.view 'admin'
+        @theme.setAdminMenu 'Dashboard'
+        @theme.view 'admin'
       else
-        @template.view new system.core.AuthorizationError('No Admin Permissions')
+        @theme.view new system.core.AuthorizationError('No Admin Permissions')
     else
-      @template.view 'signin'
+      @theme.view 'signin'
 
 
   #
@@ -44,8 +44,12 @@ module.exports = class Admin extends application.core.AdminController
   #
   authenticateAction: ->
 
-    @user.login @input.post("username"), @input.post("password")
-
+    if @input.post('login')
+      if @validation.run('login')
+        @user.login @input.post("username"), @input.post("password")
+      else
+        @session.setFlashdata 'error', @validation.errorString()
+        @redirect '/admin'
 
   #
   # User Logout

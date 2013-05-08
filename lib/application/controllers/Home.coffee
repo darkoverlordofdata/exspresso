@@ -33,7 +33,7 @@ module.exports = class Home extends application.core.PublicController
     @db.where 'id', '1'
     @db.get ($err, $blog) =>
 
-      @template.view 'home_page', $err ||
+      @theme.view 'home_page', $err ||
         blog: $blog.row()
 
 

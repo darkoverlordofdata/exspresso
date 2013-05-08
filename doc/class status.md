@@ -35,7 +35,7 @@
         * array_helper          X
         * cookie_helper         ?
         * date_helper           ?
-        * directory_helper      ?
+        * directory_helper      X
         * download_helper       ?
         * email_helper          ?
         * file_helper           X

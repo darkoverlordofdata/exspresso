@@ -118,10 +118,10 @@ module.exports = class system.core.Config
     $loaded = false
 
 
+    $config = {}
+    $found = false
     for $path in @getPaths($module)
 
-      $config = {}
-      $found = false
       $check_locations = [$file, ENVIRONMENT + '/' + $file]
       for $location in $check_locations
 
@@ -131,23 +131,32 @@ module.exports = class system.core.Config
           $found = true
           $config[$key] = $val for $key, $val of require($file_path)
 
-      if not $found
-        if $fail_gracefully is true then return false
-        else show_error('The config file [%s] does not contain valid configuration settings.', $file_path)
 
-      if $use_sections
-        @config[$file] = {} unless @config[$file]?
-        @config[$file][$key] = $val for $key, $val of $config
-
+    if not $found
+      if $fail_gracefully is true
+        log_message 'error', 'The config file [%s] does not contain valid configuration settings.', $file_path
+        return false
       else
-        @config[$key] = $val for $key, $val of $config
+        show_error('The config file [%s] does not contain valid configuration settings.', $file_path)
+        return false
 
-      @_is_loaded.push $file_path
-      $loaded = true
+    if $use_sections
+      @config[$file] = {} unless @config[$file]?
+      @config[$file][$key] = $val for $key, $val of $config
+
+    else
+      @config[$key] = $val for $key, $val of $config
+
+    @_is_loaded.push $file_path
+    $loaded = true
 
     if not $loaded
-      if $fail_gracefully is true then return false
-      else show_error('The config file [%s] does not exist.', $file+EXT)
+      if $fail_gracefully is true
+        log_message 'error', 'The config file [%s] does not exist.', $file+EXT
+        return false
+      else
+        show_error('The config file [%s] does not exist.', $file+EXT)
+        return false
 
     @item($file)
 

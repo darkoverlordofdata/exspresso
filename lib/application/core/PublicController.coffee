@@ -22,8 +22,7 @@ module.exports = class application.core.PublicController extends system.core.Con
 
     super($args...)
 
-    @load.library 'template'
-    @template.setTheme 'default', 'prettify'
+    @load.library 'Theme'
     @load.database()
     @output.enableProfiler exspresso.profile
     @output.cache 5

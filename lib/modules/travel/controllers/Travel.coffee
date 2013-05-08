@@ -29,6 +29,7 @@ module.exports = class Travel extends application.core.PublicController
 
     super $args...
     @load.model 'HotelModel', 'hotels'
+    @load.library 'formvalidation'
 
   #
   # Search Action
@@ -44,7 +45,7 @@ module.exports = class Travel extends application.core.PublicController
 
     @hotels.getBooked ($err, $bookings) =>
 
-      @template.view "travel/main", $err || {
+      @theme.view "travel/main", $err || {
         bookings      : $bookings
         searchString  : $searchString
         pageSize      : ''+parseInt($pageSize,10)
@@ -68,21 +69,26 @@ module.exports = class Travel extends application.core.PublicController
 
     base_url = @load.helper('url').base_url
 
-    $start = parseInt($start)
-    if @input.post("submit")?
-      $searchString = @input.post("searchString")
-      $pageSize     = parseInt(@input.post('pageSize'),10)
-      @session.setUserdata
-        searchString  : $searchString
-        pageSize      : $pageSize
+    @validation.setRules 'searchString', 'Search String', 'required'
+    @validation.setRules 'pageSize', 'Page Size', 'required'
 
-    else
+
+    if @validation.run() is false
       $searchString = @session.userdata("searchString")
       $pageSize     = parseInt(@session.userdata('pageSize'),10)
 
+    else
+      $start = parseInt($start)
+      if @input.post("submit")?
+        $searchString = @input.post("searchString")
+        $pageSize     = parseInt(@input.post('pageSize'),10)
+        @session.setUserdata
+          searchString  : $searchString
+          pageSize      : $pageSize
+
     @hotels.getCount ($err, $count) =>
 
-      return @template.view($err) if $err
+      return @theme.view($err) if $err
 
       @load.library 'pagination',
         base_url      : base_url.call(@)+'travel/hotels/'
@@ -92,7 +98,7 @@ module.exports = class Travel extends application.core.PublicController
 
       @hotels.getLike $searchString, $pageSize, $start, ($err, $hotels) =>
 
-        @template.view "travel/hotels", $err || {
+        @theme.view "travel/hotels", $err || {
           hotels        : $hotels
           searchString  : $searchString
           pageSize      : $pageSize
@@ -113,7 +119,7 @@ module.exports = class Travel extends application.core.PublicController
 
     @hotels.getById $id, ($err, $hotel) =>
 
-      @template.view "travel/detail", $err || {
+      @theme.view "travel/detail", $err || {
         id      : $id
         hotel   : $hotel
       }
@@ -136,7 +142,7 @@ module.exports = class Travel extends application.core.PublicController
 
     @hotels.getById $id, ($err, $hotel) =>
 
-      @template.view "travel/booking", $err || {
+      @theme.view "travel/booking", $err || {
         id      : $id
         hotel   : $hotel
         beds:
@@ -182,7 +188,7 @@ module.exports = class Travel extends application.core.PublicController
     date = @load.helper('date').date
     @hotels.getById $id, ($err, $hotel) =>
 
-      return @template.view($err) if $err
+      return @theme.view($err) if $err
 
       $customer = @session.userdata('customer')
       $booking =
@@ -201,12 +207,12 @@ module.exports = class Travel extends application.core.PublicController
 
       @hotels.createBooking $booking, ($err, $booking_id) =>
 
-        return @template.view($err) if $err
+        return @theme.view($err) if $err
 
         $booking.id = $booking_id
         $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
         $booking.totalPayment = $booking.numberOfNights * $hotel.price
-        @template.view "travel/confirm",
+        @theme.view "travel/confirm",
           hotel       : $hotel
           booking     : $booking
 
@@ -227,7 +233,7 @@ module.exports = class Travel extends application.core.PublicController
 
     @hotels.getById $id, ($err, $booking) =>
 
-      return @template.view($err) if $err
+      return @theme.view($err) if $err
 
       if @input.post('confirm')?
 
@@ -254,11 +260,11 @@ module.exports = class Travel extends application.core.PublicController
         #
         @hotels.getById $booking.hotel, ($err, $hotel) =>
 
-          return @template.view($err) if $err
+          return @theme.view($err) if $err
 
           $booking.numberOfNights = ($booking.checkoutDate - $booking.checkinDate) / (24 * 60 * 60 * 1000)
           $booking.totalPayment = $booking.numberOfNights * $hotel.price
-          @template.view "travel/booking",
+          @theme.view "travel/booking",
             hotel     : $hotel
             booking   : $booking
 
@@ -277,7 +283,7 @@ module.exports = class Travel extends application.core.PublicController
 
     if @input.cookie('username') is ''
 
-      @template.view "travel/login",
+      @theme.view "travel/login",
         url: $url
 
     else
@@ -287,7 +293,7 @@ module.exports = class Travel extends application.core.PublicController
       @db.get ($err, $customer) =>
 
         if $err or $customer.num_rows is 0
-          @template.view "travel/login",
+          @theme.view "travel/login",
             url: $url
           return
 

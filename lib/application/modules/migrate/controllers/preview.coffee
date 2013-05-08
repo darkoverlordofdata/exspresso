@@ -43,7 +43,7 @@ class Preview extends application.core.AdminController
 
     @migration.set_module $module
     $class = require(@migration._migration_path + $name + EXT)
-    @template.view 'preview',
+    @theme.view 'preview',
       nav       : @sidenav('Migrate')
       module    : if $module.length then $module else 'core'
       path      : @migration._migration_path + $name + EXT

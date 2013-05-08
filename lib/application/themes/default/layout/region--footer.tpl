@@ -2,7 +2,7 @@
 <footer id="footer">
     <div class="container">
         <div class="credit">
-            {$credits}
+            {$content}
         </div>
     </div>
 </footer>

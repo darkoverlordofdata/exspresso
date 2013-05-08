@@ -24,11 +24,11 @@ module.exports = class Admin extends application.core.AdminController
 
     $db = require(APPPATH+'config/database.coffee')
 
-    @load.library 'table'
-    @template.setAdminMenu 'Db'
+    @load.library 'Table'
+    @theme.setAdminMenu 'Db'
     @db.listTables ($err, $tables) =>
 
-      @template.view 'admin', $err || {
+      @theme.view 'admin', $err || {
         info:   $db.db[$db.active_group]
         tables: $tables
       }

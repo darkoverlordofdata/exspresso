@@ -31,11 +31,11 @@ module.exports = class Admin extends application.core.AdminController
   # @return [Void]  #
   indexAction: ($module = '') ->
 
-    @template.setAdminMenu 'Migrate'
+    @theme.setAdminMenu 'Migrate'
     @migration.setModule $module
     @migration.getVersion ($err, $version) =>
 
-      @template.view 'index', $err || {
+      @theme.view 'index', $err || {
         nav       : @sidenav('Migrations')
         menu      : @submenu($module || 'Core')
         module    : if $module then $module+'/' else ''

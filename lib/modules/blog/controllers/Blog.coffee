@@ -36,7 +36,7 @@ module.exports = class Blog extends application.core.AdminController
 
     @blog.getAll ($err, $docs) =>
 
-      @template.view 'list', $err ||
+      @theme.view 'list', $err ||
         docs : $docs
 
 
@@ -52,7 +52,7 @@ module.exports = class Blog extends application.core.AdminController
 
     @blog.getById $id, ($err, $doc) =>
 
-      @template.view 'display', $err ||
+      @theme.view 'display', $err ||
         doc  : $doc
 
 
@@ -74,7 +74,7 @@ module.exports = class Blog extends application.core.AdminController
       return @redirect '/blog'
 
     @blog.getById $id, ($err, $doc) =>
-      return @template.view($err) if $err?
+      return @theme.view($err) if $err?
 
       #
       # Security check: must be document owner
@@ -86,7 +86,7 @@ module.exports = class Blog extends application.core.AdminController
       #
       # Edit the article
       #
-      @template.view 'edit',
+      @theme.view 'edit',
         category    : @blog.getCategoryName($doc.category_id)
         categories  : @blog.getCategoryNames()
         doc         : $doc
@@ -147,7 +147,7 @@ module.exports = class Blog extends application.core.AdminController
       @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @template.view 'new'
+    @theme.view 'new'
 
   #
   # Create Action

@@ -588,11 +588,19 @@ exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
 #
 exports.validation_errors = validation_errors = ($prefix = '', $suffix = '') ->
 
+  log_message 'debug', 'validation_errors'
+  if @formvalidation?
+    log_message 'debug', 'validation_errors %s', @formvalidation.errorString($prefix, $suffix)
+    return @formvalidation.errorString($prefix, $suffix)
+  else
+    return ''
+
+
   if false is ($OBJ = @_get_validation_object())
     return ''
 
-  log_message 'debug', 'validation_errors %s', $OBJ.error_string($prefix, $suffix)
-  return $OBJ.error_string($prefix, $suffix)
+  log_message 'debug', 'validation_errors %s', $OBJ.errorString($prefix, $suffix)
+  return $OBJ.errorString($prefix, $suffix)
 
 #
 # Parse the form attributes
@@ -678,14 +686,15 @@ exports._attributes_to_string = _attributes_to_string = ($attributes, $formtag =
 # @return [Mixed]
 #
 exports._get_validation_object = _get_validation_object =  ->
+  return @formvalidation
 
   #  We set this as a variable since we're returning by reference
   $return = false
 
-  if not @load._classes? or not @load._classes['form_validation']?
+  if not @load._classes? or not @load._classes['formvalidation']?
     return $return
 
-  $object = @load._classes['form_validation']
+  $object = @load._classes['formvalidation']
 
   if not @[$object]? or not 'object' is typeof(@[$object])
     return $return

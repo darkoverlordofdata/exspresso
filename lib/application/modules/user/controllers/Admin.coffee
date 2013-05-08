@@ -19,6 +19,6 @@ module.exports = class Admin extends application.core.AdminController
 
 
   indexAction: ->
-    @template.setAdminMenu 'User'
-    @template.view 'admin'
+    @theme.setAdminMenu 'User'
+    @theme.view 'admin'
 

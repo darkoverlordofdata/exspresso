@@ -284,10 +284,8 @@ module.exports = class system.core.Input
     if not $array[$index]?
       return null #false
 
-    if $xss_clean is true
-      return @security.xssClean($array[$index])
-
-    return $array[$index]
+    if $xss_clean is true then @security.xssClean($array[$index])
+    else $array[$index]
 
 
   #

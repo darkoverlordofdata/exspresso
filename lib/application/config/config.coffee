@@ -16,7 +16,7 @@ module.exports =
   #|--------------------------------------------------------------------------
   #|
   #| A Catchy Jingle
-  #|
+  #|  Until there is something darker, black will do.
   #|
   site_slogan: "\"If It Isn\'t Dark, It Just Isn\'t Data\""
 
@@ -359,7 +359,6 @@ module.exports =
   ]
   view_paths: [
     APPPATH
-    APPPATH+'themes/default/'
   ]
   controller_paths: [
     APPPATH

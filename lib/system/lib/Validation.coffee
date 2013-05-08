@@ -14,9 +14,8 @@
 #
 # Form Validation Class
 #
-# @package		Exspresso
 #
-module.exports = class system.lib.FormValidation
+module.exports = class system.lib.Validation
 
   sprintf = require('util').format
 
@@ -37,19 +36,11 @@ module.exports = class system.lib.FormValidation
 
     #  Validation rules can be stored in a config file.
     @_config_rules = $rules
-    @_field_datam = {}
+    @_field_data = {}
     @_error_array = {}
     @_error_messages = {}
 
-    #  Automatically load the form helper
-    @load.helper('form')
-
-    #  Set the character encoding in MB.
-    if function_exists('mb_internal_encoding')
-      mb_internal_encoding(@config.item('charset'))
-
-
-    log_message('debug', "Form Validation Class Initialized")
+    log_message 'debug', "Form Validation Class Initialized"
 
   #
   # Set Rules
@@ -57,22 +48,24 @@ module.exports = class system.lib.FormValidation
   # This function takes an array of field names and validation
   # rules as input, validates the info, and stores it
   #
-    # @param  [Mixed]  # @param  [String]    # @return [Void]  #
+  # @param  [Mixed]
+  # @param  [String]
+  # @return [Void]
+  #
   setRules: ($field, $label = '', $rules = '') ->
-    #  No reason to set rules if we have no POST data
-    if count(@req.body) is 0
+    #  No reason to set rules if we have no request body data
+    if Object.keys(@req.body).length is 0
       return @
 
     $indexes = []
     #  If an array was passed via the first parameter instead of indidual string
     #  values we cycle through it and recursively call this function.
-    if is_array($field)
+    if 'string' isnt typeof($field)
       for $row in $field
         #  Houston, we have a problem...
         if not $row['field']?  or  not $row['rules']? 
           continue
-          
-        
+
         #  If the field label wasn't passed we use the field name
         $label = if not $row['label']? then $row['field'] else $row['label']
         
@@ -81,35 +74,25 @@ module.exports = class system.lib.FormValidation
         
       return @
       
-    
     #  No fields? Nothing to do...
-    if not 'string' is typeof($field) or  not 'string' is typeof($rules) or $field is ''
+    if 'string' isnt typeof($field) or 'string' isnt typeof($rules) or $field is ''
       return @
-      
-    
+
     #  If the field label wasn't passed we use the field name
     $label = if $label is '' then $field else $label
-    
+
+    $indexes = []
+    $is_array = false
     #  Is the field name an array?  We test for the existence of a bracket "[" in
     #  the field name to determine this.  If it is an array, we break it apart
     #  into its components so that we can fetch the corresponding POST data later
-    if $field.indexOf('[') isnt -1 and preg_match_all('/\\[(.*?)\\]/', $field, $matches)
-      #  Note: Due to a bug in current() that affects some versions
-      #  of PHP we can not pass function call directly into it
-      $x = explode('[', $field)
-      $indexes.push $x[Object.keys($x)[0]]
-      
-      for $i in [0..count($matches['0'])-1]
-        if $matches['1'][$i] isnt ''
-          $indexes.push $matches['1'][$i]
-        
+    if $field.indexOf('[') isnt -1
+      $indexes.push $field.split('[')[0]
+      while ($match = /\[(.*?)\]/img.exec($field)) isnt null
+        $indexes.push $match
+        $is_array = true
+    $indexes = [] unless $is_array
 
-      $is_array = true
-      
-    else 
-      $indexes = []
-      $is_array = false
-      
     
     #  Build our master array
     @_field_data[$field] = 
@@ -130,14 +113,14 @@ module.exports = class system.lib.FormValidation
   # Lets users set their own error messages on the fly.  Note:  The key
   # name has to match the  function name that it corresponds to.
   #
-    # @param  [String]    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @param  [String]
+  # @return	[String]
   #
   setMessage: ($lang, $val = '') ->
-    if not is_array($lang)
+    if 'string' is typeof($lang)
       $lang = array($lang, $val)
-
     @_error_messages[$key] = $val for $key, $val of  $lang
-    
     return @
     
   
@@ -146,7 +129,10 @@ module.exports = class system.lib.FormValidation
   #
   # Permits a prefix/suffix to be added to each error message
   #
-    # @param  [String]    # @param  [String]    # @return [Void]  #
+  # @param  [String]
+  # @param  [String]
+  # @return [Void]
+  #
   setErrorDelimiters: ($prefix = '<p>', $suffix = '</p>') ->
     @_error_prefix = $prefix
     @_error_suffix = $suffix
@@ -159,13 +145,14 @@ module.exports = class system.lib.FormValidation
   #
   # Gets the error message associated with a particular field
   #
-    # @param  [String]  the field name
-  # @return [Void]  #
+  # @param  [String]  the field name
+  # @return [Void]
+  #
   error: ($field = '', $prefix = '', $suffix = '') ->
 
     if not @_field_data[$field]? then return ''
 
-    if not @_field_data[$field]['error']?  or @_field_data[$field]['error'] is ''
+    if not @_field_data[$field]['error']? or @_field_data[$field]['error'] is ''
       return ''
 
     if $prefix is ''
@@ -182,11 +169,13 @@ module.exports = class system.lib.FormValidation
   #
   # Returns the error messages as a string, wrapped in the error delimiters
   #
-    # @param  [String]    # @param  [String]    # @return	str
+  # @param  [String]
+  # @param  [String]
+  # @return	str
   #
   errorString: ($prefix = '', $suffix = '') ->
     #  No errrors, validation passes!
-    if count(@_error_array) is 0
+    if Object.keys(@_error_array).length is 0
       return ''
 
     if $prefix is ''
@@ -212,45 +201,36 @@ module.exports = class system.lib.FormValidation
   # @return	bool
   #
   run: ($group = '') ->
-    #  Do we even have any data to process?  Mm?
-    if count(@req.body) is 0
-      return false
-      
-    
+    return false if Object.keys(@req.body).length is 0
+
     #  Does the _field_data array containing the validation rules exist?
     #  If not, we look to see if they were assigned via a config file
-    if count(@_field_data) is 0
+    if Object.keys(@_field_data).length is 0
       #  No validation rules?  We're done...
-      if count(@_config_rules) is 0
-        return false
-        
-      
+      return false if Object.keys(@_config_rules).length is 0
+
       #  Is there a validation rule for the particular URI being accessed?
       # $uri = if ($group is '') then trim(@uri.ruri_string(), '/') else $group
       $uri = $group
       if $uri isnt '' and @_config_rules[$uri]? 
-        @set_rules(@_config_rules[$uri])
-        
-      else 
-        @set_rules(@_config_rules)
-        
-      
+        @setRules(@_config_rules[$uri])
+      else
+        @setRules(@_config_rules)
+
       #  We're we able to set the rules correctly?
-      if count(@_field_data) is 0
+      if Object.keys(@_field_data).length is 0
         log_message('debug', "Unable to find validation rules")
         return false
-        
-      
-    
+
     #  Load the language file containing error messages
-    @i18n.load('form_validation')
+    @i18n.load('validation')
     
     #  Cycle through the rules for each field, match the
     #  corresponding @req.body item and test for errors
     for $field, $row of @_field_data
       #  Fetch the data from the corresponding @req.body array and cache it in the _field_data array.
       #  Depending on whether the field name is an array or a string will determine where we get it from.
-      
+
       if $row['is_array'] is true
         @_field_data[$field]['postdata'] = @_reduce_array(@req.body, $row['keys'])
         
@@ -258,10 +238,10 @@ module.exports = class system.lib.FormValidation
         if @req.body[$field]?  and @req.body[$field] isnt ""
           @_field_data[$field]['postdata'] = @req.body[$field]
 
-      @_execute($row, explode('|', $row['rules']), @_field_data[$field]['postdata'])
+      @_execute($row, $row['rules'].split('|'), @_field_data[$field]['postdata'])
 
     #  Did we end up with any errors?
-    $total_errors = count(@_error_array)
+    $total_errors = Object.keys(@_error_array).length
 
     if $total_errors > 0
       @_safe_form_data = true
@@ -281,9 +261,13 @@ module.exports = class system.lib.FormValidation
   # Traverse a multidimensional @req.body array index until the data is found
   #
   # @private
-  # @param  [Array]  # @param  [Array]  # @param  [Integer]  # @return [Mixed]  #
+  # @param  [Array]
+  # @param  [Array]
+  # @param  [Integer]
+  # @return [Mixed]
+  #
   _reduce_array: ($array, $keys, $i = 0) ->
-    if is_array($array)
+    if 'object' is typeof($array)
       if $keys[$i]? 
         if $array[$keys[$i]]? 
           $array = @_reduce_array($array[$keys[$i]], $keys, ($i + 1))
@@ -314,78 +298,65 @@ module.exports = class system.lib.FormValidation
           $post_ref = @req.body
           
           #  before we assign values, make a reference to the right POST key
-          if count($row['keys']) is 1
+          if Object.keys($row['keys']).length is 1
             $post_ref = $post_ref[$row['keys'][Object.keys($row['keys'])[0]]]
 
           else
             for $val in $row['keys']
               $post_ref = $post_ref[$val]
-              
-            
-          
-          if is_array($row['postdata'])
+
+          if 'object' is typeof($row['postdata'])
             $array = {}
             for $k, $v of $row['postdata']
               $array[$k] = @prep_for_form($v)
-              
-            
+
             $post_ref = $array
             
           else 
             $post_ref = @prep_for_form($row['postdata'])
-            
-          
-        
-      
-    
-  
+
   #
   # Executes the Validation routines
   #
   # @private
-  # @param  [Array]  # @param  [Array]  # @param  [Mixed]  # @param  [Integer]  # @return [Mixed]  #
-  _execute: ($row, $rules, $postdata = null, $cycles = 0) ->
+  # @param  [Array]
+  # @param  [Array]
+  # @param  [Mixed]
+  # @param  [Integer]
+  # @return [Mixed]
+  #
+  _execute: ($row, $rules, $postdata = '', $cycles = 0) ->
     #  If the @req.body data is an array we will run a recursive call
-    if is_array($postdata)
+    if 'object' is typeof($postdata)
       for $key, $val of $postdata
         @_execute($row, $rules, $val, $cycles)
         $cycles++
-        
-      
+
       return
 
-    #  --------------------------------------------------------------------
-    
     #  If the field is blank, but NOT required, no further tests are necessary
     $next = false
-    if in_array('required', $rules) is false and not($postdata?)
+    if $rules.indexOf('required') is -1 and $postdata is ''
       #  Before we bail out, does the rule contain a callback?
-      if ($match = preg_match("/(callback_\\w+)/", $rules.join(' ')))?
+      if ($match = $rules.join(' ').match(/(callback_\w+)/, $rules.join(' ')))?
         $next = true
         $rules = '1':$match[1]
         
       else 
         return
 
-
-
-    #  --------------------------------------------------------------------
-    
     #  Isset Test. Typically this rule will only apply to checkboxes.
-    if not($postdata?) and $next is false
-      if in_array('isset', $rules, true) or in_array('required', $rules)
+    if not $postdata? and $next is false
+      if $rules.indexOf('isset') isnt -1 or $rules.indexOf('required') isnt -1
         #  Set the message type
-        $type = if (in_array('required', $rules)) then 'required' else 'isset'
+        $type = if $rules.indexOf('required') isnt -1 then 'required' else 'isset'
 
         if not @_error_messages[$type]?
           if false is ($line = @i18n.line($type))
             $line = 'The field was not set'
-            
-          
         else
           $line = @_error_messages[$type]
           
-        
         #  Build the error message
         $message = sprintf($line, @_translate_fieldname($row['label']))
         
@@ -397,47 +368,43 @@ module.exports = class system.lib.FormValidation
 
       return
 
-
-    #  --------------------------------------------------------------------
-    
     #  Cycle through each rule and run it
     for $rule in $rules
+
       $_in_array = false
       
       #  We set the $postdata variable with the current data in our master array so that
       #  each cycle of the loop is dealing with the processed data from the last cycle
-      if $row['is_array'] is true and is_array(@_field_data[$row['field']]['postdata'])
+      if $row['is_array'] is true and 'object' is typeof(@_field_data[$row['field']]['postdata'])
         #  We shouldn't need this safety, but just in case there isn't an array index
         #  associated with this cycle we'll bail out
         if not @_field_data[$row['field']]['postdata'][$cycles]? 
           continue
-          
-        
+
         $postdata = @_field_data[$row['field']]['postdata'][$cycles]
         $_in_array = true
         
       else 
         $postdata = @_field_data[$row['field']]['postdata']
 
+      $postdata = if $postdata is null then '' else $postdata
 
-      #  --------------------------------------------------------------------
-      
       #  Is the rule a callback?
       $next = false
-      if substr($rule, 0, 9) is 'callback_'
-        $rule = substr($rule, 9)
+      if $rule.substr(0, 9) is 'callback_'
+        $rule = $rule.substr(9)
         $next = true
 
       #  Strip the parameter (if exists) from the rule
       #  Rules can contain a parameter: max_length[5]
       $param = false
-      if ($match = preg_match("/(.*?)\\[(.*)\\]/", $rule))?
+      if ($match = $rule.match(/(.*?)\[(.*)\]/))?
         $rule = $match[1]
         $param = $match[2]
 
       #  Call the function that corresponds to the rule
       if $next is true
-        if not @[$rule?
+        if not @[$rule]?
           continue
 
         #  Run the function and grab the result
@@ -451,14 +418,14 @@ module.exports = class system.lib.FormValidation
           @_field_data[$row['field']]['postdata'] = if ('boolean' is typeof($result)) then $postdata else $result
           
         #  If the field isn't required and we just processed a callback we'll move on...
-        if not in_array('required', $rules, true) and $result isnt false
+        if $rules.indexOf('required') is -1 and $result isnt false
           continue
 
       else
         if not @[$rule]?
-          #  If our own wrapper function doesn't exist we see if a native PHP function does.
-          #  Users can use any native PHP function call that has one param.
-          if function_exists($rule)
+          #  If our own wrapper function doesn't exist we see if a native function does.
+          #  Users can use any native function call that has one param.
+          if global[$rule]? and 'function' is typeof($rule)
             $result = $rule($postdata)
             
             if $_in_array is true
@@ -492,7 +459,8 @@ module.exports = class system.lib.FormValidation
           $param = @_translate_fieldname(@_field_data[$param]['label'])
 
         #  Build the error message
-        $message = sprintf($line, @_translate_fieldname($row['label']), $param)
+        $message = if $param then sprintf($line, @_translate_fieldname($row['label']), $param)
+        else sprintf($line, @_translate_fieldname($row['label']))
 
         #  Save the error message
         @_field_data[$row['field']]['error'] = $message
@@ -515,16 +483,13 @@ module.exports = class system.lib.FormValidation
   _translate_fieldname: ($fieldname) ->
     #  Do we need to translate the field name?
     #  We look for the prefix lang: to determine this
-    if substr($fieldname, 0, 5) is 'lang:'
+    if $fieldname.substr(0, 5) is 'lang:'
       #  Grab the variable
-      $line = substr($fieldname, 5)
+      $line = $fieldname.substr(5)
       
       #  Were we able to translate the field name?  If not we use $line
       if false is ($fieldname = @i18n.line($line))
         return $line
-        
-      
-    
     return $fieldname
     
   
@@ -534,19 +499,19 @@ module.exports = class system.lib.FormValidation
   # Permits you to repopulate a form field with the value it was submitted
   # with, or, if that value doesn't exist, with the default
   #
-    # @param  [String]  the field name
-  # @param  [String]    # @return [Void]  #
+  # @param  [String]  the field name
+  # @param  [String]
+  # @return [Void]
+  #
   set_value: ($field = '', $default = '') ->
     if not @_field_data[$field]? 
       return $default
-      
-    
+
     #  If the data is an array output them one at a time.
     #      E.g: form_input('name[]', set_value('name[]');
-    if is_array(@_field_data[$field]['postdata'])
+    if Array.isArray(@_field_data[$field]['postdata'])
       return @_field_data[$field]['postdata'].shift()
-      
-    
+
     return @_field_data[$field]['postdata']
     
   
@@ -556,24 +521,23 @@ module.exports = class system.lib.FormValidation
   # Enables pull-down lists to be set to the value the user
   # selected in the event of an error
   #
-    # @param  [String]    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @param  [String]
+  # @return	[String]
   #
   set_select: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
-      if $default is true and count(@_field_data) is 0
+      if $default is true and Object.keys(@_field_data).length is 0
         return ' selected="selected"'
         
       return ''
-      
-    
+
     $field = @_field_data[$field]['postdata']
-    
-    if is_array($field)
-      if not in_array($value, $field)
+
+    if 'object' is typeof($field)
+      if $field.indexOf($value) is -1
         return ''
-        
-      
-    else 
+    else
       if ($field is '' or $value is '') or ($field isnt $value)
         return ''
         
@@ -588,7 +552,9 @@ module.exports = class system.lib.FormValidation
   # Enables radio buttons to be set to the value the user
   # selected in the event of an error
   #
-    # @param  [String]    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @param  [String]
+  # @return	[String]
   #
   set_radio: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
@@ -599,12 +565,10 @@ module.exports = class system.lib.FormValidation
       
     
     $field = @_field_data[$field]['postdata']
-    
-    if is_array($field)
-      if not in_array($value, $field)
+
+    if 'object' is typeof($field)
+      if $field.indexOf($value) is -1
         return ''
-        
-      
     else 
       if ($field is '' or $value is '') or ($field isnt $value)
         return ''
@@ -618,7 +582,9 @@ module.exports = class system.lib.FormValidation
   # Enables checkboxes to be set to the value the user
   # selected in the event of an error
   #
-    # @param  [String]    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @param  [String]
+  # @return	[String]
   #
   set_checkbox: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
@@ -628,11 +594,10 @@ module.exports = class system.lib.FormValidation
       return ''
 
     $field = @_field_data[$field]['postdata']
-    
-    if is_array($field)
-      if not in_array($value, $field)
-        return ''
 
+    if 'object' is typeof($field)
+      if $field.indexOf($value) is -1
+        return ''
     else 
       if ($field is '' or $value is '') or ($field isnt $value)
         return ''
@@ -643,24 +608,26 @@ module.exports = class system.lib.FormValidation
   #
   # Required
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   required: ($str) ->
-    if not is_array($str)
+    if 'object' isnt typeof($str)
       return if trim($str) is '' then false else true
     else
-      return if empty($str) then false else true
+      return if Object.keys($str).length is 0 then false else true
       
     
   
   #
   # Performs a Regular Expression match test.
   #
-    # @param  [String]    # @param	regex
+  # @param  [String]
+  # @param	regex
   # @return	bool
   #
   regex_match: ($str, $regex) ->
-    if not preg_match($regex, $str)?
+    if not $str.match($regex)?
       return false
     return true
     
@@ -668,7 +635,8 @@ module.exports = class system.lib.FormValidation
   #
   # Match one field to another
   #
-    # @param  [String]    # @param	field
+  # @param  [String]
+  # @param	field
   # @return	bool
   #
   matches: ($str, $field) ->
@@ -683,75 +651,64 @@ module.exports = class system.lib.FormValidation
   #
   # Minimum Length
   #
-    # @param  [String]    # @param	value
+  # @param  [String]
+  # @param	value
   # @return	bool
   #
   min_length: ($str, $val) ->
-    if preg_match("/[^0-9]/", $val)?
-      return false
+    if /[^0-9]/.test($val)
+      if $str.length < $val then false else true
+    else false
 
-    if function_exists('mb_strlen')
-      return if (mb_strlen($str) < $val) then false else true
-
-    return if (strlen($str) < $val) then false else true
-    
   
   #
   # Max Length
   #
-    # @param  [String]    # @param	value
+  # @param  [String]
+  # @param	value
   # @return	bool
   #
   max_length: ($str, $val) ->
-    if preg_match("/[^0-9]/", $val)?
-      return false
-      
-    
-    if function_exists('mb_strlen')
-      return if (mb_strlen($str) > $val) then false else true
-      
-    
-    return if (strlen($str) > $val) then false else true
-    
+    if /[^0-9]/.test($val)
+      if $str.length > $val then false else true
+    else false
+
   
   #
   # Exact Length
   #
-    # @param  [String]    # @param	value
+  # @param  [String]
+  # @param	value
   # @return	bool
   #
   exact_length: ($str, $val) ->
-    if preg_match("/[^0-9]/", $val)?
-      return false
-      
-    
-    if function_exists('mb_strlen')
-      return if (mb_strlen($str) isnt $val) then false else true
-      
-    
-    return if (strlen($str) isnt $val) then false else true
+    if /[^0-9]/.test($val)
+      if $str.length = $val then false else true
+    else false
     
   
   #
   # Valid Email
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   valid_email: ($str) ->
-    return if ( not preg_match("/^([a-z0-9\\+_\\-]+)(\\.[a-z0-9\\+_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$/i", $str)?) then false else true
+    /^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/i.test($str)
     
   
   #
   # Valid Emails
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   valid_emails: ($str) ->
     if $str.indexOf(',') is -1
       return @valid_email(trim($str))
       
     
-    for $email in explode(',', $str)
+    for $email in $str.split(',')
       if trim($email) isnt '' and @valid_email(trim($email)) is false
         return false
         
@@ -763,80 +720,89 @@ module.exports = class system.lib.FormValidation
   #
   # Validate IP Address
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @return	[String]
   #
   valid_ip: ($ip) ->
-    return @input.valid_ip($ip)
+    @input.valid_ip($ip)
     
   
   #
   # Alpha
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   alpha: ($str) ->
-    return if ( not preg_match("/^([a-z])+$/i", $str)?) then false else true
-    
+    /^([a-z])+$/i.test($str)
+
   
   #
   # Alpha-numeric
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   alpha_numeric: ($str) ->
-    return if ( not preg_match("/^([a-z0-9])+$/i", $str)?) then false else true
-    
+    /^([a-z0-9])+$/i.test($str)
+
   
   #
   # Alpha-numeric with underscores and dashes
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   alpha_dash: ($str) ->
-    return if ( not preg_match("/^([-a-z0-9_-])+$/i", $str)?) then false else true
-    
+    /^([-a-z0-9_-])+$/i.test($str)
+
   
   #
   # Numeric
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   numeric: ($str) ->
-    return preg_match('/^[\-+]?[0-9]*\.?[0-9]+$/', $str)
+    /^[\-+]?[0-9]*\.?[0-9]+$/.test($str)
     
     
   
   #
   # Is Numeric
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   is_numeric: ($str) ->
-    return if ( not 'number' is typeof($str)) then false else true
+    'number' is typeof($str)
     
   
   #
   # Integer
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   integer: ($str) ->
-    return preg_match('/^[\\-+]?[0-9]+$/', $str)
+    /^[\-+]?[0-9]+$/.test($str)
     
   
   #
   # Decimal number
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   decimal: ($str) ->
-    return preg_match('/^[\\-+]?[0-9]+\\.[0-9]+$/', $str)
+    /^[\-+]?[0-9]+\.[0-9]+$/.test($str)
     
   
   #
   # Greather than
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   greater_than: ($str, $min) ->
     if not 'number' is typeof($str)
@@ -848,7 +814,8 @@ module.exports = class system.lib.FormValidation
   #
   # Less than
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   less_than: ($str, $max) ->
     if not 'number' is typeof($str)
@@ -860,27 +827,23 @@ module.exports = class system.lib.FormValidation
   #
   # Is a Natural number  (0,1,2,3, etc.)
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   is_natural: ($str) ->
-    return preg_match('/^[0-9]+$/', $str)
+    /^[0-9]+$/.test($str)
     
   
   #
   # Is a Natural number, but not a zero  (1,2,3, etc.)
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   is_natural_no_zero: ($str) ->
-    if not preg_match('/^[0-9]+$/', $str)
+    if /^[0-9]+$/.test($str)
       return false
-      
-    
-    if $str is 0
-      return false
-      
-    
-    return true
+    if $str is 0 then false else true
     
   
   #
@@ -889,10 +852,11 @@ module.exports = class system.lib.FormValidation
   # Tests a string for characters outside of the Base64 alphabet
   # as defined by RFC 2045 http://www.faqs.org/rfcs/rfc2045
   #
-    # @param  [String]    # @return	bool
+  # @param  [String]
+  # @return	bool
   #
   valid_base64: ($str) ->
-    return  not preg_match('/[^a-zA-Z0-9\\/\\+=]/', $str)?
+    not /[^a-zA-Z0-9\/\+=]/.test($str)
     
   
   #
@@ -901,10 +865,11 @@ module.exports = class system.lib.FormValidation
   # This function allows HTML to be safely shown in a form.
   # Special characters are converted.
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @return	[String]
   #
   prep_for_form: ($data = '') ->
-    if is_array($data)
+    if 'object' is typeof($data)
       for $key, $val of $data
         $data[$key] = @prep_for_form($val)
       return $data
@@ -912,49 +877,59 @@ module.exports = class system.lib.FormValidation
     if @_safe_form_data is false or $data is ''
       return $data
 
-    return str_replace(["'", '"', '<', '>'], ["&#39;", "&quot;", '&lt;', '&gt;'], stripslashes($data))
-    
+    stripslashes($data)
+      .replace(/\'/g, "&#39;")
+      .replace(/\"/g, "&quot;")
+      .replace(/\</g, "&lt;")
+      .replace(/\>/g, "&gt;")
+
   
   #
   # Prep URL
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @return	[String]
   #
   prep_url: ($str = '') ->
     if $str is 'http://' or $str is ''
       return ''
 
-    if substr($str, 0, 7) isnt 'http://' and substr($str, 0, 8) isnt 'https://'
+    if $str.substr(0, 7) isnt 'http://' and $str.substr(0, 8) isnt 'https://'
       $str = 'http://' + $str
-
-    return $str
+    $str
     
   
   #
   # Strip Image Tags
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @return	[String]
   #
   strip_image_tags: ($str) ->
-    return @input.strip_image_tags($str)
+    @input.stripImageTags($str)
     
   
   #
   # XSS Clean
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @return	[String]
   #
   xssClean: ($str) ->
-    return @security.xssClean($str)
+    @security.xssClean($str)
     
   
   #
-  # Convert PHP tags to entities
+  # Convert eco tags to entities
   #
-    # @param  [String]    # @return	[String]
+  # @param  [String]
+  # @return	[String]
   #
-  encode_php_tags: ($str) ->
-    return str_replace(['<?php', '<?PHP', '<?', '?>'], ['&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'], $str)
-    
-  
+  encode_eco_tags: ($str) ->
+    $str
+      .replace(/\<\?\-/g, "&lt;?-")
+      .replace(/\<\?\=/g, "&lt;?=")
+      .replace(/\<\?/g, "&lt;?")
+      .replace(/\?\>/g, "?&gt;")
+
   

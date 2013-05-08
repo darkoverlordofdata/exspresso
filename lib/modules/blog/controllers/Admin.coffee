@@ -21,7 +21,7 @@ module.exports = class Admin extends application.core.AdminController
 
     super $args...
     @load.model 'BlogModel', 'blog'
-    @template.setAdminMenu 'Blog'
+    @theme.setAdminMenu 'Blog'
 
   #
   # Blog Categories/Options
@@ -29,7 +29,7 @@ module.exports = class Admin extends application.core.AdminController
   indexAction: ->
     @load.library 'table'
 
-    @template.view 'admin/list'
+    @theme.view 'admin/list'
 
 
 
