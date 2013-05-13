@@ -30,26 +30,15 @@ module.exports = class Admin extends application.core.AdminController
     if @user.isLoggedIn
       if @user.authorizationCheck('admin')
         @theme.setAdminMenu 'Dashboard'
-        @theme.view 'admin'
+        return @theme.view 'admin'
       else
-        @theme.view new system.core.AuthorizationError('No Admin Permissions')
-    else
-      @theme.view 'signin'
-
-
-  #
-  # Authenticate user credentials
-  #
-  # @return [Void]
-  #
-  authenticateAction: ->
+        return @theme.view new system.core.AuthorizationError('No Admin Permissions')
 
     if @input.post('login')
       if @validation.run('login')
-        @user.login @input.post("username"), @input.post("password")
-      else
-        @session.setFlashdata 'error', @validation.errorString()
-        @redirect '/admin'
+        return @user.login @input.post("username"), @input.post("password")
+
+    @theme.view 'signin'
 
   #
   # User Logout

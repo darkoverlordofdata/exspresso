@@ -19,6 +19,8 @@ require APPPATH+'core/PublicController.coffee'
 
 module.exports = class Travel extends application.core.PublicController
 
+  PAGE_SIZE = '10'
+  SEARCH_STRING = ''
 
   bcrypt = require('bcrypt')  # A bcrypt library for NodeJS.
 
@@ -28,7 +30,7 @@ module.exports = class Travel extends application.core.PublicController
   constructor: ($args...) ->
 
     super $args...
-    @load.model 'HotelModel', 'hotels'
+    @load.model 'TravelModel', 'travel'
     @load.library 'validation'
 
   #
@@ -40,10 +42,10 @@ module.exports = class Travel extends application.core.PublicController
   #
   searchAction: () ->
 
-    $searchString = @session.userdata("searchString") ||  ''
-    $pageSize     = @session.userdata('pageSize') || ''
+    $searchString = @session.userdata("searchString", SEARCH_STRING)
+    $pageSize     = @session.userdata('pageSize', PAGE_SIZE)
 
-    @hotels.getBooked ($err, $bookings) =>
+    @travel.getBooked ($err, $bookings) =>
 
       @theme.view "travel/main", $err || {
         bookings      : $bookings
@@ -69,15 +71,14 @@ module.exports = class Travel extends application.core.PublicController
 
     base_url = @load.helper('url').base_url
 
-    @validation.setRules 'searchString', 'Search String', 'required'
     @validation.setRules 'pageSize', 'Page Size', 'required'
-
-
     if @validation.run() is false
-      $searchString = @session.userdata("searchString")
-      $pageSize     = parseInt(@session.userdata('pageSize'),10)
+
+      $searchString = @session.userdata("searchString", SEARCH_STRING)
+      $pageSize     = parseInt(@session.userdata('pageSize', PAGE_SIZE), 10)
 
     else
+
       $start = parseInt($start)
       if @input.post("submit")?
         $searchString = @input.post("searchString")
@@ -86,7 +87,7 @@ module.exports = class Travel extends application.core.PublicController
           searchString  : $searchString
           pageSize      : $pageSize
 
-    @hotels.getCount ($err, $count) =>
+    @travel.getCount ($err, $count) =>
 
       return @theme.view($err) if $err
 
@@ -96,7 +97,7 @@ module.exports = class Travel extends application.core.PublicController
         total_rows    : parseInt($count, 10)
         per_page      : $pageSize
 
-      @hotels.getLike $searchString, $pageSize, $start, ($err, $hotels) =>
+      @travel.getLike $searchString, $pageSize, $start, ($err, $hotels) =>
 
         @theme.view "travel/hotels", $err || {
           hotels        : $hotels
@@ -117,7 +118,7 @@ module.exports = class Travel extends application.core.PublicController
   #
   hotelAction: ($id) ->
 
-    @hotels.getById $id, ($err, $hotel) =>
+    @travel.getById $id, ($err, $hotel) =>
 
       @theme.view "travel/detail", $err || {
         id      : $id
@@ -140,7 +141,7 @@ module.exports = class Travel extends application.core.PublicController
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/booking/#{$id}"
 
-    @hotels.getById $id, ($err, $hotel) =>
+    @travel.getById $id, ($err, $hotel) =>
 
       @theme.view "travel/booking", $err || {
         id      : $id
@@ -186,7 +187,7 @@ module.exports = class Travel extends application.core.PublicController
       return @redirect "/travel/login?url=/travel/confirm/#{$id}"
 
     date = @load.helper('date').date
-    @hotels.getById $id, ($err, $hotel) =>
+    @travel.getById $id, ($err, $hotel) =>
 
       return @theme.view($err) if $err
 
@@ -203,9 +204,8 @@ module.exports = class Travel extends application.core.PublicController
         smoking       : @input.post('smoking')
         beds          : 1
         amenities     : @input.post('amenities')
-        state         : "CREATED"
 
-      @hotels.createBooking $booking, ($err, $booking_id) =>
+      @travel.createBooking $booking, ($err, $booking_id) =>
 
         return @theme.view($err) if $err
 
@@ -231,7 +231,7 @@ module.exports = class Travel extends application.core.PublicController
     if not @session.userdata('customer')
       return @redirect "/travel/login?url=/travel/book/#{$id}"
 
-    @hotels.getById $id, ($err, $booking) =>
+    @travel.getById $id, ($err, $booking) =>
 
       return @theme.view($err) if $err
 
@@ -240,7 +240,7 @@ module.exports = class Travel extends application.core.PublicController
         #
         # Confirm
         #
-        @hotels.confirmBooking $id, ($err) =>
+        @travel.confirmBooking $id, ($err) =>
 
           return @redirect "/travel"
 
@@ -249,7 +249,7 @@ module.exports = class Travel extends application.core.PublicController
         #
         # Cancel
         #
-        @hotels.cancelBooking $id, ($err) =>
+        @travel.cancelBooking $id, ($err) =>
 
           return @redirect "/travel"
 
@@ -258,7 +258,7 @@ module.exports = class Travel extends application.core.PublicController
         #
         # Revise
         #
-        @hotels.getById $booking.hotel, ($err, $hotel) =>
+        @travel.getById $booking.hotel, ($err, $hotel) =>
 
           return @theme.view($err) if $err
 
@@ -288,7 +288,7 @@ module.exports = class Travel extends application.core.PublicController
 
     else
 
-      @db.from 'customer'
+      @db.from 'customers'
       @db.where 'username', @input.cookie('username')
       @db.get ($err, $customer) =>
 
@@ -323,7 +323,7 @@ module.exports = class Travel extends application.core.PublicController
     $password = @input.post("password")
     $remember = @input.post("remember")
 
-    @db.from 'customer'
+    @db.from 'customers'
     @db.where 'username', $username
     @db.get ($err, $customer) =>
 
@@ -341,7 +341,7 @@ module.exports = class Travel extends application.core.PublicController
         delete $customer.password
         @session.setUserdata 'customer', $customer
 
-        @session.setFlashdata  'info', 'Hello '+$customer.name
+        @session.setFlashdata 'info', 'Hello '+$customer.name
         return @redirect $url
       else
         @session.setFlashdata 'error', 'Invalid credentials. Please try again.'

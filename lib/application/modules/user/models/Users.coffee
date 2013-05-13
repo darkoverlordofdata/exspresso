@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| UserModel.coffee
+#| Users.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -14,7 +14,7 @@
 #
 #   User Data Model
 #
-module.exports = class application.modules.user.models.UserModel extends system.core.Model
+module.exports = class application.modules.user.models.Users extends system.core.Model
 
   @UID_ANONYMOUS       = 1
   @UID_ADMIN           = 2
@@ -24,13 +24,13 @@ module.exports = class application.modules.user.models.UserModel extends system.
   @RID_MEMBER          = 3
 
   #
-  # Load by id
+  # Get by id
   #
-  #   load user by uid
+  #   get user by uid
   #
   # @return [Object]
   #
-  loadById: ($id, $next) ->
+  getById: ($id, $next) ->
 
     @db.where 'uid', $id
     @db.get 'users', ($err, $user) =>
@@ -41,17 +41,18 @@ module.exports = class application.modules.user.models.UserModel extends system.
         $next(null, $user)
 
   #
-  # Load by name
+  # Get by name
   #
-  #   load user by name
+  #   get user by name
   #
   # @return [Object]
   #
-  loadByName: ($name, $next) ->
+  getByName: ($name, $next) ->
 
     @db.where 'name', $name
     @db.get 'users', ($err, $user) =>
-      return $next($err) if $err
+      return $next($err) if $err?
+      return $next(null, {}) if $user.num_rows is 0
       $user = $user.row()
       @load_roles $user.uid, ($err, $roles) =>
         $user.roles = $roles
@@ -156,9 +157,9 @@ module.exports = class application.modules.user.models.UserModel extends system.
           type:'VARCHAR', constraint:'100', null:false
 
       $roles.addData [
-          {rid: UserModel.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
-          {rid: UserModel.RID_ADMIN, name:'admin', description:'Administrator'}
-          {rid: UserModel.RID_MEMBER, name:'member', description:'Member'}
+          {rid: Users.RID_ANONYMOUS, name:'anon', description:'Anonymous'}
+          {rid: Users.RID_ADMIN, name:'admin', description:'Administrator'}
+          {rid: Users.RID_MEMBER, name:'member', description:'Member'}
         ]
 
   #
@@ -190,9 +191,9 @@ module.exports = class application.modules.user.models.UserModel extends system.
           type:'tinyint', constraint:'1', unsigned:true, null:true
 
       $users.addData [
-          {uid: UserModel.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
-          {uid: UserModel.UID_ADMIN, name: 'admin', password: '$2a$10$7PVELW1pLmKiJIJ8MacLe.', salt: 'XWneHe/CgFMmI/iVpvibH5i/g1p98Tu', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
-          {uid: UserModel.UID_TEST, name: 'shaggy', password: '$2a$10$7PVELW1pLmKiJIJ8MacLe.', salt: 'XWneHe/CgFMmI/iVpvibH5i/g1p98Tu', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+          {uid: Users.UID_ANONYMOUS, name: 'anonymous', password: '', salt: '', email: '', created_on: 1268889823, last_login: 1268889823, active: 1}
+          {uid: Users.UID_ADMIN, name: 'admin', password: '$2a$10$7PVELW1pLmKiJIJ8MacLe.', salt: 'XWneHe/CgFMmI/iVpvibH5i/g1p98Tu', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
+          {uid: Users.UID_TEST, name: 'shaggy', password: '$2a$10$7PVELW1pLmKiJIJ8MacLe.', salt: 'XWneHe/CgFMmI/iVpvibH5i/g1p98Tu', email: 'admin@admin.com', created_on: 1268889823, last_login: 1268889823, active: 1}
         ]
 
       # scoobydoo
@@ -217,11 +218,11 @@ module.exports = class application.modules.user.models.UserModel extends system.
           type:'INT', constraint:10, 'unsigned':true, null:false
 
       $user_roles.addData [
-          {uid: UserModel.UID_ANONYMOUS, rid: UserModel.RID_ANONYMOUS}
-          {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ADMIN}
-          {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_ANONYMOUS}
-          {uid: UserModel.UID_ADMIN,     rid: UserModel.RID_MEMBER}
-          {uid: UserModel.UID_TEST,      rid: UserModel.RID_MEMBER}
+          {uid: Users.UID_ANONYMOUS, rid: Users.RID_ANONYMOUS}
+          {uid: Users.UID_ADMIN,     rid: Users.RID_ADMIN}
+          {uid: Users.UID_ADMIN,     rid: Users.RID_ANONYMOUS}
+          {uid: Users.UID_ADMIN,     rid: Users.RID_MEMBER}
+          {uid: Users.UID_TEST,      rid: Users.RID_MEMBER}
         ]
 
 

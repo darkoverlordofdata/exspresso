@@ -29,7 +29,7 @@ module.exports = class Home extends application.core.PublicController
   # @return [Void]  #
   indexAction: ->
 
-    @db.from 'blog'
+    @db.from 'blogs'
     @db.where 'id', '1'
     @db.get ($err, $blog) =>
 

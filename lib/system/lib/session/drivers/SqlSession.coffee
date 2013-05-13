@@ -17,7 +17,7 @@
 #
 module.exports = class system.lib.session.SqlSession extends require(exspresso.server.driver).session.Store
 
-  UserModel = require(APPPATH+'modules/user/models/UserModel.coffee')
+  Users = require(APPPATH+'modules/user/models/Users.coffee')
 
   parent                  : null        # The parent class for this driver
   controller              : null        # the system controller
@@ -35,7 +35,7 @@ module.exports = class system.lib.session.SqlSession extends require(exspresso.s
       parent        : {enumerable: true, writeable: false, value: $parent}
       controller    : {enumerable: true, writeable: false, value: $controller}
 
-    @controller.load.model('UserModel')
+    @controller.load.model('Users')
     return
 
 
@@ -64,7 +64,7 @@ module.exports = class system.lib.session.SqlSession extends require(exspresso.s
         # unpack the data
         $data                   = $result.row()
         $session                = JSON.parse($data.user_data)
-        $session.uid            = $data.uid || UserModel.UID_ANONYMOUS
+        $session.uid            = $data.uid || Users.UID_ANONYMOUS
         $session.ip_address     = $data.ip_address
         $session.user_agent     = $data.user_agent
         $session.last_activity  = $data.last_activity
@@ -96,7 +96,7 @@ module.exports = class system.lib.session.SqlSession extends require(exspresso.s
         $user_data = {}
         $user_data[$key] = $val for $key, $val of $session
         $data =
-          uid             : fetch($user_data, 'uid', UserModel.UID_ANONYMOUS)
+          uid             : fetch($user_data, 'uid', Users.UID_ANONYMOUS)
           ip_address      : fetch($user_data, 'ip_address')
           user_agent      : fetch($user_data, 'user_agent').substr(0, 120)
           last_activity   : fetch($user_data, 'last_activity')
@@ -143,12 +143,12 @@ module.exports = class system.lib.session.SqlSession extends require(exspresso.s
   #
   #   create user & session tables if they doesn't exist
   #   called when Session library is auto loaded during boot
-  #   deferred to the UserModel, due to the dependencies on User
+  #   deferred to the Users, due to the dependencies on User
   #
   # @return [Void]
   #
   install: ->
-    @controller.usermodel.install()
+    @controller.users.install()
     @
 
   #

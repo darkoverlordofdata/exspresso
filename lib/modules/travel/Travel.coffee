@@ -34,7 +34,7 @@ module.exports = class Travel extends application.core.Module
   # @return [Void]
   #
   initialize: () ->
-    @controller.load.model 'HotelModel'
-    @controller.hotelmodel.install() if @controller.install
+    @controller.load.model 'TravelModel'
+    @controller.travelmodel.install() if @controller.install
 
 

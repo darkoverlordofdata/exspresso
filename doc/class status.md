@@ -22,15 +22,15 @@
         * Output                X
         * Router                X
         * Security              X
-        * URI                   X
+        * Uri                   X
         * Utf8                  X
     * Database                  mysql   sqlite  postgresql
-        * DB_active_rec         X       X       X
-        * DB_cache              X       X       X
-        * DB_driver             X       X       X
-        * DB_forge              X       X       X
-        * DB_result             X       X       X
-        * DB_utility            X       X       X
+        * ActiveRecord          X       X       X
+        * Cache                 X       X       X
+        * Driver                X       X       X
+        * Forge                 X       X       X
+        * Result                X       X       X
+        * Utility               X       X       X
     * Helpers
         * array_helper          X
         * cookie_helper         ?
@@ -46,7 +46,7 @@
         * path_helper           ?
         * security_helper       ?
         * smiley_helper         ?
-        * string_helper         ?
+        * string_helper         X
         * text_helper           X
         * typography_helper     ?
         * url_helper            X
@@ -57,7 +57,6 @@
         * Cart                  ?
         * Driver                X
         * Email                 ?
-        * FormValidation        ?
         * Ftp                   -
         * Image_lib             -
         * Javascript            -
@@ -70,9 +69,10 @@
         * Table                 X
         * Trackback             -
         * Typography            ?
-        * Unit_test             X
+        * Unit                  X
         * Upload                ?
         * User_agent            X
+        * Validation            X
         * Xmlrpc                -
         * Zip                   -
 

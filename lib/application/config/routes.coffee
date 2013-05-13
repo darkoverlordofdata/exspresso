@@ -8,6 +8,7 @@ module.exports =
   '/welcome'                           : 'Welcome/index'
   
   '/admin'                             : 'Admin/index'
+  '/admin/index'                       : 'Admin/index'
   '/admin/login'                       : 'Admin/login'
   '/admin/logout'                      : 'Admin/logout'
   '/admin/authenticate'                : 'Admin/authenticate'

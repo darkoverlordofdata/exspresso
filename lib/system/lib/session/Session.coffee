@@ -16,7 +16,7 @@
 #
 module.exports = class system.lib.session.Session extends system.lib.DriverLibrary
 
-  UserModel = load_class(APPPATH+'modules/user/models/UserModel.coffee')
+  Users = load_class(APPPATH+'modules/user/models/Users.coffee')
 
   cookie      = require('cookie')       # cookie parsing and serialization
   format      = require('util').format  # sprintf style formated string
@@ -119,7 +119,7 @@ module.exports = class system.lib.session.Session extends system.lib.DriverLibra
         $req.session.session_id = decodeURIComponent($sid).split(':')[1]
 
     # set reasonable session defaults
-    $req.session.uid            = $req.session.uid || UserModel.UID_ANONYMOUS
+    $req.session.uid            = $req.session.uid || Users.UID_ANONYMOUS
     $req.session.ip_address     = ($req.headers['x-forwarded-for'] || '').split(',')[0] || $req.connection.remoteAddress
     $req.session.user_agent     = $req.headers['user-agent']
     $req.session.last_activity  = @_get_time()
@@ -175,11 +175,11 @@ module.exports = class system.lib.session.Session extends system.lib.DriverLibra
   # @param  [String]    
   # @return string
   #
-  userdata: ($item) ->
+  userdata: ($item, $default = false) ->
 
     $data = @req.session.userdata = @req.session.userdata ? {}
 
-    if not $data[$item]? then false else $data[$item]
+    if not $data[$item]? then $default else $data[$item]
 
   #
   # Fetch all session data

@@ -142,7 +142,7 @@ module.exports = class system.db.Result
   customRowObject : ($n, $type) ->
     $result = @customResultObject($type)
 
-    return [] if $result.length is 0
+    return {} if $result.length is 0
     if $n isnt @_current and $result[$n]?
       @_current = $n
     return $result[@_current]
@@ -154,7 +154,7 @@ module.exports = class system.db.Result
   #
   rowArray : ($n = 0) ->
 
-    return [] if @_rows.length is 0
+    return {} if @_rows.length is 0
     if $n isnt @_current and @_rows[$n]?
       @_current = $n
     return @_rows[@_current]

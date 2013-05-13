@@ -57,6 +57,8 @@ module.exports = class system.core.Loader
 
     log_message 'debug', "Loader Class Initialized"
 
+  getObject: ($name) ->
+    @_classes[$name]
   #
   # Class Loader
   #

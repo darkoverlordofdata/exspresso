@@ -16,7 +16,7 @@
 #
 module.exports = class application.modules.user.lib.User
 
-  UserModel = load_class(APPPATH+'modules/user/models/UserModel.coffee')
+  Users = load_class(APPPATH+'modules/user/models/Users.coffee')
   bcrypt            = require('bcrypt')     # A bcrypt library for NodeJS
 
   isAnonymous       : null  # returns true for anonymous user
@@ -38,23 +38,26 @@ module.exports = class application.modules.user.lib.User
   constructor: ($controller, $config = {}) ->
 
     log_message 'debug', "User Class Initialized"
-    @load.model('UserModel')
-    @i18n.load('user', 'user')
+    @i18n.load 'user', 'user'
+    @load.model 'Users', 'users'
+    #
+    # Load the current user's attributes
+    #
     @queue ($next) =>
       #
       # Reload the current user
-      @usermodel.loadById @req.session.uid, ($err, $user) =>
+      @users.getById @req.session.uid, ($err, $user) =>
 
         $roles = []
         $is_admin = false
         for $row in $user.roles
-          $is_admin = true if $row.rid is UserModel.RID_ADMIN
+          $is_admin = true if $row.rid is Users.RID_ADMIN
           $roles.push freeze($row)
 
         return $next($err) if $err
         defineProperties @,
-          isAnonymous   : {enumerable: true,   get: -> $user.uid is UserModel.UID_ANONYMOUS}
-          isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt UserModel.UID_ANONYMOUS}
+          isAnonymous   : {enumerable: true,   get: -> $user.uid is Users.UID_ANONYMOUS}
+          isLoggedIn    : {enumerable: true,   get: -> $user.uid isnt Users.UID_ANONYMOUS}
           isAdmin       : {enumerable: true,   get: -> $is_admin}
           uid           : {enumerable: true,   get: -> $user.uid}
           name          : {enumerable: true,   get: -> $user.name}
@@ -76,7 +79,7 @@ module.exports = class application.modules.user.lib.User
   login: ($name, $password, $action = '/admin') ->
     #
     #
-    @usermodel.loadByName $name, ($err, $user) =>
+    @users.getByName $name, ($err, $user) =>
       return if log_error('error', 'load by name: %s', $err) if show_error($err)
 
       bcrypt.compare $password, String($user.password)+String($user.salt), ($err, $ok) =>
@@ -84,11 +87,11 @@ module.exports = class application.modules.user.lib.User
 
         if $ok
           @req.session.uid = $user.uid
-          @session.setFlashdata  'info', @i18n.line('user_hello'), $user.name
+          @session.setFlashdata 'info', @i18n.line('user_hello'), $user.name
           @redirect $action
 
         else
-          @req.session.uid = UserModel.UID_ANONYMOUS
+          @req.session.uid = Users.UID_ANONYMOUS
           @session.setFlashdata 'error', @i18n.line('user_invalid_credentials')
           @redirect $action
 
@@ -101,7 +104,7 @@ module.exports = class application.modules.user.lib.User
   logout: ($action = '/admin') ->
 
     @session.setFlashdata  'info', @i18n.line('user_goodbye')
-    @req.session.uid = UserModel.UID_ANONYMOUS
+    @req.session.uid = Users.UID_ANONYMOUS
     @redirect $action
 
 

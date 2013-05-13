@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <%- @form_open("/block/edit/#{@region}/#{@name}") %>
+        <%- @form_hidden('id', @block.id) %>
+        <div class="control-group">
+            <%- @form_label('Name:', 'name', class:'control-label') %>
+            <%- @form_input('name', @block.name, disabled:'true') %>
+        </div>
+        <div class="control-group">
+            <%- @form_label('Active:', 'active', class:'control-label') %>
+            <%- @form_input('active', @block.active) %>
+        </div>
+        <div class="control-group">
+            <%- @ckeditor('content', @block.content) %>
+        </div>
+        <div class="control-group">
+            <input class="btn btn-primary" name="save" type="submit" value="Save" />
+            <input class="btn" name="cancel" type="submit" value="Cancel" />
+        </div>
+        <%- @form_close() %>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| BlockModel.coffee
+#| Blocks.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -16,30 +16,115 @@
 #
 # Define User Blocks
 #
-module.exports = class application.modules.block.models.BlockModel extends system.core.Model
+module.exports = class application.modules.block.models.Blocks extends system.core.Model
 
-  table: 'block'
+  table: 'blocks'
 
   constructor: ($args...) ->
     super $args...
 
+  #
+  # Get Block By Id
+  #
+  # @param  [String]  id  block id
+  # @param  [Function]  next  async callback
+  # @return [Void]
+  #
   getById: ($id, $next) ->
     @db.where 'id', $id
     @db.get @table, ($err, $block) =>
       return $next($err, {}) if $err
       return $next(null, $block.row())
 
-  getByName: ($name, $next) ->
+  #
+  # Get Block By Region and Name
+  #
+  # @param  [String]  region  region name
+  # @param  [String]  name  block name
+  # @param  [Function]  next  async callback
+  # @return [Void]
+  #
+  getByRegionAndName: ($region, $name, $next) ->
+    @db.where 'region', '$'+$region
     @db.where 'name', $name
     @db.get @table, ($err, $block) =>
       return $next($err, {}) if $err
       return $next(null, $block.row())
 
+  #
+  # Get Blocks By Theme
+  #
+  # @param  [String]  theme theme name
+  # @param  [Function]  next  async callback
+  # @return [Void]
+  #
   getByTheme: ($theme, $next) ->
     @db.where 'theme', $theme
     @db.get @table, ($err, $block) =>
       return $next($err, []) if $err
       return $next(null, $block.result())
+
+
+  #
+  # Update Content
+  #
+  # @param  [String]  id  record id
+  # @param  [String]  content the content
+  # @param  [String]  active  is content active
+  # @param  [Function]  next  async callback
+  # @return [Void]
+  #
+  updateContent: ($id, $content, $active, $next) ->
+    @db.where 'id', $id
+    @db.update @table, active: $active, content: $content, $next
+
+  #
+  # Get All Blocks in a de-normalized list
+  #
+  # @return [Void]
+  #
+  getList: () ->
+    $blocks = []
+
+    #
+    # for each region, list the blocks
+    #
+    for $name, $desc of @theme.getRegions()
+
+      $rows = []
+      for $block in @theme.getBlocks()
+        if $block.region is '$'+$name
+          $rows.push {
+            id        : $block.id
+            name      : $block.name
+            region    : $block.region.substr(1)
+            weight    : $block.order
+          }
+      $blocks.push {
+        name: $name
+        desc: $desc
+        rows: $rows
+      }
+
+    #
+    # then list the blocks that aren't being used
+    #
+    $rows = []
+    for $block in @theme.getBlocks()
+      if $block.region is ''
+        $rows.push {
+          id        : $block.id
+          name      : $block.name
+          region    : ''
+          weight    : $block.order
+        }
+    $blocks.push {
+      name: 'disabled'
+      desc: 'Disabled'
+      rows: $rows
+    }
+    $blocks
+
 
   #
   # Install the Block Module data

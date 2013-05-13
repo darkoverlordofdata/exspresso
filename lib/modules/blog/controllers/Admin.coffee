@@ -20,7 +20,7 @@ module.exports = class Admin extends application.core.AdminController
   constructor: ($args...) ->
 
     super $args...
-    @load.model 'BlogModel', 'blog'
+    @load.model 'Blogs', 'blog'
     @theme.setAdminMenu 'Blog'
 
   #

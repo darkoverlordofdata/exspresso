@@ -171,7 +171,11 @@ module.exports = class system.db.Forge
       return $next($err) if $err
       return $next(null) if $table_exists
 
-      $def(@) if $def?
+      if $def? # call the table definition function
+        @data = null
+        @_reset()
+        $def(@)
+
       if Object.keys(@fields).length is 0
         show_error 'Field information is required.'
 
@@ -181,8 +185,7 @@ module.exports = class system.db.Forge
 
         return log_message('error', 'Error creating table %s: %s', $table, $err.message) if $err?
 
-        log_message 'debug', 'dbForge created table: %s', $table
-        if @data? then @db.insertBatch($table, @data, $next)
+        if @data isnt null then @db.insertBatch($table, @data, $next)
         else $next(null)
 
 

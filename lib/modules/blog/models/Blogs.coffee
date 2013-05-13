@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| BlogModel.coffee
+#| Blogs.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -14,7 +14,7 @@
 #
 #	Blog Data Model
 #
-module.exports = class modules.blog.models.BlogModel extends system.core.Model
+module.exports = class modules.blog.models.Blogs extends system.core.Model
 
   _categories       : null  # category table cache
   _category_names   : null  # hash of category names for drop-down list
@@ -30,7 +30,7 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
-    #@queue @_load_categories
+    @queue @_load_categories
 
   #
   # Get all
@@ -39,49 +39,50 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
   # @return [Void]
   #
   getAll: ($next) ->
-    @db.select 'blog.id, users.name AS author, category.name AS category, blog.status, blog.created_on, blog.updated_on, blog.title'
-    @db.from 'blog'
-    @db.join 'users', 'users.uid = blog.author_id', 'inner'
-    @db.join 'category', 'category.id = blog.category_id', 'inner'
-    @db.get ($err, $blog) ->
+    @db.select 'blogs.id, users.name AS author, categories.name AS category'
+    @db.select 'blogs.status, blogs.created_on, blogs.updated_on, blogs.title'
+    @db.from 'blogs'
+    @db.join 'users', 'users.uid = blogs.author_id', 'inner'
+    @db.join 'categories', 'categories.id = blogs.category_id', 'inner'
+    @db.get ($err, $blogs) ->
       return $next($err) if $err?
-      $next null, $blog.result()
+      $next null, $blogs.result()
 
   #
-  # Get blog by id
+  # Get blogs by id
   #
-  # @param  [Integer] $id blog id
+  # @param  [Integer] $id blogs id
   # @param  [Function] $next  async function
   # @return [Void]
   #
   getById: ($id, $next) ->
-    @db.from 'blog'
+    @db.from 'blogs'
     @db.where 'id', $id
-    @db.get ($err, $blog) ->
+    @db.get ($err, $blogs) ->
       return $next($err) if $err?
-      $next null, $blog.row()
+      $next null, $blogs.row()
 
   #
-  # Delete blog by id
+  # Delete blogs by id
   #
-  # @param  [Integer] $id blog id
+  # @param  [Integer] $id blogs id
   # @param  [Function] $next  async function
   # @return [Void]
   #
   deleteById: ($id, $next) ->
     @db.where 'id', $id
-    @db.delete 'blog', $next
+    @db.delete 'blogs', $next
 
   #
-  # Create new blog doc
+  # Create new blogs doc
   #
-  # @param  [Integer] $doc blog document
+  # @param  [Integer] $doc blogs document
   # @param  [Function] $next  async function
   # @return [Void]
   #
   create: ($doc, $next) ->
 
-    @db.insert 'blog', $doc, ($err) =>
+    @db.insert 'blogs', $doc, ($err) =>
       return $next($err) if $err?
 
       @db.insertId ($err, $id) ->
@@ -89,16 +90,16 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
         $next null, $id
 
   #
-  # Save blog doc by id
+  # Save blogs doc by id
   #
-  # @param  [Integer] $id blog id
-  # @param  [Integer] $doc blog document
+  # @param  [Integer] $id blogs id
+  # @param  [Integer] $doc blogs document
   # @param  [Function] $next  async function
   # @return [Void]
   #
   save: ($id, $doc, $next) ->
     @db.where 'id', $id
-    @db.update 'blog', $update, $next
+    @db.update 'blogs', $doc, $next
 
 
   #
@@ -112,7 +113,7 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
   #
   newCategory: ($name, $next) ->
 
-    @db.insert 'category', name: $name, ($err) =>
+    @db.insert 'categories', name: $name, ($err) =>
       return $next($err) if $err?
 
       @db.insertId ($err, $id) =>
@@ -170,14 +171,14 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
   #
   _load_categories: ($next) =>
 
-    @cache.get 'blog._load_categories', ($err, $data) =>
+    @cache.get 'blogs._load_categories', ($err, $data) =>
 
       if $data isnt false
         @_categories = $data.categories
         @_category_names = $data.category_names
         return $next(null)
 
-      @db.from 'category'
+      @db.from 'categories'
       @db.get ($err, $cat) =>
         return $next() if $err
 
@@ -189,7 +190,7 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
           categories: @_categories
           category_names: @_category_names
 
-        @cache.save 'blog._load_categories', $data, -1, $next
+        @cache.save 'blogs._load_categories', $data, -1, $next
 
   #
   # Install the Blog Module data
@@ -199,8 +200,8 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
   install: () ->
 
     @load.dbforge() unless @dbforge?
-    @queue @install_category
-    @queue @install_blog
+    @queue @install_categories
+    @queue @install_blogs
 
   #
   # Step 1:
@@ -210,38 +211,38 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
   # @param  [Function]  next  async callback
   # @return [Void]
   #
-  install_category: ($next) =>
+  install_categories: ($next) =>
 
     #
     # if categories doesn't exist, create and load initial data
     #
-    @dbforge.createTable 'category', $next, ($category) ->
-      $category.addKey 'id', true
-      $category.addField
+    @dbforge.createTable 'categories', $next, ($categories) ->
+      $categories.addKey 'id', true
+      $categories.addField
         id:
           type: 'INT', constraint: 5, unsigned: true, auto_increment: true
         name:
           type: 'VARCHAR', constraint: 255
 
-      $category.addData id: 1, name: "Article"
+      $categories.addData id: 1, name: "Article"
 
 
   #
   # Step 2:
   # Install Check
-  # Create the blog table
+  # Create the blogs table
   #
   # @param  [Function]  next  async callback
   # @return [Void]
   #
-  install_blog: ($next) =>
+  install_blogs: ($next) =>
 
     #
-    # if blog table doesn't exist, create and load initial data
+    # if blogs table doesn't exist, create and load initial data
     #
-    @dbforge.createTable 'blog', $next, ($blog) ->
-      $blog.addKey 'id', true
-      $blog.addField
+    @dbforge.createTable 'blogs', $next, ($blogs) ->
+      $blogs.addKey 'id', true
+      $blogs.addField
         id:
           type: 'INT', constraint: 5, unsigned: true, auto_increment: true
         author_id:
@@ -261,7 +262,7 @@ module.exports = class modules.blog.models.BlogModel extends system.core.Model
         body:
           type: 'TEXT'
 
-      $blog.addData
+      $blogs.addData
         id: 1,
         author_id: 2,
         category_id: 1,

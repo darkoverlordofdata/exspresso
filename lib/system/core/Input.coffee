@@ -252,6 +252,7 @@ module.exports = class system.core.Input
     return @_headers[$index]
 
 
+  #
   # Is ajax Request?
   #
   # Test to see if a request contains the HTTP_X_REQUESTED_WITH header
@@ -261,6 +262,7 @@ module.exports = class system.core.Input
   isAjaxRequest :  ->
     if @req.headers['x-requested-with'] is 'XMLHttpRequest' then true else false
 
+  #
   # Is cli Request?
   #
   # Test to see if a request was made from the command line
@@ -268,6 +270,17 @@ module.exports = class system.core.Input
   # @return [Boolean]  False
   #
   isCliRequest :  -> false
+
+  #
+  # Is this a PostBack
+  #
+  # Tests the page life-cycle
+  #
+  # @return [Boolean]  False
+  #
+  isPostBack: ->
+    Object.keys(@req.body).length > 0
+
 
   #
   # Fetch from array

@@ -32,7 +32,7 @@ module.exports = class Blog extends application.core.Module
   # @return [Void]
   #
   initialize: () ->
-    @controller.load.model 'BlogModel'
-    @controller.blogmodel.install() if @controller.install
+    @controller.load.model 'Blogs'
+    @controller.blogs.install() if @controller.install
 
 

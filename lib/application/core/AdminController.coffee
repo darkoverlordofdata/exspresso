@@ -25,5 +25,6 @@ module.exports = class application.core.AdminController extends application.core
     @theme.use 'signin', 'sidenav'
     @load.library 'User'
     @load.library 'Validation'
+    @validation.setErrorDelimiters '<p><em>', '</em></p>'
 
 

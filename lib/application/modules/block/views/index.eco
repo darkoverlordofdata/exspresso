@@ -42,11 +42,12 @@
         </div>
     </div>
     <div class="row">
-        <div class="span7"></div>
-        <div class="span2">
+        <div class="span5"></div>
+        <div class="span4">
             <p>
-                <%- @form_submit("submit", "Save", class: "btn-primary btn") %>
-                <%- @form_submit("submit", "New", class: "btn") %>
+                <%- @form_submit("save", "Save", class: "btn-primary btn") %>
+                <%- @form_submit("create", "New", class: "btn") %>
+                <%- @form_submit("cancel", "Cancel", class: "btn") %>
             </p>
         </div>
     </div>

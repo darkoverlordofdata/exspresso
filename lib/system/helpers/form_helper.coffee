@@ -445,14 +445,14 @@ exports.form_prep = form_prep = ($str = '', $field_name = '') ->
 # @return [Mixed]
 #
 exports.set_value = set_value = ($field = '', $default = '') ->
-  if false is ($OBJ = @_get_validation_object())
 
-    if not @req.body[$field]
+  if false is ($validation = @_get_validation_object())
+    if not @req.body[$field]?
       return $default
 
     return form_prep(@req.body[$field], $field)
 
-  return form_prep($OBJ.set_value($field, $default), $field)
+  return form_prep(@[$validation].setValue($field, $default), $field)
 
 #
 # Set Select
@@ -466,19 +466,16 @@ exports.set_value = set_value = ($field = '', $default = '') ->
 # @return	[String]
 #
 exports.set_select = set_select = ($field = '', $value = '', $default = false) ->
-  $OBJ = @_get_validation_object()
 
-
-  if $OBJ is false
-    if not @req.body[$field]
+  if false is ($validation = @_get_validation_object())
+    if not @req.body[$field]?
       if Object.keys(@req.body).length is 0 and $default is true
         return ' selected="selected"'
-
       return ''
 
     $field = @req.body[$field]
 
-    if is_array($field)
+    if Array.isArray($field)
       if $field.indexOf($value) is -1
         return ''
 
@@ -488,7 +485,7 @@ exports.set_select = set_select = ($field = '', $value = '', $default = false) -
 
     return ' selected="selected"'
 
-  return $OBJ.set_select($field, $value, $default)
+  return $validation.setSelect($field, $value, $default)
 
 #
 # Set Checkbox
@@ -502,18 +499,16 @@ exports.set_select = set_select = ($field = '', $value = '', $default = false) -
 # @return	[String]
 #
 exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = false) ->
-  $OBJ = @_get_validation_object()
 
-  if $OBJ is false
-    if not @req.body[$field]
+  if false is ($validation = @_get_validation_object())
+    if not @req.body[$field]?
       if Object.keys(@req.body).length is 0 and $default is true
         return ' checked="checked"'
-
       return ''
 
     $field = @req.body[$field]
 
-    if is_array($field)
+    if Array.isArray($field)
       if $field.indexOf($value) is -1
         return ''
 
@@ -523,7 +518,7 @@ exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = fals
 
     return ' checked="checked"'
 
-  return $OBJ.set_checkbox($field, $value, $default)
+  return $validation.setCheckbox($field, $value, $default)
 
 #
 # Set Radio
@@ -537,18 +532,16 @@ exports.set_checkbox = set_checkbox = ($field = '', $value = '', $default = fals
 # @return	[String]
 #
 exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
-  $OBJ = @_get_validation_object()
 
-  if $OBJ is false
-    if not @req.body[$field]
+  if false is ($validation = @_get_validation_object())
+    if not @req.body[$field]?
       if Object.keys(@req.body).length is 0 and $default is true
         return ' checked="checked"'
-
       return ''
 
     $field = @req.body[$field]
 
-    if is_array($field)
+    if Array.isArray($field)
       if $field.indexOf($value) is -1
         return ''
 
@@ -558,7 +551,7 @@ exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
 
     return ' checked="checked"'
 
-  return $OBJ.set_radio($field, $value, $default)
+  return $validation.setRadio($field, $value, $default)
 
 #
 # Form Error
@@ -572,9 +565,9 @@ exports.set_radio = set_radio = ($field = '', $value = '', $default = false) ->
 # @return	[String]
 #
 exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
-  if false is ($OBJ = @_get_validation_object())
-    return ''
-  return $OBJ.error($field, $prefix, $suffix)
+
+  if false is ($validation = @_get_validation_object()) then ''
+  else @[$validation].error($field, $prefix, $suffix)
 
 #
 # Validation Error String
@@ -588,19 +581,8 @@ exports.form_error = form_error = ($field = '', $prefix = '', $suffix = '') ->
 #
 exports.validation_errors = validation_errors = ($prefix = '', $suffix = '') ->
 
-  log_message 'debug', 'validation_errors'
-  if @formvalidation?
-    log_message 'debug', 'validation_errors %s', @formvalidation.errorString($prefix, $suffix)
-    return @formvalidation.errorString($prefix, $suffix)
-  else
-    return ''
-
-
-  if false is ($OBJ = @_get_validation_object())
-    return ''
-
-  log_message 'debug', 'validation_errors %s', $OBJ.errorString($prefix, $suffix)
-  return $OBJ.errorString($prefix, $suffix)
+  if false is ($validation = @_get_validation_object()) then ''
+  else @[$validation].errorString($prefix, $suffix)
 
 #
 # Parse the form attributes
@@ -686,20 +668,10 @@ exports._attributes_to_string = _attributes_to_string = ($attributes, $formtag =
 # @return [Mixed]
 #
 exports._get_validation_object = _get_validation_object =  ->
-  return @formvalidation
-
-  #  We set this as a variable since we're returning by reference
-  $return = false
-
-  if not @load._classes? or not @load._classes['formvalidation']?
-    return $return
-
-  $object = @load._classes['formvalidation']
-
-  if not @[$object]? or not 'object' is typeof(@[$object])
-    return $return
-
-  return @[$object]
+  $object = @load.getObject('validation')
+  if $object?
+    if @[$object]? then return $object
+  false
 
 #
 # parse extra

@@ -35,5 +35,5 @@ module.exports = class Block extends application.core.Module
   # @return [Void]
   #
   initialize: () ->
-    @controller.load.model 'BlockModel'
-    @controller.blockmodel.install() if @controller.install?
+    @controller.load.model 'Blocks'
+    @controller.blocks.install() if @controller.install?

@@ -1,13 +1,13 @@
 <div class="container">
     <div class="row">
-        <%- @form_open('/blog/create') %>
+        <%- @form_open(@form.action) %>
         <div class="control-group">
-            <%- @form_label('Title:', 'title', class:'control-label') %>
+            <%- @form_label('Title:', 'title', class:'control-label', size: 160) %>
             <%- @form_input('title', '') %>
         </div>
         <div class="control-group">
             <%- @form_label('Category:', 'category', class:'control-label') %>
-            <%- @form_dropdown('category', @blog.getCategoryNames(), @category, size:1) %>
+            <%- @form_dropdown('category', @blogs.getCategoryNames(), @category, size:1) %>
         </div>
         <div class="control-group">
             <%- @ckeditor('blog', '') %>

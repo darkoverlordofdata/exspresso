@@ -23,7 +23,7 @@ module.exports = class Blog extends application.core.AdminController
   constructor: ($args...) ->
 
     super $args...
-    @load.model 'BlogModel', 'blog'
+    @load.model 'Blogs'
 
   #
   # Index Action
@@ -34,9 +34,8 @@ module.exports = class Blog extends application.core.AdminController
   #
   indexAction: () ->
 
-    @blog.getAll ($err, $docs) =>
-
-      @theme.view 'list', $err ||
+    @blogs.getAll ($err, $docs) =>
+      @theme.view 'index', $err ||
         docs : $docs
 
 
@@ -50,9 +49,8 @@ module.exports = class Blog extends application.core.AdminController
   #
   showAction: ($id) ->
 
-    @blog.getById $id, ($err, $doc) =>
-
-      @theme.view 'display', $err ||
+    @blogs.getById $id, ($err, $doc) =>
+      @theme.view 'show', $err ||
         doc  : $doc
 
 
@@ -73,23 +71,53 @@ module.exports = class Blog extends application.core.AdminController
       @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @blog.getById $id, ($err, $doc) =>
-      return @theme.view($err) if $err?
-
-      #
-      # Security check: must be document owner
-      #
-      unless @user.isAdmin or (@user.uid is $doc.author_id)
-        @session.setFlashdata 'error', 'Not an owner of this document'
-        return @redirect '/blog'
+    @validation.setRules 'title', 'Blog Title', 'required'
+    if @validation.run() is false
 
       #
       # Edit the article
       #
-      @theme.view 'edit',
-        category    : @blog.getCategoryName($doc.category_id)
-        categories  : @blog.getCategoryNames()
-        doc         : $doc
+      @blogs.getById $id, ($err, $doc) =>
+        @theme.view 'edit', $err || {
+          form        :
+            action    : "/blog/edit/#{$id}"
+            hidden    :
+                id    : $id
+          category    : @blogs.getCategoryName($doc.category_id)
+          categories  : @blogs.getCategoryNames()
+          doc         : $doc
+        }
+
+    else
+
+      if @input.post('cancel')?
+        @redirect '/blog'
+
+      else if @input.post('save')?
+        #
+        # pack up the document update
+        #
+        $update =
+          catagory      : @blogs.getCategoryId(@input.post('category'))
+          title         : @input.post('title')
+          body          : @input.post('blog')
+          updated_on    : @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
+          updated_by    : @user.uid
+
+        #
+        # save it!
+        #
+        @blogs.save $id, $update, ($err) =>
+
+          if $err?
+            @session.setFlashdata 'error', $err.message
+          else
+            @session.setFlashdata 'info', 'Blog entry %s saved', $id
+
+          @redirect "/blog/edit/#{$id}"
+
+
+
 
 
   #
@@ -109,7 +137,7 @@ module.exports = class Blog extends application.core.AdminController
       @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @blog.getById $id, ($err, $doc) =>
+    @blogs.getById $id, ($err, $doc) =>
 
       #
       # Security check: must be document owner
@@ -118,7 +146,7 @@ module.exports = class Blog extends application.core.AdminController
         @session.setFlashdata 'error', 'Not an owner of this document'
         return @redirect '/blog'
 
-      @blog.delete $id, ($err) =>
+      @blogs.delete $id, ($err) =>
 
         #
         # Show the status of the delete
@@ -132,24 +160,6 @@ module.exports = class Blog extends application.core.AdminController
 
 
   #
-  # New Action
-  #
-  # Edit a new blog entry
-  #
-  # @return [Void]
-  #
-  newAction: () ->
-
-    #
-    # Security check: must be logged in
-    #
-    unless @user.isLoggedIn
-      @session.setFlashdata 'error', 'Not logged in'
-      return @redirect '/blog'
-
-    @theme.view 'new'
-
-  #
   # Create Action
   #
   # Create the new blog entry
@@ -159,97 +169,52 @@ module.exports = class Blog extends application.core.AdminController
   createAction: () ->
 
     #
-    # Canceled?
-    #
-    return @redirect('/blog') if @input.post('cancel')
-
-    #
     # Security check: must be logged in
     #
     unless @user.isLoggedIn
       @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    #
-    # Pack up the document data
-    #
-    $now = @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
-    $doc =
-      author_id     : @user.uid
-      category_id   : @blog.getCategoryId(@input.post('category'))
-      status        : 1
-      created_on    : $now
-      updated_on    : $now
-      title         : @input.post('title')
-      body          : @input.post('blog')
+    @validation.setRules 'title', 'Blog Title', 'required'
+    @validation.setRules 'category', 'Blog Category', 'required'
 
+    if @validation.run() is false
+      @theme.view 'create',
+        form        :
+          action    : "/blog/create"
+    else
 
-    #
-    # Create the document in database
-    #
-    @blog.create $doc, ($err, $id) =>
+      if @input.post('cancel')?
+        @redirect '/blog'
 
-      if $err?
-        @session.setFlashdata 'error', $err.message
-        return @redirect '/blog'
+      else if @input.post('save')?
 
-      #
-      # Show the id that was created
-      #
-      @session.setFlashdata 'info', 'Blog entry %s created', $id
-      @redirect '/blog/edit/'+$id
+        #
+        # Pack up the document data
+        #
+        $now = @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
+        $doc =
+          author_id     : @user.uid
+          category_id   : @blogs.getCategoryId(@input.post('category'))
+          status        : 1
+          created_on    : $now
+          updated_on    : $now
+          updated_by    : @user.uid
+          title         : @input.post('title')
+          body          : @input.post('blog')
 
+        #
+        # Create the document in database
+        #
+        @blogs.create $doc, ($err, $id) =>
 
-  #
-  # Save Action
-  #
-  # saves a blog entry
-  #
-  # @return [Void]
-  #
-  saveAction: () ->
+          if $err?
+            @session.setFlashdata 'error', $err.message
+            return @redirect '/blog'
 
-    #
-    # Canceled?
-    #
-    return @redirect('/blog') if @input.post('cancel')
-
-    #
-    # Security check: must be logged in
-    #
-    unless @user.isLoggedIn
-      @session.setFlashdata 'error', 'Not logged in'
-      return @redirect '/blog'
-
-
-    @blog.getById @input.post('id'), ($err, $doc) =>
-
-      #
-      # Security check: must be document owner
-      #
-      unless @user.isAdmin or (@user.uid is $doc.author_id)
-        @session.setFlashdata 'error', 'Not an owner of this document'
-        return @redirect '/blog'
-
-      #
-      # pack up the document update
-      #
-      $update =
-        catagory      : @blog.getCategoryId(@input.post('category'))
-        title         : @input.post('title')
-        body          : @input.post('blog')
-        updated_on    : @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
-
-      #
-      # save it!
-      #
-      @blog.save $doc.id, $update, ($err) =>
-
-        if $err?
-          @session.setFlashdata 'error', $err.message
-        else
-          @session.setFlashdata 'info', 'Blog entry %s saved', $doc.id
-
-        @redirect '/blog/edit/'+$doc.id
-
+          #
+          # Show the id that was created
+          #
+          @session.setFlashdata 'info', 'Blog entry %s created', $id
+          @redirect '/blog/create'
 

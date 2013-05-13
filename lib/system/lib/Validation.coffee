@@ -503,8 +503,8 @@ module.exports = class system.lib.Validation
   # @param  [String]
   # @return [Void]
   #
-  set_value: ($field = '', $default = '') ->
-    if not @_field_data[$field]? 
+  setValue: ($field = '', $default = '') ->
+    if not @_field_data[$field]?
       return $default
 
     #  If the data is an array output them one at a time.
@@ -525,7 +525,7 @@ module.exports = class system.lib.Validation
   # @param  [String]
   # @return	[String]
   #
-  set_select: ($field = '', $value = '', $default = false) ->
+  setSelect: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
       if $default is true and Object.keys(@_field_data).length is 0
         return ' selected="selected"'
@@ -540,9 +540,7 @@ module.exports = class system.lib.Validation
     else
       if ($field is '' or $value is '') or ($field isnt $value)
         return ''
-        
-      
-    
+
     return ' selected="selected"'
     
   
@@ -556,7 +554,7 @@ module.exports = class system.lib.Validation
   # @param  [String]
   # @return	[String]
   #
-  set_radio: ($field = '', $value = '', $default = false) ->
+  setRadio: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
       if $default is true and count(@_field_data) is 0
         return ' checked="checked"'
@@ -586,7 +584,7 @@ module.exports = class system.lib.Validation
   # @param  [String]
   # @return	[String]
   #
-  set_checkbox: ($field = '', $value = '', $default = false) ->
+  setCheckbox: ($field = '', $value = '', $default = false) ->
     if not @_field_data[$field]?  or  not @_field_data[$field]['postdata']? 
       if $default is true and count(@_field_data) is 0
         return ' checked="checked"'

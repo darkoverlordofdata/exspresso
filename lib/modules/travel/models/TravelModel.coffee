@@ -14,7 +14,7 @@
 #
 #	Class HotelModel
 #
-module.exports = class modules.travel.models.HotelModel
+module.exports = class modules.travel.models.TravelModel
 
   #
   # Get booked rooms
@@ -24,10 +24,10 @@ module.exports = class modules.travel.models.HotelModel
   #
   getBooked: ($next) ->
 
-    @db.select ['hotel.name', 'hotel.address', 'hotel.city', 'hotel.state', 'booking.checkinDate', 'booking.checkoutDate', 'booking.id']
-    @db.from 'booking'
-    @db.where 'booking.state', 'BOOKED'
-    @db.join 'hotel', 'hotel.id = booking.hotel','inner'
+    @db.select ['travel_hotels.name', 'travel_hotels.address', 'travel_hotels.city', 'travel_hotels.state', 'travel_bookings.checkinDate', 'travel_bookings.checkoutDate', 'travel_bookings.id']
+    @db.from 'travel_bookings'
+    @db.where 'travel_bookings.state', 'BOOKED'
+    @db.join 'travel_hotels', 'travel_hotels.id = travel_bookings.hotel','inner'
     @db.get ($err, $bookings) ->
 
       return $next($err) if $err?
@@ -41,7 +41,7 @@ module.exports = class modules.travel.models.HotelModel
   #
   getCount: ($next) ->
 
-    @db.countAll 'hotel', $next
+    @db.countAll 'travel_hotels', $next
 
 
   #
@@ -55,7 +55,7 @@ module.exports = class modules.travel.models.HotelModel
   #
   getLike: ($like, $pageSize, $start, $next) ->
 
-    @db.from 'hotel'
+    @db.from 'travel_hotels'
     @db.like 'name', "%#{$like}%"
     @db.limit $pageSize, $start
     @db.get ($err, $hotels) ->
@@ -73,7 +73,7 @@ module.exports = class modules.travel.models.HotelModel
   #
   getById: ($id, $next) ->
 
-    @db.from 'hotel'
+    @db.from 'travel_hotels'
     @db.where 'id', $id
     @db.get ($err, $hotel) ->
 
@@ -89,7 +89,7 @@ module.exports = class modules.travel.models.HotelModel
   #
   getBookingById: ($id, $next) ->
 
-    @db.from 'booking'
+    @db.from 'travel_bookings'
     @db.where 'id', $id
     @db.get ($err, $booking) ->
 
@@ -105,7 +105,7 @@ module.exports = class modules.travel.models.HotelModel
   #
   confirmBooking: ($id, $next) ->
     @db.where 'id', $id
-    @db.update 'booking', state: 'BOOKED', $next
+    @db.update 'travel_bookings', state: 'BOOKED', $next
 
   #
   # Cancel booking
@@ -116,7 +116,7 @@ module.exports = class modules.travel.models.HotelModel
   #
   cancelBooking: ($id, $next) ->
     @db.where 'id', $id
-    @db.update 'booking', state: 'CANCELLED', $next
+    @db.update 'travel_bookings', state: 'CANCELLED', $next
 
 
   #
@@ -127,12 +127,19 @@ module.exports = class modules.travel.models.HotelModel
   # @return [Void]
   #
   createBooking: ($data, $next) ->
-    @db.insert 'booking', $data, ($err) =>
+
+    $data.state = "CREATED"
+    @db.insert 'travel_bookings', $data, ($err) =>
       return $next($err) if $err?
 
       @db.insertId ($err, $id) ->
         return $next($err) if $err?
         $next null, $id
+
+
+  login: ($name, $pwd) ->
+
+  logout: () ->
 
   #
   # Install the Hotel Module data
@@ -159,9 +166,9 @@ module.exports = class modules.travel.models.HotelModel
     #
     # if hotels doesn't exist, create and load initial data
     #
-    @dbforge.createTable 'hotel', $next, ($hotel) ->
-      $hotel.addKey 'id', true
-      $hotel.addField
+    @dbforge.createTable 'travel_hotels', $next, ($table) ->
+      $table.addKey 'id', true
+      $table.addField
         id:
           type: 'INT', constraint: 5, unsigned: true, auto_increment: true
         price:
@@ -180,7 +187,7 @@ module.exports = class modules.travel.models.HotelModel
           type: 'VARCHAR', constraint: 255
 
 
-      $hotel.addData [
+      $table.addData [
         {id: 1, price: 199, name: "Westin Diplomat", address: "3555 S. Ocean Drive", city: "Hollywood", state: "FL", zip: "33019", country: "USA"},
         {id: 2, price: 60, name: "Jameson Inn", address: "890 Palm Bay Rd NE", city: "Palm Bay", state: "FL", zip: "32905", country: "USA"},
         {id: 3, price: 199, name: "Chilworth Manor", address: "The Cottage, Southampton Business Park", city: "Southampton", state: "Hants", zip: "SO16 7JF", country: "UK"},
@@ -219,9 +226,9 @@ module.exports = class modules.travel.models.HotelModel
     #
     # if customers doesn't exist, create and load initial data
     #
-    @dbforge.createTable 'customer', $next, ($customer) ->
-      $customer.addKey 'id', true
-      $customer.addField
+    @dbforge.createTable 'travel_customers', $next, ($table) ->
+      $table.addKey 'id', true
+      $table.addField
         id:
           type: 'INT', constraint: 5, unsigned: true, auto_increment: true
         username:
@@ -231,7 +238,7 @@ module.exports = class modules.travel.models.HotelModel
         name:
           type: 'VARCHAR', constraint: 255
 
-      $customer.addData [
+      $table.addData [
         {id: 1, username: "keith", password: "", name: "Keith"}
         {id: 2, username: "erwin", password: "", name: "Erwin"}
         {id: 3, username: "jeremy", password: "", name: "Jeremy"}
@@ -251,9 +258,9 @@ module.exports = class modules.travel.models.HotelModel
     #
     # if bookings doesn't exist, create it
     #
-    @dbforge.createTable 'booking', $next, ($booking) ->
-      $booking.addKey 'id', true
-      $booking.addField
+    @dbforge.createTable 'travel_bookings', $next, ($table) ->
+      $table.addKey 'id', true
+      $table.addField
         id:
           type: 'INT', constraint: 5, unsigned: true, auto_increment: true
         email:

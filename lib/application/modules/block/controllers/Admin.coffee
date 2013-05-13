@@ -20,62 +20,117 @@ module.exports = class Admin extends application.core.AdminController
   constructor: ($args...) ->
 
     super $args...
-    @load.model 'BlockModel', 'blocks'
+    @load.model 'Blocks'
     @load.library 'Table'
     @theme.setAdminMenu 'Blocks'
 
   #
   # Blocks
   #
+  # @return [Void]
+  #
   indexAction: ->
 
-    $blocks = []
 
-    for $name, $desc of @theme.getRegions()
+    #
+    # Form submitted?
+    #
+    if not @input.isPostBack()
 
-      $rows = []
-      for $block in @theme.getBlocks()
-        if $block.region is '$'+$name
-          $rows.push {
-            id        : $block.id
-            name      : $block.name
-            region    : $block.region.substr(1)
-            weight    : $block.order
-          }
-      $blocks.push {
-        name: $name
-        desc: $desc
-        rows: $rows
-      }
+      @theme.view 'index',
+        blocks    : @blocks.getList()
+        regions   : @theme.getRegions()
+        weights   :
+            '-3'  : -3
+            '-2'  : -2
+            '-1'  : -1
+            '0'   : 0
+            '1'   : 1
+            '2'   : 2
+            '3'   : 3
 
-    $rows = []
-    for $block in @theme.getBlocks()
-      if $block.region is ''
-        $rows.push {
-          id        : $block.id
-          name      : $block.name
-          region    : ''
-          weight    : $block.order
+    else
+
+      #
+      # Cancel?
+      #
+      if @input.post("cancel")?
+        @redirect '/admin'
+
+      #
+      # Save changes?
+      #
+      else if @input.post("save")?
+        @redirect '/admin/block'
+
+      #
+      # New block?
+      #
+      else if @input.post("create")?
+        @redirect '/admin/block'
+
+
+  #
+  # Create
+  #
+  # create block content
+  #
+  # @return [Void]
+  #
+  createAction: () ->
+
+  #
+  # Edit
+  #
+  # edit a block content
+  #
+  # @param  [String]  region  region name
+  # @param  [String]  name  block name
+  # @return [Void]
+  #
+  editAction: ($region, $name) ->
+
+    #
+    # Form submitted?
+    #
+    if not @input.isPostBack()
+
+      #
+      # No, just display the content
+      #
+      @blocks.getByRegionAndName $region, $name, ($err, $block) =>
+
+        @theme.view 'edit', $err || {
+          region  : $region
+          name    : $name
+          block   : $block
         }
-    $blocks.push {
-      name: 'disabled'
-      desc: 'Disabled'
-      rows: $rows
-    }
 
+    else
 
+      #
+      # Cancel?
+      #
+      if @input.post("cancel")?
+        @redirect '/admin/block'
 
-    @theme.view 'index',
-      blocks    : $blocks
-      regions   : @theme.getRegions()
-      weights   :
-          '-3'  : -3
-          '-2'  : -2
-          '-1'  : -1
-          '0'   : 0
-          '1'   : 1
-          '2'   : 2
-          '3'   : 3
+      #
+      # Save changes?
+      #
+      else if @input.post("save")?
+
+        $id       = @input.post("id")
+        $content  = @input.post("content")
+        $active   = @input.post("active")
+
+        @blocks.updateContent $id, $content, $active, ($err) =>
+
+          if $err?
+            @session.setFlashdata 'error', 'Unable to save: %s', $err
+          else
+            @session.setFlashdata 'info', 'Saved %s, %s (%s)', $region, $name, $id
+          @redirect '/admin/block'
+
 
 
 

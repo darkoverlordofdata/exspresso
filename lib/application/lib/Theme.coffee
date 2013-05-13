@@ -109,7 +109,7 @@ module.exports = class application.lib.Theme extends system.lib.Parser
 
     @html = @load.helper('html')
     @load.library 'Parser'
-    @load.model 'BlockModel', 'blocks'
+    @load.model 'Blocks', 'blocks'
     @load_theme @_theme_name
 
     # load the blocks defined for this theme
@@ -325,8 +325,10 @@ module.exports = class application.lib.Theme extends system.lib.Parser
 
         # get the next
         $index += 1
-        return $next(null) if $index is @_partials.length
-        return _parse_partials($next)
+        #return $next(null) if $index is @_partials.length
+        #return _parse_partials($next)
+        return _parse_partials($next) unless $index is @_partials.length
+        return $next(null)
 
     # Then render the partials
     _parse_partials ($err) =>
@@ -383,6 +385,11 @@ module.exports = class application.lib.Theme extends system.lib.Parser
       random_element = @load.helper('array').random_element
       @_site_slogan = random_element(@_site_slogan)
 
+    $info = @session.flashdata('info')
+    $error = @session.flashdata('error')
+    if @validation?
+      if ($str = @validation.errorString()) isnt ''
+        $error = if $error then $error+$str else $str
     #
     # define standard template variables
     #
@@ -398,7 +405,7 @@ module.exports = class application.lib.Theme extends system.lib.Parser
       $menu             : if keys(@_menu).length>0 then @html.menu(@_menu, @uri.segment(1, '')) else ''
       $breadcrumb       : if @breadcrumb? then @breadcrumb.output() else ''
       $sidenav          : if @_admin then @html.sidenav($admin_menu, @_active) else ''
-      $flash            : @html.flash(@session.flashdata('error'), @session.flashdata('info'))
+      $flash            : @html.flash($error, $info)
       $sidebar_first    : ''
       $sidebar_second   : ''
       $profile          : if @output._enable_profiler then system.lib.Profiler::button else ''
