@@ -30,7 +30,7 @@ module.exports = class modules.blog.models.Blogs extends system.core.Model
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
-    #@queue @_load_categories
+    @queue @_load_categories
 
   #
   # Get all
