@@ -104,7 +104,6 @@ module.exports = class Blog extends application.core.AdminController
         # pack up the document update
         #
         $update =
-          catagory      : @blogs.getCategoryId(@input.post('category'))
           title         : @input.post('title')
           body          : @input.post('blog')
           updated_on    : @load.helper('date').date('YYYY-MM-DD hh:mm:ss')
@@ -120,7 +119,7 @@ module.exports = class Blog extends application.core.AdminController
           else
             @session.setFlashdata 'info', 'Blog entry %s saved', $id
 
-          @redirect "/blog/edit/#{$id}"
+          @redirect "/blog"
 
 
 
