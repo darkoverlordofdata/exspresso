@@ -78,7 +78,7 @@ module.exports =
       hostport: 3306
 
     postgres:
-      url     : process.env.HEROKU_POSTGRESQL_ROSE_URL ? "postgres://tagsobe:tagsobe@localhost:5432/tagsobe"
+      url     : process.env.HEROKU_POSTGRESQL_CHARCOAL_URL ? "postgres://tagsobe:tagsobe@localhost:5432/tagsobe"
       hostname: ''
       username: ''
       password: ''
