@@ -75,11 +75,48 @@ module.exports = class application.lib.Theme extends system.lib.Parser
   _active             : ''
 
 
-  getName: () -> @_theme_name
-  getLayout: () -> @_layout
-  getBlocks: () -> @_blocks
-  getRegions: () -> @_regions
-  getPartials: () -> @_partials
+  #
+  # Get Name
+  #
+  # @return [String] the theme name
+  #
+  getName: () ->
+    @_theme_name
+
+  #
+  # Get Layout
+  #
+  # @return [String] the document layout template
+  #
+  getLayout: () ->
+    @_layout
+
+  #
+  # Get Blocks
+  #
+  # @return [Array] list of available blocks for the theme
+  #
+  getBlocks: () ->
+    @_blocks
+
+  #
+  # Get Regions
+  #
+  # @return [Array] list of available regions for the theme
+  #
+  getRegions: () ->
+    $regions = {}
+    $regions[$name] = $val for $name, $val of @_regions
+    $regions['none'] = '- None -'
+    $regions
+
+  #
+  # Get Partials
+  #
+  # @return [Array] list of available partials for the theme
+  #
+  getPartials: () ->
+    @_partials
 
   #
   # constructor
@@ -325,8 +362,6 @@ module.exports = class application.lib.Theme extends system.lib.Parser
 
         # get the next
         $index += 1
-        #return $next(null) if $index is @_partials.length
-        #return _parse_partials($next)
         return _parse_partials($next) unless $index is @_partials.length
         return $next(null)
 
@@ -402,13 +437,14 @@ module.exports = class application.lib.Theme extends system.lib.Parser
       $logo             : @_logo
       $site_name        : @_site_name
       $site_slogan      : @_site_slogan
-      $menu             : if keys(@_menu).length>0 then @html.menu(@_menu, @uri.segment(1, '')) else ''
+      $menu             : @_menu
       $breadcrumb       : if @breadcrumb? then @breadcrumb.output() else ''
       $sidenav          : if @_admin then @html.sidenav($admin_menu, @_active) else ''
       $flash            : @html.flash($error, $info)
       $sidebar_first    : ''
       $sidebar_second   : ''
       $profile          : if @output._enable_profiler then system.lib.Profiler::button else ''
+
 
 
   #
@@ -510,8 +546,20 @@ module.exports = class application.lib.Theme extends system.lib.Parser
   get_layout_files: ($theme) ->
 
     return _template_cache[$theme] if _template_cache[$theme]?
-    _template_cache[$theme] = directory_map(APPPATH+"themes/#{$theme}/layout", 1)
 
+    _files = []
+    #
+    # flatten a hierarchical map
+    #
+    flatten = ($files, $subdir = '') ->
+      for $file, $dir of $files
+        if 'string' is typeof $dir
+          _files.push if $subdir is '' then $file else $subdir+"/"+$file
+        else
+          flatten $dir, $subdir+$file
+      _files
+
+    _template_cache[$theme] = flatten(directory_map(APPPATH+"themes/#{$theme}/layout"))
 
   #
   # Return the most specific layout template
@@ -527,7 +575,8 @@ module.exports = class application.lib.Theme extends system.lib.Parser
     if 'string' is typeof $slugs then $slugs = [$slugs]
     $files = {}
     for $file in @get_layout_files(@_theme_name)
-      $name = path.basename($file, path.extname($file))
+      #$name = path.basename($file, path.extname($file))
+      $name = $file.substr(0,$file.length-path.extname($file).length)
       $files[$name] = $file
 
     #
@@ -543,24 +592,24 @@ module.exports = class application.lib.Theme extends system.lib.Parser
         # If the slug is a number,
         # add the prefix plus "--%" to the list
         if 'number' is typeof($slug)
-          if $files["#{$pfx}--%"]?
-            $candidates.push $files["#{$pfx}--%"]
+          if $files["#{$pfx}/%"]?
+            $candidates.push $files["#{$pfx}/%"]
 
         # Regardless of whether the slug is a number or not,
-        # add the prefix plus "--" plus the slug to the list
-        if $files["#{$pfx}--#{$slug}"]?
-          $candidates.push $files["#{$pfx}--#{$slug}"]
+        # add the prefix plus "/" plus the slug to the list
+        if $files["#{$pfx}/#{$slug}"]?
+          $candidates.push $files["#{$pfx}/#{$slug}"]
 
         # If the slug is not a number,
         # append "--" plus the slug to the prefix.
         if 'number' isnt typeof($slug)
-          $pfx+="--#{$slug}"
+          $pfx+="/#{$slug}"
 
     # If the page is the front page
     # add "page--front" to the list
     if @uri.uriString() is '/'
-      if $files["#{$type}--front"]?
-        $candidates.push $files["#{$type}--front"]
+      if $files["#{$type}/front"]?
+        $candidates.push $files["#{$type}/front"]
 
 
     # Reverse the order, so that [0] is

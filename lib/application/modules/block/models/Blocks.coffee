@@ -79,11 +79,11 @@ module.exports = class application.modules.block.models.Blocks extends system.co
     @db.update @table, active: $active, content: $content, $next
 
   #
-  # Get All Blocks in a de-normalized list
+  # Get Blocks by Region
   #
   # @return [Void]
   #
-  getList: () ->
+  getByRegion: () ->
     $blocks = []
 
     #
@@ -98,31 +98,14 @@ module.exports = class application.modules.block.models.Blocks extends system.co
             id        : $block.id
             name      : $block.name
             region    : $block.region.substr(1)
-            weight    : $block.order
+            weight    : if $block.order<0 then ''+$block.order else ' '+$block.order
           }
       $blocks.push {
-        name: $name
-        desc: $desc
-        rows: $rows
+        name  : $name
+        desc  : $desc
+        rows  : $rows
       }
 
-    #
-    # then list the blocks that aren't being used
-    #
-    $rows = []
-    for $block in @theme.getBlocks()
-      if $block.region is ''
-        $rows.push {
-          id        : $block.id
-          name      : $block.name
-          region    : ''
-          weight    : $block.order
-        }
-    $blocks.push {
-      name: 'disabled'
-      desc: 'Disabled'
-      rows: $rows
-    }
     $blocks
 
 

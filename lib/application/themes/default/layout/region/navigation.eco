@@ -1,0 +1,9 @@
+<ul class="nav nav-tabs">
+    <% for $name, $item of @$menu: %>
+        <% if $item.uri is '/'+@uri.segment(1, ''): %>
+        <li class="active"><a href="<%- $item.uri %>"><%- $name %></a></li>
+        <% else: %>
+        <li><a href="<%- $item.uri %>" title="<%- $item.tip %>"><%- $name %></a></li>
+        <% end %>
+    <% end %>
+</ul>

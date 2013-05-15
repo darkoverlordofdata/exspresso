@@ -28,23 +28,9 @@ exports.location =      APPPATH+'themes/'
 exports.regions =
   header          : 'Header'
   navigation      : 'Navigation bar'
-  #highlighted     : 'Highlighted'
-  #help            : 'Help'
   content         : 'Content'
-  #sidebar_first   : 'First sidebar'
-  #sidebar_second  : 'Second sidebar'
   footer          : 'Footer'
   bottom          : 'Page bottom'
-  #page_top        : 'Page top'
-  #page_bottom     : 'Page bottom'
-
-
-#
-# Layout
-#
-# This is the main page layout template
-#
-#exports.layout = 'html.tpl'
 
 
 #
@@ -53,15 +39,18 @@ exports.regions =
 # Defines the main page menu
 #
 exports.menu =
-  tabs: # tabs | pills
-
-    # Text    Uri
-    Welcome : ['/welcome', "About Exspresso"]
-    Home    : ['/', 'Blog']
-    Travel  : ['/travel', 'DB Demo']
-    Admin   : ['/admin', 'Login']
-
-
+  Welcome :
+    uri   : '/welcome'
+    tip   : "About Exspresso"
+  Home    :
+    uri   : '/'
+    tip   : 'Blog'
+  Travel  :
+    uri   : '/travel'
+    tip   : 'DB Demo'
+  Admin   :
+    uri   : '/admin'
+    tip   : 'Login'
 
 
 #

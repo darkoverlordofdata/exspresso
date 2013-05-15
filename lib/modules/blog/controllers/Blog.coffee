@@ -90,9 +90,15 @@ module.exports = class Blog extends application.core.AdminController
 
     else
 
+      #
+      # Cancel?
+      #
       if @input.post('cancel')?
         @redirect '/blog'
 
+      #
+      # Save changes?
+      #
       else if @input.post('save')?
         #
         # pack up the document update

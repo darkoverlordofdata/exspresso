@@ -14,30 +14,6 @@
 #
 # Application MyHTML Helpers
 #
-#
-# Menu
-#
-# Main menu
-#
-# @param  [Object]  items hash of menu items
-# @param  [String]  active  the active menu item
-# @return [String]  the html
-#
-exports.menu = ($items, $active) ->
-
-  $k = keys($items)[0]
-  $active = '/'+$active
-
-  $menu = "<ul class=\"nav nav-#{$k}\">\n"
-  for $name, $val of $items[$k]
-    [$uri, $tip] = $val
-    if $uri is $active
-      $menu+="<li class=\"active\"><a href=\"#{$uri}\">#{$name}</a></li>\n"
-    else
-      $menu+="<li><a href=\"#{$uri}\" title=\"#{$tip}\">#{$name}</a></li>\n"
-
-  $menu+"</ul>\n"
-
 
 #
 # Sidenav
@@ -59,28 +35,6 @@ exports.sidenav = ($items, $active) ->
     else
       $menu += "<li>"
     $menu += "<a href=\"#{$u}\"><i class=\"icon-chevron-right\"></i> #{$k}</a></li>\n"
-  $menu += "</ul>\n"
-
-#
-# Submenu
-#
-# sub menu
-#
-# @param  [Object]  items hash of menu items
-# @param  [String]  active  the active menu item
-# @return [String]  the html
-#
-exports.submenu = ($modules, $module) ->
-
-  $active = ucfirst($module)
-
-  $menu = "<ul class=\"nav nav-tabs\">\n"
-  for $k, $u of $modules
-    if $k is $active
-      $menu += "<li class=\"active\">\n"
-    else
-      $menu += "<li>\n"
-    $menu += "<a href=\"#{$u}\" title=\"#{$k}\">#{$k}</a>\n</li>\n"
   $menu += "</ul>\n"
 
 

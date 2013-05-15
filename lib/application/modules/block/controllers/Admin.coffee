@@ -37,17 +37,21 @@ module.exports = class Admin extends application.core.AdminController
     #
     if not @input.isPostBack()
 
+      $weights =
+        '-3'  : -3
+        '-2'  : -2
+        '-1'  : -1
+        ' 0'  : 0
+        ' 1'  : 1
+        ' 2'  : 2
+        ' 3'  : 3
+
+      console.log $weights
+
       @theme.view 'index',
-        blocks    : @blocks.getList()
+        blocks    : @blocks.getByRegion()
         regions   : @theme.getRegions()
-        weights   :
-            '-3'  : -3
-            '-2'  : -2
-            '-1'  : -1
-            '0'   : 0
-            '1'   : 1
-            '2'   : 2
-            '3'   : 3
+        weights   : $weights
 
     else
 
@@ -101,9 +105,13 @@ module.exports = class Admin extends application.core.AdminController
       @blocks.getByRegionAndName $region, $name, ($err, $block) =>
 
         @theme.view 'edit', $err || {
-          region  : $region
-          name    : $name
-          block   : $block
+          form      :
+            action  : "/block/edit/#{@region}/#{@name}"
+            hidden  :
+                id  : $block.id
+          region    : $region
+          name      : $name
+          block     : $block
         }
 
     else

@@ -35,19 +35,20 @@ exports.directory_map = directory_map = ($source_dir, $directory_depth = 0, $hid
   if is_dir($source_dir)
 
     $filedata = []
-    $new_depth = $directory_depth - 1
     $source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR) + DIRECTORY_SEPARATOR
 
     for $file in fs.readdirSync($source_dir)
       #  Remove '.', '..', and hidden files [optional]
-      if not trim($file, '.') or ($hidden is false and $file[0] is '.')
+      if trim($file, '.').length is 0 or ($hidden is false and $file[0] is '.')
         continue
 
-      if ($directory_depth < 1 or $new_depth > 0) and is_dir($source_dir + $file)
-        $filedata[$file] = directory_map($source_dir + $file + DIRECTORY_SEPARATOR, $new_depth, $hidden)
+      if is_dir($source_dir + $file)
+        if $directory_depth < 1
+          $filedata[$file] = directory_map($source_dir + $file + DIRECTORY_SEPARATOR, $directory_depth - 1, $hidden)
 
       else
-        $filedata.push $file
+        #$filedata.push $file
+        $filedata[$file] = $file
 
     return $filedata
   else

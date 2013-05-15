@@ -220,6 +220,7 @@ exports.form_dropdown = form_dropdown = ($name = '', $options = {}, $selected = 
   #$multiple = if (count($selected) > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
   $multiple = if ($selected.length > 1 and $extra.indexOf('multiple') is -1) then ' multiple="multiple"' else ''
   $form = '<select name="' + $name + '"' + _parse_extra($extra) + $multiple + ">\n"
+
   for $key, $val of $options
     $key = ''+$key
 

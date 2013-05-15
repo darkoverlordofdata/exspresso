@@ -4,18 +4,16 @@
 
         {$header}
 
-        <% if @$menu: %>
-            <div class="clearfix"></div>
-            {$menu}
-        <% end %>
+        <div class="clearfix"></div>
+        {$navigation}
 
         <div class="clearfix"></div>
         <% if @$sidenav: %>
             <div class="row">
-                <div class="span2">
+                <div class="span3">
                     {$sidenav}
                 </div>
-                <div class="span10">
+                <div class="span9">
                     {$content}
                 </div>
             </div>
