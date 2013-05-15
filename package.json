@@ -14,7 +14,7 @@
     "coffee-script": "*",
     "not-php": "*",
     "connect": "*",
-    "sqlite3": "*",
+    "pg": "*",
     "bcrypt": "*",
     "cookie": "*",
     "cookie-signature": "*",
