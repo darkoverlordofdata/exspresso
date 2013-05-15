@@ -1,1 +1,1 @@
-web: node exspresso.js --profile --db sqlite
+web: node exspresso.js --profile --install --db sqlite
