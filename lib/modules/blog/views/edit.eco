@@ -7,7 +7,7 @@
             <%- @form_input('title', @doc.title) %>
         </div>
         <div class="control-group">
-            <%- @ckeditor('blog', @doc.body) %>
+            <%- @ckeditor('blog', @doc.body, height: 380) %>
         </div>
         <div class="control-group">
             <input class="btn btn-primary" name="save" type="submit" value="Save" />

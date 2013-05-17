@@ -474,19 +474,16 @@ module.exports = class CKEditor
     if 'boolean' is typeof($val)
       return if $val then 'true' else 'false'
 
-    if is_int($val)
-      return $val
-
-    if is_float($val)
-      return str_replace(',', '.', $val)
+    if 'number' is typeof($val)
+      return str_replace(',', '.', ''+$val)
 
     if is_array($val) or 'object' is typeof($val)
-      if is_array($val) and (Object.keys($val) is range(0, count($val) - 1))
+      if Array.isArray($val)
         return '[' + implode(',', array_map([@, 'jsEncode'], $val)) + ']'
 
       $temp = []
       for $k, $v of $val
-        $temp.push @jsEncode("{$k}") + ':' + @jsEncode($v)
+        $temp.push @jsEncode("#{$k}") + ':' + @jsEncode($v)
 
       return '{' + $temp.join(',') + '}'
       #return '{' + implode(',', $temp) + '}'
