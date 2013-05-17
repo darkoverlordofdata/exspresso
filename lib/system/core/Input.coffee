@@ -17,6 +17,7 @@
 module.exports = class system.core.Input
 
   os = require('os')
+  net = require('net')
 
   _headers              : null    # The list of HTTP request headers
   _ip_address           : false   # The IP address of the current user
@@ -311,21 +312,7 @@ module.exports = class system.core.Input
   # @return	[Boolean] True if a valid ip
   #
   _valid_ipv4 : ($ip) ->
-    $ip_segments = $ip.split('.')
-
-    #  Always 4 segments needed
-    return false unless Object.keys($ip_segments).length is 4
-
-    #  IP can not start with 0
-    return false if $ip_segments[0][0] is '0'
-
-    #  Check each segment
-    for $segment in $ip_segments
-      #  IP segments must be digits and can not be
-      #  longer than 3 digits or greater then 255
-      if $segment is '' or /[^0-9]/.test($segment) or $segment > 255 or $segment.length > 3
-        return false
-    return true
+    net.isIPv4($ip)
 
   #
   # Validate IPv6 Address
@@ -334,46 +321,8 @@ module.exports = class system.core.Input
   # @param  [String]  ip  the ip string to validate
   # @return	[Boolean] True if a valid ip
   #
-  _valid_ipv6 : ($str) ->
-    #  8 groups, separated by :
-    #  0-ffff per group
-    #  one set of consecutive 0 groups can be collapsed to ::
-
-    $groups = 8
-    $collapsed = false
-
-    $chunks = $item for $item in $str.split(/(:{1,2})/) when $item?
-
-    #  Rule out easy nonsense
-    return false if $chunks[0] is ':' or $chunks[$chunks.length-1] is ':'
-
-    #  PHP supports IPv4-mapped IPv6 addresses, so we'll expect those as well
-    if $chunks[$chunks.length-1].indexOf('.') isnt -1
-      $ipv4 = $chunks.pop()
-
-      if not @_valid_ipv4($ipv4)
-        return false
-
-      $groups--
-
-    while ($seg = $chunks.pop())?
-
-      if $seg[0] is ':'
-        if --$groups is 0
-          return false#  too many groups
-
-      if $seg.length > 2
-        return false#  long separator
-
-      if $seg is '::'
-        if $collapsed
-          return false#  multiple collapsed
-
-        $collapsed = true
-
-      else if /[^0-9a-f]/i.exec($seg)? or $seg.length > 4
-        return false#  invalid segment
-    return $collapsed or $groups is 1
+  _valid_ipv6 : ($ip) ->
+    net.isIPv6($ip)
 
   # Sanitize Globals
   #

@@ -1,5 +1,5 @@
 {$doctype}
-<html>
+<html lang="{$language}">
 <head>
     <title>{$title}</title>
     {$meta}

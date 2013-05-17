@@ -27,9 +27,8 @@ exports.favicon =      'favicon.png'
 exports.meta = [
   {type: 'charset',       name: 'UTF-8'}
   {name: 'author',        content: 'darkoverlordofdata'}
-  {name: 'copyright',     content: 'darkoverlordofdata'}
-  {name: 'resource-type', content: 'document'}
-  {name: 'language',      content: 'en'}
-  {name: 'viewport',      content: 'width=device-width, initial-scale=1.0'}
+  {name: 'copyright',     content: '2012 - 2013 Dark Overlord of Data'}
+  {name: 'language',      content: 'english'}
+  {name: 'description',   content: 'Coffee-script web app framework'}
 ]
 

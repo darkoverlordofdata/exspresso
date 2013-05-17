@@ -30,6 +30,13 @@ module.exports = class modules.blog.models.Blogs extends system.core.Model
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
+
+  #
+  # Pre Load the categories
+  #
+  # @return [Void]
+  #
+  preload_cache: () ->
     @queue @_load_categories
 
   #

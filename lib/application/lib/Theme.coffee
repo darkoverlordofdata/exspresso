@@ -57,6 +57,7 @@ module.exports = class application.lib.Theme extends system.lib.Parser
   _title              : config_item('site_name')
   _site_name          : config_item('site_name')
   _site_slogan        : config_item('site_slogan')
+  _language           : config_item('language')
   _doctype            : 'html5'
   _layout             : 'html'
   _theme_name         : 'default'
@@ -437,10 +438,11 @@ module.exports = class application.lib.Theme extends system.lib.Parser
       $logo             : @_logo
       $site_name        : @_site_name
       $site_slogan      : @_site_slogan
+      $language         : @_language
       $menu             : @_menu
       $breadcrumb       : if @breadcrumb? then @breadcrumb.output() else ''
       $sidenav          : if @_admin then @html.sidenav($admin_menu, @_active) else ''
-      $flash            : @html.flash($error, $info)
+      $message          : @html.flash($error, $info)
       $sidebar_first    : ''
       $sidebar_second   : ''
       $profile          : if @output._enable_profiler then system.lib.Profiler::button else ''

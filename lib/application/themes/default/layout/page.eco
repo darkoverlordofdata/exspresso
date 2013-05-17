@@ -21,9 +21,9 @@
             {$content}
         <% end %>
 
-        <% if @$flash: %>
+        <% if @$message: %>
             <div class="clearfix"></div>
-            {$flash}
+            {$message}
         <% end %>
 
         <% if @$sidebar_first || @$sidebar_second: %>

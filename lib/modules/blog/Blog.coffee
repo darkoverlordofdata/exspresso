@@ -34,5 +34,6 @@ module.exports = class Blog extends application.core.Module
   initialize: () ->
     @controller.load.model 'Blogs'
     @controller.blogs.install() if @controller.install
+    @controller.blogs.preload_cache()
 
 

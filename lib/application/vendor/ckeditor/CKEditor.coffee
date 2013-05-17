@@ -27,10 +27,10 @@
 # <%- $CKEditor.editor("editor1", "<p>Initial value.</p>") %>
 # @endcode
 #
-class CKEditor
+module.exports = class CKEditor
 
   #
-  # import api
+  # import the compatability api
   #
   log_message 'debug', 'CKEditor loading not-php api'
   api = require('not-php')
@@ -496,4 +496,3 @@ class CKEditor
     if substr($val.toUpperCase(), 0, 9) is 'CKEDITOR.' then return $val
     return '"' + str_replace(["\\", "/", "\n", "\t", "\r", "\x08", "\x0c", '"'], ['\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"'], $val) + '"'
 
-module.exports = CKEditor

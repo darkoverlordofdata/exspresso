@@ -1,5 +1,11 @@
 # To Do:
 
+move assets into theme
+fix welcome links -> github
+fix cancel button on /admin/blocks
+blog - which goes on front page? Use page/front.eco to display the current blog item
+fix meta - not showing up on all pages
+
 ### Migrations
 
     BUG: Insert batch limited to 100 recs
