@@ -16,6 +16,7 @@
 #
 module.exports = class modules.blog.models.Blogs extends system.core.Model
 
+  _load_categories  = false
   _categories       : null  # category table cache
   _category_names   : null  # hash of category names for drop-down list
 
@@ -30,16 +31,9 @@ module.exports = class modules.blog.models.Blogs extends system.core.Model
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
-    @queue @_load_categories
+    if _load_categories then @queue @_load_categories
+    _load_categories = true
 
-
-  #
-  # Pre Load the categories
-  #
-  # @return [Void]
-  #
-  preload_cache: () ->
-    @queue @_load_categories
 
   #
   # Get all
