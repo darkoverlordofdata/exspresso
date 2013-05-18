@@ -25,9 +25,10 @@ module.exports = class Home extends application.core.PublicController
   #
   # Display the home page
   #
-  #   @access	public
-  # @return [Void]  #
-  indexAction: ->
+  # @access	public
+  # @return [Void]
+  #
+  indexActionz: ->
 
     @db.from 'blogs'
     @db.where 'id', '1'
@@ -35,5 +36,14 @@ module.exports = class Home extends application.core.PublicController
 
       @theme.view 'home_page', $err ||
         blog: $blog.row()
+
+
+  indexAction: ->
+
+    @load.model 'Blogs'
+    @blogs.getLatest ($err, $blog) =>
+
+      @theme.view 'home_page', $err ||
+      blog: $blog
 
 

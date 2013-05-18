@@ -10,8 +10,8 @@
             <%- @ckeditor('blog', @doc.body, height: 380) %>
         </div>
         <div class="control-group">
-            <input class="btn btn-primary" name="save" type="submit" value="Save" />
-            <input class="btn" name="cancel" type="submit" value="Cancel" />
+            <%- @form_submit(name: 'save', value: 'Save', class: 'btn btn-primary') %>
+            <%- @form_submit(name: 'cancel', value: 'Cancel', class: 'btn') %>
         </div>
         <%- @form_close() %>
     </div>

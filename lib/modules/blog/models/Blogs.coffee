@@ -30,6 +30,8 @@ module.exports = class modules.blog.models.Blogs extends system.core.Model
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
+    @queue @_load_categories
+
 
   #
   # Pre Load the categories
@@ -65,6 +67,19 @@ module.exports = class modules.blog.models.Blogs extends system.core.Model
   getById: ($id, $next) ->
     @db.from 'blogs'
     @db.where 'id', $id
+    @db.get ($err, $blogs) ->
+      return $next($err) if $err?
+      $next null, $blogs.row()
+
+  #
+  # Get the most recently updated article
+  #
+  # @return [Void]
+  #
+  getLatest: ($next) ->
+    @db.from 'blogs'
+    @db.orderBy 'updated_on', 'desc'
+    @db.limit 1
     @db.get ($err, $blogs) ->
       return $next($err) if $err?
       $next null, $blogs.row()

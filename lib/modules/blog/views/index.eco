@@ -43,7 +43,7 @@
         <div class="span11"></div>
         <div class="span1">
             <% if @user.isLoggedIn: %>
-            <p><%- @anchor("blog/new", "New", class: "btn-primary btn") %></p>
+            <p><%- @anchor("blog/create", "New", class: "btn-primary btn") %></p>
             <% end %>
         </div>
     </div>

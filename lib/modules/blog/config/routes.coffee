@@ -7,8 +7,7 @@ module.exports =
   '/blog'                              : 'blog/Blog/index'
   '/blog/show/:id'                     : 'blog/Blog/show'
   '/blog/edit/:id'                     : 'blog/Blog/edit'
-  '/blog/del/:id'                      : 'blog/Blog/delele'
-  '/blog/new'                          : 'blog/Blog/new'
+  '/blog/del/:id'                      : 'blog/Blog/delete'
   '/blog/save'                         : 'blog/Blog/save'
   '/blog/create'                       : 'blog/Blog/create'
 

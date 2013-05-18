@@ -151,7 +151,7 @@ module.exports = class Blog extends application.core.AdminController
         @session.setFlashdata 'error', 'Not an owner of this document'
         return @redirect '/blog'
 
-      @blogs.delete $id, ($err) =>
+      @blogs.deleteById $id, ($err) =>
 
         #
         # Show the status of the delete
@@ -187,6 +187,7 @@ module.exports = class Blog extends application.core.AdminController
       @theme.view 'create',
         form        :
           action    : "/blog/create"
+        category    : "Article"
     else
 
       if @input.post('cancel')?
