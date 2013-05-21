@@ -43,7 +43,7 @@
     <img id="pic" height="300"/>
 
     <label>Notes:</label>
-    <textarea id="description" name="description" class="span3" rows='9'></textarea>
+    <textarea id="description" name="description" class="span4" rows='9'></textarea>
     </div>
 
     </form>
