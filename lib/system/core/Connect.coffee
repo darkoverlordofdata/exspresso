@@ -121,7 +121,7 @@ module.exports = class system.core.Connect
     # initialize modules
     #
     for $name, $module of @config.modules
-      $module.initialize() if $module.initialize?
+      $module.initialize(@app) if $module.initialize?
 
     #
     # Register the exception handler
@@ -196,6 +196,11 @@ module.exports = class system.core.Connect
     #
     @app.use $driver.static(APPPATH+"assets/")
     @app.use $driver.static(DOCPATH) unless DOCPATH is false
+    for $name, $module of @config.modules
+      if is_dir($module.path+"/assets/")
+        @app.use $driver.static($module.path+"/assets/")
+        console.log $module.path
+
 
     #
     # Favorites icon
@@ -215,6 +220,21 @@ module.exports = class system.core.Connect
       #
       if @config.item('base_url') is ''
         @config.setItem('base_url', protocol($req.connection.encrypted)+'://'+ $req.headers['host'])
+
+      #
+      # Send JSON
+      #
+      # Send object as JSON
+      #
+      # @private
+      # @param [Object] data  hash of variables to render with template
+      # @return [Void]
+      #
+      $res.json = ($data = {}) ->
+        $res.writeHead 200,
+          'Content-Type'    : 'application/json; charset=utf-8'
+        $res.end JSON.stringify($data)
+        return
 
       #
       # Render the view

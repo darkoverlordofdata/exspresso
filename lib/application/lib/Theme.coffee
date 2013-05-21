@@ -176,8 +176,15 @@ module.exports = class application.lib.Theme extends system.lib.Parser
       if @_theme.css[$name]?
         @setCss @_theme.css[$name]
 
-      if @_theme.script[$name]?
+      else if @_theme.script[$name]?
         @setScript @_theme.script[$name]
+
+      else if $name.substr(-4) is '.css'
+        @setCss $name
+
+      else if $name.substr(-3) is '.js'
+        @setScript $name
+
     return
 
   #

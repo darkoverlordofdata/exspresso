@@ -1,4 +1,4 @@
-# [Exspresso v0.9.4] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.9.5] (https://github.com/darkoverlordofdata/exspresso)
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 

@@ -151,7 +151,10 @@ module.exports = class system.db.Forge
     if Array.isArray($data)
       @data = $data
     else
-      @data = [$data]
+      if @data is null
+        @data = [$data]
+      else
+        @data.push $data
   
   #
   # Create Table

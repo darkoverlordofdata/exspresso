@@ -1,9 +1,22 @@
 <ul class="nav nav-tabs">
     <% for $name, $item of @$menu: %>
-        <% if $item.uri is '/'+@uri.segment(1, ''): %>
-        <li class="active"><a href="<%- $item.uri %>"><%- $name %></a></li>
+        <% if $item.uri? : %>
+            <% if $item.uri is '/'+@uri.segment(1, ''): %>
+            <li class="active"><a href="<%- $item.uri %>"><%- $name %></a></li>
+            <% else: %>
+            <li><a href="<%- $item.uri %>" title="<%- $item.tip %>"><%- $name %></a></li>
+            <% end %>
         <% else: %>
-        <li><a href="<%- $item.uri %>" title="<%- $item.tip %>"><%- $name %></a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%- $name %><b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                <% for $subname, $subitem of $item: %>
+                    <li><a href="<%- $subitem.uri %>" title="<%- $subitem.tip %>">
+                        <%- $subname %>
+                    </a></li>
+                <% end %>
+                </ul>
+            </li>
         <% end %>
     <% end %>
 </ul>

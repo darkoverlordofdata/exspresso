@@ -1,0 +1,52 @@
+<div class="row">
+	<input type="text" id="searchKey" class="input-medium search-query"/>
+	<button id="btnSearch" class="btn btn-primary">Search</button>
+	<button id="btnAdd" class="btn">New Wine</button>
+</div>
+
+<p></p>
+<div class="row">
+
+    <div class="span4">
+    <ul id="wineList" class="nav nav-tabs nav-stacked"></ul>
+    </div>
+
+    <form id="wineForm">
+
+    <div class="span4">
+
+    <label>Id:</label>
+    <input id="wineId" name="id" type="text" disabled  class="span4"/>
+
+    <label>Name:</label>
+    <input type="text" id="name" name="name" required class="span4">
+
+    <label>Grapes:</label>
+    <input type="text" id="grapes" name="grapes" class="span4"/>
+
+    <label>Country:</label>
+    <input type="text" id="country" name="country" class="span4"/>
+
+    <label>Region:</label>
+    <input type="text" id="region" name="region" class="span4"/>
+
+    <label>Year:</label>
+    <input type="text" id="year" name="year" class="span4"/>
+
+    <button id="btnSave" class="btn">Save</button>
+    <button id="btnDelete" class="btn btn-danger">Delete</button>
+
+    </div>
+
+    <div class="span3">
+
+    <img id="pic" height="300"/>
+
+    <label>Notes:</label>
+    <textarea id="description" name="description" class="span3" rows='9'></textarea>
+    </div>
+
+    </form>
+</div>
+
+

@@ -16,7 +16,7 @@
 #
 module.exports = class modules.blog.models.Blogs extends system.core.Model
 
-  _load_categories  = false
+  _categories_load  = false # skip 1st instantiation
   _categories       : null  # category table cache
   _category_names   : null  # hash of category names for drop-down list
 
@@ -31,8 +31,8 @@ module.exports = class modules.blog.models.Blogs extends system.core.Model
       _categories       : {writeable: false, value: []}
       _category_names   : {writeable: false, value: {}}
 
-    if _load_categories then @queue @_load_categories
-    _load_categories = true
+    if _categories_load then @queue @_load_categories
+    _categories_load = true
 
 
   #

@@ -45,9 +45,13 @@ exports.menu =
   Home    :
     uri   : '/'
     tip   : 'Blog'
-  Travel  :
-    uri   : '/travel'
-    tip   : 'DB Demo'
+  Demos:
+    Travel  :
+      uri   : '/travel'
+      tip   : 'DB Demo'
+    Wine  :
+      uri   : '/wines'
+      tip   : 'Ajax Demo'
   Admin   :
     uri   : '/admin'
     tip   : 'Login'
@@ -63,13 +67,16 @@ exports.script =
     'js/jquery-1.8.1.min.js'
     'js/jquery-ui-1.8.24.custom.min.js'
     'js/bootstrap.min.js'
+    """
+    Exspresso_base_url = "#{config_item('base_url')}";
+    """
   ]
   ckeditor: 'ckeditor/ckeditor.js'
   prettify: [
     'google-code-prettify/prettify.js'
     """
     $(function() {
-    prettyPrint();
+      prettyPrint();
     });
     """
   ]
