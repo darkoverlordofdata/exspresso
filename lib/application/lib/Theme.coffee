@@ -442,6 +442,8 @@ module.exports = class application.lib.Theme extends system.lib.Parser
     # define standard template variables
     #
     @set
+      $ga_account       : config_item('ga_account')
+      $ga_domain        : config_item('ga_domain')
       $doctype          : if @_doctype then @html.doctype(@_doctype) else 'html5'
       $meta             : if @_metadata then @html.meta(@_metadata) else ''
       $style            : $css.join("\n")

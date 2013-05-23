@@ -1,6 +1,8 @@
 module.exports =
 
   title: 'Exspresso CoffeeScript Web Framework'
+  ga_account: 'UA-41153554-2'
+  ga_domain: 'herokuapp.com'
   #|
   #|--------------------------------------------------------------------------
   #| Site Name

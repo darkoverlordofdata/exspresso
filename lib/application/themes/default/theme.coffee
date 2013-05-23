@@ -31,6 +31,7 @@ exports.regions =
   content         : 'Content'
   footer          : 'Footer'
   bottom          : 'Page bottom'
+  analytics       : 'Google Analytics'
 
 
 #
