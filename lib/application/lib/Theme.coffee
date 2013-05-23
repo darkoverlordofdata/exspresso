@@ -54,7 +54,7 @@ module.exports = class application.lib.Theme extends system.lib.Parser
   breadcrumb: null
 
   _logo               : config_item('logo')
-  _title              : config_item('site_name')
+  _title              : config_item('title')
   _site_name          : config_item('site_name')
   _site_slogan        : config_item('site_slogan')
   _language           : config_item('language')

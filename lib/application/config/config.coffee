@@ -1,5 +1,6 @@
 module.exports =
 
+  title: 'Exspresso CoffeeScript Web Framework'
   #|
   #|--------------------------------------------------------------------------
   #| Site Name
