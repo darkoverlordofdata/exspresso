@@ -52,6 +52,9 @@ exports.menu =
     Wine  :
       uri   : '/wines'
       tip   : 'Ajax Demo'
+    Katra  :
+      uri   : '/katra'
+      tip   : 'Live Long And Prosper'
   Admin   :
     uri   : '/admin'
     tip   : 'Login'
@@ -72,6 +75,7 @@ exports.script =
     """
   ]
   ckeditor: 'ckeditor/ckeditor.js'
+  coffeescript: 'js/coffee-script.js'
   prettify: [
     'google-code-prettify/prettify.js'
     """

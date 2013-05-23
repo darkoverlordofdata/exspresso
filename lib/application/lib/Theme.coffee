@@ -168,9 +168,9 @@ module.exports = class application.lib.Theme extends system.lib.Parser
   #
   use: ($extra...) ->
 
-    if @output._enable_profiler is true
-      if $extra.indexOf('prettify') is -1
-        $extra.push 'prettify'
+    #if @output._enable_profiler is true
+    #  if $extra.indexOf('prettify') is -1
+    #    $extra.push 'prettify'
 
     for $name in $extra
       if @_theme.css[$name]?
@@ -183,6 +183,9 @@ module.exports = class application.lib.Theme extends system.lib.Parser
         @setCss $name
 
       else if $name.substr(-3) is '.js'
+        @setScript $name
+
+      else if $name.substr(-7) is '.coffee'
         @setScript $name
 
     return
@@ -402,6 +405,8 @@ module.exports = class application.lib.Theme extends system.lib.Parser
     for $str in @_script
       if $str.substr(-3) is '.js'
         $script.push @html.javascript_tag($str)
+      else if $str.substr(-7) is '.coffee'
+        $script.push @html.javascript_tag($str, 'text/coffeescript')
       else
         $script.push @html.javascript_decl($str)
 

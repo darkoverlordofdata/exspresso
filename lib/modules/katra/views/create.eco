@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row">
+        <%- @form_open(@form.action) %>
+        <div class="control-group">
+            <%- @form_label('Title:', 'title', class:'control-label', size: 160) %>
+            <%- @form_input('title', '') %>
+        </div>
+        <div class="control-group">
+            <%- @form_label('Notes:', 'notes', class:'control-label', size: 160) %>
+            <%- @form_input('notes', '') %>
+        </div>
+        <div class="control-group">
+            <textarea name='katra' cols=80 rows=24 class='span12' placeholder='Enter Basic Code'></textarea>
+        </div>
+        <div class="control-group">
+            <input class="btn btn-primary" name="save" type="submit" value="Save" />
+            <input class="btn" name="cancel" type="submit" value="Cancel" />
+        </div>
+        <%- @form_close() %>
+    </div>
+</div>

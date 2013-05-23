@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <%- @form_open(@form.action) %>
+        <%- @form_hidden(@form.hidden) %>
+        <div class="control-group">
+            <%- @form_label('Title:', 'title', class:'control-label') %>
+            <%- @form_input('title', @doc.title) %>
+        </div>
+        <div class="control-group">
+            <%- @form_label('Notes:', 'notes', class:'control-label') %>
+            <%- @form_input('notes', @doc.notes) %>
+        </div>
+        <div class="control-group">
+            <textarea name='katra' cols=80 rows=24 class='span12'><%= html_entity_decode(@doc.code) %></textarea>
+        </div>
+        <div class="control-group">
+            <%- @form_submit(name: 'save', value: 'Save', class: 'btn btn-primary') %>
+            <%- @form_submit(name: 'cancel', value: 'Cancel', class: 'btn') %>
+        </div>
+        <%- @form_close() %>
+    </div>
+</div>

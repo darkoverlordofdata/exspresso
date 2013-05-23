@@ -22,5 +22,7 @@ module.exports = class Wine extends application.core.PublicController
   # @return [Void]
   #
   indexAction: () ->
-    @theme.use 'js/wines.js'
+    @theme.use 'coffeescript'
+    #@theme.use 'js/wines.js'
+    @theme.use 'js/wines.coffee'
     @theme.view 'index'

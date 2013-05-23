@@ -712,6 +712,7 @@ module.exports.htmlspecialchars = ($str) ->
   (''+$str)
     .replace(/\&/g, "&amp;")
     .replace(/\"/g, "&quot;")
+    .replace(/\'/g, "&#39;")
     .replace(/\</g, "&lt;")
     .replace(/\>/g, "&gt;")
 
@@ -720,6 +721,7 @@ module.exports.html_entity_decode = ($str) ->
   (''+$str)
     .replace(/\&amp;/g, "&")
     .replace(/\&quot;/g, '"')
+    .replace(/\&#39;/g, '\'')
     .replace(/\&lt;/g, "<")
     .replace(/\&gt;/g, ">")
 

@@ -27,7 +27,7 @@ module.exports = class system.db.ActiveRecord extends system.db.Driver
   ar_having:          null
   ar_keys:            null
   ar_limit:           false
-  ar_offset:          false
+  ar_offset:          0
   ar_order:           false
   ar_orderby:         null
   ar_set:             null
@@ -1536,7 +1536,7 @@ module.exports = class system.db.ActiveRecord extends system.db.Driver
       ar_aliased_tables:[]
       ar_distinct:false
       ar_limit:false
-      ar_offset:false
+      ar_offset:0
       ar_order:false
 
     @_reset_run($ar_reset_items)

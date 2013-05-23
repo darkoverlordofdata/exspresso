@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| home.coffee
+#| Blog.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -12,28 +12,27 @@
 #+--------------------------------------------------------------------+
 
 #
-#	  Home Page Controller
+#	Blog Module
 #
-#
-#
-require APPPATH+'core/PublicController.coffee'
+require APPPATH+'core/Module.coffee'
 
-module.exports = class Home extends application.core.PublicController
+module.exports = class Katra extends application.core.Module
+
+  name          : 'Katra'
+  description   : ''
+  path          : __dirname
+  active        : true
 
   #
-  # Index
+  # Initialize the module
   #
-  # Display the home page
+  #   Install if needed
+  #   Load the categories
   #
-  # @access	public
   # @return [Void]
   #
-  indexAction: ->
-
-    @load.model 'Blogs'
-    @blogs.getLatest ($err, $blog) =>
-
-      @theme.view 'home_page', $err ||
-        blog: $blog
+  initialize: () ->
+    @controller.load.model 'Katras'
+    @controller.katras.install() if @controller.install
 
 

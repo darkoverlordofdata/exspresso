@@ -247,7 +247,7 @@ module.exports = class system.db.Driver
     if @_save_queries is true
       @queries.push $sql
 
-    #log_message 'debug', 'SQL>\n%s', $sql
+    #log_message 'debug', 'SQL>\n\n%s\n', $sql
 
     #  Start the Query Timer
     $time_start = Date.now()

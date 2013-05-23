@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| home.coffee
+#| admin.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -10,30 +10,29 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
+#
+#	Admin Blog
+#
+require APPPATH+'core/AdminController.coffee'
 
-#
-#	  Home Page Controller
-#
-#
-#
-require APPPATH+'core/PublicController.coffee'
+module.exports = class Admin extends application.core.AdminController
 
-module.exports = class Home extends application.core.PublicController
+  constructor: ($args...) ->
+
+    super $args...
+    @load.model 'Blogs', 'blog'
+    @theme.setAdminMenu 'Blog'
 
   #
-  # Index
-  #
-  # Display the home page
-  #
-  # @access	public
-  # @return [Void]
+  # Blog Categories/Options
   #
   indexAction: ->
+    @load.library 'table'
 
-    @load.model 'Blogs'
-    @blogs.getLatest ($err, $blog) =>
+    @theme.view 'admin/list'
 
-      @theme.view 'home_page', $err ||
-        blog: $blog
+
+
+  newCategoryAction: ->
 
 

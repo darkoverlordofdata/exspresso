@@ -1,0 +1,123 @@
+/*
+Document   : katra
+Created on : Jul 19, 2012, 3:37:25 PM
+Author     : BruceDavidson@darkoverlordofdata.com
+Description:
+Purpose of the stylesheet follows.
+*/
+
+
+.user-picture img {
+	height: 32px;
+	width: 32px;
+}
+
+.katra-border {
+	border-style: solid;
+	border-width: 1;
+	border-color: #cdcdcd;
+}
+/* line 9, ../sass/katra.scss */
+.katra-input-panel {
+	/*
+  width: 650px;
+  height: 160px;
+  overflow: scroll; */
+  vertical-align: top;
+  border-radius: 5px;
+}
+
+/* line 16, ../sass/katra.scss */
+.katra-output-panel {
+	/*
+  width: 650px;
+  height: 290px;
+  overflow: scroll; */
+  vertical-align: top;
+  background-color: #efefef;
+  border-radius: 5px;
+  font-family: Droid Mono;
+  font-size: 12px;
+}
+
+.katra-source-panel {
+	/*
+  width: 650px;
+  height: 290px;
+  overflow: scroll; */
+  vertical-align: top;
+  background-color: #efefef;
+  border-radius: 5px;
+  font-family: Droid Mono;
+  font-size: 12px;
+}
+
+/* line 26, ../sass/katra.scss */
+.katra-logger-panel {
+	/*
+  width: 650px;
+  height: 290px;
+  overflow: scroll; */
+  vertical-align: top;
+  background-color: #efefef;
+  border-radius: 5px;
+  font-family: Droid Mono;
+  font-size: 12px;
+}
+
+/* line 37, ../sass/katra.scss */
+.katra-source {
+  /*display: none;*/
+  font-size: 12px; 
+}
+
+/* Runtime UI console styles */
+/* line 44, ../sass/katra.scss */
+div.notice {
+  background-color: cornsilk;
+}
+
+/* line 48, ../sass/katra.scss */
+div.runtime {
+  font-size: 14px;
+  /* margin-top:1em; */
+  font-family: monospace;
+}
+/* line 53, ../sass/katra.scss */
+div.runtime div.jquery-console-inner {
+	/*
+  width: 625px;
+  height: 50px;
+  overflow: scroll;
+*/
+  background: #efefef;
+  padding: 0.5em;
+}
+/* line 60, ../sass/katra.scss */
+div.runtime div.jquery-console-prompt-box {
+  color: #444;
+  font-family: monospace;
+}
+/* line 64, ../sass/katra.scss */
+div.runtime div.jquery-console-focus span.jquery-console-cursor {
+  background: #444;
+  color: #eee;
+  font-weight: bold;
+}
+/* line 68, ../sass/katra.scss */
+div.runtime div.jquery-console-message-error {
+  color: #ef0505;
+  font-family: sans-serif;
+  font-weight: bold;
+  padding: 0.1em;
+}
+/* line 74, ../sass/katra.scss */
+div.runtime div.jquery-console-message-success {
+  color: #187718;
+  font-family: monospace;
+  padding: 0.1em;
+}
+/* line 79, ../sass/katra.scss */
+div.runtime span.jquery-console-prompt-label {
+  font-weight: bold;
+}
