@@ -1,8 +1,16 @@
 module.exports =
 
-  title: 'Exspresso CoffeeScript Web Framework'
+  #|
+  #|--------------------------------------------------------------------------
+  #| Google Analytics
+  #|--------------------------------------------------------------------------
+  #|
+  #| Account and Domain
+  #|
+  #|
   ga_account: 'UA-41153554-2'
   ga_domain: 'herokuapp.com'
+
   #|
   #|--------------------------------------------------------------------------
   #| Site Name
@@ -11,7 +19,7 @@ module.exports =
   #| Title for your site
   #|
   #|
-  site_name: 'Dark Overlord of Data'
+  site_name: 'Exspresso'
 
   #|
   #|--------------------------------------------------------------------------
@@ -19,29 +27,8 @@ module.exports =
   #|--------------------------------------------------------------------------
   #|
   #| A Catchy Jingle
-  #|  Until there is something darker, black will do.
   #|
-  site_slogan: "\"If It Isn\'t Dark, It Just Isn\'t Data\""
-
-  #|
-  #|--------------------------------------------------------------------------
-  #| Copyright
-  #|--------------------------------------------------------------------------
-  #|
-  #| Copyright info (html)
-  #|
-  #|
-  copyright: '&copy; Copyright 2012 - 2013 by Dark Overlord of Data'
-
-  #|
-  #|--------------------------------------------------------------------------
-  #| Powered By Exspresso
-  #|--------------------------------------------------------------------------
-  #|
-  #| Shameless plug.
-  #|
-  #|
-  poweredby: 'powered by &nbsp; <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>'
+  site_slogan: "CoffeeScript Web Framework"
 
   #|
   #|--------------------------------------------------------------------------
