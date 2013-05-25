@@ -278,7 +278,8 @@ exports.stylesheet = ($content = '', $type = 'text/css') ->
 # @return	[String]
 #
 exports.javascript_tag = ($src = '', $type = 'text/javascript') ->
-  $src = exspresso.config.slashItem('base_url')+$src
+  if $src.indexOf('://') is -1
+    $src = exspresso.config.slashItem('base_url')+$src
   "<script src=\"#{$src}\" type=\"#{$type}\"></script>"
 
 #

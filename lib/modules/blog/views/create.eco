@@ -10,7 +10,7 @@
             <%- @form_dropdown('category', @blogs.getCategoryNames(), @category, size:1) %>
         </div>
         <div class="control-group">
-            <%- @ckeditor('blog', '', height: 380) %>
+            <textarea name='blog' id='blog' class='blog'></textarea>
         </div>
         <div class="control-group">
             <input class="btn btn-primary" name="save" type="submit" value="Save" />
