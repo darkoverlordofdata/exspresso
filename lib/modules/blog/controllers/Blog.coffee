@@ -72,7 +72,6 @@ module.exports = class Blog extends application.core.AdminController
       return @redirect '/blog'
 
     @theme.use 'ckeditor'
-    @theme.use 'js/textarea.blog.js'
 
     @validation.setRules 'title', 'Blog Title', 'required'
     if @validation.run() is false

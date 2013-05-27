@@ -76,7 +76,14 @@ exports.script =
     """
   ]
   #ckeditor: 'ckeditor/ckeditor.js'
-  ckeditor: '//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
+  ckeditor: [
+    '//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
+    """
+    CKEDITOR.replace( 'blog', {
+      extraPlugins: 'divarea'
+    });
+    """
+  ]
   tinymce: '//tinymce.cachefly.net/4.0/tinymce.min.js'
   coffeescript: '//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js'
   prettify: [
