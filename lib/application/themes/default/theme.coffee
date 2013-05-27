@@ -75,9 +75,10 @@ exports.script =
     Exspresso_base_url = "#{config_item('base_url')}";
     """
   ]
-  #ckeditor: 'ckeditor/ckeditor.js'
+
   ckeditor: [
-    '//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
+    'ckeditor/ckeditor.js'
+    #'//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
     """
     CKEDITOR.replace( 'blog', {
       extraPlugins: 'divarea'
