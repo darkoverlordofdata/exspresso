@@ -7,7 +7,10 @@
             <%- @form_input('title', @doc.title) %>
         </div>
         <div class="control-group">
-            <%- @ckeditor('blog', @doc.body, height: 380) %>
+            <!--
+            <div id='blog' contenteditable="true"><%- @doc.body %></div>
+            -->
+            <textarea name='blog' id='blog' class='ckeditor' rows=24 cols=80><%- @doc.body %></textarea>
         </div>
         <div class="control-group">
             <%- @form_submit(name: 'save', value: 'Save', class: 'btn btn-primary') %>

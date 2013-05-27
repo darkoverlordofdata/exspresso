@@ -68,19 +68,19 @@ exports.menu =
 #
 exports.script =
   default: [
-    'http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'
-    'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js'
-    'http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js'
+    '//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'
+    '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js'
+    '//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js'
     """
     Exspresso_base_url = "#{config_item('base_url')}";
     """
   ]
-  tinymce: 'http://tinymce.cachefly.net/4.0/tinymce.min.js'
-  ckeditor: 'ckeditor/ckeditor.js'
-  coffeescript: 'http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js'
+  #ckeditor: 'ckeditor/ckeditor.js'
+  ckeditor: '//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
+  tinymce: '//tinymce.cachefly.net/4.0/tinymce.min.js'
+  coffeescript: '//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js'
   prettify: [
-    'https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js'
-    #'google-code-prettify/prettify.js'
+    '//google-code-prettify.googlecode.com/svn/loader/run_prettify.js'
     """
     $(function() {
       prettyPrint();
@@ -95,14 +95,12 @@ exports.script =
 #
 exports.css =
   default: [
-    #'http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css'
     'css/bootstrap.min.css'
     'css/site.css'
     'css/jquery-ui-1.8.24.custom.css'
   ]
   prettify:  [
-    'https://google-code-prettify.googlecode.com/svn/loader/prettify.css'
-    #'google-code-prettify/prettify.css'
+    '//google-code-prettify.googlecode.com/svn/loader/prettify.css'
     """
     code {font-size: 100%};
     """

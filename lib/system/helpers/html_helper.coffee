@@ -233,7 +233,7 @@ exports.link_tag = link_tag = ($href = '', $rel = 'stylesheet', $type = 'text/cs
     $link+="/>"
 
   else
-    if $href.indexOf('://') isnt -1
+    if $href.indexOf('://') isnt -1 or $href.substr(0,2) is '//'
       $link+='href="' + $href + '" '
 
     else if $index_page is true
@@ -278,7 +278,7 @@ exports.stylesheet = ($content = '', $type = 'text/css') ->
 # @return	[String]
 #
 exports.javascript_tag = ($src = '', $type = 'text/javascript') ->
-  if $src.indexOf('://') is -1
+  if $src.indexOf('//') is -1
     $src = exspresso.config.slashItem('base_url')+$src
   "<script src=\"#{$src}\" type=\"#{$type}\"></script>"
 

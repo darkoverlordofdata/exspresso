@@ -71,9 +71,8 @@ module.exports = class Blog extends application.core.AdminController
       @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @theme.use 'tinymce'
-    @theme.use 'js/coffee-script.js'
-    @theme.use 'js/textarea.blog.coffee'
+    @theme.use 'ckeditor'
+    @theme.use 'js/textarea.blog.js'
 
     @validation.setRules 'title', 'Blog Title', 'required'
     if @validation.run() is false
@@ -82,7 +81,7 @@ module.exports = class Blog extends application.core.AdminController
       # Edit the article
       #
       @blogs.getById $id, ($err, $doc) =>
-        @theme.view 'edit', $err || {
+        @theme.view 'editz', $err || {
           form        :
             action    : "/blog/edit/#{$id}"
             hidden    :

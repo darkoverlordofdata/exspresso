@@ -1,10 +1,12 @@
 <div class="container">
     <p></p>
     <div class="row">
+        <h3><%= @blog.title %></h3>
+    </div>
+    <div class="row">
         <%- @blog.body %>
     </div>
-    <p class="row"></p>
     <p class="row">
-        <%- @anchor("blog", "All blogs") %>
+        <%- @anchor("blog", "List all") %>
     </p>
 </div>

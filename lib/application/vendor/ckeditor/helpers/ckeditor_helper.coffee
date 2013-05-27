@@ -31,6 +31,7 @@ exports.ckeditor = ckeditor = ($name, $value = "", $config = {}, $events = {}) -
 
   CKEditor = require('../CKEditor.coffee')
   $ckeditor = new CKEditor('/ckeditor/')
+
   $ckeditor.returnOutput = true
   return $ckeditor.editor($name, $value, $config, $events)
 
