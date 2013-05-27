@@ -20,7 +20,6 @@
     "cookie-signature": "*",
     "dispatch": "*",
     "eco": "*",
-    "connect-cachify": "*",
     "emailjs": "*",
     "marked": "*",
     "format-number": "",
