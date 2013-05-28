@@ -78,8 +78,8 @@ exports.script =
 
   ckeditor: [
     #'ckeditor/ckeditor.js'
-    #'//d16acdn.herokuapp.com/libs/ckeditor/4.1.1/full+/ckeditor.js'
-    '//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
+    '//d16acdn.herokuapp.com/ckeditor/ckeditor.js'
+    #'//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
     """
     CKEDITOR.replace( 'blog', {
       extraPlugins: 'divarea'
