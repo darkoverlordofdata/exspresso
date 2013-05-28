@@ -2,7 +2,13 @@
   "name": "exspresso",
   "version": "0.9.5",
   "description": "A CoffeeScript framework inspired by CodeIgniter",
-  "keywords": ["framework", "web", "coffee-script", "mvc", "desktop"],
+  "keywords": [
+    "framework",
+    "web",
+    "coffee-script",
+    "mvc",
+    "desktop"
+  ],
   "author": "bruce davidson <darkoverlordofdata@gmail.com>",
   "contributors": [
     {
@@ -26,7 +32,9 @@
     "moment": "*",
     "sprintf": "*",
     "glob": "*",
-    "utf8": "*"
+    "utf8": "*",
+    "local-cdn": "~0.2.2",
+    "uglify-js": "~2.3.6"
   },
   "scripts": {
     "start": "foreman start web",

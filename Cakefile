@@ -123,3 +123,39 @@ task "build:desktop", "build desktop launcher", (options) ->
 
 
     console.log 'Ok.'
+
+
+#
+# Build cdn assets
+#
+task "build:assets", "build assets for cdn upload", (options) ->
+
+  fs = require('fs')
+
+  src = __dirname+'/lib/application/assets/'
+  dst = __dirname+'/lib/assets/'
+  #
+  # compile assets for upload to CDN
+  #
+  console.log 'Building assets...'
+  assets = require('./cdn-assets.coffee')
+
+  for name, group of assets
+    for type, files of group
+      files = [files] if not Array.isArray(files)
+      source = []
+      for file in files
+        source.push fs.readFileSync "#{src}#{file}", 'utf-8'
+      console.log "writing #{dst}#{type}/#{name}.#{type} ..."
+      fs.writeFileSync "#{dst}#{type}/#{name}.#{type}", source.join('')
+      switch type
+
+        when 'css'
+          exec "lessc --yui-compress #{dst}#{type}/#{name}.css > #{dst}#{type}/#{name}.min.css", (err, output) ->
+            console.log err.message if err?
+
+        when 'js'
+          exec "uglifyjs #{dst}#{type}/#{name}.js --compress --output #{dst}#{type}/#{name}.min.js", (err, output) ->
+            console.log err.message if err?
+
+  console.log 'Ok.'

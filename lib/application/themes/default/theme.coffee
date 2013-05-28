@@ -77,9 +77,7 @@ exports.script =
   ]
 
   ckeditor: [
-    #'ckeditor/ckeditor.js'
     '//d16acdn.herokuapp.com/ckeditor/ckeditor.js'
-    #'//darkoverlordofdata.github.io/exspresso/ckeditor/ckeditor.js'
     """
     CKEDITOR.replace( 'blog', {
       extraPlugins: 'divarea'
@@ -103,11 +101,12 @@ exports.script =
 # The style sheets available to this template
 #
 exports.css =
-  default: [
-    'css/bootstrap.min.css'
-    'css/site.css'
-    'css/jquery-ui-1.8.24.custom.css'
-  ]
+  default: '//d16acdn.herokuapp.com/css/default.min.css'
+  #  default: [
+  #    'css/bootstrap.min.css'
+  #    'css/site.css'
+  #    'css/jquery-ui-1.8.24.custom.css'
+  #  ]
   prettify:  [
     '//google-code-prettify.googlecode.com/svn/loader/prettify.css'
     """

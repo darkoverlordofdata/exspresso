@@ -52,11 +52,13 @@ module.exports = class Katra extends application.core.AdminController
     # support libs
     @theme.use 'prettify'
     @theme.use '/css/katra.css'
-    @theme.use 'js/json2.js'
-    @theme.use 'js/underscore-min.js'
-    @theme.use 'js/backbone-min.js'
-    @theme.use 'js/jquery.console.js'
-    @theme.use 'js/coffee-script.js'
+
+    @theme.use '//d16acdn.herokuapp.com/js/katralib.min.js'
+    #    @theme.use 'js/json2.js'
+    #    @theme.use 'js/underscore-min.js'
+    #    @theme.use 'js/backbone-min.js'
+    #    @theme.use 'js/jquery.console.js'
+    #    @theme.use 'js/coffee-script.js'
 
     # the katra application
     @theme.use 'js/katra.benchmark.coffee'
