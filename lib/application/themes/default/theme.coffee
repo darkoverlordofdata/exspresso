@@ -101,7 +101,7 @@ exports.script =
 # The style sheets available to this template
 #
 exports.css =
-  default: '//d16acdn.herokuapp.com/css/default.min.css'
+  default: '//d16acdn.herokuapp.com/css/exspresso.min.css'
   #  default: [
   #    'css/bootstrap.min.css'
   #    'css/site.css'

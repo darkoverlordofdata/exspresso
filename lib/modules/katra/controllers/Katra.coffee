@@ -53,7 +53,7 @@ module.exports = class Katra extends application.core.AdminController
     @theme.use 'prettify'
     @theme.use '/css/katra.css'
 
-    @theme.use '//d16acdn.herokuapp.com/js/katralib.min.js'
+    @theme.use '//d16acdn.herokuapp.com/js/katra-deps.min.js'
     #    @theme.use 'js/json2.js'
     #    @theme.use 'js/underscore-min.js'
     #    @theme.use 'js/backbone-min.js'
