@@ -38,7 +38,7 @@ module.exports =
   #| The image to display with site name
   #|
   #|
-  logo: "logo.png"
+  logo: "//d16acdn.herokuapp.com/images/exspresso.png"
 
   #|
   #|--------------------------------------------------------------------------

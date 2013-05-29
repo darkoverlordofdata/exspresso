@@ -1,7 +1,7 @@
 <header>
 
     <% if @$logo: %>
-        <%- @anchor("", @img("images/{$logo}"), title: "Home", rel: "home", id: "logo" ) %>
+        <%- @anchor("", @img(@$logo), title: "Home", rel: "home", id: "logo" ) %>
     <% end %>
 
     <% if @$site_name || @$site_slogan: %>

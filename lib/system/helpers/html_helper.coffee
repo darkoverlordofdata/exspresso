@@ -155,7 +155,10 @@ exports.img = img = ($src = '', $index_page = false) ->
         $img+=' src="' + exspresso.config.siteUrl($v) + '"'
 
       else
-        $img+=' src="' + exspresso.config.slashItem('base_url') + $v + '"'
+        if $v.substr(0,2) is '//'
+          $img+=' src="' + $v + '"'
+        else
+          $img+=' src="' + exspresso.config.slashItem('base_url') + $v + '"'
 
 
     else

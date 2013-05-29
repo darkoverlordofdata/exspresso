@@ -32,9 +32,7 @@
     "moment": "*",
     "sprintf": "*",
     "glob": "*",
-    "utf8": "*",
-    "local-cdn": "~0.2.2",
-    "uglify-js": "~2.3.6"
+    "utf8": "*"
   },
   "scripts": {
     "start": "foreman start web",
