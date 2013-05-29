@@ -1,5 +1,5 @@
 
-rootURL = Exspresso_base_url+"/api/wines"
+rootURL = "#{Exspresso_base_url}/api/wines"
 currentWine = null
 
 # Nothing to delete in initial application state
@@ -35,8 +35,8 @@ $('#btnDelete').click ->
   deleteWine()
   return false
 
-
-$('#wineList a').live 'click', ->
+#$('#wineList a').click ->
+$(document).on 'click', '#wineList a', ->
   findById($(this).data('identity'))
 
 

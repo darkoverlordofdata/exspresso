@@ -36,3 +36,8 @@ module.exports =
       'js/coffee-script.js'
     ]
 
+  signin:
+    css:  'css/signin.css'
+
+  sidenav:
+    css: 'css/sidenav.css'

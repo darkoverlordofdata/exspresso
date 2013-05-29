@@ -76,6 +76,9 @@ exports.script =
     """
   ]
 
+  tinymce: '//tinymce.cachefly.net/4.0/tinymce.min.js'
+  coffeescript: '//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js'
+
   ckeditor: [
     '//d16acdn.herokuapp.com/ckeditor/ckeditor.js'
     """
@@ -84,8 +87,6 @@ exports.script =
     });
     """
   ]
-  tinymce: '//tinymce.cachefly.net/4.0/tinymce.min.js'
-  coffeescript: '//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js'
   prettify: [
     '//google-code-prettify.googlecode.com/svn/loader/run_prettify.js'
     """
@@ -102,21 +103,13 @@ exports.script =
 #
 exports.css =
   default: '//d16acdn.herokuapp.com/css/exspresso.min.css'
-  #  default: [
-  #    'css/bootstrap.min.css'
-  #    'css/site.css'
-  #    'css/jquery-ui-1.8.24.custom.css'
-  #  ]
+  signin: '//d16acdn.herokuapp.com/css/signin.min.css'
+  sidenav: '//d16acdn.herokuapp.com/css/sidenav.min.css'
   prettify:  [
     '//google-code-prettify.googlecode.com/svn/loader/prettify.css'
     """
     code {font-size: 100%};
     """
   ]
-  signin: [
-    'css/signin.css'
-  ]
-  sidenav: [
-    'css/sidenav.css'
-  ]
+
 
