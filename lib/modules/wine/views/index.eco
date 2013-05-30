@@ -5,7 +5,7 @@
 <div class="container">
 
     <div class="row-fluid">
-        <div id="content" class="span10>"></div>
+        <div id="content" class="span12>"></div>
     </div>
 
 
