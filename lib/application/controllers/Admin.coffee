@@ -30,7 +30,7 @@ module.exports = class Admin extends application.core.AdminController
     if @user.isLoggedIn
       if @user.authorizationCheck('admin')
         @theme.setAdminMenu 'Dashboard'
-        return @theme.view 'admin'
+        return @theme.view 'dashboard'
       else
         return @theme.view new system.core.AuthorizationError('No Admin Permissions')
 

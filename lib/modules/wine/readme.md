@@ -1,6 +1,6 @@
-# Wine Cellar Application (Coffee-script Version) #
+# NodeCellar Application (Coffee-script Version) #
 
-Based on https://github.com/ccoenraets/wine-cellar-php
+Based on https://github.com/ccoenraets/nodecellar
 
 The Wine Cellar application is documented [here](http://coenraets.org).
 
@@ -12,4 +12,4 @@ This application provides an example of:
 Set Up:
 
 1. Install Exspresso
-2. Visit http://localhost:3000/demo/wine-cellar
+2. Visit http://localhost:3000/wines

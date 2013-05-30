@@ -1,5 +1,5 @@
-<script src="http://use.edgefonts.net/andika.js"></script>
-<script src="http://use.edgefonts.net/arvo.js"></script>
+    <script src="http://use.edgefonts.net/andika.js"></script>
+    <script src="http://use.edgefonts.net/arvo.js"></script>
 
 
 <div class="container">
@@ -10,9 +10,9 @@
 
 
             <div class="well span3" style="text-align: center;">
-                <h3>Right Now</h3>
-                <p id="connections" style="font-size: 96px;line-height: 96px;">0</p>
-                <h5>active visitors</h5>
+                    <h3>Right Now</h3>
+                    <p id="connections" style="font-size: 96px;line-height: 96px;">0</p>
+                    <h5>active visitors</h5>
             </div>
 
             <div class="span9">
@@ -21,7 +21,7 @@
                 <div class="row-fluid">
                     <table id="visits" class="table table-bordered table-striped table-condensed">
                         <thead>
-                        <tr><td>URL</td><td>IP</td><td>Timestamp</td></tr>
+                            <tr><td>URL</td><td>IP</td><td>Timestamp</td></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -31,7 +31,7 @@
                 <div class="row-fluid">
                     <table id="pageViews" class="table table-bordered table-striped table-condensed">
                         <thead>
-                        <tr><td>URL</td><td>Page Views</td></tr>
+                            <tr><td>URL</td><td>Page Views</td></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
