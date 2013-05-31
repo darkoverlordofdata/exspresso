@@ -21,6 +21,7 @@
     "not-php": "*",
     "connect": "*",
     "pg": "*",
+    "mysql": "*",
     "bcrypt": "*",
     "cookie": "*",
     "cookie-signature": "*",

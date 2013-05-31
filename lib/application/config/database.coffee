@@ -27,6 +27,7 @@
 #|
 #
 #
+
 credential = ($name) ->
 
   #
@@ -43,7 +44,7 @@ credential = ($name) ->
     $credentials = $service[$driver][0].credentials
     $driver = $appfog[$driver.split('-')[0]] # strip off the version and translate
 
-    switch $name
+    return switch $name
       when 'dbdriver' then $driver
       when 'username' then $credentials.username
       when 'password' then $credentials.password
@@ -52,7 +53,7 @@ credential = ($name) ->
       when 'database' then $credentials.name
 
   #
-  # Heroku?
+  # Url?
   #
   $url = process.env.HEROKU_POSTGRESQL_CHARCOAL_URL ||
   process.env.CLEARDB_DATABASE_URL
@@ -72,11 +73,11 @@ credential = ($name) ->
     #
   else
     switch $name
-      when 'dbdriver' then 'postgres'
+      when 'dbdriver' then 'mysql'
       when 'username' then 'demo'
       when 'password' then 'demo'
       when 'hostname' then 'localhost'
-      when 'port'     then 5432
+      when 'port'     then 3306
       when 'database' then 'demo'
 
 module.exports =

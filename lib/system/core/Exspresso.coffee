@@ -343,7 +343,9 @@ module.exports = class system.core.Exspresso extends system.core.Object
           #
           #  Close the DB connection if one exists
           if system.db.DbDriver? and $controller.db?
-            $controller.db.close()
+            $controller.db.close ($err) ->
+              log_message 'error', $err if $err?
+              log_message 'debug', 'db connection closed'
 
         catch $err
           return $next($err)

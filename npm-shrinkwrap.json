@@ -90,6 +90,20 @@
         }
       }
     },
+    "mysql": {
+      "version": "2.0.0-alpha8",
+      "from": "mysql@*",
+      "dependencies": {
+        "require-all": {
+          "version": "0.0.3",
+          "from": "require-all@0.0.3"
+        },
+        "bignumber.js": {
+          "version": "1.0.1",
+          "from": "bignumber.js@1.0.1"
+        }
+      }
+    },
     "bcrypt": {
       "version": "0.7.5",
       "from": "bcrypt@*",
