@@ -9,7 +9,7 @@ module.exports =
   #|
   #|
   ga_account: 'UA-41153554-2'
-  ga_domain: 'herokuapp.com'
+  ga_domain: 'aws.af.cm'
 
   #|
   #|--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ module.exports =
   #| The image to display with site name
   #|
   #|
-  logo: "//d16acdn.herokuapp.com/images/exspresso.png"
+  logo: "//d16acdn.aws.af.cm/images/exspresso.png"
 
   #|
   #|--------------------------------------------------------------------------

@@ -60,7 +60,6 @@ exports.menu =
     uri   : '/admin'
     tip   : 'Login'
 
-
 #
 # Scripts
 #
@@ -80,10 +79,10 @@ exports.script =
   coffeescript: '//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js'
 
   ckeditor: [
-    '//d16acdn.herokuapp.com/ckeditor/ckeditor.js'
+    '//d16acdn.aws.af.cm/ckeditor/ckeditor.js'
     """
     CKEDITOR.replace( 'blog', {
-      extraPlugins: 'divarea'
+    extraPlugins: 'divarea'
     });
     """
   ]
@@ -91,7 +90,7 @@ exports.script =
     '//google-code-prettify.googlecode.com/svn/loader/run_prettify.js'
     """
     $(function() {
-      prettyPrint();
+    prettyPrint();
     });
     """
   ]
@@ -102,9 +101,9 @@ exports.script =
 # The style sheets available to this template
 #
 exports.css =
-  default: '//d16acdn.herokuapp.com/css/exspresso.min.css'
-  signin: '//d16acdn.herokuapp.com/css/signin.min.css'
-  sidenav: '//d16acdn.herokuapp.com/css/sidenav.min.css'
+  default: '//d16acdn.aws.af.cm/css/exspresso.min.css'
+  signin: '//d16acdn.aws.af.cm/css/signin.min.css'
+  sidenav: '//d16acdn.aws.af.cm/css/sidenav.min.css'
   prettify:  [
     '//google-code-prettify.googlecode.com/svn/loader/prettify.css'
     """

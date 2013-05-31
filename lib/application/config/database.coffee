@@ -26,12 +26,64 @@
 #|	stricton        true/false - Forces 'Strict Mode' connections if available
 #|
 #
+#
+credential = ($name) ->
+
+  #
+  # AppFog?
+  #
+  if process.env.VCAP_SERVICES?
+
+    $appfog =
+      mysql: 'mysql'
+      postgresql: 'postgres'
+
+    $service = JSON.parse(process.env.VCAP_SERVICES)
+    $driver = Object.keys($service)[0]
+    $credentials = $service[$driver][0].credentials
+    $driver = $appfog[$driver.split('-')[0]] # strip off the version and translate
+
+    switch $name
+      when 'dbdriver' then $driver
+      when 'username' then $credentials.username
+      when 'password' then $credentials.password
+      when 'hostname' then $credentials.hostname
+      when 'port'     then parseInt($credentials.port, 10)
+      when 'database' then $credentials.name
+
+  #
+  # Heroku?
+  #
+  $url = process.env.HEROKU_POSTGRESQL_CHARCOAL_URL ||
+  process.env.CLEARDB_DATABASE_URL
+
+  if $url?
+
+    switch $name
+      when 'dbdriver' then parse_url($url).scheme
+      when 'username' then parse_url($url).user
+      when 'password' then parse_url($url).pass
+      when 'hostname' then parse_url($url).host
+      when 'port'     then parseInt(parse_url($url).port, 10)
+      when 'database' then parse_url($url).path
+
+    #
+    # Must be localhost
+    #
+  else
+    switch $name
+      when 'dbdriver' then 'postgres'
+      when 'username' then 'demo'
+      when 'password' then 'demo'
+      when 'hostname' then 'localhost'
+      when 'port'     then 5432
+      when 'database' then 'demo'
 
 module.exports =
 
-  #
-  # Use the ActiveRecord class?
-  #
+#
+# Use the ActiveRecord class?
+#
   active_record: true
 
   #
@@ -44,12 +96,13 @@ module.exports =
   #
   db:
     default:
-      hostname: ''
-      username: ''
-      password: ''
-      database: './exspresso.sqlite'
-      dbdriver: 'sqlite'
-      dbprefix: ''
+      port:     credential('port')
+      hostname: credential('hostname')
+      username: credential('username')
+      password: credential('password')
+      database: credential('database')
+      dbdriver: credential('dbdriver')
+      dbprefix: 'ex5o_'
       db_debug: true
       cache_on: false
       cachedir: ''

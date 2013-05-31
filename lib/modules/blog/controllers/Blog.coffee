@@ -182,9 +182,7 @@ module.exports = class Blog extends application.core.AdminController
       @session.setFlashdata 'error', 'Not logged in'
       return @redirect '/blog'
 
-    @theme.use 'tinymce'
-    @theme.use 'js/coffee-script.js'
-    @theme.use 'js/textarea.blog.coffee'
+    @theme.use 'ckeditor'
 
     @validation.setRules 'title', 'Blog Title', 'required'
     @validation.setRules 'category', 'Blog Category', 'required'

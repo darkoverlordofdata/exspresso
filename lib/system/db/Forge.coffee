@@ -169,7 +169,7 @@ module.exports = class system.db.Forge
     if $table is ''
       show_error 'A table name is required for that operation.'
 
-    @db.tableExists @db.dbprefix + $table, ($err, $table_exists) =>
+    @db.tableExists $table, ($err, $table_exists) =>
 
       return $next($err) if $err
       return $next(null) if $table_exists

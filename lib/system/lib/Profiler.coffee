@@ -151,9 +151,7 @@ module.exports = class system.lib.Profiler
       $output.push '<dl>'
       $output.push "\n"
       $output.push '<dt>'
-      $output.push @i18n.line('profiler_database') + ':&nbsp; ' + $db.database + '&nbsp;'
-      $output.push @i18n.line('profiler_driver') + ':&nbsp; ' + $db.dbdriver + '&nbsp;'
-      $output.push @i18n.line('profiler_version') + ':&nbsp; ' + $db.version + '&nbsp;'
+      $output.push @i18n.line('profiler_database') + '&nbsp;'
       $output.push '</dt>'
       $output.push '<dt>'
       $output.push @i18n.line('profiler_queries') + ':&nbsp; ' + $db.queries.length + '&nbsp;'
