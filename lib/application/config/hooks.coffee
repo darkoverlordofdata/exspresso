@@ -8,3 +8,11 @@
 #|
 #|
 #
+module.exports =
+
+  cache_override:
+
+    function: 'displayCache'
+    filename: 'PageCache.coffee'
+    filepath: 'hooks'
+

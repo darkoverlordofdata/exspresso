@@ -129,7 +129,7 @@ module.exports =
   #| Enable the 'hooks' feature.
   #|
   #|
-  enable_hooks: false
+  enable_hooks: true
 
   #|
   #|--------------------------------------------------------------------------

@@ -285,11 +285,10 @@ module.exports = class system.core.Output
   #
   # Update/serve a cached file
   #
+  # @param  [Function] next the async callback
   # @return [Void]
   #
-  displayCache: () ->
-
-    return true if @hooks.callHook('cache_override')
+  displayCache: ($next) ->
 
     $cache_path = if (@config.item('cache_path') is '') then APPPATH + 'cache/' else @config.item('cache_path')
 
@@ -298,21 +297,21 @@ module.exports = class system.core.Output
 
     $filepath = $cache_path+md5($uri)
 
-    if not file_exists($filepath)
-      return false
+    fs.readFile $filepath, ($err, $cache) =>
+      return $next($err, false) if $err?
 
-    $cache = String(fs.readFileSync($filepath))
-    $match = /^(.*)\t(.*)\t/.exec($cache)
+      $cache = String($cache)
+      $match = /^(.*)\t(.*)\t/.exec($cache)
 
-    $expires = new Date($match[2])
-    #  Has the file expired? If so we'll delete it.
-    return _gc_cache($cache_path, $filepath) unless Date.now() < $expires.getTime()
+      $expires = new Date($match[2])
+      #  Has the file expired? If so we'll delete it.
+      return $next(null, _gc_cache($cache_path, $filepath)) unless Date.now() < $expires.getTime()
 
-    #  Display the cache
-    log_message('debug', "Cache file is current. Sending it to browser.")
-    @enableProfiler true
-    @display(null, $cache.replace($match[0], ''))
-    return true
+      #  Display the cache
+      log_message('debug', "Cache file is current. Sending it to browser.")
+      @enableProfiler true
+      @display(null, $cache.replace($match[0], ''))
+      $next null, true
 
   #
   # Write a Cache File

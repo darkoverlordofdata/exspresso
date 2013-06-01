@@ -44,7 +44,7 @@ module.exports = class system.core.Hooks
     #  If hooks are not enabled in the config file
     #  there is nothing else to do
     #
-    return unless config_item('enable_hooks')
+    return unless config_item('enable_hooks') is true
 
       
     #
@@ -57,7 +57,7 @@ module.exports = class system.core.Hooks
     else if fs.existsSync(APPPATH + 'config/hooks.coffee')
       $hook = require(APPPATH + 'config/hooks.coffee')
     
-    if not $hook?  or  typeof $hook isnt 'object'
+    if not $hook? or typeof $hook isnt 'object'
       return 
     
     @hooks = $hook
@@ -68,21 +68,19 @@ module.exports = class system.core.Hooks
   # Call Hook
   #
   # @param  [String]  which the hook name
-  # @param  [Object]  instance  the controller instance
+  # @param  [Object]  args  args that will be passed to the hook
   # @return [Boolean] returns true if the hook was run, false if it was not
   #
-  callHook : ($which = '', $instance = null) ->
+  callHook : ($which = '', $args...) ->
 
     return false if not @enabled or not @hooks[$which]?
 
     if @hooks[$which][0]?  and typeof @hooks[$which][0] is 'object'
       @runHook($val, $instance) for $val in @hooks[$which]
     else
-      @runHook(@hooks[$which], $instance)
+      @runHook(@hooks[$which], $args)
 
-    true
-    
-  
+
   #
   # Run Hook
   #
@@ -92,7 +90,7 @@ module.exports = class system.core.Hooks
   # @param  [Object]  instance  the controller instance
   # @return [Boolean] returns true if the hook was run, false if it was not
   #
-  runHook : ($data, $instance) ->
+  runHook : ($data, $args) ->
     return false if typeof $data isnt 'object'
 
     #
@@ -116,11 +114,11 @@ module.exports = class system.core.Hooks
     #
     $class = false
     $function = false
-    $params = ''
+    $config = {}
 
     $class    = $data['class']    if $data['class']?  and $data['class'] isnt ''
     $function = $data['function'] if $data['function']?
-    $params   = $data['params']   if $data['params']?
+    $config   = $data['params']   if $data['params']?
 
     return false if $class is false and $function is false
 
@@ -136,11 +134,12 @@ module.exports = class system.core.Hooks
     if $class isnt false
       $class = require($filepath)
       $hook = new $class()
-      $hook[$function]($instance, $params)
+      $result = $hook[$function]($config, $args...)
       
     else
       $function = require($filepath)[$function]
-      $function($instance, $params)
+      $result = $function($config, $args...)
 
     @in_progress = false
+    $result
     true

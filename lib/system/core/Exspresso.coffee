@@ -298,75 +298,81 @@ module.exports = class system.core.Exspresso extends system.core.Object
       #
       #	if we can display from cache, we're done
       #
-      return if $output.displayCache()
+      #$output.displayCache ($err, $found) =>
+      $continue = ($err, $found) =>
 
-      try
-
-        # locale support
-        $i18n = new_core('I18n', $config, $module)
-        # xss and csrf support
-        $security = new_core('Security', $req, $res)
-        # encoding support
-        $utf = new_core('Utf8', $config)
-        # Cookies, get & post data, etc...
-        $input = new_core('Input', $req, $utf, $security)
-
-        #  Housekeeping...
-        $bench.mark 'loading_time:_base_classes_end'
-        $hooks.callHook 'pre_controller'
-        $bench.mark 'controller_execution_time_( ' + $class + ' / ' + $method + ' )_start'
-        #
-        #  Create the requested controller
-        #
-        $controller = new $klass(@server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method)
-
-      catch $err
-        return $next($err)
-
-      #
-      # Next ->
-      #
-      # This function will be called by the controller when it is done.
-      # Sends final output to the browser and releases resources.
-      #
-      $controller.next = ($err) ->
+        return if $found
 
         try
 
-          return $next($err) if $err
-          #  More housekeeping...
-          $bench.mark 'controller_execution_time_( ' + $class + ' / ' + $method + ' )_end'
-          $hooks.callHook 'post_controller'
+          # locale support
+          $i18n = new_core('I18n', $config, $module)
+          # xss and csrf support
+          $security = new_core('Security', $req, $res)
+          # encoding support
+          $utf = new_core('Utf8', $config)
+          # Cookies, get & post data, etc...
+          $input = new_core('Input', $req, $utf, $security)
+
+          #  Housekeeping...
+          $bench.mark 'loading_time:_base_classes_end'
+          $hooks.callHook 'pre_controller'
+          $bench.mark 'controller_execution_time_( ' + $class + ' / ' + $method + ' )_start'
           #
-          #  Send the final rendered output to the browser
-          if $hooks.callHook('display_override') is false
-            $output.display($controller)
+          #  Create the requested controller
           #
-          #  Final hook
-          $hooks.callHook 'post_system'
-          #
-          #  Close the DB connection if one exists
-          if system.db.DbDriver? and $controller.db?
-            $controller.db.close()
+          $controller = new $klass(@server, $bench, $hooks, $config, $uri, $output, $security, $input, $i18n, $req, $res, $module, $class, $method)
 
         catch $err
           return $next($err)
 
-      #
-      #  Run items in the post constructor queue
-      $bench.mark 'post_controller_que_start'
-      $controller.run ($err) ->
-        return $next($err) if $err
-        try
+        #
+        # Next ->
+        #
+        # This function will be called by the controller when it is done.
+        # Sends final output to the browser and releases resources.
+        #
+        $controller.next = ($err) ->
+
+          try
+
+            return $next($err) if $err
+            #  More housekeeping...
+            $bench.mark 'controller_execution_time_( ' + $class + ' / ' + $method + ' )_end'
+            $hooks.callHook 'post_controller'
+
+            #
+            #  Send the final rendered output to the browser
+            if $hooks.callHook('display_override') is false
+              $output.display($controller)
+            #
+            #  Final hook
+            $hooks.callHook 'post_system'
+            #
+            #  Close the DB connection if one exists
+            if system.db.DbDriver? and $controller.db?
+              $controller.db.close()
+
+          catch $err
+            return $next($err)
 
         #
-        # Dispatch to the requested method.
-        #   Any URI segments present (besides the class/function)
-        #   will be passed to the method for convenience
-        #
-          $bench.mark 'post_controller_que_end'
-          $controller[$method].apply($controller, $args)
+        #  Run items in the post constructor queue
+        $bench.mark 'post_controller_que_start'
+        $controller.run ($err) ->
+          return $next($err) if $err
+          try
 
-        catch $err
-          $next $err
+          #
+          # Dispatch to the requested method.
+          #   Any URI segments present (besides the class/function)
+          #   will be passed to the method for convenience
+          #
+            $bench.mark 'post_controller_que_end'
+            $controller[$method].apply($controller, $args)
 
+          catch $err
+            $next $err
+
+      if not @hooks.callHook('cache_override', $output, $continue)
+        $output.displayCache $continue
