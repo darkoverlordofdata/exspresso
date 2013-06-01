@@ -46,13 +46,7 @@ module.exports = class system.lib.session.SqlSession extends require(exspresso.s
   # @param  [Function]  next
   # @return 	nothing
   #
-  get: ($sid, $next2) ->
-
-    $next = =>
-      @controller.db.close ($err) ->
-        log_message 'error', $err if $err?
-        log_message 'debug', 'Session::set db connection closed'
-        $next2()
+  get: ($sid, $next) ->
 
     # Ensure that we have a live database connection
     @controller.db.reconnect ($err) =>
@@ -85,13 +79,7 @@ module.exports = class system.lib.session.SqlSession extends require(exspresso.s
   # @param  [Function]  next
   # @return 	nothing
   #
-  set: ($sid, $session, $next2) ->
-
-    $next = =>
-      @controller.db.close ($err) ->
-        log_message 'error', $err if $err?
-        log_message 'debug', 'Session::set db connection closed'
-        $next2()
+  set: ($sid, $session, $next) ->
 
     # Ensure that we have a live database connection
     @controller.db.reconnect ($err) =>
@@ -137,13 +125,7 @@ module.exports = class system.lib.session.SqlSession extends require(exspresso.s
   # @param  [Function]  $next
   # @return 	nothing
   #
-  destroy: ($sid, $next2) ->
-
-    $next = =>
-      @controller.db.close ($err) ->
-        log_message 'error', $err if $err?
-        log_message 'debug', 'Session::set db connection closed'
-        $next2()
+  destroy: ($sid, $next) ->
 
     # Ensure that we have a live database connection
     @controller.db.reconnect ($err) =>

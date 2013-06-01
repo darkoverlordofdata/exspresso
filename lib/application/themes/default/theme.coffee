@@ -77,6 +77,7 @@ exports.script =
 
   tinymce: '//tinymce.cachefly.net/4.0/tinymce.min.js'
   coffeescript: '//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js'
+  eco: "http://sstephenson.github.com/eco/dist/eco.js"
 
   ckeditor: [
     '//d16acdn.aws.af.cm/ckeditor/ckeditor.js'

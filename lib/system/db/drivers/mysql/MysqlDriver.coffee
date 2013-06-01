@@ -17,6 +17,10 @@
 #
 module.exports = class system.db.mysql.MysqlDriver extends system.db.ActiveRecord
 
+  pool = null
+  # count = 0
+
+
   #  some platform specific strings
 
   _escape_char      : '`'
@@ -49,25 +53,66 @@ module.exports = class system.db.mysql.MysqlDriver extends system.db.ActiveRecor
   #
   connect: ($next) =>
 
-    if not @connected
-      mysql = require(@driver)
+    mysql = require(@driver)
 
-      @client = new mysql.createConnection
-        host: @hostname
-        port: @port
-        user: @username
-        password: @password
-        database: @database
-        debug: false # @db_debug
+    disconnect_handler = ($connection) =>
+
+      $connection.on 'error', ($err) =>
+
+        return if not $err.fatal
+        throw $err unless $err.code is 'PROTOCOL_CONNECTION_LOST'
+
+        #
+        # This happens because the connection used to write to
+        # the sessions table is left open. When it times out,
+        # we re-open it.
+        #
+        # TODO: this reopens the connection every server timeout cycle.
+        # On AppFog, this is every 60 seconds. This should be changed to
+        # reopen only when required - good luck with that...
+        #
+        # count++
+        # log_message 'debug', 'PROTOCOL_CONNECTION_LOST [%s]', count
+        pool = new mysql.createPool
+          host: @hostname
+          port: @port
+          user: @username
+          password: @password
+          database: @database
+          debug: false # @db_debug
+
+        pool.getConnection ($err, $connection) =>
+          if $err?
+            @connected = false
+            console.log $err
+          else
+            @client = $connection
+            disconnect_handler $connection
+
+
+    if not @connected
+
+      if not pool?
+        pool = new mysql.createPool
+          host: @hostname
+          port: @port
+          user: @username
+          password: @password
+          database: @database
+          debug: false # @db_debug
 
       @connected = true
 
-    @client.connect $next, ($err) =>
-      if ($err)
+    pool.getConnection ($err, $connection) =>
+      if $err?
         @connected = false
         console.log $err
       else
-        $next($err, @client)
+        @client = $connection
+        disconnect_handler $connection
+        $next(null, @client)
+
+
 
   #
   # Reconnect
@@ -536,4 +581,11 @@ module.exports = class system.db.mysql.MysqlDriver extends system.db.ActiveRecor
   # @param	resource
   # @return [Void]  #
   _close: ($next) ->
-    @client.end($next)
+    #@client.end($next)
+    #
+    # We manage our own connection and close at the end of the session,
+    # so we're going to explitely destroy the connection. This way
+    # recovery from PROTOCOL_CONNECTION_LOST only takes 1 retry.
+    #
+    @client.destroy()
+    $next() if $next

@@ -20,10 +20,17 @@ module.exports = class system.lib.Cache extends system.lib.DriverLibrary
   self = @
   self.support = {}
 
-  valid_drivers     : ['null', 'ram', 'file'] #, 'memcached']
+  valid_drivers: [
+
+    'null'  # Dummy (noop) cache
+    'ram'   # Hash table cache
+    'mem'   # Memcached based cache
+    'file'  # File system cache
+  ]
+
   _cache_path       : ''
-  _adapter          : 'ram'
-  _fallback         : 'null'
+  _adapter          : 'mem'
+  _fallback         : 'ram'
   
   #
   # Constructor
@@ -123,5 +130,8 @@ module.exports = class system.lib.Cache extends system.lib.DriverLibrary
   # @return [Void]
   #
   _validate: ->
-    if not @isSupported(@_adapter) then @_adapter = @_fallback
+    if not @isSupported(@_adapter)
+      log_message 'debug', 'Cache adapter %s not found.', @_adapter
+      log_message 'debug', 'Using fallback adapter %s.', @_fallback
+      @_adapter = @_fallback
   

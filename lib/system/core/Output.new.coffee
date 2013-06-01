@@ -17,6 +17,13 @@
 module.exports = class system.core.Output
 
   fs = require('fs')  # file system
+  try
+    redis = require('redis')
+
+  catch $ex
+    $redis = false
+
+
 
   _parse_exec_vars    : true  # parse profiler vars {elapsed_time} and {memory_usage}
   _enable_profiler    : false # create profiler outout?
@@ -227,7 +234,7 @@ module.exports = class system.core.Output
       $memory = Math.round((process.memoryUsage().heapUsed / 1048576) * 100) / 100
       $output = $output.replace(/{elapsed_time}/g, $elapsed)
       $output = $output.replace(/{memory_usage}/g, $memory)
-    # * 1048576 = 1MB
+      # * 1048576 = 1MB
 
     #  Are there any server headers to send?
     if @_headers.length > 0
@@ -280,39 +287,60 @@ module.exports = class system.core.Output
     @_final_output = ''
     log_message('debug', "Final output sent to browser")
     log_message('debug', "Total execution time: " + $elapsed)
-    return
+    return true
 
   #
-  # Update/serve a cached file
+  # Update/serve a cached file/redis
   #
   # @return [Void]
   #
-  displayCache: () ->
+  displayCache: ($overriden, $next) ->
 
-    return true if @hooks.callHook('cache_override')
+    return $next(null, true) if $overriden
 
     $cache_path = if (@config.item('cache_path') is '') then APPPATH + 'cache/' else @config.item('cache_path')
 
     #  Build the file path.  The file name is an MD5 hash of the full URI
     $uri = @config.item('base_url') + @config.item('index_page') + @uri.uriString()
 
-    $filepath = $cache_path+md5($uri)
+    if redis
 
-    if not file_exists($filepath)
-      return false
+      $redis = @get_redis()
+      if $redis is false
+        redis = false
+        log_message 'error', 'Unable to connect to REDIS'
 
-    $cache = String(fs.readFileSync($filepath))
-    $match = /^(.*)\t(.*)\t/.exec($cache)
 
-    $expires = new Date($match[2])
-    #  Has the file expired? If so we'll delete it.
-    return _gc_cache($cache_path, $filepath) unless Date.now() < $expires.getTime()
+    if $redis
 
-    #  Display the cache
-    log_message('debug', "Cache file is current. Sending it to browser.")
-    @enableProfiler true
-    @display(null, $cache.replace($match[0], ''))
-    return true
+      $redis.get $uri, ($err, $value) =>
+        return $next(null, false) if $err
+
+        $next(null, @display(null, $value.toString()))
+
+    else
+
+      $filepath = $cache_path+md5($uri)
+
+      #if not file_exists($filepath)
+      #  return $next(null, false)
+
+      fs.readFile $filepath, ($err, $cache) =>
+        return $next(null, false) if $err?
+
+        $cache = String($cache)
+        $match = /^(.*)\t(.*)\t/.exec($cache)
+
+        $expires = new Date($match[2])
+        #  Has the file expired? If so we'll delete it.
+        if Date.now() > $expires.getTime()
+          $next(null, _gc_cache($cache_path, $filepath))
+
+        #  Display the cache
+        else
+          log_message('debug', "Cache file is current. Sending it to browser.")
+          @enableProfiler true
+          $next(null, @display(null, $cache.replace($match[0], '')))
 
   #
   # Write a Cache File
@@ -323,22 +351,31 @@ module.exports = class system.core.Output
   #
   _write_cache: ($output) ->
 
-    $path = @config.item('cache_path')
+    if redis
 
-    $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
+      $redis = @get_redis()
+      if $redis is false
+        redis = false
+        log_message 'error', 'Unable to connect to REDIS'
 
-    # can we create the dir if needed?
-    if not is_dir($cache_path)
-      try
-        fs.mkdirSync $cache_path, DIR_READ_MODE
-      catch $err
-        log_message('error', "Unable to mkdir cache path: " + $cache_path)
+    if redis is false
+
+      $path = @config.item('cache_path')
+
+      $cache_path = if ($path is '') then APPPATH + 'cache/' else $path
+
+      # can we create the dir if needed?
+      if not is_dir($cache_path)
+        try
+          fs.mkdirSync $cache_path, DIR_READ_MODE
+        catch $err
+          log_message('error', "Unable to mkdir cache path: " + $cache_path)
+          return
+
+      # can we write to the file system?
+      if not is_really_writable($cache_path)
+        log_message('error', "Unable to write to cache path: " + $cache_path)
         return
-
-    # can we write to the file system?
-    if not is_really_writable($cache_path)
-      log_message('error', "Unable to write to cache path: " + $cache_path)
-      return
 
 
     # when should this cache expire?
@@ -348,23 +385,35 @@ module.exports = class system.core.Output
 
     # check the uri against the rules
     for $pattern, $ttl of $cache_rules
-      break if (new RegExp($pattern)).test($uri)
+      if (new RegExp($pattern)).test($uri)
+        log_message 'debug', 'FOUND     %s : %s', $pattern, $ttl
+        break
+      else
+        log_message 'debug', 'NOT FOUND %s : %s', $pattern, $ttl
 
+    log_message 'debug', '[%s = %s]', $uri, $ttl
     return if $ttl <= 0 # no point in caching that
+
+
 
     # build the cache data
     $uri = @config.item('base_url') + @config.item('index_page') + $uri
-    $filepath = $cache_path+md5($uri)
-    $expires = new Date(Date.now() + $ttl)
 
-    # queue up the cache and immediately return
-    fs.writeFile $filepath, "#{$uri}\t#{$expires}\t#{$output}", ($err) ->
-      if $err
-        log_message('debug', "Error writing cache file %s: %s", $filepath, $err)
-      else
-        log_message('debug', "Cache file written: " + $filepath)
-        # set a timer to clean the cache
-        setTimeout _gc_cache, ($expires.getTime() - Date.now()), $cache_path, $filepath
+    if $redis
+      $redis.set $uri, $output
+      $redis.expire $uri, $ttl
+
+    else
+      # queue up the cache and immediately return
+      $filepath = $cache_path+md5($uri)
+      $expires = new Date(Date.now() + $ttl)
+      fs.writeFile $filepath, "#{$uri}\t#{$expires}\t#{$output}", ($err) ->
+        if $err
+          log_message('debug', "Error writing cache file %s: %s", $filepath, $err)
+        else
+          log_message('debug', "Cache file written: " + $filepath)
+          # set a timer to clean the cache
+          setTimeout _gc_cache, ($expires.getTime() - Date.now()), $cache_path, $filepath
 
 
   #
@@ -387,3 +436,14 @@ module.exports = class system.core.Output
         log_message('debug', "Cache file has expired. File '%s' deleted", $filepath)
 
     return false
+
+  #
+  # Get the redis client
+  #
+  get_redis: ->
+    return false if redis is false
+
+    $url = process.env.REDISCLOUD_URL || process.env.REDISTOGO_URL || 'redis://localhost:6379'
+    $redis = redis.createClient(parse_url($url).port, parse_url($url).host, no_ready_check: true)
+    $redis.auth parse_url($url).pass
+    return $redis

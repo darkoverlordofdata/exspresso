@@ -199,6 +199,15 @@
         }
       }
     },
+    "memjs": {
+      "version": "0.6.0",
+      "from": "memjs@*",
+      "resolved": "https://registry.npmjs.org/memjs/-/memjs-0.6.0.tgz"
+    },
+    "redis": {
+      "version": "0.8.3",
+      "from": "redis@*"
+    },
     "utf8": {
       "version": "1.0.0",
       "from": "utf8@*"

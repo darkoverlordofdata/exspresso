@@ -37,3 +37,8 @@ module.exports = class Home extends application.core.PublicController
         blog: $blog
 
 
+  demoAction: ->
+
+    @theme.use 'coffeescript'
+    @theme.use 'eco'
+    @theme.view 'test_page'

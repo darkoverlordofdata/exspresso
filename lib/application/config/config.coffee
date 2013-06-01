@@ -188,7 +188,8 @@ module.exports =
   #|
   cache_path: ''
   cache_rules:
-    '.*': 0 # 60000
+    '/welcome': 60000
+    '.*': 0
 
 
   #|

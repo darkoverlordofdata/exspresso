@@ -5,6 +5,7 @@ module.exports =
   'default_controller'                 : "Home/index"
   
   '/home'                              : 'Home/index'
+  '/demo'                              : 'Home/demo'
   '/welcome'                           : 'Welcome/index'
   
   '/admin'                             : 'Admin/index'

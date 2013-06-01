@@ -7,9 +7,9 @@
     <meta name="resource-type" content="document" />
     <meta name="language" content="en" />
     <title>{site_name}</title>
-    <link rel='stylesheet' href='/css/bootstrap.min.css' />
-    <link rel='stylesheet' href='/css/site.css' />
-    <link href="/google-code-prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <link rel='stylesheet' href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js' />
+    <link rel='stylesheet' href='//d16acdn.aws.af.cm/css/exspresso.min.css' />
+    <link href="//google-code-prettify.googlecode.com/svn/loader/prettify.css" type="text/css" rel="stylesheet" />
     <style>
         code {font-size: 90%;}
     </style>
@@ -25,8 +25,8 @@
             <a href="https://github.com/darkoverlordofdata/exspresso/blob/master/lib/application/views/welcome_message.eco">
                 <pre><code>application/views/welcome_message.eco</code></pre></a>
             <p>The corresponding controller for this page is found at:</p>
-            <a href="https://github.com/darkoverlordofdata/exspresso/blob/master/lib/application/controllers/welcome.coffee">
-                <pre><code>application/controllers/welcome.coffee</code></pre></a>
+            <a href="https://github.com/darkoverlordofdata/exspresso/blob/master/lib/application/controllers/Welcome.coffee">
+                <pre><code>application/controllers/Welcome.coffee</code></pre></a>
             <p></p>
             <p>Page rendered in {elapsed_time} ms</p>
         </div>
@@ -40,9 +40,9 @@
     <div id="push"></div>
 </div>
 
-<script type="text/javascript" src="/js/jquery-1.8.1.min.js"></script>
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/google-code-prettify/prettify.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 <script type="text/javascript">$(function() {
     prettyPrint();
 });

@@ -215,9 +215,9 @@ module.exports = class system.core.Exspresso extends system.core.Object
         console.log $stdout if $stdout?
         process.exit()
 
-    #
-    # preview locally?
-    #
+      #
+      # preview locally?
+      #
     else if @preview
       exec "#{FCPATH}bin/preview http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
@@ -292,11 +292,15 @@ module.exports = class system.core.Exspresso extends system.core.Object
         $uri = new_core('Uri', $req)
         $output = new_core('Output', $req, $res, $bench, $hooks, $config, $uri)
 
-        #
-        #	can we just display the cache and be done with it?
-        if $hooks.callHook('cache_override') is false
-          if $output.displayCache() is true
-            return
+      catch $err
+        return $next($err)
+
+      #
+      #	if we can display from cache, we're done
+      #
+      return if $output.displayCache()
+
+      try
 
         # locale support
         $i18n = new_core('I18n', $config, $module)
@@ -343,9 +347,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
           #
           #  Close the DB connection if one exists
           if system.db.DbDriver? and $controller.db?
-            $controller.db.close ($err) ->
-              log_message 'error', $err if $err?
-              log_message 'debug', 'db connection closed'
+            $controller.db.close()
 
         catch $err
           return $next($err)
@@ -357,11 +359,11 @@ module.exports = class system.core.Exspresso extends system.core.Object
         return $next($err) if $err
         try
 
-          #
-          # Dispatch to the requested method.
-          #   Any URI segments present (besides the class/function)
-          #   will be passed to the method for convenience
-          #
+        #
+        # Dispatch to the requested method.
+        #   Any URI segments present (besides the class/function)
+        #   will be passed to the method for convenience
+        #
           $bench.mark 'post_controller_que_end'
           $controller[$method].apply($controller, $args)
 
