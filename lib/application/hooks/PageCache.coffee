@@ -15,16 +15,29 @@
 #
 
 fs = require('fs')
-try
-  redis = require('redis')
-  $url = process.env.REDISCLOUD_URL || process.env.REDISTOGO_URL || 'redis://localhost:6379'
-  client = redis.createClient(parse_url($url).port, parse_url($url).host, no_ready_check: true)
-  client.auth parse_url($url).pass
+#
+# Initialize the redis client
+#
+client = do ->
+  try
+    redis = require('redis')
+    $url = process.env.REDISCLOUD_URL || process.env.REDISTOGO_URL || 'redis://localhost:6379'
+    client = redis.createClient(parse_url($url).port, parse_url($url).host, no_ready_check: true)
+    client.auth parse_url($url).pass
+    client
 
-catch $ex
-  client = false
+  catch $e
+    log_message 'error', 'Unable to connect to REDIS'
+    false
 
-_write_cache = ($output) ->
+#
+# Override Output Write Cache
+#
+# @param  [String]  output  HTML to cache
+# @return [Void]
+#
+system.core.Output::_write_cache = ($output) ->
+
   # when should this cache expire?
   $cache_rules = @config.item('cache_rules')
   $ttl = @_cache_expiration * 60000
@@ -43,14 +56,18 @@ _write_cache = ($output) ->
 
 module.exports =
 
+  #
+  # Display a Cached Page
+  #
+  # @param  [Object]  config  params from hook config
+  # @param  [Object]  output  the output object
+  # @param  [Function]  next  the async callback
+  # @return [Void]
+  #
   displayCache: ($config, $output, $next) ->
 
-    log_message 'debug', 'HOOK displayCache -- REDIS'
-    $output._write_cache = _write_cache
-
-    if client is false
-      log_message 'error', 'Unable to connect to REDIS'
-      return $next(null, false)
+    log_message 'debug', 'cache_override Hook Initialized'
+    return $next(null, false) if client is false
 
     $cache_path = if ($output.config.item('cache_path') is '') then APPPATH + 'cache/' else $output.config.item('cache_path')
 
