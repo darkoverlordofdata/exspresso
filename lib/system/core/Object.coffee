@@ -72,10 +72,11 @@ module.exports = class system.core.Object
 
     $iterate = ->
 
-      $done(null) if $queue.length is 0
+      return $done(null) if $queue.length is 0
       #
       # call the function at index
       #
+      console.log 'INDEX = '+$index
       $function = $queue[$index]
 
       $function ($err) ->

@@ -352,7 +352,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
             $hooks.callHook 'post_system'
             #
             #  Close the DB connection if one exists
-            if system.db.DbDriver? and $controller.db?
+            if system.db?.DbDriver? and $controller.db?
               $controller.db.close()
 
           catch $err

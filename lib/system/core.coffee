@@ -113,11 +113,11 @@ module.exports = ->
   load_class SYSPATH+'lib/DriverLibrary.coffee'
   #load_class MODPATH+'user/lib/User.coffee'
   #load_class MODPATH+'user/models/Users.coffee'
-  load_class APPPATH+'modules/user/lib/User.coffee'
-  load_class APPPATH+'modules/user/models/Users.coffee'
-  load_class SYSPATH+'lib/session/Session.coffee'
-  load_class APPPATH+'core/PublicController.coffee'
-  load_class APPPATH+'core/Module.coffee'
+  #load_class APPPATH+'modules/user/lib/User.coffee'
+  #load_class APPPATH+'modules/user/models/Users.coffee'
+  #load_class SYSPATH+'lib/session/Session.coffee'
+  #load_class APPPATH+'core/PublicController.coffee'
+  #load_class APPPATH+'core/Module.coffee'
 
 
 #

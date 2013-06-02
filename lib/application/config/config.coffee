@@ -2,17 +2,6 @@ module.exports =
 
   #|
   #|--------------------------------------------------------------------------
-  #| Google Analytics
-  #|--------------------------------------------------------------------------
-  #|
-  #| Account and Domain
-  #|
-  #|
-  ga_account: 'UA-41153554-2'
-  ga_domain: 'aws.af.cm'
-
-  #|
-  #|--------------------------------------------------------------------------
   #| Site Name
   #|--------------------------------------------------------------------------
   #|
@@ -129,7 +118,7 @@ module.exports =
   #| Enable the 'hooks' feature.
   #|
   #|
-  enable_hooks: true
+  enable_hooks: false
 
   #|
   #|--------------------------------------------------------------------------
@@ -188,7 +177,6 @@ module.exports =
   #|
   cache_path: ''
   cache_rules:
-    '/welcome': 43200 # 1 month = 30 days * 24 hrs * 60 min
     '.*': 0
 
 
@@ -226,7 +214,7 @@ module.exports =
   sess_expiration: 7200*60
   sess_expire_on_close: false
   sess_encrypt_cookie: false
-  sess_use_database: true # process.env.REDISTOGO_URL ? 'redis://localhost:6379'
+  sess_use_database: false
   sess_table_name: 'sessions'
   sess_match_ip: false
   sess_match_useragent: true

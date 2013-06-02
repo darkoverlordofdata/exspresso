@@ -29,8 +29,5 @@ module.exports = class Welcome extends system.core.Controller
   #
   indexAction: ->
 
-    @output.cache 5
-    #@load.view 'welcome_message', site_name: config_item('site_name')
-    @load.library 'Parser'
-    @parser.parse 'welcome_message', site_name: config_item('site_name')
+    @load.view 'welcome_message', site_name: config_item('site_name')
 

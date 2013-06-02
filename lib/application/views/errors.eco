@@ -1,8 +1,0 @@
-<div class="row">
-    <div class="alert alert-block alert-<%= @err.class %>">
-        <h3><%= @err.message %></h3>
-        <div class="well">
-            <%- @err.stack %>
-        </div>
-    </div>
-</div>

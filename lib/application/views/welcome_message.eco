@@ -6,7 +6,7 @@
     <meta name="copyright" content="darkoverlordofdata.com" />
     <meta name="resource-type" content="document" />
     <meta name="language" content="en" />
-    <title>{site_name}</title>
+    <title><%= @site_name %></title>
     <link rel='stylesheet' href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js' />
     <link rel='stylesheet' href='//d16acdn.aws.af.cm/css/exspresso.min.css' />
     <link href="//google-code-prettify.googlecode.com/svn/loader/prettify.css" type="text/css" rel="stylesheet" />
@@ -19,7 +19,9 @@
     <div class="container">
         <p></p>
         <div class="hero-unit">
-            <h1>Welcome to Exspresso!</h1>
+            <h1>Exspresso <small>Coffee-Script Web Framework</small></h1>
+        </div>
+        <div class="span8">
             <p>The page you are looking at is being generated dynamically by Exspresso.</p>
             <p>If you would like to edit this page you'll find it located at:</p>
             <a href="https://github.com/darkoverlordofdata/exspresso/blob/master/lib/application/views/welcome_message.eco">
@@ -28,11 +30,6 @@
             <a href="https://github.com/darkoverlordofdata/exspresso/blob/master/lib/application/controllers/Welcome.coffee">
                 <pre><code>application/controllers/Welcome.coffee</code></pre></a>
             <p></p>
-            <p>Page rendered in {elapsed_time} ms</p>
-        </div>
-        <div class="row">
-            <div class="span6">
-                <%- @anchor("",'Demo &raquo', class:'btn') %>
             </div>
         </div>
         <p class="row"></p>

@@ -30,10 +30,7 @@ module.exports =
   #|  $autoload['packages: [APPPATH+'vendor', '/usr/local/shared']
   #|
   #
-  packages: [
-    APPPATH+'vendor/ckeditor/'
-    APPPATH+'vendor/gravatar/'
-  ]
+  packages: []
   #
   #| -------------------------------------------------------------------
   #|  Auto-load Libraries
@@ -45,7 +42,7 @@ module.exports =
   #|
   #|	$autoload['libraries: ['database']
   #
-  libraries: ['database'] #, 'Session/session']
+  libraries: []
   
   #
   #| -------------------------------------------------------------------
@@ -58,7 +55,7 @@ module.exports =
   #|
   #|	$autoload['drivers: ['session']
   #
-  drivers: ['session', 'cache']
+  drivers: []
   
   #
   #|--------------------------------------------------------------------------
@@ -68,7 +65,7 @@ module.exports =
   #|
   #|	helper: ['url', 'file']
   #
-  helper: ['form', 'url', 'html', 'ckeditor', 'date', 'inflector', 'file', 'directory']
+  helper: []
   
   #
   #| -------------------------------------------------------------------

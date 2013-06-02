@@ -53,8 +53,16 @@ define 'ENVIRONMENT', process.env.ENVIRONMENT ? 'development'
 #
 # Set the default paths:
 #
-$system_folder  = 'lib/system'        # expresso system libraries
-$app_folder     = 'lib/application'   # expresso application
+if realpath('lib/system') is false
+  $system_folder  = __dirname + '/lib/system'       # expresso system libraries
+else
+  $system_folder  = 'lib/system'
+
+if realpath('lib/application') is false
+  $app_folder  = __dirname + '/lib/application'     # application libraries
+else
+  $app_folder  = 'lib/application'
+
 $asset_folder   = "lib/assets"        # document root,
 $module_folder  = "lib/modules"       # expresso modules
 

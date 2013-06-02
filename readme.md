@@ -1,11 +1,10 @@
-# [Exspresso v0.9.5] (https://github.com/darkoverlordofdata/exspresso)
+# [Exspresso v0.10.0] (https://github.com/darkoverlordofdata/exspresso)
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
     Exspresso Features:
 
       * Runs on the connect.js http stack
-      * HMVC architecture
       * Magic: controller members are available to all libs, models, and views.
       * Multiple view formats
         * html
@@ -16,11 +15,8 @@
         * PostgreSQL  - requires pg
         * SQLite      - requires sqlite3
       * Cascading configuration
-      * Themed templating engine
-      * Bootstrap css styles
-      * Run as a desktop application in dedicated webkit window (requires vala)
 
- [Live Demo!](http://exspresso.herokuapp.com/) on heroku using postgesql database.
+ [Live Demo!](http://exspresso.aws.cf.cm/)
 
 
 
@@ -36,46 +32,10 @@ $ npm install exspresso
 ### Run on localhost
 
 ```bash
-$ node exspresso.js --db sqlite --install
-$ node exspresso.js --db sqlite --install --subclass Express
+$ node exspresso
 ```
-and point your browser to http://localhost:5000
+and point your browser to http://localhost:53610
 
-```bash
-Usage: node exspresso [--option]
-
-Options:
- --cache
- --csrf
- --desktop
- --preview
- --profile
- --subclass <Express>
- --nocache
- --nocsrf
- --noprofile
- --db <mysql|postgres|sqlite>
-```
-
-To use the -- preview or --desktop options, you will need to build the excutable.
-note - valac required.
-```bash
-$ sudo apt-get install valac
-$ cake build:preview
-```
-
-```bash
-$ sudo apt-get install valac
-$ cake build:desktop
-```
-
-### More...
-
-  * [Compare](/doc/comparison.md) Compare Exspresso to CodeIgniter
-  * [Magic](/doc/magic.md) Inheritance injection (Magic!)
-  * [Coding](/doc/style%20guide.md) Exspresso style guide
-  * [Status](/doc/class%20status.md) Component status
-  * [Todo](/doc/todo.md) Wish list
 
 ## License
 

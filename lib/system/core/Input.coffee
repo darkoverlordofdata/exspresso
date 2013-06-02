@@ -356,16 +356,17 @@ module.exports = class system.core.Input
     #  or silly application, that are of no use to a Exspressp application anyway
     #  but that when present will trip our 'Disallowed Key Characters' alarm
     #  http://www.ietf.org/rfc/rfc2109.txt
-    delete @req.cookies['$Version']  if @req.cookies['$Version']?
-    delete @req.cookies['$Path']     if @req.cookies['$Path']?
-    delete @req.cookies['$Domain']   if @req.cookies['$Domain']?
+    if @req.cookies?
+      delete @req.cookies['$Version']  if @req.cookies['$Version']?
+      delete @req.cookies['$Path']     if @req.cookies['$Path']?
+      delete @req.cookies['$Domain']   if @req.cookies['$Domain']?
 
-    for $key, $val of @req.cookies
-      @req.cookies[@_clean_input_keys($key)] = @_clean_input_data($val)
+      for $key, $val of @req.cookies
+        @req.cookies[@_clean_input_keys($key)] = @_clean_input_data($val)
 
-    #  CSRF Protection check on HTTP requests
-    if @_enable_csrf is true and  not @isCliRequest()
-      @security.csrfVerify()
+      #  CSRF Protection check on HTTP requests
+      if @_enable_csrf is true and  not @isCliRequest()
+        @security.csrfVerify()
 
     log_message('debug', "Global POST and COOKIE data sanitized")
 

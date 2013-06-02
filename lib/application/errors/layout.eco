@@ -7,14 +7,14 @@
     <meta name="resource-type" content="document" />
     <meta name="language" content="en" />
     <title><%= @title %></title>
-    <link rel='stylesheet' href='/css/bootstrap.min.css' />
-    <link rel='stylesheet' href='/css/site.css' />
+    <link rel='stylesheet' href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js' />
+    <link rel='stylesheet' href='//d16acdn.aws.af.cm/css/exspresso.min.css' />
 </head>
 <body>
 <div id="wrap">
     <div class="container">
         <header>
-            <a href="/" title="Home" rel="home" id="logo"><img src="/images/logo.png" alt=""/></a>
+            <a href="/" title="Home" rel="home" id="logo"><img src="//d16acdn.aws.af.cm/images/exspresso.png" alt=""/></a>
             <hgroup id="name-and-slogan">
                 <div class="page-header">
                     <h1><%= @$site_name %><p><blockquote>
@@ -30,7 +30,7 @@
     <div id="push"></div>
 </div>
 
-<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <footer id="footer">
     <div class="container">
         <div class="credit">

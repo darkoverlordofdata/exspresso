@@ -1,6 +1,0 @@
-<div id="demo_main"></div>
-<script type='text/coffeescript'>
-$ ->
-    $.get 'tpl/header.eco', (template) ->
-        $('#demo_main').html eco.render(template, word: "hey")
-</script>

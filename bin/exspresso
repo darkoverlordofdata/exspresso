@@ -1,3 +1,7 @@
 #!/usr/bin/env coffee
 #
 # CLI tool to create new Exspresso application
+#
+# Copy node_modules/exspresso/lib/application/*.* to lib/application
+#
+
