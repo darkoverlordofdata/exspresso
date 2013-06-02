@@ -10,9 +10,13 @@
 #
 module.exports =
 
+  #
+  # Override standard, file system based caching
+  # with Redis caching
+  #
   cache_override:
 
     function: 'displayCache'
-    filename: 'PageCache.coffee'
+    filename: 'PageCacheRedis.coffee'
     filepath: 'hooks'
 

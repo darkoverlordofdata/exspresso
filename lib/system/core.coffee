@@ -102,7 +102,7 @@ module.exports = ->
   load_class SYSPATH+'core/Log.coffee'
   load_class SYSPATH+'core/Model.coffee'
   #load_class SYSPATH+'core/Modules.coffee'
-  load_class SYSPATH+'core/Output.coffee'
+  #load_class SYSPATH+'core/Output.coffee'
   #load_class SYSPATH+'core/Render.coffee'
   load_class SYSPATH+'core/Router.coffee'
   load_class SYSPATH+'core/Security.coffee'
@@ -424,9 +424,12 @@ module.exports.new_core = ($class, $0, $1, $2, $3, $4, $5, $6, $7, $8, $9) ->
     $class = $class.class
 
   #  Does the class exist?  If so, we're done...
-  $klass = system.core[$prefix+$class] or application.core[$prefix+$class]
-  if $klass?
-    return new $klass($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+  #
+  # TODO: Not finding the subclass in cache
+  #
+  #$klass = system.core[$prefix+$class] or application.core[$prefix+$class]
+  #if $klass?
+  #  return new $klass($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
 
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder

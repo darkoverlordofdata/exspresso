@@ -354,7 +354,7 @@ module.exports = class system.core.Output
     # build the cache data
     $uri = @config.item('base_url') + @config.item('index_page') + $uri
     $filepath = $cache_path+md5($uri)
-    $expires = new Date(Date.now() + $ttl)
+    $expires = new Date(Date.now() + ($ttl * 60000)) # ms per minutes
 
     # queue up the cache and immediately return
     fs.writeFile $filepath, "#{$uri}\t#{$expires}\t#{$output}", ($err) ->

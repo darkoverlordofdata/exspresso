@@ -188,7 +188,7 @@ module.exports =
   #|
   cache_path: ''
   cache_rules:
-    '/welcome': 60000
+    '/welcome': 43200 # 1 month = 30 days * 24 hrs * 60 min
     '.*': 0
 
 

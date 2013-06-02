@@ -1,5 +1,5 @@
 #+--------------------------------------------------------------------+
-#| PageCache.coffee
+#| PageCacheRedis.coffee
 #+--------------------------------------------------------------------+
 #| Copyright DarkOverlordOfData (c) 2012 - 2013
 #+--------------------------------------------------------------------+
@@ -11,7 +11,7 @@
 #|
 #+--------------------------------------------------------------------+
 #
-#	Page Cache Hooks using REDIS
+#	Page Cache Hook using REDIS
 #
 
 fs = require('fs')
@@ -26,8 +26,9 @@ client = do ->
     client.auth parse_url($url).pass
     client
 
-  catch $e
-    log_message 'error', 'Unable to connect to REDIS'
+  catch $err
+    log_message 'error', 'Unable to connect to REDIS: %s', $err.stack
+
     false
 
 #
@@ -52,6 +53,7 @@ system.core.Output::_write_cache = ($output) ->
   # build the cache data
   $uri = @config.item('base_url') + @config.item('index_page') + $uri
   client.set $uri, $output
+  client.expire $uri, $ttl*60 # seconds per minute
 
 
 module.exports =

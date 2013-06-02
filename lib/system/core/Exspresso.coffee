@@ -296,12 +296,14 @@ module.exports = class system.core.Exspresso extends system.core.Object
         return $next($err)
 
       #
-      #	if we can display from cache, we're done
       #
-      #$output.displayCache ($err, $found) =>
-      $continue = ($err, $found) =>
+      #
+      create_content = ($err, $cached) =>
 
-        return if $found
+        #
+        #	if we can display from cache, we're done
+        #
+        return if $cached
 
         try
 
@@ -343,7 +345,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
 
             #
             #  Send the final rendered output to the browser
-            if $hooks.callHook('display_override') is false
+            if not $hooks.callHook('display_override')
               $output.display($controller)
             #
             #  Final hook
@@ -374,5 +376,11 @@ module.exports = class system.core.Exspresso extends system.core.Object
           catch $err
             $next $err
 
-      if not @hooks.callHook('cache_override', $output, $continue)
-        $output.displayCache $continue
+      #
+      #	If there is no cache override hook,
+      # use system.core.Output::displayCache
+      #
+      if not @hooks.callHook('cache_override', $output, create_content)
+        $output.displayCache create_content
+
+
