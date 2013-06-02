@@ -1,0 +1,19 @@
+---
+applications:
+  .:
+    name: exspresso
+    framework:
+      name: node
+      info:
+        mem: 64M
+        description: Node.js Application
+        exec: 
+    infra: aws
+    url: ${name}.${target-base}
+    mem: 64M
+    instances: 1
+    services:
+      d16a_postgresql:
+        type: postgresql
+      redis-1e8c4:
+        type: redis

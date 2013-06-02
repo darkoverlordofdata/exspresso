@@ -32,8 +32,6 @@ module.exports =
 
     log_message 'debug', 'cache_override Hook Initialized'
 
-    $cache_path = if ($output.config.item('cache_path') is '') then APPPATH + 'cache/' else $output.config.item('cache_path')
-
     #  Build the file path.
     $uri = $output.config.item('base_url') + $output.config.item('index_page') + $output.uri.uriString()
 
@@ -41,7 +39,7 @@ module.exports =
       return $next(null, false) if $err
       return $next(null, false) if $value is null
 
-      $next(null, $output.display(null, $value.toString()))
+      $next null, $output.display(null, $value.toString())
 
 
 

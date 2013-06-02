@@ -55,12 +55,11 @@ module.exports = class application.core.MyOutput extends system.core.Output
   _write_cache: ($output) ->
 
     # when should this cache expire?
-    $cache_rules = @config.item('cache_rules')
     $ttl = @_cache_expiration * 60000
     $uri = @uri.uriString()
 
     # check the uri against the rules
-    for $pattern, $ttl of $cache_rules
+    for $pattern, $ttl of @config.item('cache_rules')
       break if (new RegExp($pattern)).test($uri)
 
     return if $ttl <= 0 # no point in caching that

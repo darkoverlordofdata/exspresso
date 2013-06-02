@@ -16,7 +16,7 @@ module.exports =
   #
   cache_override:
 
-    function: 'displayCache'
-    filename: 'PageCacheRedis.coffee'
     filepath: 'hooks'
+    filename: 'PageCacheRedis.coffee'
+    function: 'displayCache'
 
