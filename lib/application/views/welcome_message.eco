@@ -32,6 +32,9 @@
             <p></p>
             </div>
         </div>
+        <div class="span6">
+            <a href="http://ex5o.aws.af.cm/" class="btn">Demo &raquo</a>
+        </div>
         <p class="row"></p>
     </div>
     <div id="push"></div>
