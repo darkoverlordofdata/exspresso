@@ -1,4 +1,4 @@
-# Exspresso v0.10.3
+# Exspresso v0.10.4
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
@@ -35,7 +35,10 @@ require('exspresso');
 ```
 and point your browser to http://localhost:53610
 
-[Demo application on githib.] (<https://github.com/darkoverlordofdata/ex6o>)
+
+The demo is now split into a seperate application, which uses exspresso as a node module.
+
+You can see the demo at http://ex6o.aws.af.cm/, [demo code on githib.] (<https://github.com/darkoverlordofdata/ex6o>)
 
 
 ## License
