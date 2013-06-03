@@ -30,9 +30,8 @@ $ npm install exspresso --save
 
 ### Run on localhost
 
-```javascript
-exspresso = require('exspresso');
-exspresso.run();
+```bash
+node exspresso
 ```
 and point your browser to http://localhost:53610
 

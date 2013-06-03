@@ -4,5 +4,5 @@
  *
  */
 require('coffee-script');
-require('./index.coffee');
+require('./index.coffee').run();
 

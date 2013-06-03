@@ -13,7 +13,7 @@
 #
 #	Exspresso
 #
-#   node [--harmony] index <appjs|connect|express> <mvc|hmvc> [--option]
+#   node exspresso [--option]
 #
 #     options:
 #     --cache
@@ -23,12 +23,8 @@
 #     --nocache
 #     --nocsrf
 #     --noprofile
-#     --db <mysql|postgres>
+#     --db <mysql|postgres|sqlite>
 #
-#   examples:
-#     node --harmony index appjs
-#     node index connect
-#     node index express
 #
 #
 # Set global path constants, load the api and boot exspresso
@@ -37,7 +33,7 @@
 
 module.exports =
 
-  run: ($config)->
+  run: ($config = {})->
 
 
     $apppath = $config.APPPATH ? 'lib/application'

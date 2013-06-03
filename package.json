@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.10.5",
+  "version": "0.10.6",
   "description": "A CoffeeScript Web Framework",
   "keywords": [
     "framework",
@@ -38,7 +38,7 @@
     "utf8": "*"
   },
   "scripts": {
-    "start": "node index.js --profile --install --db postgres",
+    "start": "node exspresso.js",
     "test": "cake test"
   },
   "devDependencies": {
