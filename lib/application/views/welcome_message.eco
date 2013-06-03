@@ -20,6 +20,7 @@
         <p></p>
         <div class="hero-unit">
             <h1>Exspresso <small>Coffee-Script Web Framework</small></h1>
+            <br />
         </div>
         <div class="row span8">
             <p>The page you are looking at is being generated dynamically by Exspresso.</p>
@@ -32,12 +33,12 @@
             <p></p>
             </div>
         </div>
+        <div class="row"></row>
         <div class="row">
             <div class="span2">
             </div>
-            <a href="http://ex5o.aws.af.cm/" class="btn">Demo &raquo</a>
+            <p>Page rendered in <strong>{elapsed_time}</strong> ms</p>
         </div>
-        <p class="row"></p>
     </div>
     <div id="push"></div>
 </div>
