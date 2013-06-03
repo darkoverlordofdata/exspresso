@@ -25,16 +25,17 @@
 ### Install
 
 ```bash
-$ npm install exspresso
+$ npm install exspresso --save
 ```
 
 
 ### Run on localhost
 
-```bash
-$ node exspresso
+```javascript
+require('exspresso');
 ```
 and point your browser to http://localhost:53610
+[Example] (https://github.com/darkoverlordofdata/ex6o) application on githib.
 
 
 ## License

@@ -34,7 +34,7 @@
     "sprintf": "*",
     "glob": "*",
     "memjs": "*",
-    "redis": "*",
+    "redis": "~0.8.3",
     "utf8": "*"
   },
   "scripts": {

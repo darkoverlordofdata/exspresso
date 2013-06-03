@@ -101,9 +101,9 @@ module.exports = ->
   load_class SYSPATH+'core/Loader.coffee'
   load_class SYSPATH+'core/Log.coffee'
   load_class SYSPATH+'core/Model.coffee'
-  #load_class SYSPATH+'core/Modules.coffee'
-  #load_class SYSPATH+'core/Output.coffee'
-  #load_class SYSPATH+'core/Render.coffee'
+  load_class SYSPATH+'core/Module.coffee'
+  load_class SYSPATH+'core/Output.coffee'
+  load_class SYSPATH+'core/Render.coffee'
   load_class SYSPATH+'core/Router.coffee'
   load_class SYSPATH+'core/Security.coffee'
   load_class SYSPATH+'core/Uri.coffee'
@@ -111,14 +111,6 @@ module.exports = ->
   load_class SYSPATH+'lib/Profiler.coffee'
   load_class SYSPATH+'lib/Driver.coffee'
   load_class SYSPATH+'lib/DriverLibrary.coffee'
-  #load_class MODPATH+'user/lib/User.coffee'
-  #load_class MODPATH+'user/models/Users.coffee'
-  #load_class APPPATH+'modules/user/lib/User.coffee'
-  #load_class APPPATH+'modules/user/models/Users.coffee'
-  #load_class SYSPATH+'lib/session/Session.coffee'
-  #load_class APPPATH+'core/PublicController.coffee'
-  #load_class APPPATH+'core/Module.coffee'
-
 
 #
 # Magic

@@ -21,7 +21,7 @@
         <div class="hero-unit">
             <h1>Exspresso <small>Coffee-Script Web Framework</small></h1>
         </div>
-        <div class="span8">
+        <div class="row span8">
             <p>The page you are looking at is being generated dynamically by Exspresso.</p>
             <p>If you would like to edit this page you'll find it located at:</p>
             <a href="https://github.com/darkoverlordofdata/exspresso/blob/master/lib/application/views/welcome_message.eco">
@@ -32,7 +32,9 @@
             <p></p>
             </div>
         </div>
-        <div class="span6">
+        <div class="row">
+            <div class="span2">
+            </div>
             <a href="http://ex5o.aws.af.cm/" class="btn">Demo &raquo</a>
         </div>
         <p class="row"></p>
