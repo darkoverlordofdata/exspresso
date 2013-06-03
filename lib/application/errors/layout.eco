@@ -66,7 +66,7 @@
     <div class="masthead">
         <ul class="nav nav-pills pull-right">
             <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="/readme">Read Me</a></li>
             <li><a href="https://github.com/darkoverlordofdata/exspresso">GitHub</a></li>
         </ul>
         <h3 class="muted">Exspresso</h3>

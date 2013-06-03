@@ -32,14 +32,14 @@ module.exports = class Welcome extends system.core.Controller
     @load.view 'welcome_message', site_name: config_item('site_name')
 
   #
-  # About
+  # Read Me
   #
   # About Exspresso
   #
   # @access	public
   # @return [Void]
   #
-  aboutAction: ->
+  readmeAction: ->
 
-    @load.view 'about', site_name: config_item('site_name')
+    @load.view 'readme', site_name: config_item('site_name')
 

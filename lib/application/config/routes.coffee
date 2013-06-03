@@ -5,5 +5,5 @@ module.exports =
   'default_controller'                  : 'Welcome/index'
   
   '/welcome'                            : 'Welcome/index'
-  '/about'                              : 'Welcome/about'
+  '/readme'                             : 'Welcome/readme'
 
