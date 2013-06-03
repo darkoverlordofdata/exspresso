@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "A CoffeeScript Web Framework",
   "keywords": [
     "framework",
@@ -34,7 +34,7 @@
     "sprintf": "*",
     "glob": "*",
     "memjs": "*",
-    "redis": "~0.8.3",
+    "redis": "*",
     "utf8": "*"
   },
   "scripts": {

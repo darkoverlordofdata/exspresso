@@ -76,7 +76,6 @@ module.exports = class system.core.Object
       #
       # call the function at index
       #
-      console.log 'INDEX = '+$index
       $function = $queue[$index]
 
       $function ($err) ->

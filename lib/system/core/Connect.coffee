@@ -199,7 +199,7 @@ module.exports = class system.core.Connect
     for $name, $module of @config.modules
       if is_dir($module.path+"/assets/")
         @app.use $driver.static($module.path+"/assets/")
-        console.log $module.path
+        log_message 'debug', 'Module %s mounted at %s', $module.name, $module.path
 
 
     #
