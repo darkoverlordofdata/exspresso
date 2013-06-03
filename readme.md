@@ -2,19 +2,19 @@
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
-    Exspresso Features:
+Exspresso Features:
 
-      * Runs on the connect.js http stack
-      * Magic: controller members are available to all libs, models, and views.
-      * Multiple view formats
-        * html
-        * md (markdown)
-        * eco (embedded coffee-script)
-      * DB Drivers for
-        * MySQL       - requires mysql
-        * PostgreSQL  - requires pg
-        * SQLite      - requires sqlite3
-      * Cascading configuration
+  * Runs on the connect.js http stack
+  * Magic: controller members are available to all libs, models, and views.
+  * Multiple view formats
+    * html
+    * md (markdown)
+    * eco (embedded coffee-script)
+  * DB Drivers for
+    * MySQL       - requires mysql
+    * PostgreSQL  - requires pg
+    * SQLite      - requires sqlite3
+  * Cascading configuration
 
  [Live Demo!](http://exspresso.aws.cf.cm/)
 
@@ -35,6 +35,7 @@ $ npm install exspresso --save
 require('exspresso');
 ```
 and point your browser to http://localhost:53610
+
 [Example] (https://github.com/darkoverlordofdata/ex6o) application on githib.
 
 

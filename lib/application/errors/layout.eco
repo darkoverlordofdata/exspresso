@@ -1,47 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="author" content="darkoverlordofdata" />
-    <meta name="copyright" content="darkoverlordofdata.com" />
-    <meta name="resource-type" content="document" />
-    <meta name="language" content="en" />
-    <title><%= @title %></title>
-    <link rel='stylesheet' href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js' />
-    <link rel='stylesheet' href='//d16acdn.aws.af.cm/css/exspresso.min.css' />
+    <meta charset="utf-8">
+    <title><%= @site_name %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+            /* Custom container */
+        .container-narrow {
+            margin: 0 auto;
+            max-width: 700px;
+        }
+        .container-narrow > hr {
+            margin: 30px 0;
+        }
+
+            /* Main marketing message and sign up button */
+        .jumbotron {
+            margin: 60px 0;
+            text-align: center;
+        }
+        .jumbotron h1 {
+            font-size: 72px;
+            line-height: 1;
+        }
+        .jumbotron .btn {
+            font-size: 21px;
+            padding: 14px 24px;
+        }
+
+            /* Supporting marketing content */
+        .marketing {
+            margin: 60px 0;
+        }
+        .marketing p + h4 {
+            margin-top: 28px;
+        }
+    </style>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="/ico/favicon.png">
 </head>
 <body>
-<div id="wrap">
-    <div class="container">
-        <header>
-            <a href="/" title="Home" rel="home" id="logo"><img src="//d16acdn.aws.af.cm/images/exspresso.png" alt=""/></a>
-            <hgroup id="name-and-slogan">
-                <div class="page-header">
-                    <h1><%= @$site_name %><p><blockquote>
-                        <small>&quot;<%= @title %>&quot;</small></blockquote></p></h1>
-                </div>
-            </hgroup>
-        </header>
+<div class="container-narrow">
+
+    <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="https://github.com/darkoverlordofdata/exspresso">GitHub</a></li>
+        </ul>
+        <h3 class="muted">Exspresso</h3>
+    </div>
+
+    <hr>
+    <div>
 
         <div class="clearfix"></div>
         <%- @$content %>
     </div>
 
-    <div id="push"></div>
-</div>
 
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<footer id="footer">
-    <div class="container">
-        <div class="credit">
-            <span class="pull-left muted">
-                &copy; Copyright 2012 - 2013 by Dark Overlord of Data
-            </span>
-            <span class="pull-right">powered by &nbsp;
-                <a href="https://npmjs.org/package/exspresso">e x s p r e s s o</a>
-            </span>
-        </div>
+    <div class="footer">
+        <p>&copy; Copyright 2012 - 2013 by Dark Overlord of Data</p>
     </div>
-</footer>
+
+</div> <!-- /container -->
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap-transition.js"></script>
+<script src="/js/bootstrap-alert.js"></script>
+<script src="/js/bootstrap-modal.js"></script>
+<script src="/js/bootstrap-dropdown.js"></script>
+<script src="/js/bootstrap-scrollspy.js"></script>
+<script src="/js/bootstrap-tab.js"></script>
+<script src="/js/bootstrap-tooltip.js"></script>
+<script src="/js/bootstrap-popover.js"></script>
+<script src="/js/bootstrap-button.js"></script>
+<script src="/js/bootstrap-collapse.js"></script>
+<script src="/js/bootstrap-carousel.js"></script>
+<script src="/js/bootstrap-typeahead.js"></script>
+
 </body>
 </html>

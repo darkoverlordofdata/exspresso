@@ -67,44 +67,52 @@
 
     <div class="masthead">
         <ul class="nav nav-pills pull-right">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="/">Home</a></li>
+            <li class="active"><a href="#">About</a></li>
             <li><a href="https://github.com/darkoverlordofdata/exspresso">GitHub</a></li>
         </ul>
-        <h3 class="muted">Dark Overlord of Data</h3>
+        <h3 class="muted">Exspresso</h3>
     </div>
 
     <hr>
 
-    <div class="jumbotron">
-        <h1>Exspresso</h1>
-        <p class="lead">Coffee-Script Web Framework</p>
-        <!--
-        <a class="btn btn-large btn-success" href="#">Sign up today</a>
-        -->
-    </div>
-
-    <hr>
-
-    <div class="row-fluid marketing">
-        <div class="span6">
-            <h4>Easy</h4>
-            <p>Class based HMVC arcitecture on the connect.js stack.</p>
-
-            <h4>Fast</h4>
-            <p>This page rendered on the sever in {elapsed_time} ms.</p>
-
-        </div>
-
-
-        <div class="span6">
-            <h4>Magic</h4>
-            <p>Controller members are available to all libs, models, and views.</p>
-
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Topic 1</h4>
+            <p>The first topic.</p>
         </div>
     </div>
 
+    <br/>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Topic 2</h4>
+            <p>The second topic.</p>
+        </div>
+    </div>
+
+    <br/>
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Topic 3</h4>
+            <p>The third topic.</p>
+        </div>
+    </div>
+
+    <br/>
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Topic 4</h4>
+            <p>The last topic.</p>
+        </div>
+    </div>
     <hr>
+
 
     <div class="footer">
         <p>&copy; Copyright 2012 - 2013 by Dark Overlord of Data</p>

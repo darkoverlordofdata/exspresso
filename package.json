@@ -1,7 +1,7 @@
 {
   "name": "exspresso",
-  "version": "0.10.0",
-  "description": "A CoffeeScript framework inspired by CodeIgniter",
+  "version": "0.10.1",
+  "description": "A CoffeeScript Web Framework",
   "keywords": [
     "framework",
     "web",
@@ -38,7 +38,7 @@
     "utf8": "*"
   },
   "scripts": {
-    "start": "node exspresso.js --profile --install",
+    "start": "node index.js --profile --install --db postgres",
     "test": "cake test"
   },
   "devDependencies": {

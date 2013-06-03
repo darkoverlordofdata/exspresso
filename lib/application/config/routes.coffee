@@ -2,7 +2,8 @@ module.exports =
   #----------------------------------------------------------------------
   #          Route                                 Controller URI
   #----------------------------------------------------------------------
-  'default_controller'                 : 'Welcome/index'
+  'default_controller'                  : 'Welcome/index'
   
-  '/welcome'                           : 'Welcome/index'
-  
+  '/welcome'                            : 'Welcome/index'
+  '/about'                              : 'Welcome/about'
+
