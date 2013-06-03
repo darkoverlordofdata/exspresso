@@ -1,4 +1,4 @@
-# Exspresso v0.10.4
+# Exspresso v0.10.5
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
@@ -31,7 +31,8 @@ $ npm install exspresso --save
 ### Run on localhost
 
 ```javascript
-require('exspresso');
+exspresso = require('exspresso');
+exspresso.run();
 ```
 and point your browser to http://localhost:53610
 

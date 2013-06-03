@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "dependencies": {
     "coffee-script": {
       "version": "1.6.3",
@@ -207,13 +207,13 @@
       "version": "1.0.0",
       "from": "utf8@*"
     },
-    "async": {
-      "version": "0.2.9",
-      "from": "async@*"
-    },
     "chai": {
       "version": "1.6.0",
       "from": "chai@*"
+    },
+    "async": {
+      "version": "0.2.9",
+      "from": "async@*"
     },
     "mocha": {
       "version": "1.10.0",
