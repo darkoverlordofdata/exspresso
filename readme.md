@@ -1,4 +1,4 @@
-# [Exspresso v0.10.0] (https://github.com/darkoverlordofdata/exspresso)
+# Exspresso v0.10.2
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
@@ -14,9 +14,8 @@ Exspresso Features:
     * MySQL       - requires mysql
     * PostgreSQL  - requires pg
     * SQLite      - requires sqlite3
-  * Cascading configuration
 
- [Live Demo!](http://exspresso.aws.cf.cm/)
+ [Live Demo!] (<http://exspresso.aws.cf.cm/>)
 
 
 
@@ -36,7 +35,7 @@ require('exspresso');
 ```
 and point your browser to http://localhost:53610
 
-[Example] (https://github.com/darkoverlordofdata/ex6o) application on githib.
+[Demo application on githib.] (<https://github.com/darkoverlordofdata/ex6o>)
 
 
 ## License

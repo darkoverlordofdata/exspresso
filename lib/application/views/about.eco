@@ -78,8 +78,8 @@
 
     <div class="row-fluid">
         <div class="span12">
-            <h4>Topic 1</h4>
-            <p>The first topic.</p>
+            <h4>Install</h4>
+            <p><code>$ npm install exspresso --save</code></p>
         </div>
     </div>
 
@@ -87,18 +87,9 @@
 
     <div class="row-fluid">
         <div class="span12">
-            <h4>Topic 2</h4>
-            <p>The second topic.</p>
-        </div>
-    </div>
-
-    <br/>
-
-
-    <div class="row-fluid">
-        <div class="span12">
-            <h4>Topic 3</h4>
-            <p>The third topic.</p>
+            <h4>Run</h4>
+            <p><code>require('exspresso');</code></p>
+            <p>Then point your browser to <a href="http://localhost:53610">http://localhost:53610</a></p>
         </div>
     </div>
 
@@ -107,8 +98,19 @@
 
     <div class="row-fluid">
         <div class="span12">
-            <h4>Topic 4</h4>
-            <p>The last topic.</p>
+            <h4>Documentation</h4>
+            <p>doh ~ I'm working on it...</p>
+        </div>
+    </div>
+
+    <br/>
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Demo</h4>
+            <p>Explore the demo code on <a href="https://github.com/darkoverlordofdata/ex6o">github</a></p>
+            <p>Visit the demo on <a href="http://ex6o.aws.af.cm/">appfog</a></p>
         </div>
     </div>
     <hr>
