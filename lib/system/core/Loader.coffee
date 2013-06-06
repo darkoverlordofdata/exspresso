@@ -265,66 +265,71 @@ module.exports = class system.core.Loader
     else if $vars instanceof Error
       $vars = {err: new system.core.ExspressoError($vars)}
       $view = APPPATH+'errors/5xx'
+    else if 'string' is typeof($view)
 
-    #
-    # Default extendsion: '.eco'
-    #
-    $ext = path.extname($view)
-    $ext = if $ext is '' then @_view_ext else ''
+      #
+      # Default extendsion: '.eco'
+      #
+      $ext = path.extname($view)
+      $ext = if $ext is '' then @_view_ext else ''
 
-    if $view.charAt(0) is '/'
-      #
-      # If the path is absolute, just use that
-      #
-      $pos = $view.lastIndexOf('/')
-      $path = $view.substr(0,$pos)
-      $view = $view.substr($pos+1)
-
-    else
-      #
-      # Othewise, we must search for the view file
-      #
-      $orig = $view # save original view
-      $pos = $view.indexOf('/')
-      if $pos isnt -1
+      if $view.charAt(0) is '/'
         #
-        # there is a subdir, it could be the module
+        # If the path is absolute, just use that
         #
-        $module = $view.substr(0,$pos)
-        if @controller.config.modules[$module]?
-          $view = $view.substr($pos+1)
-        else
-          $pos = -1
-          $module = @controller.module
+        $pos = $view.lastIndexOf('/')
+        $path = $view.substr(0,$pos)
+        $view = $view.substr($pos+1)
+
       else
-        $module = @controller.module
-
-      $path = false
-      for $root in @controller.config.getPaths($module, @getViewPaths())
-
-        if fs.existsSync($root+'views/'+$view+$ext)
-          $path = $root+'views/'
-          break
-
+        #
+        # Othewise, we must search for the view file
+        #
+        $orig = $view # save original view
+        $pos = $view.indexOf('/')
         if $pos isnt -1
-          if fs.existsSync($root+'views/'+$orig+$ext)
-            $view = $orig
+          #
+          # there is a subdir, it could be the module
+          #
+          $module = $view.substr(0,$pos)
+          if @controller.config.modules[$module]?
+            $view = $view.substr($pos+1)
+          else
+            $pos = -1
+            $module = @controller.module
+        else
+          $module = @controller.module
+
+        $path = false
+        for $root in @controller.config.getPaths($module, @getViewPaths())
+
+          if fs.existsSync($root+'views/'+$view+$ext)
             $path = $root+'views/'
             break
+
+          if $pos isnt -1
+            if fs.existsSync($root+'views/'+$orig+$ext)
+              $view = $orig
+              $path = $root+'views/'
+              break
 
       if $path is false # then we didn't find it
         if fs.existsSync(APPPATH+'views/'+$orig+$ext)
           $view = $orig
           $path = APPPATH+'views/'
 
-    #
-    #  Set the path to the requested file
-    #
-    $file = $view+$ext
-    $path = $path.replace(/[\/]+$/g, '')+'/'+$file # rtrim /
+      #
+      #  Set the path to the requested file
+      #
+      $file = $view+$ext
+      $path = $path.replace(/[\/]+$/g, '')+'/'+$file # rtrim /
 
-    if not fs.existsSync($path)
-      return show_error('Unable to load the requested file: %s', $file)
+      if not fs.existsSync($path)
+        return show_error('Unable to load the requested file: %s', $file)
+
+
+    else
+      $path = $view
 
     @_cached_vars[$key] = $var for $key, $var of $vars
 
@@ -335,6 +340,7 @@ module.exports = class system.core.Loader
       else
         @controller.output.appendOutput $html
         @controller.next()
+
 
 
   #

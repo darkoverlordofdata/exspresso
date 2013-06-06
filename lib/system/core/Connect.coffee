@@ -252,6 +252,14 @@ module.exports = class system.core.Connect
       $res.render = ($view, $data = {}, $next) ->
         if typeof $data is 'function' then [$data, $next] = [{}, $data]
 
+        # if it's not a filename, then directly render partial
+        if Array.isArray($view)
+
+          $html = $render.eco($view.join(''), new Vars($data))
+          return $next(null, $html)
+
+        if not fs.existsSync($view)
+          return show_error('Unable to load the requested file: %s', $view)
         #
         # Default terminal next
         #

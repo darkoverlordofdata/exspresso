@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "A CoffeeScript Web Framework",
   "keywords": [
     "framework",
@@ -20,6 +20,7 @@
     "coffee-script": "*",
     "not-php": "*",
     "connect": "*",
+    "commander": "*",
     "pg": "*",
     "mysql": "*",
     "bcrypt": "*",

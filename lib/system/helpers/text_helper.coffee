@@ -14,16 +14,18 @@
 #  Exspresso Text Helpers
 # 
 #
-
+not_php = require('not-php')
+for $name, $proc of not_php
+  eval "#{$name} = #{$proc}"
 #
 #  Word Limiter
 # 
 #  Limits a string to X number of words.
 # 
-#  @access  public
-#  @param  string
-# @param  [Integer]  #  @param  string  the end character. Usually an ellipsis
-#  @return  string
+# @access  public
+# @param  string
+# @param  [Integer]  # @param  string  the end character. Usually an ellipsis
+# @return  string
 #
 exports.word_limiter = word_limiter = ($str, $limit = 100, $end_char = '&#8230;') ->
 
@@ -47,10 +49,10 @@ exports.word_limiter = word_limiter = ($str, $limit = 100, $end_char = '&#8230;'
 #  Limits the string based on the character count.  Preserves complete words
 #  so the character count may not be exactly as specified.
 #
-#  @access  public
-#  @param  string
-# @param  [Integer]  #  @param  string  the end character. Usually an ellipsis
-#  @return  string
+# @access  public
+# @param  string
+# @param  [Integer]  # @param  string  the end character. Usually an ellipsis
+# @return  string
 #
 exports.character_limiter = character_limiter = ($str, $n = 500, $end_char = '&#8230;') ->
 
@@ -77,9 +79,9 @@ exports.character_limiter = character_limiter = ($str, $n = 500, $end_char = '&#
 #
 #  Converts High ascii text and MS Word special characters to character entities
 #
-#  @access  public
-#  @param  string
-#  @return  string
+# @access  public
+# @param  string
+# @return  string
 #
 exports.ascii_to_entities = ascii_to_entities = ($str) ->
 
@@ -127,10 +129,10 @@ exports.ascii_to_entities = ascii_to_entities = ($str) ->
 #
 #  Converts character entities back to ASCII
 #
-#  @access  public
-#  @param  string
-#  @param  bool
-#  @return  string
+# @access  public
+# @param  string
+# @param  bool
+# @return  string
 #
 exports.entities_to_ascii = entities_to_ascii = ($str, $all = true) ->
 
@@ -177,11 +179,11 @@ exports.entities_to_ascii = entities_to_ascii = ($str, $all = true) ->
 #  matched words will be converted to #### or to the replacement
 #  word you've submitted.
 #
-#  @access  public
-#  @param  string  the text string
-#  @param  string  the array of censoered words
-#  @param  string  the optional replacement value
-#  @return  string
+# @access  public
+# @param  string  the text string
+# @param  string  the array of censoered words
+# @param  string  the optional replacement value
+# @return  string
 #
 exports.word_censor = word_censor = ($str, $censored, $replacement = '') ->
 
@@ -215,9 +217,9 @@ exports.word_censor = word_censor = ($str, $censored, $replacement = '') ->
 #
 #  Colorizes code strings
 #
-#  @access  public
-#  @param  string  the text string
-#  @return  string
+# @access  public
+# @param  string  the text string
+# @return  string
 #
 exports.highlight_code = highlight_code = ($str) ->
 
@@ -235,12 +237,12 @@ exports.highlight_code = highlight_code = ($str) ->
 #
 #  Highlights a phrase within a text string
 #
-#  @access  public
-#  @param  string  the text string
-#  @param  string  the phrase you'd like to highlight
-#  @param  string  the openging tag to precede the phrase with
-#  @param  string  the closing tag to end the phrase with
-#  @return  string
+# @access  public
+# @param  string  the text string
+# @param  string  the phrase you'd like to highlight
+# @param  string  the openging tag to precede the phrase with
+# @param  string  the closing tag to end the phrase with
+# @return  string
 #
 exports.highlight_phrase = highlight_phrase = ($str, $phrase, $tag_open = '<strong>', $tag_close = '</strong>') ->
 
@@ -259,9 +261,9 @@ exports.highlight_phrase = highlight_phrase = ($str, $phrase, $tag_open = '<stro
 #
 #  Convert Accented Foreign Characters to ASCII
 #
-#  @access  public
-#  @param  string  the text string
-#  @return  string
+# @access  public
+# @param  string  the text string
+# @return  string
 #
 exports.convert_accented_characters = convert_accented_characters = ($str) ->
 
@@ -291,10 +293,10 @@ exports.convert_accented_characters = convert_accented_characters = ($str) ->
 #  Anything placed between unwrap/unwrap will not be word wrapped, nor
 #  will URLs.
 #
-#  @access  public
-#  @param  string  the text string
+# @access  public
+# @param  string  the text string
 # @param  [Integer]  the number of characters to wrap at
-#  @return  string
+# @return  string
 #
 exports.word_wrap = word_wrap = ($str, $charlim = '76') ->
 
@@ -375,11 +377,11 @@ exports.word_wrap = word_wrap = ($str, $charlim = '76') ->
 #
 #  This function will strip tags from a string, split it at its max_length and ellipsize
 #
-#  @param  string    string to ellipsize
+# @param  string    string to ellipsize
 # @param  [Integer]  max length of string
 # @param  [Mixed]  int (1|0) or float, .5, .2, etc for position to split
-#  @param  string    ellipsis ; Default '...'
-#  @return  string    ellipsized string
+# @param  string    ellipsis ; Default '...'
+# @return  string    ellipsized string
 #
 exports.ellipsize = ellipsize = ($str, $max_length, $position = 1, $ellipsis = '&hellip;') ->
 
