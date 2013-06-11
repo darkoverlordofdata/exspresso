@@ -4,16 +4,15 @@
   "dependencies": {
     "coffee-script": {
       "version": "1.6.3",
-      "from": "coffee-script@*",
-      "resolved": "https://registry.npmjs.org/coffee-script/-/coffee-script-1.6.3.tgz"
+      "from": "coffee-script@"
     },
     "not-php": {
       "version": "0.3.14",
-      "from": "not-php@*"
+      "from": "not-php@"
     },
     "connect": {
       "version": "2.7.11",
-      "from": "connect@*",
+      "from": "connect@",
       "dependencies": {
         "qs": {
           "version": "0.6.5",
@@ -63,50 +62,9 @@
         }
       }
     },
-    "pg": {
-      "version": "1.1.3",
-      "from": "pg@*",
-      "resolved": "https://registry.npmjs.org/pg/-/pg-1.1.3.tgz",
-      "dependencies": {
-        "generic-pool": {
-          "version": "2.0.3",
-          "from": "generic-pool@2.0.3"
-        },
-        "buffer-writer": {
-          "version": "1.0.0",
-          "from": "buffer-writer@1.0.0",
-          "dependencies": {
-            "cloned": {
-              "version": "0.0.1",
-              "from": "cloned@0.0.1",
-              "dependencies": {
-                "rmdir": {
-                  "version": "1.0.0",
-                  "from": "rmdir@~1.0.0"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "mysql": {
-      "version": "2.0.0-alpha8",
-      "from": "mysql@*",
-      "dependencies": {
-        "require-all": {
-          "version": "0.0.3",
-          "from": "require-all@0.0.3"
-        },
-        "bignumber.js": {
-          "version": "1.0.1",
-          "from": "bignumber.js@1.0.1"
-        }
-      }
-    },
     "bcrypt": {
       "version": "0.7.5",
-      "from": "bcrypt@*",
+      "from": "bcrypt@",
       "dependencies": {
         "bindings": {
           "version": "1.0.0",
@@ -133,21 +91,6 @@
         "strscan": {
           "version": "1.0.1",
           "from": "strscan@>=1.0.1"
-        }
-      }
-    },
-    "emailjs": {
-      "version": "0.3.4",
-      "from": "emailjs@*",
-      "dependencies": {
-        "moment": {
-          "version": "1.7.0",
-          "from": "moment@= 1.7.0",
-          "resolved": "https://registry.npmjs.org/moment/-/moment-1.7.0.tgz"
-        },
-        "bufferjs": {
-          "version": "1.1.0",
-          "from": "bufferjs@=1.1.0"
         }
       }
     },
@@ -195,68 +138,9 @@
         }
       }
     },
-    "memjs": {
-      "version": "0.6.0",
-      "from": "memjs@*"
-    },
-    "redis": {
-      "version": "0.8.3",
-      "from": "redis@*"
-    },
     "utf8": {
       "version": "1.0.0",
       "from": "utf8@*"
-    },
-    "async": {
-      "version": "0.2.9",
-      "from": "async@*"
-    },
-    "chai": {
-      "version": "1.6.0",
-      "from": "chai@*"
-    },
-    "mocha": {
-      "version": "1.10.0",
-      "from": "mocha@*",
-      "dependencies": {
-        "commander": {
-          "version": "0.6.1",
-          "from": "commander@0.6.1"
-        },
-        "growl": {
-          "version": "1.7.0",
-          "from": "growl@1.7.x"
-        },
-        "jade": {
-          "version": "0.26.3",
-          "from": "jade@0.26.3",
-          "resolved": "https://registry.npmjs.org/jade/-/jade-0.26.3.tgz",
-          "dependencies": {
-            "mkdirp": {
-              "version": "0.3.0",
-              "from": "mkdirp@0.3.0",
-              "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.0.tgz"
-            }
-          }
-        },
-        "diff": {
-          "version": "1.0.2",
-          "from": "diff@1.0.2"
-        },
-        "debug": {
-          "version": "0.7.2",
-          "from": "debug@*"
-        },
-        "mkdirp": {
-          "version": "0.3.3",
-          "from": "mkdirp@0.3.3",
-          "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.3.tgz"
-        },
-        "ms": {
-          "version": "0.3.0",
-          "from": "ms@0.3.0"
-        }
-      }
     }
   }
 }

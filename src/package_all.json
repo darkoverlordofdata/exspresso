@@ -29,6 +29,8 @@
     "moment": "*",
     "sprintf": "*",
     "glob": "*",
+    "memjs": "*",
+    "redis": "*",
     "utf8": "*"
   },
   "scripts": {

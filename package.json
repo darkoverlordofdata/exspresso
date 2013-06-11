@@ -17,24 +17,19 @@
     }
   ],
   "dependencies": {
-    "coffee-script": "*",
-    "not-php": "*",
-    "connect": "*",
-    "pg": "*",
-    "mysql": "*",
-    "bcrypt": "*",
+    "coffee-script": "",
+    "not-php": "",
+    "connect": "",
+    "bcrypt": "",
     "cookie": "*",
     "cookie-signature": "*",
     "dispatch": "*",
     "eco": "*",
-    "emailjs": "*",
     "marked": "*",
     "format-number": "",
     "moment": "*",
     "sprintf": "*",
     "glob": "*",
-    "memjs": "*",
-    "redis": "*",
     "utf8": "*"
   },
   "scripts": {
@@ -42,9 +37,6 @@
     "test": "cake test"
   },
   "devDependencies": {
-    "chai": "*",
-    "mocha": "*",
-    "async": "*"
   },
   "repository": "git://github.com/darkoverlordofdata/exspresso",
   "main": "index",
