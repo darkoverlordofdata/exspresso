@@ -1,0 +1,10 @@
+# change history
+
+### Version 0.10.x (6/1/13)
+* In preperation for repelase, the Exspresso core was split off by itself,
+with the demo as a seperate module with a dependancy on this one.
+
+### Version 0.10.9 (6/11/13)
+* Remove db/Driver dependancy on the package version (broken with module separation)
+* Cache the current context in $data.$this when calling the rendering engine. This is a
+fix for swig, and other rendering engines that don't remember the context like ECO.
