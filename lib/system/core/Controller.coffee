@@ -161,6 +161,8 @@ module.exports = class system.core.Controller extends system.core.Object
   #
   render: ($view, $data = {}, $next) ->
 
+    $data.$this = @ # some template engines, such as swig
+                    # lose track of the context
     @res.render $view, magic(@, $data), ($err, $html) =>
 
       return $next($err, $html) if $next?
