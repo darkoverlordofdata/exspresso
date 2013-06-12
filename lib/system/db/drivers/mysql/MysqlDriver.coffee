@@ -43,7 +43,7 @@ module.exports = class system.db.mysql.MysqlDriver extends system.db.ActiveRecor
 
     Object.defineProperties @,
       driver        : {writeable: false, enumerable: true, value: 'mysql'}
-      version       : {writeable: false, enumerable: true, value: require(FCPATH + 'node_modules/mysql/package.json').version}
+      version       : {writeable: false, enumerable: true, value: '2.0.0-alpha8'}
 
   #
   # Non-persistent database connection

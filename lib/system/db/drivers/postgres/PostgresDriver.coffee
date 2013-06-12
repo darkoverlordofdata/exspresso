@@ -37,7 +37,7 @@ module.exports = class system.db.postgres.PostgresDriver extends system.db.Activ
 
     Object.defineProperties @,
       driver        : {writeable: false, enumerable: true, value: 'pg'}
-      version       : {writeable: false, enumerable: true, value: require(FCPATH + 'node_modules/pg/package.json').version}
+      version       : {writeable: false, enumerable: true, value: '1.3.0'}
 
   #
   # Connection String

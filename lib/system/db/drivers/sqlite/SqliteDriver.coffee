@@ -37,7 +37,7 @@ module.exports = class system.db.sqlite.SqliteDriver extends system.db.ActiveRec
 
     Object.defineProperties @,
       driver        : {writeable: false, enumerable: true, value: 'sqlite3'}
-      version       : {writeable: false, enumerable: true, value: require(FCPATH + 'node_modules/sqlite3/package.json').version}
+      version       : {writeable: false, enumerable: true, value: '2.1.7'}
 
   #
   # Database connection
