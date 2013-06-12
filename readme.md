@@ -1,4 +1,4 @@
-# Exspresso v0.10.7
+# Exspresso v0.10.9
 
  A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
 
