@@ -210,7 +210,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
     # run as desktop app?
     #
     if @desktop
-      exec "#{FCPATH}bin/desktop http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "webview http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
         process.exit()
@@ -219,7 +219,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
       # preview locally?
       #
     else if @preview
-      exec "#{FCPATH}bin/preview http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "webview --debug http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
         process.exit()

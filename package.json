@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.10.10",
+  "version": "0.10.11",
   "description": "A CoffeeScript Web Framework",
   "keywords": [
     "framework",
@@ -20,7 +20,6 @@
     "coffee-script": "",
     "not-php": "",
     "connect": "",
-    "bcrypt": "",
     "cookie": "*",
     "cookie-signature": "*",
     "dispatch": "*",
@@ -33,8 +32,7 @@
     "utf8": "*"
   },
   "scripts": {
-    "start": "node exspresso.js",
-    "test": "cake test"
+    "start": "node exspresso.js"
   },
   "devDependencies": {
   },

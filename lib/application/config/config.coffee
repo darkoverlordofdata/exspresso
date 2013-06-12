@@ -306,8 +306,8 @@ module.exports =
   #|
   #|
   module_paths: [
-    MODPATH
-    APPPATH+'modules/'
+    #MODPATH
+    #APPPATH+'modules/'
   ]
 
   #|

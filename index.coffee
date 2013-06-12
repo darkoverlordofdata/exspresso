@@ -124,9 +124,10 @@ module.exports =
       define 'MODPATH', realpath($module_folder) + '/'
     else
       if not is_dir(SYSPATH+$module_folder+'/')
-        exit "Your module folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
-
-      define 'MODPATH', SYSPATH+$module_folder+'/'
+        #exit "Your module folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
+        define 'MODPATH', false
+      else
+        define 'MODPATH', SYSPATH+$module_folder+'/'
 
     #
     #   Initialize the API
