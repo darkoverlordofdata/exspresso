@@ -9,9 +9,11 @@ with the demo as a seperate module with a dependancy on this one.
 * Cache the current context in $data.$this when calling the rendering engine. This is a
 fix for swig, and other rendering engines that don't remember the context like ECO.
 * Remove non-essential modules from package.json
+
+### Version 0.10.11 (6/12/13)
 * Remove webview to seperate project
 
-### Version 0.10.11 (6/17/13)
+### Version 0.10.12 (6/17/13)
 * Refactor system.core.Connect to use template pattern for initialization. This allows
 a subclass hook before & after each initializtion step. Driven by asset management. No changes
 were made to logic, this only exposes the interface.
