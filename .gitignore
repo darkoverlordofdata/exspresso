@@ -1,13 +1,6 @@
 /node_modules
 /lib/cache
 /.idea
-/lib/assets/doc
 /lib/application/logs
 /lib/application/cache
-/docs
-/bin/preview
-/bin/desktop
-Exspresso.desktop
-exspresso.sh
-exspresso.sqlite
 npm-debug.log
