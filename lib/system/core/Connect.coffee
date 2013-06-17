@@ -178,6 +178,7 @@ module.exports = class system.core.Connect
     @app.use $driver.session($options)
     @app.use $session.parseRequest($session.cookie_prefix + $session.sess_cookie_name)
     return
+
   #
   # Initialize the driver
   #
@@ -188,9 +189,30 @@ module.exports = class system.core.Connect
 
     @app = $driver()
     @port = @config.item('http_port')
-    $render = new_core('Render')
 
+    #
+    # Template for initializing the server
+    #
+    @initialize_log $driver
+    @initialize_assets $driver
+    @initialize_request $driver
+    @initialize_response new_core('Render')
+
+  #
+  # Initialize the log
+  #
+  # @return [Void]
+  #
+  initialize_log: ($driver) ->
     @app.use $driver.logger(@config.item('log_http'))
+
+
+  #
+  # Initialize the assets
+  #
+  # @return [Void]
+  #
+  initialize_assets:($driver) ->
     #
     # Expose asset folders
     #
@@ -201,20 +223,37 @@ module.exports = class system.core.Connect
         @app.use $driver.static($module.path+"/assets/")
         log_message 'debug', 'Module %s mounted at %s', $module.name, $module.path
 
-
     #
     # Favorites icon
     #
     @app.use $driver.favicon(APPPATH+"assets/" + @config.item('favicon'))
 
+  #
+  # Initialize the request
+  #
+  # @return [Void]
+  #
+  initialize_request: ($driver) ->
     #
     # Request parsing
     #
     @app.use $driver.query()
     @app.use $driver.bodyParser()
     @app.use $driver.methodOverride()
+
+
+  #
+  # Initialize the response
+  #
+  # @return [Void]
+  #
+  initialize_response: ($render) ->
     @app.use ($req, $res, $next) =>
 
+      #
+      # Represent
+      #
+      $res.setHeader 'X-Powered-By', 'exspresso'
       #
       # get the base url?
       #
@@ -235,6 +274,32 @@ module.exports = class system.core.Connect
           'Content-Type'    : 'application/json; charset=utf-8'
         $res.end JSON.stringify($data)
         return
+
+      #
+      # Redirect
+      #
+      # Redirect to another url
+      #
+      # @private
+      # @param [String] url url to redirect to
+      # @param [String] type  location | refresh
+      # @param [String] url url to redirect to
+      # @return [Void]
+      #
+      $res.redirect = ($url, $type='location', $status = 302) ->
+
+        switch $type
+          when 'refresh'
+            $res.writeHead $status,
+              Refresh: 0
+              url: $url
+            $res.end null
+          else
+            $res.writeHead $status,
+              Location: $url
+            $res.end null
+
+
 
       #
       # Render the view

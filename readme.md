@@ -1,11 +1,13 @@
 # Exspresso v0.10.11
 
- A CoffeeScript framework inspired by [CodeIgniter] (<http://codeigniter.com/>)
+A Classy web framework written in CoffeeScript.
+
+If you've used [CodeIgniter] (<http://codeigniter.com/>), you know how to use Exspresso.
 
 Exspresso Features:
 
   * Runs on the connect.js http stack
-  * Magic: controller members are available to all libs, models, and views.
+  * Magic: Prototype Injection makes all controller members available in all libs, models, and views.
   * Multiple view formats
     * html
     * md (markdown)
