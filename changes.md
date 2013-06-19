@@ -16,5 +16,8 @@ with the demo as a seperate module with a dependancy on this one.
 a subclass hook before & after each initializtion step. Driven by asset management. No changes
 were made to logic, this only exposes the interface.
 
-### Version 0.10.13 (6/1?/13)
+### Version 0.10.13 (6/18/13)
 * Update documentation.
+
+### Version 0.10.14 (6/19/13)
+* Add x-powered by header: Exspresso/V0.10.13

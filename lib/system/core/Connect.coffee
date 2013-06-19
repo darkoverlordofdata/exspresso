@@ -253,7 +253,7 @@ module.exports = class system.core.Connect
       #
       # Represent
       #
-      $res.setHeader 'X-Powered-By', 'exspresso'
+      $res.setHeader 'X-Powered-By', "Exspresso/#{@controller.version}"
       #
       # get the base url?
       #
