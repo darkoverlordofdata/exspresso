@@ -1,6 +1,6 @@
    ------------------------------------------------------------------------
 
-    Magic:
+    Magic (Prototype Injection):
 
       The controller instance is injected into the prototype chain of all
       libs, models, and views; forming a virtual supercontroller instance

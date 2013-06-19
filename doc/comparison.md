@@ -24,7 +24,7 @@ exports['/admin'] = 'Admin/index'
 
 ## Magic
 CodeIgniter uses PHP magic methods to dispatch missing method calls to the controller.
-Exspresso uses inheritance injection to emulate this behavior.
+Exspresso uses prototype injection to emulate this behavior.
 
 ## Templates
 Exspresso uses embedded coffee-script (*.eco) for all view files. All helpers, supplied data elements,

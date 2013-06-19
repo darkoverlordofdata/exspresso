@@ -1,8 +1,7 @@
-# Exspresso v0.10.12
+# Exspresso v0.10.13
 
-A Classy web framework written in CoffeeScript.
+A classy mvc web framework written in CoffeeScript.
 
-If you've used [CodeIgniter] (<http://codeigniter.com/>), you know how to use Exspresso.
 
 Exspresso Features:
 

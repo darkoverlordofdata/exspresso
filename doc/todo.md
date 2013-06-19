@@ -1,10 +1,6 @@
 # To Do:
 
 
-  BUG: Insert batch limited to 100 recs
-  BUG: fix meta - not showing up on all pages
-  BUG: fix cancel button on /admin/blocks
-  BUG: blog - which goes on front page? Use page/front.eco to display the current blog item
 
 
 ### Config
