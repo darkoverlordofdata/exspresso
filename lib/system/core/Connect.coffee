@@ -93,6 +93,26 @@ module.exports = class system.core.Connect
 
 
   #
+  # Initialize the driver
+  #
+  # @param  [Object]  driver  http server object
+  # @return [Void]
+  #
+  initialize:($driver) ->
+
+    @app = $driver()
+    @port = @config.item('http_port')
+    $render = new_core('Render', @controller)
+
+    #
+    # Template for initializing the server
+    #
+    @initialize_log $driver, $render
+    @initialize_assets $driver, $render
+    @initialize_request $driver, $render
+    @initialize_response $driver, $render
+
+  #
   # Set view helpers
   #
   # Sets the autoloaded helpers on the Variables class
@@ -180,30 +200,11 @@ module.exports = class system.core.Connect
     return
 
   #
-  # Initialize the driver
-  #
-  # @param  [Object]  driver  http server object
-  # @return [Void]
-  #
-  initialize:($driver) ->
-
-    @app = $driver()
-    @port = @config.item('http_port')
-
-    #
-    # Template for initializing the server
-    #
-    @initialize_log $driver
-    @initialize_assets $driver
-    @initialize_request $driver
-    @initialize_response new_core('Render')
-
-  #
   # Initialize the log
   #
   # @return [Void]
   #
-  initialize_log: ($driver) ->
+  initialize_log: ($driver, $render) ->
     @app.use $driver.logger(@config.item('log_http'))
 
 
@@ -212,7 +213,7 @@ module.exports = class system.core.Connect
   #
   # @return [Void]
   #
-  initialize_assets:($driver) ->
+  initialize_assets:($driver, $render) ->
     #
     # Expose asset folders
     #
@@ -233,7 +234,7 @@ module.exports = class system.core.Connect
   #
   # @return [Void]
   #
-  initialize_request: ($driver) ->
+  initialize_request: ($driver, $render) ->
     #
     # Request parsing
     #
@@ -247,7 +248,7 @@ module.exports = class system.core.Connect
   #
   # @return [Void]
   #
-  initialize_response: ($render) ->
+  initialize_response: ($driver, $render) ->
     @app.use ($req, $res, $next) =>
 
       #
