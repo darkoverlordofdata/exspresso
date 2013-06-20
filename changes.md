@@ -22,3 +22,6 @@ were made to logic, this only exposes the interface.
 ### Version 0.10.14 (6/19/13)
 * Add x-powered by header: Exspresso/Vx.y.z
 * Refactor system.core.Connect initialize to integrate system.core.Render.
+
+### Version 0.10.15 (6/20/13)
+* Check for process.env.NODE_ENV in addition to process.env.ENVIRONMENT.

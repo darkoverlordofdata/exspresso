@@ -53,7 +53,7 @@ module.exports =
     #
     # set the environment
     #
-    define 'ENVIRONMENT', process.env.ENVIRONMENT ? 'development'
+    define 'ENVIRONMENT', process.env.ENVIRONMENT ? process.env.NODE_ENV ? 'development'
 
     #
     # Set the default paths:
