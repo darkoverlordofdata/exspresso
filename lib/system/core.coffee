@@ -458,10 +458,10 @@ module.exports.load_core = ($class, $controller) ->
     $prefix = $class.subclass
     $class = $class.class
 
-  $klass = system.core[$prefix+$class] or application.core[$prefix+$class]
+  #$klass = system.core[$prefix+$class] or application.core[$prefix+$class]
   #  Does the class exist?  If so, we're done...
-  if $klass?
-    return magic($controller, $klass, $controller)
+  #if $klass?
+  #  return magic($controller, $klass, $controller)
 
   #  Look for the class first in the native system/libraries folder
   #  then in the local application/libraries folder
