@@ -29,7 +29,8 @@
     "moment": "*",
     "sprintf": "*",
     "glob": "*",
-    "utf8": "*"
+    "utf8": "*",
+    "async": "*"
   },
   "scripts": {
     "start": "node exspresso.js"

@@ -108,14 +108,15 @@ module.exports = class system.db.Cache
   # Write a query to a cache file
   #
   # @param  [String]  sql script to execute
-  # @param  [Object]  data  hash of data to cache
+  # @param  [Object]  rs  result set
   # @param  [Function]  next  async callback
   # @return	[Void]
   #
-  write: ($sql, $data, $next) ->
-    return $next(null, false) unless @uri # skip system requests
+  write: ($sql, $rs, $next) ->
+    return $next(null, $rs) unless @uri # skip system requests
     if not @checkPath()
-      return $next(null, @db.cacheOff())
+      @db.cacheOff()
+      return $next(null, $rs)
 
     $segment_one = @uri.segment(1, 'default')
     $segment_two = @uri.segment(2, 'index')
@@ -126,13 +127,13 @@ module.exports = class system.db.Cache
       time: Math.floor(Date.now()/1000)
       ttl: -1
       sql: $sql
-      data: $data.data
-      meta: $data.meta
+      data: $rs._rows
+      meta: $rs._meta
 
     if self.cache?
       self.cache[$path] = {} unless self.cache[$path]
       self.cache[$path][md5($sql)] = $cache
-      $next(null)
+      $next(null, $rs)
 
     else
       $dir_path = @db.cachedir + $path + '/'
@@ -142,25 +143,25 @@ module.exports = class system.db.Cache
 
         if $exists
           fs.writeFile $dir_path + $filename, JSON.stringify($cache), encoding:'utf8', ($err) ->
-            return $next($err) if $err?
+            return $next(null, $rs) if $err?
 
             fs.chmod $dir_path + $filename, FILE_WRITE_MODE, ($err) ->
-              return $next($err) if $err?
-              $next()
+              return $next(null, $rs) if $err?
+              $next(null, $rs)
 
         else
           fs.mkdir $dir_path, DIR_WRITE_MODE, ($err) ->
-            return $next($err) if $err?
+            return $next(null, $rs) if $err?
 
             fs.chmod $dir_path, DIR_WRITE_MODE, ($err) ->
-              return $next($err) if $err?
+              return $next(null, $rs) if $err?
 
               fs.writeFile $dir_path + $filename, JSON.stringify($cache), encoding:'utf8', ($err) ->
-                return $next($err) if $err?
+                return $next(null, $rs) if $err?
 
                 fs.chmod $dir_path + $filename, FILE_WRITE_MODE, ($err) ->
-                  return $next($err) if $err?
-                  $next()
+                  return $next(null, $rs) if $err?
+                  $next(null, $rs)
 
 
   
@@ -187,7 +188,7 @@ module.exports = class system.db.Cache
       delete self.cache[$path] if self.cache[$path]?
     else
       delete_files(@db.cachedir+$path+'/', true)
-    $next()
+    $next() if $next?
 
     
   
@@ -196,10 +197,10 @@ module.exports = class system.db.Cache
   #
   # @return	bool
   #
-  deleteAll : ($next) ->
+  deleteAll: ($next) ->
     if self.cache?
       self.cache = {}
     else
       delete_files(@db.cachedir, true)
-    $next()
+    $next() if $next?
 

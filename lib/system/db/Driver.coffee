@@ -17,7 +17,7 @@
 #
 module.exports = class system.db.Driver
 
-
+  async = require('async')
   #
   # @property [String] Dsn url. Overrides all other connection settings
   #
@@ -180,12 +180,10 @@ module.exports = class system.db.Driver
   #
   dbVersion: ($next) ->
     if false is ($sql = @_db_version())
-      if @db_debug
-        return @displayError('db_unsupported_function')
-      return false
+      return $next(@displayError('db_unsupported_function'))
 
-    @query $sql, ($err, $result) =>
-      if $err then throw new Error($err)
+    @query $sql, $next
+
 
 
 
@@ -231,106 +229,92 @@ module.exports = class system.db.Driver
   # @param  [Array]  An array of binding data
   # @return [Mixed]
   #
-  query: ($sql, $binds, $next = null) =>
-    if $sql is ''
-      if @db_debug
-        log_message('error', 'Invalid query: ' + $sql)
-        return @displayError('db_invalid_query')
+  query: ($sql, $binds, $next) ->
 
-      return false
+    # validate parameters
+    [$binds, $next] = [null, $binds] unless $next?
+    throw Error('Invalid Async Callback') unless $next?
+    if $sql is ''
+      return $next(Error(@displayError('db_invalid_query')))
 
     #  Verify table prefix and replace if necessary
     if (@dbprefix isnt '' and @swap_pre isnt '') and (@dbprefix isnt @swap_pre)
       $sql = $sql.replace(RegExp("(\\W)" + @swap_pre + "(\\S+?)", 'mig'), "$1" + @dbprefix + "$2")
 
     #  Save the  query for debugging
-    if @_save_queries is true
-      @queries.push $sql
-
-    #log_message 'debug', 'SQL>\n\n%s\n', $sql
+    @queries.push $sql if @_save_queries
 
     #  Start the Query Timer
     $time_start = Date.now()
 
-    #
-    # Async call to execute sql
-    #
-    execute_sql = =>
-
-      if $next?
-        @_execute $sql, $binds, ($err, $results, $info) =>
-          @_query2 $err, $results, $info, $time_start, $sql, $next
-
-      else if $binds?
-        @_execute $sql, ($err, $results, $info) =>
-          @_query2 $err, $results, $info, $time_start, $sql, $binds
-
-    #@cache_on = false
-    if @cache_on is true and $sql.search(/SELECT/i) isnt -1
-      @_cache_init()
-      @_cache.read $sql, ($err, $cache) =>
-        if $cache is false
-          execute_sql()
-
-        else
-          $driver = @_load_rdriver()
-          $rs = new $driver($cache.data, $cache.meta)
-          if $next?
-            return $next(null, $rs)
-          else if $binds?
-            return $binds(null, $rs)
-
-    else
-      execute_sql()
-    return $sql
-
-  #
-  # Execute the query (continued)
-  #
-  _query2: ($err, $results, $info, $time_start, $sql, $next) =>
-    if $err
-      #  Trigger a rollback if transactions are being used
-      @_trans_status = false
-      #@transComplete =>
-      return show_error($err)
+    $queue = []
 
     #
-    # metrics
+    # 1 - Try to read cached query
     #
-    $time_end = Date.now()
-    @_benchmark+= $time_end - $time_start
-    if @_save_queries is true
-      @query_times.push $time_end - $time_start
-    @_query_count++
+    $queue.push ($step) =>
+
+      if @cache_on is true and $sql.search(/^SELECT/i) isnt -1
+        @_cache_init()
+        @_cache_read $sql, $step
+      else
+        $step(null, false)
 
     #
-    # Load and instantiate the result driver
+    # 2 - If no cache, execute Sql
     #
-    $driver = @_load_rdriver()
-    $rs = new $driver($results, $info)
+    $queue.push ($cache, $step) =>
+
+      if $cache is false
+        @_execute $sql, $binds, $step
+
+      else
+        $driver = @_load_rdriver()
+        $rs = new $driver($cache.data, $cache.meta)
+        # do NOT pass go
+        # do NOT collect $200
+        $next(null, $rs)
 
     #
-    # Write Cache
+    # 3 - Finish up
     #
-    write_cache = =>
+    $queue.push ($data, $meta, $step) =>
+
+      # profile
+      $time_end = Date.now()
+      @_benchmark+= $time_end - $time_start
+      if @_save_queries is true
+        @query_times.push $time_end - $time_start
+      @_query_count++
+
+      # create the result set
+      $driver = @_load_rdriver()
+      $rs = new $driver($data, $meta)
+
+      # delete cache?
+      if @is_write_type($sql) is true and @cache_on is true and @_cache_autodel is true
+        @_cache_init()
+        @_cache.delete()
+
+      # write cache?
       if @cache_on
         @_cache_init()
-        @_cache.write $sql, {data: $results, meta: $info}, ($warn) ->
-          log_message 'error', $warn if $warn?
-          return $next $err, $rs, $info
+        @_cache.write $sql, $rs, $step
       else
-        return $next $err, $rs, $info
+        $step null, $rs
+
 
     #
-    # delete cache when updating?
+    # Run the steps
     #
-    if @is_write_type($sql) is true and @cache_on is true and @_cache_autodel is true
-      @_cache_init()
-      @_cache.delete ($warn) =>
-        log_message 'error', $warn if $warn?
-        write_cache()
-    else
-      write_cache()
+    (async.compose($queue.reverse()...)) ($err, $rs) =>
+      if $err?
+        #  Trigger a rollback if transactions are being used
+        @_trans_status = false
+        return show_error($err)
+      else
+        $next null, $rs, $rs._meta
+
 
   #
   # Load the result drivers
@@ -354,19 +338,13 @@ module.exports = class system.db.Driver
   #
   simpleQuery : ($sql, $binds, $next) ->
 
-    if $next is null
-      @_execute $sql, ($err, $results, $info) =>
-        @_query2 $err, $results, $info, $time_start, $sql, $binds
+    # validate parameters
+    [$binds, $next] = [null, $binds] unless $next?
+    throw Error('Invalid Async Callback') unless $next?
+    if $sql is ''
+      return $next(Error(@displayError('db_invalid_query')))
 
-    else
-      @_execute $sql, $binds, ($err, $results, $info) =>
-        @_query2 $err, $results, $info, $time_start, $sql, $next
-
-  _simple_query2:($err, $results, $info, $next) =>
-
-    if $results.length?
-      if $results.length is 1 then $results = $results[0]
-    $next $err, $results, $info
+    @_execute $sql, $binds, $next
 
 
   #
