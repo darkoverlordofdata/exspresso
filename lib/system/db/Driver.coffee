@@ -273,7 +273,7 @@ module.exports = class system.db.Driver
         $rs = new $driver($cache.data, $cache.meta)
         # do NOT pass go
         # do NOT collect $200
-        $next(null, $rs)
+        $next(null, $rs, $rs._meta)
 
     #
     # 3 - Finish up
