@@ -188,31 +188,35 @@ module.exports = class system.db.Driver
 
 
   #
-  # Execute a list of sql statements
+  # Execute a list of sql statements in order
   #
-  # @return	array
+  # @param  [Array<String>] sql array of sql statements
+  # #param  [Function] next async callback
+  # @return none
   #
   queryList: ($sql, $next) ->
 
-    $results = []
-    $index = 0
-    $query = @query
+    async.mapSeries $sql, @query, $next
 
-    $iterate = =>
-
-      return $next(null, $results) if $sql.length is 0
-      #
-      # execute sql
-      #
-      $query $sql[$index], ($err, $result) =>
-        return $next($err) if $err
-
-        $results.push $result
-        $index += 1
-        if $index is $sql.length then $next null, $results
-        else $iterate()
-
-    $iterate()
+#    $results = []
+#    $index = 0
+#    $query = @query
+#
+#    $iterate = =>
+#
+#      return $next(null, $results) if $sql.length is 0
+#      #
+#      # execute sql
+#      #
+#      $query $sql[$index], ($err, $result) =>
+#        return $next($err) if $err
+#
+#        $results.push $result
+#        $index += 1
+#        if $index is $sql.length then $next null, $results
+#        else $iterate()
+#
+#    $iterate()
 
 
 
@@ -827,22 +831,12 @@ module.exports = class system.db.Driver
   #
   displayError : ($error = '', $swap = '', $native = false) ->
 
-    console.log 'ERROR '+$error
-    return
-
     @i18n.load('db')
-
-    $heading = @i18n.line('db_error_heading')
-
-    if $native is true
-      $message = $error
-
-    else
-      $message = if 'string' is typeof($error) then [@i18n.line($error).replace('%s', $swap)] else $error
-
+    $message = if $native is true then $error
+    else if 'string' is typeof($error) then @i18n.line($error).replace('%s', $swap) else $error
 
     console.log $message
-    #show_error $message
+    $message
 
 
   #
