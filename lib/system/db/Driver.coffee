@@ -247,73 +247,75 @@ module.exports = class system.db.Driver
     #  Start the Query Timer
     $time_start = Date.now()
 
-    $queue = []
+    async.waterfall [
 
-    #
-    # 1 - Try to read cached query
-    #
-    $queue.push ($step) =>
+      #
+      # 1 - Try to read cached query
+      #
+      ($step) =>
 
-      if @cache_on is true and $sql.search(/^SELECT/i) isnt -1
-        @_cache_init()
-        @_cache_read $sql, $step
-      else
-        $step(null, false)
+        if @cache_on is true and $sql.search(/^SELECT/i) isnt -1
+          @_cache_init()
+          @_cache_read $sql, $step
+        else
+          $step(null, false)
 
-    #
-    # 2 - If no cache, execute Sql
-    #
-    $queue.push ($cache, $step) =>
+      #
+      # 2 - If no cache, execute Sql
+      #
+      ,
+      ($cache, $step) =>
 
-      if $cache is false
-        @_execute $sql, $binds, $step
+        if $cache is false
+          @_execute $sql, $binds, $step
 
-      else
+        else
+          $driver = @_load_rdriver()
+          $rs = new $driver($cache.data, $cache.meta)
+          # do NOT pass go
+          # do NOT collect $200
+          $next(null, $rs, $rs._meta)
+
+      #
+      # 3 - Finish up
+      #
+      ,
+      ($data, $meta, $step) =>
+
+        # profile
+        $time_end = Date.now()
+        @_benchmark+= $time_end - $time_start
+        if @_save_queries is true
+          @query_times.push $time_end - $time_start
+        @_query_count++
+
+        # create the result set
         $driver = @_load_rdriver()
-        $rs = new $driver($cache.data, $cache.meta)
-        # do NOT pass go
-        # do NOT collect $200
-        $next(null, $rs, $rs._meta)
+        $rs = new $driver($data, $meta)
 
-    #
-    # 3 - Finish up
-    #
-    $queue.push ($data, $meta, $step) =>
+        # delete cache?
+        if @is_write_type($sql) is true and @cache_on is true and @_cache_autodel is true
+          @_cache_init()
+          @_cache.delete()
 
-      # profile
-      $time_end = Date.now()
-      @_benchmark+= $time_end - $time_start
-      if @_save_queries is true
-        @query_times.push $time_end - $time_start
-      @_query_count++
+        # write cache?
+        if @cache_on
+          @_cache_init()
+          @_cache.write $sql, $rs, $step
+        else
+          $step null, $rs
 
-      # create the result set
-      $driver = @_load_rdriver()
-      $rs = new $driver($data, $meta)
-
-      # delete cache?
-      if @is_write_type($sql) is true and @cache_on is true and @_cache_autodel is true
-        @_cache_init()
-        @_cache.delete()
-
-      # write cache?
-      if @cache_on
-        @_cache_init()
-        @_cache.write $sql, $rs, $step
-      else
-        $step null, $rs
-
-
-    #
-    # Run the steps
-    #
-    (async.compose($queue.reverse()...)) ($err, $rs) =>
-      if $err?
-        #  Trigger a rollback if transactions are being used
-        @_trans_status = false
-        return show_error($err)
-      else
-        $next null, $rs, $rs._meta
+      #
+      # Done
+      #
+      ],
+      ($err, $rs) =>
+        if $err?
+          #  Trigger a rollback if transactions are being used
+          @_trans_status = false
+          return show_error($err)
+        else
+          $next null, $rs, $rs._meta
 
 
   #
