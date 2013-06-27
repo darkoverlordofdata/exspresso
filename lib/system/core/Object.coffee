@@ -27,6 +27,7 @@ Function::define = ($def) ->
 #
 module.exports = class system.core.Object
 
+  async = require('async')
   #
   # Define a read-only property
   #
@@ -63,26 +64,30 @@ module.exports = class system.core.Object
     #@define _queue: [] if not @_queue?
     @_queue = [] unless @_queue?
 
-    $queue = @_queue
-    $index = 0
-
-    $done = ($err) =>
+    async.series @_queue, ($err, $results) =>
       @_queue = []
-      $next($err)
+      return $next($err)
 
-    $iterate = ->
-
-      return $done(null) if $queue.length is 0
-      #
-      # call the function at index
-      #
-      $function = $queue[$index]
-
-      $function ($err) ->
-        return $next($err) if $err
-        $index += 1
-        if $index is $queue.length then $done(null)
-        else $iterate()
-
-    $iterate()
-
+#    $queue = @_queue
+#    $index = 0
+#
+#    $done = ($err) =>
+#      @_queue = []
+#      $next($err)
+#
+#    $iterate = ->
+#
+#      return $done(null) if $queue.length is 0
+#      #
+#      # call the function at index
+#      #
+#      $function = $queue[$index]
+#
+#      $function ($err) ->
+#        return $next($err) if $err
+#        $index += 1
+#        if $index is $queue.length then $done(null)
+#        else $iterate()
+#
+#    $iterate()
+#

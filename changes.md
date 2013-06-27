@@ -26,4 +26,5 @@ were made to logic, this only exposes the interface.
 ### Version 0.10.15 (6/20/13)
 * Check for process.env.NODE_ENV in addition to process.env.ENVIRONMENT.
 * Remove references to application namespace.
-* Refactor db.Driver::query to clean up async logic
+* Refactor db.Driver::query to clean up async logic.
+* Refactor core.Object::run to clean up async logic.
