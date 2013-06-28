@@ -23,7 +23,7 @@ were made to logic, this only exposes the interface.
 * Add x-powered by header: Exspresso/Vx.y.z
 * Refactor system.core.Connect initialize to integrate system.core.Render.
 
-### Version 0.10.15 (6/20/13)
+### Version 0.10.15 (6/27/13)
 * Check for process.env.NODE_ENV in addition to process.env.ENVIRONMENT.
 * Remove references to application namespace.
 * Refactor db.Driver::query to clean up async logic.
