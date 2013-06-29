@@ -28,3 +28,6 @@ were made to logic, this only exposes the interface.
 * Remove references to application namespace.
 * Refactor db.Driver::query to clean up async logic.
 * Refactor core.Object::run to clean up async logic.
+
+### Version 0.10.16 (6/28/13)
+* Bind db.Driver::query & db.Driver::simpleQuery so that queued queries run in context.

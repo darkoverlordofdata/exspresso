@@ -233,7 +233,7 @@ module.exports = class system.db.Driver
   # @param  [Array]  An array of binding data
   # @return [Mixed]
   #
-  query: ($sql, $binds, $next) ->
+  query: ($sql, $binds, $next) =>
 
     # validate parameters
     [$binds, $next] = [null, $binds] unless $next?
@@ -342,7 +342,7 @@ module.exports = class system.db.Driver
   # @param  [String]  the sql query
   # @return [Mixed]
   #
-  simpleQuery : ($sql, $binds, $next) ->
+  simpleQuery: ($sql, $binds, $next) =>
 
     # validate parameters
     [$binds, $next] = [null, $binds] unless $next?
