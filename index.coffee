@@ -142,6 +142,7 @@ module.exports =
     #
     #   e x s p r e s s o
     #
+    exspresso.setConfig $config
     exspresso.boot()
 
 
