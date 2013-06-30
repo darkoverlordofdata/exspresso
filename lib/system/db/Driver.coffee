@@ -286,6 +286,7 @@ module.exports = class system.db.Driver
       ,
       ($data, $meta, $step) =>
 
+        [$meta, $step] = [null, $meta] unless $step?
         # profile
         $time_end = Date.now()
         @_benchmark+= $time_end - $time_start

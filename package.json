@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.10.16",
+  "version": "0.10.17",
   "description": "A CoffeeScript Web Framework",
   "keywords": [
     "framework",

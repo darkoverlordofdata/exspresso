@@ -31,3 +31,6 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.16 (6/28/13)
 * Bind db.Driver::query & db.Driver::simpleQuery so that queued queries run in context.
+
+### Version 0.10.17 (6/29/13)
+* Fix db.Driver::query: pg client does not return metadata
