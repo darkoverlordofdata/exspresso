@@ -37,3 +37,4 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.18 (6/30/13)
 * Set config overrides: ./index.coffee.
+* Refactor folders. Expresso doesn't use ./lib.

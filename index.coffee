@@ -36,14 +36,14 @@ module.exports =
   run: ($config = {})->
 
 
-    $apppath = $config.APPPATH ? 'lib/application'
-    $modpath = $config.MODPATH ? 'lib/modules'
-    $docroot = $config.DOCROOT ? 'lib/assets'
+    $apppath = $config.APPPATH ? 'application'
+    $modpath = $config.MODPATH ? 'modules'
+    $docroot = $config.DOCROOT ? 'assets'
 
     #
     # Load the core api module
     #
-    api = require('./lib/system/core.coffee')
+    api = require('./system/core.coffee')
 
     #
     # Export the api methods
@@ -58,10 +58,10 @@ module.exports =
     #
     # Set the default paths:
     #
-    if realpath('lib/system') is false
-      $system_folder  = __dirname + '/lib/system'       # expresso system libraries
+    if realpath('system') is false
+      $system_folder  = __dirname + '/system'       # expresso system libraries
     else
-      $system_folder  = 'lib/system'
+      $system_folder  = 'system'
 
     if realpath($apppath) is false
       $app_folder  = __dirname + $apppath     # application libraries
