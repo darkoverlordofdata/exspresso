@@ -53,6 +53,11 @@ module.exports =
     core.export global
 
     #
+    # set the environment
+    #
+    define 'ENVIRONMENT', process.env.ENVIRONMENT ? process.env.NODE_ENV ? 'development'
+
+    #
     #  The coffee-script file extension
     #
     define 'EXT', '.coffee'
@@ -63,32 +68,14 @@ module.exports =
     define 'FCPATH', realpath(__dirname) + '/'
 
     #
-    # set the environment
-    #
-    define 'ENVIRONMENT', process.env.ENVIRONMENT ? process.env.NODE_ENV ? 'development'
-
-    #
-    # discover the system path
-    #
-    $system_folder = if realpath('system') then 'system' else FCPATH + 'system'
-    unless is_dir($system_folder)
-      exit "Your system folder path is not set correctly."
-
-    #
-    # discover the application path
-    #
-    $app_folder = if realpath($apppath) then $apppath else FCPATH + $apppath
-    unless is_dir($app_folder)
-      exit "Your application folder path not set correctly."
-
     #  Path to the system folder
     #
-    define 'SYSPATH', realpath($system_folder) + '/'
+    define 'SYSPATH', FCPATH + 'system/'
 
     #
     # The path to the "application" folder
     #
-    define 'APPPATH', realpath($app_folder) + '/'
+    define 'APPPATH', if is_dir($apppath) then realpath($apppath) + '/' else FCPATH + 'application/'
 
     #
     # The path to the "assets" folder (optional)
@@ -101,12 +88,20 @@ module.exports =
     define 'MODPATH', if is_dir($modpath) then realpath($modpath) + '/' else false
 
     #
-    #   Initialize the API
+    # Verify the embedding application path
+    #
+    unless is_dir($apppath)
+      console.log "WARN Your application folder path not set correctly"
+      console.log "WARN --> #{$apppath} <--"
+      console.log "WARN Booting default exspresso application"
+
+    #
+    # Initialize the API
     #
     core()
 
     #
-    #   Create the top level system controller
+    # Create the top level system controller
     #
     define 'exspresso', new system.core.Exspresso
 
