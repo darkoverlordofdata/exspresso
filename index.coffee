@@ -30,12 +30,14 @@
 # Set global path constants, load the api and boot exspresso
 #
 
-
 module.exports =
 
   run: ($config = {})->
 
-
+    #
+    # Allow the embedding componet to override all
+    # paths, except for the system path
+    #
     $apppath = $config.APPPATH ? 'application'
     $modpath = $config.MODPATH ? 'modules'
     $docroot = $config.DOCROOT ? 'assets'
@@ -43,12 +45,22 @@ module.exports =
     #
     # Load the core api module
     #
-    api = require('./system/core.coffee')
+    core = require('./system/core.coffee')
 
     #
     # Export the api methods
     #
-    api.export global
+    core.export global
+
+    #
+    #  The coffee-script file extension
+    #
+    define 'EXT', '.coffee'
+
+    #
+    # Path to the this file
+    #
+    define 'FCPATH', realpath(__dirname) + '/'
 
     #
     # set the environment
@@ -56,83 +68,42 @@ module.exports =
     define 'ENVIRONMENT', process.env.ENVIRONMENT ? process.env.NODE_ENV ? 'development'
 
     #
-    # Set the default paths:
+    # discover the system path
     #
-    if realpath('system') is false
-      $system_folder  = __dirname + '/system'       # expresso system libraries
-    else
-      $system_folder  = 'system'
-
-    if realpath($apppath) is false
-      $app_folder  = __dirname + $apppath     # application libraries
-    else
-      $app_folder  = $apppath
-
-    $asset_folder   = $docroot        # document root,
-    $module_folder  = $modpath       # expresso modules
+    $system_folder = if realpath('system') then 'system' else FCPATH + 'system'
+    unless is_dir($system_folder)
+      exit "Your system folder path is not set correctly."
 
     #
-    #  Resolve the path's
+    # discover the application path
     #
-    $system_path = realpath($system_folder) + '/'
-
-    #   Is the system path correct?
-    #
-    if not is_dir($system_path)
-      exit "Your system folder path is not set correctly. Please open the following file and correct this: "+__filename
-
-    #  The coffee-script file extension
-    #
-    define 'EXT', '.coffee'
+    $app_folder = if realpath($apppath) then $apppath else FCPATH + $apppath
+    unless is_dir($app_folder)
+      exit "Your application folder path not set correctly."
 
     #  Path to the system folder
     #
-    define 'SYSPATH', $system_path
-
-    #  Path to the front controller (this file)
-    #
-    define 'FCPATH', realpath(__dirname) + '/'
+    define 'SYSPATH', realpath($system_folder) + '/'
 
     #
     # The path to the "application" folder
     #
-    if is_dir($app_folder)
-      define 'APPPATH', realpath($app_folder) + '/'
-    else
-      if not is_dir(SYSPATH+$app_folder+'/')
-        exit "Your application folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
-
-      define 'APPPATH', SYSPATH+$app_folder+'/'
+    define 'APPPATH', realpath($app_folder) + '/'
 
     #
-    # The path to the "assets" folder
+    # The path to the "assets" folder (optional)
     #
-    if is_dir($asset_folder)
-      define 'DOCPATH', realpath($asset_folder) + '/'
-    else
-      if not is_dir(SYSPATH+$asset_folder+'/')
-        #exit "Your asset folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
-        define 'DOCPATH', false
-      else
-        define 'DOCPATH', SYSPATH+$asset_folder+'/'
-
+    define 'DOCPATH', if is_dir($docroot) then realpath($docroot) + '/' else false
 
     #
-    # The path to the "modules" folder
+    # The path to the "modules" folder (optional)
     #
-    if is_dir($module_folder)
-      define 'MODPATH', realpath($module_folder) + '/'
-    else
-      if not is_dir(SYSPATH+$module_folder+'/')
-        #exit "Your module folder path does not appear to be set correctly. Please open the following file and correct this: "+__filename
-        define 'MODPATH', false
-      else
-        define 'MODPATH', SYSPATH+$module_folder+'/'
+    define 'MODPATH', if is_dir($modpath) then realpath($modpath) + '/' else false
 
     #
     #   Initialize the API
     #
-    api()
+    core()
 
     #
     #   Create the top level system controller
