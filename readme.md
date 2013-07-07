@@ -1,4 +1,4 @@
-# Exspresso v0.10.20
+# Exspresso v0.10.21
 
 An MVC Web Framework written in CoffeeScript.
 
@@ -25,14 +25,17 @@ Exspresso uses adapter classes to wrap connect middleware
 ### Install
 
 ```bash
-$ npm install exspresso --save
+$ sudo npm install exspresso -g
 ```
 
 
-### Run on localhost
+### Create a new application
 
 ```bash
-node exspresso
+exspresso new <appname>
+cd <appname>
+nmp install
+npm start
 ```
 and point your browser to http://localhost:53610
 

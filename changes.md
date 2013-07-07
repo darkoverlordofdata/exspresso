@@ -44,3 +44,6 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.20 (7/6/13)
 * Start bin/exspresso.
+
+### Version 0.10.21 (7/6/13)
+* Command exspresso new <appname>.
