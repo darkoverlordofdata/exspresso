@@ -25,6 +25,8 @@ fs = require('fs')
 path = require('path')
 {exec} = require("child_process")
 MODE = 0o755
+ucfirst = ($str) -> $str[0].toUpperCase() + $str[1..]
+
 
 #
 # Decode the command  
@@ -69,7 +71,6 @@ cmd_new = ($app) ->
   # Source folder:  /usr/local/lib/node_modules/exspresso
   $src = path.resolve(__dirname, '..')
   $src_folders = [
-    "#{$src}/application/assets"
     "#{$src}/application/config"
     "#{$src}/application/controllers"
     "#{$src}/application/errors"
@@ -79,6 +80,7 @@ cmd_new = ($app) ->
   console.log "Creating application folders..."
   fs.mkdirSync "#{$dst}/modules", MODE
   fs.mkdirSync "#{$dst}/#{$app}", MODE
+  fs.mkdirSync "#{$dst}/#{$app}/assets", MODE
   fs.mkdirSync "#{$dst}/#{$app}/core", MODE
   fs.mkdirSync "#{$dst}/#{$app}/helpers", MODE
   fs.mkdirSync "#{$dst}/#{$app}/hooks", MODE
@@ -90,8 +92,11 @@ cmd_new = ($app) ->
   exec "cp -R #{$src_folders} #{$dst}/#{$app}", ($err, $output) ->
     console.log $err.message if $err?
 
-    console.log "Updating config..."
+    console.log "Updating config/config..."
     fs.writeFileSync "#{$dst}/#{$app}/config/config.coffee",  config_coffee($app),   mode: MODE
+
+    console.log "Extend core/Connect..."
+    fs.writeFileSync "#{$dst}/#{$app}/core/#{ucfirst($app)}Connect.coffee",  extend_coffee($app),   mode: MODE
 
     console.log 'Ok.'
 
@@ -256,7 +261,6 @@ project_js = ($app) ->
 # @retun [String] code
 #
 config_coffee = ($app) ->
-  $APP = $app[0].toUpperCase() + $app[1..]
   """
   module.exports =
 
@@ -400,7 +404,7 @@ config_coffee = ($app) ->
     #| native libraries.
     #|
     #|
-    subclass_prefix: '#{$APP}'
+    subclass_prefix: '#{ucfirst($app)}'
 
     #|
     #|--------------------------------------------------------------------------
@@ -622,6 +626,46 @@ config_coffee = ($app) ->
     #|
     #|
     view_ext: '.eco'
+
+  """
+
+extend_coffee = ($app) ->
+  """
+  #+--------------------------------------------------------------------+
+  #| #{ucfirst($app)}Connect.coffee
+  #+--------------------------------------------------------------------+
+  #| Copyright DarkOverlordOfData (c) 2012 - 2013
+  #+--------------------------------------------------------------------+
+  #|
+  #| This file is a part of Exspresso
+  #|
+  #| Exspresso is free software; you can copy, modify, and distribute
+  #| it under the terms of the MIT License
+  #|
+  #+--------------------------------------------------------------------+
+
+  #
+  #	#{ucfirst($app)}Connect
+  #
+  #   An adapter to the connect server instance
+  #
+  #   This extension allows us to use assets from the exspresso component
+  #
+  module.exports = class #{$app}.core.#{ucfirst($app)}Connect extends system.core.Connect
+
+    #
+    # Initialize the assets
+    #
+    #   Use the assets from the exspresso component
+    #
+    # @param  [Object]  driver  the instantiated express driver
+    # @return [Void]
+    #
+    initialize_assets:($driver, $render) =>
+
+      @app.use $driver.static("node_modules/exspresso/application/assets/")
+      super $driver, $render
+
 
   """
 
