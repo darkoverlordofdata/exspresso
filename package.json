@@ -1,6 +1,6 @@
 {
   "name": "exspresso",
-  "version": "0.10.19",
+  "version": "0.10.20",
   "description": "A CoffeeScript Web Framework",
   "keywords": [
     "framework",
@@ -34,6 +34,9 @@
   },
   "scripts": {
     "start": "node exspresso.js"
+  },
+  "bin": {
+    "exspresso": "./bin/exspresso"
   },
   "devDependencies": {
   },

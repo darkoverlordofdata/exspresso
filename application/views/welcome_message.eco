@@ -99,7 +99,7 @@
 
         <div class="span6">
             <h4>Magic</h4>
-            <p>Controller members are available to all libs, models, and views.</p>
+            <p>Dynamic controller members are available to all libs, models, and views.</p>
 
         </div>
     </div>

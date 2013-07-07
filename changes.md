@@ -41,3 +41,6 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.19 (7/5/13)
 * Clean up front end logic: ./index.coffee.
+
+### Version 0.10.20 (7/6/13)
+* Start bin/exspresso.

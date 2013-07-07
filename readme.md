@@ -1,9 +1,9 @@
-# Exspresso v0.10.19
+# Exspresso v0.10.20
 
-A classy mvc web framework written in CoffeeScript.
+An MVC Web Framework written in CoffeeScript.
 
 
-Exspresso Features:
+Exspresso uses adapter classes to wrap connect middleware
 
   * Runs on the connect.js http stack
   * Magic: Prototype Injection makes all controller members available in all libs, models, and views.

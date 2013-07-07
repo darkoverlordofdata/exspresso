@@ -1,0 +1,35 @@
+#!/usr/bin/env coffee
+
+fs = require('fs')
+path = require('path')
+
+process.argv.shift() # coffee
+process.argv.shift() # ./bin/exspresso
+
+$project = ''
+for $arg in process.argv
+  if $arg[0] is '-'
+    switch $arg
+      when '--namespace'
+        console.log $arg
+      when '-n'
+        console.log $arg
+
+  else
+    $project = $arg
+
+if $project is ''
+  console.log 'No project specified'
+  process.exit()
+
+
+console.log "Creating #{$project}..."
+
+$dst = process.cwd()+'/'+$project
+
+# copy from exspresso/application
+
+$src = path.resolve(__dirname, '..')
+
+console.log 'copy from '+$dst
+console.log 'copy to '+$src
