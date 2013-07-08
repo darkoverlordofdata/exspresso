@@ -26,6 +26,7 @@ path = require('path')
 {exec} = require("child_process")
 MODE = 0o755
 ucfirst = ($str) -> $str[0].toUpperCase() + $str[1..]
+$cwd = process.cwd()
 
 
 #
@@ -36,16 +37,24 @@ main = ->
   process.argv.shift() # ./bin/exspresso
 
   switch process.argv.shift()
-    when 'new'    then cmd_new process.argv.shift()
+    when 'new'        then cmd_new process.argv.shift()
+    when 'module'     then cmd_module process.argv.shift()
+    when 'controller' then cmd_controller process.argv.shift(), process.argv.shift()
+    when 'model'      then cmd_model process.argv.shift(), process.argv...
 
     else
       console.log 'Usage:'
-      console.log
+      console.log ''
       console.log 'exspresso new <appname>'
-      console.log
+      console.log 'exspresso module <name>'
+      console.log 'exspresso controller <name> <method>'
+      console.log 'exspresso model <name> <field1:type> <fieldn:type>'
 
 #
 # New Application
+#
+# @param  [String]  app name
+# @return none
 #
 cmd_new = ($app) ->
   
@@ -101,6 +110,86 @@ cmd_new = ($app) ->
     console.log 'Ok.'
 
 #
+# Generate Module
+#
+# @param  [String]  app name
+# @return none
+#
+cmd_module = ($name) ->
+  if ($app = get_application()) is false
+    console.log 'Not a valid application folder.'
+    process.exit(1)
+
+  if fs.fileExistsSync("#{$cwd}/modules/#{$name}")
+    console.log 'Module already exists.'
+    process.exit(1)
+
+  console.log "Creating folder structure for module #{$name}"
+  fs.mkdirSync "#{$cwd}/modules/#{$name}", MODE
+  fs.mkdirSync "#{$cwd}/modules/#{$name}/config", MODE
+  fs.mkdirSync "#{$cwd}/modules/#{$name}/controllers", MODE
+  fs.mkdirSync "#{$cwd}/modules/#{$name}/lib", MODE
+  fs.mkdirSync "#{$cwd}/modules/#{$name}/models", MODE
+  fs.mkdirSync "#{$cwd}/modules/#{$name}/views", MODE
+  write_file "#{$cwd}/modules/#{$name}/#{ucfirst($name)}.coffee", module_coffee($name)
+
+#
+# Generate Controller with View and Route
+#
+# @param  [String]  model/controller name
+# @param  [String]  default method name
+# @return none
+#
+cmd_controller = ($name, $method = 'index') ->
+  if ($app = get_application()) is false
+    console.log 'Not a valid application folder'
+    process.exit(1)
+
+  [$mod, $name] = $name.split('/')
+  [$mod, $name] = ['', $mod] unless $name?
+
+  if $module is ''
+    add_method "#{$cwd}/#{$app}/controllers/#{$name}.coffee", $name, $method
+    write_file "#{$cwd}/#{$app}/views/#{$name}-#{$method}.coffee",  view_coffee($name, $method)
+    add_route "#{$cwd}/#{$app}/config/routes.coffee", $name, $method
+  else
+    add_method "#{$cwd}/modules/#{$mod}/controllers/#{$name}.coffee", $module, $name, $method
+    write_file "#{$cwd}/modules/#{$mod}/views/#{$name}-#{$method}.coffee",  view_coffee($module, $name, $method)
+    add_route "#{$cwd}/modules/#{$mod}/config/routes.coffee", $name, $method
+
+
+#
+# Generate Model
+#
+# @param  [String]  module/model name
+# @param  [Array<String>]  list of fields:types
+# @return none
+#
+cmd_model = ($name, $fields...) ->
+  if ($app = get_application()) is false
+    console.log 'Not a valid application folder'
+    process.exit(1)
+
+  [$mod, $name] = $name.split('/')
+  [$mod, $name] = ['', $mod] unless $name?
+
+  if $module is ''
+    write_file "#{$cwd}/#{$app}/models/#{$name}.coffee",  model_coffee($name, $method)
+  else
+    write_file "#{$cwd}/modules/#{$mod}/models/#{$name}.coffee",  model_coffee($module, $name, $method)
+
+
+#
+# Get Application
+#
+# @return [String]  current application name or false
+#
+get_application = () ->
+  if fs.fileExistsSync("#{$cwd}/package.json")
+    require("#{$cwd}/package.json").name
+  else false
+
+#
 # Write File
 #
 # @param [String] path  path to file
@@ -111,6 +200,240 @@ write_file = ($path, $data) ->
   console.log "Writing #{$path}..."
   fs.writeFileSync "#{$path}", $data, mode: MODE
   return
+
+#
+# module.coffee
+#
+# @param [String] name  module name
+# @retun [String] code
+#
+module_coffee = ($name) ->
+  """
+  #+--------------------------------------------------------------------+
+  #| #{ucfirst($name)}.coffee
+  #+--------------------------------------------------------------------+
+  #| Copyright DarkOverlordOfData (c) 2012 - 2013
+  #+--------------------------------------------------------------------+
+  #|
+  #| This file is a part of Exspresso
+  #|
+  #| Exspresso is free software; you can copy, modify, and distribute
+  #| it under the terms of the MIT License
+  #|
+  #+--------------------------------------------------------------------+
+
+  #
+  #	#{ucfirst($name)} Module
+  #
+
+  module.exports = class #{ucfirst($name)} extends system.core.Module
+
+    name          : '#{ucfirst($name)}'
+    description   : ''
+    path          : __dirname
+    active        : true
+
+  """
+
+#
+# controller.coffee
+#
+# @param [String] module  module name
+# @param [String] name  controller name
+# @param [String] method  method name
+# @retun [String] code
+#
+controller_coffee = ($module, $name, $method) ->
+  """
+  #+--------------------------------------------------------------------+
+  #| #{ucfirst($name)}.coffee
+  #+--------------------------------------------------------------------+
+  #| Copyright DarkOverlordOfData (c) 2012 - 2013
+  #+--------------------------------------------------------------------+
+  #|
+  #| This file is a part of Exspresso
+  #|
+  #| Exspresso is free software; you can copy, modify, and distribute
+  #| it under the terms of the MIT License
+  #|
+  #+--------------------------------------------------------------------+
+
+  #
+  #	#{ucfirst($name)} Controller
+  #
+
+  module.exports = class #{ucfirst($name)} extends system.core.Controller
+
+    #
+    # #{ucfirst($name)}
+    #
+    # @access	public
+    # @return [Void]
+    #
+    #{$name}Action: ->
+
+    @load.view '#{$name}-#{$method}'
+
+  """
+
+#
+# controller.coffee
+#
+# @param [String] module  module name
+# @param [String] name  controller name
+# @param [String] method  method name
+# @retun [String] code
+#
+method_coffee = ($module, $name, $method) ->
+  """
+  #
+  # #{ucfirst($name)}
+  #
+  # @access	public
+  # @return [Void]
+          #
+  #{$name}Action: ->
+
+    @load.view '#{$name}-#{$method}'
+
+  """
+
+#
+# view.coffee
+#
+# @param [String] module  module name
+# @param [String] name  controller name
+# @param [String] method  method name
+# @retun [String] code
+#
+view_coffee = ($module, $name, $method) ->
+  """
+  """
+
+
+#
+# model.coffee
+#
+# @param [String] module  module name
+# @param [String] name  model name
+# @param [String] fields  model fields
+# @retun [String] code
+#
+model_coffee = ($module, $name, $fields) ->
+  """
+  #+--------------------------------------------------------------------+
+  #| #{ucfirst($name)}.coffee
+  #+--------------------------------------------------------------------+
+  #| Copyright DarkOverlordOfData (c) 2012 - 2013
+  #+--------------------------------------------------------------------+
+  #|
+  #| This file is a part of Exspresso
+  #|
+  #| Exspresso is free software; you can copy, modify, and distribute
+  #| it under the terms of the MIT License
+  #|
+  #+--------------------------------------------------------------------+
+
+  #
+  #	Class #{ucfirst($name)}
+  #
+  module.exports = class modules.#{$module}.models.#{ucfirst($name)} extends system.core.Model
+
+    table: '#{$name}'
+    #
+    # Initialize #{ucfirst($name)} Model
+    #
+    constructor: ($args...) ->
+
+      super $args...
+      log_message 'debug', '#{ucfirst($name)} Model Initialized'
+
+
+    #
+    # Install the #{ucfirst($name)} data
+    #
+    # @return [Void]
+    #
+    install: () ->
+
+      @load.dbforge() unless @dbforge?
+      @queue @install_#{$name}
+
+    #
+    # Create the #{$name} table
+    #
+    # @param  [Function]  next  async callback
+    # @return [Void]
+    #
+    install_#{$name}: ($next) =>
+
+      #
+      # if table doesn't exist, create and load initial data
+      #
+      @dbforge.createTable @table, $next, ($table) ->
+        $table.addKey 'id', true
+        $table.addField
+          id:
+            type: 'INT', constraint: 5, unsigned: true, auto_increment: true
+  """ + fields_coffee($fields)
+
+
+fields_coffee = ($field) ->
+
+field_coffee = ($field) ->
+
+#
+# Add Route
+#
+# @param [String] path  path to config/routes
+# @param [String] name  controller name
+# @param [String] method  method name
+# @retun [String] code
+#
+add_route = ($path, $name, $method) ->
+  if fs.fileExists($path)
+    write_file $path, [
+      fs.readFileSync($path, encoding: 'utf8')
+      route_coffee($name, $method)
+    ].join('\n')
+
+  else
+    write_file $path, routes_coffee($name, $method)
+
+
+#
+# Add Method
+#
+# @param [String] path  path to config/routes
+# @param [String] name  controller name
+# @param [String] method  method name
+# @retun [String] code
+#
+add_method = ($path, $name, $method) ->
+  if fs.fileExists($path)
+    write_file $path, [
+      fs.readFileSync($path, encoding: 'utf8')
+      method_coffee($name, $method)
+    ].join('\n')
+
+  else
+    write_file $path, controller_coffee($name, $method)
+
+
+routes_coffee = ($name, $method) ->
+  """
+  module.exports =
+    #----------------------------------------------------------------------
+    #          Route                                 Controller URI
+    #----------------------------------------------------------------------
+    '/#{$name}'                               : '#{ucfirst($name)}/#{$method}'
+  """
+
+route_coffee = ($name, $method) ->
+  """
+    '/#{$name}'                               : '#{ucfirst($name)}/#{$method}'
+  """
+
 
 
 #
