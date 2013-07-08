@@ -378,9 +378,19 @@ model_coffee = ($module, $name, $fields) ->
   """ + fields_coffee($fields)
 
 
-fields_coffee = ($field) ->
+fields_coffee = ($fields) ->
+  $str = ''
+  for $field in $fields
+    [$name, $type] = $field.split(':')
+    $str += field_coffee($name, $type)
+  return $str
 
-field_coffee = ($field) ->
+field_coffee = ($name, $type) ->
+  """
+          #{$name}:
+            type: '#{$type.toUpperCase()}'
+  """
+
 
 #
 # Add Route
