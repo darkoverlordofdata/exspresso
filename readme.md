@@ -1,4 +1,4 @@
-# Exspresso v0.10.22
+# Exspresso v0.10.23
 
 An MVC Web Framework written in CoffeeScript.
 

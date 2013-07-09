@@ -27,9 +27,7 @@ fields = ($fields) ->
   for $field in $fields
     [$name, $type] = $field.split(':')
     $str += "        "+$name+":\n          type: '"+$type.toUpperCase()+"'\n"
-  return $str
-
-
+  $str += "      $table.addData []\n"
 
 
 module.exports =

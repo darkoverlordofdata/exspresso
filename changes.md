@@ -50,3 +50,6 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.22 (7/6/13)
 * Command exspresso new <appname>.
+
+### Version 0.10.23 (7/8/13)
+* Add scaffolding commands.
