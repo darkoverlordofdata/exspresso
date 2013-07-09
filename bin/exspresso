@@ -23,14 +23,17 @@
 
 fs = require('fs')
 path = require('path')
+templates = require('../lib/templates.coffee')
 {exec} = require("child_process")
-MODE = 0o755
 ucfirst = ($str) -> $str[0].toUpperCase() + $str[1..]
 $cwd = process.cwd()
+MODE = 0o755
 
 
 #
-# Decode the command  
+# Main
+#
+# Decode the command
 #
 main = ->
   process.argv.shift() # coffee
@@ -41,7 +44,6 @@ main = ->
     when 'module'     then cmd_module process.argv.shift()
     when 'controller' then cmd_controller process.argv.shift(), process.argv.shift()
     when 'model'      then cmd_model process.argv.shift(), process.argv...
-
     else
       console.log 'Usage:'
       console.log ''
@@ -68,13 +70,13 @@ cmd_new = ($app) ->
   console.log "Creating #{$app}..."
   fs.mkdirSync $dst, MODE
 
-  write_file "#{$dst}/index.coffee",  index_coffee($app)
-  write_file "#{$dst}/index.js",      index_js($app)
-  write_file "#{$dst}/license.md",    license_md($app)
-  write_file "#{$dst}/package.json",  package_json($app)
-  write_file "#{$dst}/Procfile",      Procfile($app)
-  write_file "#{$dst}/readme.md",     readme_md($app)
-  write_file "#{$dst}/#{$app}.js",    project_js($app)
+  write_file "#{$dst}/index.coffee",  templates.run($app)
+  write_file "#{$dst}/index.js",      templates.index($app)
+  write_file "#{$dst}/license.md",    templates.license($app)
+  write_file "#{$dst}/package.json",  templates.package($app)
+  write_file "#{$dst}/Procfile",      templates.Procfile($app)
+  write_file "#{$dst}/readme.md",     templates.readme($app)
+  write_file "#{$dst}/#{$app}.js",    templates.project($app)
 
 
   # Source folder:  /usr/local/lib/node_modules/exspresso
@@ -102,10 +104,10 @@ cmd_new = ($app) ->
     console.log $err.message if $err?
 
     console.log "Updating config/config..."
-    fs.writeFileSync "#{$dst}/#{$app}/config/config.coffee",  config_coffee($app),   mode: MODE
+    fs.writeFileSync "#{$dst}/#{$app}/config/config.coffee",  templates.config($app),   mode: MODE
 
     console.log "Extend core/Connect..."
-    fs.writeFileSync "#{$dst}/#{$app}/core/#{ucfirst($app)}Connect.coffee",  extend_coffee($app),   mode: MODE
+    fs.writeFileSync "#{$dst}/#{$app}/core/#{ucfirst($app)}Connect.coffee",  templates.extend($app),   mode: MODE
 
     console.log 'Ok.'
 
@@ -120,7 +122,7 @@ cmd_module = ($name) ->
     console.log 'Not a valid application folder.'
     process.exit(1)
 
-  if fs.fileExistsSync("#{$cwd}/modules/#{$name}")
+  if fs.existsSync("#{$cwd}/modules/#{$name}")
     console.log 'Module already exists.'
     process.exit(1)
 
@@ -131,7 +133,7 @@ cmd_module = ($name) ->
   fs.mkdirSync "#{$cwd}/modules/#{$name}/lib", MODE
   fs.mkdirSync "#{$cwd}/modules/#{$name}/models", MODE
   fs.mkdirSync "#{$cwd}/modules/#{$name}/views", MODE
-  write_file "#{$cwd}/modules/#{$name}/#{ucfirst($name)}.coffee", module_coffee($name)
+  write_file "#{$cwd}/modules/#{$name}/#{ucfirst($name)}.coffee", templates.module($name)
 
 #
 # Generate Controller with View and Route
@@ -148,13 +150,13 @@ cmd_controller = ($name, $method = 'index') ->
   [$mod, $name] = $name.split('/')
   [$mod, $name] = ['', $mod] unless $name?
 
-  if $module is ''
-    add_method "#{$cwd}/#{$app}/controllers/#{$name}.coffee", $name, $method
-    write_file "#{$cwd}/#{$app}/views/#{$name}-#{$method}.coffee",  view_coffee($name, $method)
+  if $mod is ''
+    add_method "#{$cwd}/#{$app}/controllers/#{ucfirst($name)}.coffee", $name, $method
+    write_file "#{$cwd}/#{$app}/views/#{$name}-#{$method}.eco", templates.view($name, $method)
     add_route "#{$cwd}/#{$app}/config/routes.coffee", $name, $method
   else
-    add_method "#{$cwd}/modules/#{$mod}/controllers/#{$name}.coffee", $module, $name, $method
-    write_file "#{$cwd}/modules/#{$mod}/views/#{$name}-#{$method}.coffee",  view_coffee($module, $name, $method)
+    add_method "#{$cwd}/modules/#{$mod}/controllers/#{ucfirst($name)}.coffee", $name, $method
+    write_file "#{$cwd}/modules/#{$mod}/views/#{$name}-#{$method}.eco", templates.view($name, $method)
     add_route "#{$cwd}/modules/#{$mod}/config/routes.coffee", $name, $method
 
 
@@ -173,11 +175,11 @@ cmd_model = ($name, $fields...) ->
   [$mod, $name] = $name.split('/')
   [$mod, $name] = ['', $mod] unless $name?
 
-  if $module is ''
-    write_file "#{$cwd}/#{$app}/models/#{$name}.coffee",  model_coffee($name, $method)
+  if $mod is ''
+    write_file "#{$cwd}/#{$app}/models/#{ucfirst($name)}.coffee", templates.model('', $name, $fields)
   else
-    write_file "#{$cwd}/modules/#{$mod}/models/#{$name}.coffee",  model_coffee($module, $name, $method)
-
+    write_file "#{$cwd}/modules/#{$mod}/models/#{ucfirst($name)}.coffee", templates.model($mod, $name, $fields)
+    add_model "#{$cwd}/modules/#{$mod}/#{ucfirst($mod)}.coffee", $name
 
 #
 # Get Application
@@ -185,7 +187,7 @@ cmd_model = ($name, $fields...) ->
 # @return [String]  current application name or false
 #
 get_application = () ->
-  if fs.fileExistsSync("#{$cwd}/package.json")
+  if fs.existsSync("#{$cwd}/package.json")
     require("#{$cwd}/package.json").name
   else false
 
@@ -202,197 +204,6 @@ write_file = ($path, $data) ->
   return
 
 #
-# module.coffee
-#
-# @param [String] name  module name
-# @retun [String] code
-#
-module_coffee = ($name) ->
-  """
-  #+--------------------------------------------------------------------+
-  #| #{ucfirst($name)}.coffee
-  #+--------------------------------------------------------------------+
-  #| Copyright DarkOverlordOfData (c) 2012 - 2013
-  #+--------------------------------------------------------------------+
-  #|
-  #| This file is a part of Exspresso
-  #|
-  #| Exspresso is free software; you can copy, modify, and distribute
-  #| it under the terms of the MIT License
-  #|
-  #+--------------------------------------------------------------------+
-
-  #
-  #	#{ucfirst($name)} Module
-  #
-
-  module.exports = class #{ucfirst($name)} extends system.core.Module
-
-    name          : '#{ucfirst($name)}'
-    description   : ''
-    path          : __dirname
-    active        : true
-
-  """
-
-#
-# controller.coffee
-#
-# @param [String] module  module name
-# @param [String] name  controller name
-# @param [String] method  method name
-# @retun [String] code
-#
-controller_coffee = ($module, $name, $method) ->
-  """
-  #+--------------------------------------------------------------------+
-  #| #{ucfirst($name)}.coffee
-  #+--------------------------------------------------------------------+
-  #| Copyright DarkOverlordOfData (c) 2012 - 2013
-  #+--------------------------------------------------------------------+
-  #|
-  #| This file is a part of Exspresso
-  #|
-  #| Exspresso is free software; you can copy, modify, and distribute
-  #| it under the terms of the MIT License
-  #|
-  #+--------------------------------------------------------------------+
-
-  #
-  #	#{ucfirst($name)} Controller
-  #
-
-  module.exports = class #{ucfirst($name)} extends system.core.Controller
-
-    #
-    # #{ucfirst($name)}
-    #
-    # @access	public
-    # @return [Void]
-    #
-    #{$name}Action: ->
-
-    @load.view '#{$name}-#{$method}'
-
-  """
-
-#
-# controller.coffee
-#
-# @param [String] module  module name
-# @param [String] name  controller name
-# @param [String] method  method name
-# @retun [String] code
-#
-method_coffee = ($module, $name, $method) ->
-  """
-  #
-  # #{ucfirst($name)}
-  #
-  # @access	public
-  # @return [Void]
-          #
-  #{$name}Action: ->
-
-    @load.view '#{$name}-#{$method}'
-
-  """
-
-#
-# view.coffee
-#
-# @param [String] module  module name
-# @param [String] name  controller name
-# @param [String] method  method name
-# @retun [String] code
-#
-view_coffee = ($module, $name, $method) ->
-  """
-  """
-
-
-#
-# model.coffee
-#
-# @param [String] module  module name
-# @param [String] name  model name
-# @param [String] fields  model fields
-# @retun [String] code
-#
-model_coffee = ($module, $name, $fields) ->
-  """
-  #+--------------------------------------------------------------------+
-  #| #{ucfirst($name)}.coffee
-  #+--------------------------------------------------------------------+
-  #| Copyright DarkOverlordOfData (c) 2012 - 2013
-  #+--------------------------------------------------------------------+
-  #|
-  #| This file is a part of Exspresso
-  #|
-  #| Exspresso is free software; you can copy, modify, and distribute
-  #| it under the terms of the MIT License
-  #|
-  #+--------------------------------------------------------------------+
-
-  #
-  #	Class #{ucfirst($name)}
-  #
-  module.exports = class modules.#{$module}.models.#{ucfirst($name)} extends system.core.Model
-
-    table: '#{$name}'
-    #
-    # Initialize #{ucfirst($name)} Model
-    #
-    constructor: ($args...) ->
-
-      super $args...
-      log_message 'debug', '#{ucfirst($name)} Model Initialized'
-
-
-    #
-    # Install the #{ucfirst($name)} data
-    #
-    # @return [Void]
-    #
-    install: () ->
-
-      @load.dbforge() unless @dbforge?
-      @queue @install_#{$name}
-
-    #
-    # Create the #{$name} table
-    #
-    # @param  [Function]  next  async callback
-    # @return [Void]
-    #
-    install_#{$name}: ($next) =>
-
-      #
-      # if table doesn't exist, create and load initial data
-      #
-      @dbforge.createTable @table, $next, ($table) ->
-        $table.addKey 'id', true
-        $table.addField
-          id:
-            type: 'INT', constraint: 5, unsigned: true, auto_increment: true
-  """ + fields_coffee($fields)
-
-
-fields_coffee = ($fields) ->
-  $str = ''
-  for $field in $fields
-    [$name, $type] = $field.split(':')
-    $str += field_coffee($name, $type)
-  return $str
-
-field_coffee = ($name, $type) ->
-  """
-          #{$name}:
-            type: '#{$type.toUpperCase()}'
-  """
-
-
-#
 # Add Route
 #
 # @param [String] path  path to config/routes
@@ -401,14 +212,14 @@ field_coffee = ($name, $type) ->
 # @retun [String] code
 #
 add_route = ($path, $name, $method) ->
-  if fs.fileExists($path)
+  if fs.existsSync($path)
     write_file $path, [
       fs.readFileSync($path, encoding: 'utf8')
-      route_coffee($name, $method)
+      templates.route($name, $method)
     ].join('\n')
 
   else
-    write_file $path, routes_coffee($name, $method)
+    write_file $path, templates.routes($name, $method)
 
 
 #
@@ -420,586 +231,31 @@ add_route = ($path, $name, $method) ->
 # @retun [String] code
 #
 add_method = ($path, $name, $method) ->
-  if fs.fileExists($path)
+  if fs.existsSync($path)
     write_file $path, [
       fs.readFileSync($path, encoding: 'utf8')
-      method_coffee($name, $method)
+      templates.method($name, $method)
     ].join('\n')
 
   else
-    write_file $path, controller_coffee($name, $method)
-
-
-routes_coffee = ($name, $method) ->
-  """
-  module.exports =
-    #----------------------------------------------------------------------
-    #          Route                                 Controller URI
-    #----------------------------------------------------------------------
-    '/#{$name}'                               : '#{ucfirst($name)}/#{$method}'
-  """
-
-route_coffee = ($name, $method) ->
-  """
-    '/#{$name}'                               : '#{ucfirst($name)}/#{$method}'
-  """
-
-
+    write_file $path, templates.controller($name, $method)
 
 #
-# index.coffee
+# Add Model
 #
-# @param [String] app appname
+# @param [String] path  path to config/routes
+# @param [String] name  model name
 # @retun [String] code
 #
-index_coffee = ($app) ->
-  $dst = process.cwd()+'/'+$app
-  """
-  module.exports =
+add_model = ($path, $name) ->
+  if fs.existsSync($path)
+    write_file $path, [
+      fs.readFileSync($path, encoding: 'utf8')
+      templates.migrate($name)
+    ].join('\n')
 
-    #
-    # Run Exspresso
-    #
-    # Set the MODPATH and DOCPATH globals and boot exspresso.
-    #
-    # @param [Object] config  sets the expresso paths
-    # @return none
-    #
-    run: ($config = {}) ->
+  else
+    console.log 'Module not found: '+$path
 
-      $config['APPPATH'] = __dirname + "/#{$app}"
-      $config['MODPATH'] = __dirname + "/modules" unless $config['MODPATH']?
-
-      require('exspresso').run $config
-  """
-
-#
-# index.js
-#
-# @param [String] app appname
-# @retun [String] code
-#
-index_js = ($app) ->
-  """
-  /*
-   *
-   *	Reference #{$app}
-   *
-   */
-  require('coffee-script');
-  module.exports = require('./index.coffee');
-  """
-
-#
-# license.md
-#
-# @param [String] app appname
-# @retun [String] license text
-#
-license_md = ($app) ->
-  """
-  # MIT License
-
-  Copyright (c) 2012 - 2013 Bruce Davidson &lt;darkoverlordofdata@gmail.com&gt;
-
-  Permission is hereby granted, free of charge, to any person obtaining
-  a copy of this software and associated documentation files (the
-  'Software'), to deal in the Software without restriction, including
-  without limitation the rights to use, copy, modify, merge, publish,
-  distribute, sublicense, and/or sell copies of the Software, and to
-  permit persons to whom the Software is furnished to do so, subject to
-  the following conditions:
-
-  The above copyright notice and this permission notice shall be
-  included in all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  """
-
-#
-# package.json
-#
-# @param [String] app appname
-# @retun [String] npm config
-#
-package_json = ($app) ->
-  """
-  {
-    "name": "#{$app}",
-    "version": "0.0.1",
-    "description": "#{$app}",
-    "author": "myname <myname@gmail.com>",
-    "dependencies": {
-      "coffee-script": "*",
-      "exspresso": "*"
-    },
-    "scripts": {
-      "start": "node #{$app}.js"
-    },
-    "license": "MIT"
-  }
-  """
-
-#
-# Procfile
-#
-# @param [String] app appname
-# @retun [String] command line for Heroku
-#
-Procfile = ($app) ->
-  """
-  web: node index --install
-  """
-
-#
-# readme.md
-#
-# @param [String] app appname
-# @retun [String] documentation
-#
-readme_md = ($app) ->
-  """
-  # #{$app}
-
-  """
-
-#
-# projects.js
-#
-# @param [String] app appname
-# @retun [String] code
-#
-project_js = ($app) ->
-  """
-  /*
-   *
-   *	Boot #{$app}
-   *
-   */
-  require('coffee-script');
-  require('./index.coffee').run();
-
-  """
-
-#
-# config/config.coffee
-#
-# @param [String] app appname
-# @retun [String] code
-#
-config_coffee = ($app) ->
-  """
-  module.exports =
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Google Analytics Parameters
-    #|--------------------------------------------------------------------------
-    #|
-    #| Enter your GA account and domain info:
-    #|
-    #|
-    ga_account: ''
-    ga_domain: ''
-    #|
-    #|--------------------------------------------------------------------------
-    #| Site Name
-    #|--------------------------------------------------------------------------
-    #|
-    #| Title for your site
-    #|
-    #|
-    site_name: '#{$app}'
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Site Slogan
-    #|--------------------------------------------------------------------------
-    #|
-    #| A Catchy Jingle
-    #|
-    site_slogan: ""
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Logo
-    #|--------------------------------------------------------------------------
-    #|
-    #| The image to display with site name
-    #|
-    #|
-    logo: "/images/logo.png"
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Favicon
-    #|--------------------------------------------------------------------------
-    #|
-    #| For the browser or desktop
-    #|
-    #|
-    favicon: 'favicon.png'
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| HTTP Port
-    #|--------------------------------------------------------------------------
-    #|
-    #| The http port to use
-    #|
-    #|
-    http_port: process.env.PORT ? 0xd16a
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Base Site URL
-    #|--------------------------------------------------------------------------
-    #|
-    #| URL to your Exspresso root. Typically this will be your base URL,
-    #| WITH a trailing slash:
-    #|
-    #|	http://example.com/
-    #|
-    #| If this is not set then Exspresso will guess the protocol, domain and
-    #| path to your installation.
-    #|
-    #|
-    base_url: ''
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Index File
-    #|--------------------------------------------------------------------------
-    #|
-    #| Typically this will be your index.coffee file, unless you've renamed it to
-    #| something else. If you are using mod_rewrite to remove the page set this
-    #| variable so that it is blank.
-    #|
-    #|
-    index_page: ''
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| URL suffix
-    #|--------------------------------------------------------------------------
-    #|
-    #| This option allows you to add a suffix to all URLs generated by exspresso.
-    #|
-    #|
-    url_suffix: ''
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Default Language
-    #|--------------------------------------------------------------------------
-    #|
-    #| This determines which set of i18n files should be used. Make sure
-    #| there is an available translation if you intend to use something other
-    #| than english.
-    #|
-    #|
-    language: 'en'
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Default Character Set
-    #|--------------------------------------------------------------------------
-    #|
-    #| This determines which character set is used by default in various methods
-    #| that require a character set to be provided.
-    #|
-    #|
-    charset: 'UTF-8'
-    encoding: 'utf8'
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Enable/Disable System Hooks
-    #|--------------------------------------------------------------------------
-    #|
-    #| Enable the 'hooks' feature.
-    #|
-    #|
-    enable_hooks: false
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Class Extension Prefix
-    #|--------------------------------------------------------------------------
-    #|
-    #| This item allows you to set the filename/classname prefix when extending
-    #| native libraries.
-    #|
-    #|
-    subclass_prefix: '#{ucfirst($app)}'
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Allow Get Array
-    #|--------------------------------------------------------------------------
-    #|
-    #| Set to false to disallow the $req.query array
-    #|
-    #|
-    allow_get_array: true
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Logging
-    #|--------------------------------------------------------------------------
-    #|
-    #| Logging Options
-    #|
-    #|
-    log_path: ''
-    log_date_format: 'YYYY-MM-DD HH:mm:ss'
-    log_threshold: 3
-    #|	               0        Disables logging, Error logging TURNED OFF
-    #|	               1        Error Messages (including PHP errors)
-    #|	               2        Debug Messages
-    #|	               3        All Messages
-    #|
-    log_http: 'tiny'
-    #|                 default  Verbose output
-    #|                 short    Consise output
-    #|                 tiny     Terse output
-    #|                 dev      Colorized version of tiny
-    #|
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Cacheing
-    #|--------------------------------------------------------------------------
-    #|
-    #| Leave this BLANK unless you would like to set something other than the default
-    #| system/cache/ folder.  Use a full server path with trailing slash.
-    #|
-    #|
-    cache_path: ''
-    cache_rules:
-      '/welcome': 43200 # 1 month = 30 days * 24 hrs * 60 min
-      '.*': 0
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Encryption Key
-    #|--------------------------------------------------------------------------
-    #|
-    #| If you use the Encryption class or the Session class you
-    #| MUST set an encryption key.  See the user guide for info.
-    #|
-    #|
-    encryption_key: process.env.CLIENT_SECRET ? 'ZAHvYIu8u1iRS6Hox7jADpnCMYKf57ex0BEWc8bM0/4='
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Session Variables
-    #|--------------------------------------------------------------------------
-    #|
-    #| 'sess_cookie_name'		    = cookie name
-    #| 'sess_expiration'			  = seconds the session will last.
-    #|                            by default sessions last 7200 seconds (two hours).
-    #|                            Set to zero for no expiration.
-    #| 'sess_expire_on_close'	  = true/false True causes the session to expire automatically
-    #|                            when the browser window is closed
-    #| 'sess_encrypt_cookie'		= true/false Encrypt the cookie?
-    #| 'sess_use_database'		  = true/false Persist the session data to a database
-    #| 'sess_table_name'			  = Session database table name
-    #| 'sess_match_ip'			    = true/false Match the user's IP address when reading the session data?
-    #| 'sess_match_useragent'	  = true/false Match the User Agent when reading the session data?
-    #| 'sess_time_to_update'		= Seconds between refresh of session data
-    #|
-    sess_driver: 'sql'
-    sess_cookie_name: 'sid'
-    sess_expiration: 7200*60
-    sess_expire_on_close: false
-    sess_encrypt_cookie: false
-    sess_use_database: true
-    sess_table_name: 'sessions'
-    sess_match_ip: false
-    sess_match_useragent: true
-    sess_time_to_update: 300
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Cookie Related Variables
-    #|--------------------------------------------------------------------------
-    #|
-    #| 'cookie_prefix' = Set a prefix if you need to avoid collisions
-    #| 'cookie_domain' = Set to .your-domain.com for site-wide cookies
-    #| 'cookie_path'   =  Typically will be a forward slash
-    #| 'cookie_secure' =  Cookies will only be set if a secure HTTPS connection exists.
-    #|
-    #|
-    cookie_prefix: "connect."
-    cookie_domain: ""
-    cookie_path: "/"
-    cookie_secure: false
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Global XSS Filtering
-    #|--------------------------------------------------------------------------
-    #|
-    #| Determines whether the XSS filter is always active when GET, POST or
-    #| COOKIE data is encountered
-    #|
-    #|
-    global_xss_filtering: false
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Cross Site Request Forgery
-    #|--------------------------------------------------------------------------
-    #| Enables a CSRF cookie token to be set. When set to TRUE, token will be
-    #| checked on a submitted form. If you are accepting user data, it is strongly
-    #| recommended CSRF protection be enabled.
-    #|
-    #| 'csrf_token_name' = The token name
-    #| 'csrf_cookie_name' = The cookie name
-    #| 'csrf_expire' = The number in seconds the token should expire.
-    #|
-    csrf_protection: false
-    csrf_token_name: 'csrf_test_name'
-    csrf_cookie_name: 'csrf_cookie_name'
-    csrf_expire: 7200
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Output Compression
-    #|--------------------------------------------------------------------------
-    #|
-    #| Enables Gzip output compression.
-    #|
-    #|
-    compress_output: false
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Master Time Reference
-    #|--------------------------------------------------------------------------
-    #|
-    #| Options are 'local' or 'gmt'.
-    #|
-    #|
-    time_reference: 'local'
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Reverse Proxy IPs
-    #|--------------------------------------------------------------------------
-    #|
-    #| If your server is behind a reverse proxy, you must whitelist the proxy IP
-    #| addresses from which Exspresso should trust the HTTP_X_FORWARDED_FOR
-    #| header in order to properly identify the visitor's IP address.
-    #| Comma-delimited, e.g. '10.0.1.200,10.0.1.201'
-    #|
-    #|
-    proxy_ips: ''
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Module paths
-    #|--------------------------------------------------------------------------
-    #|
-    #| Paths where modules are found
-    #|
-    #|
-    module_paths: [
-      APPPATH+'modules/'
-      MODPATH
-    ]
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| Classpaths
-    #|--------------------------------------------------------------------------
-    #|
-    #| Classpaths used to search when loading classes are stored in a hash.
-    #| The key is the programatic namespace root, and the value is the
-    #| corresponding path to anchor searches at.
-    #|
-    #|
-    classpaths:
-      system    : SYSPATH
-      #{$app}   : APPPATH
-      modules   : MODPATH
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| MVC paths
-    #|--------------------------------------------------------------------------
-    #|
-    #| Paths where models/views/controllers are found
-    #|
-    #|
-    model_paths: [
-      APPPATH
-    ]
-    view_paths: [
-      APPPATH
-    ]
-    controller_paths: [
-      APPPATH
-      SYSPATH
-    ]
-
-    #|
-    #|--------------------------------------------------------------------------
-    #| View Extension
-    #|--------------------------------------------------------------------------
-    #|
-    #| The default view filetype that is loaded when no extension is specified
-    #|
-    #|
-    view_ext: '.eco'
-
-  """
-
-extend_coffee = ($app) ->
-  """
-  #+--------------------------------------------------------------------+
-  #| #{ucfirst($app)}Connect.coffee
-  #+--------------------------------------------------------------------+
-  #| Copyright DarkOverlordOfData (c) 2012 - 2013
-  #+--------------------------------------------------------------------+
-  #|
-  #| This file is a part of Exspresso
-  #|
-  #| Exspresso is free software; you can copy, modify, and distribute
-  #| it under the terms of the MIT License
-  #|
-  #+--------------------------------------------------------------------+
-
-  #
-  #	#{ucfirst($app)}Connect
-  #
-  #   An adapter to the connect server instance
-  #
-  #   This extension allows us to use assets from the exspresso component
-  #
-  module.exports = class #{$app}.core.#{ucfirst($app)}Connect extends system.core.Connect
-
-    #
-    # Initialize the assets
-    #
-    #   Use the assets from the exspresso component
-    #
-    # @param  [Object]  driver  the instantiated express driver
-    # @return [Void]
-    #
-    initialize_assets:($driver, $render) =>
-
-      @app.use $driver.static("node_modules/exspresso/application/assets/")
-      super $driver, $render
-
-
-  """
 
 main()
