@@ -153,11 +153,11 @@ cmd_controller = ($name, $method = 'index') ->
   if $mod is ''
     add_method "#{$cwd}/#{$app}/controllers/#{ucfirst($name)}.coffee", $name, $method
     write_file "#{$cwd}/#{$app}/views/#{$name}-#{$method}.eco", templates.view($name, $method)
-    add_route "#{$cwd}/#{$app}/config/routes.coffee", $name, $method
+    add_route "#{$cwd}/#{$app}/config/routes.coffee", '', $name, $method
   else
     add_method "#{$cwd}/modules/#{$mod}/controllers/#{ucfirst($name)}.coffee", $name, $method
     write_file "#{$cwd}/modules/#{$mod}/views/#{$name}-#{$method}.eco", templates.view($name, $method)
-    add_route "#{$cwd}/modules/#{$mod}/config/routes.coffee", $name, $method
+    add_route "#{$cwd}/modules/#{$mod}/config/routes.coffee", $mod, $name, $method
 
 
 #
@@ -208,18 +208,19 @@ write_file = ($path, $data) ->
 #
 # @param [String] path  path to config/routes
 # @param [String] name  controller name
+# @param [String] mod module name
 # @param [String] method  method name
 # @retun [String] code
 #
-add_route = ($path, $name, $method) ->
+add_route = ($path, $mod, $name, $method) ->
   if fs.existsSync($path)
     write_file $path, [
       fs.readFileSync($path, encoding: 'utf8')
-      templates.route($name, $method)
+      templates.route($mod, $name, $method)
     ].join('\n')
 
   else
-    write_file $path, templates.routes($name, $method)
+    write_file $path, templates.routes($mod, $name, $method)
 
 
 #

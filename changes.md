@@ -53,3 +53,6 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.23 (7/8/13)
 * Add scaffolding commands.
+
+### Version 0.10.24 (7/9/13)
+* Fix scaffold routing.

@@ -240,18 +240,18 @@ module.exports =
 
 
 
-  routes: ($name, $method) ->
+  routes: ($mod, $name, $method) ->
     """
     module.exports =
       #----------------------------------------------------------------------
       #          Route                                 Controller URI
       #----------------------------------------------------------------------
-      '/#{$name}'                               : '#{ucfirst($name)}/#{$method}'
+      '/#{$name}'                               : '#{$mod}/#{ucfirst($name)}/#{$method}'
     """
 
-  route: ($name, $method) ->
+  route: ($mod, $name, $method) ->
     """
-      '/#{$name}'                               : '#{ucfirst($name)}/#{$method}'
+      '/#{$name}'                               : '#{$mod}/#{ucfirst($name)}/#{$method}'
     """
 
 
