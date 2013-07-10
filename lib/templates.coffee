@@ -250,9 +250,7 @@ module.exports =
     """
 
   route: ($mod, $name, $method) ->
-    """
-      '/#{$name}'                               : '#{$mod}/#{ucfirst($name)}/#{$method}'
-    """
+    "  '/#{$name}'                               : '#{$mod}/#{ucfirst($name)}/#{$method}'"
 
 
 
