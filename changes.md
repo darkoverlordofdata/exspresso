@@ -56,3 +56,6 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.24 (7/9/13)
 * Fix scaffold routing.
+
+### Version 0.10.25 (8/21/13)
+* Adjust links to darkoverlordofdata domain.
