@@ -59,3 +59,4 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.25 (8/21/13)
 * Adjust links to darkoverlordofdata domain.
+* Add .openshift config (https://github.com/openshift-quickstart/nodejs-custom-version-openshift)
