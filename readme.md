@@ -1,4 +1,4 @@
-# Exspresso v0.10.25
+# Exspresso v0.10.26
 
 An MVC Web Framework written in CoffeeScript.
 
@@ -16,7 +16,7 @@ Exspresso uses adapter classes to wrap connect middleware
     * PostgreSQL  - requires pg
     * SQLite      - requires sqlite3
 
- [Live Demo!] (<http://exspresso.aws.cf.cm/>)
+ [Live Demo!] (<http://exspresso-d16a.rhcloud.com/>)
 
 
 

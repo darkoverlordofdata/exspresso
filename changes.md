@@ -61,3 +61,6 @@ were made to logic, this only exposes the interface.
 * Adjust links to darkoverlordofdata domain.
 * Add .openshift config
 * Get the openshift env values for port & ip
+
+### Version 0.10.26 (8/24/13)
+* Update demo url in readme
