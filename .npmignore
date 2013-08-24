@@ -1,0 +1,6 @@
+/lib/cache
+/.idea
+/lib/application/logs
+/lib/application/cache
+/.openshift
+npm-debug.log
