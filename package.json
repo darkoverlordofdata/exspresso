@@ -33,7 +33,7 @@
     "async": "*"
   },
   "scripts": {
-    "start": "node exspresso.js"
+      "start": "node ./exspresso.js"
   },
   "bin": {
     "exspresso": "./bin/exspresso"

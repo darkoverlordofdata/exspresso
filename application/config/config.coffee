@@ -47,7 +47,9 @@ module.exports =
   #| The http port to use
   #|
   #|
-  http_port: process.env.PORT ? 0xd16a
+  http_port: process.env.PORT || process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT || 0xd16a
+
+  http_ip: process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
   #|
   #|--------------------------------------------------------------------------

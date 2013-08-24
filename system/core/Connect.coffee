@@ -43,6 +43,10 @@ module.exports = class system.core.Connect
   #
   port: 3000
   #
+  # @property [String] ip local address
+  #
+  port: '127.0.0.1'
+  #
   # @property [system.core.Exspresso] controller
   #
   controller: null
@@ -102,6 +106,7 @@ module.exports = class system.core.Connect
 
     @app = $driver()
     @port = @config.item('http_port')
+    @ip = @config.item('http_ip')
     $render = new_core('Render', @controller)
 
     #
@@ -160,7 +165,10 @@ module.exports = class system.core.Connect
     #
     @controller.run ($err) =>
 
-      @app.listen @port, =>
+    log_message 'debug', 'IP = %s', @ip
+    log_message 'debug', 'PORT = %s', @port
+
+    @app.listen @port, @ip, =>
         @controller.ready(@port)
         return
       return
