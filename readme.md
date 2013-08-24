@@ -22,11 +22,18 @@ Exspresso uses adapter classes to wrap connect middleware
 
 ## Quick Start
 
-### Install
+### Install Locally
 
 ```bash
 $ sudo npm install exspresso -g
 ```
+
+### Install on OpenShift
+
+```bash
+$ rhc app create <appname> nodejs-0.6 --from-code https://github.com/darkoverlordofdata/exspresso
+```
+(This will also upgrade the instance to node 0.10.10)
 
 
 ### Create a new application
