@@ -28,6 +28,10 @@ Exspresso uses adapter classes to wrap connect middleware
 $ sudo npm install exspresso -g
 ```
 
+on OpenShift:
+```bash
+$ rhc create-app exspresso "http://cartreflect-claytondev.rhcloud.com/reflect?github=wshearn/openshift-origin-cartridge-nodejs" --from-code=http://github.com//darkoverlordofdata/exspresso
+```
 
 ### Create a new application
 
