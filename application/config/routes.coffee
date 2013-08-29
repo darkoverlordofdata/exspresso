@@ -6,4 +6,5 @@ module.exports =
   
   '/welcome'                            : 'Welcome/index'
   '/readme'                             : 'Welcome/readme'
+  '/about'                              : 'Welcome/about'
 

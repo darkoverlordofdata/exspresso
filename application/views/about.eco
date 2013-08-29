@@ -22,8 +22,25 @@
     <link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72">
     <link href="//cdn.darkoverlordofdata.com/ico/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon-precomposed">
     <link href="//cdn.darkoverlordofdata.com/ico/favicon.png" rel="shortcut icon" type="image/png">
+    <!-- Google Analytics Code -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', "UA-41153554-1"]);
+        _gaq.push(['_setDomainName', 'darkoverlordofdata.com']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+    <!-- End Google Analytics Code -->
 
 </head>
+
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
@@ -37,7 +54,7 @@
             <div class="nav-collapse collapse">
                 <ul class="nav">
                     <li><a href="http://exspresso.darkoverlordofdata.com">Home</a></li>
-                    <li><a href="http://exspresso.darkoverlordofdata.com/about">About</a></li>
+                    <li class="active"><a href="http://exspresso.darkoverlordofdata.com/about">About</a></li>
                     <li><a href="https://github.com/darkoverlordofdata/exspresso">Code</a></li>
                 </ul>
             </div>
@@ -47,13 +64,46 @@
 
 <div class="container-narrow">
 
-
     <hr>
-    <div>
 
-        <div class="clearfix"></div>
-        <%- @$content %>
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Install</h4>
+            <p><code>$ npm install exspresso --save</code></p>
+        </div>
     </div>
+
+    <br/>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Run</h4>
+            <p><code>require('exspresso');</code></p>
+            <p>Then point your browser to <a href="http://localhost:53610">http://localhost:53610</a></p>
+        </div>
+    </div>
+
+    <br/>
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Documentation</h4>
+            <p>Check the <a href="/readme">Read Me</a></p>
+        </div>
+    </div>
+
+    <br/>
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Demo</h4>
+            <p>Explore the demo code on <a href="https://github.com/darkoverlordofdata/ex6o">github</a></p>
+            <p>Visit the <a href="http://exspresso-d16a.rhcloud.com/">Demo</a></p>
+        </div>
+    </div>
+    <hr>
 
 
     <div class="footer">

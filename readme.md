@@ -16,33 +16,26 @@ Exspresso uses adapter classes to wrap connect middleware
     * PostgreSQL  - requires pg
     * SQLite      - requires sqlite3
 
- [Live Demo!] (<http://exspresso-d16a.rhcloud.com/>)
+ [Live Demo!] (<http://exspresso.darkoverlordofdata.com>)
 
 
 
 ## Quick Start
 
-### Install Locally
+### Install
 
 ```bash
 $ sudo npm install exspresso -g
 ```
 
-### Install on OpenShift
-
-```bash
-$ rhc app create <appname> nodejs-0.6 --from-code https://github.com/darkoverlordofdata/exspresso
-```
-(This will also upgrade the instance to node 0.10.10)
-
 
 ### Create a new application
 
 ```bash
-exspresso new <appname>
-cd <appname>
-nmp install
-npm start
+$ exspresso new <appname>
+$ cd <appname>
+$ nmp install
+$ npm start
 ```
 and point your browser to http://localhost:53610
 

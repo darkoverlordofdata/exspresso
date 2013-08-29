@@ -19,6 +19,9 @@
 
 module.exports = class Welcome extends system.core.Controller
 
+  marked = require('marked')
+  fs = require('fs')
+
   #
   # Index
   #
@@ -32,7 +35,19 @@ module.exports = class Welcome extends system.core.Controller
     @load.view 'welcome_message', site_name: config_item('site_name')
 
   #
-  # Read Me
+  # About
+  #
+  # About Exspresso
+  #
+  # @access	public
+  # @return [Void]
+  #
+  aboutAction: ->
+
+    @load.view 'about', site_name: config_item('site_name')
+
+  #
+  # About
   #
   # About Exspresso
   #
@@ -41,5 +56,7 @@ module.exports = class Welcome extends system.core.Controller
   #
   readmeAction: ->
 
-    @load.view 'readme', site_name: config_item('site_name')
+    @load.view 'readme',
+      site_name: config_item('site_name')
+      text: marked(String(fs.readFileSync(FCPATH+'readme.md')))
 

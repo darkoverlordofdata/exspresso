@@ -59,8 +59,8 @@ were made to logic, this only exposes the interface.
 
 ### Version 0.10.25 (8/21/13)
 * Adjust links to darkoverlordofdata domain.
-* Add .openshift config
 * Get the openshift env values for port & ip
 
-### Version 0.10.26 (8/24/13)
-* Update demo url in readme
+### Version 0.10.26 (8/28/13)
+* Migrate to OpenShift
+* Sync style with gh-pages
