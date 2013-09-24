@@ -17,6 +17,10 @@
 #   Scafolding script
 #
 #   exspresso new <appname>         --  Create new app
+#   exspresso module
+#   exspresso controller
+#   exspresso model
+#   exspresso serve ...
 #
 #
 #
@@ -44,6 +48,7 @@ main = ->
     when 'module'     then cmd_module process.argv.shift()
     when 'controller' then cmd_controller process.argv.shift(), process.argv.shift()
     when 'model'      then cmd_model process.argv.shift(), process.argv...
+    when 'serve'      then cmd_serve process.argv.shift()
     else
       console.log 'Usage:'
       console.log ''
@@ -180,6 +185,19 @@ cmd_model = ($name, $fields...) ->
   else
     write_file "#{$cwd}/modules/#{$mod}/models/#{ucfirst($name)}.coffee", templates.model($mod, $name, $fields)
     add_model "#{$cwd}/modules/#{$mod}/#{ucfirst($mod)}.coffee", $name
+
+
+#
+# Serve folder
+#
+# @param  [String]  path
+# @return none
+#
+cmd_serve = ($path) ->
+  process.argv.unshift "exspresso"
+  process.argv.unshift "node"
+  require("../index.coffee").run({DOCROOT: $path});
+
 
 #
 # Get Application

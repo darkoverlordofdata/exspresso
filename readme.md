@@ -46,6 +46,12 @@ and point your browser to http://localhost:53610
 Look at <appname>/core/<Appname>Connect.coffee for an example
 of how to extend exspresso.
 
+### Serve local content
+
+```bash
+$ exspresso serve /path/to/application --desktop
+```
+
 ## License
 
 (The MIT License)

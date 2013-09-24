@@ -56,6 +56,10 @@ module.exports = class system.core.Exspresso extends system.core.Object
   # @property [Object] module environment
   #
   modules: null
+  #
+  # @property [Object] args environment
+  #
+  argv: ''
 
   #
   #   Exspresso Version
@@ -72,7 +76,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
   # <br />
   #  --cache      enable cacheing <br />
   #  --csrf       enable xss checks <br />
-  #  --preview    preview using appjs <br />
+  #  --preview    preview using webkat <br />
   #  --profile    enable profiling <br />
   #  --install    run install checks
   #  --subclass   set the subclass prefix
@@ -92,6 +96,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
     $preview  = @preview
     $profile  = @profile
     $install  = false
+    $argv     = []
 
     $profile = if ENVIRONMENT is 'development' then true else false
     process.argv.shift() # node
@@ -122,7 +127,8 @@ module.exports = class system.core.Exspresso extends system.core.Object
         when '--nocsrf'     then $csrf    = false
         when '--noprofile'  then $profile = false
         when '--subclass'   then $set_pfx = true
-        else  console.log 'WARNING unknown option "'+$arg+'"'
+        else $argv.push $arg
+          #console.log 'WARNING unknown option "'+$arg+'"'
 
     @define dbDriver    : $db
     @define useCache    : $cache
@@ -131,7 +137,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
     @define preview     : $preview
     @define profile     : $profile
     @define install     : $install
-
+    @argv = $argv.join(" ")
 
   setConfig: ($config) ->
 
@@ -210,7 +216,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
     # run as desktop app?
     #
     if @desktop
-      exec "webview http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "webkat #{@argv} http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
         process.exit()
@@ -219,7 +225,7 @@ module.exports = class system.core.Exspresso extends system.core.Object
       # preview locally?
       #
     else if @preview
-      exec "webview --debug http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "webkat --debug #{@argv} http://localhost:#{$port}", ($err, $stdout, $stderr) ->
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
         process.exit()

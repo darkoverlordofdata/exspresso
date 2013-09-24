@@ -13,7 +13,7 @@
 #
 #	Exspresso
 #
-#   node exspresso [--option]
+#   node exspresso <docroot> [--option]
 #
 #     options:
 #     --cache
@@ -35,7 +35,7 @@ module.exports =
   run: ($config = {})->
 
     #
-    # Allow the embedding componet to override all
+    # Allow the embedding component to override all
     # paths, except for the system path
     #
     $apppath = $config.APPPATH ? 'application'

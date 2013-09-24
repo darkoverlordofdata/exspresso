@@ -64,3 +64,7 @@ were made to logic, this only exposes the interface.
 ### Version 0.10.26 (8/28/13)
 * Migrate to OpenShift
 * Sync style with gh-pages
+
+### Version 0.10.27 (9/23/13)
+* Add command: exspresso serve /path/to/app
+* Use webkat to display on desktop
