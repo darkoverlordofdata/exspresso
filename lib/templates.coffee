@@ -345,6 +345,7 @@ module.exports =
       "author": "myname <myname@gmail.com>",
       "dependencies": {
         "coffee-script": "*",
+        "marked": "*",
         "exspresso": "*"
       },
       "scripts": {
@@ -362,7 +363,7 @@ module.exports =
   #
   Procfile: ($app) ->
     """
-    web: node index --install
+    web: node #{$app} --install
     """
 
   #

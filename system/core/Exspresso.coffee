@@ -74,16 +74,17 @@ module.exports = class system.core.Exspresso extends system.core.Object
   # Parse the command line options.
   #
   # <br />
-  #  --cache      enable cacheing <br />
-  #  --csrf       enable xss checks <br />
-  #  --preview    preview using webkat <br />
-  #  --profile    enable profiling <br />
-  #  --install    run install checks
-  #  --subclass   set the subclass prefix
-  #  --nocache    disable cacheing <br />
-  #  --nocsrf     disable xss checks <br />
-  #  --noprofile  disable profiling <br />
-  #  --db <mysql|postgres> set database driver <br />
+  #   --cache      enable cacheing <br />
+  #   --csrf       enable xss checks <br />
+  #   --preview    preview using webkat <br />
+  #   --profile    enable profiling <br />
+  #   --install    run install checks
+  #   --subclass   set the subclass prefix
+  #   --nocache    disable cacheing <br />
+  #   --nocsrf     disable xss checks <br />
+  #   --noprofile  disable profiling <br />
+  #   --db <mysql|postgres> set database driver <br />
+  #
   #
   # @return [Void]
   #
@@ -216,18 +217,22 @@ module.exports = class system.core.Exspresso extends system.core.Object
     # run as desktop app?
     #
     if @desktop
-      exec "webkat #{@argv} http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "webkat #{@argv} http://localhost:#{$port}", ($err, $stdout, $stderr) =>
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
+        log_message "debug", "e x s p r e s s o  v%s", @version
+        log_message "debug", "exiting %s environment", ENVIRONMENT
         process.exit()
 
       #
       # preview locally?
       #
     else if @preview
-      exec "webkat --debug #{@argv} http://localhost:#{$port}", ($err, $stdout, $stderr) ->
+      exec "webkat --debug #{@argv} http://localhost:#{$port}", ($err, $stdout, $stderr) =>
         console.log $stderr if $stderr?
         console.log $stdout if $stdout?
+        log_message "debug", "e x s p r e s s o  v%s", @version
+        log_message "debug", "exiting %s environment", ENVIRONMENT
         process.exit()
 
     return

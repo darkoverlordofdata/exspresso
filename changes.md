@@ -68,3 +68,6 @@ were made to logic, this only exposes the interface.
 ### Version 0.10.27 (9/23/13)
 * Add command: exspresso serve /path/to/app
 * Use webkat to display on desktop
+
+### Version 0.10.28 (9/24/13)
+* Exit message for debugging
